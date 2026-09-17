@@ -31,6 +31,10 @@ def test_bdda_df_fixture(case_dir):
     _gate(recs, lambda: bdda_df.load_records(case_dir))
     # 主表每步每接触一行 → (step, contact) 唯一
     assert len({(r.step, r.contact_index) for r in recs}) == len(recs)
+    # 块号全部可解析（verts.csv 在时靠顶点号补全），且 verts 与 df18 两路块号零冲突
+    if (case_dir / "bdda_debug_verts.csv").exists():
+        assert not any(r.extra.get("_blocks_unknown") for r in recs)
+    assert not any(r.extra.get("_block_mismatch") for r in recs)
 
 
 @pytest.mark.parametrize("probe", sorted((FIX / "tf").glob("*/retry_contact_pair_probe.tsv")) if (FIX / "tf").exists() else [])

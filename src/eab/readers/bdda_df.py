@@ -104,6 +104,17 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
         if prev is None or j.oc_iter >= prev.oc_iter:
             last_judgment[key] = j
 
+    # verts.csv 的 vidx 是全局顶点号（2026-09-18 实测：bb52 两步各 154 行 vidx 全唯一，
+    # p1/p2 反查块号与 df18 的 block_i/block_j 54/54 吻合）。df18 只 dump 首步，
+    # 第 2 步起的块号靠它补全；两者都在时交叉核对，不一致记 extra["_block_mismatch"]。
+    verts_path = dump_dir / "bdda_debug_verts.csv"
+    vert_block: dict[tuple[int, int], int] = {}
+    if verts_path.exists():
+        for step_v, blocks in read_verts_csv(verts_path).items():
+            for b, vs in blocks.items():
+                for vidx in vs:
+                    vert_block[(step_v, vidx)] = b
+
     keys = sorted(set(contacts) | set(df18) | set(last_judgment))
     records: list[ContactRecord] = []
     for key in keys:
@@ -116,6 +127,15 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
         cover = BDDA_COVER.get(mtype, CoverType.UNKNOWN)
         block_a = int(g["block_i"]) if g else -1
         block_b = int(g["block_j"]) if g else -1
+        block_mismatch = False
+        if "p1" in c and "p2" in c:
+            va = vert_block.get((step, int(c["p1"])))
+            vb = vert_block.get((step, int(c["p2"])))
+            if va is not None and vb is not None:
+                if block_a < 0:
+                    block_a, block_b = va, vb
+                elif (va, vb) != (block_a, block_b):
+                    block_mismatch = True
 
         ref_points: tuple[tuple[float, ...], ...] = ()
         params: tuple[float, ...] = ()
@@ -181,5 +201,7 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
                 rec.length_or_area = float(c["o5"])
         if block_a < 0:
             rec.extra["_blocks_unknown"] = True
+        if block_mismatch:
+            rec.extra["_block_mismatch"] = True
         records.append(rec)
     return records
