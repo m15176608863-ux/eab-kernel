@@ -78,3 +78,57 @@ def interlocking_pair(**kw) -> tuple[Polyhedron, Polyhedron]:
     upper_kw["center"] = (c[0], c[1], c[2] + lz)
     upper = osteomorphic_block(**upper_kw)
     return upper, lower
+
+
+def osteomorphic_block_generic(nx: int = 4, ny: int = 4, *, lx=2.0, ly=1.0, lz=1.0,
+                               amp=0.25, center=(0.0, 0.0, 0.0), phase=0.0, sin_fn=None):
+    """与 osteomorphic_block 同构，但所有标量可为对偶数（几何参数的解析灵敏度用）。
+
+    sin_fn：标量的 sin 实现（float 用 math.sin，对偶用 eab.dual.sin）。
+    面表与 osteomorphic_block **逐项相同** —— 组合结构必须一致，否则冻结的盖标签对不上。
+    """
+    import math as _m
+    if sin_fn is None:
+        sin_fn = _m.sin
+    cx, cy, cz = center
+    top, bot, verts = [], [], []
+
+    def add(p):
+        verts.append(p)
+        return len(verts) - 1
+
+    for i in range(nx + 1):
+        u = i / nx
+        x = cx - lx / 2 + lx * u
+        h = amp * sin_fn(2 * _m.pi * u + phase)
+        rt, rb = [], []
+        for j in range(ny + 1):
+            y = cy - ly / 2 + ly * (j / ny)
+            rt.append(add((x, y, cz + lz / 2 + h)))
+            rb.append(add((x, y, cz - lz / 2 + h)))
+        top.append(rt)
+        bot.append(rb)
+
+    faces = []
+    for i in range(nx):
+        for j in range(ny):
+            faces.append((top[i][j], top[i + 1][j], top[i + 1][j + 1], top[i][j + 1]))
+    for i in range(nx):
+        for j in range(ny):
+            faces.append((bot[i][j], bot[i][j + 1], bot[i + 1][j + 1], bot[i + 1][j]))
+    for i in range(nx):
+        faces.append((bot[i][0], bot[i + 1][0], top[i + 1][0], top[i][0]))
+        faces.append((bot[i + 1][ny], bot[i][ny], top[i][ny], top[i + 1][ny]))
+    for j in range(ny):
+        faces.append((top[0][j], top[0][j + 1], bot[0][j + 1], bot[0][j]))
+        faces.append((top[nx][j + 1], top[nx][j], bot[nx][j], bot[nx][j + 1]))
+    return Polyhedron(verts, faces)
+
+
+def interlocking_pair_generic(**kw):
+    lz = kw.get("lz", 1.0)
+    lower = osteomorphic_block_generic(**kw)
+    up = dict(kw)
+    c = kw.get("center", (0.0, 0.0, 0.0))
+    up["center"] = (c[0], c[1], c[2] + lz)
+    return osteomorphic_block_generic(**up), lower

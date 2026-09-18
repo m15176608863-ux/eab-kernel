@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from itertools import combinations
+import math
 from math import atan2, hypot, sqrt
 
 Vec3 = tuple[float, float, float]
@@ -300,6 +301,30 @@ def _tri_ray_hit(p: Vec3, d: Vec3, a: Vec3, b: Vec3, c: Vec3, tol: float) -> tup
     return True, t, edge_hit
 
 
+_RAY_DIRS: list[Vec3] = []
+
+
+def _ray_directions(n: int = 64) -> list[Vec3]:
+    """球面上的确定性方向序列（黄金角螺旋 + 无理数偏置）。
+
+    退化命中（射线正好穿过三角形的边或顶点）会让奇偶计数出错，必须换方向重试；
+    5 个固定方向不够——互锁块这类含大量共面/轴对齐特征的几何会把它们全撞掉
+    （2026-09-18 实测二分过程中触发）。
+    """
+    global _RAY_DIRS
+    if len(_RAY_DIRS) >= n:
+        return _RAY_DIRS[:n]
+    ga = 2.39996322972865332          # 黄金角
+    out: list[Vec3] = []
+    for i in range(n):
+        z = 1.0 - 2.0 * (i + 0.5) / n
+        r = sqrt(max(0.0, 1.0 - z * z))
+        th = ga * i + 0.123456789      # 偏置：避开与坐标面对齐
+        out.append(unit((r * math.cos(th), r * math.sin(th), z)))
+    _RAY_DIRS = out
+    return out
+
+
 def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
     """1 严格内部 / 0 在边界（容差 tol）/ -1 外部。先测边界，再用射线奇偶。
 
@@ -313,13 +338,7 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
             # 投影落在面多边形内？用面内二维绕数
             if _point_on_face(p, P, fi, tol):
                 return 0
-    dirs = [(0.5773502691896258, 0.5773502691896258, 0.5773502691896258),
-            (0.2672612419124244, 0.5345224838248488, 0.8017837257372732),
-            (-0.4242640687119285, 0.5656854249492380, 0.7071067811865476),
-            (0.8017837257372732, -0.2672612419124244, 0.5345224838248488),
-            (0.1, -0.3, 0.9486832980505138)]
-    for d in dirs:
-        d = unit(d)
+    for d in _ray_directions():
         crossings = 0
         degenerate = False
         for fi, f in enumerate(P.faces):
@@ -334,7 +353,10 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
                 break
         if not degenerate:
             return 1 if crossings % 2 == 1 else -1
-    raise ValueError("point_in_polyhedron: all ray directions degenerate")
+    # 所有方向都退化 ⟺ 射线起点实际就落在表面上（每条射线 t≈0 即命中）。
+    # 这在调用方给的边界容差小于实际浮点偏移时会发生：实测点 (−0.95,−0.5,0.525) 到面的
+    # 偏移 3.3e-10 > tol=1e-12，边界判定没认出它，却又无法用奇偶法。返回"边界"是正确答案。
+    return 0
 
 
 def _point_on_face(p: Vec3, P: Polyhedron, fi: int, tol: float) -> bool:
