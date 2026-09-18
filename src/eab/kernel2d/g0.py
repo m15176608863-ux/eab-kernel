@@ -22,10 +22,11 @@ class G0Report:
     facet_local: int = 0
     facet_global: int = 0
     facet_symmetric_diff: list[tuple[str, int, int]] = field(default_factory=list)
+    hull_vertex_mismatch: int = 0      # 第三票：E 顶点集 vs conv{b−a} 顶点集（不经法向/法锥/合并）
 
     @property
     def passed(self) -> bool:
-        return not self.mismatches and not self.facet_symmetric_diff
+        return not self.mismatches and not self.facet_symmetric_diff and self.hull_vertex_mismatch == 0
 
 
 def _bbox(P: Poly) -> tuple[float, float, float, float]:
@@ -55,6 +56,12 @@ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: floa
     loc = local_facets(A, B, tol)
     rep.facet_local, rep.facet_global = len(loc), len(glob)
     rep.facet_symmetric_diff = sorted(loc ^ glob)
+    # 第三票（审查 r7）：标签集相等对"outward_normal 整体反号"是盲的；E 的顶点集必须等于
+    # 差点集 {b − a} 的凸包顶点集——这条检验不经过法向、法锥或合并规则。
+    hull = convex_hull([(b[0] - a[0], b[1] - a[1]) for a in A for b in B])
+    ev = {(round(v[0], 9), round(v[1], 9)) for v in eb.vertices}
+    hv = {(round(v[0], 9), round(v[1], 9)) for v in hull}
+    rep.hull_vertex_mismatch = len(ev ^ hv)
     for x in sample_translations(A, B, samples, rng):
         cov = membership_convex(A, B, x, band, eb)
         if cov == 0:

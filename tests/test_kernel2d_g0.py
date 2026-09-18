@@ -51,8 +51,9 @@ def test_gate_has_teeth_wrong_orientation_is_caught():
     A = random_convex_polygon(rng, 7)
     B = random_convex_polygon(rng, 7)
     A_cw = list(reversed(A))
-    rep_bad = g0_convex(A_cw, B, samples=300, seed=1)
-    assert rep_bad.mismatches or rep_bad.facet_symmetric_diff
+    # CW 输入的边角序单调下降 → 合并器拒绝（审查 r4c 后：不再静默 +2π 吞掉）
+    with pytest.raises(ValueError):
+        g0_convex(A_cw, B, samples=300, seed=1)
     A_ok, flipped = ensure_ccw(A_cw)
     assert flipped
     assert g0_convex(A_ok, B, samples=300, seed=1).passed

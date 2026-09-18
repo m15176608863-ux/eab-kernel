@@ -45,10 +45,12 @@ def unit(a: Point) -> Point:
 
 
 def signed_area(poly: Poly) -> float:
+    """相对 poly[0] 累加，避免远离原点的小多边形灾难性抵消（审查 r5c：1e-4 尺寸放在 1e4 处面积误差 100%）。"""
     s = 0.0
     n = len(poly)
+    o = poly[0]
     for i in range(n):
-        s += cross(poly[i], poly[(i + 1) % n])
+        s += cross(sub(poly[i], o), sub(poly[(i + 1) % n], o))
     return 0.5 * s
 
 
@@ -83,12 +85,25 @@ def vertex_turn(poly: Poly, i: int) -> float:
     return cross(e_prev, e_next)
 
 
+def turn_angle(poly: Poly, i: int) -> float:
+    """顶点 i 的转角（弧度，(-π, π]）：CCW 多边形凸顶点 >0、反射顶点 <0、平直 =0。
+
+    用 atan2(cross, dot) 而不是 sin：sin 分不清 θ 与 π−θ（审查 r1：178° 窄缝会被 3° 容差放行）。
+    """
+    n = len(poly)
+    e_prev = sub(poly[i % n], poly[(i - 1) % n])
+    e_next = sub(poly[(i + 1) % n], poly[i % n])
+    from math import atan2
+    return atan2(cross(e_prev, e_next), dot(e_prev, e_next))
+
+
 def is_convex(poly: Poly, tol: float = 0.0) -> bool:
-    return all(vertex_turn(poly, i) >= -tol for i in range(len(poly)))
+    """tol 为角容差（弧度）；与 covers._edge_angle 同一口径（审查 r4c：未归一化叉积与角度序错配）。"""
+    return all(turn_angle(poly, i) >= -tol for i in range(len(poly)))
 
 
 def reflex_vertices(poly: Poly, tol: float = 0.0) -> list[int]:
-    return [i for i in range(len(poly)) if vertex_turn(poly, i) < -tol]
+    return [i for i in range(len(poly)) if turn_angle(poly, i) < -tol]
 
 
 def point_side(p: Point, a: Point, b: Point) -> float:
@@ -141,25 +156,55 @@ def segments_properly_cross(p1: Point, p2: Point, q1: Point, q2: Point, tol: flo
 
 
 def centroid(poly: Poly) -> Point:
+    """面积形心（相对 poly[0] 计算防抵消）。注意：凹多边形的形心可能在多边形外——不能当内点用。"""
     a = signed_area(poly)
-    if a == 0.0:
-        n = len(poly)
-        return (sum(p[0] for p in poly) / n, sum(p[1] for p in poly) / n)
-    cx = cy = 0.0
     n = len(poly)
+    if a == 0.0:
+        return (sum(p[0] for p in poly) / n, sum(p[1] for p in poly) / n)
+    o = poly[0]
+    cx = cy = 0.0
     for i in range(n):
-        p, q = poly[i], poly[(i + 1) % n]
+        p, q = sub(poly[i], o), sub(poly[(i + 1) % n], o)
         w = cross(p, q)
         cx += (p[0] + q[0]) * w
         cy += (p[1] + q[1]) * w
-    return (cx / (6.0 * a), cy / (6.0 * a))
+    return (o[0] + cx / (6.0 * a), o[1] + cy / (6.0 * a))
+
+
+def interior_point(poly: Poly) -> Point:
+    """保证在简单多边形内部的一点（O'Rourke 的耳法）：取最左顶点 v（必凸），三角 (prev, v, next) 若无其他
+    顶点落入则取其形心；否则取落入者中离 v 最远的那个 q，返回 v 与 q 连线中点。多边形任意朝向。
+    """
+    n = len(poly)
+    iv = min(range(n), key=lambda i: (poly[i][0], poly[i][1]))
+    p, v, q = poly[(iv - 1) % n], poly[iv], poly[(iv + 1) % n]
+    # 三角内的其他顶点（用符号一致的重心判定，含朝向无关处理）
+    def in_tri(x: Point) -> bool:
+        d1, d2, d3 = point_side(x, p, v), point_side(x, v, q), point_side(x, q, p)
+        neg = d1 < 0 or d2 < 0 or d3 < 0
+        pos = d1 > 0 or d2 > 0 or d3 > 0
+        return not (neg and pos)
+    best = None
+    best_d = -1.0
+    for k in range(n):
+        if k in (iv, (iv - 1) % n, (iv + 1) % n):
+            continue
+        x = poly[k]
+        if in_tri(x):
+            d = norm(sub(x, v))
+            if d > best_d:
+                best, best_d = x, d
+    if best is None:
+        return ((p[0] + v[0] + q[0]) / 3.0, (p[1] + v[1] + q[1]) / 3.0)
+    return ((v[0] + best[0]) * 0.5, (v[1] + best[1]) * 0.5)
 
 
 def polygons_overlap(A: Poly, B: Poly, tol: float = 0.0) -> int:
     """暴力谓词：1 内部相交 / 0 仅边界接触 / -1 分离。任意简单多边形。
 
-    判据：任一顶点严格在对方内部 → 1；任一边对内部相交 → 1；任一边中点或形心严格在对方内部 → 1
-    （覆盖全等/包含等无顶点严格内部的情形）；否则若有顶点落在对方边界 → 0；否则 -1。
+    判据：任一顶点严格在对方内部 → 1；任一边对内部相交 → 1；任一边中点或**保证内点**严格在对方内部 → 1
+    （覆盖全等/包含等无顶点严格内部的情形；审查 r6b：形心对凹多边形可在自身外，已换成 interior_point）；
+    否则若有顶点落在对方边界 → 0；否则 -1。
     """
     touching = False
     for P, Q in ((A, B), (B, A)):
@@ -178,7 +223,7 @@ def polygons_overlap(A: Poly, B: Poly, tol: float = 0.0) -> int:
                 return 1
             if s == 0:
                 touching = True
-        if point_in_polygon(centroid(P), Q, tol) == 1:
+        if point_in_polygon(interior_point(P), Q, tol) == 1:
             return 1
     na, nb = len(A), len(B)
     for i in range(na):

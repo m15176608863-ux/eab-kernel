@@ -16,10 +16,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import atan2, pi
+from math import asin, atan2, pi
 
-from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, reflect, sub, unit,
-                   vertex_turn)
+from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, reflect, sub, turn_angle,
+                   unit)
 
 
 @dataclass(slots=True)
@@ -46,11 +46,15 @@ def normal_cone(poly: Poly, i: int, tol: float = 0.0) -> tuple[Point, Point] | N
     对应 legacy 里"直边中间的顶点贴在对方边上"这类接触（tol=0 时仍保留 turn==0）。
     """
     n = len(poly)
-    e_prev = unit(sub(poly[i % n], poly[(i - 1) % n]))
-    e_next = unit(sub(poly[(i + 1) % n], poly[i % n]))
-    if cross(e_prev, e_next) < -tol:
+    # 用转角（atan2）判反射：sin 分不清 θ 与 π−θ，会把 178° 的窄缝当作 2° 的近共线放行（审查 r1）。
+    if turn_angle(poly, i) < -asin(min(max(tol, 0.0), 1.0)):
         return None
     return outward_normal(poly, (i - 1) % n), outward_normal(poly, i)
+
+
+def cone_width(cone: tuple[Point, Point]) -> float:
+    """法锥角宽（弧度，(-π, π]）：n_prev 到 n_next 的有向转角。平直顶点 0，容差内微反射为负。"""
+    return atan2(cross(cone[0], cone[1]), dot(cone[0], cone[1]))
 
 
 def in_cone(cone: tuple[Point, Point], v: Point, tol: float = 0.0) -> int:
@@ -134,8 +138,15 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
     cb = normal_cone(B, jb, ct)
     if ca is None or cb is None:
         return None
-    s1 = _span(neg(ca[0]), neg(ca[1]))
-    s2 = _span(cb[0], cb[1])
+    # 锥宽 ≤ 0（平直顶点或容差内微反射）→ 法锥退化为单射线，相对内部交为空，不是 E 的顶点。
+    # 不能对原始法向做 _span：数值共线顶点的 n_next 略偏 CW 会回绕成 ≈360° 假锥（审查 r3，31% 触发）。
+    wa, wb = cone_width(ca), cone_width(cb)
+    if wa <= 0.0 or wb <= 0.0:
+        return None
+    a_lo = _ang(neg(ca[0]))
+    b_lo = _ang(cb[0])
+    s1 = (a_lo, a_lo + wa)
+    s2 = (b_lo, b_lo + wb)
     best: tuple[float, float] | None = None
     for k in (-1, 0, 1):
         lo = max(s1[0], s2[0] + 2 * pi * k)
@@ -201,6 +212,8 @@ def first_entrance_for_vertex(A: Poly, ia: int, B: Poly, *, window: float, tol: 
     """顶点 ia 对块 B 的首入盖：投影在边内的有效 VE 盖里取最大间隙（最浅侵入 / 最先被触及）。
 
     与 tf.cpp 每接触取最大 v1 者作当前入口是同一裁决；无边内 VE 时退到活跃 VV。
+    适用范围：B 凸，或已侵入情形（最短出口）。B 凹且分离时（如 L 形内角）"最大间隙"会选到远边——
+    审查 r8 指出这与命题 7 的"首入"不同，凹块分离情形应取最小正间隙，待 Phase 3 处理。
     """
     best: Cover | None = None
     for jb in range(len(B)):
@@ -252,11 +265,14 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
     iP, iQ = _start_index(P), _start_index(Q)
     angP = [_edge_angle(P, (iP + k) % n) for k in range(n)]
     angQ = [_edge_angle(Q, (iQ + k) % m) for k in range(m)]
-    # 从最低点出发的凸 CCW 多边形，边角在 [0, 2π) 内非降；数值容错保证单调
+    # 从最低点出发的凸 CCW 多边形，边角在 [0, 2π) 内非降。只吞舍入级（≤1e-9 rad）的下降；
+    # 更大的下降说明输入不是一般位置的凸多边形（审查 r4c：微凹被 +2π 级联静默吃掉，产出非凸 E）。
     for arr in (angP, angQ):
         for k in range(1, len(arr)):
-            if arr[k] < arr[k - 1] - 1e-12:
-                arr[k] += 2 * pi
+            if arr[k] < arr[k - 1]:
+                if arr[k - 1] - arr[k] > 1e-9:
+                    raise ValueError(f"input polygon not convex in general position: edge angle drops by {arr[k - 1] - arr[k]:.3e} rad at edge {k}")
+                arr[k] = arr[k - 1]
     i = j = 0
     cur = add(P[iP], Q[iQ])
     verts = [add(cur, a0)]
