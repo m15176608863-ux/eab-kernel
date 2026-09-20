@@ -26,6 +26,7 @@ from dataclasses import dataclass
 
 from ..dual import Dual, Number, val
 from .covers3 import enumerate_covers3
+from .frozen import frozen_ee_sign, frozen_gap, frozen_normal  # noqa: F401  (L5 转出的公共入口)
 from .geom3 import Polyhedron, Vec3, dot, polyhedra_overlap, sub
 
 
@@ -125,79 +126,6 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     raise ValueError("escape height not found among cover candidates (candidate set incomplete?)")
 
 
-def cover_gap_at(A: Polyhedron, B: Polyhedron, label: tuple, x) -> Number:
-    """在**冻结的盖标签**下重算 gap，支持 x 与顶点坐标为对偶数（可微路径）。
-
-    只做算术、不做择支——组合结构已由 float 路径定好，这里是"片内"的解析表达式。
-    """
-    kind, af, bf = label
-    if kind == "VF":
-        nB = _face_normal_generic(B, bf[1])
-        a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
-        b0 = B.verts[B.faces[bf[1]][0]]
-        return sum(nB[i] * (a[i] - b0[i]) for i in range(3))
-    if kind == "FV":
-        nA = _face_normal_generic(A, af[1])
-        a0 = tuple(A.verts[A.faces[af[1]][0]][i] + x[i] for i in range(3))
-        b = B.verts[bf[1]]
-        return sum(nA[i] * (b[i] - a0[i]) for i in range(3))
-    if kind == "EE":
-        ea, eb = (af[1], af[2]), (bf[1], bf[2])
-        n = _ee_normal_generic(A, ea, B, eb)
-        a = tuple(A.verts[ea[0]][i] + x[i] for i in range(3))
-        b = B.verts[eb[0]]
-        return sum(n[i] * (a[i] - b[i]) for i in range(3))
-    raise ValueError(f"cover kind not supported for sensitivity: {kind}")
-
-
-def _face_normal_generic(P: Polyhedron, fi: int):
-    """Newell 面法向，泛型标量（顶点可为对偶数）。"""
-    f = P.faces[fi]
-    o = P.verts[f[0]]
-    nx = ny = nz = 0.0
-    k = len(f)
-    for i in range(k):
-        p = tuple(P.verts[f[i]][t] - o[t] for t in range(3))
-        q = tuple(P.verts[f[(i + 1) % k]][t] - o[t] for t in range(3))
-        nx = nx + (p[1] * q[2] - p[2] * q[1])
-        ny = ny + (p[2] * q[0] - p[0] * q[2])
-        nz = nz + (p[0] * q[1] - p[1] * q[0])
-    ln = (nx * nx + ny * ny + nz * nz) ** 0.5
-    return (nx / ln, ny / ln, nz / ln)
-
-
-def _ee_normal_generic(A: Polyhedron, ea, B: Polyhedron, eb, sign: float = 1.0):
-    """交叉棱-棱的单位法向，泛型标量。`sign` 是**冻结的组合结构的一部分**（由 float 路径定），
-    不在这里做择支——对偶路径里做分支会把导数带进 if，破坏"片内解析"。"""
-    tA = tuple(A.verts[ea[1]][i] - A.verts[ea[0]][i] for i in range(3))
-    tB = tuple(B.verts[eb[1]][i] - B.verts[eb[0]][i] for i in range(3))
-    nx = tB[1] * tA[2] - tB[2] * tA[1]
-    ny = tB[2] * tA[0] - tB[0] * tA[2]
-    nz = tB[0] * tA[1] - tB[1] * tA[0]
-    ln = (nx * nx + ny * ny + nz * nz) ** 0.5
-    return (sign * nx / ln, sign * ny / ln, sign * nz / ln)
-
-
-def frozen_ee_sign(A: Polyhedron, B: Polyhedron, ea, eb, tol: float = 1e-9) -> float:
-    """float 路径下定出的 EE 法向朝向，作为冻结组合结构的一部分交给对偶路径。"""
-    from .covers3 import edge_arc_contains
-    n = _ee_normal_generic(A, ea, B, eb, 1.0)
-    probe = (val(n[0]), val(n[1]), val(n[2]))
-    return -1.0 if edge_arc_contains(B, eb, probe, tol) < 0 else 1.0
-
-
-def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1.0):
-    kind, af, bf = label
-    if kind == "VF":
-        return _face_normal_generic(B, bf[1])
-    if kind == "FV":
-        nA = _face_normal_generic(A, af[1])
-        return (-nA[0], -nA[1], -nA[2])
-    if kind == "EE":
-        return _ee_normal_generic(A, (af[1], af[2]), B, (bf[1], bf[2]), ee_sign)
-    raise ValueError(f"cover kind not supported: {kind}")
-
-
 def escape_height_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple,
                                     offset, *, ee_sign: float = 1.0) -> Number:
     """冻结盖下的逃逸高度闭式：z = −gap(offset) / (n·ẑ)，支持对偶数（∂z/∂θ）。
@@ -206,26 +134,8 @@ def escape_height_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple,
     片内是纯解析表达式，对几何参数逐点可微——与 DDA 冻结活动集后解析可微同构。
     """
     n = frozen_normal(A, B, label, ee_sign)
-    g = _cover_gap_with_normal(A, B, label, offset, n)
+    g = frozen_gap(A, B, label, offset, n)
     return -g / n[2]
-
-
-def _cover_gap_with_normal(A: Polyhedron, B: Polyhedron, label: tuple, x, n) -> Number:
-    kind, af, bf = label
-    if kind == "VF":
-        a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
-        b0 = B.verts[B.faces[bf[1]][0]]
-        return sum(n[i] * (a[i] - b0[i]) for i in range(3))
-    if kind == "FV":
-        a0 = tuple(A.verts[A.faces[af[1]][0]][i] + x[i] for i in range(3))
-        b = B.verts[bf[1]]
-        # n = −n_A，故 gap = n·(a0 − b) 与 float 路径的 n_A·(b − a0) 一致
-        return sum(n[i] * (a0[i] - b[i]) for i in range(3))
-    if kind == "EE":
-        a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
-        b = B.verts[bf[1]]
-        return sum(n[i] * (a[i] - b[i]) for i in range(3))
-    raise ValueError(f"cover kind not supported: {kind}")
 
 
 def dilatancy_profile(A: Polyhedron, B: Polyhedron, *, direction: Vec3 = (1.0, 0.0, 0.0),
