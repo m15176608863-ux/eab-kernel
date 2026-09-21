@@ -20,3 +20,32 @@
 ### 3-b-dda（bdda3d）
 - 入口 dict 无块顶点坐标；`tools/ingest_bdda3d.py` 一并导出 `ss.blocks` 顶点，读取器据 `refs` 还原参考点。
 - 已知：`_accumulate_rank1` 的 `!= 0.0` 零跳过会丢 `v==0, e≠0` 分量的导数（设计文档 §一 第 4 条）；Phase 5 替换时处理。
+
+## 2026-09-20 · G2 三维同构门首次运行时的观察
+
+### 3DDA（tf.cpp）—— 两条，第一条是**阻塞项**
+
+1. **探针与 stage 文件都不带块体顶点坐标**，因此**无法重跑盖枚举做 G2 对账**。
+   `retry_contact_pair_probe.tsv` 有接触点 (px,py,pz)、法向 (nx,ny,nz)、gap、contact_type，
+   `contact_pair_stage.tsv` 有逐块对的 nn/ne/np/ee 计数——但没有几何，就无法独立枚举。
+   **具体请求**：在 HeavyProbe 里加一份逐块顶点导出（块号 + 顶点号 + 坐标，步初一次即可），
+   或在 stage 文件里补上每条接触的参考特征顶点号。有了它，三维枚举才能第一次被独立对账。
+
+2. **三份夹具共 6716 条接触，100% 是 n-p，e-e / n-e / n-n 各 0 条**
+   （smoke_cpu stage 5296 条、sandstone_fine 探针 864 条、sandstone_medium 探针 556 条）。
+   两种可能，**在拿到几何之前无法区分**：
+   (a) 这几个算例的几何就是如此（轴对齐块体的面-面接触在 DDA 里正是用多个 n-p 表达，
+       eab-kernel 在 cb2 上复现的也恰是 4 个 VF 盖、零 EE）；
+   (b) tf05 的展开**漏掉了交叉棱-棱**。
+   若为 (b)，这是 legacy 三维枚举的一处实质缺陷。eab-kernel 在真正非轴对齐的位形上
+   **能**产出严格 EE 盖（`test_wedge_on_wedge_gives_strict_crossing_edge_cover`），
+   所以一旦拿到几何就能判。**这条把上面的几何导出请求的优先级抬高了。**
+
+### 3-b-dda（bdda3d）
+
+- G2 首次对账**通过**：cb2_locked / cb2_sliding / cb_bond 三例，legacy 4 条 / 内核 4 条，
+  两个方向零差异，间隙与法向逐条吻合。这是三维接触枚举的第一份 legacy 对账。
+- legacy 的 `np` 入口用**顶点三元组**指代一个平面，同一个平面会被不同三元组表示
+  （cb2 里 (4,7,6) 与 (4,6,5) 并存）。对账必须把三元组归约到"它所在的几何面"。
+- 入口里的 `area = 1.0`、`d1 = 16.0`（= 下块顶面全面积 4×4），与探针一样是占位/归一量，
+  不是该接触的真实分担面积。

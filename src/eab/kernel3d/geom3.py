@@ -588,3 +588,61 @@ def convex_hull_3d(points: list[Vec3], tol: float = 1e-12) -> Polyhedron:
     used = sorted({i for f in faces for i in f})
     remap = {old: new for new, old in enumerate(used)}
     return Polyhedron([verts[i] for i in used], [tuple(remap[i] for i in f) for f in faces])
+
+def merge_coplanar(P: "Polyhedron", tol: float = 1e-9) -> "Polyhedron":
+    """把共面的相邻面归并成一个多边形面，**保留顶点编号**。
+
+    为什么必须有它：三角化的输入（凸包、STL、大多数网格导出）会让**同一个几何平面**
+    被拆成多个三角形，于是一个顶点对同一个平面产生**多个 VF 盖**——2026-09-20 的 G2 对账
+    实测：cb2 的 4×4 顶面被凸包拆成两个三角形后，上块 4 个底角给出 **6** 个有效盖
+    （落在公共对角线上的两个角各被数两次），而四边形面的同一位形恰好给 4 个。
+    归并之后盖数才是几何决定的，与网格划分无关。
+
+    做法：按支撑平面分组 → 组内有向边相消（内部边正反成对出现）→ 剩余边串成边界环。
+    环的朝向自动正确（源面都是外看 CCW）。**共线顶点保留**（与二维版的 legacy 兼容纪律一致）。
+    """
+    groups: list[tuple[Vec3, float, list[int]]] = []
+    for fi in range(len(P.faces)):
+        n = P.face_normal(fi)
+        d = dot(n, P.verts[P.faces[fi][0]])
+        hit = None
+        for gi, (gn, gd, _) in enumerate(groups):
+            if norm(sub(gn, n)) < tol and abs(gd - d) < tol:
+                hit = gi
+                break
+        if hit is None:
+            groups.append((n, d, [fi]))
+        else:
+            groups[hit][2].append(fi)
+
+    faces: list[Face] = []
+    for _, _, fis in groups:
+        if len(fis) == 1:
+            faces.append(P.faces[fis[0]])
+            continue
+        directed: dict[tuple[int, int], int] = {}
+        for fi in fis:
+            f = P.faces[fi]
+            for i in range(len(f)):
+                e = (f[i], f[(i + 1) % len(f)])
+                directed[e] = directed.get(e, 0) + 1
+        boundary = {}
+        for (a, b), c in directed.items():
+            if directed.get((b, a), 0) == 0 and c == 1:
+                boundary[a] = b
+        if not boundary:
+            raise ValueError("merge_coplanar: coplanar group has no boundary (degenerate)")
+        start = next(iter(boundary))
+        ring = [start]
+        cur = boundary[start]
+        while cur != start:
+            ring.append(cur)
+            nxt = boundary.get(cur)
+            if nxt is None:
+                raise ValueError(f"merge_coplanar: boundary ring broken at vertex {cur}")
+            cur = nxt
+        if len(ring) != len(boundary):
+            raise ValueError("merge_coplanar: coplanar group has more than one boundary ring "
+                             f"({len(ring)} of {len(boundary)} edges used) — face with a hole?")
+        faces.append(tuple(ring))
+    return Polyhedron(list(P.verts), faces)
