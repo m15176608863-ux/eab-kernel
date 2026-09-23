@@ -296,8 +296,8 @@ def test_g2_window_contains_every_legacy_gap_and_nothing_else(path):
     """`G2_WINDOW` 的理由钉成门：
       (1) legacy 每个 np 入口的几何间隙（顶点到所指三角所在平面的距离）≤ 窗口——legacy 侧全进得来；
       (2) 窗口 ≪ 夹具里任何"非面接触"特征对的距离（顶点-棱段、棱段-棱段的最小值）——窗口内几何上
-          只可能出现 VF/FV 盖。所以门在窗口内对任何多出的盖（含 g2-geom 组正在放开 strict 过滤的
-          VE3/EV3/VV3 低维盖）都会红，而不会因为那次改动误红。
+          只可能出现 VF/FV 盖。所以门在窗口内对任何多出的盖都会红（见 EE 注入的牙测试），却不会因为
+          低维盖（VE3/EV3/VV3）strict 过滤的去留而误红——M0.b 计划删除那道过滤门，本门对它稳健。
     oracle：点-平面、线段-线段距离全用内联算术，不调 covers3 / geom3（纪律 A）。前提：两块都是轴对齐长方体。
     """
     d = json.loads(path.read_text(encoding="utf-8"))
