@@ -40,6 +40,29 @@ def sha256(p: Path) -> str:
     return h.hexdigest()
 
 
+def provenance_entry(dest: str, source: str, ingested: str) -> dict:
+    """已入库夹具 fixtures/<dest> 的一条 ok 溯源条目：按**库内字节**记 bytes 与 sha256。"""
+    d = FIX / dest
+    return {"dest": dest, "source": source, "ingested": ingested, "status": "ok",
+            "bytes": d.stat().st_size, "sha256": sha256(d)}
+
+
+def upsert_provenance(entries: list[dict], prov_path: Path | None = None) -> None:
+    """按 dest 插入/替换条目后整体重写 PROVENANCE.json（条目按 dest 排序）。
+
+    换行符显式写 CRLF：这个文件自 Phase 0 起就是 CRLF（当初在 Windows 上经文本模式写出），
+    显式化之后在任何平台重写都逐字节稳定，diff 只含真正变了的条目。
+    """
+    prov_path = prov_path or FIX / "PROVENANCE.json"
+    prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {"entries": []}
+    seen = {e["dest"]: e for e in prov["entries"]}
+    for e in entries:
+        seen[e["dest"]] = e
+    prov["entries"] = [seen[k] for k in sorted(seen)]
+    prov_path.parent.mkdir(parents=True, exist_ok=True)
+    prov_path.write_text(json.dumps(prov, ensure_ascii=False, indent=1), encoding="utf-8", newline="\r\n")
+
+
 def main() -> int:
     prov_path = FIX / "PROVENANCE.json"
     prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {"entries": []}
@@ -64,9 +87,7 @@ def main() -> int:
             assert sha256(s) == entry["sha256"]
             print(f"OK       {dest} ({entry['bytes']} B)")
         seen[dest] = entry
-    prov["entries"] = [seen[k] for k in sorted(seen)]
-    FIX.mkdir(exist_ok=True)
-    prov_path.write_text(json.dumps(prov, ensure_ascii=False, indent=1), encoding="utf-8")
+    upsert_provenance(list(seen.values()), prov_path)
     return 0
 
 
