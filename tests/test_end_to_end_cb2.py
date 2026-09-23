@@ -71,30 +71,69 @@ def test_axial_push_slides_or_topples_exactly_as_closed_form(path, mu, d):
     assert r.alpha == pytest.approx(min(mu, 1.0) * W, abs=1e-9)
 
 
-@pytest.mark.parametrize("mu", [0.3, 1.0, 1.3, 1.5, 3.0])             # 对角分界在 √2
+@pytest.mark.parametrize("mu", [0.3, 1.0, 1.3, math.sqrt(2.0), 1.5, 3.0])   # 对角分界 μ = √2 本身也取到
 def test_diagonal_push_uses_the_sqrt2_tipping_line(mu):
     r, *_ = _capacity(CASES[0], mu, DIR_DIAG)
     assert r.status == "optimal"
     assert r.alpha == pytest.approx(min(mu, math.sqrt(2.0)) * W, abs=1e-9)
 
 
-@pytest.mark.parametrize("mu,topples", [(0.4, False), (0.95, False), (1.05, True), (2.0, True)])
-def test_failure_mode_is_read_off_the_dual_mechanism(mu, topples):
-    """滑动 = 纯平动（角速度为零）；倾覆 = 绕 y 轴转动，且前缘（x = +1, z = 0）速度为零。"""
-    r, cts, dead, live, _ = _capacity(CASES[0], mu, (1.0, 0.0))
-    vx, vy, vz, wx, wy, wz = r.mechanism
-    if topples:
-        assert abs(wy) > 1e-6 and abs(wx) < 1e-9 and abs(wz) < 1e-9
-        v_edge = (vx + wy * 0.0 - wz * 0.0, vy, vz + wx * 0.0 - wy * 1.0)   # v + ω×r，r=(1,0,0)
-        assert abs(v_edge[0]) < 1e-9 and abs(v_edge[2]) < 1e-9
+def _power(mech, mu, W_):
+    """**独立于 eab.limit** 的上限核算：用刚体速度场 v(p) = v₀ + ω×p 直接算虚功率。
+
+    锥棱按本文件 docstring 的推导独立写出（法向 +z、t1 = −ŷ、t2 = +x̂、k = 8）：
+    g_j = (μ·sin a_j, −μ·cos a_j, 1)，a_j = 2πj/8。返回 (最差接触功率, 驱动功率, 上限)。
+    """
+    v0, om = mech[:3], mech[3:]
+
+    def vel(p):
+        return (v0[0] + om[1] * p[2] - om[2] * p[1],
+                v0[1] + om[2] * p[0] - om[0] * p[2],
+                v0[2] + om[0] * p[1] - om[1] * p[0])
+
+    worst = float("inf")
+    for p in [(sx, sy, 0.0) for sx in (-1.0, 1.0) for sy in (-1.0, 1.0)]:
+        vp = vel(p)
+        for j in range(8):
+            a = 2.0 * math.pi * j / 8
+            g = (mu * math.sin(a), -mu * math.cos(a), 1.0)
+            worst = min(worst, vp[0] * g[0] + vp[1] * g[1] + vp[2] * g[2])
+    drive = vel((0.0, 0.0, 1.0))[0]                    # 活荷载 (1,0,0) 作用于 (0,0,1)
+    upper = W_ * vel((0.0, 0.0, 0.5))[2] / drive       # 自重 (0,0,−W) 作用于体心
+    return worst, drive, upper
+
+
+@pytest.mark.parametrize("mu,topples", [(0.4, False), (0.95, False), (1.0, None), (1.05, True), (2.0, True)])
+def test_failure_mode_is_read_off_invariants_of_the_dual_face(mu, topples):
+    """破坏模式按**对偶最优面的不变量**判，不读机构的逐分量取值。
+
+    订正（2026-09-24）：旧版在滑动分支断言"返回的机构无转动"。复核者给出反例：μ = 0.4 时
+    (1, 0, 0.4, 0.117, 0, −0.293) 在原问题上同样容许、上限同样等于 α——**对偶最优面里有带转动的机构**，
+    那条断言成立与否取决于单纯形挑哪个顶点。同理，旧提交说明里"力矩反号变异下本文件其余测试全绿"也不对：
+    参考点在对称中心时那个变异只是列的重排（同一个 LP），被它弄红的正是这条脆断言，不是抓到了缺陷。
+
+    现在的不变量（全部用 _power 独立核算）：
+      · 返回的机构容许、驱动为 1、上限 = α（它确是最优对偶）；
+      · 滑动（μ < 1）：沿推力的平动 + 关联剪胀 T = (1,0,μ,0,0,0) 也是最优对偶；
+      · 倾覆（μ > 1）：绕前缘的转动 R = (0,0,1, 0,1,0) 是最优对偶，而**任何**纯平动的上限 ≥ μW > α，
+        所以返回的机构必须带转动——这一条对倾覆是真不变量；
+      · μ = 1 两种机构并列最优。
+    """
+    r, *_ = _capacity(CASES[0], mu, (1.0, 0.0))
+    worst, drive, upper = _power(r.mechanism, mu, W)
+    assert worst > -1e-9 and abs(drive - 1.0) < 1e-9 and abs(upper - r.alpha) < 1e-9
+    T = (1.0, 0.0, mu, 0.0, 0.0, 0.0)
+    R = (0.0, 0.0, 1.0, 0.0, 1.0, 0.0)
+    wT, dT, uT = _power(T, mu, W)
+    wR, dR, uR = _power(R, mu, W)
+    assert wT > -1e-12 and wR > -1e-12                 # 两者总是容许的
+    if topples is False:
+        assert abs(uT - r.alpha) < 1e-9 and uR > r.alpha + 1e-6
+    elif topples is True:
+        assert abs(uR - r.alpha) < 1e-9 and uT > r.alpha + 1e-6
+        assert max(abs(v) for v in r.mechanism[3:]) > 1e-6
     else:
-        # 纯平动；但**切向速度方向不唯一**：推力方向恰落在八边形内接锥的一条棱上时，
-        # 对偶最优面是该棱两侧 ±π/k 的一整段，求解器返回其中一个端点（实测偏 −22.5°，
-        # vy = −tan(π/8)）。承载力与对偶间隙不受影响。所以只断言：无转动、偏角 ≤ π/k、
-        # 沿推力方向的关联流动 vz = μ·vx（上限功率平衡 α = vz·W / vx 即由此给出 μW）。
-        assert max(abs(wx), abs(wy), abs(wz)) < 1e-9
-        assert vx > 0 and abs(math.atan2(vy, vx)) <= math.pi / 8 + 1e-9
-        assert vz == pytest.approx(mu * vx, abs=1e-9)
+        assert abs(uT - r.alpha) < 1e-9 and abs(uR - r.alpha) < 1e-9
 
 
 @pytest.mark.parametrize("mu", [0.3, 1.5])
