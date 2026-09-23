@@ -1,5 +1,7 @@
 """L2 裕度层的门：四条定理各有一道，外加牙。"""
 
+import functools
+import math
 import random
 import sys
 from pathlib import Path
@@ -11,8 +13,8 @@ from osteomorphic import interlocking_pair, interlocking_pair_generic  # noqa: E
 
 from eab import dual as D  # noqa: E402
 from eab.dual import Dual, convergence_order, val  # noqa: E402
-from eab.kernel3d.covers3 import vertex_cone_contains  # noqa: E402
-from eab.kernel3d.frozen import frozen_ee_sign  # noqa: E402
+from eab.kernel3d.covers3 import cone_relint_direction, vertex_cone_contains  # noqa: E402
+from eab.kernel3d.frozen import FROZEN_KINDS, frozen_ee_sign  # noqa: E402
 from eab.kernel3d.geom3 import (box, brute_feature_distance, norm, polyhedra_overlap,  # noqa: E402
                                 sub, tetra, unit)
 from eab.margin import (INSIDE, ON_BOUNDARY, OUTSIDE, body_distance,  # noqa: E402
@@ -48,6 +50,28 @@ def test_config_space_distance_equals_body_distance(seed):
         assert abs(d_body - brute_feature_distance(At, B)) < 1e-9
         n += 1
     assert n > 40, f"only {n} separated samples"   # 实测 54-59；掉下来说明采样器坏了
+
+
+def test_theorem_two_gate_has_teeth_shrinking_the_nearest_point_is_caught(monkeypatch):
+    """定理二那道门的牙（reports/margin_layer.md 记为"把 E 的最近点缩 1% → 全部样本被抓"，此前无测试）：
+    把凸 oracle 的最近点缩 1%，同一采样下每一个分离样本的 |d_config − d_body| 检验都必须失败。"""
+    import eab.margin as M
+    true_nearest = M.nearest_point_on_convex_entrance
+    monkeypatch.setattr(M, "nearest_point_on_convex_entrance",
+                        lambda E, x: tuple(0.99 * c for c in true_nearest(E, x)))
+    A, B = _small_convex_pair()
+    E = entrance_block_convex(A, B)
+    rng = random.Random(0)
+    n = caught = 0
+    for _ in range(60):
+        x = (rng.uniform(-2.2, 2.2), rng.uniform(-2.2, 2.2), rng.uniform(-2.2, 2.2))
+        At = A.translated(x)
+        if polyhedra_overlap(At, B, 1e-12) != -1:
+            continue
+        n += 1
+        d_body, _ = body_distance(At, B)
+        caught += abs(distance_to_convex_entrance(E, x) - d_body) >= 1e-9
+    assert n > 40 and caught == n, (n, caught)
 
 
 def test_body_distance_is_not_the_cover_gap():
@@ -92,26 +116,118 @@ def test_margin_contacts_are_generalized_contacts():
 
 # ---------------------------------------------------------------- 定理四：C^{1,1}
 
-def test_inflated_normal_is_lipschitz():
-    """凸集投影非扩张 => 膨胀法向 Lipschitz，常数 <= 2/delta。"""
+# 探针点集是确定性的；真实法向带备忘（每次 inflated_normal ~11 ms，全部探针点 ~400 个）
+_TRUE_INFLATED_NORMAL = inflated_normal
+_TRUE_MEMO: dict = {}
+
+
+def _true_normal(E, x):
+    if x not in _TRUE_MEMO:
+        _TRUE_MEMO[x] = _TRUE_INFLATED_NORMAL(E, x)
+    return _TRUE_MEMO[x]
+
+
+def _lipschitz_probe_points(E, delta):
+    """(局部差商点对, 闭环相邻点对)。全部点都在 {dist ≥ δ}（局部点对的第二点可内移 h）。
+
+    · 随机基点 12 个：δ ≤ dist ≤ 3δ；
+    · E 顶点基点：v + δ·d，d = 该顶点法锥的相对内部方向（非极点的共线/共面凸包点法锥退化，跳过）
+      ——法向变化最快的位置，理论商恰为 1/δ；
+    · 每个基点 6 个随机方向，步长 h = 1e-3·δ（局部差商，不再被点对间距稀释）；
+    · 三个坐标平面上、以 E 顶点均值为心、半径 rmax + δ 的闭环（dist ≥ δ 由三角不等式保证），
+      相邻点间距 ≤ 0.15：Lipschitz 场沿闭环不许有跳变（局部差商看不见的"局部反号"类错误在这里现形）。
+    """
+    rng = random.Random(11)
+    bases = []
+    while len(bases) < 12:
+        x = (rng.uniform(-2.5, 2.5), rng.uniform(-2.5, 2.5), rng.uniform(-2.5, 2.5))
+        if delta <= distance_to_convex_entrance(E, x) <= 3.0 * delta:
+            bases.append(x)
+    n_vertex = 0
+    for vi, v in enumerate(E.verts):
+        d = cone_relint_direction(E.vertex_edge_dirs(vi))
+        if d is None:
+            continue
+        assert vertex_cone_contains(E, vi, d, 1e-9) == 1
+        bases.append(tuple(v[k] + delta * d[k] for k in range(3)))
+        n_vertex += 1
+    assert n_vertex >= 10, n_vertex
+    h = 1e-3 * delta
+    local = []
+    for x in bases:
+        for _ in range(6):
+            e = unit((rng.gauss(0, 1), rng.gauss(0, 1), rng.gauss(0, 1)))
+            local.append((x, tuple(x[k] + h * e[k] for k in range(3))))
+    c = tuple(sum(v[k] for v in E.verts) / len(E.verts) for k in range(3))
+    R = max(norm(sub(v, c)) for v in E.verts) + delta
+    m = int(math.ceil(2.0 * math.pi * R / 0.15))
+    loops = []
+    for u, w in ((0, 1), (1, 2), (2, 0)):
+        ring = []
+        for i in range(m):
+            p = list(c)
+            p[u] += R * math.cos(2.0 * math.pi * i / m)
+            p[w] += R * math.sin(2.0 * math.pi * i / m)
+            ring.append(tuple(p))
+        loops += [(ring[i], ring[(i + 1) % m]) for i in range(m)]
+    return local, loops
+
+
+def _lipschitz_worst(normal_fn, E, pairs):
+    worst = 0.0
+    for x, y in pairs:
+        worst = max(worst, norm(sub(normal_fn(E, x), normal_fn(E, y))) / norm(sub(x, y)))
+    return worst
+
+
+@functools.lru_cache(maxsize=None)
+def _lipschitz_setup(delta):
     A, B = _small_convex_pair()
     E = entrance_block_convex(A, B)
-    rng = random.Random(11)
-    delta = 0.25
-    pts = []
-    while len(pts) < 12:
-        x = (rng.uniform(-2.5, 2.5), rng.uniform(-2.5, 2.5), rng.uniform(-2.5, 2.5))
-        d = distance_to_convex_entrance(E, x)
-        if delta <= d <= 3.0 * delta:
-            pts.append(x)
-    worst = 0.0
-    for i in range(len(pts)):
-        for j in range(i + 1, len(pts)):
-            ni, nj = inflated_normal(E, pts[i]), inflated_normal(E, pts[j])
-            dx = norm(sub(pts[i], pts[j]))
-            if dx > 0:
-                worst = max(worst, norm(sub(ni, nj)) / dx)
-    assert worst <= 2.0 / delta + 1e-9, worst
+    return (E,) + _lipschitz_probe_points(E, delta)
+
+
+def _lipschitz_verdict(normal_fn, delta=0.25):
+    """定理四的双边门：最坏商 ≤ 2/δ（Lipschitz 上界）且 ≥ 0.9/δ（紧性：顶点处真实值 = 1/δ）。"""
+    E, local, loops = _lipschitz_setup(delta)
+    worst = max(_lipschitz_worst(normal_fn, E, local), _lipschitz_worst(normal_fn, E, loops))
+    return worst, (worst <= 2.0 / delta + 1e-6 and worst >= 0.9 / delta)
+
+
+def test_inflated_normal_is_lipschitz():
+    """凸集投影非扩张 => 膨胀法向 Lipschitz，常数 <= 2/delta；且在 E 顶点处**紧**（商 >= 0.9/delta）。
+
+    旧门（12 个点两两求商）无牙：点对最小间距 0.42 ≫ δ，任何单位向量函数的商都 ≤ 4.81 < 8。
+    现在：局部差商 + 顶点基点 + 闭环扫描 + 双边断言；有牙见下一条测试。
+    oracle（纪律 A）：判据的两条界来自定理（投影非扩张 ⇒ ≤ 2/δ；顶点法锥内 n 以 1/dist 转动 ⇒
+    顶点基点处 = 1/δ），不来自任何实现。共用：随机基点的筛选用了 distance_to_convex_entrance
+    （与被测 inflated_normal 同一个最近点例程）——它只决定"在哪儿探"，不参与判据；
+    顶点基点与闭环点的位置由法锥方向与三角不等式构造，不经过最近点例程。
+    """
+    fn = _true_normal if inflated_normal is _TRUE_INFLATED_NORMAL else inflated_normal
+    worst, ok = _lipschitz_verdict(fn)
+    assert worst <= 2.0 / 0.25 + 1e-6, worst
+    assert worst >= 0.9 / 0.25, worst
+    assert ok
+
+
+def test_lipschitz_gate_has_teeth():
+    """门要有牙：审查列出的四种错误实现必须全部被双边门抓住。
+
+    随机单位向量（上界破）、常向量（紧性下界破）、径向 unit(x)（下界破）、
+    x[0] > 0 处法向反号（局部差商看不见，闭环扫描上跳变 2/0.15 ≫ 2/δ）。
+    """
+    rng = random.Random(99)
+    mutants = {
+        "random": lambda E, x: unit((rng.gauss(0, 1), rng.gauss(0, 1), rng.gauss(0, 1))),
+        "constant": lambda E, x: (1.0, 0.0, 0.0),
+        "radial": lambda E, x: unit(x),
+        "local_flip": lambda E, x: (tuple(-c for c in _true_normal(E, x)) if x[0] > 0.0
+                                    else _true_normal(E, x)),
+    }
+    for name, fn in mutants.items():
+        worst, ok = _lipschitz_verdict(fn)
+        assert not ok, f"错误实现 {name} 没被抓住：worst = {worst}"
 
 
 def test_inflation_turns_a_set_valued_normal_into_a_single_valued_one():
@@ -157,7 +273,8 @@ def test_margin_gap_is_differentiable_in_delta_and_geometry():
     sep = A.translated(off)
     assert polyhedra_overlap(sep, L, 1e-12) == -1
     _, lab = body_distance(sep, L)
-    assert lab is not None and lab[0] in ("VF", "FV", "EE", "VV3")
+    # 不再把"冻结路径只支持 VF/FV/EE/VV3"写成前置条件；全部种类的批量门见 tests/test_frozen_lowdim.py
+    assert lab is not None and lab[0] in FROZEN_KINDS
     sign = 1.0
     if lab[0] == "EE":
         sign = frozen_ee_sign(sep, L, (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2]))

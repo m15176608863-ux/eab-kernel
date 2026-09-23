@@ -49,9 +49,54 @@ def frozen_ee_sign(A: Polyhedron, B: Polyhedron, ea, eb, tol: float = 1e-9) -> f
     return -1.0 if edge_arc_contains(B, eb, probe, tol) < 0 else 1.0
 
 
-def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1.0):
-    """冻结盖的单位法向（B → A），泛型标量。"""
-    kind, af, bf = label
+# 冻结路径支持的盖种类 = `body_distance` / `escape_candidates` 可能给出的全部种类。
+FACET_KINDS = ("VF", "FV", "EE")          # ∂E 的二维片：法向与平移无关，gap 沿平移仿射
+LOW_DIM_KINDS = ("VE3", "EV3", "VV3")     # ∂E 的棱 / 顶点：法向 = 见证方向，随平移转动
+FROZEN_KINDS = FACET_KINDS + LOW_DIM_KINDS
+
+
+def _check_kind(label: tuple) -> str:
+    kind = label[0] if label else None
+    if kind not in FROZEN_KINDS:
+        raise ValueError(f"cover kind not supported for the frozen path: {kind}")
+    return kind
+
+
+def _moved(P: Polyhedron, vi: int, x):
+    """P 的第 vi 个顶点平移 x（x=None 即不平移）。泛型标量。"""
+    p = P.verts[vi]
+    if x is None:
+        return p
+    return (p[0] + x[0], p[1] + x[1], p[2] + x[2])
+
+
+def _unit_generic(v):
+    ln = (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) ** 0.5
+    return (v[0] / ln, v[1] / ln, v[2] / ln)
+
+
+def _line_residual_normal(p, e0, e1):
+    """点 p 到直线 e0e1 的正交投影残差之单位向量（从直线指向 p）。泛型标量、无择支。
+
+    残差为零（点在直线上，两体相触）时法向集值、无定义：除零照常抛出。
+    """
+    d = (e1[0] - e0[0], e1[1] - e0[1], e1[2] - e0[2])
+    w = (p[0] - e0[0], p[1] - e0[1], p[2] - e0[2])
+    s = (w[0] * d[0] + w[1] * d[1] + w[2] * d[2]) / (d[0] * d[0] + d[1] * d[1] + d[2] * d[2])
+    return _unit_generic((w[0] - s * d[0], w[1] - s * d[1], w[2] - s * d[2]))
+
+
+def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1.0, x=None):
+    """冻结盖的单位法向（B → A），泛型标量。
+
+    x 是 A 的平移（可为对偶数；None 即零平移）。VF/FV/EE 的法向与平移无关；
+    低维盖（VV3 / VE3 / EV3）的法向是两特征间的见证方向，**随平移转动**，必须用平移后的 A 算
+    ——否则 `margin_gap_from_frozen_cover(A, B, lab, x≠0, …)` 给的是 x=0 处的切平面而非距离。
+    VE3（A 顶点 × B 棱）：顶点到 B 棱所在直线的投影残差；EV3（A 棱 × B 顶点）：B 顶点到 A 棱
+    所在直线的投影残差取反（仍是 B → A）。两者都无择支，对偶数直接透传。
+    """
+    kind = _check_kind(label)
+    _, af, bf = label
     if kind == "VF":
         return face_normal_generic(B, bf[1])
     if kind == "FV":
@@ -60,11 +105,13 @@ def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1
     if kind == "EE":
         return ee_normal_generic(A, (af[1], af[2]), B, (bf[1], bf[2]), ee_sign)
     if kind == "VV3":
-        a, b = A.verts[af[1]], B.verts[bf[1]]
-        d = tuple(a[i] - b[i] for i in range(3))
-        ln = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]) ** 0.5
-        return (d[0] / ln, d[1] / ln, d[2] / ln)
-    raise ValueError(f"cover kind not supported for the frozen path: {kind}")
+        a, b = _moved(A, af[1], x), B.verts[bf[1]]
+        return _unit_generic((a[0] - b[0], a[1] - b[1], a[2] - b[2]))
+    if kind == "VE3":
+        return _line_residual_normal(_moved(A, af[1], x), B.verts[bf[1]], B.verts[bf[2]])
+    # EV3
+    n = _line_residual_normal(B.verts[bf[1]], _moved(A, af[1], x), _moved(A, af[2], x))
+    return (-n[0], -n[1], -n[2])
 
 
 def frozen_gap(A: Polyhedron, B: Polyhedron, label: tuple, x, n) -> Number:
@@ -73,8 +120,13 @@ def frozen_gap(A: Polyhedron, B: Polyhedron, label: tuple, x, n) -> Number:
     注意口径：VF/FV 的 gap 是顶点到面**所在平面**的有符号距离，**不是**两体间距——
     分离的凹体之间也常有顶点落在对方某面平面内侧（2026-09-18 实测 −2.7）。
     只有当这个盖正是实现最短距离的那一对特征时，gap 才等于见证距离。
+
+    低维盖取 A、B 特征上的任一参考点即可：VE3 / EV3 的法向垂直于棱，故 n·(a − 棱起点)
+    恰是点到棱所在直线的距离；VV3 的 n 与 a − b 同向，故即 |a − b|。
+    （n 须按同一平移 x 由 `frozen_normal(..., x=x)` 给出。）
     """
-    kind, af, bf = label
+    kind = _check_kind(label)
+    _, af, bf = label
     if kind == "VF":
         a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
         b0 = B.verts[B.faces[bf[1]][0]]
@@ -83,8 +135,7 @@ def frozen_gap(A: Polyhedron, B: Polyhedron, label: tuple, x, n) -> Number:
         a0 = tuple(A.verts[A.faces[af[1]][0]][i] + x[i] for i in range(3))
         b = B.verts[bf[1]]
         return sum(n[i] * (a0[i] - b[i]) for i in range(3))
-    if kind in ("EE", "VV3"):
-        a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
-        b = B.verts[bf[1]]
-        return sum(n[i] * (a[i] - b[i]) for i in range(3))
-    raise ValueError(f"cover kind not supported for the frozen path: {kind}")
+    # EE / VV3 / VE3 / EV3：af[1] 是 A 的顶点或 A 棱的起点，bf[1] 是 B 的顶点或 B 棱的起点
+    a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
+    b = B.verts[bf[1]]
+    return sum(n[i] * (a[i] - b[i]) for i in range(3))

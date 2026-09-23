@@ -25,8 +25,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from ..dual import Dual, Number, val
-from .covers3 import enumerate_covers3
-from .frozen import frozen_ee_sign, frozen_gap, frozen_normal  # noqa: F401  (L5 转出的公共入口)
+from .covers3 import ee_cover, enumerate_covers3, fv_cover, vf_cover
+from .frozen import FACET_KINDS, frozen_ee_sign, frozen_gap, frozen_normal  # noqa: F401  (L5 转出的公共入口)
 from .geom3 import Polyhedron, Vec3, dot, polyhedra_overlap, sub
 
 
@@ -58,11 +58,17 @@ def escape_height_brute(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
 
 # ------------------------------------------------------------------ 盖路径（可微）
 
+TIE_TOL = 1e-9                     # 候选高度并列的相对容差（与谓词的 geom_tol 同量级）
+
+
 @dataclass(slots=True)
 class EscapeSolution:
     height: float
-    cover_label: tuple | None      # 决定逃逸高度的那个盖（冻结的活动集）
+    cover_label: tuple | None      # 决定逃逸高度的那个盖（冻结的活动集；并列时按枚举序裁决）
     n_candidates: int
+    # 在该高度上**并列活跃**的全部接触盖（含 cover_label，且它排第一）。多于一种导数时该点
+    # 不可微——cover_label 只是并列里被裁决选中的那一支（审查 C13）。
+    tied_labels: tuple = ()
 
 
 def _cover_escape_z(A: Polyhedron, B: Polyhedron, cover, offset: Vec3) -> float | None:
@@ -80,26 +86,63 @@ def _cover_escape_z(A: Polyhedron, B: Polyhedron, cover, offset: Vec3) -> float 
     return -cover.gap / nz
 
 
+def _same_z(z: float, z0: float | None) -> bool:
+    return z0 is not None and abs(z - z0) <= 1e-12 * max(1.0, abs(z))
+
+
+def _cover_at(Az: Polyhedron, B: Polyhedron, label: tuple, tol: float):
+    """同一对特征（面盖）在 A 抬升后的位形 Az 上重新求盖。有效性只看法向与法锥，与平移无关。"""
+    kind, af, bf = label
+    if kind == "VF":
+        return vf_cover(Az, af[1], B, bf[1], tol)
+    if kind == "FV":
+        return fv_cover(Az, af[1], B, bf[1], tol)
+    if kind == "EE":
+        return ee_cover(Az, (af[1], af[2]), B, (bf[1], bf[2]), tol)
+    return None
+
+
 def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float = 1e-9
                       ) -> list[tuple[float, tuple]]:
     """盖给出的**完备候选高度集**：每个法向朝上的盖解一个 gap(z)=0，升序返回 (z, 标签)。
 
-    不施加 in_extent 过滤——抬升会让投影移出面，z=0 处的 in_extent 说明不了 z=z* 处的情况；
-    候选集宁可多不可漏（漏了就丢掉真解）。
+    in_extent 在**各自的 z* 处**判，不在 z=0 处判：
+      · z=0 处过滤会漏真解——抬升会让投影移进/移出面，z=0 处的 in_extent 说明不了 z=z* 处的情况。
+        2026-09-21 审查实测：曾用 `enumerate_covers3` 的默认过滤，非对称块
+        interlocking_pair(5,2,0.3,1.0) 上 25 个随机偏移错 8–10 个（0.44749 vs 真值 0.40054，静默偏大）。
+      · 完全不过滤不漏，但会混入"对方面的延长平面上的巧合零间隙"（投影落在面外、不是接触）。
+        它的高度可以恰与真解并列（周期剖面上常见），被冻结后导数毫无意义
+        （实测 δ=0.3 处并列胜出 FV(A 面 14, L 顶点 9)，∂h/∂amp 给 4.6，真值 0.6）。
+      · 真解处两体相触，决定它的接触盖零间隙且接触点落在面内/段内，即在 z* 处 in_extent——
+        所以按 z* 处的 in_extent 过滤**既不漏真解、又只留真接触**。
+    低维盖（VE3/EV3/VV3）不参与：它们的 gap 是无符号距离（≥ 0），z = −gap/n_z ≤ 0，
+    从不给出 z > 0 的候选（旧实现里它们只以 z≈0 出现，随即被裁决循环跳过）。
+    门：tests/test_interlock_escape.py。
     """
     At = A.translated(offset)
-    out: list[tuple[float, tuple]] = []
-    for c in enumerate_covers3(At, B, window=float("inf"), tol=tol):
+    raw: list[tuple[float, tuple]] = []
+    for c in enumerate_covers3(At, B, window=float("inf"), tol=tol, require_in_extent=False,
+                               include_low_dim=False):
         z = _cover_escape_z(At, B, c, offset)
         if z is not None and z >= -1e-12:
-            out.append((max(z, 0.0), c.label()))
-    out.sort(key=lambda t: t[0])
+            raw.append((max(z, 0.0), c.label()))
+    raw.sort(key=lambda t: t[0])
+    out: list[tuple[float, tuple]] = []
+    z_prev, Az = None, None
+    for z, lab in raw:
+        if z <= 0.0:
+            out.append((z, lab))          # 已接触/已分离：由调用方的谓词裁决，无需抬升
+            continue
+        if not _same_z(z, z_prev):
+            z_prev, Az = z, At.translated((0.0, 0.0, z))
+        c = _cover_at(Az, B, lab, tol)
+        if c is not None and c.in_extent:
+            out.append((z, lab))
     return out
 
 
 def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
-                         tol: float = 1e-9, geom_tol: float = 1e-9,
-                         verify: bool = True) -> EscapeSolution:
+                         tol: float = 1e-9, geom_tol: float = 1e-9) -> EscapeSolution:
     """逃逸高度：**盖提供完备候选集、精确谓词裁决**，胜出的候选仍是闭式可微的。
 
     为什么不能只靠盖：对**凹**体，"全部有效盖间隙非负"既不充分也不必要
@@ -109,20 +152,21 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     正确分工与 G4 的结论一致：盖系统的价值在**完备、带语义的候选集**，不在当谓词。
     真解必是某个盖的零间隙高度（接触位形必有零间隙盖），故在候选集里升序找第一个
     不再贯入者即得——O(候选数) 次谓词调用，远优于盲二分，且结果带着决定它的那个盖标签。
+    （曾有 `verify=False` 分支直接返回最大候选——正是上面判定无效的纯盖规则，已删除。）
     """
     cands = escape_candidates(A, B, offset, tol=tol)
-    if not verify:
-        best = max((z for z, _ in cands), default=0.0)
-        lab = next((l for z, l in cands if z == best), None)
-        return EscapeSolution(best, lab, len(cands))
     if polyhedra_overlap(A.translated(offset), B, geom_tol) != 1:
         return EscapeSolution(0.0, None, len(cands))
+    z_prev, penetrating = None, True
     for z, lab in cands:
         if z <= 0.0:
             continue
-        x = (offset[0], offset[1], offset[2] + z)
-        if polyhedra_overlap(A.translated(x), B, geom_tol) != 1:
-            return EscapeSolution(z, lab, len(cands))
+        if not _same_z(z, z_prev):        # 并列候选（同一高度的多个接触盖）只问一次谓词
+            x = (offset[0], offset[1], offset[2] + z)
+            z_prev, penetrating = z, polyhedra_overlap(A.translated(x), B, geom_tol) == 1
+        if not penetrating:
+            tied = tuple(l for zz, l in cands if zz > 0.0 and abs(zz - z) <= TIE_TOL * max(1.0, abs(z)))
+            return EscapeSolution(z, lab, len(cands), (lab,) + tuple(l for l in tied if l != lab))
     raise ValueError("escape height not found among cover candidates (candidate set incomplete?)")
 
 
@@ -132,7 +176,13 @@ def escape_height_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple,
 
     这是"片 + 划"里的**片**：组合结构（哪个盖当家、EE 法向朝哪）已由 float 路径冻结，
     片内是纯解析表达式，对几何参数逐点可微——与 DDA 冻结活动集后解析可微同构。
+
+    只接**面盖**（VF / FV / EE）：它们的 gap 沿平移仿射，z = −gap/(n·ẑ) 才是零间隙高度。
+    低维盖（VE3 / EV3 / VV3）的 gap 是无符号距离，沿竖线非仿射，上式不是逃逸高度——拒收
+    （`escape_height_covers` 也从不让它们胜出：gap ≥ 0 ⇒ z ≤ 0）。
     """
+    if not label or label[0] not in FACET_KINDS:
+        raise ValueError(f"escape height is defined by facet covers (VF/FV/EE) only, got {label[:1]}")
     n = frozen_normal(A, B, label, ee_sign)
     g = frozen_gap(A, B, label, offset, n)
     return -g / n[2]
