@@ -2,6 +2,9 @@
 
 实测（bb52，2026-09-18）：vidx 是全局顶点号；每块顶点按多边形序连续；尾部带两个回绕重复点
 （df 存储 d[i2+1]=d[i1]、d[i2+2]=d[i1+1]）；legacy 接触表用重复索引引用首边，故返回 alias 表。
+
+审查 C19（2026-09-21）：除尾部回绕外，**任何**循环意义下的连续重复点（零长边）也在这里剥除并登记
+alias——内核不接受零长边（`kernel2d.geom.outward_normal` 清晰报错）。见 `strip_duplicate_vertices`。
 """
 
 from __future__ import annotations
@@ -38,6 +41,51 @@ class StepGeometry:
         return {v: g.poly[i] for b, g in self.blocks.items() for i, v in enumerate(g.vidx)}
 
 
+def strip_duplicate_vertices(vids: list[int], poly: Poly, dup_tol: float = 1e-12,
+                             *, block: int | None = None) -> tuple[list[int], Poly, dict[int, int]]:
+    """剥除一块多边形环上的重复点，返回 (保留的顶点号, 保留的点, alias: 被剥顶点号 -> 保留顶点号)。
+
+    两步，都按坐标逐分量 |Δ| ≤ dup_tol 判"同一点"：
+      1. df 的回绕尾巴：末点等于首点或第二点（d[i2+1]=d[i1]、d[i2+2]=d[i1+1]），从尾部逐个剥；
+      2. 循环意义下的**任何**连续重复点（零长边）：顺序扫描保留首次出现者，最后再比末点与首点。
+    alias 链压平到最终保留的顶点号。剩余不足 3 点抛 ValueError（带块号）。
+    """
+    vids, poly = list(vids), list(poly)
+    alias: dict[int, int] = {}
+
+    def same(p, q) -> bool:
+        return abs(p[0] - q[0]) <= dup_tol and abs(p[1] - q[1]) <= dup_tol
+
+    while len(poly) > 3:
+        k = len(poly) - 1
+        dup = next((h for h in range(2) if same(poly[h], poly[k])), None)
+        if dup is None:
+            break
+        alias[vids[k]] = vids[dup]
+        poly.pop()
+        vids.pop()
+    kv: list[int] = []
+    kp: Poly = []
+    for v, p in zip(vids, poly):
+        if kp and same(kp[-1], p):
+            alias[v] = kv[-1]
+            continue
+        kv.append(v)
+        kp.append(p)
+    while len(kp) > 1 and same(kp[-1], kp[0]):
+        alias[kv[-1]] = kv[0]
+        kv.pop()
+        kp.pop()
+    for k in list(alias):
+        t = alias[k]
+        while t in alias:
+            t = alias[t]
+        alias[k] = t
+    if len(kp) < 3:
+        raise ValueError(f"block {block}: fewer than 3 distinct vertices after stripping duplicates: {kp}")
+    return kv, kp, alias
+
+
 def load_step_geometries(verts_csv: Path, *, dup_tol: float = 1e-12) -> dict[int, StepGeometry]:
     by: dict[int, dict[int, list[tuple[int, tuple[float, float]]]]] = defaultdict(lambda: defaultdict(list))
     with Path(verts_csv).open(newline="", encoding="utf-8") as fh:
@@ -48,20 +96,8 @@ def load_step_geometries(verts_csv: Path, *, dup_tol: float = 1e-12) -> dict[int
         sg = StepGeometry(step=step, blocks={})
         for b, lst in blocks.items():
             lst.sort()
-            vids = [v for v, _ in lst]
-            poly = [p for _, p in lst]
-            while len(poly) > 3:
-                k = len(poly) - 1
-                dup = None
-                for h, p in enumerate(poly[:2]):
-                    if abs(p[0] - poly[k][0]) <= dup_tol and abs(p[1] - poly[k][1]) <= dup_tol:
-                        dup = h
-                        break
-                if dup is None:
-                    break
-                sg.alias[vids[k]] = vids[dup]
-                poly.pop()
-                vids.pop()
+            vids, poly, alias = strip_duplicate_vertices([v for v, _ in lst], [p for _, p in lst], dup_tol, block=b)
+            sg.alias.update(alias)
             ccw, flipped = ensure_ccw(poly)
             sg.blocks[b] = BlockGeom(b, ccw, list(reversed(vids)) if flipped else vids, flipped)
         out[step] = sg

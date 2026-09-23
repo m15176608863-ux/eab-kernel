@@ -1,8 +1,11 @@
-"""读取器门：对入库夹具 (1) 解析非空 (2) 两次解析逐字节同一 (3) JSON 往返恒等 (4) 契约校验全过。
+"""读取器门：对入库夹具 (1) 解析非空 (2) 两次解析逐字节同一 (3) JSON 往返恒等 (4) 契约校验全过
+(5) canonical_key 块序交换不变 (6) 身份可解析的来源（bdda_df 有 verts.csv、bdda3d）逐步键唯一。
 
+旧版 (5) 处是 `len(keys) == len(records)`——列表推导式的长度恒等于输入长度，同义反复（审查 C20）。
 夹具缺失时 skip（夹具由 tools/ingest_fixtures.py / tools/ingest_bdda3d.py 生成）。
 """
 
+import dataclasses
 from pathlib import Path
 
 import pytest
@@ -13,6 +16,10 @@ from eab.readers import bdda3d, bdda_df, tf_probe
 FIX = Path(__file__).resolve().parents[1] / "fixtures"
 
 
+def _swapped(r):
+    return dataclasses.replace(r, block_a=r.block_b, block_b=r.block_a, feature_a=r.feature_b, feature_b=r.feature_a)
+
+
 def _gate(records, parse_again):
     assert len(records) > 0
     text = records_to_json(records)
@@ -20,9 +27,18 @@ def _gate(records, parse_again):
     assert records_from_json(text) == records              # 往返恒等
     for r in records:
         validate(r)
-    keys = [r.canonical_key() for r in records]
-    assert len(keys) == len(records)
+        k = r.canonical_key()
+        hash(k)
+        assert _swapped(r).canonical_key() == k            # 块序交换不变（真实数据上）
     return text
+
+
+def _assert_step_keys_unique(records):
+    seen = {}
+    for r in records:
+        key = (r.step, r.canonical_key())
+        assert key not in seen, ("同一步两条记录撞键", seen[key], r.contact_index, key)
+        seen[key] = r.contact_index
 
 
 @pytest.mark.parametrize("case_dir", sorted((FIX / "bdda_df").glob("*")) if (FIX / "bdda_df").exists() else [])
@@ -35,6 +51,12 @@ def test_bdda_df_fixture(case_dir):
     if (case_dir / "bdda_debug_verts.csv").exists():
         assert not any(r.extra.get("_blocks_unknown") for r in recs)
     assert not any(r.extra.get("_block_mismatch") for r in recs)
+    # 身份（两个特征）可解析的记录逐步键唯一；缺 verts.csv 的夹具里块号未知的记录没有特征，键只到块对级
+    resolved = [r for r in recs if r.feature_a is not None and r.feature_b is not None]
+    if (case_dir / "bdda_debug_verts.csv").exists():
+        assert len(resolved) == len(recs)
+    assert all(r.extra.get("_blocks_unknown") for r in recs if r not in resolved)
+    _assert_step_keys_unique(resolved)
 
 
 @pytest.mark.parametrize("probe", sorted((FIX / "tf").glob("*/retry_contact_pair_probe.tsv")) if (FIX / "tf").exists() else [])
@@ -42,6 +64,8 @@ def test_tf_probe_fixture(probe):
     recs = tf_probe.load_records(probe)
     _gate(recs, lambda: tf_probe.load_records(probe))
     assert all(r.cover.value in ("VF", "EE", "NN", "NE") for r in recs)
+    # tf 探针不带特征：canonical_key 只到块对级（契约文档写明），不做逐步唯一断言
+    assert all(r.feature_a is None and r.feature_b is None and r.canonical_key()[3] == () for r in recs)
 
 
 @pytest.mark.parametrize("stage", sorted((FIX / "tf").glob("*/contact_pair_stage.tsv")) if (FIX / "tf").exists() else [])
@@ -58,3 +82,41 @@ def test_bdda3d_fixture(js):
     recs = bdda3d.load_records(js)
     _gate(recs, lambda: bdda3d.load_records(js))
     assert all(r.cover.value in ("VF", "EE") for r in recs)
+    assert all(r.feature_a is not None and r.feature_b is not None for r in recs)
+    assert all(r.feature_b.verts for r in recs if r.cover.value == "VF")   # 面身份 = 顶点三元组，不是 −1
+    _assert_step_keys_unique(recs)
+
+
+def _key_constant(orig):
+    return lambda self: ("const",)
+
+
+def _key_ignores_features(orig):
+    return lambda self: orig(self)[:3] + ((),)
+
+
+def _key_not_swap_symmetric(orig):
+    return lambda self: (self.block_a, self.block_b) + orig(self)[2:]
+
+
+_KEYED = ([p for p in sorted((FIX / "bdda3d").glob("*.json"))] if (FIX / "bdda3d").exists() else []) + \
+         ([p for p in sorted((FIX / "bdda_df").glob("*")) if (p / "bdda_debug_verts.csv").exists()]
+          if (FIX / "bdda_df").exists() else [])
+
+
+@pytest.mark.parametrize("src", _KEYED, ids=lambda p: f"{p.parent.name}/{p.name}")
+@pytest.mark.parametrize("mut", [_key_constant, _key_ignores_features, _key_not_swap_symmetric],
+                         ids=["constant_key", "key_ignores_features", "key_not_swap_symmetric"])
+def test_reader_key_gate_has_teeth_where_the_retired_assert_had_none(monkeypatch, src, mut):
+    """审查 C20 的证据钉成门：三种 canonical_key 退化（常量键、键丢特征、键不对称）下，
+    被删的 `len([k for r in recs]) == len(recs)` 恒真（同义反复，删掉不算放松），
+    而现在的门（块序交换不变 + 逐步键唯一）必红。"""
+    import eab.contact_record as cr
+    recs = bdda3d.load_records(src) if src.suffix == ".json" else bdda_df.load_records(src)
+    monkeypatch.setattr(cr.ContactRecord, "canonical_key", mut(cr.ContactRecord.canonical_key))
+    keys = [r.canonical_key() for r in recs]
+    assert len(keys) == len(recs)                              # 旧断言：退化下照样绿
+    with pytest.raises(AssertionError):
+        for r in recs:
+            assert _swapped(r).canonical_key() == r.canonical_key()
+        _assert_step_keys_unique([r for r in recs if r.feature_a is not None and r.feature_b is not None])

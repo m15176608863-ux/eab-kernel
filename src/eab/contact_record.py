@@ -10,7 +10,10 @@
 - 统一词汇（CoverType / Mode）+ 各引擎原始码**同时保留**（raw_mode / raw_cover），
   因为三家的 "3" 含义不同：b-DDA 3 = v-v 第二参考闭合，bdda3d 3 = 键合，tf.cpp 3 = 受拉。
 - `extra` 装下一切不入正式字段的列，读取器**不许丢信息**。
-- 典范序键 `canonical_key()` 与来源的枚举顺序无关，用于跨引擎集合同构比较。
+- 典范序键 `canonical_key()` 与来源的枚举顺序无关（块序交换不变），用于跨引擎集合同构比较。
+  它的分辨率取决于来源给了多少特征身份（审查 C20）：bdda_df（有 verts.csv）与 bdda3d 逐步唯一；
+  tf 探针不带特征，键只到 (块对, 盖类) 级；bdda_df 缺 verts.csv 时块号未知的记录同样只到块对级。
+  这几条由 tests/test_readers_roundtrip.py 在真实夹具上断言。
 """
 
 from __future__ import annotations
@@ -46,6 +49,7 @@ class Mode(str, Enum):
     BONDED = "BONDED"        # bdda3d 键合态
     TENSION = "TENSION"      # tf.cpp 受拉态
     VV_CLOSED = "VV_CLOSED"  # b-DDA v-v 第二参考闭合（m0=3）
+    UNVERIFIED = "UNVERIFIED"  # 引擎给了码、也有名字，但归入统一词汇的依据未核实（原始码见 raw_mode）
     UNKNOWN = "UNKNOWN"
 
 
@@ -53,8 +57,11 @@ class Mode(str, Enum):
 BDDA_MODE: dict[int, Mode] = {0: Mode.OPEN, 1: Mode.SLIDING, 2: Mode.LOCKED, 3: Mode.VV_CLOSED}
 BDDA3D_MODE: dict[int, Mode] = {0: Mode.OPEN, 1: Mode.SLIDING, 2: Mode.LOCKED, 3: Mode.BONDED}
 # tf.cpp 注释（tf.cpp:306-313）：0 open 1 friction 2 s-spring 3 t-tension 4 2f-friction 5 2f-lock 6 top-lock
+# 4/5/6 此前折进 SLIDING/LOCKED，但 docs/sibling_observations.md 没有为这几个码记下任何 tf.cpp 行号引文
+# （"2f"/"top" 的语义、它们在开闭迭代里是否等价于滑动/锁定，都没人核实过）——审查盲区 5。
+# 所以标 UNVERIFIED，不替 tf.cpp 断言；raw_mode 保留原始码。入库夹具只出现 1、2（tests/test_tf_reader.py）。
 TF_MODE: dict[int, Mode] = {0: Mode.OPEN, 1: Mode.SLIDING, 2: Mode.LOCKED, 3: Mode.TENSION,
-                            4: Mode.SLIDING, 5: Mode.LOCKED, 6: Mode.LOCKED}
+                            4: Mode.UNVERIFIED, 5: Mode.UNVERIFIED, 6: Mode.UNVERIFIED}
 # tf.cpp c[i][2] / m[j][2]：0 n-n 1 n-e 2 n-p 3 e-e（tf.cpp:297-300, 329-336）
 TF_COVER: dict[int, CoverType] = {0: CoverType.NN, 1: CoverType.NE, 2: CoverType.VF, 3: CoverType.EE}
 # b-DDA mtype：0 v-e 1 v-v（df05）
@@ -65,14 +72,20 @@ BDDA3D_COVER: dict[str, CoverType] = {"np": CoverType.VF, "ee": CoverType.EE}
 
 @dataclass(frozen=True, slots=True)
 class Feature:
-    """块上的几何特征。index 为来源引擎的局部/全局编号，-1 表示未知。"""
+    """块上的几何特征。index 为来源引擎的局部/全局编号，-1 表示未知。
+
+    verts：来源没有特征编号、只用顶点号指代特征时的身份（**排序后**的顶点号元组，与列出顺序无关）。
+    例：bdda3d 的 n-p 入口用宿主块面扇形里的一个三角 (P2,P3,P4) 指代面，没有面号 → index=-1、
+    verts=sorted(P2,P3,P4)；e-e 入口的棱 → verts=sorted(两端点)。空元组表示未提供。
+    """
 
     block: int
     kind: str  # "vertex" | "edge" | "face"
     index: int = -1
+    verts: tuple[int, ...] = ()
 
-    def as_tuple(self) -> tuple[int, str, int]:
-        return (self.block, self.kind, self.index)
+    def as_tuple(self) -> tuple[int, str, int, tuple[int, ...]]:
+        return (self.block, self.kind, self.index, self.verts)
 
 
 Vec = tuple[float, ...]
@@ -142,7 +155,7 @@ def _encode(v: Any) -> Any:
     if isinstance(v, Enum):
         return v.value
     if isinstance(v, Feature):
-        return {"block": v.block, "kind": v.kind, "index": v.index}
+        return {"block": v.block, "kind": v.kind, "index": v.index, "verts": list(v.verts)}
     if isinstance(v, tuple):
         return [_encode(x) for x in v]
     if isinstance(v, dict):
@@ -161,7 +174,7 @@ def _decode(name: str, v: Any) -> Any:
     if name in ("mode", "mode_prev", "mode_init"):
         return Mode(v)
     if name in ("feature_a", "feature_b"):
-        return Feature(int(v["block"]), str(v["kind"]), int(v["index"]))
+        return Feature(int(v["block"]), str(v["kind"]), int(v["index"]), tuple(int(x) for x in v.get("verts", ())))
     if name == "ref_points":
         return tuple(tuple(float(x) for x in p) for p in v)
     if name in _TUPLE_FIELDS:
@@ -181,6 +194,8 @@ def validate(rec: ContactRecord) -> None:
     for f in (rec.feature_a, rec.feature_b):
         if f is not None and f.kind not in ("vertex", "edge", "face"):
             raise ValueError(f"bad feature kind: {f.kind}")
+        if f is not None and (list(f.verts) != sorted(f.verts) or not all(isinstance(x, int) for x in f.verts)):
+            raise ValueError(f"feature verts must be sorted ints: {f.verts}")
     for name in ("gap", "normal_force", "length_or_area", "gap_ref", "lock_position"):
         v = getattr(rec, name)
         if v is not None and not math.isfinite(v):

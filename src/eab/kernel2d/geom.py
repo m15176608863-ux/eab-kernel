@@ -71,10 +71,23 @@ def edge(poly: Poly, i: int) -> tuple[Point, Point]:
 
 
 def outward_normal(poly: Poly, i: int) -> Point:
-    """CCW 多边形第 i 条边 (i -> i+1) 的单位外法向。"""
+    """CCW 多边形第 i 条边 (i -> i+1) 的单位外法向。
+
+    零长边（连续重复顶点）没有法向：抛 ValueError('zero-length edge ...')，而不是 unit() 的
+    ZeroDivisionError（审查 C19）。输入归一化在读取器边界做（readers.bdda_geom.strip_duplicate_vertices）。
+    """
     p, q = edge(poly, i)
     e = sub(q, p)
+    if e[0] == 0.0 and e[1] == 0.0:
+        raise ValueError(f"zero-length edge {i % len(poly)} (consecutive duplicate vertex at {p}); "
+                         f"strip duplicates at the reader boundary")
     return unit((e[1], -e[0]))
+
+
+def zero_length_edges(poly: Poly) -> list[int]:
+    """零长边的下标（循环意义：含末点 → 首点那条）。"""
+    n = len(poly)
+    return [i for i in range(n) if poly[i] == poly[(i + 1) % n]]
 
 
 def vertex_turn(poly: Poly, i: int) -> float:
