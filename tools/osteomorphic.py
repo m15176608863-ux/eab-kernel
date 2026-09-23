@@ -84,12 +84,13 @@ def osteomorphic_block_generic(nx: int = 4, ny: int = 4, *, lx=2.0, ly=1.0, lz=1
                                amp=0.25, center=(0.0, 0.0, 0.0), phase=0.0, sin_fn=None):
     """与 osteomorphic_block 同构，但所有标量可为对偶数（几何参数的解析灵敏度用）。
 
-    sin_fn：标量的 sin 实现（float 用 math.sin，对偶用 eab.dual.sin）。
+    sin_fn：标量的 sin 实现。默认 `eab.dual.sin`——对 float 退化为 math.sin，对对偶数走导数通道；
+    （曾默认 math.sin：配合 Dual 的隐式 float 协议，不传 sin_fn 时 ∂/∂phase 被静默清零。）
     面表与 osteomorphic_block **逐项相同** —— 组合结构必须一致，否则冻结的盖标签对不上。
     """
     import math as _m
     if sin_fn is None:
-        sin_fn = _m.sin
+        from eab.dual import sin as sin_fn
     cx, cy, cz = center
     top, bot, verts = [], [], []
 

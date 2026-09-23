@@ -92,12 +92,24 @@ class Dual:
                                     for a, b in zip(self.e, oe)))
 
     def __pow__(self, p: float) -> "Dual":
+        """实指数幂。负底的非整数幂在实数里无定义：float.__pow__ 会静默给出复数并流进后续
+        对偶运算，所以这里当场报错。指数本身不许是对偶数（不支持 ∂/∂p）。"""
+        if isinstance(p, Dual):
+            raise TypeError("Dual ** Dual is not supported (no derivative w.r.t. the exponent)")
+        p = float(p)
+        if self.v < 0.0 and not p.is_integer():
+            raise ValueError(f"Dual ** {p!r}: negative base {self.v!r} has no real power")
         c = p * (self.v ** (p - 1.0))
         return Dual(self.v ** p, tuple(c * a for a in self.e))
 
     # ---------------- 择支（只看 primal，禁止参与本构） ----------------
     def __float__(self) -> float:
-        return self.v
+        """**禁止**隐式转 float。CPython 的 float()/math.*/%-格式化都走这条协议，
+        若返回 primal，math.sin(Dual) 会静默丢掉全部导数通道（primal 逐位不变，任何值门都抓不到）。
+        择支请显式用 `val()`；超越函数请用本模块的 sin/cos/sqrt/atan2。"""
+        raise TypeError("Dual cannot be implicitly converted to float (it would silently drop the "
+                        "derivative channels); use eab.dual.val() for branching, eab.dual.sin/cos/"
+                        "sqrt/atan2 for arithmetic")
 
     def __lt__(self, o: Number) -> bool:
         return self.v < (o.v if isinstance(o, Dual) else float(o))
@@ -156,6 +168,8 @@ def cos(x: Number) -> Number:
 def atan2(y: Number, x: Number) -> Number:
     if not isinstance(y, Dual) and not isinstance(x, Dual):
         return math.atan2(y, x)
+    if isinstance(y, Dual) and isinstance(x, Dual) and y.width != x.width:
+        raise ValueError(f"dual width mismatch: {y.width} vs {x.width}")
     yv, xv = val(y), val(x)
     w = y.width if isinstance(y, Dual) else x.width       # type: ignore[union-attr]
     ye = grad(y, w)

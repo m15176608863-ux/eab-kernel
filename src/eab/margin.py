@@ -43,8 +43,14 @@
 
 - **见证距离 ≠ 盖的 gap。** VF/FV 的 `gap` 是顶点到面**所在平面**的有符号距离；分离的凹体之间
   也常有顶点落在对方某面平面内侧（实测 −2.7）。两体间距必须用 `|point_a − point_b|`。
-- **本层只在两体分离时有意义。** 贯入之后见证距离恒为 0，裕度谓词只能回答"已违约"，
-  违约多深要靠贯入深度（未实现）。安全裕度问题本来就活在分离侧，这不是缺陷但必须写明。
+- **本层只在两体分离（或相触）时有数值意义；贯入由 `polyhedra_overlap` 先判。**
+  贯入位形上盖枚举的 |point_a − point_b| **不是**间距，而是贯入深度一类的正数（2026-09-21
+  审查实测 0.1 / 0.4 / 0.3 / 1.3，曾让 `margin_contacts` 返回 []、即回答"安全"——fail-unsafe）。
+  所以三个入口在贯入时一致地回答"已违约"：`body_distance` 返回哨兵 `(0.0, ("PENETRATING",))`，
+  `margin_contacts` 返回单个已闭合的哨兵接触（distance 0、margin_gap = −δ、normal None），
+  `inflated_membership` 答 INSIDE；`margin_gap_from_frozen_cover` 对哨兵抛 ValueError（没有冻结盖）。
+  违约多深要靠贯入深度（未实现）。贯入浅于 `geom_tol` 时按相触处理：见证距离 ≈ 0，裕度同样闭合。
+  门：`tests/test_margin_penetration.py`。安全裕度问题本来就活在分离侧，这不是缺陷但必须写明。
 - 距离由盖枚举给出，其**完备性**（法锥筛选不丢最近特征对）由 `g0_distance_completeness3` 看着。
 """
 
@@ -59,6 +65,7 @@ from .kernel3d.geom3 import (Polyhedron, Vec3, add, convex_hull_3d, norm, polyhe
                              sub, unit)
 
 OUTSIDE, ON_BOUNDARY, INSIDE = -1, 0, 1
+PENETRATING = "PENETRATING"            # 贯入哨兵标签：("PENETRATING",)
 
 
 # ------------------------------------------------------------------ 见证与距离
@@ -72,12 +79,16 @@ def cover_witness(c) -> tuple[float, Vec3 | None] | None:
     return (d, unit(v) if d > 0.0 else None)
 
 
-def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9
+def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float = 1e-9
                   ) -> tuple[float, tuple | None]:
-    """两体间距及实现它的那个盖标签（盖路径）。前提：A、B 分离。
+    """两体间距及实现它的那个盖标签（盖路径）。
 
+    贯入（`polyhedra_overlap(A, B, geom_tol) == 1`）时返回哨兵 `(0.0, ("PENETRATING",))`：
+    此时盖的见证距离不是间距（见模块诚实条款），不许把它当距离报出去。
     完备性（不丢最近特征对）由 Phase 2 的距离完备性门保证。
     """
+    if polyhedra_overlap(A, B, geom_tol) == 1:
+        return 0.0, (PENETRATING,)
     best, lab = float("inf"), None
     for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
         if not c.in_extent:
@@ -95,9 +106,9 @@ class MarginContact:
     label: tuple
     distance: float          # 两体特征对间距（工作空间）
     margin_gap: float        # distance − delta；≤0 即广义接触闭合
-    normal: Vec3 | None      # 单位见证方向 B→A，**单值**（C^{1,1}）
-    point_a: Vec3
-    point_b: Vec3
+    normal: Vec3 | None      # 单位见证方向 B→A，**单值**（C^{1,1}）；贯入哨兵为 None
+    point_a: Vec3 | None     # 贯入哨兵为 None
+    point_b: Vec3 | None
 
     @property
     def closed(self) -> bool:
@@ -105,11 +116,16 @@ class MarginContact:
 
 
 def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float = 0.0,
-                    tol: float = 1e-9) -> list[MarginContact]:
+                    tol: float = 1e-9, geom_tol: float = 1e-9) -> list[MarginContact]:
     """裕度 δ 下的广义接触：间距 ≤ δ + band 的有效盖，按 margin_gap 升序。
 
     band 是"关注带"宽度（δ 之外还想看多远），band=0 只返回已闭合的广义接触。
+    贯入（`polyhedra_overlap(A, B, geom_tol) == 1`）时返回**单个已闭合的哨兵**
+    `MarginContact(("PENETRATING",), distance=0, margin_gap=−δ, normal=None)`——
+    裕度谓词只回答"已违约"，与 `inflated_membership` 的 INSIDE 一致（fail-safe）。
     """
+    if polyhedra_overlap(A, B, geom_tol) == 1:
+        return [MarginContact((PENETRATING,), 0.0, 0.0 - delta, None, None, None)]
     out: list[MarginContact] = []
     for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
         if not c.in_extent:
@@ -126,11 +142,11 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
                         geom_tol: float = 1e-9, atol: float = 1e-12) -> int:
     """参考点相对膨胀入口块 E_δ 的位置：−1 外 / 0 边界 / 1 内（= 裕度已违约）。
 
-    贯入时直接判"内"（见证距离失效，见模块诚实条款）。
+    贯入时直接判"内"（见证距离失效，见模块诚实条款；由 `body_distance` 的贯入哨兵给出）。
     """
-    if polyhedra_overlap(A, B, geom_tol) == 1:
+    d, lab = body_distance(A, B, tol=tol, geom_tol=geom_tol)
+    if lab == (PENETRATING,):
         return INSIDE
-    d, _ = body_distance(A, B, tol=tol)
     if d < delta - atol:
         return INSIDE
     if d > delta + atol:
@@ -171,6 +187,11 @@ def margin_gap_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple, x, 
 
     仅当冻结的盖**正是实现最短距离的那一对特征**时，沿盖法向的 gap 等于见证距离——
     这由 float 路径的 `body_distance` 选出，是冻结组合结构的一部分。
+    冻结路径接得住 `body_distance` 可能给出的全部盖种类：VF / FV / EE / VV3 / VE3 / EV3
+    （低维盖的法向随平移 x 转动，按 x 计算；门：tests/test_frozen_lowdim.py）。
+    贯入哨兵 ("PENETRATING",) 没有冻结盖，抛 ValueError。
     """
-    n = frozen_normal(A, B, label, ee_sign)
+    if label and label[0] == PENETRATING:
+        raise ValueError("bodies interpenetrate: there is no frozen cover (margin already violated)")
+    n = frozen_normal(A, B, label, ee_sign, x=x)
     return frozen_gap(A, B, label, x, n) - delta
