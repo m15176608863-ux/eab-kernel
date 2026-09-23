@@ -182,7 +182,9 @@ def compare(path: Path, *, window: float = G2_WINDOW, band: float = G2_BAND, tol
             legacy_detail.append((vblk, vidx, tuple(tri), gi))
 
         # 内核侧：VF / FV 盖 → 同一形式的键；其余种类在窗口内出现即违规（门不认识的类不许静默）
-        allc = [c for c in enumerate_covers3(A, B, window=max(window, band), tol=tol) if c.in_extent]
+        # 枚举必须伸到带宽，否则带内的真实内核盖根本进不了 band——这一行没有门看着时，改回 window=window 全套照样绿（2026-09-24 复核实测）。
+        ewin = max(window, band)
+        allc = [c for c in enumerate_covers3(A, B, window=ewin, tol=tol) if c.in_extent]
         covs = [c for c in allc if abs(c.gap) <= window]
         band_covs = sorted((c.kind, c.a_feature, c.b_feature, round(c.gap, 12)) for c in allc
                            if window < abs(c.gap) <= band and c.kind in ("VF", "FV"))
@@ -211,7 +213,7 @@ def compare(path: Path, *, window: float = G2_WINDOW, band: float = G2_BAND, tol
                      "legacy_only": sorted(legacy - mine), "mine_only": sorted(mine - legacy),
                      "legacy_detail": legacy_detail, "mine_detail": mine_detail,
                      "n_covers": len(covs), "violations": violations, "window": window,
-                     "band": band_covs, "band_limit": band})
+                     "band": band_covs, "band_limit": band, "enumerated_window": ewin})
     return {"case": case, "step": step, "rows": rows}
 
 

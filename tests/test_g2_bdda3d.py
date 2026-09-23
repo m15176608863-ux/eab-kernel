@@ -73,6 +73,7 @@ def _assert_g2_gate(res, band=G2_BAND):
         assert r["n_covers"] == len(r["mine"]), (r["pair"], "内核有盖未参与对账", r["mine_detail"])
         assert r["violations"] == [], (r["pair"], r["violations"])
         assert r["band_limit"] >= band and r["band"] == [], (r["pair"], "VF/FV 带内有多余的盖", r["band"])
+        assert r["enumerated_window"] >= band, (r["pair"], "枚举窗口窄于带宽：带内盖根本不会被枚举")
 
 
 @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
@@ -438,3 +439,20 @@ def test_g2_window_contains_every_legacy_gap_and_nothing_else(path):
     assert max(gaps) <= G2_WINDOW
     assert non_face == pytest.approx(1.0, abs=1e-12)          # cb2：上块底角到下块顶棱，最近也有 1
     assert G2_WINDOW <= 1e-3 * non_face
+
+
+@pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+def test_g2_band_catches_a_real_kernel_defect_through_enumeration(path, monkeypatch):
+    """带的牙必须**穿过枚举器**：在内核里打一个真缺陷，而不是在枚举之后追加假盖。
+
+    缺陷 = 顶点法锥判据恒返回"边界"（0）。于是 vf_cover 对本不该有效的顶点-面对也产盖，
+    cb2 上在 |gap| = 1.0 处冒出假 VF 盖——只有当 compare() 真的把枚举窗口伸到带宽时，
+    它们才进得了 band。复核实测：把 compare() 的枚举窗口改回 `window=window`，旧的注入测试
+    （都是枚举后追加）全绿、整套 460 全绿，而本测试会红（该变异下 band 恒空，门不报警）。
+    """
+    import eab.kernel3d.covers3 as cv
+    monkeypatch.setattr(cv, "vertex_cone_contains", lambda P, vi, d, tol=0.0: 0)
+    res = compare(path)
+    assert any(r["band"] for r in res["rows"]), "内核缺陷产出的带内假盖没有进入 band"
+    with pytest.raises(AssertionError):
+        _assert_g2_gate(res)
