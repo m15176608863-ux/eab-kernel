@@ -10,8 +10,10 @@
   vertex（零维）   VV3 A 的顶点 × B 的顶点
   退化            FF（平行贴面）、FE（棱平行于面）、EEP（平行棱-棱）
 
-有效性 = **局部**法锥的相对内部条件（命题 5）。局部化的两个理由：(1) 与石根华的"角"概念一致；
-(2) Phase 3 的凹块可以沿用同一实现——反射顶点/凹棱的局部锥为空，自动被排除。
+有效性 = **局部**法锥条件（命题 5）：闭条件成立即给出盖，相对内部是否严格成立记在 `strict`
+字段——枚举**不按 strict 过滤**（边界态盖是 FF/FE/EEP 退化族的唯一表达）。局部化的两个理由：
+(1) 与石根华的"角"概念一致；(2) Phase 3 的凹块可以沿用同一实现——反射顶点/凹棱的局部锥为空，
+自动被排除。凸成员谓词 `membership_convex3` 另用 E 的全部支撑半空间，不依赖一般位置。
 
 法锥的表示与判据（这是三维版与二维版唯一实质不同的地方）：
   顶点 v：N(v) = {d : d·e_i ≤ 0, e_i 为 v 的所有入射棱方向}；relint ⟺ 全部严格 <0。
@@ -24,7 +26,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import atan2
 
-from .geom3 import (Polyhedron, Vec3, add, angle_between, cross, dot, mul, neg, norm, sub, unit)
+from .geom3 import (Polyhedron, Vec3, add, angle_between, cross, dot, mul, neg, norm,
+                    point_in_face_polygon, sub, unit)
 
 
 @dataclass(slots=True)
@@ -209,23 +212,11 @@ def _project_on_face(p: Vec3, P: Polyhedron, fi: int) -> tuple[Vec3, float]:
     return add(p, mul(n, -g)), g
 
 
-def _point_inside_face(x: Vec3, P: Polyhedron, fi: int, tol: float) -> bool:
-    f = P.faces[fi]
-    n = P.face_normal(fi)
-    k = len(f)
-    for i in range(k):
-        a, b = P.verts[f[i]], P.verts[f[(i + 1) % k]]
-        e = sub(b, a)
-        le = norm(e)
-        if le == 0.0:
-            continue
-        # 面内侧判据：cross(e, x−a)·n ≥ −tol·|e|
-        if dot(cross(e, sub(x, a)), n) < -tol * le:
-            return False
-    return True
-
-
 # ------------------------------------------------------------------ 三类 facet 盖
+#
+# in_extent（投影落在面多边形内）一律用 geom3.point_in_face_polygon：面可以非凸
+# （merge_coplanar 归并出的十边形侧面、L 块顶底面）。此前这里自带一份半平面核判据，
+# 只对凸面正确（2026-09-21 审查 C7：L 块臂上的 VF 盖 in_extent=False 被丢）。
 
 def vf_cover(A: Polyhedron, ia: int, B: Polyhedron, fb: int, tol: float = 0.0) -> Cover3 | None:
     """A 的顶点 ia 对 B 的面 fb。有效 ⟺ −n_f ∈ relint N_A(ia)。"""
@@ -236,7 +227,7 @@ def vf_cover(A: Polyhedron, ia: int, B: Polyhedron, fb: int, tol: float = 0.0) -
     a = A.verts[ia]
     proj, g = _project_on_face(a, B, fb)
     return Cover3("VF", ("vertex", ia), ("face", fb), nB, g, a, proj, (),
-                  B.face_area(fb), side == 1, _point_inside_face(proj, B, fb, tol))
+                  B.face_area(fb), side == 1, point_in_face_polygon(proj, B, fb, tol))
 
 
 def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
@@ -248,7 +239,7 @@ def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0) -
     b = B.verts[ib]
     proj, g = _project_on_face(b, A, fa)     # g = n_A·(b − a0)：>0 表示 B 顶点在 A 面外侧
     return Cover3("FV", ("face", fa), ("vertex", ib), neg(nA), g, proj, b, (),
-                  A.face_area(fa), side == 1, _point_inside_face(proj, A, fa, tol))
+                  A.face_area(fa), side == 1, point_in_face_polygon(proj, A, fa, tol))
 
 
 def _closest_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, float] | None:
@@ -300,9 +291,12 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
 # ------------------------------------------------------------------ 低维与退化盖
 
 def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: float = 0.0) -> Cover3 | None:
-    """A 的顶点 × B 的棱 → ∂E 的棱（一维盖）。有效 ⟺ N_B(eb) 的弧与 −N_A(ia) 的锥相对内部相交。
+    """A 的顶点 × B 的棱 → ∂E 的棱（一维盖）。有效 ⟺ N_B(eb) 的弧与 −N_A(ia) 的锥相交（闭）。
 
     实现上取分离方向 = 顶点到棱的最短向量（若最近点在段内），再验它同时落在两个锥里。
+    strict = 两个判据**都**严格（相对内部）；任一为边界（0）即 False——与 ee_cover 同一口径
+    （2026-09-21 审查 C10：此前写死 True）。边界态盖**照样返回**：平行棱-棱最近对（EEP 退化）
+    只能由它表达，见 enumerate_covers3。
     """
     a = A.verts[ia]
     p0 = B.verts[eb[0]]
@@ -313,14 +307,16 @@ def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: f
     if norm(v) <= tol:
         return None
     n = unit(v)
-    if edge_arc_contains(B, eb, n, tol) < 0 or vertex_cone_contains(A, ia, neg(n), tol) < 0:
+    sb = edge_arc_contains(B, eb, n, tol)
+    sa = vertex_cone_contains(A, ia, neg(n), tol)
+    if sb < 0 or sa < 0:
         return None
     return Cover3("VE3", ("vertex", ia), ("edge", eb[0], eb[1]), n, norm(v), a, q, (s,), None,
-                  True, -tol <= s <= 1.0 + tol)
+                  sb == 1 and sa == 1, -tol <= s <= 1.0 + tol)
 
 
 def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
-    """A 的棱 × B 的顶点 → ∂E 的棱。"""
+    """A 的棱 × B 的顶点 → ∂E 的棱。strict 口径同 ve3_cover。"""
     b = B.verts[ib]
     p0 = A.verts[ea[0]]
     d = sub(A.verts[ea[1]], p0)
@@ -330,10 +326,12 @@ def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: f
     if norm(v) <= tol:
         return None
     n = unit(v)
-    if vertex_cone_contains(B, ib, n, tol) < 0 or edge_arc_contains(A, ea, neg(n), tol) < 0:
+    sb = vertex_cone_contains(B, ib, n, tol)
+    sa = edge_arc_contains(A, ea, neg(n), tol)
+    if sb < 0 or sa < 0:
         return None
     return Cover3("EV3", ("edge", ea[0], ea[1]), ("vertex", ib), n, norm(v), q, b, (s,), None,
-                  True, -tol <= s <= 1.0 + tol)
+                  sb == 1 and sa == 1, -tol <= s <= 1.0 + tol)
 
 
 def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
@@ -359,7 +357,13 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) 
 
 def enumerate_covers3(A: Polyhedron, B: Polyhedron, *, window: float, tol: float = 0.0,
                       require_in_extent: bool = True, include_low_dim: bool = True) -> list[Cover3]:
-    """当前位形下所有有效且在距离窗口内的三维盖。"""
+    """当前位形下所有有效且在距离窗口内的三维盖。
+
+    有效 = 法锥**闭**条件成立（判据 ≥ 0）；strict 只是盖上的一个字段，**任何一类盖都不按
+    strict 过滤**。低维盖尤其不能过滤（2026-09-21 审查 C10 实测）：平行棱-棱最近对
+    （EEP 退化，ee_cover 对平行棱返回 None）只由边界态 VE3/EV3 表达，一旦按 strict 过滤，
+    margin.body_distance 的距离完备性就丢（tests/test_margin.py 三例红）。
+    """
     out: list[Cover3] = []
     for ia in range(len(A.verts)):
         for fb in range(len(B.faces)):
@@ -380,12 +384,12 @@ def enumerate_covers3(A: Polyhedron, B: Polyhedron, *, window: float, tol: float
         for ia in range(len(A.verts)):
             for eb in B.edges():
                 c = ve3_cover(A, ia, B, eb, tol)
-                if c is not None and c.strict and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
+                if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
                     out.append(c)
         for ea in A.edges():
             for ib in range(len(B.verts)):
                 c = ev3_cover(A, ea, B, ib, tol)
-                if c is not None and c.strict and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
+                if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
                     out.append(c)
         for ia in range(len(A.verts)):
             for ib in range(len(B.verts)):
@@ -416,34 +420,72 @@ def local_facets3(A: Polyhedron, B: Polyhedron, tol: float = 0.0) -> set[tuple]:
     return out
 
 
-def facet_gap3(A: Polyhedron, B: Polyhedron, label: tuple, x: Vec3) -> float:
-    """E 的一条 facet 在平移 x 下的有符号间隙（>0 参考点在该 facet 外侧）。"""
+def facet_normal3(A: Polyhedron, B: Polyhedron, label: tuple) -> Vec3:
+    """facet 标签对应的 E 的**定向外法向**（B → A 的分离方向）。
+
+    VF → n_B(face)；FV → −n_A(face)；EE → ±unit(t_B × t_A)，取落在 B 棱弧里的那一支。
+    facet_gap3 与 G0 票二共用它（票二的另一侧不经它，见 g03.g0_convex3）。
+    """
     kind, af, bf = label
     if kind == "VF":
-        nB = B.face_normal(bf[1])
-        return dot(nB, sub(add(A.verts[af[1]], x), B.verts[B.faces[bf[1]][0]]))
+        return B.face_normal(bf[1])
     if kind == "FV":
-        nA = A.face_normal(af[1])
-        return dot(nA, sub(B.verts[bf[1]], add(A.verts[A.faces[af[1]][0]], x)))
+        return neg(A.face_normal(af[1]))
     if kind == "EE":
         ea = (af[1], af[2])
         eb = (bf[1], bf[2])
-        tA, tB = A.edge_dir(ea), B.edge_dir(eb)
-        c = cross(tB, tA)
-        n = unit(c)
-        # 取与 B 的弧一致的朝向
-        if edge_arc_contains(B, eb, n, 1e-9) < 0:
+        n = unit(cross(B.edge_dir(eb), A.edge_dir(ea)))
+        if edge_arc_contains(B, eb, n, 1e-9) < 0:        # 取与 B 的弧一致的朝向
             n = neg(n)
-        return dot(n, sub(add(A.verts[ea[0]], x), B.verts[eb[0]]))
+        return n
     raise ValueError(f"not a facet label: {label}")
+
+
+def facet_gap3(A: Polyhedron, B: Polyhedron, label: tuple, x: Vec3) -> float:
+    """E 的一条 facet 在平移 x 下的有符号间隙（>0 参考点在该 facet 外侧）。"""
+    kind, af, bf = label
+    n = facet_normal3(A, B, label)
+    if kind == "VF":
+        return dot(n, sub(add(A.verts[af[1]], x), B.verts[B.faces[bf[1]][0]]))
+    if kind == "FV":
+        return dot(n, sub(add(A.verts[A.faces[af[1]][0]], x), B.verts[bf[1]]))
+    return dot(n, sub(add(A.verts[af[1]], x), B.verts[bf[1]]))           # EE
+
+
+def support_gaps3(A: Polyhedron, B: Polyhedron, x: Vec3) -> list[float]:
+    """E = B ⊕ (−A) 在 A、B **每个面法向**上的支撑半空间间隙（>0 参考点在外侧），与严格性无关。
+
+    B 的面 fb（外法向 n）：取 a* = argmin_a n·a，间隙 n·(a* + x − b_f)；
+    A 的面 fa（外法向 m）：E 的法向是 −m，取 b* = argmin_b m·b，间隙 (−m)·(a_f + x − b*)。
+    每一条都是 E 的合法支撑半空间（含 E）；FF/FE 退化 facet 的法向恰好都在其中。
+    """
+    gaps: list[float] = []
+    for fb in range(len(B.faces)):
+        n = B.face_normal(fb)
+        ia = min(range(len(A.verts)), key=lambda i: dot(n, A.verts[i]))
+        gaps.append(dot(n, sub(add(A.verts[ia], x), B.verts[B.faces[fb][0]])))
+    for fa in range(len(A.faces)):
+        m = A.face_normal(fa)
+        ib = min(range(len(B.verts)), key=lambda i: dot(m, B.verts[i]))
+        gaps.append(dot(neg(m), sub(add(A.verts[A.faces[fa][0]], x), B.verts[ib])))
+    return gaps
 
 
 def membership_convex3(A: Polyhedron, B: Polyhedron, x: Vec3, tol: float = 0.0,
                        facets: set[tuple] | None = None) -> int:
-    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界 / -1 外部。A、B 凸。"""
+    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界 / -1 外部。A、B 凸，**不要求一般位置**。
+
+    E 的 facet 法向只有三类来源：B 的面法向、−(A 的面法向)、严格交叉棱-棱（命题 4）。
+    前两类用 `support_gaps3` 的**全部**支撑半空间覆盖（含 FF/FE 退化 facet），第三类取 facets
+    里的 EE 标签；facets 里的 VF/FV 标签也一并取 max（合法标签的间隙与支撑间隙相同，错标签只会
+    把答案推向"外部"，于是被票一抓住）。
+
+    2026-09-21 审查 C2（critical）：此前只对 strict facet 取 max——平行面生成的 facet 全被丢，
+    四面体 vs 方块在 +x 侧恒判"相交"，两个轴对齐方块对空集取 max 崩溃。
+    """
     if facets is None:
         facets = local_facets3(A, B, tol)
-    g = max(facet_gap3(A, B, lab, x) for lab in facets)
+    g = max(support_gaps3(A, B, x) + [facet_gap3(A, B, lab, x) for lab in facets])
     if g > tol:
         return -1
     if g < -tol:
