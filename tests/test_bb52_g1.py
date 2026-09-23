@@ -67,6 +67,34 @@ def test_g0_distance_completeness_real_concave_geometry(result):
     assert result["g0_worst_abs_error"] <= 1e-12
 
 
+def _retired_vote(r):
+    """重放 2026-09-18 版的旧投票（**已退役的规则**，只为对照）：sign(min gap over 非 VV 盖) 当成员谓词，
+    计入条件 = 有非 VV 盖、|min gap| > 1e-9、暴力谓词非 0。返回 (计入, 与暴力一致, 计入者中暴力相交)。"""
+    import eab.kernel2d.covers as cv
+    from eab.kernel2d.geom import polygons_overlap, translate
+    blocks, _ = bb52_g0.load_blocks(1)
+    total = agree = overlap = 0
+    for bi, bj, xs in bb52_g0.g0_draws(r["g0_pairs"], 60, 0):
+        A, B = blocks[bi]["poly"], blocks[bj]["poly"]
+        for x in xs:
+            At = translate(A, x)
+            brute = polygons_overlap(At, B, 1e-12)
+            pen = min((c.gap for c in cv.enumerate_covers(At, B, window=bb52_g0.D0, tol=bb52_g0.TOL)
+                       if c.kind != "VV"), default=None)
+            if pen is None or abs(pen) <= 1e-9 or brute == 0:
+                continue
+            total += 1
+            agree += (1 if pen < 0 else -1) == brute
+            overlap += brute == 1
+    return total, agree, overlap
+
+
+def test_g0_rerun_replays_the_original_1186_translations(result):
+    """看着"同一批平移"与"旧 1186 里 621 次是相交样本"这两句话：在 analyze 用的同一平移序列上重放旧投票，
+    必须恰好复现当初的 1186/1186，其中暴力相交 621。"""
+    assert _retired_vote(result) == (1186, 1186, 621)
+
+
 def _drop_vv(monkeypatch):
     import eab.kernel2d.covers as cv
     monkeypatch.setattr(cv, "vv_cover", lambda *a, **k: None)
@@ -82,7 +110,7 @@ def _drop_cone_boundary(monkeypatch):
 def test_g0_distance_completeness_has_teeth(monkeypatch, mutate):
     """门要有牙：两种现实的盖枚举退化（丢零维 VV 盖；只收法锥严格内部、丢边界盖）都必须让 G0 红。
 
-    对照（2026-09-24 scratch 实测，同一批平移）：丢 VV 盖时旧投票门仍报 1186/1186，完全无感；
+    对照（同一批平移、同一退化下重放旧投票）：丢 VV 盖时旧门仍报 1186/1186，完全无感；
     只收严格内部时旧门 106/110。旧门检验的命题与盖枚举是否完备基本无关。
     """
     mutate(monkeypatch)
@@ -90,6 +118,8 @@ def test_g0_distance_completeness_has_teeth(monkeypatch, mutate):
     assert r["g0_samples"] > 0
     assert r["g0_agree"] < r["g0_samples"]
     assert all(d[-1].startswith("盖漏枚举") for d in r["g0_disagree"]), r["g0_disagree"][:2]
+    old_total, old_agree, _ = _retired_vote(r)
+    assert (old_total, old_agree) == {_drop_vv: (1186, 1186), _drop_cone_boundary: (110, 106)}[mutate]
 
 
 def test_gate_has_teeth_strict_cone_loses_legacy_contacts():

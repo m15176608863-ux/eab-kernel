@@ -213,20 +213,24 @@ def test_g2_duplicate_vertices_are_aliased_and_reconcile(tmp_path, mut, scale):
         assert len(r["mine"]) == len(r["legacy"]) == 4
 
 
+@pytest.mark.parametrize("scale", [1.0, 1e-3, 1e3], ids=["x1", "x1e-3", "x1e3"])
 @pytest.mark.parametrize("pt,kind", [
     ([0.0, -2.0, 0.0], "mid_edge"),       # 块 1 顶面前棱中点
     ([0.0, 0.0, -1.0], "mid_face"),       # 块 1 底面中心
     ([0.3, 0.2, -0.5], "interior"),       # 块 1 内部
 ])
-def test_g2_non_corner_vertex_is_a_clear_error(tmp_path, pt, kind):
+def test_g2_non_corner_vertex_is_a_clear_error(tmp_path, pt, kind, scale):
     """既非凸包角点、也不在 tol 内重复任何角点的输入顶点（T 形顶点 / 内点）：
-    构造多面体时报 ValueError，带块号与顶点号——不许静默保留、也不许到 compare 里撞裸 assert。"""
+    构造多面体时报 ValueError，带块号、顶点号与分类——不许静默保留、也不许到 compare 里撞裸 assert。"""
+    want = {"mid_edge": "mid-edge T-junction", "mid_face": "mid-face T-junction", "interior": "interior"}[kind]
+
     def add(d):
-        d["verts"]["1"].append(pt)
+        _scaled(d, scale)
+        d["verts"]["1"].append([scale * c for c in pt])
         if kind == "mid_edge":
             e = d["entrances"][0]
             e["refs"] = [e["refs"][0], [1, 4], [1, 8], [1, 5]]
-    with pytest.raises(ValueError, match=r"block 1\b.*vertex 8\b"):
+    with pytest.raises(ValueError, match=r"block 1\b.*vertex 8\b.*" + want):
         compare(_fake_case(tmp_path, add))
 
 

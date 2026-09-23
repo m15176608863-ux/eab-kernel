@@ -101,6 +101,17 @@ def classify_completeness_failure(At, B, arg) -> str:
     return f"其他：{what} 盖存在且在边内（gap {c.gap:.6g}），见证距离却不等于暴力距离"
 
 
+def g0_draws(pairs: list[tuple[int, int]], samples_per_pair: int, seed: int):
+    """G0 的平移序列：同一 rng、按块对序、每对 samples_per_pair 个 x ∈ [−D0, D0]²。
+
+    与 2026-09-18 版逐位相同，所以 samples_per_pair=60, seed=0 重跑的就是当初报 "1186/1186"
+    的那批平移（tests/test_bb52_g1.py 用这个函数重放旧投票、复现 1186 这个数来看着这句话）。
+    """
+    rng = random.Random(seed)
+    return [(bi, bj, [(rng.uniform(-D0, D0), rng.uniform(-D0, D0)) for _ in range(samples_per_pair)])
+            for bi, bj in pairs]
+
+
 def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE_TOL) -> dict:
     blocks, alias = load_blocks(1)
     canon = lambda v: alias.get(v, v)  # noqa: E731
@@ -153,15 +164,11 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
             non_mirror.append((v, blk))
 
     # G0 近接触自证（一般多边形，严格法锥模式）：真值一律暴力，盖侧检验距离完备性。
-    # 采样与 2026-09-18 版逐位相同（同一 rng、同一块对序、每对 samples_per_pair 个 x ∈ [−D0, D0]²），
-    # 所以 samples_per_pair=60 重跑的就是当初报 "1186/1186" 的那批平移。
-    rng = random.Random(seed)
     g0 = {"draws": 0, "overlap": 0, "touch": 0, "separated": 0, "agree": 0, "worst": 0.0}
     disagree = []
-    pairs = {tuple(sorted((v2b[v], next(iter({v2b[x] for x in e}))))) for v, e in eab_ve}
-    for bi, bj in sorted(pairs):
+    pairs = sorted({tuple(sorted((v2b[v], next(iter({v2b[x] for x in e}))))) for v, e in eab_ve})
+    for bi, bj, xs in g0_draws(pairs, samples_per_pair, seed):
         A, B = blocks[bi]["poly"], blocks[bj]["poly"]
-        xs = [(rng.uniform(-D0, D0), rng.uniform(-D0, D0)) for _ in range(samples_per_pair)]
         rep = g0_distance_completeness(A, B, xs, tol=TOL, atol=1e-9)
         g0["draws"] += rep.draws
         g0["overlap"] += rep.overlapping
@@ -186,7 +193,7 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         "vv_legacy": [sorted(k) for k in leg_vv], "vv_eab_active": len(eab_vv),
         # G0：命题 = 距离完备性（分离样本上 min 见证距离 == 暴力特征距离）；真值 = polygons_overlap。
         # 相交/仅接触样本只计数、不检验（凹块成员谓词要等全局 E 构造，M3）。
-        "g0_proposition": "distance_completeness",
+        "g0_proposition": "distance_completeness", "g0_pairs": pairs,
         "g0_draws": g0["draws"], "g0_brute_overlap": g0["overlap"], "g0_brute_touch": g0["touch"],
         "g0_samples": g0["separated"], "g0_agree": g0["agree"], "g0_worst_abs_error": g0["worst"],
         "g0_disagree": disagree[:10],

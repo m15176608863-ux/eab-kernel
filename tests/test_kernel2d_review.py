@@ -116,10 +116,15 @@ SQ = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
 FAR = [(2.0, 0.0), (3.0, 0.0), (3.0, 1.0), (2.0, 1.0)]
 
 
+_IRR = [(1e4 + 1e-3 * x, -2e4 + 1e-3 * y) for x, y in
+        [(0.0, 0.0), (1.3, -0.2), (1.7, 0.9), (0.6, 1.4), (0.6, 1.4), (-0.4, 0.8)]]   # 非对称、×1e-3、远离原点
+
+
 @pytest.mark.parametrize("poly,where", [
     ([(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], "interior"),
     ([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (0.0, 0.0)], "cyclic_wrap"),
     ([(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], "triple"),
+    (_IRR, "irregular_scaled_far"),
 ])
 def test_c19_zero_length_edge_is_a_clear_error_not_zerodivision(poly, where):
     """零长边（连续重复顶点）进内核：必须清晰报 ValueError('zero-length edge ...')，不许 ZeroDivisionError，
@@ -192,5 +197,12 @@ def test_c19_loaders_strip_every_cyclic_consecutive_duplicate(tmp_path, monkeypa
         assert _same_cycle(poly, clean), (who, poly)                # CCW、与干净环同一循环序
         assert {k: v for k, v in alias.items() if k < 200} == want, (who, alias)
         assert len(vidx) == len(poly) and not set(vidx) & set(want), (who, vidx)
+        assert set(alias.values()) <= set(vidx) | set(range(200, 204)), (who, alias)   # alias 只指向保留的顶点
         got = sorted((c.kind, round(c.gap / shift, 12)) for c in enumerate_covers(poly, nbr, window=5.0, tol=1e-12))
         assert got == ref and ref, (who, got, ref)
+
+
+def test_c19_ring_with_fewer_than_three_distinct_points_is_refused():
+    from eab.readers.bdda_geom import strip_duplicate_vertices
+    with pytest.raises(ValueError, match="block 9"):
+        strip_duplicate_vertices([1, 2, 3, 4], [(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (0.0, 0.0)], block=9)
