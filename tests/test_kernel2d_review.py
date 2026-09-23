@@ -82,3 +82,29 @@ def test_r7_third_vote_hull_vertices_match_and_catch_sign_flip(monkeypatch):
     monkeypatch.setattr(cv, "outward_normal", lambda poly, i: tuple(-x for x in orig(poly, i)))
     bad = g0_convex(A, B, samples=300, seed=2)
     assert not bad.passed
+
+
+def test_gap0_sign_of_min_gap_is_not_a_concave_membership_rule():
+    """审查盲区 1（2026-09-21）的反例，钉成门：细臂 L 块（臂厚 0.1）+ 凹槽内悬浮 0.5×0.05 方块。
+
+    暴力谓词判分离；旧 bb52 G0 的投票 sign(min gap over 非 VV 盖) 判相交——方块顶角对 L 块**外**底边
+    （y=0）的 VE 盖法锥有效（非严格：+y 在方块顶角法锥边界上）、投影在边内、gap ≈ −0.16，落在 bb52 的
+    窗口 D0 = 0.196875 内。16 个偏移全部失配。这条门断言的是"那条规则是假的"，所以它永远该绿；
+    若哪天它红了，说明盖的有效性判据变了，得重新审视。
+    """
+    from eab.kernel2d.geom import translate
+    L = [(0.0, 0.0), (3.0, 0.0), (3.0, 0.1), (0.1, 0.1), (0.1, 3.0), (0.0, 3.0)]
+    S = [(0.0, 0.0), (0.5, 0.0), (0.5, 0.05), (0.0, 0.05)]
+    d0 = 0.19687500000000002
+    mismatches = 0
+    for ox in (0.15, 0.2, 0.3, 0.5):
+        for oy in (0.105, 0.11, 0.12, 0.13):
+            A = translate(S, (ox, oy))
+            assert polygons_overlap(A, L, 1e-12) == -1                 # 真值：分离
+            covs = enumerate_covers(A, L, window=d0, tol=1e-9)
+            pen = min(c.gap for c in covs if c.kind != "VV")
+            culprit = [c for c in covs if c.kind == "VE" and c.b_index == 0 and c.gap < 0]
+            assert culprit and not any(c.strict for c in culprit)      # 非严格 VE 盖对外底边
+            assert abs(pen - (-(oy + 0.05))) < 1e-12                   # gap = −(方块顶 y)
+            mismatches += (1 if pen < 0 else -1) != -1
+    assert mismatches == 16

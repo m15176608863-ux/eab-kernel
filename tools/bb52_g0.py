@@ -1,4 +1,4 @@
-"""bb52 真几何上的二维盖枚举：G1 集合对照（对 legacy 接触表）+ G0 近接触自证。
+"""bb52 真几何上的二维盖枚举：G1 集合对照（对 legacy 接触表）+ G0 近接触自证（距离完备性）。
 
 几何来自夹具 bdda_debug_verts.csv（步 1，vidx 为全局顶点号，每块按多边形序连续，尾部带两个
 回绕重复点——df 存储 d[i2+1]=d[i1]、d[i2+2]=d[i1+1] 的 dump 外露；legacy 用重复索引引用首边）。
@@ -6,6 +6,11 @@ legacy 接触来自 bdda_debug_contacts.csv（mtype 0 = v-e：p1 顶点、p3->p2
 检测参数来自 b-DDA 的 detparams：d0 = 0.196875（搜索距离），h5 = 0.3，h1 = 3°（角度容差）。
 
 `analyze()` 返回数字供 tests/test_bb52_g1.py 钉门；`main()` 打印明细。
+
+G0 口径（2026-09-24 改）：真值一律暴力 `polygons_overlap`；盖侧被检验的命题是**距离完备性**
+（分离样本上，有效盖见证距离的最小值 == 暴力特征距离），与三维 `g0_distance_completeness3` 同构。
+2026-09-18 版把 sign(min gap) 当凹块成员谓词——这条规则在三维已被证伪，二维由审查以
+"细臂 L 块 + 凹槽内悬浮方块" 复现（tests/test_bb52_g1.py 钉着）；那版的 "1186/1186" 撤回。
 """
 
 from __future__ import annotations
@@ -21,8 +26,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+import eab.kernel2d.covers as cv  # noqa: E402  （归因走模块属性：被替换的盖函数也要被如实归因）
 from eab.kernel2d.covers import enumerate_covers  # noqa: E402
-from eab.kernel2d.geom import ensure_ccw, is_convex, polygons_overlap, reflex_vertices, translate  # noqa: E402
+from eab.kernel2d.g0 import g0_distance_completeness  # noqa: E402
+from eab.kernel2d.geom import edge, ensure_ccw, is_convex, norm, reflex_vertices, sub, translate  # noqa: E402
 
 FIX = ROOT / "fixtures" / "bdda_df" / "studio_20260712"
 D0, H5, H1, TOL = 0.19687500000000002, 0.3, 3.0, 1e-9
@@ -67,6 +74,40 @@ def legacy_contacts(step: int = 1):
             continue
         out.append((int(r["mtype"]), int(r["p1"]), int(r["p2"]), int(r["p3"]), int(r["m0_2"]), float(r["o2"])))
     return out
+
+
+def classify_completeness_failure(At, B, arg) -> str:
+    """距离完备性失配的归因：暴力实现特征对在盖枚举里遭遇了什么。
+
+    端点处实现（t ∈ {0,1}）= 顶点-顶点，应由活跃 VV 盖（或相邻边在端点处的 VE/EV 盖）接住；
+    边内部实现 = 顶点-边，应由 VE/EV 盖接住。归因分三类：盖漏枚举（法锥判据拒绝）/ 边内筛除 / 其他。
+    """
+    tag, i, j, t = arg
+    a_side = tag == "A-vertex/B-edge"
+    P_edge = B if a_side else At
+    if t <= 0.0 or t >= 1.0:
+        k = j if t <= 0.0 else (j + 1) % len(P_edge)
+        ia, jb = (i, k) if a_side else (k, i)
+        c = cv.vv_cover(At, ia, B, jb, TOL)
+        what = f"A 顶点 {ia} × B 顶点 {jb}（顶点-顶点实现）"
+        if c is None:
+            return f"盖漏枚举：{what} 无 VV 盖（法锥相对内部交为空），相邻边端点处的 VE/EV 盖也未接住"
+        if not c.strict:
+            return f"盖漏枚举：{what} 的 VV 盖不活跃（分离方向落在交锥外）"
+        return f"其他：{what} 有活跃 VV 盖（gap {c.gap:.6g}），见证距离却不等于暴力距离"
+    if a_side:
+        c = cv.ve_cover(At, i, B, j, TOL)
+        what = f"A 顶点 {i} × B 边 {j} (t={t:.4g})"
+    else:
+        c = cv.ev_cover(At, j, B, i, TOL)
+        what = f"B 顶点 {i} × A 边 {j} (t={t:.4g})"
+    if c is None:
+        return f"盖漏枚举：{what} 被法锥判据拒绝"
+    p, q = edge(P_edge, j)
+    le = norm(sub(q, p))
+    if not (-SEG_TOL / le <= c.param <= 1.0 + SEG_TOL / le):
+        return f"边内筛除：{what} 盖存在但投影参数 {c.param:.6g} 在边外"
+    return f"其他：{what} 盖存在且在边内（gap {c.gap:.6g}），见证距离却不等于暴力距离"
 
 
 def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE_TOL) -> dict:
@@ -120,26 +161,25 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         if not hit:
             non_mirror.append((v, blk))
 
-    # G0 近接触自证（一般多边形，严格法锥模式）
+    # G0 近接触自证（一般多边形，严格法锥模式）：真值一律暴力，盖侧检验距离完备性。
+    # 采样与 2026-09-18 版逐位相同（同一 rng、同一块对序、每对 samples_per_pair 个 x ∈ [−D0, D0]²），
+    # 所以 samples_per_pair=60 重跑的就是当初报 "1186/1186" 的那批平移。
     rng = random.Random(seed)
-    total = agree = 0
+    g0 = {"draws": 0, "overlap": 0, "touch": 0, "separated": 0, "agree": 0, "worst": 0.0}
     disagree = []
     pairs = {tuple(sorted((v2b[v], next(iter({v2b[x] for x in e}))))) for v, e in eab_ve}
     for bi, bj in sorted(pairs):
         A, B = blocks[bi]["poly"], blocks[bj]["poly"]
-        for _ in range(samples_per_pair):
-            x = (rng.uniform(-D0, D0), rng.uniform(-D0, D0))
-            At = translate(A, x)
-            brute = polygons_overlap(At, B, 1e-12)
-            covs = enumerate_covers(At, B, window=D0, tol=TOL)
-            pen = min((c.gap for c in covs if c.kind != "VV"), default=None)
-            if pen is None or abs(pen) <= 1e-9 or brute == 0:
-                continue
-            total += 1
-            if (1 if pen < 0 else -1) == brute:
-                agree += 1
-            else:
-                disagree.append((bi, bj, x, brute, pen))
+        xs = [(rng.uniform(-D0, D0), rng.uniform(-D0, D0)) for _ in range(samples_per_pair)]
+        rep = g0_distance_completeness(A, B, xs, tol=TOL, atol=1e-9)
+        g0["draws"] += rep.draws
+        g0["overlap"] += rep.overlapping
+        g0["touch"] += rep.touching
+        g0["separated"] += rep.samples
+        g0["agree"] += rep.samples - len(rep.failures)
+        g0["worst"] = max(g0["worst"], rep.worst_abs_error)
+        for x, got, truth, arg in rep.failures:
+            disagree.append((bi, bj, x, got, truth, arg, classify_completeness_failure(translate(A, x), B, arg)))
 
     return {
         "blocks": len(blocks), "stripped_duplicates": len(alias),
@@ -153,7 +193,12 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         "vb_legacy_only": sorted(leg_vb - eab_vb), "vb_eab_only": len(extra_vb), "vb_eab_only_mirror": mirror,
         "vb_eab_only_non_mirror": non_mirror,
         "vv_legacy": [sorted(k) for k in leg_vv], "vv_eab_active": len(eab_vv),
-        "g0_samples": total, "g0_agree": agree, "g0_disagree": disagree[:10],
+        # G0：命题 = 距离完备性（分离样本上 min 见证距离 == 暴力特征距离）；真值 = polygons_overlap。
+        # 相交/仅接触样本只计数、不检验（凹块成员谓词要等全局 E 构造，M3）。
+        "g0_proposition": "distance_completeness",
+        "g0_draws": g0["draws"], "g0_brute_overlap": g0["overlap"], "g0_brute_touch": g0["touch"],
+        "g0_samples": g0["separated"], "g0_agree": g0["agree"], "g0_worst_abs_error": g0["worst"],
+        "g0_disagree": disagree[:10],
     }
 
 

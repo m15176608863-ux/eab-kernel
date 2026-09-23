@@ -32,6 +32,11 @@ class Cover:
     param: float | None       # 投影参数（VE/EV），VV 为 None
     point: Point | None       # 边上投影点 / 顶点
     strict: bool              # 法锥相对内部条件严格成立（VV：分离方向落在交锥内）
+    # 见证点对（距离完备性门用）：point_a 在 A 上、point_b 在 B 上，|point_a − point_b| 即该盖给出的
+    # 特征间距。VE：(A 的顶点, 它在 B 边所在直线上的垂足)；EV：(B 顶点在 A 边直线上的垂足, B 的顶点)；
+    # VV：(A 的顶点, B 的顶点)。投影参数落在 [0,1] 内时两点都在各自多边形上，见证距离 ≥ 真距离。
+    point_a: Point | None = None
+    point_b: Point | None = None
 
     def label(self) -> tuple[str, int, int]:
         return (self.kind, self.a_index, self.b_index)
@@ -98,7 +103,7 @@ def ve_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
     a = A[ia]
     b0, b1 = edge(B, jb)
     s, pt = _project(a, b0, b1)
-    return Cover("VE", ia, jb, nB, dot(nB, sub(a, b0)), s, pt, side == 1)
+    return Cover("VE", ia, jb, nB, dot(nB, sub(a, b0)), s, pt, side == 1, a, pt)
 
 
 def ev_cover(A: Poly, ka: int, B: Poly, ib: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
@@ -114,7 +119,7 @@ def ev_cover(A: Poly, ka: int, B: Poly, ib: int, tol: float = 0.0, cone_tol: flo
     b = B[ib]
     a0, a1 = edge(A, ka)
     s, pt = _project(b, a0, a1)
-    return Cover("EV", ka, ib, neg(nA), dot(nA, sub(b, a0)), s, pt, side == 1)
+    return Cover("EV", ka, ib, neg(nA), dot(nA, sub(b, a0)), s, pt, side == 1, pt, b)
 
 
 def _ang(v: Point) -> float:
@@ -160,11 +165,11 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
     d = sub(a, b)
     dist = norm(d)
     if dist == 0.0:
-        return Cover("VV", ia, jb, None, 0.0, None, a, True)
+        return Cover("VV", ia, jb, None, 0.0, None, a, True, a, b)
     u = unit(d)
     au = _ang(u)
     active = any(best[0] - tol <= au + 2 * pi * k <= best[1] + tol for k in (-1, 0, 1))
-    return Cover("VV", ia, jb, u, dist, None, a, active)
+    return Cover("VV", ia, jb, u, dist, None, a, active, a, b)
 
 
 # ---------------------------------------------------------------- 枚举
