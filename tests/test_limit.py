@@ -152,6 +152,10 @@ def test_three_d_cone_linearisation_is_conservative_within_the_inradius_bound(k)
     相对短缺 ≤ 1 − cos(π/k)（k → ∞ 时 → 0：这就是"收敛"的全部含义，**不是单调**）。
     k 序列必须含非 4 的倍数：本几何在 4|k 时恰好精确（见下一个门），只测 4 的倍数的门没有牙。
     k = 7 在未修的 LP 阈值下曾假不可行（审查 C21）。
+
+    另保留旧门的绝对下限 k ≥ 8 ⇒ 短缺 < 0.02（原样恢复，一处不放松）。它在 k ≥ 9 时被上面的解析下限蕴含；
+    在 k = 8 时比解析下限（允许 0.0233）更严，成立**只因**基架对齐（4|k 精确，下一个门钉住）——
+    即这是一条依赖切向基架的断言：把棱扇整体转 π/k 的改动（仍是合法的内接锥）会在 k = 8 被它判红。
     """
     r, *_ = _interlock_capacity(_LIN_AMP, _LIN_MU, k=k)
     assert r.status == "optimal", (k, r.status)
@@ -159,6 +163,8 @@ def test_three_d_cone_linearisation_is_conservative_within_the_inradius_bound(k)
     assert ratio <= _LIN_EXACT + 1e-9
     assert (_LIN_EXACT - ratio) / _LIN_EXACT <= (1.0 - cos(pi / k)) + 1e-9
     assert ratio >= tan(atan(2.0 * _LIN_AMP) + atan(_LIN_MU * cos(pi / k))) - 1e-9
+    if k >= 8:
+        assert ratio > _LIN_EXACT - 0.02, (k, _LIN_EXACT - ratio)     # 旧门原断言，恢复
 
 
 def test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k():
