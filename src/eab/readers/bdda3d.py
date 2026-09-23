@@ -26,15 +26,18 @@ def record_from_entrance(c: dict[str, Any], *, step: int = 0, index: int = 0,
     bi, bj = int(c["bi"]), int(c["bj"])
     refs = [(int(r[0]), int(r[1])) for r in c.get("refs", [])]
     # n-p：P1 顶点属 bi，P2-P4 是 bj 的面扇形三角；e-e：P1,P2 属 bi 的棱，P3,P4 属 bj 的棱。
+    # 入口 dict 不带面号/棱号：特征身份 = 排序后的顶点号元组（审查 C20：面下标写死 −1 时，同一顶点对
+    # 同一宿主块两片不同三角的两条入口撞成同一个键）。同一几何面的不同三角仍是不同身份——那是 legacy
+    # 自己的区分；把三角归约到几何面要几何，见 tools/g2_bdda3d.py。
     fa: Feature | None = None
     fb: Feature | None = None
     if refs:
         if cover is CoverType.VF:
             fa = Feature(refs[0][0], "vertex", refs[0][1])
-            fb = Feature(refs[1][0], "face", -1)
+            fb = Feature(refs[1][0], "face", -1, tuple(sorted(r[1] for r in refs[1:])))
         elif cover is CoverType.EE:
-            fa = Feature(refs[0][0], "edge", refs[0][1])
-            fb = Feature(refs[2][0], "edge", refs[2][1])
+            fa = Feature(refs[0][0], "edge", -1, tuple(sorted(r[1] for r in refs[0:2])))
+            fb = Feature(refs[2][0], "edge", -1, tuple(sorted(r[1] for r in refs[2:4])))
     ref_points: tuple[tuple[float, ...], ...] = ()
     if verts is not None and refs:
         pts = []

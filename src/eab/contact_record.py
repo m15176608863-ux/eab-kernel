@@ -10,7 +10,10 @@
 - 统一词汇（CoverType / Mode）+ 各引擎原始码**同时保留**（raw_mode / raw_cover），
   因为三家的 "3" 含义不同：b-DDA 3 = v-v 第二参考闭合，bdda3d 3 = 键合，tf.cpp 3 = 受拉。
 - `extra` 装下一切不入正式字段的列，读取器**不许丢信息**。
-- 典范序键 `canonical_key()` 与来源的枚举顺序无关，用于跨引擎集合同构比较。
+- 典范序键 `canonical_key()` 与来源的枚举顺序无关（块序交换不变），用于跨引擎集合同构比较。
+  它的分辨率取决于来源给了多少特征身份（审查 C20）：bdda_df（有 verts.csv）与 bdda3d 逐步唯一；
+  tf 探针不带特征，键只到 (块对, 盖类) 级；bdda_df 缺 verts.csv 时块号未知的记录同样只到块对级。
+  这几条由 tests/test_readers_roundtrip.py 在真实夹具上断言。
 """
 
 from __future__ import annotations
@@ -65,14 +68,20 @@ BDDA3D_COVER: dict[str, CoverType] = {"np": CoverType.VF, "ee": CoverType.EE}
 
 @dataclass(frozen=True, slots=True)
 class Feature:
-    """块上的几何特征。index 为来源引擎的局部/全局编号，-1 表示未知。"""
+    """块上的几何特征。index 为来源引擎的局部/全局编号，-1 表示未知。
+
+    verts：来源没有特征编号、只用顶点号指代特征时的身份（**排序后**的顶点号元组，与列出顺序无关）。
+    例：bdda3d 的 n-p 入口用宿主块面扇形里的一个三角 (P2,P3,P4) 指代面，没有面号 → index=-1、
+    verts=sorted(P2,P3,P4)；e-e 入口的棱 → verts=sorted(两端点)。空元组表示未提供。
+    """
 
     block: int
     kind: str  # "vertex" | "edge" | "face"
     index: int = -1
+    verts: tuple[int, ...] = ()
 
-    def as_tuple(self) -> tuple[int, str, int]:
-        return (self.block, self.kind, self.index)
+    def as_tuple(self) -> tuple[int, str, int, tuple[int, ...]]:
+        return (self.block, self.kind, self.index, self.verts)
 
 
 Vec = tuple[float, ...]
@@ -142,7 +151,7 @@ def _encode(v: Any) -> Any:
     if isinstance(v, Enum):
         return v.value
     if isinstance(v, Feature):
-        return {"block": v.block, "kind": v.kind, "index": v.index}
+        return {"block": v.block, "kind": v.kind, "index": v.index, "verts": list(v.verts)}
     if isinstance(v, tuple):
         return [_encode(x) for x in v]
     if isinstance(v, dict):
@@ -161,7 +170,7 @@ def _decode(name: str, v: Any) -> Any:
     if name in ("mode", "mode_prev", "mode_init"):
         return Mode(v)
     if name in ("feature_a", "feature_b"):
-        return Feature(int(v["block"]), str(v["kind"]), int(v["index"]))
+        return Feature(int(v["block"]), str(v["kind"]), int(v["index"]), tuple(int(x) for x in v.get("verts", ())))
     if name == "ref_points":
         return tuple(tuple(float(x) for x in p) for p in v)
     if name in _TUPLE_FIELDS:
@@ -181,6 +190,8 @@ def validate(rec: ContactRecord) -> None:
     for f in (rec.feature_a, rec.feature_b):
         if f is not None and f.kind not in ("vertex", "edge", "face"):
             raise ValueError(f"bad feature kind: {f.kind}")
+        if f is not None and (list(f.verts) != sorted(f.verts) or not all(isinstance(x, int) for x in f.verts)):
+            raise ValueError(f"feature verts must be sorted ints: {f.verts}")
     for name in ("gap", "normal_force", "length_or_area", "gap_ref", "lock_position"):
         v = getattr(rec, name)
         if v is not None and not math.isfinite(v):
