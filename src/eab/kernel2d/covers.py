@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from math import asin, atan2, pi
 
 from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, reflect, sub, turn_angle,
-                   unit)
+                   unit, zero_length_edges)
 
 
 @dataclass(slots=True)
@@ -49,8 +49,15 @@ def normal_cone(poly: Poly, i: int, tol: float = 0.0) -> tuple[Point, Point] | N
 
     tol 以 sin(转角) 计：turn < -tol 判为反射；平直顶点（turn≈0）保留——其法锥退化为单射线，
     对应 legacy 里"直边中间的顶点贴在对方边上"这类接触（tol=0 时仍保留 turn==0）。
+    邻边为零长边时抛 ValueError('zero-length edge ...')（不是 ZeroDivisionError）。
     """
     n = len(poly)
+    # 零长邻边先于转角判：atan2(0,0)=0 会把它伪装成"平直顶点"（审查 C19）。清晰报错，不静默跳过——
+    # 跳过会让重复点处那个真实角点失去法锥，距离完备性静默破缺。
+    for k in ((i - 1) % n, i % n):
+        if poly[k] == poly[(k + 1) % n]:
+            raise ValueError(f"zero-length edge {k} at vertex {i % n}: consecutive duplicate vertex {poly[k]}; "
+                             f"strip duplicates at the reader boundary")
     # 用转角（atan2）判反射：sin 分不清 θ 与 π−θ，会把 178° 的窄缝当作 2° 的近共线放行（审查 r1）。
     if turn_angle(poly, i) < -asin(min(max(tol, 0.0), 1.0)):
         return None
@@ -262,8 +269,13 @@ def _edge_angle(P: Poly, i: int) -> float:
 def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float = 0.0) -> EntranceBlock:
     """A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角合并，每条边带盖标签。
 
-    平行边（极角相等，容差 tol）合并成一条 FF 边。
+    平行边（极角相等，容差 tol）合并成一条 FF 边。零长边（连续重复顶点）清晰报错（审查 C19）。
     """
+    for name, poly in (("A", A), ("B", B)):
+        bad = zero_length_edges(poly)
+        if bad:
+            raise ValueError(f"zero-length edge {bad[0]} in {name} (consecutive duplicate vertex {poly[bad[0]]}); "
+                             f"strip duplicates at the reader boundary")
     P = B
     Q = reflect(A)                # Q[k] = −A[k]；Q 的边 k = −(A 的边 k)
     n, m = len(P), len(Q)

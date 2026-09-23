@@ -30,6 +30,7 @@ import eab.kernel2d.covers as cv  # noqa: E402  （归因走模块属性：被�
 from eab.kernel2d.covers import enumerate_covers  # noqa: E402
 from eab.kernel2d.g0 import g0_distance_completeness  # noqa: E402
 from eab.kernel2d.geom import edge, ensure_ccw, is_convex, norm, reflex_vertices, sub, translate  # noqa: E402
+from eab.readers.bdda_geom import strip_duplicate_vertices  # noqa: E402
 
 FIX = ROOT / "fixtures" / "bdda_df" / "studio_20260712"
 D0, H5, H1, TOL = 0.19687500000000002, 0.3, 3.0, 1e-9
@@ -38,8 +39,10 @@ SEG_TOL = 1e-9
 
 
 def load_blocks(step: int = 1) -> tuple[dict, dict[int, int]]:
-    """从 verts.csv 重建多边形；剥离尾部回绕重复点并返回 alias（重复 vidx -> 真实 vidx）。"""
-    rows = [r for r in csv.DictReader((FIX / "bdda_debug_verts.csv").open(newline="")) if int(r["step"]) == step]
+    """从 verts.csv 重建多边形；剥离尾部回绕重复点与**任何**循环连续重复点（零长边，审查 C19），
+    返回 alias（被剥 vidx -> 保留 vidx）。剥点规则与 readers.bdda_geom 共用同一个函数。"""
+    with (FIX / "bdda_debug_verts.csv").open(newline="", encoding="utf-8") as fh:
+        rows = [r for r in csv.DictReader(fh) if int(r["step"]) == step]
     by: dict[int, list[tuple[int, tuple[float, float]]]] = defaultdict(list)
     for r in rows:
         by[int(r["block"])].append((int(r["vidx"]), (float(r["x"]), float(r["y"]))))
@@ -47,20 +50,8 @@ def load_blocks(step: int = 1) -> tuple[dict, dict[int, int]]:
     alias: dict[int, int] = {}
     for b, lst in by.items():
         lst.sort()
-        vids = [v for v, _ in lst]
-        poly = [p for _, p in lst]
-        while len(poly) > 3:
-            k = len(poly) - 1
-            dup = None
-            for h, p in enumerate(poly[:2]):
-                if abs(p[0] - poly[k][0]) <= 1e-12 and abs(p[1] - poly[k][1]) <= 1e-12:
-                    dup = h
-                    break
-            if dup is None:
-                break
-            alias[vids[k]] = vids[dup]
-            poly.pop()
-            vids.pop()
+        vids, poly, al = strip_duplicate_vertices([v for v, _ in lst], [p for _, p in lst], 1e-12, block=b)
+        alias.update(al)
         ccw, flipped = ensure_ccw(poly)
         gmap = list(reversed(vids)) if flipped else vids
         blocks[b] = {"poly": ccw, "vidx": gmap, "flipped": flipped}

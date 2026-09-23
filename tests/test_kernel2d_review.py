@@ -108,3 +108,89 @@ def test_gap0_sign_of_min_gap_is_not_a_concave_membership_rule():
             assert abs(pen - (-(oy + 0.05))) < 1e-12                   # gap = −(方块顶 y)
             mismatches += (1 if pen < 0 else -1) != -1
     assert mismatches == 16
+
+
+# ---------------------------------------------------------------- 审查 C19（2026-09-21）：零长边
+
+SQ = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+FAR = [(2.0, 0.0), (3.0, 0.0), (3.0, 1.0), (2.0, 1.0)]
+
+
+@pytest.mark.parametrize("poly,where", [
+    ([(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], "interior"),
+    ([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (0.0, 0.0)], "cyclic_wrap"),
+    ([(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], "triple"),
+])
+def test_c19_zero_length_edge_is_a_clear_error_not_zerodivision(poly, where):
+    """零长边（连续重复顶点）进内核：必须清晰报 ValueError('zero-length edge ...')，不许 ZeroDivisionError，
+    也不许 convex_entrance_block 报出误导的 "not convex ... drops by 3.142 rad"。"""
+    i = next(k for k in range(len(poly)) if poly[k] == poly[(k + 1) % len(poly)])
+    for call in (lambda: normal_cone(poly, i), lambda: normal_cone(poly, (i + 1) % len(poly)),
+                 lambda: enumerate_covers(poly, FAR, window=5.0, tol=1e-9),
+                 lambda: enumerate_covers(FAR, poly, window=5.0, tol=1e-9),
+                 lambda: convex_entrance_block(poly, FAR, tol=1e-12)):
+        with pytest.raises(ValueError, match="zero-length edge"):
+            call()
+
+
+def _verts_csv(rows):
+    return "step,block,vidx,x,y\n" + "".join(f"1,{b},{v},{x!r},{y!r}\n" for b, v, x, y in rows)
+
+
+def _ring_rows(block, vid0, pts):
+    return [(block, vid0 + k, x, y) for k, (x, y) in enumerate(pts)]
+
+
+def _cases():
+    s, o = 1e-3, (1e4, -2e4)
+    small = [(o[0] + s * x, o[1] + s * y) for x, y in SQ]
+    df_wrap = SQ + [SQ[0], SQ[1]]                                  # df 的两点回绕尾巴
+    return [
+        # (名字, 块 1 的原始点列, 期望的干净环, 期望 alias（局部下标 -> 局部下标）)
+        ("interior", [SQ[0], SQ[1], SQ[1], SQ[2], SQ[3]], SQ, {2: 1}),
+        ("first_equals_second", [SQ[0], SQ[0], SQ[1], SQ[2], SQ[3]], SQ, {1: 0}),
+        ("triple_chain", [SQ[0], SQ[1], SQ[1], SQ[1], SQ[2], SQ[3]], SQ, {2: 1, 3: 1}),
+        ("single_wrap_tail", SQ + [SQ[0]], SQ, {4: 0}),
+        ("df_wrap_plus_interior", [SQ[0], SQ[1], SQ[2], SQ[2], SQ[3], SQ[0], SQ[1]], SQ, {3: 2, 5: 0, 6: 1}),
+        ("clockwise_interior", [SQ[0], SQ[3], SQ[3], SQ[2], SQ[1]], SQ, {2: 1}),
+        ("scaled_far_offset", [small[0], small[1], small[2], small[2], small[3]], small, {3: 2}),
+    ]
+
+
+def _load_both(tmp_path, monkeypatch, rows):
+    """两个生产读取器同读一份 verts.csv：readers/bdda_geom 与 tools/bb52_g0（后者经 FIX 重定向）。"""
+    import sys as _sys
+    from pathlib import Path as _P
+    _sys.path.insert(0, str(_P(__file__).resolve().parents[1] / "tools"))
+    import bb52_g0
+    from eab.readers.bdda_geom import load_step_geometries
+    (tmp_path / "bdda_debug_verts.csv").write_text(_verts_csv(rows), encoding="utf-8")
+    sg = load_step_geometries(tmp_path / "bdda_debug_verts.csv")[1]
+    monkeypatch.setattr(bb52_g0, "FIX", tmp_path)
+    blocks, alias = bb52_g0.load_blocks(1)
+    return [("bdda_geom", sg.blocks[1].poly, sg.blocks[1].vidx, sg.alias),
+            ("bb52_g0", blocks[1]["poly"], blocks[1]["vidx"], alias)]
+
+
+def _same_cycle(P, Q):
+    n = len(P)
+    return n == len(Q) and any(all(P[(k + i) % n] == Q[i] for i in range(n)) for k in range(n))
+
+
+@pytest.mark.parametrize("name,raw,clean,want_alias", _cases(), ids=[c[0] for c in _cases()])
+def test_c19_loaders_strip_every_cyclic_consecutive_duplicate(tmp_path, monkeypatch, name, raw, clean, want_alias):
+    """读取器在边界上剥除**所有**循环意义下的连续重复点，并把被剥的顶点号登记为 alias；
+    剥完的多边形与干净多边形逐点同环、无零长边，盖枚举结果与干净多边形相同（按全局顶点号比）。"""
+    vid0 = 100
+    shift = 2.0 * abs(clean[1][0] - clean[0][0])
+    nbr = [(x + shift, y) for x, y in clean]                       # 块 2：右侧的干净邻块
+    rows = _ring_rows(1, vid0, raw) + _ring_rows(2, 200, nbr)
+    want = {vid0 + k: vid0 + v for k, v in want_alias.items()}
+    ref = sorted((c.kind, round(c.gap / shift, 12)) for c in enumerate_covers(clean, nbr, window=5.0, tol=1e-12))
+    for who, poly, vidx, alias in _load_both(tmp_path, monkeypatch, rows):
+        assert all(poly[k] != poly[(k + 1) % len(poly)] for k in range(len(poly))), (who, poly)
+        assert _same_cycle(poly, clean), (who, poly)                # CCW、与干净环同一循环序
+        assert {k: v for k, v in alias.items() if k < 200} == want, (who, alias)
+        assert len(vidx) == len(poly) and not set(vidx) & set(want), (who, vidx)
+        got = sorted((c.kind, round(c.gap / shift, 12)) for c in enumerate_covers(poly, nbr, window=5.0, tol=1e-12))
+        assert got == ref and ref, (who, got, ref)
