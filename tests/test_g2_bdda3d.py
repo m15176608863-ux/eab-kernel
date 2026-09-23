@@ -11,7 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from g2_bdda3d import G2_WINDOW, compare, load_case, polyhedron_preserving_indices  # noqa: E402
+from g2_bdda3d import G2_BAND, G2_WINDOW, compare, load_case, polyhedron_preserving_indices  # noqa: E402
 from osteomorphic import osteomorphic_block  # noqa: E402
 
 from eab.kernel3d.covers3 import enumerate_covers3  # noqa: E402
@@ -54,12 +54,15 @@ def test_merge_coplanar_kills_the_triangulation_over_count():
 
 # ---------------------------------------------------------------- G2 同构
 
-def _assert_g2_gate(res):
+def _assert_g2_gate(res, band=G2_BAND):
     """G2 门的判据（门本身；牙测试调用同一个函数）。
 
     旧门只看 legacy_only / mine_only，而两者只由 np↔VF/FV 构成：legacy 的 ee 入口进 UNSUPPORTED 桶、
     内核的 EE/VE3/EV3/VV3 盖进 detail 桶，都不参与判定（审查 C17）。现在二者都进 violations，非空即红；
     另外独立断言"窗口内每个有效盖都参与了对账"（n_covers == len(mine)）。
+    窗口从 1.0 收到 G2_WINDOW 之后，旧窗口对 (G2_WINDOW, 1.0] 内多余 VF/FV 盖的那颗牙由 `band` 接住：
+    非空即红（旧门的 mine_only 在这段上蕴含于 band == [] 与新的 mine_only == []，见 G2_BAND 的注释）。
+    band 是夹具长度量纲：缩放过的夹具（×1e-3 / ×1e3）要按同一比例给，且门断言 compare 真用了不窄于它的带。
     """
     assert res["rows"]
     for r in res["rows"]:
@@ -69,6 +72,7 @@ def _assert_g2_gate(res):
         assert not [x for x in r["legacy_detail"] if x[0] == "UNSUPPORTED"], (r["pair"], "legacy 有门不认识的入口类")
         assert r["n_covers"] == len(r["mine"]), (r["pair"], "内核有盖未参与对账", r["mine_detail"])
         assert r["violations"] == [], (r["pair"], r["violations"])
+        assert r["band_limit"] >= band and r["band"] == [], (r["pair"], "VF/FV 带内有多余的盖", r["band"])
 
 
 @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
@@ -112,6 +116,122 @@ def test_g2_gate_red_on_extra_kernel_ee_cover(monkeypatch):
     monkeypatch.setattr(g2, "enumerate_covers3", plus_ee)
     with pytest.raises(AssertionError):
         _assert_g2_gate(compare(CASES[0]))
+
+
+def _inject(monkeypatch, cover):
+    """在 compare 拿到的枚举结果后追加一个盖（不看枚举窗口——窗口/带的划分由 compare 自己做，这里要测的就是它）。"""
+    import g2_bdda3d as g2
+    orig = g2.enumerate_covers3
+    monkeypatch.setattr(g2, "enumerate_covers3", lambda A, B, **kw: orig(A, B, **kw) + [cover(A, B)])
+
+
+def _vf(gap, kind="VF"):
+    """一个法锥有效、投影在面内、间隙为 gap 的 VF（或 FV）盖——几何上并不存在（夹具带内为空）。"""
+    from eab.kernel3d.covers3 import Cover3
+
+    def make(A, B):
+        p = A.verts[4]                                  # 动块顶面一角：它对宿主任何面都不在 0 < |gap| ≤ 1 内
+        if kind == "VF":
+            return Cover3("VF", ("vertex", 4), ("face", 0), (0.0, 0.0, 1.0), gap, p, p, (), 1.0, True, True)
+        return Cover3("FV", ("face", 0), ("vertex", 4), (0.0, 0.0, -1.0), gap, p, p, (), 1.0, True, True)
+    return make
+
+
+@pytest.mark.parametrize("kind", ["VF", "FV"])
+@pytest.mark.parametrize("gap", [2e-6, 0.5, -0.5, 1.0], ids=["just_above_window", "mid", "mid_negative", "band_edge"])
+def test_g2_gate_red_on_spurious_vf_cover_in_band(monkeypatch, gap, kind):
+    """被放松的旧断言恢复成门：窗口 1.0 时代，|gap| ∈ (G2_WINDOW, 1.0] 的多余 VF/FV 盖会以 mine_only 报红；
+    窗口收到 G2_WINDOW 后它们不进对账——现在由 band 报红。分界点：刚过窗口、带边 1.0（含），正负间隙。"""
+    _inject(monkeypatch, _vf(gap, kind))
+    res = compare(CASES[0])
+    assert any(r["band"] for r in res["rows"])
+    with pytest.raises(AssertionError, match="VF/FV 带内有多余的盖"):
+        _assert_g2_gate(res)
+
+
+def test_g2_band_edge_is_inclusive_and_nothing_beyond_is_reconciled(monkeypatch):
+    """带的另一侧分界点：|gap| 刚过 G2_BAND 的 VF 盖不进带（与旧窗口 `abs(gap) <= 1.0` 同一口径）。"""
+    _inject(monkeypatch, _vf(G2_BAND * (1 + 1e-12)))
+    _assert_g2_gate(compare(CASES[0]))
+
+
+@pytest.mark.parametrize("kind", ["VE3", "EV3", "VV3"])
+def test_g2_band_ignores_low_dim_covers_at_gap_one(monkeypatch, kind):
+    """带只收 VF/FV：M0.b 去掉低维盖 strict 过滤后，cb2 上 gap 恰为 1.0 的 VE3/EV3（上块底角到下块顶棱）
+    会进枚举——它们合法、不属于 legacy 的 np 对账，门不能因此红（窗口 1.0 硬编码时代会红）。"""
+    from eab.kernel3d.covers3 import Cover3
+
+    def make(A, B):
+        p = A.verts[0]
+        fa = ("vertex", 0) if kind != "EV3" else ("edge", 0, 1)
+        fb = ("edge", 4, 5) if kind == "VE3" else ("vertex", 5)
+        return Cover3(kind, fa, fb, (1.0, 0.0, 0.0), 1.0, p, p, (), None, True, True)
+    _inject(monkeypatch, make)
+    res = compare(CASES[0])
+    _assert_g2_gate(res)
+    assert [r["n_covers"] for r in res["rows"]] == [4]
+
+
+def _box_vf_oracle(V, lim):
+    """轴对齐长方体对的 VF/FV 暴力枚举（内联算术，不调 covers3/geom3——纪律 A）。
+
+    顶点 v 的法锥（闭）= {d : s_k·d_k ≥ 0 ∀k}，s = v 相对块心的符号；面 (m, σ) 的外法向 σ·e_m。
+    VF(a, 面 (m,σ) of B) 有效 ⟺ s^A_m = −σ；间隙 σ·(a_m − 面坐标)；投影在面内 ⟺ 另两坐标落在面的闭矩形内。
+    FV(面 (m,σ) of A, b) 同理，间隙 σ·(b_m − A 的面坐标)。返回 {(种类, 顶点所在块, 顶点号, (面所在块, m, σ)): gap}。
+    """
+    out = {}
+    lo = {k: [min(v[a] for v in vs) for a in range(3)] for k, vs in V.items()}
+    hi = {k: [max(v[a] for v in vs) for a in range(3)] for k, vs in V.items()}
+    for kind, vb, fb in (("VF", 2, 1), ("FV", 1, 2)):     # 动块 A = 2，宿主 B = 1；FV 的顶点在 B、面在 A
+        for i, v in enumerate(V[vb]):
+            s = [1 if v[a] > 0.5 * (lo[vb][a] + hi[vb][a]) else -1 for a in range(3)]
+            for m in range(3):
+                for sg in (1, -1):
+                    if s[m] != -sg:
+                        continue
+                    plane = hi[fb][m] if sg == 1 else lo[fb][m]
+                    gap = sg * (v[m] - plane)
+                    if abs(gap) > lim:
+                        continue
+                    if all(lo[fb][a] - 1e-9 <= v[a] <= hi[fb][a] + 1e-9 for a in range(3) if a != m):
+                        out[(kind, vb, i, (fb, m, sg))] = gap
+    return out
+
+
+@pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+def test_g2_band_is_geometrically_empty(path):
+    """G2_BAND 注释里的几何理由钉成门：
+      (1) 暴力枚举（上面的长方体 oracle）在 |gap| ≤ G2_BAND 内只给出零间隙坐落，恰是 legacy 的 4 条；
+      (2) 内核的 VF/FV 盖在更宽的 |gap| ≤ 3 上与 oracle 逐条同集、同间隙（oracle 确实刻画了内核的有效性规则）；
+      (3) G2_BAND 之外最近的 VF/FV 在 |gap| = 2.0——带边离它还有 1.0，不是刀口。
+    前提：两块都是轴对齐长方体（断言）。
+    """
+    d = json.loads(path.read_text(encoding="utf-8"))
+    V = {int(k): [tuple(v) for v in vs] for k, vs in d["verts"].items()}
+    for vs in V.values():
+        assert len(vs) == 8 and all(len({v[k] for v in vs}) == 2 for k in range(3))
+    near = _box_vf_oracle(V, G2_BAND)
+    assert len(near) == len(d["entrances"]) == 4 and set(near.values()) == {0.0}
+    assert {(k[1], k[2]) for k in near} == {tuple(e["refs"][0]) for e in d["entrances"]}
+    wide = _box_vf_oracle(V, 3.0)
+    assert min(abs(g) for g in wide.values() if abs(g) > G2_BAND) == 2.0
+
+    _, _, blocks, _ = load_case(path)
+    A, B = blocks[2], blocks[1]
+
+    def axis(n):
+        m = max(range(3), key=lambda a: abs(n[a]))
+        return m, (1 if n[m] > 0 else -1)
+    mine = {}
+    for c in enumerate_covers3(A, B, window=3.0, tol=1e-9):
+        if not c.in_extent or c.kind not in ("VF", "FV"):
+            continue
+        if c.kind == "VF":
+            mine[("VF", 2, c.a_feature[1], (1, *axis(B.face_normal(c.b_feature[1]))))] = c.gap
+        else:
+            mine[("FV", 1, c.b_feature[1], (2, *axis(A.face_normal(c.a_feature[1]))))] = c.gap
+    assert set(mine) == set(wide)
+    assert all(abs(mine[k] - wide[k]) < 1e-12 for k in wide)
 
 
 @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
@@ -207,8 +327,8 @@ def test_g2_duplicate_vertices_are_aliased_and_reconcile(tmp_path, mut, scale):
     """重复顶点（精确或 tol 内近重复、在动块或宿主块、重复者下标高于或低于原点）登记 alias，
     legacy 引用经 alias 归并后与几何上完全相同的干净夹具一样零差异（旧实现：假 legacy_only/mine_only）。"""
     p = _fake_case(tmp_path, lambda d: (_scaled(d, scale), mut(d)))     # 先缩放、后造重复：近重复偏移恒为 1e-10
-    res = compare(p)
-    _assert_g2_gate(res)
+    res = compare(p, band=G2_BAND * scale)                              # VF/FV 带随几何缩放
+    _assert_g2_gate(res, band=G2_BAND * scale)
     for r in res["rows"]:
         assert len(r["mine"]) == len(r["legacy"]) == 4
 

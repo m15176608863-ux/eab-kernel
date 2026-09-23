@@ -85,3 +85,38 @@ def test_bdda3d_fixture(js):
     assert all(r.feature_a is not None and r.feature_b is not None for r in recs)
     assert all(r.feature_b.verts for r in recs if r.cover.value == "VF")   # 面身份 = 顶点三元组，不是 −1
     _assert_step_keys_unique(recs)
+
+
+def _key_constant(orig):
+    return lambda self: ("const",)
+
+
+def _key_ignores_features(orig):
+    return lambda self: orig(self)[:3] + ((),)
+
+
+def _key_not_swap_symmetric(orig):
+    return lambda self: (self.block_a, self.block_b) + orig(self)[2:]
+
+
+_KEYED = ([p for p in sorted((FIX / "bdda3d").glob("*.json"))] if (FIX / "bdda3d").exists() else []) + \
+         ([p for p in sorted((FIX / "bdda_df").glob("*")) if (p / "bdda_debug_verts.csv").exists()]
+          if (FIX / "bdda_df").exists() else [])
+
+
+@pytest.mark.parametrize("src", _KEYED, ids=lambda p: f"{p.parent.name}/{p.name}")
+@pytest.mark.parametrize("mut", [_key_constant, _key_ignores_features, _key_not_swap_symmetric],
+                         ids=["constant_key", "key_ignores_features", "key_not_swap_symmetric"])
+def test_reader_key_gate_has_teeth_where_the_retired_assert_had_none(monkeypatch, src, mut):
+    """审查 C20 的证据钉成门：三种 canonical_key 退化（常量键、键丢特征、键不对称）下，
+    被删的 `len([k for r in recs]) == len(recs)` 恒真（同义反复，删掉不算放松），
+    而现在的门（块序交换不变 + 逐步键唯一）必红。"""
+    import eab.contact_record as cr
+    recs = bdda3d.load_records(src) if src.suffix == ".json" else bdda_df.load_records(src)
+    monkeypatch.setattr(cr.ContactRecord, "canonical_key", mut(cr.ContactRecord.canonical_key))
+    keys = [r.canonical_key() for r in recs]
+    assert len(keys) == len(recs)                              # 旧断言：退化下照样绿
+    with pytest.raises(AssertionError):
+        for r in recs:
+            assert _swapped(r).canonical_key() == r.canonical_key()
+        _assert_step_keys_unique([r for r in recs if r.feature_a is not None and r.feature_b is not None])

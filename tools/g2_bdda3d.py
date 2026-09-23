@@ -15,7 +15,8 @@
 门的判据（审查 C17：原门对非 VF 结构性失明）——每个块对：
   · legacy_only == [] 且 mine_only == []（np↔VF/FV 两个方向零差异）；
   · `violations` 为空：legacy 有门不认识的入口类（目前除 np 外全部，含 ee）即红；
-    内核在对账窗口内的盖凡未参与对账（EE/VE3/EV3/VV3/…，或两个盖归到同一个键）即红。
+    内核在对账窗口内的盖凡未参与对账（EE/VE3/EV3/VV3/…，或两个盖归到同一个键）即红；
+  · `band` 为空：G2_WINDOW < |gap| ≤ G2_BAND 的 VF/FV 盖即红（旧窗口 1.0 对 VF/FV 的那颗牙，见 G2_BAND）。
   对账窗口 `G2_WINDOW` 见其注释；ee↔EE 的键尚未实现，所以带 ee 的夹具目前**必红**，不是静默绿。
 """
 
@@ -40,6 +41,16 @@ from eab.kernel3d.geom3 import (Polyhedron, convex_hull_3d, cross, dot, merge_co
 # 两条都由 tests/test_g2_bdda3d.py::test_g2_window_contains_every_legacy_gap_and_nothing_else 看着。
 # 将来夹具的 legacy 入口若带正间隙（legacy 搜索距离内的"近接触"），门会以 legacy_only 报红——不会静默。
 G2_WINDOW = 1e-6
+
+# VF/FV 带（长度量纲）：2026-09-24 前对账窗口硬编码为 1.0，那时 |gap| ∈ (0, 1.0] 的多余 VF/FV 盖会以
+# mine_only 报红。窗口收到 G2_WINDOW 后这颗牙不能丢（审查：被放松的旧断言），所以单列：
+# G2_WINDOW < |gap| ≤ G2_BAND 的 VF/FV 盖一律进 `band`、非空即红。理由不靠 legacy 的搜索距离（夹具没记，
+# 见 PROVENANCE.json），而靠几何：三份夹具里法锥有效、投影在面内的顶点-面对，|gap| ≤ 1.0 的恰是 4 个零间隙
+# 坐落，下一个在 2.0——带内几何上为空、带边离最近的 VF/FV 还有 1.0 的余量（不是卡在某个特征距离上的刀口）。
+# 带只收 VF/FV：低维盖（VE3/EV3/VV3）在 1.0 处合法存在（cb2 上块底角到下块顶棱 = 1.0），M0.b 去掉 strict
+# 过滤后会进来，它们不属于这颗牙。几何理由由 tests/test_g2_bdda3d.py::test_g2_band_is_geometrically_empty 看着。
+# 与 G2_WINDOW 不同，带宽是**夹具几何**的量（下一个 VF/FV 在 2.0）：缩放过的夹具须按同一比例传 band。
+G2_BAND = 1.0
 
 
 def polyhedron_with_aliases(pts: list[tuple[float, float, float]], tol: float = 1e-9, *,
@@ -129,7 +140,7 @@ def load_case(path: Path):
     return c["case"], c["step"], c["blocks"], c["entrances"]
 
 
-def compare(path: Path, *, window: float = G2_WINDOW, tol: float = 1e-9) -> dict:
+def compare(path: Path, *, window: float = G2_WINDOW, band: float = G2_BAND, tol: float = 1e-9) -> dict:
     lc = load_case_full(path)
     case, step, blocks, aliases, entrances = lc["case"], lc["step"], lc["blocks"], lc["aliases"], lc["entrances"]
 
@@ -171,7 +182,10 @@ def compare(path: Path, *, window: float = G2_WINDOW, tol: float = 1e-9) -> dict
             legacy_detail.append((vblk, vidx, tuple(tri), gi))
 
         # 内核侧：VF / FV 盖 → 同一形式的键；其余种类在窗口内出现即违规（门不认识的类不许静默）
-        covs = [c for c in enumerate_covers3(A, B, window=window, tol=tol) if c.in_extent]
+        allc = [c for c in enumerate_covers3(A, B, window=max(window, band), tol=tol) if c.in_extent]
+        covs = [c for c in allc if abs(c.gap) <= window]
+        band_covs = sorted((c.kind, c.a_feature, c.b_feature, round(c.gap, 12)) for c in allc
+                           if window < abs(c.gap) <= band and c.kind in ("VF", "FV"))
         mine = set()
         mine_detail = []
         n_reconciled = 0
@@ -196,7 +210,8 @@ def compare(path: Path, *, window: float = G2_WINDOW, tol: float = 1e-9) -> dict
         rows.append({"pair": (bi, bj), "legacy": sorted(legacy), "mine": sorted(mine),
                      "legacy_only": sorted(legacy - mine), "mine_only": sorted(mine - legacy),
                      "legacy_detail": legacy_detail, "mine_detail": mine_detail,
-                     "n_covers": len(covs), "violations": violations, "window": window})
+                     "n_covers": len(covs), "violations": violations, "window": window,
+                     "band": band_covs, "band_limit": band})
     return {"case": case, "step": step, "rows": rows}
 
 
@@ -212,6 +227,7 @@ def main() -> int:
             print(f"    legacy_only = {r['legacy_only']}")
             print(f"    mine_only   = {r['mine_only']}")
             print(f"    violations  = {r['violations']}")
+            print(f"    band        = {r['band']}")
             for d in r["mine_detail"]:
                 print(f"      内核: {d}")
             for d in r["legacy_detail"]:

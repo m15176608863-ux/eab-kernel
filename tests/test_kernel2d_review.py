@@ -110,6 +110,44 @@ def test_gap0_sign_of_min_gap_is_not_a_concave_membership_rule():
     assert mismatches == 16
 
 
+_CHANNEL = [(0.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.0, 1.0), (1.0, 1.8), (3.0, 1.8), (3.0, 2.8), (0.0, 2.8)]
+_WEDGE = [(0.0, 0.0), (0.6, 0.2), (0.2, 0.75)]          # 楔尖在原点，56.7°，CCW
+
+
+@pytest.mark.parametrize("scale,off", [(1.0, (0.0, 0.0)), (1e-3, (10.0, -3.0)), (1e3, (1e7, -3e6))],
+                         ids=["x1", "x1e-3_far", "x1e3_far"])
+@pytest.mark.parametrize("dx,dy", [(0.05, 0.05), (0.02, 0.08), (0.08, 0.03), (0.01, 0.01), (0.1, 0.1)])
+def test_gap0_sign_of_min_gap_false_negative_wedge_in_channel(dx, dy, scale, off):
+    """旧 bb52 G0 投票的**另一半**也是假的（2026-09-24）：相交判成分离。
+
+    C 形槽（反射角在 (1,1)）+ 楔块，楔尖压进槽角 (dx, dy)（一般位置：对称/非对称、浅/深；尺度 ×1e-3、×1e3
+    并远离原点）。暴力谓词判相交。楔尖对槽底上沿（边 2）、槽左壁（边 3）的 VE 盖法锥有效、间隙 −dy / −dx，
+    但投影参数 1 + dx/2 / −dy/0.8 出界，被边内筛选剔除；窗口 D0 内只剩楔顶对槽顶（边 4）的 VE 盖，
+    间隙 0.05 + dy > 0 → 投票判分离。同一位形上出口完备性为绿（盖系统没错，错的是投票规则）。
+    """
+    from eab.kernel2d.g0 import g0_exit_completeness
+    from eab.kernel2d.geom import translate
+    C = [(off[0] + scale * x, off[1] + scale * y) for x, y in _CHANNEL]
+    x = (off[0] + scale * (1.0 - dx), off[1] + scale * (1.0 - dy))
+    W = [(scale * a, scale * b) for a, b in _WEDGE]
+    A = translate(W, x)
+    d0 = 0.19687500000000002 * scale
+    assert polygons_overlap(A, C, 1e-12 * scale) == 1                   # 真值：相交
+    covs = [c for c in enumerate_covers(A, C, window=d0, tol=1e-9 * scale) if c.kind != "VV"]
+    assert [(c.kind, c.a_index, c.b_index) for c in covs] == [("VE", 2, 4)]
+    assert abs(covs[0].gap / scale - (0.05 + dy)) < 1e-9                 # 唯一入窗盖：正间隙
+    tip = {c.b_index: c for c in enumerate_covers(A, C, window=d0, tol=1e-9 * scale, require_in_segment=False)
+           if c.kind == "VE" and c.a_index == 0}
+    assert set(tip) == {2, 3}
+    assert abs(tip[2].gap / scale + dy) < 1e-9 and abs(tip[3].gap / scale + dx) < 1e-9     # 负间隙……
+    assert abs(tip[2].param - (1.0 + dx / 2.0)) < 1e-9 and abs(tip[3].param + dy / 0.8) < 1e-9   # ……但出界
+    vote = 1 if min(c.gap for c in covs) < 0 else -1
+    assert vote == -1                                                   # 旧投票：分离（错）
+    u = (-0.6, 0.8)
+    rep = g0_exit_completeness(W, C, [x], [u], tol=1e-9 * scale)
+    assert rep.samples == 1 and rep.passed, rep.failures
+
+
 # ---------------------------------------------------------------- 审查 C19（2026-09-21）：零长边
 
 SQ = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]

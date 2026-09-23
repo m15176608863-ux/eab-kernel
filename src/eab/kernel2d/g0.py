@@ -4,8 +4,10 @@ E(A,B) 的成员谓词可以暴力验证——随机采样参考点平移 x，�
 判定比对。凸情形要求逐样本恒等（去掉 |gap| ≤ band 的边界带）；同时检验"局部法锥规则 = 全局
 Minkowski facet 结构"（命题 4/5）。这条门不依赖任何 legacy。
 
-凹情形没有局部成员谓词（E 非凸，facet 间隙取 max 或 min 都不成立），G0 改检验**距离完备性**
-（`g0_distance_completeness`，与三维 `g0_distance_completeness3` 同构）。
+凹情形没有局部成员谓词（E 非凸，facet 间隙取 max 或 min 都不成立），G0 改检验同一条定理
+"∂E ⊆ ∪ 有效盖的平移线段"的两面：分离样本上的**距离完备性**（`g0_distance_completeness`，与三维
+`g0_distance_completeness3` 同构），相交样本上的**出口完备性**（`g0_exit_completeness`：沿射线首次离开
+E 的那个 ∂E 点必有有效盖作见证）。两者都不是凹块的成员谓词——成员判定要等入口块全局构造（M3）。
 """
 
 from __future__ import annotations
@@ -174,6 +176,113 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
         rep.worst_abs_error = max(rep.worst_abs_error, err)
         if err > atol * max(1.0, truth):
             rep.failures.append((x, got, truth, arg))
+    return rep
+
+
+# ---------------------------------------------------------------- 相交样本：出口完备性（∂E 完备性的另一面）
+
+def brute_ray_exit(A: Poly, B: Poly, u: Point) -> float:
+    """A 与 B 内部相交时，A 沿方向 u 平移、**首次**离开 int E 的平移参数 t*（暴力 oracle；t 以 u 的长度计）。
+
+    依据：z ∈ ∂E ⟹ A+z 与 B 仅边界接触。两条边在各自内部横截相交必致内部相交，所以接触处必有"一方的
+    顶点落在另一方的边上"（共线重叠时，重叠段的端点也是顶点）。于是 ∂E ⊆ ∪{顶点 × 边 的候选线段}——
+    取**全部**顶点-边对、两个方向、**不做任何法锥筛选**。射线 x + t·u 在相邻两次候选命中之间不碰 ∂E，
+    成员状态恒定，取区间中点用 `polygons_overlap` 判一次即可。t ≥ t_sep = max_B(b·u) − min_A(a·u)
+    时 A 在 u 方向整体越过 B、必不内部相交，t_sep 作最后一个命中。t* = 第一个"中点不相交"区间的左端。
+
+    oracle 与被测对象的共用（纪律 A）：射线-线段求交只用内联算术；状态判定用 `polygons_overlap`（与盖枚举
+    共用 geom 的 sub/dot/cross/norm，见 `g0_distance_completeness`）；不用法锥、转角、外法向、投影或窗口。
+    输入须满足 polygons_overlap(A, B) == 1（调用方判），u 非零。
+    """
+    ux, uy = u
+    hits: list[float] = []
+
+    def hit(px: float, py: float, dx: float, dy: float, q0: Point, q1: Point) -> None:
+        # 点 p 沿 (dx, dy) 走 t 落在闭线段 [q0, q1] 上：p + t·d = q0 + s·e，t > 0，s ∈ [0, 1]
+        ex, ey = q1[0] - q0[0], q1[1] - q0[1]
+        den = dx * ey - dy * ex
+        if den == 0.0:                       # 射线与该边平行：共线段只在测度零的方向上出现
+            return
+        wx, wy = q0[0] - px, q0[1] - py
+        t = (wx * ey - wy * ex) / den
+        s = (wx * dy - wy * dx) / den
+        if t > 0.0 and 0.0 <= s <= 1.0:
+            hits.append(t)
+
+    nA, nB = len(A), len(B)
+    for px, py in A:                          # A 的顶点随 A 走 +u，撞 B 的边
+        for j in range(nB):
+            hit(px, py, ux, uy, B[j], B[(j + 1) % nB])
+    for qx, qy in B:                          # 相对地，B 的顶点走 −u，撞 A 的边
+        for k in range(nA):
+            hit(qx, qy, -ux, -uy, A[k], A[(k + 1) % nA])
+    t_sep = max(bx * ux + by * uy for bx, by in B) - min(ax * ux + ay * uy for ax, ay in A)
+    lo = 0.0
+    for t in sorted({h for h in hits if h < t_sep}) + [t_sep]:
+        mid = 0.5 * (lo + t)
+        if polygons_overlap(translate(A, (mid * ux, mid * uy)), B, 1e-12) != 1:
+            return lo
+        lo = t
+    return t_sep
+
+
+@dataclass(slots=True)
+class ExitReport:
+    """二维相交样本的出口完备性检验结果（`g0_exit_completeness`）。"""
+    draws: int = 0
+    separated: int = 0              # 暴力谓词判分离：归距离完备性检验，这里只计数
+    touching: int = 0               # 暴力谓词判仅接触：只计数
+    samples: int = 0                # 暴力谓词判相交、实际做了出口检验的样本数
+    worst_witness: float = 0.0      # 出口位形上"有效盖最小见证距离"的最大值（理想为 0）
+    # (x, u, t*, 出口处有效盖最小见证距离, 暴力给出的出口接触特征对 (类别, i, j, t))
+    failures: list[tuple[Point, Point, float, float, tuple]] = field(default_factory=list)
+
+    @property
+    def passed(self) -> bool:
+        return not self.failures
+
+
+def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions: list[Point], *,
+                         tol: float = 1e-9, atol: float = 1e-9) -> ExitReport:
+    """相交样本上的二维 G0：**出口完备性**——∂E 完备性在 E 内侧的检验。
+
+    定理（与距离完备性同一条）：∂E ⊆ ∪{有效盖的平移线段}。z ∈ ∂E 处接触若是"顶点 a 对边 e 的内部"，
+    a 为反射顶点则 A 在 a 附近必越过 e 所在直线、内部相交；a 凸但 −n_B(e) ∉ N_A(a) 同理——所以
+    边界位形上的顶点-边接触都是法锥有效的盖；纯顶点-顶点接触的 z 是相邻有效线段的端点（投影参数 0/1）。
+    检验：对每个暴力判相交的平移 x 与对应方向 u，z = x + t*·u（`brute_ray_exit`）处
+        min{ |point_a − point_b| : c ∈ enumerate_covers(A+z, B, window=∞, tol) } ≤ atol·max(1, 坐标量级)，
+    即法锥有效性筛选与边内筛选没有把出口处那段 ∂E 滤掉。
+
+    **不是**成员谓词：它不判定 x 在不在 E 内（真值由 `polygons_overlap` 给），也不给出凹块的穿透深度；
+    凹块的成员判定仍待入口块全局构造（M3）。与分离侧的距离完备性互补：后者检验 E 外一点的最近 ∂E 点，
+    这里检验 E 内一点沿随机方向的首个 ∂E 点。
+    零维 VV 盖在一般方向的出口上不起作用（出口几乎必在某段的相对内部），所以丢 VV 盖这里不会红——
+    那颗牙在距离完备性那边（角对角实现的最短距离）。
+    """
+    if len(directions) != len(translations):
+        raise ValueError(f"need one direction per translation: {len(directions)} != {len(translations)}")
+    rep = ExitReport()
+    inf = float("inf")
+    for x, u in zip(translations, directions):
+        rep.draws += 1
+        At = translate(A, x)
+        brute = polygons_overlap(At, B, 1e-12)
+        if brute == -1:
+            rep.separated += 1
+            continue
+        if brute == 0:
+            rep.touching += 1
+            continue
+        t = brute_ray_exit(At, B, u)
+        Az = translate(At, (t * u[0], t * u[1]))
+        covs = enumerate_covers(Az, B, window=inf, tol=tol)
+        got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
+                   for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
+        scale = max(1.0, max(abs(v) for p in (*Az, *B) for v in p))
+        rep.samples += 1
+        rep.worst_witness = max(rep.worst_witness, got)
+        if got > atol * scale:
+            rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))
     return rep
 
 

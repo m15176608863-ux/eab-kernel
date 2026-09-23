@@ -75,7 +75,8 @@ def test_first_entrance_picks_shallowest_penetration():
 
 from math import cos, hypot, pi, sin  # noqa: E402
 
-from eab.kernel2d.g0 import brute_polygon_distance, g0_distance_completeness  # noqa: E402
+from eab.kernel2d.g0 import (brute_polygon_distance, brute_ray_exit, g0_distance_completeness,  # noqa: E402
+                            g0_exit_completeness)
 
 THIN_L = [(0.0, 0.0), (3.0, 0.0), (3.0, 0.1), (0.1, 0.1), (0.1, 3.0), (0.0, 3.0)]
 
@@ -156,3 +157,111 @@ def test_distance_completeness_has_teeth(monkeypatch):
     monkeypatch.undo()
     monkeypatch.setattr(cv, "ve_cover", lambda *a, **k: None)
     assert not g0_distance_completeness(DIAMOND, SQUARE, [(0.4, 1.7)], tol=1e-12).passed
+
+
+# ---------------------------------------------------------------- 相交样本：出口完备性（2026-09-24）
+
+CHANNEL = [(0.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.0, 1.0), (1.0, 1.8), (3.0, 1.8), (3.0, 2.8), (0.0, 2.8)]
+SMALL = [(0.0, 0.0), (0.2, 0.0), (0.2, 0.2), (0.0, 0.2)]
+
+
+@pytest.mark.parametrize("A,B,x,u,want,kind", [
+    (SQUARE, SQUARE, (0.3, 0.2), (1.0, 0.0), 0.7, "FF_exit_+x"),
+    (SQUARE, SQUARE, (0.3, 0.2), (0.0, 1.0), 0.8, "FF_exit_+y"),
+    (SQUARE, SQUARE, (0.3, 0.2), (2.0, 0.0), 0.35, "t_in_units_of_u"),
+    (SQUARE, SQUARE, (0.3, 0.2), (-1.0, 0.0), 1.3, "FF_exit_-x"),
+    (SQUARE, SQUARE, (0.3, 0.2), (0.6, 0.8), 1.0, "oblique_asymmetric"),     # y 先到 1：0.2 + 0.8t = 1
+    (SQUARE, SQUARE, (0.3, 0.3), (1.0, 1.0), 0.7, "exit_through_E_corner"),  # 分界点：恰从 E 的顶点（VV）离开
+    (SMALL, CHANNEL, (1.5, 0.3), (0.0, 1.0), 0.7, "first_exit_not_last"),    # 出底臂进槽（再入顶臂 1.3、终出 2.5）
+])
+def test_brute_ray_exit_hand_values(A, B, x, u, want, kind):
+    """oracle 自检：手算出口。最后一例是凹块的要点——返回**首个**出口（槽内自由区），不是最后一个。"""
+    from eab.kernel2d.geom import translate
+    At = translate(A, x)
+    assert polygons_overlap(At, B, 1e-12) == 1
+    assert abs(brute_ray_exit(At, B, u) - want) < 1e-12, kind
+
+
+@pytest.mark.parametrize("scale", [1.0, 1e-3, 1e3], ids=["x1", "x1e-3", "x1e3"])
+@pytest.mark.parametrize("seed", range(4))
+def test_brute_ray_exit_is_the_first_crossing(seed, scale):
+    """oracle 自检的第二条路（与候选求交无关）：沿射线等距行进，t* 之前每一步都相交，t* 处（容差内）仅接触。
+
+    一般位置（随机星形凹块、随机方向）× 尺度（×1e-3 / ×1e3，奇数种子远离原点）。
+    共用：行进与接触判定都用 `polygons_overlap`（oracle 自己也用它判区间状态）；不共用候选线段求交。
+    """
+    from eab.kernel2d.geom import translate
+    rng = random.Random(300 + seed)
+    off = (1e4 * scale, -3e3 * scale) if seed % 2 else (0.0, 0.0)
+    A = _star(rng, rng.randint(5, 9), scale)
+    B = _star(rng, rng.randint(5, 9), scale, off)
+    checked = 0
+    for x in _ring(rng, 40, 0.5 * scale):
+        At = translate(A, (off[0] + x[0], off[1] + x[1]))
+        if polygons_overlap(At, B, 1e-12 * scale) != 1:
+            continue
+        th = rng.uniform(0.0, 2 * pi)
+        u = (cos(th), sin(th))
+        t = brute_ray_exit(At, B, u)
+        assert 0.0 < t < 4.0 * scale
+        assert polygons_overlap(translate(At, (t * u[0], t * u[1])), B, 1e-9 * scale) == 0
+        for k in range(1, 64):
+            tk = t * k / 64
+            assert polygons_overlap(translate(At, (tk * u[0], tk * u[1])), B, 1e-12 * scale) == 1, (x, u, k)
+        checked += 1
+    assert checked >= 8
+
+
+@pytest.mark.parametrize("scale", [1.0, 1e-3, 1e3], ids=["x1", "x1e-3", "x1e3"])
+@pytest.mark.parametrize("seed", range(6))
+def test_exit_completeness_general_position_concave(seed, scale):
+    """纪律 B：一般位置的凹块相交样本（随机星形，非对称）× 尺度变化（奇数种子远离原点）。"""
+    rng = random.Random(200 + seed)
+    off = (1e4 * scale, -3e3 * scale) if seed % 2 else (0.0, 0.0)
+    A = _star(rng, rng.randint(5, 11), scale)
+    B = _star(rng, rng.randint(5, 11), scale, off)
+    xs = [(off[0] + p[0], off[1] + p[1]) for p in _ring(rng, 60, 0.5 * scale)]
+    us = [(cos(t), sin(t)) for t in (rng.uniform(0.0, 2 * pi) for _ in xs)]
+    rep = g0_exit_completeness(A, B, xs, us, tol=1e-9 * scale, atol=1e-9)
+    assert rep.samples >= 20, (rep.samples, rep.separated)
+    assert rep.passed, rep.failures[:3]
+    assert rep.worst_witness <= 1e-12 * max(1.0, 1e4 * scale)
+
+
+DIAMOND_UP = [(0.0, -0.5), (0.5, 0.0), (0.0, 0.5), (-0.5, 0.0)]
+
+
+@pytest.mark.parametrize("A,B,x,u,kind", [
+    (SQUARE, SQUARE, (0.3, 0.2), (1.0, 0.0), "FF_parallel_edges"),        # 出口在平行贴边（非严格盖）上
+    (SQUARE, SQUARE, (0.3, 0.3), (1.0, 1.0), "E_corner_VV"),              # 分界点：出口恰是 E 的顶点
+    (DIAMOND_UP, SQUARE, (0.4, 0.8), (0.0, 1.0), "A_vertex_on_B_edge"),   # 菱形下角离开方块顶边内部：VE
+    (SQUARE, DIAMOND_UP, (-0.4, 0.2), (0.0, 1.0), "B_vertex_on_A_edge"),  # 菱形上角离开方块底边内部：EV
+])
+def test_exit_completeness_boundary_cases(A, B, x, u, kind):
+    rep = g0_exit_completeness(A, B, [x], [u], tol=1e-12, atol=1e-12)
+    assert rep.samples == 1, kind
+    assert rep.passed, (kind, rep.failures)
+
+
+@pytest.mark.parametrize("drop,case,red", [
+    ("ve_cover", (DIAMOND_UP, SQUARE, (0.4, 0.8), (0.0, 1.0)), True),
+    ("ev_cover", (SQUARE, DIAMOND_UP, (-0.4, 0.2), (0.0, 1.0)), True),
+    ("vv_cover", (SQUARE, SQUARE, (0.3, 0.3), (1.0, 1.0)), False),
+], ids=["no_VE_red", "no_EV_red", "no_VV_not_a_tooth_here"])
+def test_exit_completeness_has_teeth(monkeypatch, drop, case, red):
+    """门要有牙：丢 VE 盖 / 丢 EV 盖 → 出口处无见证 → 红。
+
+    看着 `g0_exit_completeness` 文档的那句"丢 VV 盖这里不会红"：即便出口恰是 E 的顶点（角对角），
+    相邻 VE/EV 线段的端点（投影参数 0/1）也见证它——VV 的牙在距离完备性那边（test_distance_completeness_has_teeth）。
+    """
+    import eab.kernel2d.covers as cv
+    monkeypatch.setattr(cv, drop, lambda *a, **k: None)
+    A, B, x, u = case
+    rep = g0_exit_completeness(A, B, [x], [u], tol=1e-12, atol=1e-12)
+    assert rep.samples == 1
+    assert rep.passed is (not red), rep.failures
+
+
+def test_exit_completeness_needs_one_direction_per_translation():
+    with pytest.raises(ValueError, match="one direction per translation"):
+        g0_exit_completeness(SQUARE, SQUARE, [(0.3, 0.2)], [])

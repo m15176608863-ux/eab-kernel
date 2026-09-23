@@ -1,4 +1,4 @@
-"""bb52 真几何上的二维盖枚举：G1 集合对照（对 legacy 接触表）+ G0 近接触自证（距离完备性）。
+"""bb52 真几何上的二维盖枚举：G1 集合对照（对 legacy 接触表）+ G0 近接触自证（距离完备性 + 出口完备性）。
 
 几何来自夹具 bdda_debug_verts.csv（步 1，vidx 为全局顶点号，每块按多边形序连续，尾部带两个
 回绕重复点——df 存储 d[i2+1]=d[i1]、d[i2+2]=d[i1+1] 的 dump 外露；legacy 用重复索引引用首边）。
@@ -7,10 +7,13 @@ legacy 接触来自 bdda_debug_contacts.csv（mtype 0 = v-e：p1 顶点、p3->p2
 
 `analyze()` 返回数字供 tests/test_bb52_g1.py 钉门；`main()` 打印明细。
 
-G0 口径（2026-09-24 改）：真值一律暴力 `polygons_overlap`；盖侧被检验的命题是**距离完备性**
-（分离样本上，有效盖见证距离的最小值 == 暴力特征距离），与三维 `g0_distance_completeness3` 同构。
-2026-09-18 版把 sign(min gap) 当凹块成员谓词——这条规则在三维已被证伪，二维由审查以
-"细臂 L 块 + 凹槽内悬浮方块" 复现（tests/test_bb52_g1.py 钉着）；那版的 "1186/1186" 撤回。
+G0 口径（2026-09-24 改）：真值一律暴力 `polygons_overlap`；盖侧被检验的是定理"∂E ⊆ ∪ 有效盖线段"
+的两面——分离样本上的**距离完备性**（有效盖见证距离的最小值 == 暴力特征距离，与三维
+`g0_distance_completeness3` 同构），相交样本上的**出口完备性**（沿随机方向首次离开 E 的 ∂E 点处必有有效盖
+作见证，`g0_exit_completeness`）。两者都不是凹块成员谓词（M3）。
+2026-09-18 版把 sign(min gap) 当凹块成员谓词——这条规则两个方向都是假的：分离判成相交（审查的
+"细臂 L 块 + 凹槽内悬浮方块"）、相交判成分离（"槽角楔块"：楔尖压进槽角，楔尖的负间隙盖投影全部出界、
+被边内筛除，窗口里只剩槽顶的正间隙盖）。两条反例都钉在 tests/test_bb52_g1.py；那版的 "1186/1186" 撤回。
 """
 
 from __future__ import annotations
@@ -20,7 +23,7 @@ import json
 import random
 import sys
 from collections import defaultdict
-from math import radians, sin
+from math import cos, pi, radians, sin
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,7 +31,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import eab.kernel2d.covers as cv  # noqa: E402  （归因走模块属性：被替换的盖函数也要被如实归因）
 from eab.kernel2d.covers import enumerate_covers  # noqa: E402
-from eab.kernel2d.g0 import g0_distance_completeness  # noqa: E402
+from eab.kernel2d.g0 import g0_distance_completeness, g0_exit_completeness  # noqa: E402
 from eab.kernel2d.geom import edge, ensure_ccw, is_convex, norm, reflex_vertices, sub, translate  # noqa: E402
 from eab.readers.bdda_geom import strip_duplicate_vertices  # noqa: E402
 
@@ -112,7 +115,18 @@ def g0_draws(pairs: list[tuple[int, int]], samples_per_pair: int, seed: int):
             for bi, bj in pairs]
 
 
-def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE_TOL) -> dict:
+def g0_exit_directions(pairs: list[tuple[int, int]], samples_per_pair: int, seed: int) -> list[list[tuple[float, float]]]:
+    """出口完备性的射线方向：每次平移配一个单位方向（极角均匀）。独立的 rng（字符串种子），
+    不动 `g0_draws` 的随机序列——"同一批平移"那句话仍然成立。"""
+    rng = random.Random(f"bb52-g0-exit/{seed}")
+    out = []
+    for _ in pairs:
+        angs = [rng.uniform(0.0, 2.0 * pi) for _ in range(samples_per_pair)]
+        out.append([(cos(a), sin(a)) for a in angs])
+    return out
+
+
+def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE_TOL, exit_probes: bool = True) -> dict:
     blocks, alias = load_blocks(1)
     canon = lambda v: alias.get(v, v)  # noqa: E731
     v2b = {v: b for b, d in blocks.items() for v in d["vidx"]}
@@ -163,11 +177,15 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         if not hit:
             non_mirror.append((v, blk))
 
-    # G0 近接触自证（一般多边形，严格法锥模式）：真值一律暴力，盖侧检验距离完备性。
-    g0 = {"draws": 0, "overlap": 0, "touch": 0, "separated": 0, "agree": 0, "worst": 0.0}
+    # G0 近接触自证（一般多边形，严格法锥模式）：真值一律暴力。分离样本检验距离完备性，
+    # 相交样本检验出口完备性（同一条定理 ∂E ⊆ ∪ 有效盖线段 的两面）。
+    g0 = {"draws": 0, "overlap": 0, "touch": 0, "separated": 0, "agree": 0, "worst": 0.0,
+          "exit_samples": 0, "exit_agree": 0, "exit_worst": 0.0}
     disagree = []
+    exit_disagree = []
     pairs = sorted({tuple(sorted((v2b[v], next(iter({v2b[x] for x in e}))))) for v, e in eab_ve})
-    for bi, bj, xs in g0_draws(pairs, samples_per_pair, seed):
+    dirs = g0_exit_directions(pairs, samples_per_pair, seed)
+    for (bi, bj, xs), us in zip(g0_draws(pairs, samples_per_pair, seed), dirs):
         A, B = blocks[bi]["poly"], blocks[bj]["poly"]
         rep = g0_distance_completeness(A, B, xs, tol=TOL, atol=1e-9)
         g0["draws"] += rep.draws
@@ -178,6 +196,15 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         g0["worst"] = max(g0["worst"], rep.worst_abs_error)
         for x, got, truth, arg in rep.failures:
             disagree.append((bi, bj, x, got, truth, arg, classify_completeness_failure(translate(A, x), B, arg)))
+        if not exit_probes:
+            continue
+        ex = g0_exit_completeness(A, B, xs, us, tol=TOL, atol=1e-9)
+        g0["exit_samples"] += ex.samples
+        g0["exit_agree"] += ex.samples - len(ex.failures)
+        g0["exit_worst"] = max(g0["exit_worst"], ex.worst_witness)
+        for x, u, t, got, arg in ex.failures:
+            Az = translate(A, (x[0] + t * u[0], x[1] + t * u[1]))
+            exit_disagree.append((bi, bj, x, u, t, got, arg, classify_completeness_failure(Az, B, arg)))
 
     return {
         "blocks": len(blocks), "stripped_duplicates": len(alias),
@@ -192,11 +219,15 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         "vb_eab_only_non_mirror": non_mirror,
         "vv_legacy": [sorted(k) for k in leg_vv], "vv_eab_active": len(eab_vv),
         # G0：命题 = 距离完备性（分离样本上 min 见证距离 == 暴力特征距离）；真值 = polygons_overlap。
-        # 相交/仅接触样本只计数、不检验（凹块成员谓词要等全局 E 构造，M3）。
         "g0_proposition": "distance_completeness", "g0_pairs": pairs,
         "g0_draws": g0["draws"], "g0_brute_overlap": g0["overlap"], "g0_brute_touch": g0["touch"],
         "g0_samples": g0["separated"], "g0_agree": g0["agree"], "g0_worst_abs_error": g0["worst"],
         "g0_disagree": disagree[:10],
+        # 相交样本：命题 = 出口完备性（沿随机方向首个 ∂E 点处有效盖最小见证距离 == 0）。不是成员谓词（M3）；
+        # 仅接触样本只计数。exit_probes=False 时这四项为 0 / []。
+        "g0_exit_proposition": "exit_completeness" if exit_probes else None,
+        "g0_exit_samples": g0["exit_samples"], "g0_exit_agree": g0["exit_agree"],
+        "g0_exit_worst_witness": g0["exit_worst"], "g0_exit_disagree": exit_disagree[:10],
     }
 
 
