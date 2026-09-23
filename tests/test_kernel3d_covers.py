@@ -113,9 +113,14 @@ def test_facet_count_matches_minkowski_theory_for_boxes():
     norms = set()
     for fi in range(len(hull.faces)):
         n = hull.face_normal(fi)
-        norms.add(tuple(round(x, 7) for x in n))
-    assert len(facets) <= len(norms)
-    assert len(facets) >= 6
+        norms.add(tuple(round(x, 7) + 0.0 for x in n))
+    # 退化数独立地数：方块面法向 n 与四面体某面法向反平行（FF）的个数。
+    tn = {tuple(round(x, 7) + 0.0 for x in t.face_normal(fi)) for fi in range(len(t.faces))}
+    bn = {tuple(round(x, 7) + 0.0 for x in b.face_normal(fi)) for fi in range(len(b.faces))}
+    degenerate = {n for n in bn if tuple(-x + 0.0 for x in n) in tn}
+    assert len(norms) == 10 and len(degenerate) == 3
+    # 审查 C23：原先只断言 6 <= len <= 10，丢一个 facet 也绿。改成注释里写的恒等式。
+    assert len(facets) == len(norms) - len(degenerate) == 7
 
 
 @pytest.mark.parametrize("seed", range(6))
@@ -132,6 +137,10 @@ def test_g0_convex3_random_pairs(seed):
     assert rep.samples > 60, rep
     assert rep.hull_vertex_mismatch == 0, (rep.hull_vertices, rep.e_vertices)
     assert rep.mismatches == [], rep.mismatches[:3]
+    # 票二（审查 C23/C27：此前只存计数、从不比较）
+    assert rep.facet_symmetric_diff == [], rep.facet_symmetric_diff[:3]
+    assert rep.facet_local == rep.facet_global
+    assert rep.passed
 
 
 def test_g0_gate_has_teeth_flipped_normals_are_caught(monkeypatch):

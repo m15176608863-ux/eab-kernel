@@ -85,6 +85,22 @@ def test_g0_distance_completeness_on_concave_interlocking_pair(seed):
     assert rep.worst_abs_error < 1e-9
 
 
+def test_g0_distance_completeness_on_merged_interlocking_pair():
+    """归并后的互锁块：y = ±0.5 侧面是**凹十边形**（审查 C7 的现场）。
+
+    纪律 A：本门的 oracle brute_feature_distance 与盖的 in_extent 共用 point_in_face_polygon，
+    且采样区里的最近对不落在凹臂上——所以它只是一致性检查；对凹面的独立门是
+    tests/test_geom3_face_polygon.py 里的骨形块侧面探针（闭式真值）。
+    """
+    from eab.kernel3d.geom3 import merge_coplanar
+    A, L = interlocking_pair(nx=4, ny=2, amp=0.25)
+    Am, Lm = merge_coplanar(A), merge_coplanar(L)
+    assert max(len(f) for f in Lm.faces) == 10 and Lm.manifold_issues() == []
+    rep = g0_distance_completeness3(Am, Lm, radius=0.35, samples=60, seed=0, atol=1e-9)
+    assert rep.samples > 15, rep
+    assert rep.failures == [], rep.failures[:3]
+
+
 def test_min_cover_gap_is_not_a_membership_rule_for_concave_bodies():
     """把边界钉死：分离的凹块之间也存在深负 gap 的有效盖（顶点落在对方某面平面内侧）。
 
