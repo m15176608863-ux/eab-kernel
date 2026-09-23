@@ -10,11 +10,28 @@ L3 极限分析要解的是小规模线性规划（变量数 ~ 接触数 × 摩�
 代价是迭代数可能多一些——这里规模小，不值得为速度换正确性。
 
 返回里带**对偶解 y**：在极限分析里它就是破坏机构（上限定理的运动场），不是附属品。
+
+**尺度规整（2026-09-22，审查 C0/C21 及其尺度格子）**：`tol` 是绝对阈值，而 A、b 带着用户的单位
+（荷载 N/kN、几何 m/mm、黏聚列 ∝ c·A）。旧代码的三种静默失败：
+  · 一阶段结束时人工变量和的舍入残差 ~ eps·max|b|·(主元数)，N = 100 时就有 ~2e-12，拿它与绝对的
+    tol = 1e-12 比，可行问题被判成 INFEASIBLE（互锁块 (amp, μ, k) = (0.2, 0.1, 8) 等 9 格）；
+  · 列量级悬殊（黏聚列 ~1e4 与单位约束行并存）时在 ~3e-10 的主元上失稳，读出的基解整行违反 Ax = b
+    （残差 ~1e3），却照样报 OPTIMAL（荷载 ×1e4 的三维黏聚算例，承载力超出解析上界）；
+  · 一阶段的入基检验数是舍入噪声时核心报 UNBOUNDED，被当成 INFEASIBLE（一阶段目标有下界 0，
+    精确算术里不可能无界）。现在一阶段只看人工变量和。
+现在求解前做三步，因子**全是 2 的幂**（乘除都精确，不引入任何舍入）：
+  1. 列均衡：A_j 乘 2^−e_j 使 max_i|A_ij| ∈ [0.5, 1)，c_j 同乘；x_j 最后乘回；
+  2. 行均衡：行 i 乘 2^−e_i 使 max_j|A_ij| ∈ [0.5, 1)，b_i 同乘；对偶 y_i 最后乘回；
+  3. 右端项归一：b 除以 s = 2^⌈log₂ max b⌉（仅当 max b > 1），x 乘回 s；y 与 b 无关，不动。
+于是一阶段可行性阈值、比值检验的并列容差、主元阈值都作用在**均衡后**的量级上（相对阈值）；
+对 max|b| > 1 的问题，b 乘 2 的幂时整个求解逐位按比例（门：tests/test_lp_scale.py）。
+返回前再核对一次 Ax = b（`_guard_residual`）：数值失稳就抛 RuntimeError，不静默给错值。
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import frexp, ldexp
 
 INFEASIBLE, OPTIMAL, UNBOUNDED = "infeasible", "optimal", "unbounded"
 
@@ -69,9 +86,35 @@ def _simplex_core(T: list[list[float]], basis: list[int], ncols: int, *,
     raise RuntimeError(f"simplex did not terminate in {max_iter} iterations")
 
 
+def _rhs_scale(b: list[float]) -> float:
+    """b（已规整为 ≥ 0）的归一因子：max b ≤ 1 时为 1，否则为不小于 max b 的最小 2 的幂。"""
+    bmax = max(b, default=0.0)
+    if not bmax > 1.0:
+        return 1.0
+    mant, e = frexp(bmax)                    # bmax = mant·2^e，mant ∈ [0.5, 1)
+    return ldexp(1.0, e)
+
+
+def _pow2_inv(v: float) -> float:
+    """2^−e，其中 |v| = mant·2^e、mant ∈ [0.5, 1)——乘上它 |v| 落进 [0.5, 1)。v = 0 时返回 1。精确。"""
+    if v == 0.0:
+        return 1.0
+    _, e = frexp(abs(v))
+    return ldexp(1.0, -e)
+
+
+_RESIDUAL_GUARD = 1e-7
+
+
 def solve(A: list[list[float]], b: list[float], c: list[float], *,
           tol: float = 1e-10, max_iter: int = 20000) -> LPResult:
-    """min cᵀx s.t. Ax = b, x ≥ 0。b 的符号自动规整。"""
+    """min cᵀx s.t. Ax = b, x ≥ 0。b 的符号、行列尺度与右端项尺度自动规整（见模块文档）。
+
+    `tol` 作用在均衡 + 右端项归一化之后的问题上：一阶段可行性判据是 Σ人工变量 > tol，
+    折回原单位即相对于各行量级与 max(1, max|b|) 的阈值。
+    返回前核对 Ax = b 的后向误差；若表格在主元中数值失稳（基解不再满足约束），抛 RuntimeError，
+    **不**静默返回一个错的"最优"。
+    """
     m, n = len(A), len(c)
     if m == 0:
         return LPResult(OPTIMAL, [0.0] * n, 0.0, [], 0, [])
@@ -84,6 +127,17 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
     for i in flipped:
         A[i] = [-v for v in A[i]]
         b[i] = -b[i]
+    # 均衡：先列后行，因子全是 2 的幂（精确）。x = D·x'，c' = D·c；行 i 乘 r_i ⇒ y_i = r_i·y'_i。
+    cs = [_pow2_inv(max(abs(A[i][j]) for i in range(m))) for j in range(n)]
+    A = [[A[i][j] * cs[j] for j in range(n)] for i in range(m)]
+    cq = [c[j] * cs[j] for j in range(n)]
+    rs = [_pow2_inv(max((abs(v) for v in A[i]), default=0.0)) for i in range(m)]
+    A = [[v * rs[i] for v in A[i]] for i in range(m)]
+    b = [b[i] * rs[i] for i in range(m)]
+    # 右端项尺度归一（精确：2 的幂）。x 最后乘回 s；y = c_Bᵀ B⁻¹ 与 b 无关，不动。
+    s = _rhs_scale(b)
+    if s != 1.0:
+        b = [v / s for v in b]
 
     # ---- 一阶段：引入人工变量，min Σ 人工
     T = [A[i] + [1.0 if k == i else 0.0 for k in range(m)] + [b[i]] for i in range(m)]
@@ -95,16 +149,19 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
         obj[n + k] = 0.0
     T.append(obj)
     basis = list(range(n, n + m))
-    st, it1 = _simplex_core(T, basis, n + m, allowed=set(range(n)) | set(range(n, n + m)),
-                            tol=tol, max_iter=max_iter)
-    if st == UNBOUNDED or -T[m][-1] > tol:
+    _, it1 = _simplex_core(T, basis, n + m, allowed=set(range(n)) | set(range(n, n + m)),
+                           tol=tol, max_iter=max_iter)
+    # 可行性**只**看人工变量和（均衡 + 归一之后，这里的绝对 tol 在原单位里是相对阈值）。
+    # 一阶段目标有下界 0，精确算术里不可能无界；核心若报 UNBOUNDED，只能是某个入基检验数是
+    # ~1e-12 的舍入噪声而该列又无正元——那是"已到最优"，不是"不可行"（旧代码把它判成 INFEASIBLE）。
+    if -T[m][-1] > tol:
         return LPResult(INFEASIBLE, [0.0] * n, float("nan"), [0.0] * m, it1, basis)
 
-    # 人工变量若仍在基里（退化），设法换出；换不出说明该行冗余，直接丢
+    # 人工变量若仍在基里（退化），设法换出（取该行绝对值最大的元做主元）；换不出说明该行冗余，直接丢
     for i in range(m - 1, -1, -1):
         if basis[i] >= n:
-            piv = next((j for j in range(n) if abs(T[i][j]) > tol), None)
-            if piv is not None:
+            piv = max(range(n), key=lambda j: abs(T[i][j]), default=None)
+            if piv is not None and abs(T[i][piv]) > tol:
                 _pivot(T, basis, i, piv)
             else:
                 del T[i]
@@ -114,10 +171,10 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
     # ---- 二阶段：换成真目标，去掉人工列
     for i in range(len(T)):
         T[i] = T[i][:n] + [T[i][-1]]
-    obj = c[:] + [0.0]
+    obj = cq[:] + [0.0]
     for i in range(m2):
-        if abs(c[basis[i]]) > 0.0:
-            f = c[basis[i]]
+        if abs(cq[basis[i]]) > 0.0:
+            f = cq[basis[i]]
             for j in range(n + 1):
                 obj[j] -= f * T[i][j]
     T[m2] = obj
@@ -125,14 +182,36 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
     if st == UNBOUNDED:
         return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [0.0] * m, it1 + it2, basis)
 
-    x = [0.0] * n
+    xn = [0.0] * n                            # 均衡 + 归一单位里的解
     for i in range(m2):
-        x[basis[i]] = T[i][-1]
-    # 对偶：y = c_B ᵀ B⁻¹，可从目标行的松弛读出；这里直接用 A、基解回算最稳
-    y = _duals(A, c, basis, m, n, tol)
+        xn[basis[i]] = T[i][-1]
+    _guard_residual(A, b, xn)
+    x = [xn[j] * cs[j] * s for j in range(n)]
+    # 对偶：y' 解 B'ᵀ y' = c'_B（均衡后的数据），再按行因子折回；取负的行再翻号
+    yq = _duals(A, cq, basis, m, n, tol)
+    y = [yq[i] * rs[i] for i in range(m)]
     for i in flipped:
         y[i] = -y[i]
     return LPResult(OPTIMAL, x, sum(ci * xi for ci, xi in zip(c, x)), y, it1 + it2, basis)
+
+
+def _guard_residual(A: list[list[float]], b: list[float], x: list[float]) -> None:
+    """粗差守卫：基解必须满足 Ax = b、x ≥ 0（到后向误差 _RESIDUAL_GUARD）。
+
+    表格法每次主元都在累积舍入；若在极小主元上失稳，读出来的基解会整行违反约束，
+    而单纯形照样报 OPTIMAL——那是最坏的失败方式（静默给错值）。这里在均衡 + 归一后的单位里核对，
+    健康求解的残差 ~1e-14，守卫阈值留七个量级的余地，只抓粗差。
+    """
+    xmax = max((abs(v) for v in x), default=0.0)
+    for j, v in enumerate(x):
+        if v < -_RESIDUAL_GUARD * (1.0 + xmax):
+            raise RuntimeError(f"simplex lost primal feasibility: x[{j}] = {v!r} (scaled units)")
+    for i, (Ai, bi) in enumerate(zip(A, b)):
+        ax = sum(a * v for a, v in zip(Ai, x))
+        scale = abs(bi) + sum(abs(a * v) for a, v in zip(Ai, x))
+        if abs(ax - bi) > _RESIDUAL_GUARD * (1.0 + scale):
+            raise RuntimeError(f"simplex lost feasibility: row {i} residual {ax - bi!r} "
+                               f"(scaled units, row scale {scale!r})")
 
 
 def _duals(A: list[list[float]], c: list[float], basis: list[int], m: int, n: int,
