@@ -5,7 +5,6 @@
   · 解析梯度 —— 中心差分 + 收敛阶（对非线性参数）。
 """
 
-import functools
 import sys
 from pathlib import Path
 
@@ -45,14 +44,8 @@ def test_candidate_set_contains_the_true_escape_height():
         assert any(abs(z - truth) < 1e-9 for z in cands), (delta, truth, cands[:6])
 
 
-@functools.lru_cache(maxsize=None)
-def _default_profile():
-    """默认剖面（nx=4, amp=0.25, phase=0, δ=0.05..0.95）只算一次，供下面几道门共用。"""
-    return tuple(profile())
-
-
 def test_escape_profile_is_a_symmetric_ramp_with_peak_at_amplitude():
-    rows = _default_profile()
+    rows = profile()
     peak = max(rows, key=lambda r: r["h"])
     assert abs(peak["h"] - 0.25) < 1e-12 and abs(peak["delta"] - 0.5) < 1e-12
     for r in rows:
@@ -87,7 +80,7 @@ def test_phase_derivative_at_phase_zero_is_flagged_on_every_default_row():
     """默认剖面 phase=0：h(δ, φ) 关于 φ 是偶函数、在 0 处 V 形（h(+φ)=h(−φ)>h(0)），∂h/∂phase 不存在。
     旧工具在每一行报一个裸数 +0.5δ（并列盖里恰被选中那支的单侧值）。现在每行必须 differentiable=False，
     且报出的区间 = 解析 oracle 的两个单侧差商 (−0.5δ, +0.5δ)。"""
-    rows = _default_profile()
+    rows = profile()
     assert len(rows) == 19
     for r in rows:
         left, right = _analytic_one_sided(r["delta"])["dh_dphase"]
@@ -161,7 +154,7 @@ def test_dh_damp_is_two_delta_on_the_rising_branch(delta):
 
 
 def test_dual_path_value_matches_float_path():
-    for r in _default_profile():
+    for r in profile():
         assert abs(r["h"] - r["h_float"]) < 1e-12
 
 

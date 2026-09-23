@@ -14,7 +14,7 @@ from osteomorphic import interlocking_pair, interlocking_pair_generic  # noqa: E
 from eab import dual as D  # noqa: E402
 from eab.dual import Dual, convergence_order, val  # noqa: E402
 from eab.kernel3d.covers3 import cone_relint_direction, vertex_cone_contains  # noqa: E402
-from eab.kernel3d.frozen import FROZEN_KINDS, frozen_ee_sign  # noqa: E402
+from eab.kernel3d.frozen import frozen_ee_sign  # noqa: E402
 from eab.kernel3d.geom3 import (box, brute_feature_distance, norm, polyhedra_overlap,  # noqa: E402
                                 sub, tetra, unit)
 from eab.margin import (INSIDE, ON_BOUNDARY, OUTSIDE, body_distance,  # noqa: E402
@@ -180,34 +180,71 @@ def _lipschitz_worst(normal_fn, E, pairs):
     return worst
 
 
+def _legacy_global_pairs(E, delta):
+    """审查前那道门的 66 个全局点对，构造原样保留（rng = Random(11)，12 个 δ ≤ dist ≤ 3δ 的随机点两两配对）。
+
+    它检的是**非局部**点对上的 Lipschitz 上界，局部差商与闭环都不覆盖这部分，所以并入上界判据、不删。
+    对任何单位向量场它单独无牙（最小间距 > δ，见 test_inflated_normal_is_lipschitz 里对此的断言）；
+    它抓得住的是非单位的区域性错误（test_lipschitz_gate_global_pairs_have_their_own_teeth）。
+    单位向量类错误的牙在局部差商 + 下界 + 闭环。
+    """
+    rng = random.Random(11)
+    pts = []
+    while len(pts) < 12:
+        x = (rng.uniform(-2.5, 2.5), rng.uniform(-2.5, 2.5), rng.uniform(-2.5, 2.5))
+        d = distance_to_convex_entrance(E, x)
+        if delta <= d <= 3.0 * delta:
+            pts.append(x)
+    pairs = []
+    for i in range(len(pts)):
+        for j in range(i + 1, len(pts)):
+            if norm(sub(pts[i], pts[j])) > 0:
+                pairs.append((pts[i], pts[j]))
+    return pairs
+
+
 @functools.lru_cache(maxsize=None)
 def _lipschitz_setup(delta):
     A, B = _small_convex_pair()
     E = entrance_block_convex(A, B)
-    return (E,) + _lipschitz_probe_points(E, delta)
+    return (E,) + _lipschitz_probe_points(E, delta) + (_legacy_global_pairs(E, delta),)
 
 
 def _lipschitz_verdict(normal_fn, delta=0.25):
-    """定理四的双边门：最坏商 ≤ 2/δ（Lipschitz 上界）且 ≥ 0.9/δ（紧性：顶点处真实值 = 1/δ）。"""
-    E, local, loops = _lipschitz_setup(delta)
-    worst = max(_lipschitz_worst(normal_fn, E, local), _lipschitz_worst(normal_fn, E, loops))
-    return worst, (worst <= 2.0 / delta + 1e-6 and worst >= 0.9 / delta)
+    """定理四的双边门。
+
+    上界（Lipschitz，常数 2/δ，容差 1e-9 与原门相同）查**全部**点对：局部差商 ∪ 闭环 ∪ 原门 66 个全局点对；
+    紧性下界（≥ 0.9/δ，顶点处真实值 = 1/δ）只看局部 ∪ 闭环——把全局点对并进下界只会让下界更松，故不并。
+    返回 ((局部∪闭环最坏商, 全局点对最坏商), 是否通过)。
+    """
+    E, local, loops, glob = _lipschitz_setup(delta)
+    w_local = max(_lipschitz_worst(normal_fn, E, local), _lipschitz_worst(normal_fn, E, loops))
+    w_global = _lipschitz_worst(normal_fn, E, glob)
+    ok = max(w_local, w_global) <= 2.0 / delta + 1e-9 and w_local >= 0.9 / delta
+    return (w_local, w_global), ok
 
 
 def test_inflated_normal_is_lipschitz():
     """凸集投影非扩张 => 膨胀法向 Lipschitz，常数 <= 2/delta；且在 E 顶点处**紧**（商 >= 0.9/delta）。
 
-    旧门（12 个点两两求商）无牙：点对最小间距 0.42 ≫ δ，任何单位向量函数的商都 ≤ 4.81 < 8。
-    现在：局部差商 + 顶点基点 + 闭环扫描 + 双边断言；有牙见下一条测试。
+    旧门（12 个点两两求商）对单位向量场单独无牙：点对最小间距 0.42 ≫ δ，任何单位向量函数的商都 ≤ 2/0.42 ≈ 4.81 < 8
+    （下面第一组断言把这句钉死）。它的 66 个点对与 1e-9 容差**原样保留**在上界判据里；
+    牙来自新增的局部差商 + 顶点基点 + 闭环扫描 + 紧性下界，见下一条测试。
     oracle（纪律 A）：判据的两条界来自定理（投影非扩张 ⇒ ≤ 2/δ；顶点法锥内 n 以 1/dist 转动 ⇒
     顶点基点处 = 1/δ），不来自任何实现。共用：随机基点的筛选用了 distance_to_convex_entrance
     （与被测 inflated_normal 同一个最近点例程）——它只决定"在哪儿探"，不参与判据；
     顶点基点与闭环点的位置由法锥方向与三角不等式构造，不经过最近点例程。
     """
+    delta = 0.25
+    _, _, _, glob = _lipschitz_setup(delta)
+    assert len(glob) == 66
+    dmin = min(norm(sub(x, y)) for x, y in glob)
+    assert 2.0 / dmin < 4.82 < 2.0 / delta, dmin          # 旧门单独无牙的原因（任何单位向量场都过）
     fn = _true_normal if inflated_normal is _TRUE_INFLATED_NORMAL else inflated_normal
-    worst, ok = _lipschitz_verdict(fn)
-    assert worst <= 2.0 / 0.25 + 1e-6, worst
-    assert worst >= 0.9 / 0.25, worst
+    (w_local, w_global), ok = _lipschitz_verdict(fn, delta)
+    assert w_global <= 2.0 / delta + 1e-9, w_global       # 原门断言，原样
+    assert w_local <= 2.0 / delta + 1e-9, w_local
+    assert w_local >= 0.9 / delta, w_local
     assert ok
 
 
@@ -227,7 +264,30 @@ def test_lipschitz_gate_has_teeth():
     }
     for name, fn in mutants.items():
         worst, ok = _lipschitz_verdict(fn)
-        assert not ok, f"错误实现 {name} 没被抓住：worst = {worst}"
+        assert not ok, f"错误实现 {name} 没被抓住：(局部∪闭环, 全局) worst = {worst}"
+
+
+def test_lipschitz_gate_global_pairs_have_their_own_teeth():
+    """原门的 66 个全局点对不是摆设（把"局部差商与闭环不覆盖非局部点对"这句钉死）：
+
+    在最近一对全局点的一端 p0 的 1e-3 球内给法向加常向量 (10,0,0)（区域性的归一化失误）。
+    以 p0 为起点的局部差商两点同在球内（h = 2.5e-4）、偏移相同；其余探针点与闭环离 p0 都 > 0.1（实测 ≥ 0.33）
+    ⇒ 局部 ∪ 闭环的最坏商与真实实现逐位相同、落在 [0.9/δ, 2/δ] 内；只有全局点对看得见跳变（≥ 8/0.42 ≈ 19 > 2/δ）。
+    """
+    delta = 0.25
+    E, local, loops, glob = _lipschitz_setup(delta)
+    p0 = min(glob, key=lambda xy: norm(sub(xy[0], xy[1])))[0]
+    assert min(norm(sub(q, p0)) for pr in loops for q in pr) > 0.1
+    assert min(norm(sub(q, p0)) for pr in local if pr[0] != p0 for q in pr) > 0.1
+
+    def bump(E, x):
+        n = _true_normal(E, x)
+        return (n[0] + 10.0, n[1], n[2]) if norm(sub(x, p0)) < 1e-3 else n
+
+    (w_local, w_global), ok = _lipschitz_verdict(bump, delta)
+    (w_true, _), _ = _lipschitz_verdict(_true_normal, delta)
+    assert w_local == w_true and 0.9 / delta <= w_local <= 2.0 / delta, (w_local, w_true)   # 局部 ∪ 闭环看不见
+    assert w_global > 2.0 / delta and not ok, w_global         # 全局点对抓住
 
 
 def test_inflation_turns_a_set_valued_normal_into_a_single_valued_one():
@@ -273,8 +333,10 @@ def test_margin_gap_is_differentiable_in_delta_and_geometry():
     sep = A.translated(off)
     assert polyhedra_overlap(sep, L, 1e-12) == -1
     _, lab = body_distance(sep, L)
-    # 不再把"冻结路径只支持 VF/FV/EE/VV3"写成前置条件；全部种类的批量门见 tests/test_frozen_lowdim.py
-    assert lab is not None and lab[0] in FROZEN_KINDS
+    # 原断言原样保留（不放松）：这个手选偏移落在 VF/FV 并列集上（8 个等距盖全是 VF/FV）。
+    # 它描述的是本测试的输入，不是冻结路径的能力边界——VE3/EV3 已有分支，
+    # 全部种类（含 VE3/EV3）的批量门见 tests/test_frozen_lowdim.py。
+    assert lab is not None and lab[0] in ("VF", "FV", "EE", "VV3")
     sign = 1.0
     if lab[0] == "EE":
         sign = frozen_ee_sign(sep, L, (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2]))
