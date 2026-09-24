@@ -254,11 +254,12 @@ def test_homogeneous_system_is_solved_and_its_ray_certified():
 
 @pytest.mark.parametrize("W", [1.0, 1e6, 1e10, 1e12, 1e15, 1e-12])
 def test_objective_magnitude_does_not_hide_an_improving_column(W):
-    """G6 critical 19 的 LP 级复现：max α s.t. W·α + s = W ⇒ α = 1。旧实现目标只随列因子缩放
-    （c_α·2^−e ~ 1/W），入基检验用绝对 1e-10：W ≳ 1e10 时 α 列永远进不了基，报 OPTIMAL 且 α = 0。"""
-    r = maximize([[W, 1.0]], [W], [1.0, 0.0])
+    """G6 critical 19 的 LP 级复现：变量序 (s, α)，max α s.t. s + W·α = W ⇒ α = 1。
+    松弛列排在前面，旧实现（Bland）一阶段就停在 {s} 上，二阶段 α 列的目标系数只随列因子缩放（c_α·2^−e ~ 1/W），
+    入基检验用绝对 1e-10：W ≳ 1e10 时 α 列永远进不了基，报 OPTIMAL 且 α = 0。"""
+    r = maximize([[1.0, W]], [W], [0.0, 1.0])
     assert r.status == OPTIMAL
-    assert r.x[0] == pytest.approx(1.0, rel=1e-12), (W, r.x)
+    assert r.x[1] == pytest.approx(1.0, rel=1e-12), (W, r.x)
     assert r.obj == pytest.approx(1.0, rel=1e-12)
     assert r.y[0] * W == pytest.approx(1.0, rel=1e-12)          # 对偶：y·W ≥ c_α = 1 取等
 
