@@ -373,5 +373,595 @@
    "summary": "No review exercised any cross-layer path end to end: L1→L3 was only run on synthetic osteomorphic/box inputs (limit_load never run on the cb2_sliding/cb2_locked fixtures whose names carry a free mechanical verdict, nor on bb52 2D geometry through kernel2d covers even though limit.py supports 2D wrenches), readers→kernel (tools/run_bdda_kernel.py, needs df_rebuilt.exe) was never executed, and L2 margin_contacts was never fed into L3 as 'virtual contact forces' despite 定理三 claiming exactly that reuse.",
    "why": "Each layer's gates pass on inputs built inside that layer; the seams (contacts_from_covers with non-zero window, margin→limit, fixture geometry→covers→LP) are where the reviews already found silent value errors (gap/2 line-of-action shift, false 'infeasible', VE3/EV3 frozen-path crash), so an integration failure on a real fixture would currently go unnoticed."
   }
- ]
+ ],
+ "errata": [
+  {
+   "target": "confirmed[5].fix",
+   "kind": "sign_error",
+   "text": "The code snippet picks the B vertex for A's faces with `ib = max(range(len(B.verts)), key=lambda i: dot(n, B.verts[i]))`, n = A.face_normal(fa). That is a sign error. For an A face with outward normal m, E = B (+) (-A) has facet normal -m, and the supporting B vertex is argmin_b m.b (equivalently argmax of (-m).b); the gap is (-m).(a_f + x - b*). The prose in reports/audit_20260921.md ('反之亦然') was ambiguous in the same place and is clarified there.",
+   "correct_form": "m = A.face_normal(fa); ib = min(range(len(B.verts)), key=lambda i: dot(m, B.verts[i])); gap = dot(neg(m), sub(add(A.verts[A.faces[fa][0]], x), B.verts[ib]))  -- as implemented in src/eab/kernel3d/covers3.py::support_gaps3",
+   "evidence": "The M0 fixer (g2-geom, 273c984) recorded that the literal snippet in place of the fix turns 26 gates red, including all six random-pair G0 tests and box/box. Re-run during the 2026-09-24 doc pass with the snippet patched into covers3.support_gaps3 via a pytest plugin (scratchpad audit_literal_c5_plugin.py): at 273c984 in a fresh clone 31 failed / 480 passed; at main 8376ec2 31 failed / 1178 passed. In both runs the 5 reds beyond 26 are tests/test_covers3_membership.py::test_support_gaps_are_supporting_half_spaces[0-4], which tests support_gaps3 directly. That test was NOT added later: it was added in 273c984 together with the fix (git log -S test_support_gaps_are_supporting_half_spaces -- tests/ lists only 273c984). So the fixer's '26' either left these 5 out or was counted before the test was written; the record does not say which. The other 26 match (tests/test_kernel3d_covers.py::test_g0_convex3_random_pairs x6, ::test_g0_gate_has_teeth_flipped_normals_are_caught, and 19 cases in tests/test_covers3_membership.py incl. test_g0_convex3_box_vs_box_runs_and_passes and test_g0_convex3_tetra_vs_box_has_zero_mismatches).",
+   "command": "cd <clone at 273c984 or D:/eab-kernel> && cp <scratchpad>/audit_literal_c5_plugin.py . && PYTHONPATH='src;.' python -X utf8 -m pytest -q -p no:cacheprovider -p audit_literal_c5_plugin",
+   "date": "2026-09-24"
+  },
+  {
+   "target": "confirmed[23].fix, confirmed[27].fix",
+   "kind": "incomplete_fix",
+   "text": "Both fixes propose implementing G0 vote 2 by subtracting only FF-degenerate normals (pairs of antiparallel faces of A and B) from the hull's facet set. That is not enough: FE-degenerate facets (a face of one body parallel to an edge of the other) also have no strict label and would be reported as 'hull_only', turning vote 2 falsely red on non-generic inputs. The implementation (src/eab/kernel3d/g03.py::facet_vote3) classifies each hull facet by the affine dimensions of A's and B's support sets and subtracts every non-strict (dimA, dimB) combination.",
+   "evidence": "Pair tetra (0,0,0),(1,0,0),(0,1,1),(0,-1,1) vs box(half=1): hull facets by (dimA, dimB) = {(0,2): 3, (2,1): 3, (1,2): 2, (1,1): 2, (2,2): 1}, i.e. 1 FF + 5 FE degenerate. Subtracting FF only would leave 5 spurious differences. g0_convex3 on this pair (samples=200, seed=0): facet_local 5 == facet_global 5, facet_degenerate 6, 0 mismatches, passed True.",
+   "command": "python -X utf8 -c \"import sys; sys.path.insert(0,'src'); from eab.kernel3d.geom3 import box, tetra; from eab.kernel3d.g03 import g0_convex3; r=g0_convex3(tetra((0.,0.,0.),(1.,0.,0.),(0.,1.,1.),(0.,-1.,1.)), box(half=(1.,1.,1.)), samples=200, seed=0); print(r.facet_local, r.facet_global, r.facet_degenerate, r.passed)\"",
+   "date": "2026-09-24"
+  },
+  {
+   "target": "confirmed[25].fix",
+   "kind": "superseded_recommendation",
+   "text": "The fix proposes the upper bound `worst <= 2.0/delta + 1e-6`. The original gate used 1e-9; the first M0 fix adopted 1e-6, the verifier flagged that as a loosened assertion, and the rework restored 1e-9 (the real worst quotients are 4.0 and 1.23 against a bound of 8, so 1e-6 was never needed). The 66 global point pairs of the original gate were also restored alongside the new local/tightness checks.",
+   "evidence": "tests/test_margin.py lines 223, 245, 246 at 77600c9 and at 8376ec2 assert `<= 2.0 / delta + 1e-9`; gates tests/test_margin.py::test_inflated_normal_is_lipschitz, ::test_lipschitz_gate_has_teeth, ::test_lipschitz_gate_global_pairs_have_their_own_teeth (green in the 1174-test run at 77600c9 and in the 1209-test run at 8376ec2).",
+   "command": "grep -n \"2.0 / delta + 1e-\" tests/test_margin.py",
+   "date": "2026-09-24"
+  },
+  {
+   "target": "confirmed[5].evidence",
+   "kind": "line_reference",
+   "text": "Says reports/phase2_3d_kernel.md 'line 30' lists 堆叠方块（bdda3d cb2 同构）; at the audited commit b399148 that row is line 29 (line 30 is the 楔-楔交叉 row). All line numbers in this file refer to b399148; the 2026-09-24 doc corrections shift line numbers in reports/phase2_3d_kernel.md, reports/g2_three_dimensional.md and reports/bb52_g1_first_look.md.",
+   "command": "git show b399148:reports/phase2_3d_kernel.md | sed -n 29,30p",
+   "date": "2026-09-24"
+  },
+  {
+   "date": "2026-09-24",
+   "where": "m0_resolution.items.GAP5.note",
+   "what": "said the bdda3d fixtures carry no friction/cohesion parameters; every entrance carries fa/coh/tens"
+  }
+ ],
+ "m0_resolution": {
+  "date": "2026-09-24",
+  "main": "094861c",
+  "test_baseline": "8376ec2",
+  "suite": "1209 passed at the test baseline 8376ec2 (python -X utf8 -m pytest -q -p no:cacheprovider), in the main tree and in a fresh clone that inherits the system core.autocrlf=true; 1174 passed at 77600c9. main is now 094861c, which changes only line 41 of the src/eab/limit.py module docstring (the honesty clause now points at tests/test_end_to_end_cb2.py::test_failure_mode_is_read_off_invariants_of_the_dual_face and says 'has rotation' is an invariant only when every pure translation's upper bound strictly exceeds alpha); at 094861c the full suite is still 1209 passed in the main tree and in a fresh clone. After the b1bbd27 merge, 6f157ac, b26d7f5, 77600c9, 8376ec2 and 094861c (five commits; git log --oneline --no-merges b1bbd27..094861c) all went straight to main without an independent verifier. G6 (independent six-lens re-audit, the M0 exit gate) has not been run; nothing in this record has passed G6.",
+  "status_legend": {
+   "verified": "fixed, and an independent verifier saw the gates red on reverted code and green after the fix (verify_items / reverify_items of the M0 record)",
+   "fixed": "fixed, but the last round was not independently re-verified",
+   "partial": "part of the plan item done",
+   "open": "not done"
+  },
+  "exit_criterion": "M0 exits only after G6: a rerun of the six-lens audit with 0 critical and 0 major; not yet run as of 2026-09-24 (main 094861c; test baseline 8376ec2).",
+  "items": {
+   "C0": {
+    "md_label": "C1",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_limit_scale.py::test_interlock_is_never_falsely_infeasible_on_the_audited_cells",
+     "tests/test_limit_scale.py::test_plan_regression_cells_equal_patton",
+     "tests/test_lp_scale.py::test_status_is_invariant_to_rhs_scale_even_at_a_tight_tolerance"
+    ],
+    "note": "Verifier caveats: test_slide_topple_closed_form_holds_across_units stays green on reverted code (control, no teeth for this defect); test_old_tight_lp_tolerance_no_longer_breaks_feasibility is red on reverted code only by TypeError (the lp_tol kwarg does not exist there), not a genuine red. Neither is listed as a gate here."
+   },
+   "C1": {
+    "md_label": "M1",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_limit_duality.py::test_pure_cohesion_duality_gap_and_complementarity_vanish",
+     "tests/test_limit_duality.py::test_friction_plus_cohesion_sliding_duality"
+    ]
+   },
+   "C2": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED; test reorder listed as possible weakening -> repair refuted_on_recheck -> reverify VERIFIED",
+    "gates": [
+     "tests/test_lp.py::test_against_brute_force_basic_feasible_solutions",
+     "tests/test_lp.py::test_unbounded_oracle_has_teeth"
+    ]
+   },
+   "C3": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407",
+     "1fedb77"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED; old k>=8 floor listed as relaxed -> repair fixed (restored verbatim) -> reverify VERIFIED",
+    "gates": [
+     "tests/test_limit.py::test_three_d_cone_linearisation_is_conservative_within_the_inradius_bound",
+     "tests/test_limit.py::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k"
+    ]
+   },
+   "C4": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_limit_contacts.py::test_toppling_capacity_is_independent_of_the_gap"
+    ]
+   },
+   "C5": {
+    "md_label": "C2",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x",
+     "tests/test_covers3_membership.py::test_membership_axis_aligned_boxes_does_not_crash",
+     "tests/test_covers3_membership.py::test_g0_convex3_box_vs_box_runs_and_passes"
+    ],
+    "note": "The audit's own fix snippet has a sign error; see errata[0]."
+   },
+   "C6": {
+    "md_label": "M4",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_geom3_face_polygon.py::test_all_five_call_sites_route_through_the_single_helper",
+     "tests/test_geom3_face_polygon.py::test_rod_through_concave_notch_is_separated"
+    ]
+   },
+   "C7": {
+    "md_label": "M2",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_geom3_face_polygon.py::test_brute_distance_and_vf_cover_over_the_L_arm",
+     "tests/test_geom3_face_polygon.py::test_probe_in_front_of_merged_concave_side_face_has_a_face_cover"
+    ]
+   },
+   "C8": {
+    "md_label": "M6",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_geom3_merge.py::test_vertex_pinched_coplanar_faces_do_not_hang",
+     "tests/test_geom3_merge.py::test_u_prism_prong_ends_stay_separate"
+    ]
+   },
+   "C9": {
+    "md_label": "M5",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_geom3_overlap_witness.py::test_thin_notch_bite_is_detected",
+     "tests/test_geom3_overlap_witness.py::test_audit_case_volume_is_0_012"
+    ]
+   },
+   "C10": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_covers3_strict_lowdim.py::test_parallel_edge_edge_nearest_pair_ve3_is_boundary_state",
+     "tests/test_covers3_strict_lowdim.py::test_distance_completeness_does_not_depend_on_strict"
+    ]
+   },
+   "C11": {
+    "md_label": "M9",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_convex_400"
+    ]
+   },
+   "C12": {
+    "md_label": "M7",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks"
+    ]
+   },
+   "C13": {
+    "md_label": "M11",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_interlock_sensitivity.py::test_phase_derivative_at_phase_zero_is_flagged_on_every_default_row",
+     "tests/test_interlock_sensitivity.py::test_differentiability_flag_agrees_with_one_sided_quotients"
+    ]
+   },
+   "C14": {
+    "md_label": "M8",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_margin_penetration.py::test_penetration_is_reported_as_a_violated_margin"
+    ]
+   },
+   "C15": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_interlock_escape.py::test_unverified_escape_branch_is_gone"
+    ]
+   },
+   "C16": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_dual.py::test_atan2_width_mismatch_is_an_error",
+     "tests/test_dual.py::test_pow_of_a_negative_base_to_a_fractional_power_is_an_error"
+    ]
+   },
+   "C17": {
+    "md_label": "M10",
+    "status": "fixed",
+    "group": "g4-legacy",
+    "commits": [
+     "53ac9c1",
+     "36103be",
+     "6f157ac"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED; window 1.0 -> 1e-6 listed as relaxed -> repair fixed (VF/FV band) -> reverify NO_TEETH at the g4 merge b1bbd27 (band tooth only exercised by covers appended after enumeration) -> 6f157ac through-enumerator tooth, committed straight to main after the merge, not reviewed by an independent verifier",
+    "gates": [
+     "tests/test_g2_bdda3d.py::test_g2_gate_red_on_fabricated_ee_legacy_entrance",
+     "tests/test_g2_bdda3d.py::test_g2_gate_red_on_extra_kernel_ee_cover",
+     "tests/test_g2_bdda3d.py::test_g2_band_catches_a_real_kernel_defect_through_enumeration"
+    ],
+    "note": "6f157ac was not reviewed by an independent verifier; only its author and the 2026-09-24 doc pass ran the verifier's mutation. Mutation check (doc pass): enumerating with window=window instead of window=ewin in tools/g2_bdda3d.py::compare gives tests/test_g2_bdda3d.py 3 failed (the three new cases) / 55 passed; unmutated 58 passed."
+   },
+   "C18": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g4-legacy",
+    "commits": [
+     "53ac9c1"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_g2_bdda3d.py::test_g2_duplicate_vertices_are_aliased_and_reconcile",
+     "tests/test_g2_bdda3d.py::test_g2_non_corner_vertex_is_a_clear_error"
+    ]
+   },
+   "C19": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g4-legacy",
+    "commits": [
+     "96c6379"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_kernel2d_review.py::test_c19_zero_length_edge_is_a_clear_error_not_zerodivision",
+     "tests/test_kernel2d_review.py::test_c19_loaders_strip_every_cyclic_consecutive_duplicate"
+    ]
+   },
+   "C20": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g4-legacy",
+    "commits": [
+     "a87d47e",
+     "36103be"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED; removed tautology listed as possible weakening -> repair refuted_on_recheck -> reverify VERIFIED",
+    "gates": [
+     "tests/test_contact_record.py::test_c20_bdda3d_np_entrances_on_different_triangles_have_distinct_keys",
+     "tests/test_readers_roundtrip.py::test_reader_key_gate_has_teeth_where_the_retired_assert_had_none"
+    ]
+   },
+   "C21": {
+    "md_label": "merged into C1 (M12-M15)",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_limit_scale.py::test_interlock_is_never_falsely_infeasible_on_the_audited_cells",
+     "tests/test_limit_scale.py::test_patton_sweep_is_optimal_and_inside_the_inscribed_cone_bracket",
+     "tests/test_limit.py::test_three_d_cone_linearisation_is_conservative_within_the_inradius_bound[7]"
+    ],
+    "note": "Verifier record: with the fix reverted, test_interlock_is_never_falsely_infeasible_on_the_audited_cells fails 9/9 ('infeasible'), test_patton_sweep 3 cells, and the k=7 cone cell fails ('infeasible'). The fixer's listed test_old_tight_lp_tolerance_no_longer_breaks_feasibility fails on reverted code only by TypeError (no lp_tol kwarg), not a genuine red, so it is not listed as a gate."
+   },
+   "C22": {
+    "md_label": "merged into Minor (test_lp)",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_lp.py::test_random_gate_exercises_both_branches_as_counted"
+    ]
+   },
+   "C23": {
+    "md_label": "merged into M3 (M12-M15)",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_covers3_g0_vote2.py::test_vote2_has_teeth_every_single_dropped_facet_is_caught"
+    ],
+    "note": "The audit's fix (subtract FF only) is incomplete; see errata[1]."
+   },
+   "C24": {
+    "md_label": "merged into M1 (M12-M15)",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_limit_duality.py::test_check_duality_rejects_a_mechanism_that_ignores_cohesion_rows"
+    ]
+   },
+   "C25": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a",
+     "1529681"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED; tolerance 1e-9 -> 1e-6 and dropped global pairs listed as relaxed -> repair fixed (restored) -> reverify VERIFIED",
+    "gates": [
+     "tests/test_margin.py::test_inflated_normal_is_lipschitz",
+     "tests/test_margin.py::test_lipschitz_gate_has_teeth",
+     "tests/test_margin.py::test_lipschitz_gate_global_pairs_have_their_own_teeth"
+    ],
+    "note": "See errata[2]."
+   },
+   "C26": {
+    "md_label": "merged into Minor (cone k)",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_limit.py::test_three_d_cone_bound_is_tight_for_loads_in_every_direction"
+    ]
+   },
+   "C27": {
+    "md_label": "M3",
+    "status": "verified",
+    "group": "g2-geom",
+    "commits": [
+     "273c984"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_covers3_g0_vote2.py::test_vote2_local_facets_equal_hull_facets_on_random_pairs",
+     "tests/test_covers3_g0_vote2.py::test_vote2_has_teeth_a_spurious_label_is_caught"
+    ],
+    "note": "See errata[1]."
+   },
+   "C28": {
+    "md_label": "merged into M8 (M12-M15)",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_margin.py::test_theorem_two_gate_has_teeth_shrinking_the_nearest_point_is_caught"
+    ]
+   },
+   "C29": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g1-lp",
+    "commits": [
+     "b754407"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED; deleted 'monotone' docstring listed -> repair refuted_on_recheck (claim is false, not restored) -> reverify VERIFIED",
+    "gates": [
+     "tests/test_limit.py::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k"
+    ]
+   },
+   "C30": {
+    "md_label": "Minor",
+    "status": "verified",
+    "group": "g3-theory",
+    "commits": [
+     "f52551a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_dual.py::test_implicit_float_conversion_of_a_dual_is_a_type_error",
+     "tests/test_interlock_sensitivity.py::test_generic_block_default_sin_keeps_the_phase_derivative"
+    ]
+   },
+   "GAP0": {
+    "status": "verified",
+    "group": "g4-legacy",
+    "commits": [
+     "42d8c1b",
+     "36103be"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED; deleted sign(min gap) assertion listed -> repair fixed (exit completeness on the 657 overlapping draws) -> reverify VERIFIED",
+    "gates": [
+     "tests/test_bb52_g1.py::test_g0_distance_completeness_real_concave_geometry",
+     "tests/test_bb52_g1.py::test_g0_exit_completeness_real_concave_geometry",
+     "tests/test_bb52_g1.py::test_g0_rerun_replays_the_original_1186_translations",
+     "tests/test_bb52_g1.py::test_g0_gate_no_false_alarm_on_thin_arm_L_notch",
+     "tests/test_bb52_g1.py::test_g0_gate_no_false_negative_on_wedge_in_channel"
+    ],
+    "note": "Rerun (same 1260 translations, brute polygons_overlap truth): separated 603, distance completeness 603/603 (error 0); overlapping 657, exit completeness 657/657 (worst witness 1.8e-15); touching 0. Retired rule fails both ways: L-notch 11 false alarms of 60, wedge-in-channel 15 false negatives of 53. Concave membership itself remains ungated (milestone M3)."
+   },
+   "GAP1": {
+    "status": "open",
+    "milestone": "M2",
+    "gates": [],
+    "note": "No 3D first entrance: `grep -rn \"首入\\|first_entrance\" src/eab/kernel3d` returns nothing at 77600c9 or at 8376ec2. reports/phase2_3d_kernel.md now marks the claim withdrawn."
+   },
+   "GAP2": {
+    "status": "verified",
+    "group": "g4-legacy",
+    "commits": [
+     "c1326a0"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_fixture_provenance.py::test_every_fixture_file_is_hash_gated",
+     "tests/test_fixture_provenance.py::test_bdda3d_gate_has_teeth"
+    ],
+    "note": "61 fixture files, 61 PROVENANCE entries."
+   },
+   "GAP3": {
+    "status": "open",
+    "gates": [],
+    "note": "docs/canon_map.md (plan M0.e) is not in 8376ec2 nor in the current main 094861c (git cat-file -e HEAD:docs/canon_map.md fails); it is committed together with this batch of M0 wrap-up documents and has not been through G6, so GAP3 stays open until G6 reviews it (its content was not checked in this record). Gate docstrings now state which primitives each oracle shares (discipline A), which is not a canon-to-code map."
+   },
+   "GAP4": {
+    "status": "verified",
+    "group": "g4-legacy",
+    "commits": [
+     "da5691a"
+    ],
+    "verdicts": "fix fixed -> verify VERIFIED",
+    "gates": [
+     "tests/test_tf_reader.py::test_tf_census_recomputed_through_the_readers",
+     "tests/test_tf_reader.py::test_tf_census_gate_has_teeth",
+     "tests/test_tf_reader.py::test_tf_mode_states_4_5_6_are_unverified_not_asserted"
+    ]
+   },
+   "GAP5": {
+    "status": "partial",
+    "commits": [
+     "b26d7f5",
+     "8376ec2"
+    ],
+    "verdicts": "not independently verified (both commits went straight to main)",
+    "gates": [
+     "tests/test_end_to_end_cb2.py::test_axial_push_slides_or_topples_exactly_as_closed_form",
+     "tests/test_end_to_end_cb2.py::test_diagonal_push_uses_the_sqrt2_tipping_line",
+     "tests/test_end_to_end_cb2.py::test_failure_mode_is_read_off_invariants_of_the_dual_face",
+     "tests/test_end_to_end_cb2.py::test_capacity_is_independent_of_the_moment_reference_point"
+    ],
+    "note": "3D path fixture -> covers -> contacts -> limit_load done (115 cases at 8376ec2, pen-and-paper closed forms; the diagonal boundary mu = sqrt(2) itself is a cell since 8376ec2). Not done: bb52 2D geometry -> 2D limit analysis. The plan's 'sliding case translates, locked case carries more' cannot be read from the fixtures: every entrance carries joint parameters (fa = 35 deg; cb2 coh = tens = 0, cb_bond coh = 20, tens = 3), but cb2_locked and cb2_sliding are field-for-field identical apart from `case`, and the step-0 export has no load or drive (corrected 2026-09-24: this note previously said the fixtures carry no friction/cohesion parameters)."
+   }
+  },
+  "found_during_m0": [
+   {
+    "id": "NEW-CRLF",
+    "commit": "cc5d7cf",
+    "summary": "10 Phase 0 fixtures were stored LF-normalised (Git for Windows system core.autocrlf=true) while PROVENANCE.json hashed the CRLF originals; the provenance gate was green only in this machine's working tree (stat cache), red in any fresh clone. All six audit lenses ran in the main tree. Rule established: a fresh worktree/clone baseline must be all green.",
+    "check": "Fresh clone (inherits system autocrlf=true): at b399148 tests/test_fixture_provenance.py 10 failed / 49 passed; at 77600c9 66 passed, full suite 1174 passed; at 8376ec2 and at 094861c full suite 1209 passed.",
+    "sibling_config": "git config --system core.autocrlf = true; --local core.autocrlf = false in D:/b-DDA, C:/3DDA/3d-DDA-work (real 3DDA repo; C:/3DDA/.git is an empty directory), D:/3-b-dda and D:/eab-kernel.",
+    "erratum": "Correction (2026-09-24): the cc5d7cf message says '3DDA and 3-b-dda still inherit the system true'. For 3DDA that was wrong, not merely outdated: it checked the empty C:/3DDA/.git; the real repo C:/3DDA/3d-DDA-work has had local core.autocrlf=false since 09-18 (.git/config mtime 2026-09-18 16:52, before cc5d7cf at 09-23 23:53). For 3-b-dda the value at commit time cannot be re-checked; it is false now (.git/config mtime 2026-09-24 01:18, after cc5d7cf), consistent with 'later set by the user'. The pushed commit message is not rewritten."
+   },
+   {
+    "id": "NEW-LP-NUMERICS",
+    "commit": "b754407",
+    "summary": "Three LP numerical defects found by the discipline-B scale grid: (a) 'optimal' returned from a numerically broken tableau (Ax != b); (b) column scaling by 1e2/1e4 gave a false 'infeasible'; (c) phase-1 'unbounded' from rounding noise reported as infeasible. Fixed by power-of-two row/column equilibration, rhs normalisation and a residual guard that raises RuntimeError.",
+    "gates": [
+     "tests/test_lp_scale.py::test_numerical_breakdown_raises_instead_of_returning_a_wrong_optimum",
+     "tests/test_lp_scale.py::test_column_scaling_does_not_change_the_answer",
+     "tests/test_lp_scale.py::test_phase_one_rounding_noise_is_not_reported_as_infeasible",
+     "tests/test_limit_duality.py::test_three_d_cohesive_block_duality_in_general_direction",
+     "tests/test_lp_fail_loud.py::test_answer_is_correct_or_the_solver_raises",
+     "tests/test_lp_fail_loud.py::test_default_tolerance_answers_the_audited_case"
+    ],
+    "unverified": "The fixer's original wrong values (residual ~1e3, capacity 1.46x the analytic upper bound) were not reproduced on old code in the doc pass.",
+    "followup_commit": "8376ec2",
+    "contract": "8376ec2 adds tests/test_lp_fail_loud.py (33 cases, straight to main, not independently verified) pinning 'correct answer or RuntimeError, never a silent wrong optimum': lp_tol {None, 1e-9, 1e-12, 1e-14} x 4 load/geometry scales x k {5, 16} = 32 cells; at 8376ec2 6 cells raise, all with explicit lp_tol 1e-12 or 1e-14 (including the cohesive x1e4 block), which the contract allows; every default-tolerance and 1e-9 cell answers inside the analytic bracket. At the default tolerance the audited cohesive x1e4 case must answer, not raise."
+   },
+   {
+    "id": "NEW-G0-VOTE3-DEGENERATE",
+    "commit": "273c984",
+    "summary": "3D G0 vote 3 compared all vertices of the hull triangulation, including coplanar/collinear non-extreme points, so it was red on every degenerate pair: tetra/box 19 vs 13, box/box 26 vs 8. Hidden because membership crashed first and tests used general-position pairs only.",
+    "gates": [
+     "tests/test_covers3_membership.py::test_g0_vote3_counts_only_extreme_points_on_degenerate_input"
+    ],
+    "check": "len(convex_hull_3d(diffs).verts) vs len(_hull_extreme_vertices(hull)): tetra/box(half 1) 19/13; box(half 1)/box(half (2,0.5,1.5)) 26/8."
+   },
+   {
+    "id": "NEW-C17-NO-TEETH",
+    "commit": "6f157ac",
+    "summary": "Second-round verification of C17 at the g4 merge (b1bbd27) found the restored VF/FV band tooth reachable only by covers appended after enumerate_covers3; reverting the enumeration window left the suite green (NO_TEETH). 6f157ac records enumerated_window, asserts it, and adds a tooth that injects a real kernel defect (vertex_cone_contains always 0). 6f157ac went straight to main after the merge and was not reviewed by an independent verifier.",
+    "gates": [
+     "tests/test_g2_bdda3d.py::test_g2_band_catches_a_real_kernel_defect_through_enumeration"
+    ],
+    "check": "Mutation window=ewin -> window=window in compare(): 3 failed / 55 passed; unmutated 58 passed."
+   },
+   {
+    "id": "NEW-E2E-SYMMETRY",
+    "commit": "b26d7f5",
+    "summary": "Writing the end-to-end gate exposed (i) a non-unique dual mechanism: with the octagonal inscribed cone and the push on a generator the solver returns tangential velocity at -22.5 deg (vy/vx = -tan(pi/8); rechecked at 8376ec2 for mu = 0.3/0.4/0.95); capacity and duality gap exact. (ii) cb2's four contacts are centrally symmetric about the origin, which hides 'contact moments negated' and 'contact columns ignore the reference point'; a reference-point invariance gate with origins (5,-3,2) and (-0.7,0.4,-11) was added. b26d7f5's 'invariants' included 'sliding has no rotation', which is NOT an invariant of the optimal dual face (counterexample (1,0,0.4,0.117,0,-0.293) at mu = 0.4, recorded in the test docstring). 8376ec2 deleted test_failure_mode_is_read_off_the_dual_mechanism and replaced it with test_failure_mode_is_read_off_invariants_of_the_dual_face: an independent rigid-body power computation (does not call eab.limit.wrench) asserts the returned mechanism is an optimal dual; for sliding, translation plus associated dilation T=(1,0,mu,0,0,0) is also optimal; for toppling, rotation about the front edge R=(0,0,1,0,1,0) is optimal and every pure translation has upper bound >= mu*W > alpha, so 'has rotation' is a genuine invariant only when toppling; at mu = 1 both tie. Neither commit was reviewed by an independent verifier.",
+    "gates": [
+     "tests/test_end_to_end_cb2.py::test_capacity_is_independent_of_the_moment_reference_point",
+     "tests/test_end_to_end_cb2.py::test_failure_mode_is_read_off_invariants_of_the_dual_face"
+    ],
+    "check": "Mutating only the contact columns (eab.limit.wrench patched after collection; scratchpad e2e_mutants.py). At b26d7f5 (fresh clone): moments negated -> 6 failed / 107 passed (4 reference-point + 2 test_failure_mode_is_read_off_the_dual_mechanism); reference point ignored -> 4 failed / 109 passed, all reference-point. At 8376ec2: both mutations -> 4 failed / 111 passed, all reference-point.",
+    "followup_commit": "8376ec2",
+    "docstring_followup_commit": "094861c",
+    "docstring_followup": "094861c (straight to main, not independently verified) changes only line 41 of the src/eab/limit.py module docstring: the honesty clause, which still pointed at the deleted test_failure_mode_is_read_off_the_dual_mechanism and listed 'whether it rotates' as an unconditional invariant, now points at test_failure_mode_is_read_off_invariants_of_the_dual_face and says rotation is an invariant only when every pure translation's upper bound strictly exceeds alpha (toppling). git grep read_off_the_dual_mechanism HEAD -- '*.py' returns nothing.",
+    "erratum": "Correction (2026-09-24): the b26d7f5 commit message and its test docstring said the moment-negation mutation left every other test in the file green; at b26d7f5 that was wrong. With the reference point at the symmetric centre the mutation only permutes the columns (the same LP); the 2 sliding cells it turned red were the brittle 'no rotation' assertion picking up a different vertex, not a caught defect. The only real tooth for this mutation is the reference-point gate."
+   }
+  ]
+ }
 }
