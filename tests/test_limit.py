@@ -4,7 +4,8 @@
   1. **解析解**：滑动/倾覆的经典闭式；锯齿节理的 Patton 剪胀律；
   2. **对偶自校验**：静力下限 == 运动上限，机构容许、互补成立；
   3. **跨层交叉验证**：无摩擦互锁块的横向承载比，必须等于 L5 逃逸剖面给出的剪胀比
-     ——两条毫不相干的计算路径（静力 LP vs 入口块几何 + 对偶数）。
+     ——两条路径的**求解部分**互不共用（静力 LP vs 入口块几何 + 对偶数），但共用块体生成与盖枚举
+     （2026-09-24 订正，见下面那道门的 docstring）。
 """
 
 import sys
@@ -108,7 +109,13 @@ def _interlock_capacity(amp, mu, k=16, N=100.0):
 @pytest.mark.parametrize("amp", [0.10, 0.20, 0.25, 0.30])
 def test_frictionless_interlock_capacity_equals_the_dilatancy_ratio(amp):
     """**跨层交叉验证**：静力极限分析给出的横向承载比，必须等于 L5 由入口块几何 +
-    对偶数算出的剪胀比 tanψ = 2·amp。两条计算路径毫无共用代码。
+    对偶数算出的剪胀比 tanψ = 2·amp。
+
+    订正（2026-09-24，G6 minor 20）：旧文"两条计算路径毫无共用代码"不成立。两条路径的**求解部分**互不共用
+    （静力 LP `limit_load` 对冻结盖逃逸高度 `escape_height_covers`），但**共用块体生成与盖枚举**：
+    G6 用 sys.setprofile 实测两条路径共同调用 34 个函数（tools/osteomorphic.interlocking_pair、
+    covers3.enumerate_covers3 / vf_cover / fv_cover / ee_cover / edge_arc_contains 等、geom3 的 21 个拓扑与谓词）。
+    所以盖层的缺陷可以同时打到两边。本门的硬度在于**两侧各自对闭式 2·amp 核对**，不在于路径独立。
     """
     r, *_ = _interlock_capacity(amp, 0.0)
     assert r.status == "optimal"

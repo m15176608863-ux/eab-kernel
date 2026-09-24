@@ -13,7 +13,9 @@
 尺度 荷载 ×1、×100、×1e4，几何 ×1e-3（窗口与盖枚举 tol 同比缩放）。
 """
 
+import sys
 from math import cos, pi
+from pathlib import Path
 
 import pytest
 
@@ -98,3 +100,55 @@ def test_midpoint_and_b_side_shift_the_line_of_action_by_the_documented_amount(g
 def test_unknown_side_is_rejected():
     with pytest.raises(ValueError):
         _hovering_block(0.1, 1.0, side="left")
+
+
+# ---------------------------------------------------------------- G6 major 23：盖 → 接触不带黏聚
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def _cb2_covers():
+    sys.path.insert(0, str(ROOT / "tools"))
+    from g2_bdda3d import load_case
+
+    _, _, blocks, _ = load_case(sorted((ROOT / "fixtures" / "bdda3d").glob("cb2_*.json"))[0])
+    return [c for c in enumerate_covers3(blocks[2], blocks[1], window=1e-6, tol=1e-9) if c.in_extent]
+
+
+@pytest.mark.parametrize("c", [1.0, 1e-9, 1e5])
+def test_cohesion_through_covers_is_refused_on_cb2(c):
+    """G6 major 23：cb2 的四个 VF 盖各带代表面积 16（整张下块顶面），真实接触面片合计只有 4（上块底面）。
+    旧实现把 16 原样当每个角点的黏聚面积：W = 10、μ = 0.3、c = 1 时 α = 67 而非 7（黏聚项高估 16 倍，
+    不安全一侧）。面片分配实现之前，cohesion > 0 必须 ValueError。"""
+    covs = _cb2_covers()
+    assert len(covs) == 4 and {cv.kind for cv in covs} == {"VF"}
+    assert all(cv.area == 16.0 for cv in covs)            # 拒绝的理由：area 是整张面，不是面片
+    with pytest.raises(ValueError, match="cohesion"):
+        contacts_from_covers(covs, mu=0.3, cohesion=c)
+
+
+def test_ee_cover_with_cohesion_is_refused_not_silently_dropped():
+    """EE 盖的 area 是 None，旧实现 `c.area or 0.0` 把它的黏聚静默丢掉。现在同样 ValueError。"""
+    class _EE:
+        kind, area, normal = "EE", None, (0.0, 0.0, 1.0)
+        point_a, point_b, gap = (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 0.0
+
+        def label(self):
+            return ("EE", 0, 1)
+
+    with pytest.raises(ValueError, match="cohesion"):
+        contacts_from_covers([_EE()], mu=0.3, cohesion=2.0)
+    cts = contacts_from_covers([_EE()], mu=0.3)
+    assert cts[0].area == 0.0 and cts[0].cohesion == 0.0
+
+
+def test_covers_without_cohesion_are_unchanged_and_carry_no_area():
+    """cohesion = 0 的路径不变（摩擦承载 μW = 3），返回的接触不继承盖的代表面积（area = 0），
+    免得事后给它们设 cohesion 时又被整张面的面积放大。"""
+    covs = _cb2_covers()
+    cts = contacts_from_covers(covs, mu=0.3)
+    assert all(ct.area == 0.0 and ct.cohesion == 0.0 for ct in cts)
+    o = (0.0, 0.0, 0.0)
+    r = limit_load(cts, wrench((0.0, 0.0, -10.0), (0.0, 0.0, 0.5), o, 3),
+                   wrench((1.0, 0.0, 0.0), (0.0, 0.0, 0.0), o, 3), dim=3, origin=o, k=8)
+    assert r.status == "optimal" and r.alpha == pytest.approx(3.0, abs=1e-9)

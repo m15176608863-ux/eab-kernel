@@ -155,23 +155,49 @@ def test_phase_one_rounding_noise_is_not_reported_as_infeasible():
 
 
 def test_numerical_breakdown_raises_instead_of_returning_a_wrong_optimum(monkeypatch):
-    """lp.py 的声称（纪律 C）：基解若不再满足 Ax = b（表格失稳），solve 抛 RuntimeError。
-    这里人为在二阶段结束后把表格一行的右端项拨偏 0.1，模拟失稳。"""
+    """lp.py 的声称（纪律 C）：基解若不再满足 Ax = b（数值失稳），solve 抛 RuntimeError。
+    这里在二阶段核验之后把基逆的第 0 行整体拨偏 0.1（缺陷注入到求解路径内部，读出基解之前），模拟失稳。
+    （2026-09-24 改写：旧版注入到表格法的 `_simplex_core`，修正单纯形里没有表格。）"""
     import eab.lp as lp
 
-    real = lp._simplex_core
+    real = lp._certified_optimize
 
-    def corrupt(T, basis, ncols, *, allowed, tol, max_iter):
-        st, it = real(T, basis, ncols, allowed=allowed, tol=tol, max_iter=max_iter)
-        if allowed is None:                     # 二阶段
-            T[0][-1] += 0.1
-        return st, it
+    def corrupt(S, cost, allowed, tol, ray_ok, *, phase):
+        st, info = real(S, cost, allowed, tol, ray_ok, phase=phase)
+        if phase == 2:
+            S.Binv[0] = [v + 0.1 for v in S.Binv[0]]
+        return st, info
 
     A, b, c = _system(0)
     assert solve(A, b, c).status == OPTIMAL
-    monkeypatch.setattr(lp, "_simplex_core", corrupt)
+    monkeypatch.setattr(lp, "_certified_optimize", corrupt)
     with pytest.raises(RuntimeError):
         solve(A, b, c)
+
+
+def test_premature_optimality_is_caught_by_the_dual_check(monkeypatch):
+    """lp.py 的声称（纪律 C）：OPTIMAL 必过与 tol 无关的对偶可行性核验（G6 minor 24 / major 1）。
+    牙：让二阶段的第一次定价谎报"没有入基列"（等价于把入基阈值放宽到无穷），核验必须发现约化成本为负、
+    继续迭代，最终结果过本文件的独立证书。"""
+    import eab.lp as lp
+
+    A, b, c = _system(3)
+    ref = solve(A, b, c)
+    _certify(A, b, c, ref)
+    real = lp._Revised.price
+    state = {"lied": False}
+
+    def lying_price(self, cost, y, allowed, tol):
+        if not allowed[-1] and not state["lied"]:        # 二阶段（人工列不许入基）第一次
+            state["lied"] = True
+            return -1
+        return real(self, cost, y, allowed, tol)
+
+    monkeypatch.setattr(lp._Revised, "price", lying_price)
+    r = solve(A, b, c)
+    assert state["lied"]
+    _certify(A, b, c, r)
+    assert r.obj == pytest.approx(ref.obj, rel=1e-12)
 
 
 @pytest.mark.parametrize("seed", SEEDS)
