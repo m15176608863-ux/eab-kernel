@@ -139,6 +139,86 @@ def test_differentiability_flag_agrees_with_one_sided_quotients(nx, amp, phase, 
     assert r["differentiable"] is all(r["differentiable_by"].values())
 
 
+# ---------------------------------------------------------------- G6 minor[11]：陡坡上并列窗口与谓词容差一致
+
+# 陡坡块 interlocking_pair(nx=5, amp=0.3, phase=1.0, lx=0.2)：活动支的面坡度 8.5，n_z ≈ 0.117
+STEEP_KINK = 0.16                                    # 4·lx/nx：网格对齐的剖面折点
+STEEP_OFFSETS = (1e-11, 1e-10, 2e-10, 5e-10, 1e-9, 2e-9, 5e-9, 1e-8, 1e-7)
+_U = (0.6, -0.48, 0.64)
+EPS = 2.220446049250313e-16
+
+
+def _steep_H(d, s=1.0):
+    return analytic_escape_height(d, 0.0, nx=5, amp=0.3 * s, phase=1.0, lx=0.2 * s, ly=1.0 * s, lz=1.0 * s)
+
+
+def _steep_branch_slopes():
+    """解析 oracle 在折点两侧各自那一段上的单侧差商（两个差商点都在同一段上，远离折点 1e-6）。"""
+    k = STEEP_KINK
+    sl = (_steep_H(k - 1e-6) - _steep_H(k - 2e-6)) / 1e-6
+    sr = (_steep_H(k + 2e-6) - _steep_H(k + 1e-6)) / 1e-6
+    return sl, sr
+
+
+@pytest.mark.parametrize("s,t", [(1.0, 0.0), (1e-3, 0.0), (1e3, 1e5), (1.0, 1e5)])
+def test_steep_profile_kink_is_flagged_consistently_with_the_predicate(s, t):
+    """G6 minor[11]：逃逸谓词按**法向贯入深度** geom_tol 判，旧的并列窗口按**竖向高度** 1e-9 判；陡坡上
+    （n_z ≈ 0.117）谓词接受了比真值低 4e-9 的另一支候选，真活动的盖落在并列窗口外，于是在折点左侧
+    5e-10 处报"可微、tanψ = −0.507"，真值 −8.528（lx = 0.2）。
+
+    逐点对照解析 oracle（与盖路径零共用）：折点两侧各 9 个偏移 e ∈ [1e-11, 1e-7]，
+      · 高度误差 ≤ 谓词分辨率（geom_tol / n_z 量级，这里取 2e-8·s）加坐标舍入；
+      · 报可微 ⇒ AD 值 = 该点所在一侧那一段的解析单侧差商（真导数）；
+      · 报不可微 ⇒ 区间恰为两支斜率 {左, 右}，且点在谓词分辨带内（|e| < 5e-9）；
+      · |e| ≥ 5e-9（δ 向分辨带 ≈ geom_tol_eff·√(1+8.53²)/(8.53−0.51) ≈ 2e-9 的 2.5 倍）必须报可微。
+    尺度格：几何 ×s（s = 1e-3 / 1e3，带宽必须随之 ×s——绝对容差在这里会错）；平移 1e5（C·eps 地板）。
+    牙：test_steep_gate_has_teeth_vertical_tie_window。
+    """
+    _steep_check(s, t)
+
+
+def _steep_check(s, t):
+    sl, sr = _steep_branch_slopes()
+    assert abs(sl + 8.528020973702644) < 1e-6 and abs(sr + 0.5068809109942674) < 1e-6   # 陡坡前提
+    c = (t * _U[0], t * _U[1], t * _U[2])
+    n_flagged = 0
+    for side in (-1.0, 1.0):
+        for e in STEEP_OFFSETS:
+            d = STEEP_KINK + side * e
+            r = sensitivity_at(s * d, nx=5, ny=2, amp=0.3 * s, phase=1.0, lx=0.2 * s, ly=1.0 * s, lz=1.0 * s,
+                               center=c)
+            truth = s * _steep_H(d)
+            # 谓词分辨率 geom_tol_eff / n_z ≈ 1.85e-9·s / 0.117 ≈ 1.6e-8·s，外加坐标舍入 C·eps / n_z
+            tol_h = 2e-8 * s + 256 * EPS * (t + 2 * s) / 0.1165
+            assert abs(r["h_float"] - truth) <= tol_h, (side * e, r["h_float"], truth)
+            own = sl if side < 0 else sr
+            if r["differentiable_by"]["tan_psi"]:
+                assert abs(r["tan_psi"] - own) < 1e-6, (side * e, r["tan_psi"], own, "可微但给了另一支的斜率")
+            else:
+                n_flagged += 1
+                assert e < 5e-9, (side * e, r["derivative_range"]["tan_psi"], "分辨带外被标成不可微")
+                lo, hi = r["derivative_range"]["tan_psi"]
+                assert abs(lo - min(sl, sr)) < 1e-6 and abs(hi - max(sl, sr)) < 1e-6, (side * e, lo, hi)
+    assert n_flagged >= 1          # 分辨带确实存在（门不许退化成"处处可微"）
+
+
+def test_steep_gate_has_teeth_vertical_tie_window(monkeypatch):
+    """牙（缺陷注入到被测路径内部）：把 interlock 的并列裁决换回旧规则——按**竖向高度** 1e-9·max(1, |z|)
+    判并列、胜出者 = 谓词接受的那个候选——s = 1 格必须红，而且红在"可微但给了另一支的斜率"这条断言上
+    （G6 minor[11] 的原样症状），不是别的断言。"""
+    import eab.kernel3d.interlock as I
+
+    def vertical_window(z, nz, cands, gtol, r):
+        pos = [c for c in cands if c[0] > 0.0]
+        lab = next(c[1] for c in pos if c[0] == z)
+        tied = tuple(c[1] for c in pos if abs(c[0] - z) <= 1e-9 * max(1.0, abs(z)) and c[1] != lab)
+        return I.EscapeSolution(z, lab, len(cands), (lab,) + tied)
+
+    monkeypatch.setattr(I, "_escape_solution", vertical_window)
+    with pytest.raises(AssertionError, match="另一支"):
+        _steep_check(1.0, 0.0)
+
+
 def test_dilatancy_ratio_equals_twice_amplitude_closed_form():
     """该块型的闭式设计关系：tanψ = 2·amp（lx=2, nx=4 时坡长 lx/4 = 0.5）。"""
     for amp in (0.10, 0.15, 0.20, 0.25, 0.30):
