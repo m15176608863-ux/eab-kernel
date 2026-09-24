@@ -6,9 +6,16 @@
 `inflated_membership` 却答 INSIDE。模块文档说的"贯入之后见证距离恒为 0"是假的。
 
 oracle（纪律 A）：守卫本身用的是 `polyhedra_overlap`，所以"是否贯入"**不许**再用它来判。
-每个输入都由**构造**保证贯入：A 的某个顶点严格落在 B 内部，用显式不等式核对——
-方块用 |p − c| < half 逐轴比较；互锁下块用骨形块的解析顶面 z = lz/2 + amp·sin(2πu + phase)
-沿 x 的分段线性插值（math.sin，不经过 geom3 的任何谓词）。
+每个输入都由**构造**保证贯入，用显式不等式核对（不经过 geom3 的任何谓词）：
+  · "顶点在体内"类：A 的某个顶点严格落在 B 内部——方块用 |p − c| < half 逐轴比较；互锁下块用骨形块的
+    解析顶面 z = lz/2 + amp·sin(2πu + phase) 沿 x 的分段线性插值（math.sin）；
+  · **"无任何顶点在对方体内"类**（G6 minor[18] 补）：交叉方条，两体都是轴对齐方块，交集是三个区间交的
+    乘积，贯入 ⟺ 三个区间重叠都为正；另逐顶点核对两体没有任何顶点严格在对方体内——只靠棱-棱穿越贯入。
+    旧门只有前一类，把守卫换成"顶点在体内"检查全套照绿（见 test_guard_is_not_a_vertex_inside_check）。
+  （等高 X 交叉——共面顶底面、谓词漏判——是 m2-geom 的 critical，不在这里重复。）
+
+G6 minor[28]（亚容差贯入）：浅于 geom_tol 的贯入曾跳过哨兵，见证距离 ≈ 贯入深度被当距离报出，
+δ < p 时答"安全"，比恰好相触还"安全"（不单调）。见 test_contact_resolution_is_monotone_in_depth。
 """
 
 import math
@@ -21,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from osteomorphic import interlocking_pair  # noqa: E402
 
 from eab.kernel3d.geom3 import box, tetra  # noqa: E402
-from eab.margin import (INSIDE, ON_BOUNDARY, PENETRATING, body_distance,  # noqa: E402
+from eab.margin import (INSIDE, ON_BOUNDARY, OUTSIDE, PENETRATING, body_distance,  # noqa: E402
                         inflated_membership, margin_contacts)
 
 
@@ -77,6 +84,29 @@ def _interlock_case(dx, nx=4, amp=0.25, phase=0.0):
     return A.translated((dx, 0.0, 0.0)), L, depth
 
 
+_BARS = (((0.0, 0.0, 0.45), (2.0, 0.2, 0.1)), ((0.0, 0.0, 0.0), (0.2, 2.0, 0.4)))
+
+
+def _box_verts(center, half):
+    return [tuple(center[k] + sg[k] * half[k] for k in range(3))
+            for sg in ((-1, -1, -1), (1, -1, -1), (1, 1, -1), (-1, 1, -1),
+                       (-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1))]
+
+
+def _crossbars_case(s=1.0, swap=False):
+    """交叉方条 A = box((0,0,0.45),(2,0.2,0.1))、B = box((0,0,0),(0.2,2,0.4))，几何 ×s。
+
+    构造性证据（只用区间与逐轴不等式）：交集 = 三个轴区间交的乘积，贯入深度 = 三个重叠长度的最小值
+    （z 向 [0.35, 0.55] ∩ [−0.4, 0.4] = 0.05，x、y 向各 0.4）；同时断言两体没有任何顶点严格在对方体内。"""
+    (ca, ha), (cb, hb) = _BARS
+    ca, ha, cb, hb = (tuple(s * c for c in v) for v in (ca, ha, cb, hb))
+    overlap = [min(ca[k] + ha[k], cb[k] + hb[k]) - max(ca[k] - ha[k], cb[k] - hb[k]) for k in range(3)]
+    for P, (c, h) in ((_box_verts(ca, ha), (cb, hb)), (_box_verts(cb, hb), (ca, ha))):
+        assert not any(_strictly_inside_box(p, c, h, 0.0) for p in P), "构造不是'无顶点在体内'"
+    A, B = box(ca, ha), box(cb, hb)
+    return (B, A, min(overlap)) if swap else (A, B, min(overlap))
+
+
 CASES = {
     # 审查的四个复现输入（一般位置）
     "tetra+box (0,0,0.3)": lambda: _convex_case((0.0, 0.0, 0.3)),
@@ -93,6 +123,10 @@ CASES = {
     "interlock dx=0.12": lambda: _interlock_case(0.12),
     "interlock dx=0.2": lambda: _interlock_case(0.2),
     "interlock nx=5 dx=0.15": lambda: _interlock_case(0.15, nx=5, amp=0.3, phase=1.0),
+    # 无任何顶点在对方体内：交叉方条只靠棱-棱穿越贯入（G6 minor[18]）；外加 ×1e-3 与翻转参数次序
+    "crossed bars (edge-edge only)": lambda: _crossbars_case(),
+    "crossed bars x1e-3": lambda: _crossbars_case(1e-3),
+    "crossed bars swapped": lambda: _crossbars_case(swap=True),
 }
 
 
@@ -128,11 +162,114 @@ def test_touching_is_not_penetration_and_still_closes_the_margin():
 
 
 def test_penetration_below_geom_tol_is_still_fail_safe():
-    """分界点的另一侧：贯入 1e-12 < geom_tol=1e-9，按相触处理——不管走哪条路，裕度都必须闭合。"""
+    """分界点的另一侧：贯入 1e-12 < geom_tol，按相触处理——距离钳为 0，裕度闭合。"""
     A, B, depth = _convex_case((0.0, 0.0, 0.4 - 1e-12))
     assert depth > 0.0
-    d, _ = body_distance(A, B)
-    assert 0.0 <= d < 1e-9
+    d, lab = body_distance(A, B)
+    assert d == 0.0 and lab is not None and lab[0] != PENETRATING
     ms = margin_contacts(A, B, delta=0.05)
     assert ms and all(m.closed for m in ms)
     assert inflated_membership(A, B, delta=0.05) == INSIDE
+
+
+# ---------------------------------------------------------------- G6 minor[18]：守卫必须不是"顶点在体内"检查
+
+def test_edge_edge_penetration_without_any_vertex_inside_is_constructed():
+    """交叉方条的构造前提本身（区间 oracle）：深度 0.05·s > 0、无任何顶点严格在对方体内。"""
+    for s in (1.0, 1e-3):
+        _, _, depth = _crossbars_case(s)
+        assert depth == pytest.approx(0.05 * s, rel=1e-12)
+
+
+def test_guard_is_not_a_vertex_inside_check(monkeypatch):
+    """牙（穿过被测路径）：把 margin 里的贯入守卫换成"A 的某顶点在 B 内"检查（G6 的变异原样），
+    交叉方条必须红——它给出间距 0.05、EE 标签、margin_contacts []（fail-unsafe）；
+    而"顶点在体内"那一类旧输入在同一变异下照绿（这正是旧门无牙的原因）。"""
+    import eab.margin as M
+    from eab.kernel3d.geom3 import point_in_polyhedron
+
+    def vertex_inside_guard(A, B, tol=0.0):
+        st = [point_in_polyhedron(v, B, tol) for v in A.verts]
+        return 1 if 1 in st else (0 if 0 in st else -1)
+
+    monkeypatch.setattr(M, "polyhedra_overlap", vertex_inside_guard)
+    A, B, _ = _crossbars_case()
+    d, lab = body_distance(A, B)
+    assert lab[0] == "EE" and d == pytest.approx(0.05, abs=1e-12), (d, lab)       # 变异：把贯入深度当间距
+    assert margin_contacts(A, B, delta=0.05) == []
+    with pytest.raises(AssertionError):
+        test_penetration_is_reported_as_a_violated_margin("crossed bars (edge-edge only)")
+    test_penetration_is_reported_as_a_violated_margin("tetra+box (0,0,0.3)")        # 旧类输入看不见这个变异
+
+
+# ---------------------------------------------------------------- G6 minor[28]：相触分辨率内的结果单调
+
+_ORDER = {OUTSIDE: 0, ON_BOUNDARY: 1, INSIDE: 2}
+
+
+def test_contact_resolution_is_monotone_in_depth():
+    """把 tetra 沿 −z 压向方块顶面，深度 p（负 = 间隙）从 −1e-6 扫到 +1e-6，跨过 0 与 geom_tol：
+
+      · 间距（贯入哨兵记 0）随 p 单调不增；每个 δ 下成员判定随 p 单调不减（OUTSIDE < ON_BOUNDARY < INSIDE），
+        "有闭合的广义接触"也单调不减——修前 p = 5e-10、δ = 0 时答 OUTSIDE / []，而恰好相触答 ON_BOUNDARY；
+      · 亚容差贯入与恰好相触的回答**逐字相同**（距离 0.0、δ = 0 时 ON_BOUNDARY、δ > 0 时 INSIDE）。
+    构造：深度由平移量给定（顶面 z = 0.4、tetra 底面 z = 0.4 − p），不经过任何谓词。
+    牙：test_contact_resolution_gate_has_teeth。"""
+    _check_monotone_contact_resolution()
+
+
+_DEPTHS = (-1e-6, -1e-9, -2e-10, 0.0, 1e-12, 2e-10, 5e-10, 2e-9, 1e-6)
+_DELTAS = (0.0, 1e-10, 1e-9, 0.05)
+
+
+def _check_monotone_contact_resolution():
+    rows = []
+    for p in _DEPTHS:
+        A, B, _ = _convex_case((0.0, 0.0, 0.4 - p))
+        d, lab = body_distance(A, B)
+        mem = [_ORDER[inflated_membership(A, B, delta=dl)] for dl in _DELTAS]
+        closed = [bool(margin_contacts(A, B, delta=dl)) for dl in _DELTAS]
+        rows.append((p, d, lab, mem, closed))
+    for (p0, d0, _, m0, c0), (p1, d1, _, m1, c1) in zip(rows, rows[1:]):
+        assert d1 <= d0, (p0, d0, p1, d1)
+        assert all(b >= a for a, b in zip(m0, m1)), (p0, m0, p1, m1)
+        assert all(b >= a for a, b in zip(c0, c1)), (p0, c0, p1, c1)
+    by_p = {p: (d, lab, mem, closed) for p, d, lab, mem, closed in rows}
+    touch = by_p[0.0]
+    for p in (1e-12, 2e-10, 5e-10):                       # 亚容差贯入 ≡ 相触
+        d, lab, mem, closed = by_p[p]
+        assert d == 0.0 and lab[0] != PENETRATING, (p, d, lab)
+        assert mem == touch[2] == [1, 2, 2, 2] and closed == touch[3] == [True] * 4, (p, mem, closed)
+    for p in (2e-9, 1e-6):                                # 超过 geom_tol：哨兵
+        assert by_p[p][1] == (PENETRATING,)
+    assert by_p[-1e-6][2] == [0, 0, 0, 2]                 # 间隙 1e-6：δ ≤ 1e-9 仍在外
+    assert by_p[-1e-6][0] == pytest.approx(1e-6, rel=1e-9)
+
+
+def test_contact_resolution_gate_has_teeth(monkeypatch):
+    """牙（注入到被测路径内部）：把裕度层的"相触分辨率"分支关掉（_resolve 永远报不在分辨率内——
+    即修前行为：亚容差贯入的见证距离 ≈ 贯入深度被当间距报出），单调门必须红，且红在间距单调那条断言上
+    （p = 1e-12 处 d = 1e-12 > 相触的 0）。"""
+    import eab.margin as M
+    true_resolve = M._resolve
+
+    def no_contact_branch(A, B, tol, geom_tol):
+        gtol, rnd, wits, _ = true_resolve(A, B, tol, geom_tol)
+        return gtol, rnd, wits, wits is None
+    monkeypatch.setattr(M, "_resolve", no_contact_branch)
+    with pytest.raises(AssertionError) as ei:
+        _check_monotone_contact_resolution()
+    # 间距单调断言的消息是 (p0, d0, p1, d1)：红在 p 从 0 到 1e-12 这一步、d 从 0 跳到 ≈1e-12
+    assert str(ei.value).startswith("(0.0, 0.0, 1e-12, "), str(ei.value)
+
+
+@pytest.mark.parametrize("s", [1e-9, 1e-6])
+def test_nested_bodies_at_nanometre_scale_are_penetrating(s):
+    """G6 minor[28](b)：旧守卫用绝对 geom_tol = 1e-9，边长 1e-9 量级的整体嵌套掉进盖枚举、答 OUTSIDE
+    （C14 的尺度变体）。容差随特征长度缩放后，任何尺度上嵌套都是贯入。"""
+    A, B, depth = _nested_case(s)
+    assert depth > 0.0
+    assert body_distance(A, B) == (0.0, (PENETRATING,))
+    assert inflated_membership(A, B, delta=0.0) == INSIDE
+    ms = margin_contacts(A, B, delta=0.0)
+    assert len(ms) == 1 and ms[0].label == (PENETRATING,) and ms[0].closed

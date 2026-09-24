@@ -49,13 +49,34 @@
   所以三个入口在贯入时一致地回答"已违约"：`body_distance` 返回哨兵 `(0.0, ("PENETRATING",))`，
   `margin_contacts` 返回单个已闭合的哨兵接触（distance 0、margin_gap = −δ、normal None），
   `inflated_membership` 答 INSIDE；`margin_gap_from_frozen_cover` 对哨兵抛 ValueError（没有冻结盖）。
-  违约多深要靠贯入深度（未实现）。贯入浅于 `geom_tol` 时按相触处理：见证距离 ≈ 0，裕度同样闭合。
-  门：`tests/test_margin_penetration.py`。安全裕度问题本来就活在分离侧，这不是缺陷但必须写明。
+  违约多深要靠贯入深度（未实现）。门：`tests/test_margin_penetration.py`。安全裕度问题本来就活在
+  分离侧，这不是缺陷但必须写明。
+  贯入守卫的可靠性等于 `polyhedra_overlap` 的可靠性：谓词漏判的贯入（G6 critical：等高 X 交叉，
+  m2-geom 在修）在这里同样漏判，本层不另设第二道谓词。
+- **相触分辨率 geom_tol（纪律 F，2026-09-24 M0.2）。** 间距或贯入深度在 geom_tol_eff 以内即"相触"：
+  `body_distance` 返回 **0.0**（标签是实现最小见证的那个盖），`margin_contacts` 里见证距离 ≤ geom_tol_eff
+  的盖 distance 钳为 0、margin_gap = −δ、normal None（零距离处见证方向无定义；亚容差贯入时 a − b 还是反的）。
+  深度超过 geom_tol_eff 的贯入给哨兵。于是回答随贯入深度**单调**：分离 d → 相触 0 → 亚容差贯入 0 → 哨兵，
+  成员判定 OUTSIDE → ON_BOUNDARY/INSIDE → INSIDE（修前浅于 geom_tol 的贯入把见证距离 ≈ 贯入深度当间距报出，
+  δ < p 时答"安全"，比恰好相触还"安全"——G6 minor[28]）。代价：真实间距 ≤ geom_tol_eff 时报 0（在分辨率以下，
+  且偏向安全侧）。门：`tests/test_margin_penetration.py::test_contact_resolution_is_monotone_in_depth`。
+- **容差随尺度（纪律 F）。** `geom_tol=None`（默认）时 geom_tol_eff = max(1e-9·L, 64·eps·C)：L 是特征长度
+  （`characteristic_length`：各体"首顶点到最远顶点"距离取小，刚体运动下不变、缩放下 ×s），C 是坐标量级
+  （地板 64·eps·C 盖住工程坐标上顶点坐标自身的舍入）。显式给 `geom_tol` 时按**绝对长度**解释，但同样不低于
+  舍入地板。`inflated_membership` 的边界带 `atol` 同理（默认 max(1e-12·L, 64·eps·C)）。修前两者都是绝对
+  1e-9 / 1e-12：边长 1e-9 的整体嵌套答 OUTSIDE（C14 的尺度变体），1e5 坐标上相触的两体在 δ = 0 时答 OUTSIDE。
+  盖枚举的 `tol`（法锥判据，作用在单位向量上，无量纲）不随尺度；但 covers3 里另有几处绝对容差
+  （G6 critical：棱弧正交性、单形退化）在 1e-3 尺度的块放到 1e5 坐标时丢掉真最近的低维盖——
+  那是 m2-geom 的文件，本层的不变性元门在这些格子上是 strict xfail
+  （`tests/test_invariance_interlock.py::test_margin_layer_is_rigid_motion_and_unit_invariant`）。
+- **并列裁决按枚举序。** 多个盖在舍入意义上同距（平行面、平行棱）时，`body_distance` 取枚举序第一个，
+  `margin_contacts` 在同距组内也按枚举序排——变换保留顶点/面编号，所以刚体运动下标签逐字不变。
 - 距离由盖枚举给出，其**完备性**（法锥筛选不丢最近特征对）由 `g0_distance_completeness3` 看着。
 """
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 
 from .dual import Number
@@ -66,6 +87,53 @@ from .kernel3d.geom3 import (Polyhedron, Vec3, add, convex_hull_3d, norm, polyhe
 
 OUTSIDE, ON_BOUNDARY, INSIDE = -1, 0, 1
 PENETRATING = "PENETRATING"            # 贯入哨兵标签：("PENETRATING",)
+
+_EPS = sys.float_info.epsilon
+REL_GEOM_TOL = 1e-9                    # 相触分辨率：特征长度 L 的相对量
+REL_BOUNDARY_TOL = 1e-12               # inflated_membership 的边界带：L 的相对量
+ROUNDING_C = 64.0                      # 舍入地板 c·eps·C 的系数 c
+
+
+# ------------------------------------------------------------------ 容差政策（纪律 F）
+
+def characteristic_length(*bodies: Polyhedron) -> float:
+    """特征长度 L：各体"首顶点到最远顶点的距离"取最小。刚体运动下不变（顶点编号不变），缩放下 ×s；
+    介于半径与直径之间。不用 AABB（旋转会改变它）。"""
+    out = float("inf")
+    for P in bodies:
+        v0 = P.verts[0]
+        out = min(out, max(norm(sub(v, v0)) for v in P.verts))
+    return out
+
+
+def coordinate_magnitude(*bodies: Polyhedron) -> float:
+    """坐标量级 C = 全部顶点坐标分量的最大绝对值（舍入地板用）。"""
+    return max(abs(c) for P in bodies for v in P.verts for c in v)
+
+
+def rounding_floor(*bodies: Polyhedron) -> float:
+    """c·eps·max(C, L)：顶点坐标自身的舍入，以及由它引起的有符号距离、间隙的舍入量级。"""
+    return ROUNDING_C * _EPS * max(coordinate_magnitude(*bodies), characteristic_length(*bodies))
+
+
+def effective_geom_tol(A: Polyhedron, B: Polyhedron, geom_tol: float | None = None) -> float:
+    """相触分辨率：geom_tol=None 时 max(1e-9·L, 64·eps·C)；显式给出时按绝对长度，但不低于舍入地板。"""
+    base = REL_GEOM_TOL * characteristic_length(A, B) if geom_tol is None else float(geom_tol)
+    return max(base, rounding_floor(A, B))
+
+
+def _tie_groups(items: list, key, window: float) -> list:
+    """按 key 升序；key 相差 ≤ window（舍入意义上的并列）的一组内按枚举序（items 的原次序）排。"""
+    order = sorted(range(len(items)), key=lambda i: key(items[i]))
+    out: list = []
+    i = 0
+    while i < len(order):
+        j = i
+        while j + 1 < len(order) and key(items[order[j + 1]]) - key(items[order[i]]) <= window:
+            j += 1
+        out.extend(items[k] for k in sorted(order[i:j + 1]))
+        i = j + 1
+    return out
 
 
 # ------------------------------------------------------------------ 见证与距离
@@ -79,24 +147,46 @@ def cover_witness(c) -> tuple[float, Vec3 | None] | None:
     return (d, unit(v) if d > 0.0 else None)
 
 
-def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float = 1e-9
-                  ) -> tuple[float, tuple | None]:
-    """两体间距及实现它的那个盖标签（盖路径）。
-
-    贯入（`polyhedra_overlap(A, B, geom_tol) == 1`）时返回哨兵 `(0.0, ("PENETRATING",))`：
-    此时盖的见证距离不是间距（见模块诚实条款），不许把它当距离报出去。
-    完备性（不丢最近特征对）由 Phase 2 的距离完备性门保证。
-    """
-    if polyhedra_overlap(A, B, geom_tol) == 1:
-        return 0.0, (PENETRATING,)
-    best, lab = float("inf"), None
+def _witnesses(A: Polyhedron, B: Polyhedron, tol: float) -> list[tuple]:
+    """全部有效且 in_extent 的盖及其见证 (盖, 见证距离, 单位见证方向)，按枚举序。"""
+    out = []
     for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
         if not c.in_extent:
             continue
         w = cover_witness(c)
-        if w is not None and w[0] < best:
-            best, lab = w[0], c.label()
-    return best, lab
+        if w is not None:
+            out.append((c, w[0], w[1]))
+    return out
+
+
+def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None):
+    """裕度层的共同前处理：(geom_tol_eff, 舍入地板, 见证表 | None=贯入, 是否在相触分辨率内)。"""
+    gtol = effective_geom_tol(A, B, geom_tol)
+    state = polyhedra_overlap(A, B, gtol)
+    if state == 1:
+        return gtol, 0.0, None, True
+    wits = _witnesses(A, B, tol)
+    dmin = min((w for _, w, _ in wits), default=float("inf"))
+    return gtol, rounding_floor(A, B), wits, state == 0 or dmin <= gtol
+
+
+def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float | None = None
+                  ) -> tuple[float, tuple | None]:
+    """两体间距及实现它的那个盖标签（盖路径）。
+
+    贯入深于 geom_tol_eff（`polyhedra_overlap(A, B, geom_tol_eff) == 1`）时返回哨兵 `(0.0, ("PENETRATING",))`：
+    此时盖的见证距离不是间距（见模块诚实条款），不许把它当距离报出去。
+    间距或贯入深度在 geom_tol_eff 以内（相触分辨率）时返回 **0.0** 与实现最小见证的盖标签。
+    geom_tol=None 时 geom_tol_eff 随尺度（见 `effective_geom_tol`）。舍入意义上同距的盖按枚举序取第一个。
+    完备性（不丢最近特征对）由 Phase 2 的距离完备性门保证。
+    """
+    gtol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
+    if wits is None:
+        return 0.0, (PENETRATING,)
+    if not wits:
+        return (0.0 if contact else float("inf")), None
+    c, w, _ = _tie_groups(wits, lambda t: t[1], rnd)[0]
+    return (0.0 if contact and w <= gtol else w), c.label()
 
 
 # ------------------------------------------------------------------ 裕度接触
@@ -104,9 +194,9 @@ def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: 
 @dataclass(slots=True)
 class MarginContact:
     label: tuple
-    distance: float          # 两体特征对间距（工作空间）
+    distance: float          # 两体特征对间距（工作空间）；相触分辨率内钳为 0
     margin_gap: float        # distance − delta；≤0 即广义接触闭合
-    normal: Vec3 | None      # 单位见证方向 B→A，**单值**（C^{1,1}）；贯入哨兵为 None
+    normal: Vec3 | None      # 单位见证方向 B→A，**单值**（C^{1,1}）；贯入哨兵与相触（distance 0）为 None
     point_a: Vec3 | None     # 贯入哨兵为 None
     point_b: Vec3 | None
 
@@ -116,40 +206,49 @@ class MarginContact:
 
 
 def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float = 0.0,
-                    tol: float = 1e-9, geom_tol: float = 1e-9) -> list[MarginContact]:
-    """裕度 δ 下的广义接触：间距 ≤ δ + band 的有效盖，按 margin_gap 升序。
+                    tol: float = 1e-9, geom_tol: float | None = None) -> list[MarginContact]:
+    """裕度 δ 下的广义接触：间距 ≤ δ + band 的有效盖，按 margin_gap 升序（舍入意义上的并列按枚举序）。
 
     band 是"关注带"宽度（δ 之外还想看多远），band=0 只返回已闭合的广义接触。
-    贯入（`polyhedra_overlap(A, B, geom_tol) == 1`）时返回**单个已闭合的哨兵**
+    贯入深于 geom_tol_eff 时返回**单个已闭合的哨兵**
     `MarginContact(("PENETRATING",), distance=0, margin_gap=−δ, normal=None)`——
     裕度谓词只回答"已违约"，与 `inflated_membership` 的 INSIDE 一致（fail-safe）。
+    两体在相触分辨率内（间距或贯入深度 ≤ geom_tol_eff）时，见证距离 ≤ geom_tol_eff 的盖 distance 钳为 0、
+    margin_gap = −δ、normal None——与 `body_distance` 的 0.0 一致，结果随贯入深度单调。
     """
-    if polyhedra_overlap(A, B, geom_tol) == 1:
+    gtol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
+    if wits is None:
         return [MarginContact((PENETRATING,), 0.0, 0.0 - delta, None, None, None)]
     out: list[MarginContact] = []
-    for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
-        if not c.in_extent:
+    for c, w, n in wits:
+        if contact and w <= gtol:
+            w, n = 0.0, None
+        if w > delta + band:
             continue
-        w = cover_witness(c)
-        if w is None or w[0] > delta + band:
-            continue
-        out.append(MarginContact(c.label(), w[0], w[0] - delta, w[1], c.point_a, c.point_b))
-    out.sort(key=lambda m: m.margin_gap)
-    return out
+        out.append(MarginContact(c.label(), w, w - delta, n, c.point_a, c.point_b))
+    return _tie_groups(out, lambda m: m.margin_gap, rnd)
+
+
+def boundary_band(A: Polyhedron, B: Polyhedron, atol: float | None = None) -> float:
+    """`inflated_membership` 的边界带：atol=None 时 max(1e-12·L, 64·eps·C)；显式给出时不低于舍入地板。"""
+    base = REL_BOUNDARY_TOL * characteristic_length(A, B) if atol is None else float(atol)
+    return max(base, rounding_floor(A, B))
 
 
 def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: float = 1e-9,
-                        geom_tol: float = 1e-9, atol: float = 1e-12) -> int:
+                        geom_tol: float | None = None, atol: float | None = None) -> int:
     """参考点相对膨胀入口块 E_δ 的位置：−1 外 / 0 边界 / 1 内（= 裕度已违约）。
 
     贯入时直接判"内"（见证距离失效，见模块诚实条款；由 `body_distance` 的贯入哨兵给出）。
+    |d − δ| ≤ 边界带（`boundary_band`，随尺度）即"边界"；相触分辨率内 d = 0，故 δ = 0 时答边界。
     """
     d, lab = body_distance(A, B, tol=tol, geom_tol=geom_tol)
     if lab == (PENETRATING,):
         return INSIDE
-    if d < delta - atol:
+    band = boundary_band(A, B, atol)
+    if d < delta - band:
         return INSIDE
-    if d > delta + atol:
+    if d > delta + band:
         return OUTSIDE
     return ON_BOUNDARY
 
@@ -189,6 +288,8 @@ def margin_gap_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple, x, 
     这由 float 路径的 `body_distance` 选出，是冻结组合结构的一部分。
     冻结路径接得住 `body_distance` 可能给出的全部盖种类：VF / FV / EE / VV3 / VE3 / EV3
     （低维盖的法向随平移 x 转动，按 x 计算；门：tests/test_frozen_lowdim.py）。
+    相触分辨率内（`body_distance` 报 0.0）这里给的是该盖的**有符号**间隙（|gap| ≤ geom_tol_eff，亚容差贯入时为负），
+    不是钳过的 0——冻结路径是解析式，不做择支。
     贯入哨兵 ("PENETRATING",) 没有冻结盖，抛 ValueError。
     """
     if label and label[0] == PENETRATING:
