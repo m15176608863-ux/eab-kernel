@@ -169,6 +169,9 @@ SMALL = [(0.0, 0.0), (0.2, 0.0), (0.2, 0.2), (0.0, 0.2)]
     (SQUARE, SQUARE, (0.3, 0.2), (1.0, 0.0), 0.7, "FF_exit_+x"),
     (SQUARE, SQUARE, (0.3, 0.2), (0.0, 1.0), 0.8, "FF_exit_+y"),
     (SQUARE, SQUARE, (0.3, 0.2), (2.0, 0.0), 0.35, "t_in_units_of_u"),
+    (SQUARE, SQUARE, (0.3, 0.2), (0.5, 0.0), 1.4, "t_in_units_of_short_u"),         # G6 minor 13：|u|<1，哨兵须 ÷|u|²
+    (SQUARE, SQUARE, (0.3, 0.2), (0.0, -0.25), 4.8, "t_in_units_of_short_u_-y"),     # 0.2 − 0.25t = −1
+    (SMALL, CHANNEL, (1.5, 0.3), (0.0, 0.1), 7.0, "first_exit_not_last_short_u"),
     (SQUARE, SQUARE, (0.3, 0.2), (-1.0, 0.0), 1.3, "FF_exit_-x"),
     (SQUARE, SQUARE, (0.3, 0.2), (0.6, 0.8), 1.0, "oblique_asymmetric"),     # y 先到 1：0.2 + 0.8t = 1
     (SQUARE, SQUARE, (0.3, 0.3), (1.0, 1.0), 0.7, "exit_through_E_corner"),  # 分界点：恰从 E 的顶点（VV）离开
@@ -260,6 +263,12 @@ def test_exit_completeness_has_teeth(monkeypatch, drop, case, red):
     rep = g0_exit_completeness(A, B, [x], [u], tol=1e-12, atol=1e-12)
     assert rep.samples == 1
     assert rep.passed is (not red), rep.failures
+
+
+def test_g6_13_exit_completeness_with_short_direction_is_green():
+    """G6 minor 13：|u|<1 时旧 brute_ray_exit 少除 |u|²，出口参数偏小（0.35 而非 1.4），出口完备性报假红（见证 0.525）。"""
+    rep = g0_exit_completeness(SQUARE, SQUARE, [(0.3, 0.2)], [(0.5, 0.0)], tol=1e-12, atol=1e-12)
+    assert rep.samples == 1 and rep.passed, rep.failures
 
 
 def test_exit_completeness_needs_one_direction_per_translation():

@@ -60,9 +60,11 @@ def _assert_g2_gate(res, band=G2_BAND):
     旧门只看 legacy_only / mine_only，而两者只由 np↔VF/FV 构成：legacy 的 ee 入口进 UNSUPPORTED 桶、
     内核的 EE/VE3/EV3/VV3 盖进 detail 桶，都不参与判定（审查 C17）。现在二者都进 violations，非空即红；
     另外独立断言"窗口内每个有效盖都参与了对账"（n_covers == len(mine)）。
-    窗口从 1.0 收到 G2_WINDOW 之后，旧窗口对 (G2_WINDOW, 1.0] 内多余 VF/FV 盖的那颗牙由 `band` 接住：
-    非空即红（旧门的 mine_only 在这段上蕴含于 band == [] 与新的 mine_only == []，见 G2_BAND 的注释）。
-    band 是夹具长度量纲：缩放过的夹具（×1e-3 / ×1e3）要按同一比例给，且门断言 compare 真用了不窄于它的带。
+    窗口从 1.0 收到 G2_WINDOW 之后，旧窗口对 (G2_WINDOW, 1.0] 内多余盖的那颗牙由 `band` 接住：
+    非空即红，**不论盖的种类**（G6 minor 29：旧版只收 VF/FV）；带内贯入（gap < −G2_WINDOW）另由 `penetration` 单独判红。
+    band 是夹具长度量纲：缩放过的夹具（×1e-3 / ×1e3）要按同一比例给，且门断言枚举器**实际收到**的窗口不窄于它
+    （enumerated_window 取自 _enumerate_recorded，G6 minor 25）。
+    块对取 legacy 与内核的并（G6 minor 14）：内核看到、legacy 没列的块对以 legacy == [] 报红。
     """
     assert res["rows"]
     for r in res["rows"]:
@@ -72,7 +74,8 @@ def _assert_g2_gate(res, band=G2_BAND):
         assert not [x for x in r["legacy_detail"] if x[0] == "UNSUPPORTED"], (r["pair"], "legacy 有门不认识的入口类")
         assert r["n_covers"] == len(r["mine"]), (r["pair"], "内核有盖未参与对账", r["mine_detail"])
         assert r["violations"] == [], (r["pair"], r["violations"])
-        assert r["band_limit"] >= band and r["band"] == [], (r["pair"], "VF/FV 带内有多余的盖", r["band"])
+        assert r["band_limit"] >= band and r["band"] == [], (r["pair"], "带内有多余的盖", r["band"])
+        assert r["penetration"] == [], (r["pair"], "带内有贯入", r["penetration"])
         assert r["enumerated_window"] >= band, (r["pair"], "枚举窗口窄于带宽：带内盖根本不会被枚举")
 
 
@@ -146,7 +149,7 @@ def test_g2_gate_red_on_spurious_vf_cover_in_band(monkeypatch, gap, kind):
     _inject(monkeypatch, _vf(gap, kind))
     res = compare(CASES[0])
     assert any(r["band"] for r in res["rows"])
-    with pytest.raises(AssertionError, match="VF/FV 带内有多余的盖"):
+    with pytest.raises(AssertionError, match="带内有多余的盖"):
         _assert_g2_gate(res)
 
 
@@ -154,23 +157,6 @@ def test_g2_band_edge_is_inclusive_and_nothing_beyond_is_reconciled(monkeypatch)
     """带的另一侧分界点：|gap| 刚过 G2_BAND 的 VF 盖不进带（与旧窗口 `abs(gap) <= 1.0` 同一口径）。"""
     _inject(monkeypatch, _vf(G2_BAND * (1 + 1e-12)))
     _assert_g2_gate(compare(CASES[0]))
-
-
-@pytest.mark.parametrize("kind", ["VE3", "EV3", "VV3"])
-def test_g2_band_ignores_low_dim_covers_at_gap_one(monkeypatch, kind):
-    """带只收 VF/FV：M0.b 去掉低维盖 strict 过滤后，cb2 上 gap 恰为 1.0 的 VE3/EV3（上块底角到下块顶棱）
-    会进枚举——它们合法、不属于 legacy 的 np 对账，门不能因此红（窗口 1.0 硬编码时代会红）。"""
-    from eab.kernel3d.covers3 import Cover3
-
-    def make(A, B):
-        p = A.verts[0]
-        fa = ("vertex", 0) if kind != "EV3" else ("edge", 0, 1)
-        fb = ("edge", 4, 5) if kind == "VE3" else ("vertex", 5)
-        return Cover3(kind, fa, fb, (1.0, 0.0, 0.0), 1.0, p, p, (), None, True, True)
-    _inject(monkeypatch, make)
-    res = compare(CASES[0])
-    _assert_g2_gate(res)
-    assert [r["n_covers"] for r in res["rows"]] == [4]
 
 
 def _box_vf_oracle(V, lim):
@@ -255,15 +241,18 @@ def test_g2_gate_has_teeth_a_dropped_cover_is_caught(monkeypatch):
     """门要有牙：让枚举漏掉一个 VF 盖，G2 必须报出 legacy_only。"""
     import eab.kernel3d.covers3 as cv
     orig = cv.vf_cover
-    state = {"n": 0}
+    state = {"key": None}
 
     def lossy(A, ia, B, fb, tol=0.0):
         c = orig(A, ia, B, fb, tol)
         # 必须同时满足 in_extent **与窗口**才是会进最终清单的盖；
         # 只看 in_extent 会丢掉一个本来就被窗口滤掉的盖，门当然不会红（2026-09-20 踩过）。
+        # 丢的是**同一个**（顶点, 面）——每次调用都丢，不按调用次数（compare 现在先做块对发现、再枚举，
+        # "只丢第一次"会丢在发现阶段，2026-09-24 G6 minor 14 修复后踩到）。
         if c is not None and c.in_extent and abs(c.gap) <= G2_WINDOW:
-            state["n"] += 1
-            if state["n"] == 1:
+            if state["key"] is None:
+                state["key"] = (ia, fb)
+            if state["key"] == (ia, fb):
                 return None
         return c
 
@@ -456,3 +445,173 @@ def test_g2_band_catches_a_real_kernel_defect_through_enumeration(path, monkeypa
     assert any(r["band"] for r in res["rows"]), "内核缺陷产出的带内假盖没有进入 band"
     with pytest.raises(AssertionError):
         _assert_g2_gate(res)
+
+
+# ---------------------------------------------------------------- G6 minor 14：legacy 没列出的块对也要进对账
+
+def _third_block_on_top(d):
+    """块 3 = 块 2 上移 1（z），零间隙坐落在块 2 顶面上；legacy 对 (3,2) 一条入口都没有。"""
+    d["verts"]["3"] = [[x, y, z + 1.0] for x, y, z in d["verts"]["2"]]
+
+
+def test_g2_pair_seen_only_by_the_kernel_is_red(tmp_path):
+    """G6 minor 14：旧 compare 的块对只取自 legacy 入口，(3,2) 上内核有 16 个带内盖（8 个零间隙 VF/FV + EE），
+    门照绿。现在块对 = legacy 块对 ∪ 内核在枚举窗口内有盖的块对；legacy 为空的行必红。"""
+    res = compare(_fake_case(tmp_path, _third_block_on_top))
+    rows = {tuple(r["pair"]): r for r in res["rows"]}
+    assert (3, 2) in rows, sorted(rows)
+    assert rows[(3, 2)]["legacy"] == [] and rows[(3, 2)]["mine_only"], rows[(3, 2)]["mine_only"]
+    with pytest.raises(AssertionError, match="legacy 侧为空"):
+        _assert_g2_gate(res)
+
+
+# ---------------------------------------------------------------- G6 minor 29：带收所有盖类 + 带内无贯入
+
+def _low_dim(kind, gap):
+    from eab.kernel3d.covers3 import Cover3
+
+    def make(A, B):
+        p = A.verts[0]
+        fa = {"VE3": ("vertex", 0), "EV3": ("edge", 0, 1), "VV3": ("vertex", 0), "EE": ("edge", 0, 1)}[kind]
+        fb = {"VE3": ("edge", 4, 5), "EV3": ("vertex", 5), "VV3": ("vertex", 5), "EE": ("edge", 4, 5)}[kind]
+        return Cover3(kind, fa, fb, (1.0, 0.0, 0.0), gap, p, p, (), None, True, True)
+    return make
+
+
+@pytest.mark.parametrize("gap", [1.0, -1.0, 0.5, -1e-3, 2e-6], ids=["gap_1", "gap_-1", "gap_0.5", "pen_1e-3", "just_above_window"])
+@pytest.mark.parametrize("kind", ["VE3", "EV3", "VV3", "EE"])
+def test_g2_band_catches_every_cover_kind(monkeypatch, kind, gap):
+    """G6 minor 29（反转旧的 test_g2_band_ignores_low_dim_covers_at_gap_one）：旧注释说"低维盖在 gap 1.0 合法存在
+    （cb2 上块底角到下块顶棱 = 1.0）"——是错的：正确内核在三份夹具上一个低维盖都不出、|gap| ≤ 1 的在程 EE 也没有
+    （test_g2_band_is_geometrically_empty 钉着）。所以带收**所有**盖类，带内任何盖都红；负间隙另进 `penetration`。"""
+    _inject(monkeypatch, _low_dim(kind, gap))
+    res = compare(CASES[0])
+    assert any(r["band"] for r in res["rows"])
+    assert any(r["penetration"] for r in res["rows"]) == (gap < 0)
+    with pytest.raises(AssertionError, match="带内有多余的盖"):
+        _assert_g2_gate(res)
+
+
+def test_g2_penetration_is_its_own_verdict(monkeypatch):
+    """带内无贯入单独断言：把带的判据关掉（band 恒空）时，负间隙盖仍由 penetration 报红。"""
+    _inject(monkeypatch, _low_dim("EE", -0.25))
+    res = compare(CASES[0])
+    for r in res["rows"]:
+        r["band"] = []
+    with pytest.raises(AssertionError, match="带内有贯入"):
+        _assert_g2_gate(res)
+
+
+@pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+def test_g2_edge_arc_defect_turns_the_gate_red(path, monkeypatch):
+    """G6 minor 29 的复现钉成牙（缺陷在内核里，穿过枚举器）：edge_arc_contains 恒 0 时内核在窗口 1.0 内吐出
+    EE −1.0 ×6、EE +1.0 ×2、VE3 1.0 ×8——旧门（带只收 VF/FV）三份夹具全绿。"""
+    import eab.kernel3d.covers3 as cv
+    monkeypatch.setattr(cv, "edge_arc_contains", lambda *a, **k: 0)
+    res = compare(path)
+    kinds = {b[0] for r in res["rows"] for b in r["band"]}
+    assert {"EE", "VE3"} <= kinds, kinds
+    with pytest.raises(AssertionError):
+        _assert_g2_gate(res)
+
+
+@pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+def test_g2_band_is_empty_for_every_cover_kind(path):
+    """正确内核在 (G2_WINDOW, G2_BAND] 上**任何种类**的在程盖都没有（不止 VF/FV）；放宽到 require_in_extent=False
+    也没有低维盖——旧注释"低维盖在 1.0 处合法存在"的反证。"""
+    _, _, blocks, _ = load_case(path)
+    A, B = blocks[2], blocks[1]
+    inb = [(c.kind, c.gap) for c in enumerate_covers3(A, B, window=G2_BAND, tol=1e-9)
+           if c.in_extent and G2_WINDOW < abs(c.gap) <= G2_BAND]
+    assert inb == []
+    allk = {c.kind for c in enumerate_covers3(A, B, window=3.0, tol=1e-9)}
+    assert not allk & {"VE3", "EV3", "VV3"}, allk
+
+
+# ---------------------------------------------------------------- G6 minor 25：enumerated_window 不许是同义反复
+
+def _mutant_g2(old: str, new: str):
+    """对 tools/g2_bdda3d.py 做一处源码替换（断言恰好命中一次），编译成独立模块返回。"""
+    import types
+    src = (ROOT / "tools" / "g2_bdda3d.py").read_text(encoding="utf-8")
+    assert src.count(old) == 1, ("mutation site must match exactly once", old)
+    mod = types.ModuleType("g2_bdda3d_mutant")
+    mod.__file__ = str(ROOT / "tools" / "g2_bdda3d.py")
+    exec(compile(src.replace(old, new), mod.__file__, "exec"), mod.__dict__)
+    return mod
+
+
+def test_g2_enumerated_window_is_read_off_the_actual_enumeration():
+    """G6 minor 25：旧 compare 记 enumerated_window = max(window, band)（局部变量的回声），把传给枚举器的窗口改回
+    `window=window`，第 76 行那条断言永不触发（G6 实测 0 次）。现在记录值取自枚举器实际收到的参数——同一个变异
+    必须让**那条**断言红（不是别的断言碰巧红）。"""
+    mod = _mutant_g2("window=ewin, tol=tol)", "window=window, tol=tol)")
+    res = mod.compare(CASES[0])
+    assert all(r["enumerated_window"] == G2_WINDOW for r in res["rows"]), [r["enumerated_window"] for r in res["rows"]]
+    with pytest.raises(AssertionError, match="枚举窗口窄于带宽"):
+        _assert_g2_gate(res)
+
+
+# ---------------------------------------------------------------- G6 minor 22：机器报告不许过期
+
+def test_g2_committed_report_equals_the_live_comparison():
+    """reports/g2_bdda3d.json 必须等于当前 compare() 在三份夹具上的输出（G6 minor 22：旧文件停在 6934694，
+    记着 6 个盖、重复 VF 行、没有 window/band 字段）。重生成：python tools/g2_bdda3d.py。"""
+    committed = json.loads((ROOT / "reports" / "g2_bdda3d.json").read_text(encoding="utf-8"))
+    live = json.loads(json.dumps([compare(p) for p in CASES], indent=1, default=str))
+    assert committed == live
+
+
+# ---------------------------------------------------------------- 纪律 F：G2 门在刚体运动 + 换单位下不变
+
+def _rot3(seed):
+    import math
+    import random
+    rng = random.Random(seed)
+    q = [rng.gauss(0.0, 1.0) for _ in range(4)]
+    n = math.sqrt(sum(x * x for x in q))
+    a, b, c, d = (x / n for x in q)
+    R = [[a * a + b * b - c * c - d * d, 2 * (b * c - a * d), 2 * (b * d + a * c)],
+         [2 * (b * c + a * d), a * a - b * b + c * c - d * d, 2 * (c * d - a * b)],
+         [2 * (b * d - a * c), 2 * (c * d + a * b), a * a - b * b - c * c + d * d]]
+    u = [rng.gauss(0.0, 1.0) for _ in range(3)]
+    nu = math.sqrt(sum(x * x for x in u))
+    return R, [x / nu for x in u]
+
+
+_R3, _DIR3 = _rot3(20260924)
+_NEEDS_GEOM = pytest.mark.xfail(strict=True, reason=(
+    "needs m2-geom: G6 confirmed[6] (covers3 cone tests compare unit vectors against the caller's length tol with no "
+    "c*eps*C/l rounding floor -- vertex_cone_contains covers3.py:53-64 has the same pattern as edge_arc_contains:80); "
+    "face-face contact VF covers sit on the cone boundary and are dropped once coordinates carry eps*C noise. "
+    "Verified 2026-09-24: adding a c*eps*C/l floor to those two predicates alone turns all six cells green."))
+G2_MOTIONS = [pytest.param(s, tm, id=f"s{s:g}_t{tm:g}", marks=[_NEEDS_GEOM] if (s < 1.0 and tm > 0.0) else [])
+              for s in (1e-3, 1.0, 1e3) for tm in (0.0, 1e3, 1e5)]
+
+
+def _moved(d, s, tm):
+    d["verts"] = {k: [[s * sum(_R3[i][j] * v[j] for j in range(3)) + tm * _DIR3[i] for i in range(3)] for v in vs]
+                  for k, vs in d["verts"].items()}
+
+
+def _row_digest(r):
+    return (tuple(r["pair"]), r["legacy"], r["mine"], r["n_covers"], len(r["band"]), len(r["penetration"]),
+            len(r["violations"]))
+
+
+@pytest.mark.parametrize("s,tm", G2_MOTIONS)
+@pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
+    """夹具整体随机旋转（固定种子、非轴对齐）× 平移 |t| ∈ {0, 1e3, 1e5} × 单位缩放 s ∈ {1e-3, 1, 1e3}；
+    窗口、带、容差随单位缩放。门必须照绿，块对、legacy/内核键、盖数、带/贯入/违规计数与恒等变换逐项相同。
+    b6468f3 上 s=1e-3、|t| ≥ 1e3 六格全红（共面归并在原点系里量平面偏移，顶面两片三角不归并，面号错位）；
+    本组修了拓扑那一半（凸包/归并挪到块局部坐标、容差抬到舍入下限），剩下的是内核 covers3 的法锥判据没有舍入下限
+    （面-面坐落的 VF 盖卡在锥边界上），属 m2-geom——六格标 strict xfail，别组修好即 XPASS 报红、逼合并者摘标记。"""
+    ref = [_row_digest(r) for r in compare(path)["rows"]]
+    d = json.loads(path.read_text(encoding="utf-8"))
+    _moved(d, s, tm)
+    p = tmp_path / f"{path.stem}_moved.json"
+    p.write_text(json.dumps(d), encoding="utf-8")
+    res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+    _assert_g2_gate(res, band=G2_BAND * s)
+    assert [_row_digest(r) for r in res["rows"]] == ref

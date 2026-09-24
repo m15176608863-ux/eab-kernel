@@ -14,7 +14,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from ..kernel2d.geom import Poly, ensure_ccw
+from ..kernel2d.geom import Poly, coord_scale, ensure_ccw, round_floor
 
 
 @dataclass(slots=True)
@@ -45,13 +45,15 @@ def strip_duplicate_vertices(vids: list[int], poly: Poly, dup_tol: float = 1e-12
                              *, block: int | None = None) -> tuple[list[int], Poly, dict[int, int]]:
     """剥除一块多边形环上的重复点，返回 (保留的顶点号, 保留的点, alias: 被剥顶点号 -> 保留顶点号)。
 
-    两步，都按坐标逐分量 |Δ| ≤ dup_tol 判"同一点"：
+    两步，都按坐标逐分量 |Δ| ≤ dup_tol 判"同一点"（dup_tol 是长度，抬到舍入下限 c·eps·C——纪律 F：
+    坐标量级 1e5 处一个 ulp 就是 1.46e-11，绝对 1e-12 永远认不出只差一个 ulp 的重复点）：
       1. df 的回绕尾巴：末点等于首点或第二点（d[i2+1]=d[i1]、d[i2+2]=d[i1+1]），从尾部逐个剥；
       2. 循环意义下的**任何**连续重复点（零长边）：顺序扫描保留首次出现者，最后再比末点与首点。
     alias 链压平到最终保留的顶点号。剩余不足 3 点抛 ValueError（带块号）。
     """
     vids, poly = list(vids), list(poly)
     alias: dict[int, int] = {}
+    dup_tol = max(dup_tol, round_floor(coord_scale(poly)))
 
     def same(p, q) -> bool:
         return abs(p[0] - q[0]) <= dup_tol and abs(p[1] - q[1]) <= dup_tol

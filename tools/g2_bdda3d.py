@@ -1,7 +1,9 @@
 """G2 三维同构门 · 对 bdda3d 的入口列表。
 
 **三维接触枚举此前没有任何 legacy 对账通道**（见 docs/sibling_observations.md）。
-这是第一次。
+这是第一次。口径订正（G6 gap 0，2026-09-24）：夹具里的 legacy 入口是 3-b-dda 的**手写期望清单**
+（D:/3-b-dda/src/bdda3d/cases.py 用字面量 `_np_entrance(...)` 给出），不是某个检测器的输出——这道门验证的是
+"内核与人对该位形的理解一致"，没有验证与任何既有检测器一致。
 
 对账口径（守同构、不守逐字节 —— AGENTS.md §2）：
   · bdda3d 的 `np` 入口 = (动块的一个顶点, 固定块面上的一个三角形)；
@@ -12,12 +14,21 @@
     不是凸包角点的输入顶点：tol 内重复某角点者登记 alias（legacy 引用按 alias 归并）；
     其余（棱中点 / 面中点 T 形顶点、内点）构造时即报错，带块号与顶点号（审查 C18）。
 
-门的判据（审查 C17：原门对非 VF 结构性失明）——每个块对：
+门的判据（审查 C17：原门对非 VF 结构性失明）——**legacy 或内核看到的**每个块对（G6 minor 14：旧版只查 legacy
+列出的块对，legacy 漏掉整个块对时门看不见）：
+  · legacy 侧非空（内核在枚举窗口内有在程盖、legacy 却一条入口都没有的块对，以 legacy == [] 报红）；
   · legacy_only == [] 且 mine_only == []（np↔VF/FV 两个方向零差异）；
   · `violations` 为空：legacy 有门不认识的入口类（目前除 np 外全部，含 ee）即红；
     内核在对账窗口内的盖凡未参与对账（EE/VE3/EV3/VV3/…，或两个盖归到同一个键）即红；
-  · `band` 为空：G2_WINDOW < |gap| ≤ G2_BAND 的 VF/FV 盖即红（旧窗口 1.0 对 VF/FV 的那颗牙，见 G2_BAND）。
+  · `band` 为空：G2_WINDOW < |gap| ≤ G2_BAND 的**任何种类**的在程盖即红（G6 minor 29：旧版只收 VF/FV）；
+  · `penetration` 为空：枚举窗口内 gap < −G2_WINDOW 的在程盖（带内贯入）即红——单列一条判据。
   对账窗口 `G2_WINDOW` 见其注释；ee↔EE 的键尚未实现，所以带 ee 的夹具目前**必红**，不是静默绿。
+  `enumerated_window` 记的是枚举器**实际收到**的窗口（`_enumerate_recorded`），不是 compare 局部变量的回声（G6 minor 25）。
+
+坐标（纪律 F）：凸包与共面归并在**块的局部坐标系**里做（减去块的第一个顶点；只取拓扑，顶点坐标原样保留），
+长度容差抬到舍入下限 c·eps·C——工程坐标（1e5）上的小块，共面面的平面偏移 n·v 在原点系里差 eps·C²/L，
+归并判据永远不成立（geom3.merge_coplanar 的平面偏移按原点量，见 G6 minor）。
+门：tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units。
 """
 
 from __future__ import annotations
@@ -33,6 +44,9 @@ from eab.kernel3d.covers3 import enumerate_covers3  # noqa: E402
 from eab.kernel3d.geom3 import (Polyhedron, convex_hull_3d, cross, dot, merge_coplanar,  # noqa: E402
                                 norm, sub)
 
+EPS = sys.float_info.epsilon
+ROUND_C = 64.0          # 与 eab.kernel2d.geom.ROUND_C 同一口径：舍入下限 c·eps·C
+
 
 # 对账窗口（长度量纲）。理由：legacy 入口是它自己检测层选出的接触，这三份夹具里全部是零间隙坐落
 # （顶点到所指三角平面的距离恰为 0）；窗口必须装得下 legacy 的全部间隙，又必须远小于夹具里任何
@@ -42,14 +56,15 @@ from eab.kernel3d.geom3 import (Polyhedron, convex_hull_3d, cross, dot, merge_co
 # 将来夹具的 legacy 入口若带正间隙（legacy 搜索距离内的"近接触"），门会以 legacy_only 报红——不会静默。
 G2_WINDOW = 1e-6
 
-# VF/FV 带（长度量纲）：2026-09-24 前对账窗口硬编码为 1.0，那时 |gap| ∈ (0, 1.0] 的多余 VF/FV 盖会以
-# mine_only 报红。窗口收到 G2_WINDOW 后这颗牙不能丢（审查：被放松的旧断言），所以单列：
-# G2_WINDOW < |gap| ≤ G2_BAND 的 VF/FV 盖一律进 `band`、非空即红。理由不靠 legacy 的搜索距离（夹具没记，
-# 见 PROVENANCE.json），而靠几何：三份夹具里法锥有效、投影在面内的顶点-面对，|gap| ≤ 1.0 的恰是 4 个零间隙
-# 坐落，下一个在 2.0——带内几何上为空、带边离最近的 VF/FV 还有 1.0 的余量（不是卡在某个特征距离上的刀口）。
-# 带只收 VF/FV：低维盖（VE3/EV3/VV3）在 1.0 处合法存在（cb2 上块底角到下块顶棱 = 1.0），M0.b 去掉 strict
-# 过滤后会进来，它们不属于这颗牙。几何理由由 tests/test_g2_bdda3d.py::test_g2_band_is_geometrically_empty 看着。
-# 与 G2_WINDOW 不同，带宽是**夹具几何**的量（下一个 VF/FV 在 2.0）：缩放过的夹具须按同一比例传 band。
+# 带（长度量纲）：2026-09-24 前对账窗口硬编码为 1.0，那时 |gap| ∈ (0, 1.0] 的多余盖会以 mine_only 报红。
+# 窗口收到 G2_WINDOW 后这颗牙不能丢（审查：被放松的旧断言），所以单列：G2_WINDOW < |gap| ≤ G2_BAND 的在程盖
+# **不论种类**一律进 `band`、非空即红。理由不靠 legacy 的搜索距离（夹具没记，见 PROVENANCE.json），而靠几何：
+# 三份夹具上正确内核的在程盖只出现在 gap ∈ {0, −2, −3}，|gap| ≤ 1.0 的恰是 4 个零间隙 VF 坐落；放开在程过滤
+# 也没有任何低维盖（VE3/EV3/VV3）。所以带内几何上为空，带边离最近的在程盖还有 1.0 的余量（不是刀口）。
+# 由 tests/test_g2_bdda3d.py::test_g2_band_is_geometrically_empty / test_g2_band_is_empty_for_every_cover_kind 看着。
+# （旧注释说"低维盖在 1.0 处合法存在（cb2 上块底角到下块顶棱 = 1.0）"——错的，G6 minor 29 实测正确内核一个低维盖
+# 都不出；那句注释让带只收 VF/FV，edge_arc_contains 恒 0 的内核缺陷吐出 EE ±1.0、VE3 1.0 时门照绿。）
+# 与 G2_WINDOW 不同，带宽是**夹具几何**的量：缩放过的夹具须按同一比例传 band。
 G2_BAND = 1.0
 
 
@@ -61,22 +76,34 @@ def polyhedron_with_aliases(pts: list[tuple[float, float, float]], tol: float = 
     会双双成为凸包角点、夹出一条细缝面，内核对两者各出一个盖（2026-09-24 实测）。然后每个代表要么
     被某个面引用（凸包角点），要么（棱中点 / 面中点这类 T 形顶点，或内点）→ ValueError，带块号、
     顶点号、坐标与分类。不许静默保留一个未被任何面引用的顶点（审查 C18）。
+
+    纪律 F：tol 是长度（调用方单位），抬到舍入下限 c·eps·C；凸包与共面归并在局部坐标（减去 pts[0]）里算，
+    只取面拓扑，返回的多面体用**原坐标**——对调用方透明、精确。
     """
     n = len(pts)
+    C = max((abs(v) for p in pts for v in p), default=0.0)
+    fl = ROUND_C * EPS * C
+    tol = max(tol, fl)
+    o = pts[0]
+    loc = [sub(p, o) for p in pts]
+    L = max((norm(sub(p, q)) for p in loc for q in loc), default=0.0)
     rep = list(range(n))
     for i in range(n):
         for j in range(i):
-            if rep[j] == j and norm(sub(pts[i], pts[j])) <= tol:
+            if rep[j] == j and norm(sub(loc[i], loc[j])) <= tol:
                 rep[i] = j
                 break
     alias: dict[int, int] = {i: rep[i] for i in range(n) if rep[i] != i}
     reps = [i for i in range(n) if rep[i] == i]
-    hull = merge_coplanar(convex_hull_3d([pts[i] for i in reps]), tol)
+    # geom3 的两个容差接口混量纲（convex_hull_3d 的 tol 既当长度又当体积；merge_coplanar 的 tol 既比单位法向差、
+    # 又比平面偏移），按各自需要的舍入下限取大：法向差 ~eps·C/L，平面偏移与可见性 ~eps·C。
+    hull = merge_coplanar(convex_hull_3d([loc[i] for i in reps], max(1e-12, fl)),
+                          max(tol, fl / L if L > 0.0 else 0.0))
     remap: dict[int, int] = {}
     for hi, hv in enumerate(hull.verts):
         best, bd = None, float("inf")
         for oi in reps:
-            d = norm(sub(hv, pts[oi]))
+            d = norm(sub(hv, loc[oi]))
             if d < bd:
                 best, bd = oi, d
         if bd > tol:
@@ -125,12 +152,13 @@ def plane_of_triple(P: Polyhedron, tri: list[int]):
     return n, dot(n, a)
 
 
-def load_case_full(path: Path) -> dict:
-    """夹具 → {case, step, blocks: {块号: Polyhedron}, aliases: {块号: {顶点: 规范顶点}}, entrances}。"""
+def load_case_full(path: Path, *, tol: float = 1e-9) -> dict:
+    """夹具 → {case, step, blocks: {块号: Polyhedron}, aliases: {块号: {顶点: 规范顶点}}, entrances}。
+    tol：顶点去重/回映的长度容差（随夹具单位缩放；compare 把自己的 tol 传进来）。"""
     d = json.loads(path.read_text(encoding="utf-8"))
     blocks, aliases = {}, {}
     for k, vs in d["verts"].items():
-        blocks[int(k)], aliases[int(k)] = polyhedron_with_aliases([tuple(v) for v in vs], block=int(k))
+        blocks[int(k)], aliases[int(k)] = polyhedron_with_aliases([tuple(v) for v in vs], tol, block=int(k))
     return {"case": d["case"], "step": d["step"], "blocks": blocks, "aliases": aliases,
             "entrances": d["entrances"]}
 
@@ -140,14 +168,35 @@ def load_case(path: Path):
     return c["case"], c["step"], c["blocks"], c["entrances"]
 
 
+def _enumerate_recorded(A: Polyhedron, B: Polyhedron, seen: list[float], **kw):
+    """调枚举器，并把它**实际收到**的窗口记进 seen。`enumerated_window` 只许从这里取：旧版记的是 compare 的
+    局部变量 max(window, band)，把传给枚举器的窗口改回 window 时记录值照旧，门那条断言永不触发（G6 minor 25）。"""
+    seen.append(kw["window"])
+    return enumerate_covers3(A, B, **kw)
+
+
+def kernel_pairs(blocks: dict, window: float, tol: float) -> set[tuple[int, int]]:
+    """内核在枚举窗口内有在程盖的块对（无序对，按 (大号, 小号) 取向——夹具约定动块号大、宿主号小）。"""
+    ids = sorted(blocks)
+    out = set()
+    for i, lo in enumerate(ids):
+        for hi in ids[i + 1:]:
+            if any(c.in_extent for c in enumerate_covers3(blocks[hi], blocks[lo], window=window, tol=tol)):
+                out.add((hi, lo))
+    return out
+
+
 def compare(path: Path, *, window: float = G2_WINDOW, band: float = G2_BAND, tol: float = 1e-9) -> dict:
-    lc = load_case_full(path)
+    lc = load_case_full(path, tol=tol)
     case, step, blocks, aliases, entrances = lc["case"], lc["step"], lc["blocks"], lc["aliases"], lc["entrances"]
 
     def canon(b: int, i: int) -> int:
         return aliases[b].get(i, i)
 
-    pairs = sorted({(e["bi"], e["bj"]) for e in entrances})
+    legacy_pairs = {(e["bi"], e["bj"]) for e in entrances}
+    seen_unordered = {frozenset(pq) for pq in legacy_pairs}
+    pairs = sorted(legacy_pairs | {pq for pq in kernel_pairs(blocks, max(window, band), tol)
+                                   if frozenset(pq) not in seen_unordered})
     rows = []
     for bi, bj in pairs:
         A, B = blocks[bi], blocks[bj]
@@ -182,12 +231,16 @@ def compare(path: Path, *, window: float = G2_WINDOW, band: float = G2_BAND, tol
             legacy_detail.append((vblk, vidx, tuple(tri), gi))
 
         # 内核侧：VF / FV 盖 → 同一形式的键；其余种类在窗口内出现即违规（门不认识的类不许静默）
-        # 枚举必须伸到带宽，否则带内的真实内核盖根本进不了 band——这一行没有门看着时，改回 window=window 全套照样绿（2026-09-24 复核实测）。
+        # 枚举必须伸到带宽，否则带内的真实内核盖根本进不了 band；实际收到的窗口由 _enumerate_recorded 记下，
+        # 门断言它不窄于带宽（tests/test_g2_bdda3d.py::test_g2_enumerated_window_is_read_off_the_actual_enumeration）。
         ewin = max(window, band)
-        allc = [c for c in enumerate_covers3(A, B, window=ewin, tol=tol) if c.in_extent]
+        seen: list[float] = []
+        allc = [c for c in _enumerate_recorded(A, B, seen, window=ewin, tol=tol) if c.in_extent]
         covs = [c for c in allc if abs(c.gap) <= window]
         band_covs = sorted((c.kind, c.a_feature, c.b_feature, round(c.gap, 12)) for c in allc
-                           if window < abs(c.gap) <= band and c.kind in ("VF", "FV"))
+                           if window < abs(c.gap) <= band)
+        penetration = sorted((c.kind, c.a_feature, c.b_feature, round(c.gap, 12)) for c in allc
+                             if c.gap < -window and abs(c.gap) <= band)
         mine = set()
         mine_detail = []
         n_reconciled = 0
@@ -213,7 +266,8 @@ def compare(path: Path, *, window: float = G2_WINDOW, band: float = G2_BAND, tol
                      "legacy_only": sorted(legacy - mine), "mine_only": sorted(mine - legacy),
                      "legacy_detail": legacy_detail, "mine_detail": mine_detail,
                      "n_covers": len(covs), "violations": violations, "window": window,
-                     "band": band_covs, "band_limit": band, "enumerated_window": ewin})
+                     "band": band_covs, "penetration": penetration, "band_limit": band,
+                     "enumerated_window": min(seen)})
     return {"case": case, "step": step, "rows": rows}
 
 
@@ -230,6 +284,7 @@ def main() -> int:
             print(f"    mine_only   = {r['mine_only']}")
             print(f"    violations  = {r['violations']}")
             print(f"    band        = {r['band']}")
+            print(f"    penetration = {r['penetration']}")
             for d in r["mine_detail"]:
                 print(f"      内核: {d}")
             for d in r["legacy_detail"]:

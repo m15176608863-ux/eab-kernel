@@ -244,3 +244,185 @@ def test_c19_ring_with_fewer_than_three_distinct_points_is_refused():
     from eab.readers.bdda_geom import strip_duplicate_vertices
     with pytest.raises(ValueError, match="block 9"):
         strip_duplicate_vertices([1, 2, 3, 4], [(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (0.0, 0.0)], block=9)
+
+
+# ---------------------------------------------------------------- G6 major 12（2026-09-24）：interior_point 与 polygons_overlap
+
+from fractions import Fraction as _Fr  # noqa: E402
+
+
+def _fr_cross(o, a, b):
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+
+def _fr_poly(P):
+    Q = [(_Fr(x), _Fr(y)) for x, y in P]
+    a2 = sum(_fr_cross((0, 0), Q[i], Q[(i + 1) % len(Q)]) for i in range(len(Q)))
+    return Q if a2 > 0 else Q[::-1]
+
+
+def _exact_parity(pt, P) -> int:
+    """独立 oracle ①：Fraction 精确射线奇偶（1 严格在内 / 0 边界 / −1 外）。不调 geom 的任何原语。"""
+    px, py = _Fr(pt[0]), _Fr(pt[1])
+    Q = [(_Fr(x), _Fr(y)) for x, y in P]
+    inside = False
+    for i in range(len(Q)):
+        (ax, ay), (bx, by) = Q[i], Q[(i + 1) % len(Q)]
+        if _fr_cross((ax, ay), (bx, by), (px, py)) == 0 and min(ax, bx) <= px <= max(ax, bx) \
+                and min(ay, by) <= py <= max(ay, by):
+            return 0
+        if (ay > py) != (by > py) and px < ax + (py - ay) * (bx - ax) / (by - ay):
+            inside = not inside
+    return 1 if inside else -1
+
+
+def _exact_ear_clip(P):
+    """Fraction 精确耳切（简单多边形）→ 三角形列表（CCW）。"""
+    Q = _fr_poly(P)
+    idx = list(range(len(Q)))
+    tris = []
+    while len(idx) > 3:
+        n = len(idx)
+        for k in range(n):
+            i0, i1, i2 = idx[k - 1], idx[k], idx[(k + 1) % n]
+            a, b, c = Q[i0], Q[i1], Q[i2]
+            if _fr_cross(a, b, c) <= 0:
+                continue
+            if any(_fr_cross(a, b, Q[j]) >= 0 and _fr_cross(b, c, Q[j]) >= 0 and _fr_cross(c, a, Q[j]) >= 0
+                   for j in idx if j not in (i0, i1, i2)):
+                continue
+            tris.append((a, b, c))
+            idx.pop(k)
+            break
+        else:                                               # 只剩平直顶点可删
+            k = next(k for k in range(n) if _fr_cross(Q[idx[k - 1]], Q[idx[k]], Q[idx[(k + 1) % n]]) == 0)
+            idx.pop(k)
+    a, b, c = (Q[i] for i in idx)
+    if _fr_cross(a, b, c) > 0:
+        tris.append((a, b, c))
+    return tris
+
+
+def _clip_area(T, U):
+    """独立 oracle ②：Sutherland–Hodgman 精确裁剪（凸 T 被凸 U 裁），返回交集面积（Fraction）。与 SAT 不同路。"""
+    out = list(T)
+    for i in range(3):
+        a, b = U[i], U[(i + 1) % 3]
+        inp, out = out, []
+        if not inp:
+            break
+        for j in range(len(inp)):
+            p, q = inp[j - 1], inp[j]
+            sp, sq = _fr_cross(a, b, p), _fr_cross(a, b, q)
+            if sq >= 0:
+                if sp < 0:
+                    t = sp / (sp - sq)
+                    out.append((p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])))
+                out.append(q)
+            elif sp >= 0:
+                t = sp / (sp - sq)
+                out.append((p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])))
+    if len(out) < 3:
+        return _Fr(0)
+    return sum(_fr_cross((0, 0), out[i], out[(i + 1) % len(out)]) for i in range(len(out))) / 2
+
+
+def _exact_overlap(A, B) -> bool:
+    """内部相交 ⟺ 两份精确耳切里某对三角形的精确交集面积 > 0。"""
+    return any(_clip_area(T, U) > 0 for T in _exact_ear_clip(A) for U in _exact_ear_clip(B))
+
+
+def _exact_proper_cross(p1, p2, q1, q2):
+    d1, d2 = _fr_cross(p1, p2, q1), _fr_cross(p1, p2, q2)
+    d3, d4 = _fr_cross(q1, q2, p1), _fr_cross(q1, q2, p2)
+    return d1 * d2 < 0 and d3 * d4 < 0
+
+
+def _random_simple_polygon(rng, n):
+    """2-opt 解缠：随机点列，反复把一对真相交的边反转，直到无相交（精确谓词）。一般位置，不在测试里挑形状。"""
+    P = [(rng.uniform(0.0, 1.0), rng.uniform(0.0, 1.0)) for _ in range(n)]
+    F = [(_Fr(x), _Fr(y)) for x, y in P]
+    for _ in range(5000):
+        hit = None
+        for i in range(n):
+            for j in range(i + 2, n):
+                if i == 0 and j == n - 1:
+                    continue
+                if _exact_proper_cross(F[i], F[(i + 1) % n], F[j], F[(j + 1) % n]):
+                    hit = (i, j)
+                    break
+            if hit:
+                break
+        if hit is None:
+            return P
+        i, j = hit
+        P[i + 1:j + 1] = reversed(P[i + 1:j + 1])
+        F[i + 1:j + 1] = reversed(F[i + 1:j + 1])
+    return None
+
+
+# V 形缺口六边形：最左顶点 v=(0,0)，三角 (p, v, q) 里有两个顶点——缺口尖 t=(2,0)（离直线 pq 最远）与缺口下沿
+# a=(6,0.6)（离 v 最远）。旧规则取 a、返回 v–a 中点 (3, 0.3)，它落在缺口里（体外）。O'Rourke 规则取 t。
+NOTCH = [(0.0, 0.0), (8.0, -4.0), (9.0, 0.0), (6.0, 0.6), (2.0, 0.0), (8.0, 4.0)]
+NOTCH_BOX = [(2.9, 0.25), (3.1, 0.25), (3.1, 0.4), (2.9, 0.4)]            # 悬在缺口里，与 NOTCH 分离
+C_SHAPE = [(0.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.0, 1.0), (1.0, 2.0), (3.0, 2.0), (3.0, 3.0), (0.0, 3.0)]
+
+
+def test_g6_12_notch_hexagon_interior_point_is_inside():
+    from eab.kernel2d.geom import is_ccw
+    assert is_ccw(NOTCH) and _exact_parity((3.0, 0.3), NOTCH) == -1        # 旧规则的返回值确在体外
+    ip = interior_point(NOTCH)
+    assert _exact_parity(ip, NOTCH) == 1, ip
+
+
+def test_g6_12_notch_hexagon_box_in_the_notch_is_separated():
+    assert not _exact_overlap(NOTCH, NOTCH_BOX)
+    assert polygons_overlap(NOTCH, NOTCH_BOX, 1e-12) == -1
+    assert polygons_overlap(NOTCH_BOX, NOTCH, 1e-12) == -1
+
+
+def test_g6_12_c_shape_shifted_down_two_overlaps_on_the_arms():
+    """C 与 C 平移 (0,−2)：底臂与顶臂重合（面积 3），没有顶点严格在对方体内、没有边横截相交——旧谓词判 0（接触）。"""
+    from eab.kernel2d.geom import translate
+    D = translate(C_SHAPE, (0.0, -2.0))
+    assert _exact_overlap(C_SHAPE, D)
+    assert _exact_parity((2.0, 0.5), C_SHAPE) == 1 and _exact_parity((2.0, 0.5), D) == 1
+    assert polygons_overlap(C_SHAPE, D, 1e-12) == 1
+    assert polygons_overlap(D, C_SHAPE, 1e-12) == 1
+
+
+def test_g6_12_interior_point_on_random_simple_polygons():
+    """2-opt 随机简单多边形（5–10 顶点，固定种子）：interior_point 必须严格在内（精确射线奇偶 oracle）。
+    旧规则在 0.1–0.25% 的多边形上返回体外点（G6 实测 7/5000、49/20000）。"""
+    rng = random.Random(7)
+    bad, n_ok = [], 0
+    while n_ok < 3000:
+        P = _random_simple_polygon(rng, rng.randint(5, 10))
+        if P is None:
+            continue
+        n_ok += 1
+        if _exact_parity(interior_point(P), P) != 1:
+            bad.append(P)
+    assert bad == [], (len(bad), bad[:1])
+
+
+def test_g6_12_polygons_overlap_against_exact_ear_clip_area_oracle():
+    """polygons_overlap 对精确 oracle（精确耳切 + Sutherland–Hodgman 精确面积，与库的判据不同路）：
+    随机 2-opt 多边形 P × 小方块 Q，Q 的中心取 P 的包围盒内随机点**以及 interior_point(P)**（旧实现的软肋），
+    方块边长 1e-3——大量样本落在"分离但离得很近"与"真相交"的边界两侧。"""
+    rng = random.Random(12)
+    wrong, n = [], 0
+    while n < 600:
+        P = _random_simple_polygon(rng, rng.randint(5, 9))
+        if P is None:
+            continue
+        n += 1
+        centres = [interior_point(P)] + [(rng.uniform(0, 1), rng.uniform(0, 1)) for _ in range(3)]
+        for cx, cy in centres:
+            h = 5e-4
+            Q = [(cx - h, cy - h), (cx + h, cy - h), (cx + h, cy + h), (cx - h, cy + h)]
+            truth = _exact_overlap(P, Q)
+            got = polygons_overlap(P, Q, 0.0)
+            if (got == 1) != truth:
+                wrong.append((P, (cx, cy), got, truth))
+    assert wrong == [], (len(wrong), wrong[:1])

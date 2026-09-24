@@ -4,7 +4,9 @@
 任何映射都能过。这里：
   (1) 用读取器（tf_probe.read_pair_stage / load_records）**重算**普查，钉 docs/sibling_observations.md
       里的数字：三份夹具共 6716 条接触、100% n-p（stage 5296 + fine 探针 864 + medium 探针 556）；
-  (2) 用一条与读取器零共用的 oracle（按字节切行、按表头名定列，不用 csv 模块、不用 tf_probe）逐行对账；
+  (2) 用一条与读取器零共用的 oracle（按字节切行、按表头名定列，不用 csv 模块、不用 tf_probe）逐行、逐字段
+      精确对账——含法向、接触点、法向力、剪切、contact_index 与全部余项列（G6 major 16 之前只比拓扑/计数/gap/area）；
+      牙注入读取器源码本身（`_mutant_reader`），不在读取器产出之后改数据；
   (3) TF_MODE 对状态 4/5/6 的折叠：docs/sibling_observations.md 没有 tf.cpp 行号引文为它作证，
       所以映射标 UNVERIFIED，不断言 SLIDING/LOCKED；原始码照旧保留在 raw_mode。
 """
@@ -67,23 +69,55 @@ def test_tf_census_recomputed_through_the_readers():
     assert all(rec.cover.value == "VF" for recs in probes.values() for rec in recs)
 
 
+_STAGE_INT = ("step", "block_i", "block_j", "contact_start", "contact_end", "total_contacts", "nn_count", "ne_count",
+              "np_count", "ee_count")
+_PROBE_CORE_COLS = {"step", "time", "block_a", "block_b", "contact_index", "contact_state", "previous_contact_state",
+                    "contact_entry", "contact_type", "gap", "area", "normal_force", "px", "py", "pz", "nx", "ny", "nz",
+                    "shear_dx", "shear_dy", "shear_dz"}
+
+
+def _assert_rows_agree(stage, probes):
+    """逐行、逐字段、精确相等地对账（G6 major 16）：原先只比拓扑/计数/标量 gap·area，法向、接触点、法向力、
+    剪切、contact_index 五个变异全套照绿。现在 ContactRecord 的每个物理字段都对原始 TSV 独立解析的值做
+    **精确浮点相等**比较（同一个十进制串经 float() 只有一个结果，不需要容差），余项列逐一比对 extra。
+    oracle 与读取器零共用：`_raw_table` 按字节切行、按表头名取列，不用 csv 模块、不用 tf_probe。
+    每条断言的消息首项是字段名——牙测试据此确认"红在看护该字段的那条断言上"。"""
+    raw = _raw_table(STAGE)
+    assert len(raw) == len(stage), ("stage rows", len(stage), len(raw))
+    for r, o in zip(stage, raw):
+        for k in _STAGE_INT:
+            assert getattr(r, k) == int(o[k]), ("stage " + k, getattr(r, k), o[k])
+        assert r.time == float(o["time"]) and r.load_bucket == o["load_bucket"], ("stage time/bucket", r, o)
+    for name, recs in probes.items():
+        raw = _raw_table(TF / name / "retry_contact_pair_probe.tsv")
+        assert len(raw) == len(recs), ("probe rows", name, len(recs), len(raw))
+        for rec, o in zip(recs, raw):
+            f = {c: float(o[c]) for c in ("gap", "area", "normal_force", "px", "py", "pz", "nx", "ny", "nz",
+                                          "shear_dx", "shear_dy", "shear_dz", "time")}
+            assert rec.source == "tf", ("source", rec.source)
+            assert rec.step == int(o["step"]), ("step", rec.step, o["step"])
+            assert rec.contact_index == int(o["contact_index"]), ("contact_index", rec.contact_index, o["contact_index"])
+            assert (rec.block_a, rec.block_b) == (int(o["block_a"]), int(o["block_b"])), ("blocks", rec, o)
+            assert rec.raw_cover == int(o["contact_type"]), ("raw_cover", rec.raw_cover, o["contact_type"])
+            assert rec.cover.value == {"0": "NN", "1": "NE", "2": "VF", "3": "EE"}[o["contact_type"]], ("cover", rec.cover)
+            assert (rec.raw_mode, rec.raw_mode_prev) == (int(o["contact_state"]), int(o["previous_contact_state"])), \
+                ("state", rec.raw_mode, rec.raw_mode_prev, o["contact_state"], o["previous_contact_state"])
+            assert rec.entrance_index == int(o["contact_entry"]), ("entrance_index", rec.entrance_index, o["contact_entry"])
+            assert rec.gap == f["gap"], ("gap", rec.gap, o["gap"])
+            assert rec.length_or_area == f["area"], ("area", rec.length_or_area, o["area"])
+            assert rec.normal_force == f["normal_force"], ("normal_force", rec.normal_force, o["normal_force"])
+            assert rec.ref_points == ((f["px"], f["py"], f["pz"]),), ("ref_points", rec.ref_points, (o["px"], o["py"], o["pz"]))
+            assert rec.normal == (f["nx"], f["ny"], f["nz"]), ("normal", rec.normal, (o["nx"], o["ny"], o["nz"]))
+            assert rec.shear == (f["shear_dx"], f["shear_dy"], f["shear_dz"]), \
+                ("shear", rec.shear, (o["shear_dx"], o["shear_dy"], o["shear_dz"]))
+            want_extra = {k: v for k, v in o.items() if k not in _PROBE_CORE_COLS}
+            want_extra["time"] = f["time"]
+            assert rec.extra == want_extra, ("extra", rec.extra, want_extra)
+
+
 def test_tf_readers_agree_row_by_row_with_a_zero_shared_oracle():
     stage, probes = _load()
-    raw = _raw_table(STAGE)
-    assert len(raw) == len(stage)
-    for r, o in zip(stage, raw):
-        assert (r.step, r.block_i, r.block_j, r.total_contacts, r.nn_count, r.ne_count, r.np_count, r.ee_count) == \
-            tuple(int(o[k]) for k in ("step", "block_i", "block_j", "total_contacts", "nn_count", "ne_count",
-                                      "np_count", "ee_count"))
-    for k, recs in probes.items():
-        raw = _raw_table(TF / k / "retry_contact_pair_probe.tsv")
-        assert len(raw) == len(recs)
-        for rec, o in zip(recs, raw):
-            assert (rec.step, rec.block_a, rec.block_b, rec.raw_cover, rec.raw_mode, rec.raw_mode_prev,
-                    rec.entrance_index) == tuple(int(o[c]) for c in (
-                        "step", "block_a", "block_b", "contact_type", "contact_state", "previous_contact_state",
-                        "contact_entry"))
-            assert rec.gap == float(o["gap"]) and rec.length_or_area == float(o["area"])
+    _assert_rows_agree(stage, probes)
 
 
 def test_tf_census_tool_agrees_with_the_readers():
@@ -96,17 +130,58 @@ def test_tf_census_tool_agrees_with_the_readers():
         assert c[f"{k}/probe"]["rows"] == n and c[f"{k}/probe"]["by_kind"] == {"n-p": n}
 
 
-@pytest.mark.parametrize("cut", ["drop_last_probe_row", "drop_first_stage_row", "cover_2_as_ee"])
-def test_tf_census_gate_has_teeth(cut, monkeypatch):
-    """门要有牙：读取器丢一行、或把候选类映射错，普查门必须红。"""
+def _mutant_reader(monkeypatch, old: str, new: str):
+    """把缺陷注入**读取器源码本身**（AGENTS.md §2：牙要穿过被测路径，不许在它的产出之后追加假数据）：
+    对 src/eab/readers/tf_probe.py 做一处文本替换（断言恰好命中一次），编译成一个变异模块，
+    再把 tf_probe 的公开入口换成变异版——之后 `_load()` 走的就是有缺陷的解析代码。"""
+    import types
+    src = Path(tf_probe.__file__).read_text(encoding="utf-8")
+    assert src.count(old) == 1, ("mutation site must match exactly once", old)
+    name = "eab.readers._tf_probe_mutant"
+    mod = types.ModuleType(name)
+    mod.__package__ = "eab.readers"
+    mod.__file__ = tf_probe.__file__
+    monkeypatch.setitem(sys.modules, name, mod)
+    exec(compile(src.replace(old, new), tf_probe.__file__, "exec"), mod.__dict__)
+    monkeypatch.setattr(tf_probe, "load_records", mod.load_records)
+    monkeypatch.setattr(tf_probe, "read_pair_stage", mod.read_pair_stage)
+
+
+# 变异点：(原文, 变异, 应当报红的断言的字段名)。前五个是 G6 在 8200ba6 上逐一证明"全套照绿"的读取器缺陷。
+READER_MUTANTS = {
+    "normal_transposed_nz_negated": ('normal=(float(r["nx"]), float(r["ny"]), float(r["nz"]))',
+                                     'normal=(float(r["ny"]), float(r["nx"]), -float(r["nz"]))', "normal"),
+    "point_xy_transposed": ('ref_points=((float(r["px"]), float(r["py"]), float(r["pz"])),)',
+                            'ref_points=((float(r["py"]), float(r["px"]), float(r["pz"])),)', "ref_points"),
+    "normal_force_negated": ('normal_force=float(r["normal_force"])', 'normal_force=-float(r["normal_force"])',
+                             "normal_force"),
+    "contact_index_offset_7": ('contact_index=int(r["contact_index"])', 'contact_index=int(r["contact_index"]) + 7',
+                               "contact_index"),
+    "shear_xy_transposed": ('shear=(float(r["shear_dx"]), float(r["shear_dy"]), float(r["shear_dz"]))',
+                            'shear=(float(r["shear_dy"]), float(r["shear_dx"]), float(r["shear_dz"]))', "shear"),
+    "drop_last_probe_row": ("    for r in _rows(probe_path):", "    for r in _rows(probe_path)[:-1]:", "probe rows"),
+    "drop_first_stage_row": ("    for r in _rows(path):", "    for r in _rows(path)[1:]:", "stage rows"),
+    "cover_2_as_ee": ('ctype = int(r["contact_type"])', 'ctype = 3', "raw_cover"),
+}
+
+
+@pytest.mark.parametrize("mut", sorted(READER_MUTANTS))
+def test_tf_row_gate_has_teeth_through_the_reader(mut, monkeypatch):
+    """门要有牙，且牙穿过读取器：每个读取器源码变异都必须让逐行对账门红，**红在看护该字段的那条断言上**。"""
+    old, new, field = READER_MUTANTS[mut]
+    _mutant_reader(monkeypatch, old, new)
     stage, probes = _load()
-    if cut == "drop_last_probe_row":
-        probes["sandstone_fine_20260712"] = probes["sandstone_fine_20260712"][:-1]
-    elif cut == "drop_first_stage_row":
-        stage = stage[1:]
-    else:
-        import dataclasses
-        probes = {k: [dataclasses.replace(r, raw_cover=3) for r in v] for k, v in probes.items()}
+    with pytest.raises(AssertionError) as ei:
+        _assert_rows_agree(stage, probes)
+    assert str(ei.value).startswith(repr((field,))[:-2] + ","), (mut, str(ei.value)[:120])   # 红在该字段的断言上
+
+
+@pytest.mark.parametrize("mut", ["drop_last_probe_row", "drop_first_stage_row", "cover_2_as_ee"])
+def test_tf_census_gate_has_teeth(mut, monkeypatch):
+    """普查门的牙同样穿过读取器（旧版在 `_load()` 返回之后切片 / dataclasses.replace——AGENTS.md 禁止的做法）。"""
+    old, new, _ = READER_MUTANTS[mut]
+    _mutant_reader(monkeypatch, old, new)
+    stage, probes = _load()
     with pytest.raises(AssertionError):
         _assert_census(_census(stage, probes))
 

@@ -8,6 +8,10 @@ Minkowski facet 结构"（命题 4/5）。这条门不依赖任何 legacy。
 "∂E ⊆ ∪ 有效盖的平移线段"的两面：分离样本上的**距离完备性**（`g0_distance_completeness`，与三维
 `g0_distance_completeness3` 同构），相交样本上的**出口完备性**（`g0_exit_completeness`：沿射线首次离开
 E 的那个 ∂E 点必有有效盖作见证）。两者都不是凹块的成员谓词——成员判定要等入口块全局构造（M3）。
+
+容差（纪律 F，M0.2）：本模块内部不再有绝对阈值。暴力谓词的接触带取 1e-12·L，判据阈值取 atol·L（或 atol·真值）
+加舍入下限 c·eps·C——L 为两块的特征长度（包围盒对角线的较大者），C 为坐标量级。所以同一位形经刚体运动、
+搬到工程坐标、换单位后，样本分类（分离/接触/相交）与判定不变。门：tests/test_invariance_2d.py。
 """
 
 from __future__ import annotations
@@ -17,7 +21,7 @@ import random
 from dataclasses import dataclass, field
 
 from .covers import convex_entrance_block, enumerate_covers, local_facets, membership_convex
-from .geom import Point, Poly, convex_hull, polygons_overlap, translate
+from .geom import EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, polygons_overlap, round_floor, translate
 
 
 @dataclass(slots=True)
@@ -41,6 +45,15 @@ def _bbox(P: Poly) -> tuple[float, float, float, float]:
     return min(xs), max(xs), min(ys), max(ys)
 
 
+def char_length(*polys: Poly) -> float:
+    """特征长度 L：各多边形包围盒对角线的最大者。随单位缩放、对平移不变（纪律 F 的相对容差以它为尺）。"""
+    out = 0.0
+    for P in polys:
+        x0, x1, y0, y1 = _bbox(P)
+        out = max(out, math.hypot(x1 - x0, y1 - y0))
+    return out
+
+
 def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: float = 0.25) -> list[Point]:
     """在 (B 的包围盒 − A 的包围盒) 外扩 margin 的范围里均匀采样平移。"""
     ax0, ax1, ay0, ay1 = _bbox(A)
@@ -52,22 +65,35 @@ def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: fl
              rng.uniform(lo_y - margin * wy, hi_y + margin * wy)) for _ in range(n)]
 
 
-def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: float = 1e-12,
-              band: float = 1e-9) -> G0Report:
-    """A、B 凸 CCW。逐样本：暴力相交谓词 vs E 成员谓词；再比对局部/全局 facet 集合。"""
+def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: float | None = None,
+              band: float | None = None) -> G0Report:
+    """A、B 凸 CCW。逐样本：暴力相交谓词 vs E 成员谓词；再比对局部/全局 facet 集合。
+
+    tol（长度，缺省 1e-12·L）：暴力谓词的接触带与法锥判据；E 的平行边合并用它张的角 tol/L。band（长度，缺省
+    1e-9·L）：成员谓词的边界带，带内样本跳过。旧版缺省是绝对 1e-12 / 1e-9，第三票的顶点比对是 round(·, 9)——
+    旋转后坐标 1e3 处的方块对就因舍入落在不同的 1e-9 格子里报 4 个"顶点失配"（G6 纪律 F 复现）。
+    """
     rng = random.Random(seed)
     rep = G0Report()
-    eb = convex_entrance_block(A, B, (0.0, 0.0), tol)
+    L = char_length(A, B)
+    tol = 1e-12 * L if tol is None else tol
+    band = 1e-9 * L if band is None else band
+    eb = convex_entrance_block(A, B, (0.0, 0.0), tol / L)
     glob = {lab for lab in eb.facets if lab[0] != "FF"}
     loc = local_facets(A, B, tol)
     rep.facet_local, rep.facet_global = len(loc), len(glob)
     rep.facet_symmetric_diff = sorted(loc ^ glob)
     # 第三票（审查 r7）：标签集相等对"outward_normal 整体反号"是盲的；E 的顶点集必须等于
     # 差点集 {b − a} 的凸包顶点集——这条检验不经过法向、法锥或合并规则。
-    hull = convex_hull([(b[0] - a[0], b[1] - a[1]) for a in A for b in B])
-    ev = {(round(v[0], 9), round(v[1], 9)) for v in eb.vertices}
-    hv = {(round(v[0], 9), round(v[1], 9)) for v in hull}
-    rep.hull_vertex_mismatch = len(ev ^ hv)
+    # 顶点按距离配对（容差 1e-9·L + 舍入下限 × 累加步数），不按 round(·, 9) 的格子。
+    # 差点 b − a 的量级小，但带着 A、B 原坐标的舍入 ~eps·C：共线判据的下限必须按原坐标量级取。
+    hull = convex_hull([(b[0] - a[0], b[1] - a[1]) for a in A for b in B], round_floor(coord_scale(A, B)))
+    mtol = 1e-9 * L + round_floor(coord_scale(A, B)) * (len(A) + len(B))
+
+    def near(v, W):
+        return any(math.hypot(v[0] - w[0], v[1] - w[1]) <= mtol for w in W)
+    rep.hull_vertex_mismatch = (sum(not near(v, hull) for v in eb.vertices)
+                                + sum(not near(h, eb.vertices) for h in hull))
     for x in sample_translations(A, B, samples, rng):
         cov = membership_convex(A, B, x, band, eb)
         if cov == 0:
@@ -145,6 +171,9 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
         d(A+x, B) = min{ |point_a − point_b| : c ∈ enumerate_covers(A+x, B, window=∞, tol) }，
     即法锥有效性筛选与边内筛选不会把实现最短距离的那一对特征滤掉。见证点都在各自多边形上
     （边内容差 tol 除外），所以见证距离恒 ≥ 真距离；相等 ⟺ 完备。
+    tol 是长度（随单位缩放）；atol 是**相对**阈值：|见证 − 真值| > atol·max(L, 真值) + c·eps·C 判失败
+    （旧版 atol·max(1, 真值) 混了绝对量纲）。暴力谓词的接触带 1e-12·L（旧版绝对 1e-12：搬到 1e5 处，贴合样本
+    因舍入被判成分离，G6 纪律 F 复现）。
 
     **不要**用 sign(min gap) 当凹块的成员谓词：VE 盖的 gap 是顶点到对方边**所在直线**的有符号距离，
     分离的两块之间也常有顶点落在对方某条边直线的内侧（细臂 L 块 + 凹槽内悬浮方块：gap −0.16，
@@ -152,15 +181,17 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
     凹块的成员判定需要入口块的全局构造（M3）；在那之前，相交样本只计数、不检验。
 
     oracle 与被测对象的共用（纪律 A）：`polygons_overlap` 与盖枚举共用 geom 的向量算术
-    （sub/dot/cross/norm）与 `point_in_polygon`/`segments_properly_cross`（后两者盖枚举不用）；
-    不共用法锥、转角、外法向、投影、窗口或边内判据。`brute_polygon_distance` 只用内联算术。
+    （sub/dot/cross/norm）与舍入下限 `round_floor`；它另用的 `point_in_polygon`/`segments_properly_cross`/
+    `triangulate`/`orient2d` 盖枚举都不用；不共用法锥、转角、外法向、投影、窗口或边内判据。
+    `brute_polygon_distance` 只用内联算术。
     """
     rep = DistanceReport()
     inf = float("inf")
+    L = char_length(A, B)
     for x in translations:
         rep.draws += 1
         At = translate(A, x)
-        brute = polygons_overlap(At, B, 1e-12)
+        brute = polygons_overlap(At, B, 1e-12 * L)
         if brute == 1:
             rep.overlapping += 1
             continue
@@ -174,7 +205,7 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
         rep.samples += 1
         err = abs(got - truth)
         rep.worst_abs_error = max(rep.worst_abs_error, err)
-        if err > atol * max(1.0, truth):
+        if err > atol * max(L, truth) + round_floor(coord_scale(At, B)):
             rep.failures.append((x, got, truth, arg))
     return rep
 
@@ -193,12 +224,22 @@ def brute_ray_exit(A: Poly, B: Poly, u: Point) -> float:
     oracle 与被测对象的共用（纪律 A）：射线-线段求交只用内联算术；状态判定用 `polygons_overlap`（与盖枚举
     共用 geom 的 sub/dot/cross/norm，见 `g0_distance_completeness`）；不用法锥、转角、外法向、投影或窗口。
     输入须满足 polygons_overlap(A, B) == 1（调用方判），u 非零。
+
+    t 以 |u| 为单位：t_sep 是投影长度差，要除以 |u|²（G6 minor 13：旧版漏除，|u|<1 时哨兵落在真出口之前，
+    返回的 t 处两块仍相交——u=(0.5,0) 的方块对报 0.35 而非 1.4）。候选线段参数 s 放宽舍入下限（端点命中不许
+    因舍入漏掉：漏一个命中，区间中点就可能跨过 ∂E，返回更晚的出口）；多出的命中只会细分区间，无害。
+    区间状态的接触带取 1e-12·L（纪律 F，旧版绝对 1e-12）。
     """
     ux, uy = u
+    uu = ux * ux + uy * uy
+    if uu == 0.0:
+        raise ValueError("brute_ray_exit: direction u must be non-zero")
     hits: list[float] = []
+    L = char_length(A, B)
+    fl = ROUND_C * EPS * coord_scale(A, B)
 
     def hit(px: float, py: float, dx: float, dy: float, q0: Point, q1: Point) -> None:
-        # 点 p 沿 (dx, dy) 走 t 落在闭线段 [q0, q1] 上：p + t·d = q0 + s·e，t > 0，s ∈ [0, 1]
+        # 点 p 沿 (dx, dy) 走 t 落在闭线段 [q0, q1] 上：p + t·d = q0 + s·e，t > 0，s ∈ [0, 1]（放宽 fl/|e|）
         ex, ey = q1[0] - q0[0], q1[1] - q0[1]
         den = dx * ey - dy * ex
         if den == 0.0:                       # 射线与该边平行：共线段只在测度零的方向上出现
@@ -206,7 +247,8 @@ def brute_ray_exit(A: Poly, B: Poly, u: Point) -> float:
         wx, wy = q0[0] - px, q0[1] - py
         t = (wx * ey - wy * ex) / den
         s = (wx * dy - wy * dx) / den
-        if t > 0.0 and 0.0 <= s <= 1.0:
+        sl = fl / math.hypot(ex, ey)
+        if t > 0.0 and -sl <= s <= 1.0 + sl:
             hits.append(t)
 
     nA, nB = len(A), len(B)
@@ -216,11 +258,11 @@ def brute_ray_exit(A: Poly, B: Poly, u: Point) -> float:
     for qx, qy in B:                          # 相对地，B 的顶点走 −u，撞 A 的边
         for k in range(nA):
             hit(qx, qy, -ux, -uy, A[k], A[(k + 1) % nA])
-    t_sep = max(bx * ux + by * uy for bx, by in B) - min(ax * ux + ay * uy for ax, ay in A)
+    t_sep = (max(bx * ux + by * uy for bx, by in B) - min(ax * ux + ay * uy for ax, ay in A)) / uu
     lo = 0.0
     for t in sorted({h for h in hits if h < t_sep}) + [t_sep]:
         mid = 0.5 * (lo + t)
-        if polygons_overlap(translate(A, (mid * ux, mid * uy)), B, 1e-12) != 1:
+        if polygons_overlap(translate(A, (mid * ux, mid * uy)), B, 1e-12 * L) != 1:
             return lo
         lo = t
     return t_sep
@@ -250,8 +292,10 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
     a 为反射顶点则 A 在 a 附近必越过 e 所在直线、内部相交；a 凸但 −n_B(e) ∉ N_A(a) 同理——所以
     边界位形上的顶点-边接触都是法锥有效的盖；纯顶点-顶点接触的 z 是相邻有效线段的端点（投影参数 0/1）。
     检验：对每个暴力判相交的平移 x 与对应方向 u，z = x + t*·u（`brute_ray_exit`）处
-        min{ |point_a − point_b| : c ∈ enumerate_covers(A+z, B, window=∞, tol) } ≤ atol·max(1, 坐标量级)，
-    即法锥有效性筛选与边内筛选没有把出口处那段 ∂E 滤掉。
+        min{ |point_a − point_b| : c ∈ enumerate_covers(A+z, B, window=∞, tol) } ≤ atol·L + c·eps·C，
+    即法锥有效性筛选与边内筛选没有把出口处那段 ∂E 滤掉。atol 是相对阈值（L 为特征长度），c·eps·C 是出口位形
+    坐标的舍入下限（旧版 atol·max(1, 坐标量级) 把绝对量纲与坐标量级混在一起：原点附近 ×1e-3 的块松到 1e-6·L，
+    1e5 处松到 1e-4）。
 
     **不是**成员谓词：它不判定 x 在不在 E 内（真值由 `polygons_overlap` 给），也不给出凹块的穿透深度；
     凹块的成员判定仍待入口块全局构造（M3）。与分离侧的距离完备性互补：后者检验 E 外一点的最近 ∂E 点，
@@ -263,10 +307,11 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
         raise ValueError(f"need one direction per translation: {len(directions)} != {len(translations)}")
     rep = ExitReport()
     inf = float("inf")
+    L = char_length(A, B)
     for x, u in zip(translations, directions):
         rep.draws += 1
         At = translate(A, x)
-        brute = polygons_overlap(At, B, 1e-12)
+        brute = polygons_overlap(At, B, 1e-12 * L)
         if brute == -1:
             rep.separated += 1
             continue
@@ -278,10 +323,9 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
         covs = enumerate_covers(Az, B, window=inf, tol=tol)
         got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
                    for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
-        scale = max(1.0, max(abs(v) for p in (*Az, *B) for v in p))
         rep.samples += 1
         rep.worst_witness = max(rep.worst_witness, got)
-        if got > atol * scale:
+        if got > atol * L + round_floor(coord_scale(Az, B)):
             rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))
     return rep
 
