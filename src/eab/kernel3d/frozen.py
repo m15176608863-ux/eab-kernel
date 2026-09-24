@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from ..dual import Number, val
 from .covers3 import edge_arc_contains
-from .geom3 import Polyhedron
+from .geom3 import Polyhedron, dot, mul, sub, unit
 
 
 def face_normal_generic(P: Polyhedron, fi: int):
@@ -43,9 +43,17 @@ def ee_normal_generic(A: Polyhedron, ea, B: Polyhedron, eb, sign: float = 1.0):
 
 
 def frozen_ee_sign(A: Polyhedron, B: Polyhedron, ea, eb, tol: float = 1e-9) -> float:
-    """float 路径下定出的 EE 法向朝向，作为冻结组合结构的一部分交给对偶路径。"""
+    """float 路径下定出的 EE 法向朝向，作为冻结组合结构的一部分交给对偶路径。
+
+    探针方向对 B 的棱**按构造正交化**后再判弧（与 covers3.ee_cover / facet_normal3 同一口径，
+    G6 critical 6 的同类：叉积对近平行棱只正交到 eps/sinθ）。这里是 float 择支，不进对偶通道。"""
     n = ee_normal_generic(A, ea, B, eb, 1.0)
     probe = (val(n[0]), val(n[1]), val(n[2]))
+    tB = tuple(val(c) for c in unit(sub(tuple(val(c) for c in B.verts[eb[1]]),
+                                        tuple(val(c) for c in B.verts[eb[0]]))))
+    for _ in range(2):
+        probe = sub(probe, mul(tB, dot(probe, tB)))
+    probe = unit(probe)
     return -1.0 if edge_arc_contains(B, eb, probe, tol) < 0 else 1.0
 
 
@@ -79,11 +87,17 @@ def _line_residual_normal(p, e0, e1):
     """点 p 到直线 e0e1 的正交投影残差之单位向量（从直线指向 p）。泛型标量、无择支。
 
     残差为零（点在直线上，两体相触）时法向集值、无定义：除零照常抛出。
+
+    残差做两遍正交化（Gram–Schmidt "两遍就够"）：精确算术里第二遍恒为零、导数也恒为零（r·d ≡ 0），
+    浮点里它把 ∝ eps·|w|/|r| 的棱向残留压到 eps——与 float 路径 covers3.ve3_cover 同一口径（G6 critical 6）。
     """
     d = (e1[0] - e0[0], e1[1] - e0[1], e1[2] - e0[2])
     w = (p[0] - e0[0], p[1] - e0[1], p[2] - e0[2])
-    s = (w[0] * d[0] + w[1] * d[1] + w[2] * d[2]) / (d[0] * d[0] + d[1] * d[1] + d[2] * d[2])
-    return _unit_generic((w[0] - s * d[0], w[1] - s * d[1], w[2] - s * d[2]))
+    dd = d[0] * d[0] + d[1] * d[1] + d[2] * d[2]
+    s = (w[0] * d[0] + w[1] * d[1] + w[2] * d[2]) / dd
+    r = (w[0] - s * d[0], w[1] - s * d[1], w[2] - s * d[2])
+    s2 = (r[0] * d[0] + r[1] * d[1] + r[2] * d[2]) / dd
+    return _unit_generic((r[0] - s2 * d[0], r[1] - s2 * d[1], r[2] - s2 * d[2]))
 
 
 def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1.0, x=None):

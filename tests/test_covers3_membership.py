@@ -16,6 +16,7 @@
 一般位置随机平移）、尺度 ×1e-3 / ×1 / ×1e3。
 """
 
+import math
 import random
 
 import pytest
@@ -224,3 +225,93 @@ def test_g0_convex3_box_vs_box_runs_and_passes():
     assert rep.mismatches == [], rep.mismatches[:3]
     assert rep.samples > 100, rep
     assert rep.passed, rep
+
+
+# ---------------------------------------------------------------- G6 critical 26：旋转后的平行面退化对
+#
+# 缺陷（covers3.py:155）：closest_point_of_convex_hull_to_origin 只在 |v0| ≤ 1e-300 时跳过四点单形。
+# 平行面/平行棱的退化对一旦不轴对齐，锥生成元"平行到舍入"，四点单形的 v0 ~ 1e-17，重心坐标是噪声，
+# 可以报"原点在内"——于是 cone_relint_direction 说锥空，cones_intersect_relint 假，VV3 与别的
+# E 顶点消失：body_distance 返回 (inf, None)、inflated_membership 判错、G0 票三 10 个旋转里红 9 个。
+# 审查的复现用 random.Random(seed) 直接生成四元数（种子 3、9 最坏）；这里沿用同一生成器。
+#
+# oracle（纪律 A）：E(T, B) 的 13 个顶点由上面 _vertices_of_tetra_box_E 用 Fraction 精确枚举
+# （旋转不改变个数）；VV3 最近对的距离 0.1 是构造给定的（n 严格在两锥内部，见 test_invariance_geom）；
+# 方块对方块的距离是逐轴间隙的欧氏范数（闭式）。都不经 covers3。
+
+def _g6_rotation(seed: int):
+    rng = random.Random(seed)
+    q = [rng.gauss(0.0, 1.0) for _ in range(4)]
+    n = math.sqrt(sum(c * c for c in q))
+    w, x, y, z = (c / n for c in q)
+    return ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+            (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+            (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+
+
+def _rotated(P, R, s=1.0, t=(0.0, 0.0, 0.0)):
+    from eab.kernel3d.geom3 import Polyhedron
+    return Polyhedron([tuple(t[i] + s * (R[i][0] * p[0] + R[i][1] * p[1] + R[i][2] * p[2]) for i in range(3))
+                       for p in P.verts], list(P.faces))
+
+
+def _apply(R, v):
+    return tuple(R[i][0] * v[0] + R[i][1] * v[1] + R[i][2] * v[2] for i in range(3))
+
+
+@pytest.mark.parametrize("seed", range(3, 13))
+def test_rotated_tetra_box_keeps_every_E_vertex_and_the_vv3_pair(seed):
+    from eab.kernel3d.covers3 import cones_intersect_relint
+    from eab.margin import INSIDE, OUTSIDE, body_distance, inflated_membership
+    R = _g6_rotation(seed)
+    T1, B1 = _rotated(_tetra(), R), _rotated(box(half=(1.0, 1.0, 1.0)), R)
+    rep = g0_convex3(T1, B1, samples=60, seed=seed)
+    assert rep.hull_vertices == rep.e_vertices == 13 and rep.hull_vertex_mismatch == 0, rep
+    assert (rep.facet_local, rep.facet_global, rep.facet_degenerate) == (7, 7, 3), rep
+    assert rep.mismatches == [] and rep.passed, rep
+    assert cones_intersect_relint(T1, 3, B1, 2)
+    r3 = 1.0 / math.sqrt(3.0)
+    n = _apply(R, (r3, r3, -r3))
+    X = tuple(B1.verts[2][i] + 0.1 * n[i] - T1.verts[3][i] for i in range(3))
+    A = T1.translated(X)
+    d, lab = body_distance(A, B1)
+    assert abs(d - 0.1) <= 1e-12 and lab == ("VV3", ("vertex", 3), ("vertex", 2)), (d, lab)
+    assert inflated_membership(A, B1, delta=0.2) == INSIDE
+    assert inflated_membership(A, B1, delta=0.05) == OUTSIDE
+
+
+@pytest.mark.parametrize("seed", range(3, 13))
+def test_rotated_box_box_passes_the_three_votes(seed):
+    R = _g6_rotation(seed)
+    A = _rotated(box(half=(1.0, 1.0, 1.0)), R)
+    B = _rotated(box(center=(0.3, 0.0, -0.2), half=(2.0, 0.5, 1.0)), R)
+    rep = g0_convex3(A, B, samples=60, seed=seed)
+    assert (rep.facet_local, rep.facet_global, rep.facet_degenerate) == (0, 0, 6), rep
+    assert rep.hull_vertices == rep.e_vertices == 8 and rep.hull_vertex_mismatch == 0, rep
+    assert rep.mismatches == [] and rep.passed, rep
+    # 距离：同一旋转下 B 心 (3.5, 0.2, −2.9)、半宽 (2, 0.5, 3)，只有 x 向有缝 ⇒ 间距 0.5（闭式，
+    # 面-面平行，最近对大量并列）；裕度层按它判违约 / 安全
+    from eab.margin import INSIDE, OUTSIDE, body_distance, inflated_membership
+    B2 = _rotated(box(center=(3.5, 0.2, -2.9), half=(2.0, 0.5, 3.0)), R)
+    d, lab = body_distance(A, B2)
+    assert abs(d - 0.5) <= 1e-12 and lab is not None, (d, lab)
+    assert inflated_membership(A, B2, delta=0.6) == INSIDE
+    assert inflated_membership(A, B2, delta=0.4) == OUTSIDE
+
+
+@pytest.mark.parametrize("scale", [1e-3, 1.0, 1e3])
+@pytest.mark.parametrize("seed", range(2, 8))
+def test_closest_point_on_raw_minkowski_points_matches_the_box_distance(seed, scale):
+    """G6 的旁证：原始 64 个 Minkowski 差点（大量共面共线）上，原点到凸包的距离相对误差 5.98。
+    闭式：A = [−1,1]³、B 心 (3.5, 0.2, −2.9) 半宽 (2, 0.5, 3)，同一旋转下间距 = 0.5（只有 x 向有缝）。"""
+    from eab.kernel3d.covers3 import closest_point_of_convex_hull_to_origin
+    from eab.kernel3d.geom3 import norm, sub
+    R = _g6_rotation(seed)
+    A = _rotated(box(half=(1.0, 1.0, 1.0)), R, scale)
+    B = _rotated(box(center=(3.5, 0.2, -2.9), half=(2.0, 0.5, 3.0)), R, scale)
+    p = closest_point_of_convex_hull_to_origin([sub(b, a) for a in A.verts for b in B.verts])
+    assert abs(norm(p) - 0.5 * scale) <= 1e-9 * scale, (norm(p), 0.5 * scale)
+    # 原点在凸包内部（两块相交）时必须恰返回零向量
+    B2 = _rotated(box(center=(1.5, 0.2, -0.9), half=(2.0, 0.5, 3.0)), R, scale)
+    p2 = closest_point_of_convex_hull_to_origin([sub(b, a) for a in A.verts for b in B2.verts])
+    assert norm(p2) == 0.0

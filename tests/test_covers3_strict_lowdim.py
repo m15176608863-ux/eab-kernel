@@ -119,3 +119,125 @@ def test_generic_vertex_over_edge_is_strict(scale):
     assert c.strict is True
     c2 = ev3_cover(lower, e, T, ia, 1e-12 * s)
     assert c2 is not None and c2.strict is True
+
+
+# ================================================================ G6 critical 6：小间隙、工程坐标下的 VE3 / EV3
+#
+# 缺陷（covers3.py:80）：ve3_cover / ev3_cover 用 unit(a − q) 造分离方向，q = p0 + d·s 的舍入给出
+# ∝ eps·|坐标|/间隙 的**棱向分量**；edge_arc_contains 对单位向量的正交性用绝对容差 tol + 1e-12，
+# 于是间隙 < 1e-7（原点）或 < 1e-5（坐标 1e3）时真最近对被拒，body_distance 报 2.0000001 而非 1e-7，
+# margin_contacts 返回 []、inflated_membership 答 OUTSIDE——在裕度层存在的那个近接触区间里 fail-unsafe。
+#
+# oracle（纪律 A）：解析距离 = g（楔的屋脊沿 x；棱锥尖端悬在屋脊正上方 g，投影落在屋脊段内；
+# 两坡面 45°，尖端到坡面平面的投影落在坡面之外 ⇒ 最近特征就是屋脊）。不调用任何距离原语。
+# 纪律 B：间隙 1e-5 / 1e-7 / 1e-9（分界：原点处的旧失效点 1e-7）、非轴对齐（随机旋转）、
+# 工程坐标（平移 1e3，含非轴对齐方向）、两个参数顺序（VE3 与 EV3）。
+
+import random as _random  # noqa: E402
+
+from eab.kernel3d.geom3 import Polyhedron, convex_hull_3d, merge_coplanar  # noqa: E402
+from eab.margin import INSIDE, OUTSIDE, body_distance, inflated_membership, margin_contacts  # noqa: E402
+
+
+def _rot(seed: int):
+    if seed == 0:
+        return ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+    rng = _random.Random(6100 + seed)
+    q = [rng.gauss(0.0, 1.0) for _ in range(4)]
+    n = math.sqrt(sum(c * c for c in q))
+    w, x, y, z = (c / n for c in q)
+    return ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+            (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+            (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+
+
+def _ridge_and_spike(g: float, seed: int, t):
+    """B：屋脊沿 x、坡 45° 的楔（面已归并）；A：尖端 (0.3, 0, g) 朝下的细棱锥。整体经旋转 + 平移。
+    返回 (A, B, 尖端下标, 屋脊棱)。编号在变换前定好，变换只动坐标。"""
+    B0 = merge_coplanar(convex_hull_3d([(x, y, z) for x in (-2.0, 2.0)
+                                        for (y, z) in ((0.0, 0.0), (-1.0, -1.0), (1.0, -1.0))]))
+    c, s = math.cos(0.5), math.sin(0.5)
+    apex = (0.3, 0.0, g)
+    A0 = Polyhedron([apex] + [(0.3 + c * x - s * y, s * x + c * y, g + 1.0)
+                              for x, y in ((0.2, 0.0), (-0.1, 0.17), (-0.1, -0.17))],
+                    [(0, 2, 1), (0, 3, 2), (0, 1, 3), (1, 2, 3)])
+    assert A0.volume() > 0
+    ridge = next(e for e in B0.edges() if B0.verts[e[0]][2] == 0.0 and B0.verts[e[1]][2] == 0.0)
+    R = _rot(seed)
+
+    def mv(P):
+        return Polyhedron([tuple(t[i] + R[i][0] * p[0] + R[i][1] * p[1] + R[i][2] * p[2] for i in range(3))
+                           for p in P.verts], list(P.faces))
+    return mv(A0), mv(B0), 0, ridge
+
+
+SMALL_GAP_PLACEMENTS = [(0, (0.0, 0.0, 0.0)), (3, (0.0, 0.0, 0.0)), (0, (1000.0, 0.0, 0.0)),
+                        (0, (1000.0, 700.0, 300.0)), (1, (1000.0, 700.0, 300.0)), (2, (-600.0, 800.0, 20.0))]
+
+
+@pytest.mark.parametrize("seed,t", SMALL_GAP_PLACEMENTS,
+                         ids=[f"R{a}-t{max(abs(c) for c in b):g}" for a, b in SMALL_GAP_PLACEMENTS])
+@pytest.mark.parametrize("g", [1e-5, 1e-7, 1e-9])
+def test_small_gap_vertex_over_ridge_keeps_the_true_nearest_pair(g, seed, t):
+    A, B, apex, ridge = _ridge_and_spike(g, seed, t)
+    noise = 1e3 * 2.220446049250313e-16 * (max(abs(c) for c in t) + 4.0)
+    tol = 1e-12                                   # 间隙 1e-9 时显式取更小的 tol，否则按"相触"处理
+    c = ve3_cover(A, apex, B, ridge, tol)
+    assert c is not None, "真最近对 VE3 被拒"
+    assert abs(c.gap - g) <= noise and c.in_extent and c.strict
+    for X, Y, kind in ((A, B, "VE3"), (B, A, "EV3")):
+        d, lab = body_distance(X, Y, tol=tol, geom_tol=tol)
+        assert abs(d - g) <= noise, (d, g, lab)
+        assert lab is not None and lab[0] == kind, lab
+        # 裕度层：间距 < δ 绝不能答"安全"；δ < 间距则是真安全
+        assert inflated_membership(X, Y, delta=10 * g, tol=tol, geom_tol=tol) == INSIDE
+        assert margin_contacts(X, Y, delta=10 * g, tol=tol, geom_tol=tol)
+        assert inflated_membership(X, Y, delta=0.5 * g, tol=tol, geom_tol=tol) == OUTSIDE
+
+
+@pytest.mark.parametrize("seed,t", SMALL_GAP_PLACEMENTS[:4],
+                         ids=[f"R{a}-t{max(abs(c) for c in b):g}" for a, b in SMALL_GAP_PLACEMENTS[:4]])
+def test_small_gap_with_the_margin_defaults(seed, t):
+    """裕度层默认参数（tol = geom_tol = 1e-9）下，间隙 1e-7 的近接触：距离正确、δ = 1e-6 判违约。"""
+    g = 1e-7
+    A, B, _, _ = _ridge_and_spike(g, seed, t)
+    noise = 1e3 * 2.220446049250313e-16 * (max(abs(c) for c in t) + 4.0)
+    d, lab = body_distance(A, B)
+    assert abs(d - g) <= noise and lab[0] == "VE3", (d, lab)
+    assert inflated_membership(A, B, delta=1e-6) == INSIDE
+    assert margin_contacts(A, B, delta=1e-6)
+    assert inflated_membership(B, A, delta=1e-6) == INSIDE
+
+
+def test_ve3_direction_is_orthogonal_to_the_edge_by_construction():
+    """按构造正交：远坐标、小间隙下 VE3 / EV3 的法向与棱方向的点积在 eps 量级（旧实现 ∝ eps·|坐标|/间隙）。"""
+    from eab.kernel3d.geom3 import dot
+    for seed, t in SMALL_GAP_PLACEMENTS:
+        A, B, apex, ridge = _ridge_and_spike(1e-7, seed, t)
+        tdir = B.edge_dir(ridge)
+        c = ve3_cover(A, apex, B, ridge, 1e-12)
+        assert c is not None and abs(dot(c.normal, tdir)) <= 1e-13, (seed, t)
+        c2 = ev3_cover(B, ridge, A, apex, 1e-12)
+        assert c2 is not None and abs(dot(c2.normal, tdir)) <= 1e-13, (seed, t)
+
+
+@pytest.mark.parametrize("seed,t", SMALL_GAP_PLACEMENTS,
+                         ids=[f"R{a}-t{max(abs(c) for c in b):g}" for a, b in SMALL_GAP_PLACEMENTS])
+@pytest.mark.parametrize("g", [1e-5, 1e-7])
+def test_frozen_low_dim_normal_is_orthogonal_and_gives_the_gap(g, seed, t):
+    """冻结路径（frozen.py，可微的"片"）与 float 路径同一口径：VE3 / EV3 的法向按构造垂直于棱，
+    margin_gap_from_frozen_cover 在 δ = 0 时给出的正是间隙 g。旧的单遍残差 w − s·d 留着 ∝ eps/g 的
+    棱向分量，g = 1e-7 时冻结间隙的误差 ~ 1e-9·|a − 棱起点|（这里 ~2%）。"""
+    from eab.kernel3d.frozen import frozen_normal
+    from eab.kernel3d.geom3 import dot
+    from eab.margin import margin_gap_from_frozen_cover
+    A, B, apex, ridge = _ridge_and_spike(g, seed, t)
+    noise = 1e3 * 2.220446049250313e-16 * (max(abs(c) for c in t) + 4.0)
+    tdir = B.edge_dir(ridge)
+    zero = (0.0, 0.0, 0.0)
+    for X, Y, lab in ((A, B, ("VE3", ("vertex", apex), ("edge", ridge[0], ridge[1]))),
+                      (B, A, ("EV3", ("edge", ridge[0], ridge[1]), ("vertex", apex)))):
+        n = frozen_normal(X, Y, lab, x=zero)
+        assert abs(dot(n, tdir)) <= 1e-13, (lab[0], dot(n, tdir))
+        assert abs(margin_gap_from_frozen_cover(X, Y, lab, zero, 0.0) - g) <= noise, lab[0]
+

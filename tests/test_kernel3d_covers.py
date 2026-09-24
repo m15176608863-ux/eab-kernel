@@ -152,3 +152,86 @@ def test_g0_gate_has_teeth_flipped_normals_are_caught(monkeypatch):
     orig = cv.Polyhedron.face_normal
     monkeypatch.setattr(cv.Polyhedron, "face_normal", lambda self, fi: neg(orig(self, fi)))
     assert not g0_convex3(A, B, samples=120, seed=1).passed
+
+
+# ---------------------------------------------------------------- 命题 2(i) 位置无关（canon_map 附录 A.3 升格为门，G6 GAP3）
+#
+# 正本命题 2(i)：E(A, B) 只依赖两体的形状与朝向，不依赖相对位置——所以可以预计算。
+# 在实现里它落成两条可检的性质：
+#   (i)  局部法锥规则给出的严格 facet 标签集与 A 的整体平移无关：local_facets3(A + t, B) == local_facets3(A, B)；
+#   (ii) facet 间隙对平移是仿射的：facet_gap3(A + t, B, lab, x) == facet_gap3(A, B, lab, t + x)。
+# 此前只在附录 A.3 里手算过一次（20 次平移、差 < 1e-12），没有门（canon_map 第二节"已实现无门"）。
+# oracle：自身一致性（同一 API 在平移前后），无需外部真值；牙在下面两条变异里。
+
+import eab.kernel3d.covers3 as _cv  # noqa: E402
+from eab.kernel3d.geom3 import unit as _unit  # noqa: E402
+
+
+def _position_independence_violations(A, B, n: int = 20, seed: int = 0) -> list:
+    """经模块属性调用被测函数（_cv.local_facets3 / _cv.facet_gap3），变异才能打进被测路径。"""
+    rng = random.Random(seed)
+    base = _cv.local_facets3(A, B, 1e-12)
+    bad = []
+    for _ in range(n):
+        t = tuple(rng.uniform(-5.0, 5.0) for _ in range(3))
+        At = A.translated(t)
+        got = _cv.local_facets3(At, B, 1e-12)
+        if got != base:
+            bad.append(("labels", t, sorted(got ^ base)[:3]))
+            continue
+        for lab in sorted(base):
+            x = tuple(rng.uniform(-1.0, 1.0) for _ in range(3))
+            g1 = _cv.facet_gap3(At, B, lab, x)
+            g2 = _cv.facet_gap3(A, B, lab, tuple(t[i] + x[i] for i in range(3)))
+            if abs(g1 - g2) >= 1e-12:
+                bad.append(("gap", t, lab, g1 - g2))
+    return bad
+
+
+def _canon_pairs():
+    rng = random.Random(21)
+    T = tetra((0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+    G1 = convex_hull_3d([(rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(8)])
+    G2 = convex_hull_3d([(rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(8)])
+    return {"tetra_box_A3": (T, box(half=(0.5, 0.5, 0.5))), "generic": (G1, G2)}
+
+
+@pytest.mark.parametrize("name", ["tetra_box_A3", "generic"])
+def test_proposition_2i_position_independence(name):
+    A, B = _canon_pairs()[name]
+    if name == "tetra_box_A3":
+        assert len(_cv.local_facets3(A, B, 1e-12)) == 7                  # 附录 A.3 的计数
+    assert _position_independence_violations(A, B) == []
+
+
+def test_position_independence_gate_has_teeth_absolute_edge_direction(monkeypatch):
+    """变异一（打进被测路径内部）：顶点入射棱方向忘了减去顶点本身（用绝对坐标当方向）。"""
+    from eab.kernel3d import geom3
+    A, B = _canon_pairs()["generic"]
+    assert _position_independence_violations(A, B) == []
+
+    def bad_dirs(self, vi):
+        out = []
+        for e in self.edges():
+            if vi in e:
+                other = e[1] if e[0] == vi else e[0]
+                out.append(_unit(self.verts[other]))
+        return out
+    monkeypatch.setattr(geom3.Polyhedron, "vertex_edge_dirs", bad_dirs)
+    bad = _position_independence_violations(A, B)
+    assert bad and bad[0][0] == "labels", bad[:2]
+
+
+def test_position_independence_gate_has_teeth_gap_forgets_translation(monkeypatch):
+    """变异二：facet_gap3 的 VF 支忘了加平移 x（把 A 的顶点当作不动）。"""
+    A, B = _canon_pairs()["tetra_box_A3"]
+    assert _position_independence_violations(A, B) == []
+    orig = _cv.facet_gap3
+
+    def bad_gap(A_, B_, label, x):
+        if label[0] == "VF":
+            return orig(A_, B_, label, (0.0, 0.0, 0.0))
+        return orig(A_, B_, label, x)
+    monkeypatch.setattr(_cv, "facet_gap3", bad_gap)
+    bad = _position_independence_violations(A, B)
+    assert bad and all(b[0] == "gap" for b in bad), bad[:2]

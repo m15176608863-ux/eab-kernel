@@ -224,3 +224,38 @@ def test_pocketed_slab_with_separate_dents_merges_what_it_can():
     assert M.volume() == pytest.approx(P.volume(), rel=1e-12)
     top = [f for f in M.faces if all(M.verts[i][2] == 1.0 for i in f)]
     assert len(top) == 1 and len(top[0]) == 12      # 7 格之并的边界环：12 个网格点（含共线顶点）
+
+
+# ---------------------------------------------------------------- G6 minor 8：远坐标下共面不归并
+#
+# 缺陷（geom3.py:662）：按平面偏移 d = n·v0 分组用绝对 1e-9；d 的舍入误差 ∝ |v0|，旋转过的方块放到
+# 1e4 以外（1e5 必然）就把同一平面的两个三角留成两个面（12 而非 6），静默、无报错。
+# oracle：方块恰有 6 个面（闭式），体积 = 2·1·0.6（闭式）。纪律 B：偏移 0 / 1e3 / 1e4 / 1e5 / 4.5e6，
+# 五个一般朝向，外加轴对齐对照。
+
+@pytest.mark.parametrize("off", [0.0, 1e3, 1e4, 1e5, 4.5e6])
+@pytest.mark.parametrize("seed", range(0, 6))
+def test_rotated_box_far_from_origin_merges_to_six_faces(seed, off):
+    R = _rotation(seed)
+    pts = [(sx, sy, sz) for sx in (-1.0, 1.0) for sy in (-0.5, 0.5) for sz in (-0.3, 0.3)]
+    W = [tuple(off + sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in pts]
+    M = _call_with_timeout(merge_coplanar, convex_hull_3d(W))
+    assert len(M.faces) == 6, len(M.faces)
+    assert M.manifold_issues() == []
+    assert M.volume() == pytest.approx(1.2, rel=1e-6)
+
+
+def test_merge_does_not_fuse_genuinely_different_planes_far_from_origin():
+    """反向牙：相对化不能松到把真正不共面的面归并掉——1e5 处两个夹角 1e-6 的三角必须保持两个面。"""
+    off = 1e5
+    V = [(off, 0.0, 0.0), (off + 1.0, 0.0, 0.0), (off, 1.0, 0.0), (off + 1.0, 1.0, 1e-6),
+         (off + 0.3, 0.4, -1.0)]
+    # 顶部两个三角：(0,1,2) 在 z=0，(1,3,2) 抬起 1e-6——夹角 ~1e-6，不共面
+    F = [(0, 1, 2), (1, 3, 2), (0, 4, 1), (1, 4, 3), (3, 4, 2), (2, 4, 0)]
+    P = Polyhedron(V, [tuple(reversed(f)) for f in F])
+    if P.volume() < 0:
+        P = Polyhedron(V, F)
+    assert P.manifold_issues() == []
+    M = _call_with_timeout(merge_coplanar, P)
+    assert len(M.faces) == len(P.faces)
+
