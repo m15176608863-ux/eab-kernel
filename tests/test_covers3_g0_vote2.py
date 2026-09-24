@@ -11,8 +11,10 @@
             k_A = 1 且 k_B ≥ 3 → 严格 VF；k_B = 1 且 k_A ≥ 3 → 严格 FV；k_A = k_B = 2 → 严格 EE；
             其余（k_A, k_B ≥ 2 且非 2/2）→ FF/FE 退化 facet，局部规则按设计不给严格标签。
           只用顶点坐标与点积，不经法锥、不经面环朝向。
-  共用：convex_hull_3d 内部用 Polyhedron.face_normal 判可见性。风险：face_normal 若整体出错，
-  凸包本身会坏——此时票一（暴力谓词，与法向符号无关）兜底，见 test_kernel3d_covers 的翻转法向牙。
+  共用：2026-09-24 之前 convex_hull_3d 内部用 Polyhedron.face_normal 判可见性；M0.2 起凸包是
+  Quickhull、用自己的三角叉积，不再调用 face_normal，两侧只共用顶点坐标。face_normal 整体出错时
+  票二局部侧会错、凸包侧不受影响；票一（暴力谓词，与法向符号无关）另行兜底，见 test_kernel3d_covers
+  的翻转法向牙。
 """
 
 import random
@@ -67,7 +69,11 @@ def test_vote2_has_teeth_every_single_dropped_facet_is_caught(monkeypatch):
 
 
 def test_vote2_has_teeth_a_spurious_label_is_caught(monkeypatch):
-    """多报也要红：往严格集合里塞一个不是 facet 的标签（一个非支撑的 VF）。"""
+    """多报也要红：往严格集合里塞一个不是 facet 的标签（一个非支撑的 VF）。
+
+    VF 的法向是 B 的面法向，而一般位置下每个 B 面法向都是某个严格 facet 的法向——所以这个注入
+    **只能**走到 duplicate 分支（G6 minor 17：原断言写"local_only 或 duplicate"，local_only 从未被测到）。
+    local_only 分支的牙见下面的 test_vote2_has_teeth_a_non_facet_ee_is_reported_local_only。"""
     A, B = _random_pair(0)
     full = local_facets3(A, B, 1e-12)
     used = {(lab[1][1], lab[2][1]) for lab in full if lab[0] == "VF"}
@@ -76,7 +82,7 @@ def test_vote2_has_teeth_a_spurious_label_is_caught(monkeypatch):
     monkeypatch.setattr(g03, "local_facets3", lambda a, b, t: set(full) | {bogus})
     rep = g0_convex3(A, B, samples=0, seed=0)
     assert not rep.passed
-    assert any(e[0] in ("local_only", "duplicate") for e in rep.facet_symmetric_diff), rep.facet_symmetric_diff
+    assert [e[0] for e in rep.facet_symmetric_diff] == ["duplicate"], rep.facet_symmetric_diff
 
 
 def test_vote2_accounts_for_degenerate_facets_tetra_box():
@@ -94,3 +100,88 @@ def test_vote2_accounts_for_degenerate_facets_box_box():
                      samples=0)
     assert (rep.facet_local, rep.facet_global, rep.facet_degenerate) == (0, 0, 6), rep
     assert rep.facet_symmetric_diff == [] and rep.passed
+
+
+# ---------------------------------------------------------------- G6 minor 17：票二 local_only 分支的牙
+#
+# 审查：唯一的"多报"测试注入的 VF 恰好用了一个已是 facet 的 B 面法向，只能走到 duplicate 分支；
+# 把 g03.py 的 local_only 分支改成 pass，全套 1209 照绿。这里注入**不是 facet 的** EE 标签与
+# 非支撑的 FV 标签（法向与任何严格 facet 都不同向），samples=0 只看票二，断言对称差恰是 local_only。
+
+def _non_facet_ee_labels(A, B, full):
+    """不是 facet 的 EE 标签，且其 facet_normal3 与任何严格 facet 法向都不同向（只能走 local_only）。"""
+    from eab.kernel3d.covers3 import facet_normal3
+    from eab.kernel3d.geom3 import angle_between
+    normals = [facet_normal3(A, B, lab) for lab in full]
+    out = []
+    for ea in A.edges():
+        for eb in B.edges():
+            lab = ("EE", ("edge",) + ea, ("edge",) + eb)
+            if lab in full:
+                continue
+            try:
+                n = facet_normal3(A, B, lab)
+            except ZeroDivisionError:
+                continue
+            if all(angle_between(n, m) > 1e-3 for m in normals):
+                out.append(lab)
+    return out
+
+
+@pytest.mark.parametrize("seed", range(6))
+def test_vote2_has_teeth_a_non_facet_ee_is_reported_local_only(monkeypatch, seed):
+    A, B = _random_pair(seed)
+    full = local_facets3(A, B, 1e-12)
+    bogus = _non_facet_ee_labels(A, B, full)[:10]
+    assert len(bogus) >= 5, len(bogus)
+    for lab in bogus:
+        monkeypatch.setattr(g03, "local_facets3", lambda a, b, t, _l=lab: set(full) | {_l})
+        rep = g0_convex3(A, B, samples=0, seed=seed)
+        assert not rep.passed, lab
+        assert rep.facet_symmetric_diff == [("local_only", lab)], (lab, rep.facet_symmetric_diff)
+    monkeypatch.undo()
+
+
+@pytest.mark.parametrize("seed", range(6))
+def test_vote2_non_supporting_fv_is_reported_duplicate(monkeypatch, seed):
+    """非支撑的 FV（A 的面配错了 B 的顶点）：法向 −n_A 本身是一个严格 facet 的法向，故只能走 duplicate。
+    （VF/FV 标签的法向由面决定，永远落在某个 facet 上；能走 local_only 的只有 EE——上一条测的就是它。）"""
+    A, B = _random_pair(seed)
+    full = local_facets3(A, B, 1e-12)
+    fv = sorted(lab for lab in full if lab[0] == "FV")[0]
+    bogus = next(("FV", fv[1], ("vertex", ib)) for ib in range(len(B.verts)) if ("FV", fv[1], ("vertex", ib)) not in full)
+    monkeypatch.setattr(g03, "local_facets3", lambda a, b, t: set(full) | {bogus})
+    rep = g0_convex3(A, B, samples=0, seed=seed)
+    assert not rep.passed
+    assert [e[0] for e in rep.facet_symmetric_diff] == ["duplicate"], rep.facet_symmetric_diff
+
+
+# ---------------------------------------------------------------- G6 minor 9：G0 门自身的尺度格（纪律 B）
+#
+# 缺陷（g03.py:187）：convex_hull_3d(diffs, tol=1e-12) 把绝对 1e-12 与 ∝ 长度³ 的三重积比较，尺度 ≤ 1e-5
+# 时凸包报"共面"、门不能用；票三的 round(., 7) 顶点键也是绝对的。
+# oracle：同一对物体在 ×s 下的 G0 报告结构计数必须与 ×1 相同（tetra vs box 的解析计数 7/7/3、13 顶点）。
+
+@pytest.mark.parametrize("scale", [1e-6, 1e-5, 1e-3, 1.0, 1e3, 1e5])
+def test_g0_gate_works_at_every_scale_tetra_box(scale):
+    t = tetra((0.0, 0.0, 0.0), (scale, 0.0, 0.0), (0.0, scale, 0.0), (0.0, 0.0, scale))
+    b = box(half=(scale, scale, scale))
+    rep = g0_convex3(t, b, samples=60, seed=0)
+    assert (rep.facet_local, rep.facet_global, rep.facet_degenerate) == (7, 7, 3), rep
+    assert rep.hull_vertices == rep.e_vertices == 13 and rep.hull_vertex_mismatch == 0, rep
+    assert rep.mismatches == [] and rep.passed, rep
+    assert rep.samples > 20, rep
+
+
+@pytest.mark.parametrize("scale", [1e-5, 1e3])
+@pytest.mark.parametrize("seed", range(3))
+def test_g0_gate_works_at_every_scale_random_pairs(seed, scale):
+    A0, B0 = _random_pair(seed)
+    from eab.kernel3d.geom3 import Polyhedron
+    A = Polyhedron([tuple(scale * c for c in p) for p in A0.verts], list(A0.faces))
+    B = Polyhedron([tuple(scale * c for c in p) for p in B0.verts], list(B0.faces))
+    r0 = g0_convex3(A0, B0, samples=40, seed=seed)
+    r = g0_convex3(A, B, samples=40, seed=seed)
+    assert r.passed, (r.facet_symmetric_diff[:3], r.hull_vertices, r.e_vertices, r.mismatches[:2])
+    assert (r.facet_local, r.facet_global, r.hull_vertices, r.e_vertices) ==         (r0.facet_local, r0.facet_global, r0.hull_vertices, r0.e_vertices)
+

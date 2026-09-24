@@ -8,18 +8,25 @@
 各票的 oracle 与被测对象共用了什么（纪律 A）：
   票一  暴力谓词 polyhedra_overlap（射线奇偶 + geom3.point_in_face_polygon）与成员谓词
         membership_convex3（面法向 + 支撑顶点 + EE 标签）不共用判定原语；二者共用
-        Polyhedron.face_normal，但暴力谓词的**判定**只用它的方向不用符号（内点与微推证人的
+        Polyhedron.face_normal，但暴力谓词的**判定**只用它的方向不用符号（内点、微推与接触锥证人的
         搜索方向用到符号，而每个证人都经符号无关的 point_in_polyhedron 复验——符号错最多让
         证人搜不到，不会造成假阳性），故对"法向整体翻号"不盲（test_kernel3d_covers 的翻转法向牙）。
+        接触锥证人的 Gordan 方向是 geom3 里的独立实现（`_gordan_direction`），不经 covers3 的
+        cone_relint_direction / closest_point_of_convex_hull_to_origin。
   票二  局部侧经 covers3.facet_normal3（face_normal、edge_arc_contains）；凸包侧只用差点坐标：
         三角面叉积给候选法向、**支撑定向**（全部差点落在非正侧）、再按 A、B 各自支撑集的
-        仿射维数判它是严格 facet 还是 FF/FE 退化。共用：convex_hull_3d 内部用 face_normal
-        判可见性——face_normal 若整体出错，凸包本身会坏，此时由票一兜底。
+        仿射维数判它是严格 facet 还是 FF/FE 退化。凸包（2026-09-24 起为 Quickhull）用自己的三角叉积
+        判可见性，**不再**调用 Polyhedron.face_normal——票二两侧的共用只剩 Polyhedron 的坐标本身。
   票三  局部侧只用棱方向与坐标（cones_intersect_relint）；凸包侧只用差点坐标（极点判定见
         _hull_extreme_vertices）。
 
 票二在 2026-09-21 之前只存了一个计数、从不比较（审查 C23/C27：删掉任一严格 facet，190 次里
 181 次仍 passed）。现在 `passed` 看 facet_symmetric_diff。
+
+尺度（2026-09-24 G6 minor 9，纪律 F）：g0_convex3 的 tol / band 是**相对** E 的尺度 L（差点集 AABB
+对角线）的；凸包、支撑容差、平面去重角、票三顶点匹配全部按 L 与坐标量级 C 的舍入地板取。此前凸包
+tol = 1e-12 与 ∝ 长度³ 的三重积比，尺度 ≤ 1e-5 时凸包报"共面"；票三用 round(·, 7) 的绝对顶点键。
+票三现在按距离容差逐点匹配（不用舍入键：键在舍入边界两侧会把同一点拆成两个）。
 """
 
 from __future__ import annotations
@@ -29,7 +36,7 @@ from dataclasses import dataclass, field
 
 from .covers3 import facet_normal3, local_facets3, membership_convex3
 from .geom3 import (Polyhedron, Vec3, add, angle_between, brute_feature_distance, convex_hull_3d,
-                    cross, dot, neg, norm, polyhedra_overlap, sub, unit)
+                    coord_scale, cross, dot, neg, noise_floor, norm, polyhedra_overlap, sub, unit)
 
 
 @dataclass(slots=True)
@@ -53,23 +60,26 @@ class G0Report3:
                 and self.hull_vertex_mismatch == 0)
 
 
-def _hull_extreme_vertices(hull: Polyhedron, ang: float = 1e-7) -> list[Vec3]:
+def _hull_extreme_vertices(hull: Polyhedron, ang: float = 1e-7, area_tol: float | None = None) -> list[Vec3]:
     """凸包三角网格里真正的**极点**：关联的非退化三角至少张出 3 个不同平面。
 
     convex_hull_3d 会把落在 facet 内部或棱上的共面/共线点留作三角网格顶点（加点顺序决定），
     它们不是 E 的顶点。一般位置下不存在这种点，退化输入（平行面：tetra vs box、box vs box）
     则大量出现——此前票三因此在退化输入上误红（19 vs 13、26 vs 8；2026-09-23 修 C2 时发现）。
     只用凸包自身的坐标：叉积给平面方向（不读 face_normal、不看朝向），按无向角去重。
+    零面积碎片的判据相对凸包尺度（area_tol 缺省 1e-14·L²，此前是 1e-14·max(1, L)²）。
     """
     lo, hi = hull.aabb()
-    scale = max(1.0, norm(sub(hi, lo)))
+    scale = norm(sub(hi, lo)) or 1.0
+    if area_tol is None:
+        area_tol = 1e-14 * scale * scale
     planes: dict[int, list[Vec3]] = {}
     for f in hull.faces:
         o = hull.verts[f[0]]
         c = (0.0, 0.0, 0.0)
         for i in range(1, len(f) - 1):
             c = add(c, cross(sub(hull.verts[f[i]], o), sub(hull.verts[f[i + 1]], o)))
-        if norm(c) <= 1e-14 * scale * scale:
+        if norm(c) <= area_tol:
             continue
         n = unit(c)
         for vi in f:
@@ -95,7 +105,8 @@ def _affine_dim(points: list[Vec3], tol: float) -> int:
 
 
 def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedron,
-                 scale: float, ptol: float, ang: float) -> list[tuple[Vec3, int, int, bool]]:
+                 scale: float, ptol: float, ang: float,
+                 area_tol: float | None = None) -> list[tuple[Vec3, int, int, bool]]:
     """凸包侧：conv{b − a} 的每个 facet → (支撑定向外法向, dim F_A, dim F_B, 是否支撑自洽)。
 
     F_A = A 上使 n·a 最小的顶点集（−A 在 n 方向的支撑面），F_B = B 上使 n·b 最大的顶点集。
@@ -108,7 +119,7 @@ def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedr
         o = hull.verts[f[0]]
         for i in range(1, len(f) - 1):
             c = add(c, cross(sub(hull.verts[f[i]], o), sub(hull.verts[f[i + 1]], o)))
-        if norm(c) <= 1e-14 * scale * scale:
+        if norm(c) <= (1e-14 * scale * scale if area_tol is None else area_tol):
             continue                                            # 零面积碎片不给法向
         n = unit(c)
         h0 = dot(n, o)
@@ -130,11 +141,26 @@ def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedr
     return out
 
 
+def _gate_scales(A: Polyhedron, B: Polyhedron, diffs: list[Vec3]) -> tuple[float, float, float, float]:
+    """(L, ptol, ang, area_tol)：E 的尺度 L（差点集 AABB 对角线）、支撑/仿射维数的长度容差、
+    平面去重角、零面积碎片阈值。长度取 max(1e-9·L, 舍入地板)，角度取 max(1e-7, 方向噪声)——
+    差点由量级 C 的坐标相减得到，退化关系（共面、平行）被舍入破坏到 ~eps·C（纪律 F）。"""
+    xs = [p[0] for p in diffs]
+    ys = [p[1] for p in diffs]
+    zs = [p[2] for p in diffs]
+    L = norm((max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(zs))) or 1.0
+    CA, _, la = A.metrics()
+    CB, _, lb = B.metrics()
+    fl = 16.0 * noise_floor(max(CA, CB, coord_scale(*diffs)))
+    ptol = max(1e-9 * L, fl)
+    ang = max(1e-7, fl / min(la, lb))
+    return L, ptol, ang, max(1e-14 * L * L, 2.0 * fl * L)
+
+
 def facet_vote3(A: Polyhedron, B: Polyhedron, facets: set[tuple], hull: Polyhedron,
                 diffs: list[Vec3]) -> tuple[int, int, list[tuple]]:
     """票二：返回 (facet_global, facet_degenerate, 对称差)。见模块文档。"""
-    scale = max(1.0, max(norm(p) for p in diffs))
-    ptol, ang = 1e-9 * scale, 1e-7
+    scale, ptol, ang, area_tol = _gate_scales(A, B, diffs)
 
     def key(n: Vec3) -> tuple:
         return tuple(round(c, 7) + 0.0 for c in n)
@@ -142,7 +168,7 @@ def facet_vote3(A: Polyhedron, B: Polyhedron, facets: set[tuple], hull: Polyhedr
     strict: list[tuple[Vec3, int, int]] = []
     diff: list[tuple] = []
     n_deg = 0
-    for n, da, db, ok in _hull_facets(A, B, diffs, hull, scale, ptol, ang):
+    for n, da, db, ok in _hull_facets(A, B, diffs, hull, scale, ptol, ang, area_tol):
         if not ok or (da, db) not in ((0, 2), (2, 0), (1, 1), (1, 2), (2, 1), (2, 2)):
             diff.append(("hull_anomaly", key(n), da, db))
         elif (da, db) in ((0, 2), (2, 0), (1, 1)):
@@ -176,37 +202,63 @@ def sample_translations3(A: Polyhedron, B: Polyhedron, n: int, rng: random.Rando
             for _ in range(n)]
 
 
+def _dedup_points(pts: list[Vec3], tol: float) -> list[Vec3]:
+    out: list[Vec3] = []
+    for p in pts:
+        if not any(norm(sub(p, q)) <= tol for q in out):
+            out.append(p)
+    return out
+
+
+def _unmatched(P: list[Vec3], Q: list[Vec3], tol: float) -> int:
+    """两点集按距离 ≤ tol 贪心一一配对后，两侧剩余的点数之和（= 点集对称差的大小）。"""
+    free = list(Q)
+    miss = 0
+    for p in P:
+        j = next((j for j, q in enumerate(free) if norm(sub(p, q)) <= tol), None)
+        if j is None:
+            miss += 1
+        else:
+            free.pop(j)
+    return miss + len(free)
+
+
 def g0_convex3(A: Polyhedron, B: Polyhedron, *, samples: int = 400, seed: int = 0,
                tol: float = 1e-12, band: float = 1e-7) -> G0Report3:
+    """凸块 G0 三票。tol（票一暴力谓词的边界带、凸包的相对容差）与 band（票一成员谓词的跳过带）
+    都是**相对** E 的尺度 L 的（见模块文档"尺度"）；局部法锥规则的 tol 是角度，原样传给 covers3。"""
     rng = random.Random(seed)
     rep = G0Report3()
     facets = local_facets3(A, B, tol)
     rep.facet_local = len(facets)
     # 票三：E 顶点集 = conv{b − a} 极点集（凸包三角网格里的共面/共线非极点不算）
     diffs = [sub(b, a) for a in A.verts for b in B.verts]
-    hull = convex_hull_3d(diffs, tol=1e-12)
-    hv = {(round(v[0], 7), round(v[1], 7), round(v[2], 7)) for v in _hull_extreme_vertices(hull)}
+    L, ptol, ang, area_tol = _gate_scales(A, B, diffs)
+    hull = convex_hull_3d(diffs, tol=max(tol, ptol / L))
+    hv = _dedup_points(_hull_extreme_vertices(hull, ang, area_tol), ptol)
     # 票三：由**局部锥相交规则**判定为 E 顶点的 (a,b) 对，其差点集必须等于 hull 顶点集。
     # 这条检验只用棱方向与坐标，不经面法向、不经任何合并规则，故对"整体符号错"不盲。
     from .covers3 import cones_intersect_relint
-    ev: set[tuple[float, float, float]] = set()
+    ev_raw: list[Vec3] = []
     for ia in range(len(A.verts)):
         for ib in range(len(B.verts)):
             if cones_intersect_relint(A, ia, B, ib, max(tol, 1e-12)):
-                d = sub(B.verts[ib], A.verts[ia])
-                ev.add((round(d[0], 7), round(d[1], 7), round(d[2], 7)))
+                ev_raw.append(sub(B.verts[ib], A.verts[ia]))
+    ev = _dedup_points(ev_raw, ptol)
     rep.hull_vertices, rep.e_vertices = len(hv), len(ev)
-    rep.hull_vertex_mismatch = len(hv ^ ev)
+    rep.hull_vertex_mismatch = _unmatched(hv, ev, max(1e-7 * L, ptol))
     # 票二：严格 facet 集合（定向法向）== conv{b − a} 上的严格 facet 集合
     rep.facet_global, rep.facet_degenerate, rep.facet_symmetric_diff = facet_vote3(
         A, B, facets, hull, diffs)
-    # 票一：逐样本成员谓词
+    # 票一：逐样本成员谓词（band、tol 相对 L；另加坐标舍入地板）
+    band_abs = max(band * L, ptol)
+    tol_abs = tol * L
     for x in sample_translations3(A, B, samples, rng):
-        cov = membership_convex3(A, B, x, band, facets)
+        cov = membership_convex3(A, B, x, band_abs, facets)
         if cov == 0:
             rep.band_skipped += 1
             continue
-        brute = polyhedra_overlap(A.translated(x), B, tol)
+        brute = polyhedra_overlap(A.translated(x), B, tol_abs)
         if brute == 0:
             rep.band_skipped += 1
             continue
