@@ -10,6 +10,12 @@
 语义说明（来自 b-DDA sidecar.py 与 refkernel 注释）：
   mtype 0 = v-e, 1 = v-v；p1..p3 = 接触三点的顶点号（p1 顶点、p2-p3 边）；m4..m6 共边第二参考；
   m0_2 = 转移后的锁定态（0 开 1 滑 2 锁 3 v-v 第二参考闭合）；o2 = 投影比 s3；o3 法向；o4 剪向；o5 接触长度。
+
+特征顶点号（G6 minor 30，C20 的另一半）：有 verts.csv 时，feature_a.index / feature_b.index 经
+`StepGeometry.canon` 归到**载入后多边形**里的顶点号（df 的回绕尾巴 d[i2+1]=d[i1]、d[i2+2]=d[i1+1] 外露的
+重复号被剥掉，legacy 接触表却常用它们引用首边：bb52_N10 的 540 条里 feature_b 120 条、feature_a 40 条是这种号）；
+原始 p1/p2 留在 extra['raw_p1'] / extra['raw_p2']。缺 verts.csv 时顶点号是原始号（无从规范化）。
+门：tests/test_readers_roundtrip.py::test_bdda_df_feature_ids_are_in_the_loaded_polygon。
 """
 
 from __future__ import annotations
@@ -19,6 +25,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..contact_record import BDDA_COVER, BDDA_MODE, ContactRecord, CoverType, Feature, Mode
+from .bdda_geom import load_step_geometries
 
 
 @dataclass(slots=True)
@@ -77,6 +84,18 @@ def read_df22_csv(path: Path) -> list[Df22Judgment]:
     return rows
 
 
+def last_oc_judgments(rows: list[Df22Judgment]) -> dict[tuple[int, int], Df22Judgment]:
+    """(step, contact) -> 该步**最后一轮**开闭迭代（oc_iter 最大）的判定：legacy 开闭迭代在该步的终判。
+    本读取器的 mode 与 G4 的真值（tools/g4_multistep.py，G6 gap 1 之后）共用这一条规则。"""
+    last: dict[tuple[int, int], Df22Judgment] = {}
+    for j in rows:
+        key = (j.step, j.contact)
+        prev = last.get(key)
+        if prev is None or j.oc_iter >= prev.oc_iter:
+            last[key] = j
+    return last
+
+
 def read_verts_csv(path: Path) -> dict[int, dict[int, dict[int, tuple[float, float]]]]:
     out: dict[int, dict[int, dict[int, tuple[float, float]]]] = {}
     for raw in _read_csv(path):
@@ -97,23 +116,20 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
     df18 = read_df18_csv(dump_dir / "bdda_debug_df18.csv") if (dump_dir / "bdda_debug_df18.csv").exists() else {}
     df22 = read_df22_csv(dump_dir / "bdda_debug_df22.csv") if (dump_dir / "bdda_debug_df22.csv").exists() else []
 
-    last_judgment: dict[tuple[int, int], Df22Judgment] = {}
-    for j in df22:
-        key = (j.step, j.contact)
-        prev = last_judgment.get(key)
-        if prev is None or j.oc_iter >= prev.oc_iter:
-            last_judgment[key] = j
+    last_judgment = last_oc_judgments(df22)
 
     # verts.csv 的 vidx 是全局顶点号（2026-09-18 实测：bb52 两步各 154 行 vidx 全唯一，
     # p1/p2 反查块号与 df18 的 block_i/block_j 54/54 吻合）。df18 只 dump 首步，
     # 第 2 步起的块号靠它补全；两者都在时交叉核对，不一致记 extra["_block_mismatch"]。
     verts_path = dump_dir / "bdda_debug_verts.csv"
     vert_block: dict[tuple[int, int], int] = {}
+    geoms = {}
     if verts_path.exists():
         for step_v, blocks in read_verts_csv(verts_path).items():
             for b, vs in blocks.items():
                 for vidx in vs:
                     vert_block[(step_v, vidx)] = b
+        geoms = load_step_geometries(verts_path)     # 顶点号规范化（剥回绕/重复点后的 alias）
 
     keys = sorted(set(contacts) | set(df18) | set(last_judgment))
     records: list[ContactRecord] = []
@@ -152,10 +168,16 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
         raw_prev = j.m0_prev if j else None
         raw_init = int(c["m0_2"]) if "m0_2" in c else None
 
-        fa = Feature(block_a, "vertex", int(c["p1"])) if ("p1" in c and block_a >= 0) else None
-        fb = Feature(block_b, "edge", int(c["p2"])) if ("p2" in c and block_b >= 0) else None
+        sg = geoms.get(step)
+        canon = sg.canon if sg is not None else (lambda v: v)
+        fa = Feature(block_a, "vertex", canon(int(c["p1"]))) if ("p1" in c and block_a >= 0) else None
+        fb = Feature(block_b, "edge", canon(int(c["p2"]))) if ("p2" in c and block_b >= 0) else None
 
         extra: dict = {}
+        if "p1" in c:
+            extra["raw_p1"] = int(c["p1"])
+        if "p2" in c:
+            extra["raw_p2"] = int(c["p2"])
         for k, v in c.items():
             if k not in ("mtype", "p1", "p2", "p3", "m0_0", "m0_2", "o2", "o3", "o4", "o5"):
                 extra[f"c_{k}"] = v

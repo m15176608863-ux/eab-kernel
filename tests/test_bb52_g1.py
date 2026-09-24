@@ -248,3 +248,22 @@ def test_g0_gate_no_false_negative_on_wedge_in_channel(monkeypatch):
     v = _retired_vote(r)
     # 旧规则：相交判成分离 15 次（2026-09-24 实测；投票计入 53，一致 38）
     assert (v["total"], v["agree"], v["false_alarm"], v["false_negative"]) == (53, 38, 0, 15)
+
+
+# ---------------------------------------------------------------- G6 gap 5：撤回的机器报告要自带撤回标记
+
+def test_first_look_json_carries_its_retraction():
+    """reports/bb52_g0_first_look.json 仍记着已撤回的 {g0_samples: 1186, g0_agree: 1186}（原数据不删），
+    但必须带 "retracted" 字段：撤回原因（sign(min gap) 两个方向都假）与现行结果的出处（reports/bb52_g1_g0.json），
+    且它引用的现行数字与现行报告逐项一致——消费者读 JSON 不会再把 1186/1186 当成 G0 通过。"""
+    import json
+    root = Path(__file__).resolve().parents[1]
+    d = json.loads((root / "reports" / "bb52_g0_first_look.json").read_text(encoding="utf-8"))
+    assert (d["g0_samples"], d["g0_agree"]) == (1186, 1186)             # 原数据保留
+    r = d["retracted"]
+    assert r["superseded_by"] == "reports/bb52_g1_g0.json"
+    assert "sign(min gap)" in r["reason"] and "tests/test_bb52_g1.py" in r["reason"]
+    cur = json.loads((root / r["superseded_by"]).read_text(encoding="utf-8"))
+    for k, v in r["current"].items():
+        assert cur[k] == v, (k, cur[k], v)
+    assert r["current"]["g0_samples"] == 603 and r["current"]["g0_exit_samples"] == 657

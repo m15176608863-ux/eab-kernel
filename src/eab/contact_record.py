@@ -13,6 +13,9 @@
 - 典范序键 `canonical_key()` 与来源的枚举顺序无关（块序交换不变），用于跨引擎集合同构比较。
   它的分辨率取决于来源给了多少特征身份（审查 C20）：bdda_df（有 verts.csv）与 bdda3d 逐步唯一；
   tf 探针不带特征，键只到 (块对, 盖类) 级；bdda_df 缺 verts.csv 时块号未知的记录同样只到块对级。
+  bdda_df 的顶点号在有 verts.csv 时已经 alias 规范化到载入后的多边形（G6 minor 30），与由同一多边形造出的
+  内核盖同名；缺 verts.csv 时是原始号。bdda3d 的面身份是 legacy 的三角顶点三元组，归约到几何面要几何
+  （tools/g2_bdda3d.py），所以跨引擎比较 bdda3d 仍须经那一步，不能直接比 canonical_key。
   这几条由 tests/test_readers_roundtrip.py 在真实夹具上断言。
 """
 

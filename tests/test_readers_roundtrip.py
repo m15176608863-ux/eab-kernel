@@ -120,3 +120,40 @@ def test_reader_key_gate_has_teeth_where_the_retired_assert_had_none(monkeypatch
         for r in recs:
             assert _swapped(r).canonical_key() == r.canonical_key()
         _assert_step_keys_unique([r for r in recs if r.feature_a is not None and r.feature_b is not None])
+
+
+# ---------------------------------------------------------------- G6 minor 30：bdda_df 的特征顶点号经 alias 规范化
+
+_DF_WITH_VERTS = [p for p in sorted((FIX / "bdda_df").glob("*")) if (p / "bdda_debug_verts.csv").exists()] \
+    if (FIX / "bdda_df").exists() else []
+
+
+def _raw_contacts(case_dir):
+    """独立解析 contacts.csv（不用 csv 模块、不用 bdda_df）：(step, contact) -> {p1, p2}。"""
+    lines = [ln for ln in (case_dir / "bdda_debug_contacts.csv").read_bytes().decode("utf-8")
+             .replace("\r\n", "\n").split("\n") if ln]
+    head = lines[0].split(",")
+    out = {}
+    for ln in lines[1:]:
+        d = dict(zip(head, ln.split(",")))
+        out[(int(d["step"]), int(d["contact"]))] = {"p1": int(d["p1"]), "p2": int(d["p2"])}
+    return out
+
+
+@pytest.mark.parametrize("case_dir", _DF_WITH_VERTS, ids=lambda p: p.name)
+def test_bdda_df_feature_ids_are_in_the_loaded_polygon(case_dir):
+    """G6 minor 30（C20 只修了一半）：feature_b.index 曾是 legacy 的原始 p2——120/540（bb52_N10）、323/988（bbW025_N10）、
+    40/40（bbF038_N20）、24/108（studio_20260712）是 df 回绕尾巴的重复顶点号，**不在**该块载入后的多边形里，
+    由载入多边形造出的内核盖不可能带着它们，跨引擎集合同构就对不上。现在有 verts.csv 时经 StepGeometry.canon
+    规范化；原始值留 extra['raw_p1'] / extra['raw_p2']，与 contacts.csv 独立解析的值逐条相等（读取器不丢信息）。"""
+    from eab.readers.bdda_geom import load_step_geometries
+    recs = bdda_df.load_records(case_dir)
+    geoms = load_step_geometries(case_dir / "bdda_debug_verts.csv")
+    raw = _raw_contacts(case_dir)
+    bad = [(r.step, r.contact_index, f) for r in recs for f in (r.feature_a, r.feature_b)
+           if f.index not in geoms[r.step].blocks[f.block].vidx]
+    assert bad == [], (len(bad), len(recs), bad[:3])
+    for r in recs:
+        sg, want = geoms[r.step], raw[(r.step, r.contact_index)]
+        assert (r.extra["raw_p1"], r.extra["raw_p2"]) == (want["p1"], want["p2"])
+        assert (r.feature_a.index, r.feature_b.index) == (sg.canon(want["p1"]), sg.canon(want["p2"]))

@@ -11,6 +11,11 @@
 即 A 在方向 −n_B(j) 上的**局部**支撑顶点恰是 a_i（凹顶点无法锥，永不有效）。
 接触法向统一取"B 指向 A 的分离方向"：VE 用 n_B(j)，EV 用 −n_A(k)，VV 用 unit(a − b)。
 间隙 gap 沿该法向度量，>0 分离、<0 侵入、=0 接触。
+
+容差（纪律 F，M0.2）：`tol` / `seg_tol` / `window` 是长度（调用方单位，换单位随之缩放），库内抬到舍入下限
+c·eps·C；法锥判据的角容差 `cone_tol` 是无量纲的（sin 单位）——缺省（None）时取长度容差在所涉最短边上张的角
+tol/ℓ（旧版直接把长度 tol 当角度用，单位缩放 ×1e3 时角容差也跟着 ×1e3，bb52 真几何上盖集随单位而变），
+再抬到角度舍入下限 c·eps·C/ℓ。门：tests/test_invariance_2d.py::test_cover_enumeration_is_invariant。
 """
 
 from __future__ import annotations
@@ -18,8 +23,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import asin, atan2, pi
 
-from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, reflect, sub, turn_angle,
-                   unit, zero_length_edges)
+from .geom import (Point, Poly, add, angle_floor, coord_scale, cross, dot, edge, neg, norm, outward_normal, reflect,
+                   round_floor, sub, turn_angle, turn_floor, unit, zero_length_edges)
 
 
 @dataclass(slots=True)
@@ -49,6 +54,7 @@ def normal_cone(poly: Poly, i: int, tol: float = 0.0) -> tuple[Point, Point] | N
 
     tol 以 sin(转角) 计：turn < -tol 判为反射；平直顶点（turn≈0）保留——其法锥退化为单射线，
     对应 legacy 里"直边中间的顶点贴在对方边上"这类接触（tol=0 时仍保留 turn==0）。
+    tol 再抬到该顶点转角的舍入下限 `geom.turn_floor`（平直顶点经刚体运动后转角 ±eps·C/ℓ，不许翻成反射）。
     邻边为零长边时抛 ValueError('zero-length edge ...')（不是 ZeroDivisionError）。
     """
     n = len(poly)
@@ -59,7 +65,8 @@ def normal_cone(poly: Poly, i: int, tol: float = 0.0) -> tuple[Point, Point] | N
             raise ValueError(f"zero-length edge {k} at vertex {i % n}: consecutive duplicate vertex {poly[k]}; "
                              f"strip duplicates at the reader boundary")
     # 用转角（atan2）判反射：sin 分不清 θ 与 π−θ，会把 178° 的窄缝当作 2° 的近共线放行（审查 r1）。
-    if turn_angle(poly, i) < -asin(min(max(tol, 0.0), 1.0)):
+    ta = turn_angle(poly, i)
+    if ta < 0.0 and ta < -max(asin(min(max(tol, 0.0), 1.0)), turn_floor(poly, i)):
         return None
     return outward_normal(poly, (i - 1) % n), outward_normal(poly, i)
 
@@ -94,37 +101,55 @@ def _edge_len(P: Poly, k: int) -> float:
 
 # ---------------------------------------------------------------- 单个盖
 
+def _vertex_ring(P: Poly, i: int) -> tuple[Point, Point, Point]:
+    n = len(P)
+    return P[(i - 1) % n], P[i % n], P[(i + 1) % n]
+
+
+def _angle_tols(tol: float, cone_tol: float | None, pts, lengths) -> tuple[float, float, float]:
+    """(法锥角容差, 长度容差张的角, 角度舍入下限)，都无量纲。ℓ = 所涉最短边，C = 所涉点的坐标量级。
+    cone_tol 缺省取 tol/ℓ；两者都抬到 c·eps·C/ℓ。零长边时返回 0（不放宽任何判据；随后的 outward_normal /
+    normal_cone 对零长边清晰报 ValueError，审查 C19）。"""
+    ell = min(lengths)
+    if ell <= 0.0:
+        return 0.0, 0.0, 0.0
+    fl = angle_floor(coord_scale(pts), ell)
+    t_ang = max(tol / ell, fl)
+    return (max(cone_tol, fl) if cone_tol is not None else t_ang), t_ang, fl
+
+
 def ve_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
     """A 的顶点 ia 对 B 的边 jb。无效（法锥外/反射顶点）返回 None。
 
-    cone_tol：法锥判据的角容差（sin 单位；None = 用 tol）。legacy 兼容模式给 sin(h1°)。
+    tol：长度容差。cone_tol：法锥判据的角容差（sin 单位，无量纲；None = tol/ℓ，ℓ 为所涉三条边的最短者）。
+    legacy 兼容模式给 sin(h1°)。两者都抬到角度舍入下限 c·eps·C/ℓ（纪律 F）。
     """
-    ct = tol if cone_tol is None else cone_tol
+    nB = outward_normal(B, jb)                       # 零长边在这里清晰报错
+    ap, a, an = _vertex_ring(A, ia)
+    b0, b1 = edge(B, jb)
+    ct, _, _ = _angle_tols(tol, cone_tol, (ap, a, an, b0, b1), (norm(sub(a, ap)), norm(sub(an, a)), norm(sub(b1, b0))))
     cone = normal_cone(A, ia, ct)
     if cone is None:
         return None
-    nB = outward_normal(B, jb)
     side = in_cone(cone, neg(nB), ct)
     if side < 0:
         return None
-    a = A[ia]
-    b0, b1 = edge(B, jb)
     s, pt = _project(a, b0, b1)
     return Cover("VE", ia, jb, nB, dot(nB, sub(a, b0)), s, pt, side == 1, a, pt)
 
 
 def ev_cover(A: Poly, ka: int, B: Poly, ib: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
-    """B 的顶点 ib 对 A 的边 ka。"""
-    ct = tol if cone_tol is None else cone_tol
+    """B 的顶点 ib 对 A 的边 ka。容差口径同 `ve_cover`。"""
+    nA = outward_normal(A, ka)
+    bp, b, bn = _vertex_ring(B, ib)
+    a0, a1 = edge(A, ka)
+    ct, _, _ = _angle_tols(tol, cone_tol, (bp, b, bn, a0, a1), (norm(sub(b, bp)), norm(sub(bn, b)), norm(sub(a1, a0))))
     cone = normal_cone(B, ib, ct)
     if cone is None:
         return None
-    nA = outward_normal(A, ka)
     side = in_cone(cone, neg(nA), ct)
     if side < 0:
         return None
-    b = B[ib]
-    a0, a1 = edge(A, ka)
     s, pt = _project(b, a0, a1)
     return Cover("EV", ka, ib, neg(nA), dot(nA, sub(b, a0)), s, pt, side == 1, pt, b)
 
@@ -144,16 +169,21 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
     """A 的顶点 ia 对 B 的顶点 jb：E 的顶点。有效 ⟺ N_B(b) 与 −N_A(a) 的相对内部相交。
 
     活跃（strict=True）还要求分离方向 a − b 落在该交锥内，否则参考点离这个 E 顶点不是最近。
+    容差（纪律 F）：法锥用 `_angle_tols` 的角容差；交锥宽度与活跃判据用长度容差张的角 tol/ℓ（旧版直接拿长度 tol
+    当弧度）；锥宽判"退化"用角度舍入下限；两顶点重合判据用长度舍入下限。ℓ 取两顶点的四条邻边的最短者。
     """
-    ct = tol if cone_tol is None else cone_tol
+    ap, a, an = _vertex_ring(A, ia)
+    bp, b, bn = _vertex_ring(B, jb)
+    ct, vt, fl = _angle_tols(tol, cone_tol, (ap, a, an, bp, b, bn),
+                             (norm(sub(a, ap)), norm(sub(an, a)), norm(sub(b, bp)), norm(sub(bn, b))))
     ca = normal_cone(A, ia, ct)
     cb = normal_cone(B, jb, ct)
     if ca is None or cb is None:
         return None
-    # 锥宽 ≤ 0（平直顶点或容差内微反射）→ 法锥退化为单射线，相对内部交为空，不是 E 的顶点。
+    # 锥宽 ≤ 舍入下限（平直顶点或容差内微反射）→ 法锥退化为单射线，相对内部交为空，不是 E 的顶点。
     # 不能对原始法向做 _span：数值共线顶点的 n_next 略偏 CW 会回绕成 ≈360° 假锥（审查 r3，31% 触发）。
     wa, wb = cone_width(ca), cone_width(cb)
-    if wa <= 0.0 or wb <= 0.0:
+    if wa <= fl or wb <= fl:
         return None
     a_lo = _ang(neg(ca[0]))
     b_lo = _ang(cb[0])
@@ -166,16 +196,15 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
         if best is None or hi - lo > best[1] - best[0]:
             best = (lo, hi)
     assert best is not None
-    if best[1] - best[0] <= tol:
+    if best[1] - best[0] <= vt:
         return None
-    a, b = A[ia], B[jb]
     d = sub(a, b)
     dist = norm(d)
-    if dist == 0.0:
+    if dist <= round_floor(max(abs(a[0]), abs(a[1]), abs(b[0]), abs(b[1]))):
         return Cover("VV", ia, jb, None, 0.0, None, a, True, a, b)
     u = unit(d)
     au = _ang(u)
-    active = any(best[0] - tol <= au + 2 * pi * k <= best[1] + tol for k in (-1, 0, 1))
+    active = any(best[0] - vt <= au + 2 * pi * k <= best[1] + vt for k in (-1, 0, 1))
     return Cover("VV", ia, jb, u, dist, None, a, active, a, b)
 
 
@@ -188,9 +217,12 @@ def enumerate_covers(A: Poly, B: Poly, *, window: float, tol: float = 0.0,
 
     window：|gap| ≤ window 才收（对应 legacy 的 d0 搜索距离，两侧对称，调用方再筛）。
     require_in_segment：VE/EV 的投影参数须在 [0,1]（容差 seg_tol/边长，缺省 tol）。VV 只收活跃的。
-    cone_tol：法锥角容差（sin 单位）；严格数学用 0，legacy 兼容用 sin(h1°)。
+    cone_tol：法锥角容差（sin 单位，无量纲）；严格数学用 0，legacy 兼容用 sin(h1°)；None = tol/ℓ。
+    长度量（window、seg_tol、tol）都抬到舍入下限 c·eps·C（C = 两块的坐标量级；纪律 F）。
     """
-    st = tol if seg_tol is None else seg_tol
+    lf = round_floor(coord_scale(A, B))
+    st = max(tol if seg_tol is None else seg_tol, lf)
+    window = max(window, lf)
     out: list[Cover] = []
     nA, nB = len(A), len(B)
     for ia in range(nA):
@@ -227,13 +259,15 @@ def first_entrance_for_vertex(A: Poly, ia: int, B: Poly, *, window: float, tol: 
     适用范围：B 凸，或已侵入情形（最短出口）。B 凹且分离时（如 L 形内角）"最大间隙"会选到远边——
     审查 r8 指出这与命题 7 的"首入"不同，凹块分离情形应取最小正间隙，待 Phase 3 处理。
     """
+    lf = round_floor(coord_scale(A, B))
+    st, window = max(tol, lf), max(window, lf)
     best: Cover | None = None
     for jb in range(len(B)):
         c = ve_cover(A, ia, B, jb, tol, cone_tol)
         if c is None or abs(c.gap) > window:
             continue
         le = _edge_len(B, jb)
-        if not (-tol / le <= c.param <= 1.0 + tol / le):
+        if not (-st / le <= c.param <= 1.0 + st / le):
             continue
         if best is None or c.gap > best.gap:
             best = c
@@ -266,10 +300,17 @@ def _edge_angle(P: Poly, i: int) -> float:
     return a if a >= 0.0 else a + 2 * pi
 
 
+def _poly_angle_floor(P: Poly) -> float:
+    """多边形各边极角的舍入下限 c·eps·C/ℓ_min（纪律 F）。"""
+    return angle_floor(coord_scale(P), min(_edge_len(P, k) for k in range(len(P))))
+
+
 def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float = 0.0) -> EntranceBlock:
     """A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角合并，每条边带盖标签。
 
-    平行边（极角相等，容差 tol）合并成一条 FF 边。零长边（连续重复顶点）清晰报错（审查 C19）。
+    平行边（极角相等，角容差 tol——弧度、无量纲）合并成一条 FF 边。零长边（连续重复顶点）清晰报错（审查 C19）。
+    容差（纪律 F）：合并容差与"极角下降"的吞没阈值都用极角舍入下限 c·eps·C/ℓ_min（旧版分别是调用方的 tol 与
+    绝对 1e-9 rad——平行边经旋转/平移后极角差 ~eps·C/ℓ，不合并就多出 VE+EV 两条零长 facet）。
     """
     for name, poly in (("A", A), ("B", B)):
         bad = zero_length_edges(poly)
@@ -282,14 +323,16 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
     iP, iQ = _start_index(P), _start_index(Q)
     angP = [_edge_angle(P, (iP + k) % n) for k in range(n)]
     angQ = [_edge_angle(Q, (iQ + k) % m) for k in range(m)]
-    # 从最低点出发的凸 CCW 多边形，边角在 [0, 2π) 内非降。只吞舍入级（≤1e-9 rad）的下降；
+    fP, fQ = _poly_angle_floor(P), _poly_angle_floor(Q)
+    # 从最低点出发的凸 CCW 多边形，边角在 [0, 2π) 内非降。只吞舍入级（≤ 极角舍入下限）的下降；
     # 更大的下降说明输入不是一般位置的凸多边形（审查 r4c：微凹被 +2π 级联静默吃掉，产出非凸 E）。
-    for arr in (angP, angQ):
+    for arr, fl in ((angP, fP), (angQ, fQ)):
         for k in range(1, len(arr)):
             if arr[k] < arr[k - 1]:
-                if arr[k - 1] - arr[k] > 1e-9:
+                if arr[k - 1] - arr[k] > fl:
                     raise ValueError(f"input polygon not convex in general position: edge angle drops by {arr[k - 1] - arr[k]:.3e} rad at edge {k}")
                 arr[k] = arr[k - 1]
+    tol = max(tol, fP + fQ)
     i = j = 0
     cur = add(P[iP], Q[iQ])
     verts = [add(cur, a0)]
@@ -348,9 +391,12 @@ def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
 
 def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
                       eb: EntranceBlock | None = None) -> int:
-    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界（恰好接触）/ -1 外部（分离）。"""
+    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界（恰好接触）/ -1 外部（分离）。
+
+    tol 为长度容差，抬到舍入下限 c·eps·C（C = B 与 A+x 的坐标量级；纪律 F）。"""
     if eb is None:
         eb = convex_entrance_block(A, B, (0.0, 0.0), tol)
+    tol = max(tol, round_floor(max(coord_scale(B), coord_scale(A) + max(abs(x[0]), abs(x[1])))))
     g = max(facet_gap(A, B, lab, x) for lab in eb.facets)
     if g > tol:
         return -1
