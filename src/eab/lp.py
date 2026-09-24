@@ -75,6 +75,8 @@ _REINVERT = 32            # 每多少次换基重新求逆
 _PERTURB = 1e-7           # 防循环扰动的基准幅度（规整单位）
 _MAX_PERTURB = 6          # 一次优化里最多扰动几轮
 _CLEANUP_ROUNDS = 3       # 核验不过时最多清理几轮
+_EPS = 2.0 ** -52
+_NOISE_ULPS = 100.0       # 舍入噪声线的安全系数（见 `_Revised.noise`）
 
 
 def _exp2(v: float) -> int:
@@ -98,6 +100,7 @@ class _Revised:
         self.cols = [[A[i][j] for i in range(m)] for j in range(n)]
         self.cols += [[1.0 if i == k else 0.0 for i in range(m)] for k in range(m)]
         self.acols = [[abs(v) for v in col] for col in self.cols]
+        self.csum = [sum(col) for col in self.acols]          # ‖A_j‖₁
         self.b = b
         self.basis = list(range(n, n + m))
         self.inbasis = [False] * n + [True] * m
@@ -140,6 +143,26 @@ class _Revised:
                     y[k] += cb * row[k]
         return y
 
+    def noise(self, y: list[float]) -> float:
+        """约化成本的**舍入噪声线**（每单位 ‖A_j‖₁）：ν = K·m·eps·κ∞(B)·‖y‖∞，r_j 的噪声 ≲ ν·‖A_j‖₁。
+
+        为什么需要它（2026-09-25，G6 复核 G2/G3）：只用列自己的 |c_j| + Σ|y_k A_kj| 作相对尺度时，
+        与机构正交的列（倾覆时基面上的黏聚列：精确 y 在其支撑上恰为 0）尺度本身就是舍入噪声，r_j / 尺度 ≈ ±1，
+        默认容差下普通块体抛 "could not reach a verified optimal basis"（物理模糊测试 59/2000）。
+        这些分量上的噪声来自 B⁻¹ 的计算（部分主元消元把 O(1) 的量混进精确为 0 的元），逐分量界量不到它；
+        标准的**范数型**前向误差界 ‖δy‖∞ ≲ m·eps·κ∞(B)·‖y‖∞ 量得到。所以判据是
+        r_j ≥ −(tol·(|c_j| + Σ|y_k A_kj|) + ν·‖A_j‖₁)：相对项管真实的约化成本，噪声线只吸收可证明的舍入。
+        全部在规整单位里（行/列/目标都已归一），κ∞ 与 ‖y‖∞ 对 2 的幂缩放精确不变。
+        B 良态时 ν ~ 1e-13·‖y‖∞：互不耦合的块里 1e-12 量级的目标系数照样被识别
+        （tests/test_lp.py::test_tiny_objective_coefficients_are_not_ignored）。"""
+        m = self.m
+        ymax = max((abs(v) for v in y), default=0.0)
+        if ymax == 0.0:
+            return 0.0
+        bnorm = max(sum(abs(self.cols[j][i]) for j in self.basis) for i in range(m))
+        inorm = max(sum(abs(v) for v in row) for row in self.Binv)
+        return _NOISE_ULPS * m * _EPS * bnorm * inorm * ymax
+
     def direction(self, e: int) -> list[float]:
         col = self.cols[e]
         return [_dot(row, col) for row in self.Binv]
@@ -148,6 +171,10 @@ class _Revised:
         r = cost[j] - _dot(y, self.cols[j])
         s = abs(cost[j]) + sum(abs(yk) * a for yk, a in zip(y, self.acols[j]))
         return r, s
+
+    def violates(self, r: float, s: float, nu: float, j: int, tol: float) -> bool:
+        """r_j < −(tol·s_j + ν·‖A_j‖₁)：约化成本在相对阈值与舍入噪声线之外为负。"""
+        return r < -(tol * s + nu * self.csum[j])
 
     def pivot(self, p: int, e: int, d: list[float]) -> None:
         self.iters += 1
@@ -169,6 +196,7 @@ class _Revised:
 
     # ---- 定价与比值检验
     def price(self, cost: list[float], y: list[float], allowed: list[bool], tol: float) -> int:
+        nu = self.noise(y)
         best, e = 0.0, -1
         for j in range(self.n + self.m):
             if not allowed[j] or self.inbasis[j]:
@@ -176,7 +204,7 @@ class _Revised:
             r = cost[j] - _dot(y, self.cols[j])
             if r < 0.0 and r < best:
                 s = abs(cost[j]) + sum(abs(yk) * a for yk, a in zip(y, self.acols[j]))
-                if r < -tol * s:
+                if self.violates(r, s, nu, j, tol):
                     best, e = r, j
         return e
 
@@ -269,6 +297,7 @@ class _Revised:
             if p < 0 or x[p] >= -_FEAS:
                 return
             y = self.duals(cost)
+            nu = self.noise(y)
             rho = self.Binv[p]
             cand = []
             amax = 0.0
@@ -278,12 +307,12 @@ class _Revised:
                 a = _dot(rho, self.cols[j])
                 if a < 0.0:
                     r, s = self.reduced(cost, y, j)
-                    cand.append((j, a, max(r, 0.0), s))
+                    cand.append((j, a, max(r, 0.0), max(tol, _DUAL_CHECK) * s + nu * self.csum[j]))
                 amax = max(amax, abs(a))
             cand = [c for c in cand if -c[1] > _PIV_NOISE * amax]
             if not cand:
                 raise RuntimeError("dual simplex cleanup: no entering column (basis cannot be repaired)")
-            theta = min((r + max(tol, _DUAL_CHECK) * s) / -a for _, a, r, s in cand)
+            theta = min((r + slack) / -a for _, a, r, slack in cand)
             e, best = -1, 0.0
             for j, a, r, s in cand:
                 if r / -a <= theta and -a > best:
@@ -295,15 +324,17 @@ class _Revised:
             seen.add(key)
 
     def dual_violation(self, cost: list[float], allowed: list[bool]) -> float:
-        """max_j (−r_j / scale_j)，只看允许的非基列。"""
+        """max_j (−r_j − ν·‖A_j‖₁) / scale_j，只看允许的非基列（ν 见 `noise`：先扣掉可证明的舍入噪声）。"""
         y = self.duals(cost)
+        nu = self.noise(y)
         worst = 0.0
         for j in range(self.n + self.m):
             if not allowed[j] or self.inbasis[j]:
                 continue
             r, s = self.reduced(cost, y, j)
-            if r < 0.0:
-                worst = max(worst, -r / s if s > 0.0 else float("inf"))
+            excess = -r - nu * self.csum[j]
+            if excess > 0.0:
+                worst = max(worst, excess / s if s > 0.0 else float("inf"))
         return worst
 
 
@@ -391,7 +422,7 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
             raise RuntimeError(f"simplex left an artificial variable at {xb[i]!r} in a redundant row")
     _guard_residual(A, b, xn)
     yq = S.duals(cost2)
-    _guard_gap(cost2, xn, b, yq)
+    _guard_gap(cost2, xn, b, yq, S.noise(yq))
     x = [ldexp(xn[j], ec[j] + es) for j in range(n)]
     y = [ldexp(yq[i], er[i] - ek) for i in range(m)]
     for i in flipped:
@@ -473,12 +504,14 @@ def _guard_residual(A: list[list[float]], b: list[float], x: list[float]) -> Non
                                f"(scaled units, row scale {scale!r})")
 
 
-def _guard_gap(c: list[float], x: list[float], b: list[float], y: list[float]) -> None:
-    """相对对偶间隙守卫（规整单位）：cᵀx 与 bᵀy 必须一致到 _GAP_CHECK。"""
+def _guard_gap(c: list[float], x: list[float], b: list[float], y: list[float], nu: float) -> None:
+    """相对对偶间隙守卫（规整单位）：cᵀx 与 bᵀy 必须一致到 _GAP_CHECK·(Σ|c_j x_j| + Σ|y_k b_k|) + ν·‖b‖₁。
+    ν 是 y 的舍入噪声线（`_Revised.noise`）：最优值为 0 的问题（α = 0）两边只剩舍入，只用相对项时 2e-17 的噪声
+    也会超标（2026-09-25 模糊测试 1/3000）。"""
     p = sum(ci * xi for ci, xi in zip(c, x))
     d = sum(yi * bi for yi, bi in zip(y, b))
     scale = sum(abs(ci * xi) for ci, xi in zip(c, x)) + sum(abs(yi * bi) for yi, bi in zip(y, b))
-    if abs(p - d) > _GAP_CHECK * scale + 1e-300:
+    if abs(p - d) > _GAP_CHECK * scale + nu * sum(abs(v) for v in b) + 1e-300:
         raise RuntimeError(f"simplex duality gap {p - d!r} exceeds {_GAP_CHECK} relative (scale {scale!r})")
 
 

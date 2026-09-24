@@ -275,6 +275,22 @@ class LimitResult:
 _SELF_CHECK = 1e-7
 
 
+_RESOLUTION = 1e10     # 荷载因子相对自然荷载尺度的可分辨上限（见 limit_load 的"可分辨性"注释）
+
+
+def _natural_load_factor(dead_c: list[float], live_c: list[float], C, dim: int, arm: float) -> float | None:
+    """自然荷载因子 α_nat = 抗力量级 / 活荷载量级（参考点已在接触形心，`arm` = 接触点到形心的最大距离）。
+
+    抗力量级 = |恒载力| + Σ c·A + |恒载力矩| / arm；活荷载量级 = |活载力| + |活载力矩| / arm（arm = 0 时略去力矩项）。
+    活荷载为零时返回 None（不做可分辨性检查）。对刚体运动不变、对单位与荷载的一致缩放按比例不变。"""
+    fd, fl = _norm(dead_c[:dim]), _norm(live_c[:dim])
+    md, ml = _norm(dead_c[dim:]), _norm(live_c[dim:])
+    num = fd + sum(C.cap) + (md / arm if arm > 0.0 else 0.0)
+    den = fl + (ml / arm if arm > 0.0 else 0.0)
+    if den == 0.0:
+        return None
+    return max(num, 1e-300) / den
+
 def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float], *,
                dim: int = 3, origin: Vec | None = None, k: int = 8,
                tol: float = 1e-9, lp_tol: float | None = None) -> LimitResult:
@@ -305,24 +321,50 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     dead_c = _shift_wrench(list(dead), dvec, dim)
     live_c = _shift_wrench(list(live), dvec, dim)
     C = _build_columns(contacts, oc, dim, k, unit_cohesion=True)
-    cols = C.cols + [live_c]                           # α 也是一个非负变量
-    ncol = len(cols) + C.n_rows                        # 末尾追加各黏聚行的松弛变量
-    A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
-    b = [-v for v in dead_c]
-    for r_i in range(C.n_rows):
-        row = [0.0] * ncol
-        for j, rj in enumerate(C.row_of):
-            if rj == r_i:
-                row[j] = 1.0
-        row[len(cols) + r_i] = 1.0                     # 松弛
-        A.append(row)
-        b.append(C.cap[r_i])                           # 力的单位：Σμ_coh + s = c·A
-    c = [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows
-    r = maximize(A, b, c) if lp_tol is None else maximize(A, b, c, tol=lp_tol)
+
+    def _solve(alpha_cap: float | None):
+        cols = C.cols + [live_c]                       # α 也是一个非负变量
+        extra = 1 if alpha_cap is not None else 0
+        ncol = len(cols) + C.n_rows + extra            # 末尾追加各黏聚行（及 α 上限行）的松弛变量
+        A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
+        b = [-v for v in dead_c]
+        for r_i in range(C.n_rows):
+            row = [0.0] * ncol
+            for j, rj in enumerate(C.row_of):
+                if rj == r_i:
+                    row[j] = 1.0
+            row[len(cols) + r_i] = 1.0                 # 松弛
+            A.append(row)
+            b.append(C.cap[r_i])                       # 力的单位：Σμ_coh + s = c·A
+        if alpha_cap is not None:
+            row = [0.0] * ncol
+            row[len(C.cols)] = 1.0
+            row[-1] = 1.0
+            A.append(row)
+            b.append(alpha_cap)
+        c = [0.0] * len(C.cols) + [1.0] + [0.0] * (C.n_rows + extra)
+        return maximize(A, b, c) if lp_tol is None else maximize(A, b, c, tol=lp_tol)
+
+    r = _solve(None)
     if r.status != OPTIMAL:
         return LimitResult(r.status, float("inf") if r.status == UNBOUNDED else float("nan"),
                            [], [], iterations=r.iterations)
     alpha = r.x[len(C.cols)]
+    # 可分辨性（2026-09-25，M0.2 返修时在验证者的模糊测试里发现）：荷载因子超过自然荷载尺度的 _RESOLUTION 倍，
+    # 说明答案用上了荷载里**舍入级别**的分量。实例：θ = π 的"水平"推力在浮点里带竖向分量 sin π = 1.22e-16，
+    # 单点接触撑不住偏心自重（物理上不可行），浮点 LP 却给出 α = 1/1.22e-16 = 8.17e15——恰好让 α·1.22e-16 = 1
+    # 托住单位自重。浮点意义上这是对的最优，物理上是荒谬的。处理：加一行 α ≤ _RESOLUTION·α_nat 重解——
+    # 不可行 ⇒ 分辨率内不可行，如实报 infeasible；可行（凸性 ⇒ α 恰顶到上限）⇒ 承载力超出分辨率，抛错不认证
+    # （真正的自锁在上面已由 LP 的核验射线报 unbounded，走不到这里）。门：tests/test_limit_fuzz.py。
+    arm = max((_norm(tuple(ct.point[i] - oc[i] for i in range(dim))) for ct in contacts), default=0.0)
+    alpha_nat = _natural_load_factor(dead_c, live_c, C, dim, arm)
+    if alpha_nat is not None and alpha > _RESOLUTION * alpha_nat:
+        rc = _solve(_RESOLUTION * alpha_nat)
+        if rc.status != OPTIMAL:
+            return LimitResult("infeasible", float("nan"), [], [], iterations=r.iterations + rc.iterations)
+        raise RuntimeError(f"limit_load: load factor {alpha:.3e} exceeds {_RESOLUTION:.0e} x the natural load scale "
+                           f"{alpha_nat:.3e}; the answer relies on rounding-level load components or near-self-locking "
+                           f"geometry and is not certified")
     raw = r.x[:len(C.cols)]
     lam = [v / C.cap[rj] if rj is not None else v for v, rj in zip(raw, C.row_of)]
     # 各列的力（力的单位）：摩擦列 λ·g，黏聚列 μ·d
@@ -368,6 +410,41 @@ def _powers(y: list[float], yr: list[float] | None, C: _Columns) -> tuple[list[f
     return p, s
 
 
+def _norm(v) -> float:
+    return sum(x * x for x in v) ** 0.5
+
+
+def _speed_scale(y: list[float], C: _Columns, s: list[float], dim: int, loads=()) -> float:
+    """机构的特征速度 V̂ = max(各列 Σ|y_i w_ij| / |f_j|，各荷载 Σ|y_i W_i| / |F_W|)。
+
+    功率 ÷ 力 = 速度：V̂ 是机构在接触点（及荷载作用处）的速度量级，对刚体运动不变、随单位按速度缩放，
+    与列的力量级（摩擦棱是单位向量、黏聚列是 c·A）无关。
+
+    为什么需要它（2026-09-25，G6 复核 G2/G3）：只用列自己的 Σ|y_i w_ij| 作尺度时，与机构正交的列
+    （倾覆时基面上的黏聚列：精确 p_j 与其尺度都恰为 0）尺度本身就是舍入噪声，p_j / 尺度 ≈ ±1，
+    正确的最优机构被判不容许、互补 0.77、limit_load 自校验抛错（物理模糊测试 10/2000，基线答案经独立证书核验为最优）。
+    于是每列的尺度取 Σ|y_i w_ij| + |f_j|·V̂：p_j ≥ −tol·尺度 说的是"该接触的贯入速度不超过机构速度量级的 tol 倍"。"""
+    V = 0.0
+    for w, sj in zip(C.cols, s):
+        f = _norm(w[:dim])
+        if f > 0.0:
+            V = max(V, sj / f)
+    for W in loads:
+        f = _norm(W[:dim])
+        if f > 0.0:
+            V = max(V, _adot(y, W) / f)
+    return V
+
+
+def _scales(y: list[float], yr: list[float] | None, C: _Columns, dim: int, loads=()):
+    """(p, 列尺度, 各黏聚行尺度 cap_r·V̂, V̂)：列尺度 = Σ|y_i w_ij| + |y_r| + |f_j|·V̂（见 `_speed_scale`）。"""
+    p, s = _powers(y, yr, C)
+    V = _speed_scale(y, C, s, dim, loads)
+    scale = [sj + _norm(w[:dim]) * V for w, sj in zip(C.cols, s)]
+    rscale = [cap * V for cap in C.cap]
+    return p, scale, rscale, V
+
+
 def mechanism_is_admissible(mech: list[float], contacts: list[LimitContact], *,
                             dim: int = 3, origin: Vec | None = None, k: int = 8,
                             tol: float = 1e-7, row_duals: list[float] | None = None) -> bool:
@@ -388,8 +465,10 @@ def mechanism_is_admissible(mech: list[float], contacts: list[LimitContact], *,
     逐列检查 yᵀw_coh + y_r ≥ 0 与 y_r ≥ 0。列由 `_build_columns` 给出（与 `limit_load` 共用）。
     `mech` 必须恰是旋量段（二维 3 维、三维 6 维）。
 
-    **判据是相对的**（2026-09-24，G6 minor 3）：p_j ≥ −tol·(Σ_i|y_i w_ij| + |y_r|)，y_r ≥ −tol·(机构功率量级)。
-    旧版用绝对 1e-7，SI 单位 + 工程坐标下（功率 ~ y_r·力臂 ~ 1e8）把正确的机构判成不容许。
+    **判据是相对的**（2026-09-24，G6 minor 3）：p_j ≥ −tol·(Σ_i|y_i w_ij| + |y_r| + |f_j|·V̂)，y_r ≥ −tol·c_rA_r·V̂，
+    V̂ 是机构的特征速度（`_speed_scale`）。旧版用绝对 1e-7，SI 单位 + 工程坐标下（功率 ~ y_r·力臂 ~ 1e8）
+    把正确的机构判成不容许；2026-09-24 版只用列自己的 Σ|y_i w_ij|，与机构正交的列尺度是舍入噪声，又把正确机构
+    判成不容许（2026-09-25 订正，门：tests/test_limit_scale.py::test_columns_orthogonal_to_the_mechanism_…）。
     """
     if origin is None:
         origin = (0.0,) * dim
@@ -399,9 +478,8 @@ def mechanism_is_admissible(mech: list[float], contacts: list[LimitContact], *,
     C = _build_columns(contacts, origin, dim, k)
     if row_duals is not None and len(row_duals) != C.n_rows:
         raise ValueError(f"row_duals has {len(row_duals)} entries, contacts give {C.n_rows} cohesion rows")
-    p, s = _powers(mech, row_duals, C)
-    scale = max(s, default=0.0)
-    if row_duals is not None and any(v < -tol * scale for v in row_duals):
+    p, s, rs, _ = _scales(mech, row_duals, C, dim)
+    if row_duals is not None and any(v < -tol * sr for v, sr in zip(row_duals, rs)):
         return False
     for pj, sj, rj in zip(p, s, C.row_of):
         if rj is not None and row_duals is None:
@@ -424,13 +502,16 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
     · 强对偶：  α = −yᵀW_dead + Σ y_r   ← 上限定理的功率平衡（Σ y_r 是黏聚耗散）
     · 互补：    λ_j > 0 ⟹ p_j = 0；松弛 s_r = 1 − Σ_{j∈r} λ_j > 0 ⟹ y_r = 0；α > 0 ⟹ yᵀW_live = 1
 
-    **全部判据是相对的**（2026-09-24，G6 minor 3 / critical 19）：
-      · `admissible`：p_j ≥ −tol·(Σ_i|y_i w_ij| + |y_r|)、y_r ≥ −tol·G、drive ≥ 1 − tol，
-        G = |α| + Σ_i|y_i W_dead,i| + Σ|y_r| 是上限各项的量级。旧版用绝对 1e-7 且只在 α > tol 时看驱动：
+    **全部判据是相对的**（2026-09-24，G6 minor 3 / critical 19；2026-09-25 加速度量级 V̂）：
+      · 尺度：列 j 为 Σ_i|y_i w_ij| + |y_r| + |f_j|·V̂，黏聚行 r 为 c_rA_r·V̂，V̂ 是机构的特征速度
+        （`_speed_scale`，含恒载与活荷载）。只用列自己的 Σ|y_i w_ij| 时，与机构正交的列（精确功率与尺度都为 0）
+        的比值是 噪声/噪声 ≈ ±1，正确的最优机构被判不容许（G6 复核 G3）；
+      · `admissible`：p_j ≥ −tol·尺度_j、y_r ≥ −tol·尺度_r、drive ≥ 1 − tol。旧版用绝对 1e-7 且只在 α > tol 时看驱动：
         α = 0、机构为零的错解被判"容许、间隙 0、互补 0"（G6 critical 19 的自校验盲区）——零机构驱动为 0，现在不容许；
-      · `duality_gap_rel` = |上限 − α| / G；
-      · `complementarity`（无量纲）：活动列（力 > tol·最大列力）上 |p_j| / (Σ|y_i w_ij| + |y_r|) 的最大值、
-        未用满的黏聚行上 |y_r| / G、α·驱动 > tol·G 时的 |驱动 − 1|；
+      · `duality_gap_rel` = |上限 − α| / G，G = |α| + Σ_i|y_i W_dead,i| + Σ|y_r| + |F_dead|·V̂
+        （末项是恒载功率的量级：α = 0 时前几项可以全是舍入，G6 复核 case 147 曾报 duality_gap_rel = 1.0）；
+      · `complementarity`（无量纲）：活动列（力 > tol·最大列力）上 |p_j| / 尺度_j 的最大值、
+        未用满的黏聚行上 |y_r| / 尺度_r、α·驱动 > tol·G 时的 |驱动 − 1|；
       · `ok` = admissible 且 duality_gap_rel ≤ tol 且 complementarity ≤ tol。
     `worst_power`、`duality_gap` 仍给出原始（有量纲）值，`worst_power_rel` 是 min_j p_j / 尺度_j。
 
@@ -450,18 +531,18 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
             f"result does not match these contacts/dim/k: {len(res.lambdas)} lambdas vs {len(C.cols)} columns, "
             f"{len(res.mechanism)} mechanism vs {nw}, {len(res.row_duals)} row duals vs {C.n_rows} rows")
     y, yr = res.mechanism, res.row_duals
-    power, pscale = _powers(y, yr, C)
+    power, pscale, rscale, V = _scales(y, yr, C, dim, loads=(dead, live))
     drive = _dot(y, live)
     upper = -_dot(y, dead) + sum(yr)
-    G = abs(res.alpha) + _adot(y, dead) + sum(abs(v) for v in yr)
+    G = abs(res.alpha) + _adot(y, dead) + sum(abs(v) for v in yr) + _norm(dead[:dim]) * V
     worst_raw = min(power + list(yr), default=0.0)
     worst_rel = 0.0
     for pj, sj in zip(power, pscale):
         if pj < 0.0:
             worst_rel = min(worst_rel, pj / sj if sj > 0.0 else -1.0)
-    for v in yr:
+    for v, sr in zip(yr, rscale):
         if v < 0.0:
-            worst_rel = min(worst_rel, v / G if G > 0.0 else -1.0)
+            worst_rel = min(worst_rel, v / sr if sr > 0.0 else -1.0)
     admissible = worst_rel >= -tol and drive >= 1.0 - tol
     # 互补（无量纲）
     fmag = [abs(lam) * sum(v * v for v in w[:dim]) ** 0.5 for lam, w in zip(res.lambdas, C.cols)]
@@ -472,8 +553,8 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
             comp = max(comp, abs(pj) / sj)
     for r_i in range(C.n_rows):
         slack = 1.0 - sum(lam_j for lam_j, rj in zip(res.lambdas, C.row_of) if rj == r_i)
-        if slack > tol and G > 0.0:
-            comp = max(comp, abs(yr[r_i]) / G)
+        if slack > tol and yr[r_i] != 0.0:
+            comp = max(comp, abs(yr[r_i]) / rscale[r_i] if rscale[r_i] > 0.0 else 1.0)
     if res.alpha * abs(drive) > tol * G:
         comp = max(comp, abs(drive - 1.0))
     gap = abs(upper - res.alpha)

@@ -166,7 +166,11 @@ def test_slack_and_drive_complementarity_are_checked():
     d = _assert_duality(r, cts, dead, live, 2)
     assert r.row_duals == pytest.approx([0.0, 0.0], abs=1e-12)         # 转动机构在基面上无切向滑移
     r.row_duals = [0.5, 0.5]
-    assert check_duality(r, cts, dead, live, dim=2, origin=o)["complementarity"] >= 0.5 - 1e-12
+    # 订正（2026-09-25）：原断言 complementarity ≥ 0.5 绑的是旧归一化（|y_r| / G）。互补违约现以该行自身的
+    # 耗散量级 c·A·V̂ 为尺度（V̂ 为机构特征速度，见 limit._speed_scale），注入的 y_r = 0.5 相对 c·A = 100 为
+    # 0.5 / (100·V̂) ≈ 5e-3——仍比 tol = 1e-7 大四个数量级以上。牙没变，刻度换了：断言"远超容差且 ok 为假"。
+    dbad = check_duality(r, cts, dead, live, dim=2, origin=o)
+    assert dbad["complementarity"] > 1e3 * 1e-7 and not dbad["ok"]
     r.row_duals = [0.0, 0.0]
     r.mechanism = [2.0 * v for v in r.mechanism]
     d2 = check_duality(r, cts, dead, live, dim=2, origin=o)
