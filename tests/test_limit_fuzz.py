@@ -83,7 +83,9 @@ def test_rounding_level_load_component_is_not_certified_as_capacity():
     """sin(π) = 1.22e-16：θ = π 的"水平"推力在浮点里带一个舍入级的竖向分量。单点接触撑不住偏心自重
     （物理上不可行），浮点 LP 却能用 α = 1/1.22e-16 = 8.17e15 让 α·1.22e-16 = 1 托住单位自重——
     浮点意义上的真最优，物理上的荒谬值（验证者模糊测试 limfuzz 种子 11 的 7 例，修复前基线答 infeasible，
-    M0.2 返修前曾静默返回 optimal α ≈ 8e15）。可分辨性判据必须把它判回 infeasible，而不是给一个天文数字。"""
+    M0.2 返修前曾静默返回 optimal α ≈ 8e15）。必须判回 infeasible，而不是给一个天文数字。
+    （2026-09-27 起由 `limit._clean` 负责：4u 量级以内的荷载分量与 0 不可区分，进 LP 之前置 0；
+    比舍入大、但仍撑不起答案的分量由不确定度 U 负责，见下一道门。）"""
     cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
     dead = wrench((0.0, -1.0), (0.0, 0.7), (0.0, 0.0), 2)
     live = wrench((cos(pi), sin(pi)), (0.0, 0.0), (0.0, 0.0), 2)
@@ -95,10 +97,38 @@ def test_rounding_level_load_component_is_not_certified_as_capacity():
     assert r0.status == "infeasible"
 
 
+@pytest.mark.parametrize("v,expect", [(1e-6, "optimal"), (1e-9, "optimal"), (1e-10, "raise"), (1e-11, "raise"),
+                                      (1e-13, "raise"), (1e-14, "infeasible"), (1e-15, "infeasible"),
+                                      (5e-16, "infeasible"), (2e-16, "infeasible")])
+def test_small_load_component_resolvability_has_three_regimes(v, expect):
+    """同一几何，活荷载写成 (−1, v)：v 是**本意**的竖向分量，力矩平衡给 α = 1/v（实数里精确）。
+    α 对活荷载输入舍入的相对不确定度 U ≈ 8.9e-16 / v（`limit._live_uncertainty`），于是三个区间：
+      · U ≤ 1e-6（v ≥ ~1e-9）：认证，α·v = 1 到 1e-12；
+      · 1e-6 < U 且推 16 倍舍入驱动仍不翻号：抛 RuntimeError（α 有意义但给不出 1e-6，不给假精度）；
+      · 推 16 倍舍入就翻号、且推后的问题带 Farkas 证书地不可行：infeasible（答案靠舍入级分量撑着）；
+        v ≤ 4u 的分量在进 LP 之前就被 `_clean` 置 0（2e-16 这一格），同样 infeasible。
+    牙：删掉 U 判据，1e-10…1e-13 会返回 optimal 1e10…1e13；删掉"推一下"，1e-14…5e-16 会抛错而不是 infeasible；
+    删掉清洗，2e-16 走 U 路径，结论不变——清洗的牙在上一道门（sin π，U 路径上它是 raise 还是 infeasible 取决于
+    力矩舍入，清洗使它与 v 无关地确定）。"""
+    cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
+    dead = wrench((0.0, -1.0), (0.0, 0.7), (0.0, 0.0), 2)
+    live = wrench((-1.0, v), (0.0, 0.0), (0.0, 0.0), 2)
+    if expect == "raise":
+        with pytest.raises(RuntimeError, match="uncertainty"):
+            limit_load(cts, dead, live, dim=2, k=8)
+        return
+    r = limit_load(cts, dead, live, dim=2, k=8)
+    assert r.status == expect, (v, r.status, r.alpha)
+    if expect == "optimal":
+        assert r.uncertainty <= 1e-6 and abs(r.alpha * v - 1.0) <= 1e-12, (r.alpha, r.uncertainty)
+
+
 @pytest.mark.parametrize("seed", [11])
 def test_broad_fuzz_has_no_astronomical_load_factors(seed):
     """验证者的宽模糊生成器（1–5 个任意朝向接触、带黏聚、W ∈ {1, 10}）：optimal 的荷载因子不许超过
-    自然尺度的 1e10 倍——那种数只可能来自舍入级的荷载分量。1000 例，零抛错。"""
+    自然尺度的 1e10 倍——那种数只可能来自舍入级的荷载分量。1000 例，零抛错。
+    （恒载 ≥ 1e6 时这个粗判据本身会漏：舍入驱动的 α = 5.4e15 < 1e10·W。那一类由
+    tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load 看护。）"""
     rng = random.Random(seed)
     raised, huge = [], []
     for t in range(1000):

@@ -306,7 +306,8 @@ def test_beale_cycling_example_reaches_the_optimum():
 
 
 def test_a_dropped_bounding_row_is_never_reported_as_unbounded(monkeypatch):
-    """契约：UNBOUNDED 只在射线经原始 A 核验后才报。牙：把比值检验的噪声线抬到 max|d|（**每一行**都被当成噪声——
+    """契约：UNBOUNDED 只在射线经原始 A 核验后才报。牙：把比值检验的两条噪声线都抬到顶（全局线 = max|d|、
+    逐分量线 = Σ|B⁻¹_ik||A_ke| ≥ |d_i|，**每一行**都被当成噪声——
     G6 critical 0 里黏聚上限行掉出比值检验的机制推到极端），有界问题仍须 OPTIMAL 且值对：射线核验不过，
     退回最大正元换基（间谍确认这条退路真的被走到）。"""
     import eab.lp as lp
@@ -319,11 +320,12 @@ def test_a_dropped_bounding_row_is_never_reported_as_unbounded(monkeypatch):
     calls = []
     real = lp._Revised.ratio
 
-    def spy(self, d, x, *, noise=None):
+    def spy(self, d, x, dn, *, noise=None):
         calls.append(noise)
-        return real(self, d, x, noise=noise)
+        return real(self, d, x, dn, noise=noise)
 
     monkeypatch.setattr(lp, "_PIV_NOISE", 1.0)
+    monkeypatch.setattr(lp, "_PIV_NOISE_GLOBAL", 1.0)
     monkeypatch.setattr(lp._Revised, "ratio", spy)
     r = maximize(A, b, c)
     assert r.status == OPTIMAL and r.obj == pytest.approx(12.0, abs=1e-9)
@@ -345,7 +347,7 @@ def test_anti_cycling_breaks_the_classic_beale_cycle(monkeypatch):
     b = [0.0, 0.0, 1.0]
     c = [-0.75, 150.0, -0.02, 6.0, 0.0, 0.0, 0.0]
 
-    def textbook_ratio(self, d, x, *, noise=None):
+    def textbook_ratio(self, d, x, dn, *, noise=None):
         best, p = None, -1
         for i, di in enumerate(d):
             if di > 1e-12:

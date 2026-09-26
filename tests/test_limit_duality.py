@@ -174,8 +174,37 @@ def test_slack_and_drive_complementarity_are_checked():
     r.row_duals = [0.0, 0.0]
     r.mechanism = [2.0 * v for v in r.mechanism]
     d2 = check_duality(r, cts, dead, live, dim=2, origin=o)
-    assert d2["drive"] == pytest.approx(2.0) and d2["complementarity"] >= 1.0 - 1e-12
+    # 订正（2026-09-27）：驱动违约现按驱动点积自身的舍入尺度 max(1, Σ|y_i W_i|) 相对化（远坐标下平动与转动大量
+    # 相消，旧的绝对 |驱动 − 1| 把 2⁻²³ 的舍入判成违约）。放大 2 倍时尺度为 2，读数 |2 − 1| / 2 = 0.5，仍是容差的 5e6 倍。
+    assert d2["drive"] == pytest.approx(2.0) and d2["complementarity"] >= 0.5 - 1e-12 and not d2["ok"]
     assert d["complementarity"] < 1e-9
+
+
+def test_unused_cohesion_row_complementarity_is_checked_on_the_slack_branch():
+    """未用满的黏聚行 ⟹ y_r = 0，这条互补必须由 check_duality 的**松弛分支**报出来（复核者 R5：上面那道门注入的
+    y_r 经由活动黏聚列的功率被看到，把松弛分支整个删掉它照样绿）。
+
+    构造：两个无摩擦黏聚接触上的方块，活荷载竖直向上、过形心——纯提离，α = W 时**全零接触力**恰好平衡。
+    LP 在这个退化最优点上可以合法地选一对互相抵消的黏聚剪力（实测 L 用 +cA、R 用 −cA，两行用满），
+    所以这里把原始解换成同样最优的全零解（先核验它 ok），两行松弛都是满的。注入的 y_r 于是只能从松弛分支读出：
+    活动列路径没有受力列可看，驱动不变。
+    牙：把松弛分支删掉（`if slack > tol and yr[r_i] != 0.0` 恒假），complementarity 读 0，本门红。"""
+    W = 10.0
+    o = (0.0, 0.0)
+    cts = [LimitContact((-1.0, 0.0), (0.0, 1.0), 0.0, cohesion=100.0, area=1.0, label=("L",)),
+           LimitContact((1.0, 0.0), (0.0, 1.0), 0.0, cohesion=100.0, area=1.0, label=("R",))]
+    dead = wrench((0.0, -W), (0.0, 1.5), o, 2)
+    live = wrench((0.0, 1.0), (0.0, 1.5), o, 2)
+    r = limit_load(cts, dead, live, dim=2, origin=o)
+    assert r.status == "optimal" and r.alpha == pytest.approx(W, rel=1e-12)
+    assert r.row_duals == pytest.approx([0.0, 0.0], abs=1e-12)
+    r.lambdas = [0.0] * len(r.lambdas)                                  # 同样最优的全零原始解
+    d = check_duality(r, cts, dead, live, dim=2, origin=o)
+    assert d["ok"] and d["complementarity"] < 1e-9, d
+    for row in range(2):
+        r.row_duals = [0.5 if i == row else 0.0 for i in range(2)]
+        dbad = check_duality(r, cts, dead, live, dim=2, origin=o)
+        assert dbad["complementarity"] > 1e3 * 1e-7 and not dbad["ok"], (row, dbad)
 
 
 def test_argument_shape_guards():

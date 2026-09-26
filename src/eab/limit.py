@@ -43,6 +43,15 @@ y_w 是动体的虚速度旋量（`LimitResult.mechanism`），y_r 是各黏聚�
     旧写法把 c·A 乘进列里，列均衡后上限行的系数 ~ 1/(c·A·力臂)，SI 单位下落到阈值以下。
 所有判据（活动接触、容许性、互补、间隙）都是**相对**的。门：tests/test_invariance_limit.py（纪律 F）。
 
+**可分辨性（2026-09-27）**：浮点 LP 的"最优"可能完全靠荷载里舍入级的分量撑着（θ = π 的推力带 sin π = 1.22e-16
+的竖向分量，α = 8.17e15）。两道关：
+  · 进 LP 之前，与 0 在输入精度内不可区分的荷载分量（≤ 4u 的量级，`_wrench_rounding` 不含坐标项）置 0（`_clean`）；
+  · 解出之后，算 α 对活荷载**输入舍入**的相对不确定度 U = Σ|y_i|·e_i / |yᵀW_live|（`_live_uncertainty`；
+    e_i 含调用方在工程坐标上算力矩带进的 u·|p|·|F|），报在 `LimitResult.uncertainty`。U > 1e-6 不认证：
+    把活荷载沿最削弱驱动的方向推 16 倍舍入就不可行（带 Farkas 证书）⇒ 报 infeasible，否则抛 RuntimeError。
+  近自锁的真实大荷载因子 U ≈ 4u/余量，离自锁 1e-9 以内都照常认证。
+  门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes、tests/test_lp_certificates.py。
+
 ## 诚实条款
 
 - **二维的摩擦锥线性化是精确的**（锥恰有两条极棱）；三维用 k 边内接棱锥，是**偏安全**的近似：
@@ -270,26 +279,73 @@ class LimitResult:
     active: list[tuple] = field(default_factory=list)   # 乘子非零的接触标签
     iterations: int = 0
     row_duals: list[float] = field(default_factory=list)  # 各黏聚行的对偶乘子（黏聚耗散），行序同 `_build_columns`
+    uncertainty: float = 0.0   # α 由活荷载输入舍入引起的相对不确定度 U（见 `_live_uncertainty`；认证要求 ≤ 1e-6）
 
 
 _SELF_CHECK = 1e-7
 
 
-_RESOLUTION = 1e10     # 荷载因子相对自然荷载尺度的可分辨上限（见 limit_load 的"可分辨性"注释）
+_UNCERTAIN = 1e-6      # α 的输入舍入不确定度上限（见 `_live_uncertainty`）；超过即不认证
+_FLIP = 16.0           # "分辨率内不可行"的扰动幅度：活荷载各分量舍入量级的 _FLIP 倍
+_U_IN = 4.0 * 2.0 ** -53   # 调用方构造荷载旋量（三角函数、叉积、平移）的相对舍入量级
 
 
-def _natural_load_factor(dead_c: list[float], live_c: list[float], C, dim: int, arm: float) -> float | None:
-    """自然荷载因子 α_nat = 抗力量级 / 活荷载量级（参考点已在接触形心，`arm` = 接触点到形心的最大距离）。
+def _load_length(dead_c: list[float], live_c: list[float], dim: int, arm: float) -> float:
+    """荷载的特征长度 L = max(arm, |M_dead|/|F_dead|, |M_live|/|F_live|)（内部参考点下）。
 
-    抗力量级 = |恒载力| + Σ c·A + |恒载力矩| / arm；活荷载量级 = |活载力| + |活载力矩| / arm（arm = 0 时略去力矩项）。
-    活荷载为零时返回 None（不做可分辨性检查）。对刚体运动不变、对单位与荷载的一致缩放按比例不变。"""
+    arm = 接触点到形心的最大距离；单接触时 arm = 0，用荷载自身的力臂顶上，否则力矩分量的舍入会被尺度 0 藏起来。"""
     fd, fl = _norm(dead_c[:dim]), _norm(live_c[:dim])
     md, ml = _norm(dead_c[dim:]), _norm(live_c[dim:])
-    num = fd + sum(C.cap) + (md / arm if arm > 0.0 else 0.0)
-    den = fl + (ml / arm if arm > 0.0 else 0.0)
-    if den == 0.0:
-        return None
-    return max(num, 1e-300) / den
+    L = arm
+    if fd > 0.0:
+        L = max(L, md / fd)
+    if fl > 0.0:
+        L = max(L, ml / fl)
+    return L
+
+
+def _wrench_rounding(w: list[float], dim: int, L: float, C: float) -> list[float]:
+    """旋量各分量的**输入舍入量级** e_i（内部参考点下）。
+
+    力分量 e_F = u·s_F；力矩分量 e_M = u·(ŝ_M + s_F·C)，u = _U_IN。其中 s_F = |F| + |M|/L，ŝ_M = s_F·L
+    （L = 0 时 s_F = |F|、ŝ_M = |M|），C = 接触点到调用方 origin 的最大距离——调用方关于 origin 算力矩 p × F 时
+    带进 u·|p|·|F| 的舍入，块体放在工程坐标上（C/L ~ 1e6）时这一项主导。对刚体运动与单位缩放按量纲协变。"""
+    fl, ml = _norm(w[:dim]), _norm(w[dim:])
+    if L > 0.0:
+        sF = fl + ml / L
+        sM = sF * L
+    else:
+        sF, sM = fl, ml
+    return [_U_IN * sF] * dim + [_U_IN * (sM + sF * C)] * (len(w) - dim)
+
+
+def _clean(w: list[float], e: list[float]) -> list[float]:
+    """|w_i| ≤ e_i 的分量置 0：它们与 0 在输入精度内不可区分（sin π = 1.22e-16 这种）。
+
+    清洗用的 e_i **不含**坐标项（C = 0，只清 4u 量级的纯舍入垃圾）：含坐标项时远坐标块体（C/L ~ 1e5）上
+    1e-10·F·L 量级的真实力矩分量也被清掉，α 偏离精确浮点最优 1.7e-7（09-27 精确有理数对照实测）。
+    坐标项只进不确定度 U（见 `_live_uncertainty`），不改输入。
+
+    2026-09-27：θ = π 的推力关于形心的力矩只剩 6.1e-17 这一个垃圾元时，LP 的行均衡把它放大成 O(1)、
+    把右端项的全局归一整体带偏，一阶段在舍入级的负值上"修复可行性"失败而抛错（宽模糊 2/1000）。"""
+    return [0.0 if abs(v) <= ei else v for v, ei in zip(w, e)]
+
+
+def _live_uncertainty(y: list[float], live_c: list[float], e: list[float]) -> float:
+    """U = Σ_i |y_i|·e_i / |yᵀW_live|：α 由活荷载输入舍入引起的相对不确定度（一阶）。
+
+    推导：机构 y 给出上限 α_y = R_y / (yᵀW_live)（R_y 是恒载与黏聚的功率，不含活荷载）。活荷载各分量
+    扰动 |δ_i| ≤ e_i 时驱动变为 yᵀW_live + yᵀδ，α 的相对变化 ≤ U。U ~ 1 说明答案**完全靠舍入分量撑着**：
+    θ = π 的水平推力带 sin π = 1.22e-16 的竖向分量、单点接触撑不住偏心自重时，浮点 LP 给 α = 8.17e15；
+    无摩擦地面 + 带水平分量的恒载、θ = 3π/2 的"竖直"推力给 α = 5.44e15（与恒载大小无关——旧判据"α 超过
+    自然荷载尺度 1e10 倍"在恒载 1e6 以上漏掉了它，复核者 res_probe 实测）。近自锁的真实答案 U ≈ u/余量，
+    离自锁 1e-8 时 U ~ 6e-8，照常认证。"""
+    drive = abs(sum(yi * li for yi, li in zip(y, live_c)))
+    num = sum(abs(yi) * ei for yi, ei in zip(y, e))
+    if drive == 0.0:
+        return float("inf") if num > 0.0 else 0.0
+    return num / drive
+
 
 def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float], *,
                dim: int = 3, origin: Vec | None = None, k: int = 8,
@@ -320,12 +376,18 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     dvec = tuple(oc[i] - origin[i] for i in range(dim))
     dead_c = _shift_wrench(list(dead), dvec, dim)
     live_c = _shift_wrench(list(live), dvec, dim)
+    # 输入舍入以内的荷载分量置 0（见 `_clean`），不确定度 U 用同一个舍入模型（见下面"可分辨性"）
+    arm = max((_norm(tuple(ct.point[i] - oc[i] for i in range(dim))) for ct in contacts), default=0.0)
+    Cmag = max((_norm(tuple(ct.point[i] - origin[i] for i in range(dim))) for ct in contacts), default=0.0)
+    Lc = _load_length(dead_c, live_c, dim, arm)
+    dead_c = _clean(dead_c, _wrench_rounding(dead_c, dim, Lc, 0.0))
+    live_c = _clean(live_c, _wrench_rounding(live_c, dim, Lc, 0.0))
+    e_in = _wrench_rounding(live_c, dim, Lc, Cmag)
     C = _build_columns(contacts, oc, dim, k, unit_cohesion=True)
 
-    def _solve(alpha_cap: float | None):
-        cols = C.cols + [live_c]                       # α 也是一个非负变量
-        extra = 1 if alpha_cap is not None else 0
-        ncol = len(cols) + C.n_rows + extra            # 末尾追加各黏聚行（及 α 上限行）的松弛变量
+    def _solve(live_v: list[float]):
+        cols = C.cols + [live_v]                       # α 也是一个非负变量
+        ncol = len(cols) + C.n_rows                    # 末尾追加各黏聚行的松弛变量
         A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
         b = [-v for v in dead_c]
         for r_i in range(C.n_rows):
@@ -336,40 +398,45 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
             row[len(cols) + r_i] = 1.0                 # 松弛
             A.append(row)
             b.append(C.cap[r_i])                       # 力的单位：Σμ_coh + s = c·A
-        if alpha_cap is not None:
-            row = [0.0] * ncol
-            row[len(C.cols)] = 1.0
-            row[-1] = 1.0
-            A.append(row)
-            b.append(alpha_cap)
-        c = [0.0] * len(C.cols) + [1.0] + [0.0] * (C.n_rows + extra)
+        c = [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows
         return maximize(A, b, c) if lp_tol is None else maximize(A, b, c, tol=lp_tol)
 
-    r = _solve(None)
+    r = _solve(live_c)
     if r.status != OPTIMAL:
         return LimitResult(r.status, float("inf") if r.status == UNBOUNDED else float("nan"),
                            [], [], iterations=r.iterations)
     alpha = r.x[len(C.cols)]
-    # 可分辨性（2026-09-25，M0.2 返修时在验证者的模糊测试里发现）：荷载因子超过自然荷载尺度的 _RESOLUTION 倍，
-    # 说明答案用上了荷载里**舍入级别**的分量。实例：θ = π 的"水平"推力在浮点里带竖向分量 sin π = 1.22e-16，
-    # 单点接触撑不住偏心自重（物理上不可行），浮点 LP 却给出 α = 1/1.22e-16 = 8.17e15——恰好让 α·1.22e-16 = 1
-    # 托住单位自重。浮点意义上这是对的最优，物理上是荒谬的。处理：加一行 α ≤ _RESOLUTION·α_nat 重解——
-    # 不可行 ⇒ 分辨率内不可行，如实报 infeasible；可行（凸性 ⇒ α 恰顶到上限）⇒ 承载力超出分辨率，抛错不认证
-    # （真正的自锁在上面已由 LP 的核验射线报 unbounded，走不到这里）。门：tests/test_limit_fuzz.py。
-    arm = max((_norm(tuple(ct.point[i] - oc[i] for i in range(dim))) for ct in contacts), default=0.0)
-    alpha_nat = _natural_load_factor(dead_c, live_c, C, dim, arm)
-    if alpha_nat is not None and alpha > _RESOLUTION * alpha_nat:
-        rc = _solve(_RESOLUTION * alpha_nat)
-        if rc.status != OPTIMAL:
-            return LimitResult("infeasible", float("nan"), [], [], iterations=r.iterations + rc.iterations)
-        raise RuntimeError(f"limit_load: load factor {alpha:.3e} exceeds {_RESOLUTION:.0e} x the natural load scale "
-                           f"{alpha_nat:.3e}; the answer relies on rounding-level load components or near-self-locking "
-                           f"geometry and is not certified")
+    # 可分辨性（2026-09-27 重写；原版 09-25 用"α 超过自然荷载尺度 1e10 倍"作上限，恒载大时漏）：
+    # α 的输入舍入不确定度 U（见 `_live_uncertainty`）超过 _UNCERTAIN 就不认证。再分两种：
+    # 沿"最削弱该机构驱动"的方向把活荷载各分量推 _FLIP 倍舍入量级（δ_i = −sign(y_i)·_FLIP·e_i，驱动一阶地
+    # 变为 1 − _FLIP·U）；若这一推就翻号（_FLIP·U > 1）且推后的问题带 Farkas 证书地不可行 ⇒ 如实报
+    # infeasible（"在 16 倍输入舍入之内不可行"，答案本来就靠舍入分量撑着）；否则抛错不认证
+    # （本意就很小的荷载分量、或离自锁 < ~1e-10 的几何：α 有意义但到不了 1e-6，不给假精度）。
+    # 门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes（三个区间）、
+    # tests/test_lp_certificates.py（任意恒载下的舍入驱动、近自锁在报告的 U 之内）。
+    y_mech = list(r.y[:nw])
+    U = _live_uncertainty(y_mech, live_c, e_in)
+    if U > _UNCERTAIN:
+        if _FLIP * U > 1.0:
+            drive = sum(yi * li for yi, li in zip(y_mech, live_c))
+            sgn = 1.0 if drive > 0.0 else -1.0
+            live_p = [li - sgn * (1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei
+                      for li, yi, ei in zip(live_c, y_mech, e_in)]
+            try:
+                rp = _solve(live_p)
+            except RuntimeError:
+                rp = None
+            if rp is not None and rp.status == "infeasible":
+                return LimitResult("infeasible", float("nan"), [], [], iterations=r.iterations + rp.iterations,
+                                   uncertainty=U)
+        raise RuntimeError(f"limit_load: load factor {alpha:.6e} has relative uncertainty {U:.1e} from input "
+                           f"rounding (> {_UNCERTAIN:.0e}); it depends on rounding-level load components or "
+                           f"near-self-locking geometry and is not certified")
     raw = r.x[:len(C.cols)]
     lam = [v / C.cap[rj] if rj is not None else v for v, rj in zip(raw, C.row_of)]
     # 各列的力（力的单位）：摩擦列 λ·g，黏聚列 μ·d
     fvec = [tuple(raw[j] * C.cols[j][i] for i in range(dim)) for j in range(len(C.cols))]
-    fmag = [sum(v * v for v in f) ** 0.5 for f in fvec]
+    fmag = [_norm(f) for f in fvec]
     fmax = max(fmag, default=0.0)
     on = [fm > tol * fmax for fm in fmag]
     forces: list[Vec] = [tuple(0.0 for _ in range(dim)) for _ in contacts]
@@ -380,7 +447,8 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
                      if on[j] and contacts[C.owner[j]].label is not None})
     mech = _twist_back(list(r.y[:nw]), dvec, dim)
     row_duals = [yv * cap for yv, cap in zip(r.y[nw:], C.cap)]
-    res = LimitResult(OPTIMAL, alpha, lam, mech, forces, active, r.iterations, row_duals=row_duals)
+    res = LimitResult(OPTIMAL, alpha, lam, mech, forces, active, r.iterations, row_duals=row_duals,
+                      uncertainty=U)
     d = check_duality(res, contacts, dead, live, dim=dim, origin=origin, k=k, tol=_SELF_CHECK)
     if not d["ok"]:
         raise RuntimeError(f"limit_load self-check failed in the caller's frame: "
@@ -411,7 +479,11 @@ def _powers(y: list[float], yr: list[float] | None, C: _Columns) -> tuple[list[f
 
 
 def _norm(v) -> float:
-    return sum(x * x for x in v) ** 0.5
+    """欧氏范数，先按最大分量归一（1e160 量级的力平方不溢出，1e-200 量级的不下溢成 0）。"""
+    m = max((abs(x) for x in v), default=0.0)
+    if m == 0.0 or m == float("inf") or m != m:
+        return m
+    return m * sum((x / m) ** 2 for x in v) ** 0.5
 
 
 def _speed_scale(y: list[float], C: _Columns, s: list[float], dim: int, loads=()) -> float:
@@ -506,12 +578,12 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
       · 尺度：列 j 为 Σ_i|y_i w_ij| + |y_r| + |f_j|·V̂，黏聚行 r 为 c_rA_r·V̂，V̂ 是机构的特征速度
         （`_speed_scale`，含恒载与活荷载）。只用列自己的 Σ|y_i w_ij| 时，与机构正交的列（精确功率与尺度都为 0）
         的比值是 噪声/噪声 ≈ ±1，正确的最优机构被判不容许（G6 复核 G3）；
-      · `admissible`：p_j ≥ −tol·尺度_j、y_r ≥ −tol·尺度_r、drive ≥ 1 − tol。旧版用绝对 1e-7 且只在 α > tol 时看驱动：
+      · `admissible`：p_j ≥ −tol·尺度_j、y_r ≥ −tol·尺度_r、drive ≥ 1 − tol·max(1, Σ|y_i W_live,i|)。旧版用绝对 1e-7 且只在 α > tol 时看驱动：
         α = 0、机构为零的错解被判"容许、间隙 0、互补 0"（G6 critical 19 的自校验盲区）——零机构驱动为 0，现在不容许；
       · `duality_gap_rel` = |上限 − α| / G，G = |α| + Σ_i|y_i W_dead,i| + Σ|y_r| + |F_dead|·V̂
         （末项是恒载功率的量级：α = 0 时前几项可以全是舍入，G6 复核 case 147 曾报 duality_gap_rel = 1.0）；
       · `complementarity`（无量纲）：活动列（力 > tol·最大列力）上 |p_j| / 尺度_j 的最大值、
-        未用满的黏聚行上 |y_r| / 尺度_r、α·驱动 > tol·G 时的 |驱动 − 1|；
+        未用满的黏聚行上 |y_r| / 尺度_r、α·驱动 > tol·G 时的 |驱动 − 1| / max(1, Σ|y_i W_live,i|)；
       · `ok` = admissible 且 duality_gap_rel ≤ tol 且 complementarity ≤ tol。
     `worst_power`、`duality_gap` 仍给出原始（有量纲）值，`worst_power_rel` 是 min_j p_j / 尺度_j。
 
@@ -533,6 +605,9 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
     y, yr = res.mechanism, res.row_duals
     power, pscale, rscale, V = _scales(y, yr, C, dim, loads=(dead, live))
     drive = _dot(y, live)
+    # 驱动的舍入尺度：远坐标下 yᵀW_live 是平动项与转动项的大量相消（块体 2 cm、离原点 4000 km 时 Σ|y_i W_i| ~ 1e2，
+    # 驱动读成 1 + 2⁻²³），判据按它相对化；无相消时 dscale ≈ 1，与旧判据相同（2026-09-27）
+    dscale = max(1.0, _adot(y, live))
     upper = -_dot(y, dead) + sum(yr)
     G = abs(res.alpha) + _adot(y, dead) + sum(abs(v) for v in yr) + _norm(dead[:dim]) * V
     worst_raw = min(power + list(yr), default=0.0)
@@ -543,7 +618,7 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
     for v, sr in zip(yr, rscale):
         if v < 0.0:
             worst_rel = min(worst_rel, v / sr if sr > 0.0 else -1.0)
-    admissible = worst_rel >= -tol and drive >= 1.0 - tol
+    admissible = worst_rel >= -tol and drive >= 1.0 - tol * dscale
     # 互补（无量纲）
     fmag = [abs(lam) * sum(v * v for v in w[:dim]) ** 0.5 for lam, w in zip(res.lambdas, C.cols)]
     fmax = max(fmag, default=0.0)
@@ -556,7 +631,7 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
         if slack > tol and yr[r_i] != 0.0:
             comp = max(comp, abs(yr[r_i]) / rscale[r_i] if rscale[r_i] > 0.0 else 1.0)
     if res.alpha * abs(drive) > tol * G:
-        comp = max(comp, abs(drive - 1.0))
+        comp = max(comp, abs(drive - 1.0) / dscale)
     gap = abs(upper - res.alpha)
     gap_rel = gap / G if G > 0.0 else gap
     return {"admissible": admissible, "worst_power": worst_raw, "worst_power_rel": worst_rel,
