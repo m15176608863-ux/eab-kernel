@@ -26,8 +26,8 @@ critical：两个重合接触上一对夹持力的力矩各列各自舍入，3e1
 在浮点里核不出 yᵀb > 0；它的精确性由这里保证，调用方不必也不能用浮点数重核。
 性能：每次求解都做 m × m 的有理数求逆，m 大时慢（稠密 101 × 300 约 95 s）；极限分析的 m ≲ 30，不在此列。
 有理数兜底用 Dantzig 定价、只在连续退化时改 Bland，最坏情况是指数级：浮点层失败（例如一个 max|A_j| ≲ 1e-298 而
-|c_j| ≳ 1e10 的列让 ldexp 溢出）又碰上 Klee–Minty 立方体，m = 20 就超过 300 s（reverify5）。正常路径下浮点层给出的
-候选只需几次精确换基。
+|c_j| ≳ 1e10 的列让 ldexp 溢出）又碰上 Klee–Minty 立方体，m = 20 要 2²⁰−1 次换基，452 s 后撞上换基上限 1e6、
+抛错（reverify5/6）。正常路径下浮点层给出的候选只需几次精确换基。
 
 为什么这样（09-21 → 09-27 三轮复核的教训）：浮点阈值兑现不了"绝不静默给错"。绝对阈值让右端项 1e-11 的行整行违反
 也被放行（G6）；噪声线 ∝ κ(B) 在病态但合理的基上静默早停（返修一，critical）；返修二把六类阈值都改成"相对量 +
@@ -488,7 +488,7 @@ def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
 
 _U = 2.0 ** -53
 _TINY = 2.0 ** -1074          # 最小的正次正规数：取整落进次正规区时的绝对误差上界
-_EXACT_PIVOT_CAP = 1_000_000  # 有理数单纯形的换基上限（只防实现缺陷；Bland 规则下精确算术必有限步终止）
+_EXACT_PIVOT_CAP = 1_000_000  # 有理数单纯形的换基上限：有限步终止但最坏是指数级（Klee–Minty m = 20 需 2²⁰−1 次），超过即抛错
 
 
 def _fl(v: Fraction) -> float:
@@ -657,8 +657,9 @@ def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], 
         nonlocal pivots
         degenerate, bland = 0, False
         while True:
-            if pivots > _EXACT_PIVOT_CAP:                   # Bland 在精确算术里保证有限步；到这里是实现缺陷
-                raise RuntimeError(f"internal error: exact simplex exceeded {_EXACT_PIVOT_CAP} pivots")
+            if pivots > _EXACT_PIVOT_CAP:                   # 精确算术里有限步终止，但最坏是指数级——这里如实报没算完
+                raise RuntimeError(f"exact simplex exceeded {_EXACT_PIVOT_CAP} pivots without finishing (the worst case "
+                                   f"of Dantzig/Bland pricing is exponential, e.g. a Klee-Minty cube); no answer is returned")
             cb = [cost[j] for j in basis]
             y = [sum((cb[i] * Binv[i][k] for i in range(m) if cb[i] != 0), zero) for k in range(m)]
             yf = [_fl(v) for v in y]

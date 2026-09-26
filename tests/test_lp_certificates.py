@@ -748,3 +748,52 @@ def test_cohesion_capacity_is_the_exact_product():
     cts = [LimitContact((0.0, 0.0), (0.0, 1.0), 0.0, cohesion=c, area=A)]
     r = limit_load(cts, [0.0, -10.0, -(c * A)], [1.0, 0.0, 1.0], dim=2, k=4)
     assert r.status == "infeasible", (r.status, r.alpha)
+
+
+# ---------------------------------------------------------------- reverify6（259741c 的聚焦复核）
+
+def test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certified():
+    """无界规则的"推后变有限值 ⇒ 不认证"分支（reverify6：可达、却没有门——改成"照样认证无界"或"报不可行"全套照绿）。
+    1 mm 的块体放在 UTM (−2.68e6, −1.17e6)，活荷载作用线过两个接触点：浮点数据的精确模型无界，最小可行荷载因子 2.40，
+    但活荷载在自己的 ±16 倍舍入盒内一动，精确 α 就变成有限值（复核者实测 6.9e4）。这里先用独立 oracle 在盒的 8 个角上
+    求精确解、确认确有有限值（舍入模型按文档独立写：力 4u|F|、力矩 4u(|M_c| + |F|·R)），再要求 limit_load 抛"不认证"。"""
+    import itertools
+    cts = [LimitContact((-2683300.084913029, -1166311.8482405145), (0.9854095035625761, 0.1702002064879991), 1.0),
+           LimitContact((-2683300.085281646, -1166311.8485783334), (0.9854095035625761, 0.1702002064879991), 0.2,
+                        cohesion=1000000.0, area=1e-06)]
+    dead = [-6.756375623672026, 7.372339413771618, -27662239.917033132]
+    live = [-0.7372339413771618, -0.6756375623672026, 953093.6477171098]
+    A, b, c = _exact_limit_lp(cts, dead, live, 2, 4)
+    assert _exact_max(A, b, c)[0] == "unbounded"
+    ia = [j for j, cj in enumerate(c) if cj == 1.0][0]
+    u = Fraction(4) * Fraction(2) ** -53
+    F = [A[i][ia] for i in range(2)]
+    Fn = Fraction(sqrt(float(F[0] ** 2 + F[1] ** 2)))
+    R = Fraction(max(sqrt(sum(v * v for v in ct.point)) for ct in cts))
+    e = [u * Fn, u * Fn, u * (abs(A[2][ia]) + Fn * R)]
+    finite = []
+    for sg in itertools.product((-1, 1), repeat=3):
+        A2 = [row[:] for row in A]
+        for i in range(3):
+            A2[i][ia] = A[i][ia] + sg[i] * 16 * e[i]
+        st, obj = _exact_max(A2, b, c)
+        if st == "optimal":
+            finite.append(float(obj))
+    assert finite, "the ±16e box should contain a finite capacity"
+    with pytest.raises(RuntimeError, match="unbounded capacity is not certified"):
+        limit_load(cts, dead, live, dim=2, k=4)
+
+
+def test_float_filter_never_decides_a_sign_from_an_overflowed_estimate():
+    """`_Exact.reduced_sign` 用浮点估值 s 与误差界 E 比较，只在 |s| **严格**超过 E 时定论。浮点求和溢出时 s = ±inf、
+    a = inf ⇒ E = inf，严格比较不成立，于是落到有理数（非有限值守卫因此是冗余的，reverify6 核实）；但把比较改成 ≥ 就会
+    拿溢出的估值定符号（复核者实测 2 万次里错 171 次）。这里构造两列：浮点里 s 分别溢出成 +inf / −inf，精确符号相反。"""
+    A = [[1.0], [1.0], [1.0]]
+    X = lp._Exact(A, [1.0, 1.0, 1.0], [1.7e308])
+    y = [Fraction(-1.7e308), Fraction(1.79e308), Fraction(1.79e308)]         # r = 1.7 + 1.7 − 1.79 − 1.79 (e308) < 0
+    sg, s = X.reduced_sign(X.c, X.cf, y, [float(v) for v in y], 0)
+    assert sg == -1, (sg, s)
+    X2 = lp._Exact(A, [1.0, 1.0, 1.0], [-1.7e308])
+    y2 = [Fraction(1.7e308), Fraction(-1.79e308), Fraction(-1.79e308)]      # r = −1.7 − 1.7 + 1.79 + 1.79 (e308) > 0
+    sg2, s2 = X2.reduced_sign(X2.c, X2.cf, y2, [float(v) for v in y2], 0)
+    assert sg2 == 1, (sg2, s2)
