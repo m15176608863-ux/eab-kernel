@@ -141,26 +141,10 @@ def test_a_large_first_order_uncertainty_alone_does_not_reject(monkeypatch):
 
 
 def _exact_status_alpha(cts, dead, live, dim, k):
-    """同一 LP（形心参考点、黏聚列取力的单位）的精确状态与最优值；oracle 只用 Fraction（test_lp_certificates._exact_max）。"""
-    from test_lp_certificates import _exact_max
-    from eab.limit import _build_columns, _shift_wrench
-    nw = 3 if dim == 2 else 6
-    oc = tuple(sum(ct.point[i] for ct in cts) / len(cts) for i in range(dim))
-    dc, lc = _shift_wrench(list(dead), oc, dim), _shift_wrench(list(live), oc, dim)
-    C = _build_columns(cts, oc, dim, k, unit_cohesion=True)
-    cols = C.cols + [lc]
-    ncol = len(cols) + C.n_rows
-    A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
-    b = [-v for v in dc]
-    for r_i in range(C.n_rows):
-        row = [0.0] * ncol
-        for j, rj in enumerate(C.row_of):
-            if rj == r_i:
-                row[j] = 1.0
-        row[len(cols) + r_i] = 1.0
-        A.append(row)
-        b.append(C.cap[r_i])
-    st, obj = _exact_max(A, b, [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows)
+    """同一 LP（形心参考点、黏聚列取力的单位、力矩精确）的精确状态与最优值；oracle 只用 Fraction
+    （test_lp_certificates._exact_limit_lp / _exact_max）。"""
+    from test_lp_certificates import _exact_limit_lp, _exact_max
+    st, obj = _exact_max(*_exact_limit_lp(cts, dead, live, dim, k))
     return st, (float(obj) if obj is not None else None)
 
 

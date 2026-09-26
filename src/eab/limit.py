@@ -43,18 +43,34 @@ y_w 是动体的虚速度旋量（`LimitResult.mechanism`），y_r 是各黏聚�
     旧写法把 c·A 乘进列里，列均衡后上限行的系数 ~ 1/(c·A·力臂)，SI 单位下落到阈值以下。
 所有判据（活动接触、容许性、互补、间隙）都是**相对**的。门：tests/test_invariance_limit.py（纪律 F）。
 
-**可分辨性（2026-09-27）**：LP 层对给定浮点数据**精确**（见 lp.py），但数据本身可能带着舍入级的分量——
-θ = π 的推力带 sin π = 1.22e-16 的竖向分量，浮点数据的精确最优是 α = 8.17e15，物理上是荒谬值。
-解出之后算 α 对活荷载**输入舍入**的相对不确定度 U = Σ|y_i|·e_i / |yᵀW_live|（`_live_uncertainty`；
-e_i 见 `_wrench_rounding`，含调用方在工程坐标上算力矩带进的 u·|p|·|F|），报在 `LimitResult.uncertainty`。
-U > 1e-6 不认证：把活荷载沿最削弱驱动的方向推 16 倍舍入就（带精确 Farkas 证书地）不可行 ⇒ 报 infeasible，
-否则抛 RuntimeError。近自锁的真实大荷载因子 U ≈ 4u/余量。荷载进 LP 之前**不做清洗**（09-27 一度把 4u 以内的
-分量置 0，清洗用的长度 |M|/|F| 在近纯力偶上被撑到 1e16，把真实力矩清掉、α 静默偏高 2–3.8 倍，已撤回）。
-诚实边界：U 只计活荷载的舍入；恒载与接触法向的舍入不计，所以 α → 0 的近极限平衡态上 α 的相对精度可能
-远差于 U（复核者实测 α ~ 1e-11 时 1e-5 量级），那里应看 α 的绝对量。可行性本身落在刀刃上时（浮点数据精确不可行、
-差 1e-12 又可行，或反过来推 16 倍舍入就不可行），状态按数据精确给出、报 infeasible——偏保守一侧（宽生成器 limfuzz
-每 3000 例约 5 例，09-27 逐例用独立有理数 oracle 核过）。
-  门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes、tests/test_lp_certificates.py。
+**精确模型（2026-09-27 返修四）**：LP 是调用方数据的**精确**模型——接触列的力矩 (p − o′) × g 与荷载向形心的平移
+都用有理数算（`_exact_wrench`、`_exact_shift`），浮点层只拿到它们的正确舍入，答案由 lp.py 对这个精确 LP 精确给出。
+唯一不精确的是模型定义本身：锥棱方向 g 取浮点（锥的 k 边形线性化）。返修三曾让 LP 对"浮点算出的派生数据"精确，
+复核者 reverify4 的 critical 就出在这里：V 槽夹住的顶点上两个重合接触有一对夹持力，实数里合力矩为 0，浮点里各列的
+r × g 各自舍入，3e16 的夹持力拼出舍入级的力矩，报"承载无限"（真值 0）。
+
+**可分辨性（筛查，不是保证）**：数据本身可能带着舍入级的分量——θ = π 的推力带 sin π = 1.22e-16 的竖向分量，
+数据的精确最优是 α = 8.17e15，物理上是荒谬值。解出之后沿**返回的那个机构**算 α 对活荷载输入舍入的一阶估计
+U = Σ|y_i|·e_i / |yᵀW_live|（`_live_uncertainty`；e_i 见 `_wrench_rounding`，含调用方在工程坐标上算力矩带进的
+u·|p|·|F|），报在 `LimitResult.uncertainty`。U > 1e-6 时把活荷载推 ±16 倍舍入、精确重解看实际变化：推后不可行
+⇒ 报 infeasible；实测变化仍超标 ⇒ 抛 RuntimeError；否则照常返回并报实测值。荷载进 LP 之前**不做清洗**
+（09-27 一度用 |M|/|F| 当长度清洗，近纯力偶上把真实力矩清掉、α 静默偏高 2–3.8 倍，已撤回）。
+**U 不是界。** 它只看一个机构、只看活荷载：
+  · 实数里的刀刃输入（荷载作用线恰过接触点、存在不做功也不耗散的自由机构）上，对偶最优面含零驱动方向，
+    返回的机构给出 U ~ 1e-15，而活荷载在 ±16 倍舍入盒内一动，α 就跳到 0 或翻倍；同一问题换刚体坐标系（数据的
+    舍入跟着变）答案也跟着变。复核者宽生成器（荷载常作用在接触点上）里约 3% 的 optimal 属此类（09-27 返修四
+    重测：1498 例里 42 例、1645 例里 44 例）。这类输入的答案对**给定数据**精确，但对理想化前的真实构形不稳，
+    任何有限精度的实现都做不到坐标系无关；
+  · 接触几何（位置、法向）与恒载的舍入不计：两个重合接触被扰开 1e-15 就出现真实的力臂与楔入，状态可以在
+    optimal 与 unbounded 之间翻（复核者 303#386）；α → 0 的近极限平衡态上 α 的相对精度可能远差于 U（实测 α ~ 1e-11
+    时 1e-5 量级），那里应看 α 的绝对量；
+  · UNBOUNDED 只在最小可行荷载因子 α_min > 0 时做同样的检查；α_min = 0（不靠活荷载就可行）时不查，活荷载恰落在
+    接触锥边界上的"刀刃自锁"不在检查范围内；
+  · 推 16 倍舍入就不可行时报 infeasible，偏保守一侧。复核者宽生成器（limfuzz，荷载常作用在接触点上、接触常重合）
+    返修四实测每 3000 例：推后不可行 0–7 例、抛错不认证 9–15 例（0.3–0.5%，全是数据精确最优 1e16–1e17 的舍入驱动值，
+    b6468f3 在这些例上报 unbounded）；其余状态与 b6468f3 逐例相同，只有 1 例不同且是基线错（α = −3.3e-15，精确不可行）。
+  门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes、
+  ::test_a_large_first_order_uncertainty_alone_does_not_reject；tests/test_lp_certificates.py。
 
 ## 诚实条款
 
@@ -81,9 +97,10 @@ U > 1e-6 不认证：把活荷载沿最削弱驱动的方向推 16 倍舍入就�
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from fractions import Fraction
 from math import cos, pi, sin
 
-from .lp import OPTIMAL, UNBOUNDED, maximize
+from .lp import OPTIMAL, UNBOUNDED, _fl, maximize
 
 Vec = tuple[float, ...]
 
@@ -110,6 +127,29 @@ def _shift_wrench(w: list[float], d: Vec, dim: int) -> list[float]:
             w[3] - (d[1] * f[2] - d[2] * f[1]),
             w[4] - (d[2] * f[0] - d[0] * f[2]),
             w[5] - (d[0] * f[1] - d[1] * f[0])]
+
+
+def _exact_wrench(force: Vec, point: Vec, origin: Vec, dim: int) -> list[Fraction]:
+    """`wrench` 的精确版：力取原浮点值，r = point − origin 与 r × force 用有理数精确算。
+
+    为什么要精确（2026-09-27，reverify4 的 critical）：同一点上两个接触（顶点夹在 V 槽两壁之间）有一对互相抵消的
+    夹持力，实数里它们的合力矩精确为 0；浮点里每列的 r × g 各自舍入，于是 3e16 的夹持力能拼出一个舍入级的力矩，
+    LP 对这组**派生**数据精确地无界，报"承载无限"。力矩列精确之后，零合力的组合合力矩也精确为零。"""
+    F = [Fraction(v) for v in force[:dim]]
+    r = [Fraction(point[i]) - Fraction(origin[i]) for i in range(dim)]
+    if dim == 2:
+        return F + [r[0] * F[1] - r[1] * F[0]]
+    return F + [r[1] * F[2] - r[2] * F[1], r[2] * F[0] - r[0] * F[2], r[0] * F[1] - r[1] * F[0]]
+
+
+def _exact_shift(w: list[float], origin: Vec, to: Vec, dim: int) -> list[Fraction]:
+    """关于 origin 的（浮点）旋量 → 关于 to 的精确旋量：m' = m − (to − origin) × f，全用有理数。"""
+    W = [Fraction(v) for v in w]
+    d = [Fraction(to[i]) - Fraction(origin[i]) for i in range(dim)]
+    f = W[:dim]
+    if dim == 2:
+        return f + [W[2] - (d[0] * f[1] - d[1] * f[0])]
+    return f + [W[3] - (d[1] * f[2] - d[2] * f[1]), W[4] - (d[2] * f[0] - d[0] * f[2]), W[5] - (d[0] * f[1] - d[1] * f[0])]
 
 
 def _twist_back(y: list[float], d: Vec, dim: int) -> list[float]:
@@ -283,7 +323,7 @@ class LimitResult:
     active: list[tuple] = field(default_factory=list)   # 乘子非零的接触标签
     iterations: int = 0
     row_duals: list[float] = field(default_factory=list)  # 各黏聚行的对偶乘子（黏聚耗散），行序同 `_build_columns`
-    uncertainty: float = 0.0   # α 由活荷载输入舍入引起的相对不确定度 U（见 `_live_uncertainty`；认证要求 ≤ 1e-6）
+    uncertainty: float = 0.0   # α 对活荷载输入舍入的一阶估计 U（沿返回的机构；**不是**界，见模块文档"可分辨性"）
 
 
 _SELF_CHECK = 1e-7
@@ -307,10 +347,11 @@ def _wrench_rounding(w: list[float], dim: int, R: float) -> list[float]:
 
 
 def _live_uncertainty(y: list[float], live_c: list[float], e: list[float]) -> float:
-    """U = Σ_i |y_i|·e_i / |yᵀW_live|：α 由活荷载输入舍入引起的相对不确定度（一阶）。
+    """U = Σ_i |y_i|·e_i / |yᵀW_live|：沿机构 y 看，α 对活荷载输入舍入的一阶相对敏感度（估计，**不是**界）。
 
     推导：机构 y 给出上限 α_y = R_y / (yᵀW_live)（R_y 是恒载与黏聚的功率，不含活荷载）。活荷载各分量
-    扰动 |δ_i| ≤ e_i 时驱动变为 yᵀW_live + yᵀδ，α 的相对变化 ≤ U。U ~ 1 说明答案**完全靠舍入分量撑着**：
+    扰动 |δ_i| ≤ e_i 时驱动变为 yᵀW_live + yᵀδ，于是**这个机构给出的上限** α_y 的相对变化 ≤ U。真正的 α 是所有机构上限
+    的最小值：对偶退化时别的最优机构可能对扰动敏感得多（刀刃输入），所以 U 只是估计。U ~ 1 说明答案**完全靠舍入分量撑着**：
     θ = π 的水平推力带 sin π = 1.22e-16 的竖向分量、单点接触撑不住偏心自重时，浮点 LP 给 α = 8.17e15；
     无摩擦地面 + 带水平分量的恒载、θ = 3π/2 的"竖直"推力给 α = 5.44e15（与恒载大小无关——旧判据"α 超过
     自然荷载尺度 1e10 倍"在恒载 1e6 以上漏掉了它，复核者 res_probe 实测）。近自锁的真实答案 U ≈ u/余量，
@@ -349,28 +390,39 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     else:
         oc = tuple(origin[:dim])
     dvec = tuple(oc[i] - origin[i] for i in range(dim))
-    dead_c = _shift_wrench(list(dead), dvec, dim)
-    live_c = _shift_wrench(list(live), dvec, dim)
+    # 荷载平移到形心、接触列的力矩：一律用有理数精确算（见 `_exact_wrench`），LP 由此是调用方数据的**精确**模型；
+    # 浮点层只拿到这些精确量的正确舍入。
+    dead_x = _exact_shift(list(dead), origin, oc, dim)
+    live_x = _exact_shift(list(live), origin, oc, dim)
+    dead_c = [_fl(v) for v in dead_x]
+    live_c = [_fl(v) for v in live_x]
     # 活荷载的输入舍入量级（不确定度 U 用，见下面"可分辨性"）。荷载本身**不做任何清洗**。
     Rmag = max((_norm(tuple(ct.point[i] - origin[i] for i in range(dim))) for ct in contacts), default=0.0)
     e_in = _wrench_rounding(live_c, dim, Rmag)
     C = _build_columns(contacts, oc, dim, k, unit_cohesion=True)
+    Cx = [_exact_wrench(col[:dim], contacts[C.owner[j]].point, oc, dim) for j, col in enumerate(C.cols)]
+    Cf = [[_fl(v) for v in col] for col in Cx]
 
-    def _solve(live_v: list[float], sense: float = 1.0):
-        cols = C.cols + [live_v]                       # α 也是一个非负变量
-        ncol = len(cols) + C.n_rows                    # 末尾追加各黏聚行的松弛变量
-        A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
-        b = [-v for v in dead_c]
+    def _solve(live_v: list[Fraction], sense: float = 1.0):
+        """活荷载列 live_v 给精确值（Fraction）。"""
+        colsx = Cx + [live_v]                          # α 也是一个非负变量
+        ncol = len(colsx) + C.n_rows                   # 末尾追加各黏聚行的松弛变量
+        zero = Fraction(0)
+        AX = [[colsx[j][i] if j < len(colsx) else zero for j in range(ncol)] for i in range(nw)]
+        bX = [-v for v in dead_x]
         for r_i in range(C.n_rows):
-            row = [0.0] * ncol
+            row = [zero] * ncol
             for j, rj in enumerate(C.row_of):
                 if rj == r_i:
-                    row[j] = 1.0
-            row[len(cols) + r_i] = 1.0                 # 松弛
-            A.append(row)
-            b.append(C.cap[r_i])                       # 力的单位：Σμ_coh + s = c·A
+                    row[j] = Fraction(1)
+            row[len(colsx) + r_i] = Fraction(1)        # 松弛
+            AX.append(row)
+            bX.append(Fraction(C.cap[r_i]))            # 力的单位：Σμ_coh + s = c·A
         c = [0.0] * len(C.cols) + [sense] + [0.0] * C.n_rows      # sense = −1：最小可行荷载因子
-        return maximize(A, b, c) if lp_tol is None else maximize(A, b, c, tol=lp_tol)
+        A = [[_fl(v) for v in row] for row in AX]
+        b = [_fl(v) for v in bX]
+        kw = {} if lp_tol is None else {"tol": lp_tol}
+        return maximize(A, b, c, exact=(AX, bX, c), **kw)
 
     ia = len(C.cols)
 
@@ -384,8 +436,8 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
         drive = sum(yi * li for yi, li in zip(y, live_c))
         sgn = 1.0 if drive > 0.0 else -1.0
         push = [sgn * (1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei for yi, ei in zip(y, e_in)]
-        rm = _solve([li - pi for li, pi in zip(live_c, push)], sense)
-        rp = _solve([li + pi for li, pi in zip(live_c, push)], sense)
+        rm = _solve([li - Fraction(pi) for li, pi in zip(live_x, push)], sense)
+        rp = _solve([li + Fraction(pi) for li, pi in zip(live_x, push)], sense)
         its = rm.iterations + rp.iterations
         if "infeasible" in (rm.status, rp.status):
             return U0, "infeasible", its
@@ -394,21 +446,22 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
             return U, ("ok" if U <= _UNCERTAIN else "unresolved"), its
         return U0, "unresolved", its
 
-    r = _solve(live_c)
-    # 可分辨性（2026-09-27）：LP 层对给定浮点数据精确，但数据可能带着舍入级的分量（θ = π 的推力带 sin π 的竖向分量，
-    # 浮点数据的精确最优是 α = 8.17e15）。一阶不确定度 U（见 `_live_uncertainty`）≤ _UNCERTAIN 即认证——任何一个
-    # 最优机构给出的一阶界都成立。U 超标时**不**凭这个机构下结论：对偶退化时最优机构不唯一，近奇异基上的机构分量
+    r = _solve(live_x)
+    # 可分辨性（筛查，不是保证；见模块文档"可分辨性"）：LP 对给定数据精确，但数据可能带着舍入级的分量（θ = π 的推力
+    # 带 sin π 的竖向分量，数据的精确最优是 α = 8.17e15）。一阶估计 U（见 `_live_uncertainty`）≤ _UNCERTAIN 时照常返回——
+    # 它**不是**界：只沿返回的这一个机构、只看活荷载，刀刃输入上可以严重低估（模块文档）。U 超标时**不**凭这个机构下结论：对偶退化时最优机构不唯一，近奇异基上的机构分量
     # 可达 ~1e16，一阶 U 会把普通推力判成"不可分辨"（09-27 实测宽模糊 2/1000）。改为把活荷载沿该机构最敏感的方向推
     # ±_FLIP 倍舍入量级（δ_i = ∓sign(y_i)·_FLIP·e_i），精确重解两次，看 α 的**实际**变化（`_resolvable`）：
     #   任一侧不可行（精确 Farkas）⇒ 报 infeasible（"在 16 倍输入舍入之内不可行"，答案靠舍入级分量撑着）；
     #   两侧都 optimal 且实测相对变化 / _FLIP ≤ _UNCERTAIN ⇒ 认证，uncertainty 报实测值；
     #   否则抛错不认证（本意就很小的荷载分量、离自锁 < ~1e-10 的几何：α 有意义但到不了 1e-6，不给假精度）。
     # UNBOUNDED 同样要查（复核者 reverify3：UTM 坐标下会倾覆的块体报"承载无限"，靠的是内部平移带进的舍入级力矩）：
-    # 无界的前提是可行，所以对最小可行荷载因子 α_min 做同一检查；α_min = 0（不靠活荷载就可行）时无需检查。
+    # 无界的前提是可行，所以对最小可行荷载因子 α_min 做同一检查；α_min = 0（不靠活荷载就可行）时不查——
+    # 活荷载恰落在接触锥边界上的"刀刃自锁"因此不在检查范围内（模块文档"可分辨性"）。
     # 门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes（三个区间）、
     # tests/test_lp_certificates.py（任意恒载下的舍入驱动、近自锁在报告的 U 之内、退化机构不误判、UTM 倾覆）。
     if r.status == UNBOUNDED:
-        rmin = _solve(live_c, -1.0)
+        rmin = _solve(live_x, -1.0)
         U, verdict, its = 0.0, "ok", 0
         if rmin.status == OPTIMAL and rmin.x[ia] > 0.0:
             U, verdict, its = _resolvable(rmin, -1.0)

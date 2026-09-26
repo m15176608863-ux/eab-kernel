@@ -9,15 +9,22 @@ L3 极限分析要解的是小规模线性规划（变量数 ~ 接触数 × 摩�
 
 ## 契约（返修三，2026-09-27）
 
-**答案对给定的浮点数据精确成立。** 浮点数是二进有理数，`Fraction(float)` 无损，所以"给定的 LP"本身可以精确处理。
+**答案对给定的数据精确成立。** 浮点数是二进有理数，`Fraction(float)` 无损，所以"给定的 LP"本身可以精确处理；
+调用方还可以直接给精确数据（`exact=`），浮点矩阵只当它的近似喂给浮点层——在浮点里算不精确的派生量（极限分析里
+每列的力矩 r × g、荷载向形心的平移）应当精确地给，否则"精确"只是对一个已经带了舍入的派生问题精确（reverify4 的
+critical：两个重合接触上一对夹持力的力矩各列各自舍入，3e16 的夹持力拼出一个舍入级的力矩，报"承载无限"）。
 两层（`solve`）：
   · 浮点修正单纯形（`_float_solve`）只给**候选**：状态 + 基（+ 无界时的入基列）；
   · 有理数层（`_Exact.certify`）在原始数据上精确核验候选：OPTIMAL 核 x_B = B⁻¹b ≥ 0（人工变量为 0）与每列约化成本
     ≥ 0（弱对偶即最优）；UNBOUNDED 核可行 + d = B⁻¹A_e ≤ 0 + c_e − c_Bᵀd < 0；INFEASIBLE 核一阶段对偶的 Farkas 条件
     yᵀA ≤ 0、yᵀb > 0。核验不过（或浮点层抛错）就用有理数修正单纯形（`_exact_simplex`，Dantzig 定价、退化过多改
     Bland，精确算术里有限步终止）从候选基热启动或从人工基冷启动走完，再核一次。
-返回的 x、y、obj、ray 是精确解各舍入一次的浮点数；不再为数值原因抛错。
-逐列的符号判定先用浮点带严格误差界过滤，误差界之内的列才用有理数重算——结论与全用有理数相同，只是快。
+返回的 x、y、obj、ray 是精确解各舍入一次的浮点数（超出浮点范围给 ±inf）；浮点层的任何数值失败（奇异、超限、循环、
+溢出）都只是"没有候选"，不抛给调用方。逐列的符号判定先用浮点带严格误差界过滤（相对部分 + 次正规/下溢的绝对部分，
+见 `_Exact.reduced_sign`），误差界之内的列才用有理数重算——结论与全用有理数相同，只是快。
+注意 INFEASIBLE 的 y 是精确 Farkas 证书各分量舍入一次的结果：极少数情形（reverify4：789/56400）舍入后的浮点 y
+在浮点里核不出 yᵀb > 0；它的精确性由这里保证，调用方不必也不能用浮点数重核。
+性能：每次求解都做 m × m 的有理数求逆，m 大时慢（稠密 101 × 300 约 95 s）；极限分析的 m ≲ 30，不在此列。
 
 为什么这样（09-21 → 09-27 三轮复核的教训）：浮点阈值兑现不了"绝不静默给错"。绝对阈值让右端项 1e-11 的行整行违反
 也被放行（G6）；噪声线 ∝ κ(B) 在病态但合理的基上静默早停（返修一，critical）；返修二把六类阈值都改成"相对量 +
@@ -376,8 +383,11 @@ class _Revised:
         return worst
 
 def solve(A: list[list[float]], b: list[float], c: list[float], *,
-          tol: float = 1e-10, max_iter: int = 20000) -> LPResult:
-    """min cᵀx s.t. Ax = b, x ≥ 0。**答案对给定的浮点数据精确成立**（见模块文档"契约"）。
+          tol: float = 1e-10, max_iter: int = 20000, exact=None) -> LPResult:
+    """min cᵀx s.t. Ax = b, x ≥ 0。**答案对给定的数据精确成立**（见模块文档"契约"）。
+
+    `exact`：可选的精确数据 (A, b, c)（Fraction 或 int），给了就以它为准，A/b/c 只当它的浮点近似喂给浮点层
+    （调用方在浮点里算不精确的派生量——例如力矩 r × g——应当精确地给，见 limit.py）。不给时精确数据就是 A/b/c 本身。
 
     两层：浮点修正单纯形（`_float_solve`）只负责给出**候选**（状态 + 基 + 入基列）；有理数层在原始数据上
     精确核验这个候选（`_Exact.certify`），核验不过就从候选基（能热启动时）或从头用有理数 Bland 单纯形走完
@@ -391,10 +401,10 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
             ray = [1.0 if j == neg[0] else 0.0 for j in range(n)]
             return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [], 0, [], ray)
         return LPResult(OPTIMAL, [0.0] * n, 0.0, [], 0, [])
-    X = _Exact(A, b, c)
+    X = _Exact(A, b, c, exact)
     try:
         cand = _float_solve(A, b, c, tol=tol, max_iter=max_iter)
-    except RuntimeError:
+    except (RuntimeError, ArithmeticError, ValueError):   # 奇异、超限、循环、ldexp 溢出……都只是候选没了
         cand = None
     if cand is not None:
         res = X.certify(*cand)
@@ -473,6 +483,8 @@ def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
 
 
 _U = 2.0 ** -53
+_TINY = 2.0 ** -1074          # 最小的正次正规数：取整落进次正规区时的绝对误差上界
+_EXACT_PIVOT_CAP = 1_000_000  # 有理数单纯形的换基上限（只防实现缺陷；Bland 规则下精确算术必有限步终止）
 
 
 def _fl(v: Fraction) -> float:
@@ -490,15 +502,22 @@ class _Exact:
     逐列的符号判定（约化成本 ≥ 0、Farkas 的 yᵀA_j ≤ 0）先用浮点算、带严格的舍入误差界过滤：误差界之外的符号
     直接定论，误差界之内的那一列才用有理数重算——结论与全用有理数逐位相同，只是快。"""
 
-    def __init__(self, A: list[list[float]], b: list[float], c: list[float]):
+    def __init__(self, A: list[list[float]], b: list[float], c: list[float], exact=None):
         m, n = len(A), len(c)
         self.m, self.n = m, n
+        if exact is None:
+            AE, bE, cE = ([[Fraction(v) for v in row] for row in A], [Fraction(v) for v in b], [Fraction(v) for v in c])
+        else:
+            AE, bE, cE = ([[Fraction(v) for v in row] for row in exact[0]], [Fraction(v) for v in exact[1]],
+                          [Fraction(v) for v in exact[2]])
+        # b 取负的规则与 `_float_solve` 相同（按浮点 b 的符号），基的编号两层通用；浮点 b 为 ±0 而精确 b ≠ 0 的行
+        # 取负可能不一致——只影响热启动，证书在精确数据上判，不影响答案。
         self.flip = [b[i] < 0.0 for i in range(m)]
-        self.Af = [[-v if self.flip[i] else v for v in A[i]] for i in range(m)]     # 取负在浮点里精确
-        self.A = [[Fraction(v) for v in row] for row in self.Af]
-        self.b = [abs(Fraction(v)) for v in b]
-        self.c = [Fraction(v) for v in c]
-        self.cf = [float(v) for v in c]
+        self.A = [[-v for v in AE[i]] if self.flip[i] else AE[i] for i in range(m)]
+        self.b = [-v if self.flip[i] else v for i, v in enumerate(bE)]
+        self.c = cE
+        self.cf = [_fl(v) for v in cE]
+        self.Af = [[_fl(v) for v in row] for row in self.A]
         self.colf = [[self.Af[i][j] for i in range(m)] for j in range(n)]
 
     def col(self, j: int) -> list[Fraction]:
@@ -529,18 +548,25 @@ class _Exact:
                      j: int) -> tuple[int, float]:
         """原变量列 j 的约化成本 r_j = cost_j − yᵀA_j 的**精确**符号（−1/0/+1）与一个浮点估值。
 
-        浮点估值 s 的误差界：y 取整误差 ≤ u|y|，点积舍入 ≤ γ_{m+1}·(|cost_j| + Σ|y_i A_ij|)；取 E = (m+4)·u·(…)·1.0625。
-        |s| > E 时符号即定论，否则用有理数重算。"""
+        浮点估值 s 的误差界（相对部分 + 绝对部分）：
+          相对：y、A、cost 各自取整 ≤ u·|·|，乘积与 m 项求和的舍入 ≤ γ_{m+1}·(|cost_j| + Σ|y_i A_ij|)，
+                合计取 (m+6)·u·a·1.0625，a = |cost_j| + Σ|y_i A_ij|（浮点算）；
+          绝对：取整落进次正规数或下溢成 0 时相对界不成立，每个量的绝对误差 ≤ 2⁻¹⁰⁷⁴——y_i 下溢时误差是
+                2⁻¹⁰⁷⁴·|A_ij|（A = 1e300 时就是 5e-24！复核者 reverify4 实测过静默错 2 倍与死循环），A_ij 下溢时是
+                |y_i|·2⁻¹⁰⁷⁴，乘积下溢每项 2⁻¹⁰⁷⁴；合计 2·2⁻¹⁰⁷⁴·(Σ|A_ij| + Σ|y_i| + m + 2)。
+        |s| > E 时符号即定论，否则用有理数重算；出现 inf/nan（溢出）时一律用有理数。"""
         col = self.colf[j]
         s = costf[j]
         a = abs(s)
+        sa = 0.0
         for yi, v in zip(yf, col):
+            sa += abs(v) + abs(yi)
             if v != 0.0:
                 t = yi * v
                 s -= t
                 a += abs(t)
-        E = (self.m + 4) * _U * a * 1.0625 + 1e-300
-        if s == s and a < float("inf"):                    # 有非有限值（溢出）时误差界失效，一律交有理数
+        E = (self.m + 6) * _U * a * 1.0625 + 2.0 * _TINY * (sa + self.m + 2)
+        if s == s and a < float("inf") and sa < float("inf"):   # 非有限值（溢出）时误差界失效，一律交有理数
             if s > E:
                 return 1, s
             if s < -E:
@@ -628,6 +654,8 @@ def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], 
         nonlocal pivots
         degenerate, bland = 0, False
         while True:
+            if pivots > _EXACT_PIVOT_CAP:                   # Bland 在精确算术里保证有限步；到这里是实现缺陷
+                raise RuntimeError(f"internal error: exact simplex exceeded {_EXACT_PIVOT_CAP} pivots")
             cb = [cost[j] for j in basis]
             y = [sum((cb[i] * Binv[i][k] for i in range(m) if cb[i] != 0), zero) for k in range(m)]
             yf = [_fl(v) for v in y]
@@ -808,8 +836,11 @@ def _natural_scales(A: list[list[float]], b: list[float]) -> list[float]:
 
 
 def maximize(A: list[list[float]], b: list[float], c: list[float], **kw) -> LPResult:
-    """max cᵀx s.t. Ax = b, x ≥ 0。"""
-    res = solve(A, b, [-v for v in c], **kw)
+    """max cᵀx s.t. Ax = b, x ≥ 0。`exact=(A, b, c)` 同 `solve`（c 是 max 的目标）。"""
+    ex = kw.pop("exact", None)
+    if ex is not None:
+        ex = (ex[0], ex[1], [-v for v in ex[2]])
+    res = solve(A, b, [-v for v in c], exact=ex, **kw)
     if res.status == OPTIMAL:
         return LPResult(res.status, res.x, -res.obj, [-v for v in res.y],
                         res.iterations, res.basis)

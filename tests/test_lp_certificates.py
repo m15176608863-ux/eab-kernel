@@ -387,26 +387,49 @@ def _si_case(seed, index):
     return cts, dead, live, dim, k
 
 
-def _exact_alpha(cts, dead, live, dim, k):
-    """同一个 LP（形心参考点、黏聚列取力的单位——即 limit_load 内部的写法）的精确最优值。"""
+def _exact_limit_lp(cts, dead, live, dim, k):
+    """limit_load 内部那个 LP 的**精确**版（形心参考点、黏聚列取力的单位、力矩与荷载平移精确）：
+    锥棱方向取自 `_build_columns`（它就是模型定义：锥的 k 边形线性化），其余全在这里用 Fraction 独立算——
+    力矩 (p − oc) × g、荷载 m − (oc − 0) × f 都不经被测代码的 `_exact_wrench` / `_exact_shift`。"""
     nw = 3 if dim == 2 else 6
     oc = tuple(sum(ct.point[i] for ct in cts) / len(cts) for i in range(dim))
-    dead_c = _shift_wrench(list(dead), oc, dim)
-    live_c = _shift_wrench(list(live), oc, dim)
+    X = lambda v: Fraction(v)
+
+    def cross(r, g):
+        if dim == 2:
+            return [r[0] * g[1] - r[1] * g[0]]
+        return [r[1] * g[2] - r[2] * g[1], r[2] * g[0] - r[0] * g[2], r[0] * g[1] - r[1] * g[0]]
+
+    def shift(w):
+        W = [X(v) for v in w]
+        f = W[:dim]
+        mo = cross([X(oc[i]) for i in range(dim)], f)
+        return f + [W[dim + i] - mo[i] for i in range(nw - dim)]
+
     C = _build_columns(cts, oc, dim, k, unit_cohesion=True)
-    cols = C.cols + [live_c]
+    cols = []
+    for j, col in enumerate(C.cols):
+        g = [X(v) for v in col[:dim]]
+        r = [X(cts[C.owner[j]].point[i]) - X(oc[i]) for i in range(dim)]
+        cols.append(g + cross(r, g))
+    cols.append(shift(live))
     ncol = len(cols) + C.n_rows
-    A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
-    b = [-v for v in dead_c]
+    A = [[cols[j][i] if j < len(cols) else Fraction(0) for j in range(ncol)] for i in range(nw)]
+    b = [-v for v in shift(dead)]
     for r_i in range(C.n_rows):
-        row = [0.0] * ncol
+        row = [Fraction(0)] * ncol
         for j, rj in enumerate(C.row_of):
             if rj == r_i:
-                row[j] = 1.0
-        row[len(cols) + r_i] = 1.0
+                row[j] = Fraction(1)
+        row[len(cols) + r_i] = Fraction(1)
         A.append(row)
-        b.append(C.cap[r_i])
-    st, obj = _exact_max(A, b, [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows)
+        b.append(X(C.cap[r_i]))
+    return A, b, [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows
+
+
+def _exact_alpha(cts, dead, live, dim, k):
+    """同一个 LP 的精确最优值（见 `_exact_limit_lp`）。"""
+    st, obj = _exact_max(*_exact_limit_lp(cts, dead, live, dim, k))
     assert st == "optimal"
     return float(obj)
 
@@ -592,3 +615,89 @@ def test_far_site_ordinary_problems_do_not_raise():
     exact = 0.5 * 10 / (cos(bb) - 0.5 * sin(bb))
     r = limit_load(cts, c446["dead"], c446["live"], dim=3, k=8)
     assert r.status == "optimal" and abs(r.alpha - exact) <= (r.uncertainty + 1e-9) * exact, (r.alpha, exact, r.uncertainty)
+
+
+# ---------------------------------------------------------------- reverify4（26c2259 的复核）
+
+@pytest.mark.parametrize("name", ["beale", "kuhn", "chvatal"])
+def test_exact_simplex_terminates_on_classic_cycling_examples(monkeypatch, name):
+    """有理数单纯形用 Dantzig 定价，连续 2m + 10 次退化换基后改 Bland——Dantzig 在精确算术里会真的循环。
+    复核者 reverify4：删掉这个切换，全套照绿，而 Beale、Chvátal 例从松弛基热启动永不终止。这里从松弛基热启动，
+    换基上限压到 1000（变异下会抛"exceeded"而不是挂死），答案须等于独立精确 LP 的最优值。"""
+    monkeypatch.setattr(lp, "_EXACT_PIVOT_CAP", 1000)
+    LPS = {"beale": ([[1, 0, 0, 0.25, -8, -1, 9], [0, 1, 0, 0.5, -12, -0.5, 3], [0, 0, 1, 0, 0, 1, 0]],
+                     [0, 0, 1], [0, 0, 0, -0.75, 20, -0.5, 6], [0, 1, 2]),
+           "kuhn": ([[-2, -9, 1, 9, 1, 0, 0], [Fraction(1, 3), 1, Fraction(-1, 3), -2, 0, 1, 0], [2, 3, -1, -12, 0, 0, 1]],
+                    [0, 0, 2], [-2, -3, 1, 12, 0, 0, 0], [4, 5, 6]),
+           "chvatal": ([[0.5, -5.5, -2.5, 9, 1, 0, 0], [0.5, -1.5, -0.5, 1, 0, 1, 0], [1, 0, 0, 0, 0, 0, 1]],
+                       [0, 0, 1], [-10, 57, 9, 24, 0, 0, 0], [4, 5, 6])}
+    A, b, c, start = LPS[name]
+    Af = [[float(v) for v in row] for row in A]
+    X = lp._Exact(Af, [float(v) for v in b], [float(v) for v in c], (A, b, c))
+    st, basis, e, piv = lp._exact_simplex(X, start)
+    res = X.certify(st, basis, e, piv)
+    ex_st, ex_obj = _exact_max(A, b, [-Fraction(v) for v in c])
+    assert res is not None and st == ex_st == "optimal" and res.obj == float(-ex_obj), (name, st, piv)
+
+
+def test_unbounded_certificate_requires_a_descent_direction(monkeypatch):
+    """UNBOUNDED 证书除了"射线可行"还要"目标沿射线下降"（c_e − c_Bᵀd < 0）。复核者：删掉下降条件全套照绿，
+    此时说谎的候选能让有界 LP 报 unbounded。min x2，x1 − x2 = 1：最优 0；基 {x1}、入基 x2 时 d = −1 ≤ 0 是一条可行射线，
+    但约化成本 +1，不是下降方向。"""
+    A, b, c = [[1.0, -1.0]], [1.0], [0.0, 1.0]
+    assert solve(A, b, c).status == OPTIMAL
+    assert lp._Exact(A, b, c).certify(UNBOUNDED, [0], 1, 0) is None
+    monkeypatch.setattr(lp, "_float_solve", lambda *a, **k: (UNBOUNDED, [0], 1, 0))
+    r = solve(A, b, c)
+    assert r.status == OPTIMAL and r.obj == 0.0 and r.x == [1.0, 0.0]
+
+
+def test_values_beyond_the_float_range_and_float_layer_overflow_do_not_raise():
+    """(1) 精确解超出浮点范围（x·1e-300 = 1e10 ⇒ x = 1e310）：状态照报、值给 inf，不抛 OverflowError（26c2259 的 `_fl`，
+    复核者：删掉它全套照绿）；(2) 浮点层自己的 ldexp 溢出（OverflowError，复核者 32000 例里 427 例）只算"没有候选"，
+    由有理数层答出 x = 1、目标 1e10；(3) 次正规/下溢的对偶：A = 1e300、c = (1e-25, 5e-26) 时 y ~ 1e-325 下溢成 0，
+    浮点过滤若不计绝对误差会静默错 2 倍、反号时死循环（复核者 reverify4）。"""
+    r = solve([[1e-300, 1.0, -1.0]], [1e10], [0.0, 1.0, 1.0])
+    assert r.status == OPTIMAL and r.x[0] == float("inf") and r.obj == 0.0
+    r = solve([[1e-300]], [1e-300], [1e10])
+    assert r.status == OPTIMAL and r.x == [1.0] and r.obj == 1e10
+    r = solve([[1e300, 1e300]], [1e300], [1e-25, 5e-26])
+    assert r.status == OPTIMAL and r.obj == 5e-26 and r.x == [0.0, 1.0]
+    r = solve([[1e300, 1e300]], [1e300], [-1e-25, -5e-26])
+    assert r.status == OPTIMAL and r.obj == -1e-25 and r.x == [1.0, 0.0]
+
+
+def test_redundant_and_degenerate_rows_through_the_exact_path(monkeypatch):
+    """有理数单纯形里冗余行的人工变量：一阶段后值为 0 的人工变量要换出基（drive-out），换不出的（行冗余）在二阶段必须
+    留在 0（比值检验把它的任何非零分量当 0 步长挡住）。复核者：两处一起删全套照绿，而 366/3000 个退化 LP 的输出过不了
+    自身证书。这里强制走有理数路径（浮点层抛错），200 个带重复行/零右端项的随机 LP，状态与目标须等于独立精确 LP。"""
+    monkeypatch.setattr(lp, "_float_solve", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("forced")))
+    rng = random.Random(4)
+    for t in range(200):
+        m, n = rng.randint(2, 4), rng.randint(2, 6)
+        base = [[float(rng.randint(-2, 2)) for _ in range(n)] for _ in range(m)]
+        rows = base + [[2.0 * v for v in base[rng.randrange(m)]]]          # 一行冗余（另一行的 2 倍）
+        x0 = [float(rng.randint(0, 1)) for _ in range(n)]                  # 右端项取一个 0/1 解，大量退化
+        b = [sum(a * x for a, x in zip(row, x0)) for row in rows]
+        c = [float(rng.randint(-3, 3)) for _ in range(n)]
+        st, obj = _exact_max(rows, b, [-v for v in c])
+        r = solve(rows, b, c)
+        assert r.status == st, (t, r.status, st)
+        if st == "optimal":
+            assert r.obj == float(-obj), (t, r.obj, float(-obj))
+
+
+@pytest.mark.parametrize("th,mu", [(0.1, 0.4), (0.2, 0.4), (0.3, 0.6), (0.1, 0.6), (0.25, 0.5)])
+def test_a_pinched_vertex_has_no_rounding_driven_capacity(th, mu):
+    """复核者 reverify4 的 critical：块体尖端 V = (0, 0) 卡在 V 槽里（两个接触在同一点，槽壁离竖直 th、tan th < μ，
+    两条摩擦锥含相反方向），另有一个左墙接触，自重过 V，水平推力作用在 (0, 1)。V 点抵不了力矩，答案 α = 0。
+    26c2259 报 unbounded（α = ∞）：每列的力矩 r × g 各自在浮点里舍入，3e16 的夹持力拼出一个舍入级的力矩。
+    现在力矩列精确（limit._exact_wrench），夹持力对的合力矩精确为 0。"""
+    o = (0.0, 0.0)
+    nL, nR = (cos(th), sin(th)), (-cos(th), sin(th))
+    cts = [LimitContact((0.0, 0.0), nL, mu), LimitContact((0.0, 0.0), nR, mu), LimitContact((-1.0, 0.5), (1.0, 0.0), 0.3)]
+    dead = wrench((0.0, -10.0), (0.0, 0.8), o, 2)
+    live = wrench((1.0, 0.0), (0.0, 1.0), o, 2)
+    r = limit_load(cts, dead, live, dim=2, k=8)
+    ex = _exact_alpha(cts, dead, live, 2, 8)
+    assert r.status == "optimal" and r.alpha == ex, (th, mu, r.status, r.alpha, ex)
