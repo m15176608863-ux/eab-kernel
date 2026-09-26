@@ -45,7 +45,8 @@ y_w 是动体的虚速度旋量（`LimitResult.mechanism`），y_r 是各黏聚�
 
 **精确模型（2026-09-27 返修四）**：LP 是调用方数据的**精确**模型——接触列的力矩 (p − o′) × g 与荷载向形心的平移
 都用有理数算（`_exact_wrench`、`_exact_shift`），浮点层只拿到它们的正确舍入，答案由 lp.py 对这个精确 LP 精确给出。
-唯一不精确的是模型定义本身：锥棱方向 g 取浮点（锥的 k 边形线性化）。返修三曾让 LP 对"浮点算出的派生数据"精确，
+黏聚上限 c·A 也是精确乘积（reverify5：曾用 fl(c·A)）。唯一不精确的是模型定义本身：锥棱方向与黏聚方向取浮点
+（锥与黏聚圆的 k 边形线性化）。返修三曾让 LP 对"浮点算出的派生数据"精确，
 复核者 reverify4 的 critical 就出在这里：V 槽夹住的顶点上两个重合接触有一对夹持力，实数里合力矩为 0，浮点里各列的
 r × g 各自舍入，3e16 的夹持力拼出舍入级的力矩，报"承载无限"（真值 0）。
 
@@ -64,10 +65,17 @@ u·|p|·|F|），报在 `LimitResult.uncertainty`。U > 1e-6 时把活荷载推 
   · 接触几何（位置、法向）与恒载的舍入不计：两个重合接触被扰开 1e-15 就出现真实的力臂与楔入，状态可以在
     optimal 与 unbounded 之间翻（复核者 303#386）；α → 0 的近极限平衡态上 α 的相对精度可能远差于 U（实测 α ~ 1e-11
     时 1e-5 量级），那里应看 α 的绝对量；
-  · UNBOUNDED 只在最小可行荷载因子 α_min > 0 时做同样的检查；α_min = 0（不靠活荷载就可行）时不查，活荷载恰落在
-    接触锥边界上的"刀刃自锁"不在检查范围内；
+  · UNBOUNDED：取最小可行荷载因子 α_min（> 0 时）的机构，一阶估计超标就推 ±16 倍舍入、重解原问题，要求"无界"这个
+    结论本身仍在（推后不可行 ⇒ 报 infeasible；推后变成有限值 ⇒ 抛错不认证）。reverify5：曾要求 α_min 的相对精度 ≤ 1e-6，
+    α_min 既不报给调用方、也不影响结论，工程坐标下把稳定的自锁误判成不认证。α_min = 0（不靠活荷载就可行）时不查，
+    活荷载恰落在接触锥边界上的"刀刃自锁"不在检查范围内；
+  · 荷载恰好落在某个承载边界上（例：单个黏聚接触，力恰等于 μN + cA）也是刀刃：推 1e-15 就不可行，而返回的机构给出的
+    U 可以很小（reverify5 在宽生成器里找到 2 例既无自由机构、作用线也不过接触点的，都属此类）；
+  · 工程坐标（离原点 1e5–1e6 m）下，调用方关于原点算力矩 p × F 本身带 u·|p|·|F| 的舍入，e_i 如实计入它，于是离原点远、
+    块体小时 α 的实测不确定度会超过 1e-6 而抛错不认证——这是输入本身的精度，不是求解器的（reverify5：1.6 万例里 5 例，
+    α 约为自重的 29–490 倍、实测 1.1–1.9e-6）；
   · 推 16 倍舍入就不可行时报 infeasible，偏保守一侧。复核者宽生成器（limfuzz，荷载常作用在接触点上、接触常重合）
-    返修四实测每 3000 例：推后不可行 0–7 例、抛错不认证 9–15 例（0.3–0.5%，全是数据精确最优 1e16–1e17 的舍入驱动值，
+    返修四实测每 3000 例：推后不可行 0–7 例、抛错不认证 9–15 例（0.3–0.5%，全是数据精确最优 4.9e15–1.3e17 的舍入驱动值，
     b6468f3 在这些例上报 unbounded）；其余状态与 b6468f3 逐例相同，只有 1 例不同且是基线错（α = −3.3e-15，精确不可行）。
   门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes、
   ::test_a_large_first_order_uncertainty_alone_does_not_reject；tests/test_lp_certificates.py。
@@ -401,7 +409,12 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     e_in = _wrench_rounding(live_c, dim, Rmag)
     C = _build_columns(contacts, oc, dim, k, unit_cohesion=True)
     Cx = [_exact_wrench(col[:dim], contacts[C.owner[j]].point, oc, dim) for j, col in enumerate(C.cols)]
-    Cf = [[_fl(v) for v in col] for col in Cx]
+    # 黏聚上限 c·A 也精确（reverify5：曾用浮点乘积 fl(c·A)，c = 0.1、A = 3 的刀刃上状态可翻）
+    capx = [Fraction(0)] * C.n_rows
+    for j, rj in enumerate(C.row_of):
+        if rj is not None:
+            ct = contacts[C.owner[j]]
+            capx[rj] = Fraction(ct.cohesion) * Fraction(ct.area)
 
     def _solve(live_v: list[Fraction], sense: float = 1.0):
         """活荷载列 live_v 给精确值（Fraction）。"""
@@ -417,7 +430,7 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
                     row[j] = Fraction(1)
             row[len(colsx) + r_i] = Fraction(1)        # 松弛
             AX.append(row)
-            bX.append(Fraction(C.cap[r_i]))            # 力的单位：Σμ_coh + s = c·A
+            bX.append(capx[r_i])                       # 力的单位：Σμ_coh + s = c·A（精确乘积）
         c = [0.0] * len(C.cols) + [sense] + [0.0] * C.n_rows      # sense = −1：最小可行荷载因子
         A = [[_fl(v) for v in row] for row in AX]
         b = [_fl(v) for v in bX]
@@ -426,18 +439,20 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
 
     ia = len(C.cols)
 
-    def _resolvable(res, sense: float):
+    def _pushes(y):
+        """沿机构 y 最敏感的方向把活荷载推 ±_FLIP 倍舍入量级（δ_i = ±sign(y_i)·_FLIP·e_i），精确重解原问题（max α）。"""
+        push = [(1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei for yi, ei in zip(y, e_in)]
+        return (_solve([li - Fraction(pi) for li, pi in zip(live_x, push)]),
+                _solve([li + Fraction(pi) for li, pi in zip(live_x, push)]))
+
+    def _resolvable(res):
         """(U, 判定, 迭代数)：判定 ∈ {"ok", "infeasible", "unresolved"}，见下面"可分辨性"注释。"""
         a0 = res.x[ia]
         y = list(res.y[:nw])
         U0 = _live_uncertainty(y, live_c, e_in)
         if U0 <= _UNCERTAIN:
             return U0, "ok", 0
-        drive = sum(yi * li for yi, li in zip(y, live_c))
-        sgn = 1.0 if drive > 0.0 else -1.0
-        push = [sgn * (1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei for yi, ei in zip(y, e_in)]
-        rm = _solve([li - Fraction(pi) for li, pi in zip(live_x, push)], sense)
-        rp = _solve([li + Fraction(pi) for li, pi in zip(live_x, push)], sense)
+        rm, rp = _pushes(y)
         its = rm.iterations + rp.iterations
         if "infeasible" in (rm.status, rp.status):
             return U0, "infeasible", its
@@ -461,27 +476,34 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     # 门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes（三个区间）、
     # tests/test_lp_certificates.py（任意恒载下的舍入驱动、近自锁在报告的 U 之内、退化机构不误判、UTM 倾覆）。
     if r.status == UNBOUNDED:
+        # "无界"的前提是可行：取最小可行荷载因子 α_min 的机构，一阶估计超标时沿它推 ±16 倍舍入、重解**原问题**，
+        # 看"无界"这个结论本身是否还在（reverify5：曾要求 α_min 的相对精度 ≤ 1e-6——α_min 既不报给调用方、也不影响
+        # 无界结论，工程坐标下把稳定的自锁误判成不认证，40 个 UTM 摆放里 14 个）。
         rmin = _solve(live_x, -1.0)
-        U, verdict, its = 0.0, "ok", 0
+        its = r.iterations + rmin.iterations
         if rmin.status == OPTIMAL and rmin.x[ia] > 0.0:
-            U, verdict, its = _resolvable(rmin, -1.0)
-        its += r.iterations + rmin.iterations
-        if verdict == "infeasible":
-            return LimitResult("infeasible", float("nan"), [], [], iterations=its, uncertainty=U)
-        if verdict == "unresolved":
-            raise RuntimeError(f"limit_load: unbounded capacity is not certified: the least feasible load factor "
-                               f"{rmin.x[ia]:.6e} has relative uncertainty {U:.1e} from input rounding (> {_UNCERTAIN:.0e})")
-        return LimitResult(UNBOUNDED, float("inf"), [], [], iterations=its, uncertainty=U)
+            y = list(rmin.y[:nw])
+            U0 = _live_uncertainty(y, live_c, e_in)
+            if U0 > _UNCERTAIN:
+                rm, rp = _pushes(y)
+                its += rm.iterations + rp.iterations
+                if "infeasible" in (rm.status, rp.status):
+                    return LimitResult("infeasible", float("nan"), [], [], iterations=its, uncertainty=U0)
+                if not (rm.status == rp.status == UNBOUNDED):
+                    raise RuntimeError(f"limit_load: unbounded capacity is not certified: pushing the live load by "
+                                       f"{_FLIP:g}x its input rounding gives {rm.status}/{rp.status}")
+        return LimitResult(UNBOUNDED, float("inf"), [], [], iterations=its)
     if r.status != OPTIMAL:
         return LimitResult(r.status, float("nan"), [], [], iterations=r.iterations)
     alpha = r.x[ia]
-    U, verdict, its = _resolvable(r, 1.0)
+    U, verdict, its = _resolvable(r)
     if verdict == "infeasible":
         return LimitResult("infeasible", float("nan"), [], [], iterations=r.iterations + its, uncertainty=U)
     if verdict == "unresolved":
         raise RuntimeError(f"limit_load: load factor {alpha:.6e} has relative uncertainty {U:.1e} from input "
-                           f"rounding (> {_UNCERTAIN:.0e}); it depends on rounding-level load components or "
-                           f"near-self-locking geometry and is not certified")
+                           f"rounding (> {_UNCERTAIN:.0e}) and is not certified: it depends on rounding-level load "
+                           f"components, near-self-locking geometry, or (at engineering coordinates) the caller's own "
+                           f"moment rounding u·|p|·|F|")
     raw = r.x[:len(C.cols)]
     lam = [v / C.cap[rj] if rj is not None else v for v, rj in zip(raw, C.row_of)]
     # 各列的力（力的单位）：摩擦列 λ·g，黏聚列 μ·d

@@ -25,6 +25,9 @@ critical：两个重合接触上一对夹持力的力矩各列各自舍入，3e1
 注意 INFEASIBLE 的 y 是精确 Farkas 证书各分量舍入一次的结果：极少数情形（reverify4：789/56400）舍入后的浮点 y
 在浮点里核不出 yᵀb > 0；它的精确性由这里保证，调用方不必也不能用浮点数重核。
 性能：每次求解都做 m × m 的有理数求逆，m 大时慢（稠密 101 × 300 约 95 s）；极限分析的 m ≲ 30，不在此列。
+有理数兜底用 Dantzig 定价、只在连续退化时改 Bland，最坏情况是指数级：浮点层失败（例如一个 max|A_j| ≲ 1e-298 而
+|c_j| ≳ 1e10 的列让 ldexp 溢出）又碰上 Klee–Minty 立方体，m = 20 就超过 300 s（reverify5）。正常路径下浮点层给出的
+候选只需几次精确换基。
 
 为什么这样（09-21 → 09-27 三轮复核的教训）：浮点阈值兑现不了"绝不静默给错"。绝对阈值让右端项 1e-11 的行整行违反
 也被放行（G6）；噪声线 ∝ κ(B) 在病态但合理的基上静默早停（返修一，critical）；返修二把六类阈值都改成"相对量 +
@@ -396,14 +399,15 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
     """
     m, n = len(A), len(c)
     if m == 0:
-        neg = [j for j in range(n) if c[j] < 0.0]
+        cx = [Fraction(v) for v in (exact[2] if exact is not None else c)]   # 精确目标为准（reverify5：m = 0 曾忽略 exact=）
+        neg = [j for j in range(n) if cx[j] < 0]
         if neg:
             ray = [1.0 if j == neg[0] else 0.0 for j in range(n)]
             return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [], 0, [], ray)
         return LPResult(OPTIMAL, [0.0] * n, 0.0, [], 0, [])
     X = _Exact(A, b, c, exact)
     try:
-        cand = _float_solve(A, b, c, tol=tol, max_iter=max_iter)
+        cand = _float_solve(A, b, c, tol=tol, max_iter=max_iter, flip=X.flip)
     except (RuntimeError, ArithmeticError, ValueError):   # 奇异、超限、循环、ldexp 溢出……都只是候选没了
         cand = None
     if cand is not None:
@@ -418,7 +422,7 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
 
 
 def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
-                 tol: float, max_iter: int) -> tuple[str, list[int], int, int]:
+                 tol: float, max_iter: int, flip: list[bool] | None = None) -> tuple[str, list[int], int, int]:
     """浮点两阶段修正单纯形。返回候选 (status, basis, entering, iterations)：basis 按"b 取负规整后的系统"编号
     （列 j < n 是原变量，n + i 是第 i 行的人工变量），entering 只对 UNBOUNDED 有意义（射线沿它增大）。
     b 的符号、行列尺度、右端项与目标尺度自动规整（见模块文档）。候选的正确性**不**在这里保证。"""
@@ -426,8 +430,8 @@ def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
     A0, c0 = A, c
     A = [row[:] for row in A]
     b = b[:]
-    # 规整 b ≥ 0（与 `_Exact` 的取负规则逐行相同，所以基的编号两层通用）
-    flipped = [i for i in range(m) if b[i] < 0.0]
+    # 规整 b ≥ 0：取负哪些行由 `_Exact` 按**精确** b 的符号定（flip），两层逐行相同，基的编号两层通用
+    flipped = [i for i in range(m) if (flip[i] if flip is not None else b[i] < 0.0)]
     for i in flipped:
         A[i] = [-v for v in A[i]]
         b[i] = -b[i]
@@ -510,9 +514,9 @@ class _Exact:
         else:
             AE, bE, cE = ([[Fraction(v) for v in row] for row in exact[0]], [Fraction(v) for v in exact[1]],
                           [Fraction(v) for v in exact[2]])
-        # b 取负的规则与 `_float_solve` 相同（按浮点 b 的符号），基的编号两层通用；浮点 b 为 ±0 而精确 b ≠ 0 的行
-        # 取负可能不一致——只影响热启动，证书在精确数据上判，不影响答案。
-        self.flip = [b[i] < 0.0 for i in range(m)]
+        # 取负哪些行按**精确** b 的符号定，并交给 `_float_solve` 用同一份——精确 b = −1e-400 而浮点 b = −0.0 时，
+        # 曾经两层按各自的符号取负，有理数冷启动的人工基不可行，抛内部错误（reverify5，1464 例里 138 例）。
+        self.flip = [bE[i] < 0 for i in range(m)]
         self.A = [[-v for v in AE[i]] if self.flip[i] else AE[i] for i in range(m)]
         self.b = [-v if self.flip[i] else v for i, v in enumerate(bE)]
         self.c = cE
@@ -566,11 +570,10 @@ class _Exact:
                 s -= t
                 a += abs(t)
         E = (self.m + 6) * _U * a * 1.0625 + 2.0 * _TINY * (sa + self.m + 2)
-        if s == s and a < float("inf") and sa < float("inf"):   # 非有限值（溢出）时误差界失效，一律交有理数
-            if s > E:
-                return 1, s
-            if s < -E:
-                return -1, s
+        if s > E:                                          # 溢出成 inf/nan 时两个比较都不成立，自然落到有理数
+            return 1, s
+        if s < -E:
+            return -1, s
         r = cost[j] - sum((y[i] * self.A[i][j] for i in range(self.m) if self.A[i][j] != 0), Fraction(0))
         return (r > 0) - (r < 0), _fl(r)
 
