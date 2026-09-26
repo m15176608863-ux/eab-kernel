@@ -58,9 +58,12 @@
   （距离 ×s、承载比不变、状态不变、标签一致置换）。门：`tests/test_invariance_limit.py`、`tests/test_invariance_interlock.py`、
   `tests/test_kernel2d_review.py` 等（M0.2 三组各自的不变性门）；
   (2) **阈值 = max(按问题尺度的相对量, 按舍入量级的噪声量)**：没有与问题无关的绝对数，也没有随条件数 κ 膨胀的量。
-  M0.2 LP 返修二前后踩过的五个坑每一个都违反了这条（见 `src/eab/lp.py` 模块文档"阈值的统一原则"）：逐列相对判据
-  在正交列上是 噪声/噪声；噪声线 ∝ κ(B) 在病态基上盖过真信号、静默早停；全局尺度判据放过目标很小时的次优；
-  绝对可行性下限放过右端项 1e-11 的整行违反；跨行的全局噪声项吞掉小尺度行。
+  M0.2 LP 返修一、二踩过的五个坑每一个都违反了这条：逐列相对判据在正交列上是 噪声/噪声；噪声线 ∝ κ(B) 在病态基上
+  盖过真信号、静默早停；全局尺度判据放过目标很小时的次优；绝对可行性下限放过右端项 1e-11 的整行违反；跨行的全局
+  噪声项吞掉小尺度行。
+  (3) **判定必须可证正确时，阈值原则也不够。** 按 (2) 改完的六类阈值，复核者仍从两侧构造出静默错（纯对角缩放报无界、
+  相对差 1e-10 的可行 LP 报不可行……）。小规模问题改为**浮点只给候选、有理数精确核验**，派生量也要精确
+  （`src/eab/lp.py` 模块文档"契约"、`src/eab/limit.py` 模块文档"精确模型"）；阈值类缺陷在复核里超过两轮就该换这条路。
 - **G6 · 独立对抗审查是里程碑唯一的退出门。** 每个里程碑收尾跑一次与 09-21 同构的六路审查，
   **0 critical、0 major 才算过**；声称在 G6 之后才许进 README。"测试全绿"不是退出判据。
 
@@ -76,8 +79,12 @@
   门：`tests/test_dual.py` 的 `test_implicit_float_conversion_of_a_dual_is_a_type_error`、
   `test_percent_formatting_of_a_dual_is_a_type_error`、`test_pow_of_a_negative_base_to_a_fractional_power_is_an_error`、
   `test_atan2_width_mismatch_is_an_error`；`tests/test_interlock_sensitivity.py::test_generic_block_default_sin_keeps_the_phase_derivative`。
-- （2026-09-24 补）**LP 求解器：要么答对，要么抛 RuntimeError，绝不静默给错。** 显式传很紧的 `lp_tol` 时允许抛错；
-  默认容差下审查算例必须答出来。门：`tests/test_lp_fail_loud.py`（8376ec2，直接进 main、未经独立复核，待 G6）。
+- （2026-09-27 改）**LP 求解器：答案对给定数据精确成立。** 浮点单纯形只给候选（状态 + 基），有理数层在原始数据上精确核验
+  三种证书（最优 = 原始 + 对偶可行、无界 = 可行 + 下降射线、不可行 = Farkas），不过就用有理数单纯形走完；浮点层的数值失败
+  只算"没有候选"。调用方在浮点里算不精确的**派生量**要精确地给（`lp.solve(..., exact=)`；极限分析的力矩列、荷载平移、
+  黏聚上限都是这样给的）。缘由：M0.2 的 LP 经五轮独立复核，前两轮在浮点阈值上修补，每轮都被找到静默错；精确核验之后
+  第三轮又发现"只对浮点派生数据精确"（夹持顶点报承载无限）。门：`tests/test_lp_certificates.py`（含"浮点层说谎"的注入门）。
+  取代 09-24 的"要么答对、要么抛错"（`tests/test_lp_fail_loud.py` 仍在，现在那些格子一律答对）。
 - 浮点运算次序即契约；批量改文本以保留换行符方式读写（`newline=''`）。
 - 阈值先测后钉；产物自报口径（`source`/`observable` 字段）。
 
