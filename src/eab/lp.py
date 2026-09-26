@@ -7,31 +7,25 @@ L3 极限分析要解的是小规模线性规划（变量数 ~ 接触数 × 摩�
 
 返回里带**对偶解 y**：在极限分析里它就是破坏机构（上限定理的运动场），不是附属品。
 
-## 契约（2026-09-24，G6 之后重写；09-27 M0.2 返修二补全）
+## 契约（返修三，2026-09-27）
 
-**要么答对，要么抛 RuntimeError，绝不静默给错。三种状态各带一张证书，证书过不了就抛错：**
-  · OPTIMAL：最终基上**重新求逆**后核验
-      原始可行（`_guard_residual`：逐行 |A_i x − b_i| ≤ 1e-7·(|b_i| + Σ|A_ij x_j|) + 舍入噪声项，逐变量 x_j ≥ −…）、
-      最优性（`_Revised.dual_violation`：各列"还能把目标改进多少" = 约化成本 × 变量自然尺度，相对目标值 ≤ 1e-9）、
-      相对对偶间隙（`_guard_gap`）。
-    这些核验与调用方的 `tol` **无关**：`tol` 放宽只会让单纯形早停，早停的基过不了核验，于是收紧定价阈值继续迭代
-    （"清理"），三轮仍过不了就抛错（G6 minor 24）；
-  · UNBOUNDED：射线 d 先清洗（B⁻¹ 误差级别的分量置 0），再用**原始未缩放的 A** 逐行核验
-    |A_i d| ≤ 1e-9·Σ_j|A_ij d_j| + 8u·Σ_j min(行尺度, 列尺度)·|d_j|、d ≥ 0、cᵀd < 0（`_ray_verifies`）。
-    核验不过就退回去换基（先按逐分量噪声线找行，再接受任何正主元），实在无行可换才抛错；
-  · INFEASIBLE：一阶段的对偶 y 就是 Farkas 证书（yᵀA ≤ 0、yᵀb > 0），在原始数据上核验（`_farkas_verifies`），
-    过不了就抛错（09-27 之前一阶段 Σ人工 > 1e-8 就直接报，复核者实测有尺度极差的可行问题被静默判为不可行）；
-    证书随结果返回（`LPResult.y`）。
-  · 终止**不是**无条件保证的：Bland 规则只在精确算术里保证有限步终止，浮点下"平局在容差内判定"会真的循环
-    （G6 major 2：旧实现 k=128 时 409 步一周期）。现在的做法见下；仍超过 `max_iter` 就抛 RuntimeError。
+**答案对给定的浮点数据精确成立。** 浮点数是二进有理数，`Fraction(float)` 无损，所以"给定的 LP"本身可以精确处理。
+两层（`solve`）：
+  · 浮点修正单纯形（`_float_solve`）只给**候选**：状态 + 基（+ 无界时的入基列）；
+  · 有理数层（`_Exact.certify`）在原始数据上精确核验候选：OPTIMAL 核 x_B = B⁻¹b ≥ 0（人工变量为 0）与每列约化成本
+    ≥ 0（弱对偶即最优）；UNBOUNDED 核可行 + d = B⁻¹A_e ≤ 0 + c_e − c_Bᵀd < 0；INFEASIBLE 核一阶段对偶的 Farkas 条件
+    yᵀA ≤ 0、yᵀb > 0。核验不过（或浮点层抛错）就用有理数修正单纯形（`_exact_simplex`，Dantzig 定价、退化过多改
+    Bland，精确算术里有限步终止）从候选基热启动或从人工基冷启动走完，再核一次。
+返回的 x、y、obj、ray 是精确解各舍入一次的浮点数；不再为数值原因抛错。
+逐列的符号判定先用浮点带严格误差界过滤，误差界之内的列才用有理数重算——结论与全用有理数相同，只是快。
 
-**阈值的统一原则（09-27）：每个阈值 = max(按问题尺度的相对量, 按舍入量级的噪声量)，没有与问题无关的绝对数，
-也没有随 κ(B) 膨胀的量。** 这次返修前后踩过的坑，每一个都是违反了这条：
-  · 逐列相对的最优性判据：与对偶解正交的列 噪声/噪声 ≈ 1，假抛错（59/2000）；
-  · "逐列 + 噪声线 ν ∝ κ(B)"：病态但合理的基上噪声线盖过真约化成本，早停，静默 infeasible、α 偏低 67%；
-  · 全局尺度 S 的最优性判据：目标只有 S 的 1e-4 时放过相对 1e-7 的次优；
-  · 可行性与残差的绝对下限 ~1e-9：右端项全局归一后 1e-11 的行（旧写法的黏聚上限行）整行违反照样放行；
-  · 射线核验的跨行噪声项 1e-14·max(行尺度)：同一行被吞掉，报伪 unbounded。
+为什么这样（09-21 → 09-27 三轮复核的教训）：浮点阈值兑现不了"绝不静默给错"。绝对阈值让右端项 1e-11 的行整行违反
+也被放行（G6）；噪声线 ∝ κ(B) 在病态但合理的基上静默早停（返修一，critical）；返修二把六类阈值都改成"相对量 +
+舍入噪声项"，复核者仍构造出纯对角缩放报 UNBOUNDED、行违约 67% 被放行、相对差 1e-10 的可行 LP 报 INFEASIBLE、
+ν 封顶导致 50% 次优。每补一个阈值就有反例从另一侧钻出来。精确核验之后，下面"做法"里的全部阈值都只影响速度。
+
+**可分辨性不是 LP 层的事**：数据本身可能带着舍入级的分量（θ = π 的推力带 sin π），浮点数据的精确最优可以是物理上
+荒谬的 8e15。那由调用方判断（limit.py 的"可分辨性"）。
 
 ## 做法
 
@@ -45,7 +39,7 @@ L3 极限分析要解的是小规模线性规划（变量数 ~ 接触数 × 摩�
   5. **变量自然尺度** ν_j = min(1, max_i |b_i|/|A_ij|)（`_natural_scales`）：右端项全局归一之后，各变量的量级
      仍可跨十个量级；原始可行性的一切阈值（Harris 松弛、负值判定、一阶段判不可行）都乘 ν_j。ν = 1 的普通变量
      行为逐位不变。
-  于是所有阈值都作用在规整后的量级上；b 乘 2 的幂时整个求解逐位按比例（门：tests/test_lp_scale.py）。
+  于是浮点层的阈值都作用在规整后的量级上。这些规整只影响浮点层（候选的质量与速度），不影响答案。
 
 **迭代**：修正单纯形，显式维护基逆 B⁻¹（每次换基做秩一更新，每 32 次换基从原始（规整后）数据重新求逆，
 核验前必重新求逆）；x_B = B⁻¹b 每步从 b 重算——表格法的舍入漂移（G6 major 2 的"丢失可行性"）无处累积。
@@ -58,12 +52,14 @@ L3 极限分析要解的是小规模线性规划（变量数 ~ 接触数 × 摩�
   · 对偶解 y 直接取 c_Bᵀ B⁻¹（重新求逆之后），不再另解 Bᵀy = c_B（G6 major 1：旧 `_duals` 用绝对主元截断，
     大块体带黏聚时对偶行乘子被置 0，上限少 41.8%）。
 
-门：tests/test_lp.py、tests/test_lp_scale.py、tests/test_lp_fail_loud.py、tests/test_lp_certificates.py。
+以上都是浮点层（候选）的做法。门：tests/test_lp.py、tests/test_lp_scale.py、tests/test_lp_fail_loud.py、
+tests/test_lp_certificates.py（精确层的牙：`test_a_lying_float_layer_cannot_change_the_answer`）。
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 from math import frexp, ldexp
 
 INFEASIBLE, OPTIMAL, UNBOUNDED = "infeasible", "optimal", "unbounded"
@@ -80,14 +76,12 @@ class LPResult:
     ray: list[float] | None = None   # UNBOUNDED 时：经原始 A 核验过的无界射线（原单位，cᵀd < 0）
 
 
-_RESIDUAL_GUARD = 1e-7    # 原始后向误差守卫（规整单位，只抓粗差）
 _FEAS = 1e-9              # 原始可行性松弛（规整单位，max|b| ∈ [0.5, 1)）：Harris 比值检验、基解的小负值
 _INFEAS = 1e-8            # 一阶段最优值超过它即判不可行（规整单位 ⇒ 相对于 max|b|）
 _PIV_STABLE = 1e-9        # 稳定主元：d_i > _PIV_STABLE·max|d|
 _PIV_NOISE = 1e-12        # 逐分量噪声线：d_i ≤ _PIV_NOISE·Σ_k|B⁻¹_ik||A_ke| 视为 0（射线核验、退路比值检验、对偶单纯形）
 _PIV_NOISE_GLOBAL = 1e-13 # 全局噪声线：d_i ≤ 1e-13·max|d| 视为 0（主路径比值检验，见 `_Revised.ratio`）
 _DUAL_CHECK = 1e-9        # 对偶可行性核验（相对，与 tol 无关）
-_GAP_CHECK = 1e-9         # 相对对偶间隙核验
 _RAY_CHECK = 1e-9         # 无界射线核验（逐行相对）
 _REINVERT = 32            # 每多少次换基重新求逆
 _PERTURB = 1e-7           # 防循环扰动的基准幅度（规整单位）
@@ -95,7 +89,6 @@ _MAX_PERTURB = 6          # 一次优化里最多扰动几轮
 _CLEANUP_ROUNDS = 3       # 核验不过时最多清理几轮
 _U_ENTRY = 8.0 * 2.0 ** -53   # 输入元自身的舍入量级（相对 min(行尺度, 列尺度)），见 `_ray_verifies`
 _NOISE_FLOOR = 1e-12      # 带条件数余量的舍入噪声底：约化成本（×S，`dual_violation`）、Farkas 证书的列（×nz）
-_CERT_NOISE = 64.0 * 2.0 ** -53   # 舍入噪声底 ≈ 7e-15（×自然尺度）：残差、间隙、Farkas 证书的 yᵀb
 _EPS = 2.0 ** -52
 
 
@@ -353,7 +346,8 @@ class _Revised:
             seen.add(key)
 
     def dual_violation(self, cost: list[float], allowed: list[bool]) -> float:
-        """最优性核验量：max_j (−r_j − _NOISE_FLOOR·S)⁺·ν_j / |cᵀx|，取遍允许的非基列（规整单位）；≤ _DUAL_CHECK 即通过。
+        """（浮点层的启发式，决定何时把候选交给精确层；答案的正确性由 `_Exact.certify` 保证。）
+        最优性核验量：max_j (−r_j − _NOISE_FLOOR·S)⁺·ν_j / |cᵀx|，取遍允许的非基列（规整单位）；≤ _DUAL_CHECK 即通过。
 
         分子是"列 j 还能把目标改进多少"的估计：约化成本 × 该变量的自然尺度 ν_j（步长的量级；实测步长 0.67
         对 ν 0.67、5.7e-4 对 ν 2.6e-3），先扣掉约化成本的舍入噪声底 _NOISE_FLOOR·S，S = max_j(|c_j| + Σ|y_k A_kj|)。
@@ -383,11 +377,12 @@ class _Revised:
 
 def solve(A: list[list[float]], b: list[float], c: list[float], *,
           tol: float = 1e-10, max_iter: int = 20000) -> LPResult:
-    """min cᵀx s.t. Ax = b, x ≥ 0。b 的符号、行列尺度、右端项与目标尺度自动规整（见模块文档）。
+    """min cᵀx s.t. Ax = b, x ≥ 0。**答案对给定的浮点数据精确成立**（见模块文档"契约"）。
 
-    `tol` 是入基（最优性）判据的相对阈值：列 j 入基当且仅当 r_j < −tol·(|c_j| + Σ|y_i A_ij|)。
-    它**不**决定返回什么：OPTIMAL 必过固定阈值的原始/对偶/间隙核验，UNBOUNDED 必过射线核验，
-    INFEASIBLE 必过一阶段的对偶核验；过不了就继续迭代或抛 RuntimeError。
+    两层：浮点修正单纯形（`_float_solve`）只负责给出**候选**（状态 + 基 + 入基列）；有理数层在原始数据上
+    精确核验这个候选（`_Exact.certify`），核验不过就从候选基（能热启动时）或从头用有理数 Bland 单纯形走完
+    （`_exact_simplex`）。浮点层抛出的任何 RuntimeError（奇异基、迭代超限、循环）都只导致冷启动的有理数求解。
+    返回的 x、y、obj、ray 都是精确解经一次舍入得到的浮点数。`tol` 只影响浮点层的迭代路径（速度），不影响答案。
     """
     m, n = len(A), len(c)
     if m == 0:
@@ -396,16 +391,37 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
             ray = [1.0 if j == neg[0] else 0.0 for j in range(n)]
             return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [], 0, [], ray)
         return LPResult(OPTIMAL, [0.0] * n, 0.0, [], 0, [])
-    A0, c0, bvec0 = A, c, list(b)
+    X = _Exact(A, b, c)
+    try:
+        cand = _float_solve(A, b, c, tol=tol, max_iter=max_iter)
+    except RuntimeError:
+        cand = None
+    if cand is not None:
+        res = X.certify(*cand)
+        if res is not None:
+            return res
+    st, basis, e, iters = _exact_simplex(X, cand[1] if cand is not None else None)
+    res = X.certify(st, basis, e, (cand[3] if cand is not None else 0) + iters)
+    if res is None:                                   # 有理数单纯形的输出必过精确证书；到这里是实现缺陷
+        raise RuntimeError(f"internal error: exact simplex result ({st}) failed its exact certificate")
+    return res
+
+
+def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
+                 tol: float, max_iter: int) -> tuple[str, list[int], int, int]:
+    """浮点两阶段修正单纯形。返回候选 (status, basis, entering, iterations)：basis 按"b 取负规整后的系统"编号
+    （列 j < n 是原变量，n + i 是第 i 行的人工变量），entering 只对 UNBOUNDED 有意义（射线沿它增大）。
+    b 的符号、行列尺度、右端项与目标尺度自动规整（见模块文档）。候选的正确性**不**在这里保证。"""
+    m, n = len(A), len(c)
+    A0, c0 = A, c
     A = [row[:] for row in A]
     b = b[:]
-    # 规整 b ≥ 0。**被取负的行，其对偶乘子最后要翻回来**：
-    # 约束 −A_i x = −b_i 的乘子 y 对应原约束 A_i x = b_i 的乘子 −y（2026-09-21 实测 7/12 组报红）。
+    # 规整 b ≥ 0（与 `_Exact` 的取负规则逐行相同，所以基的编号两层通用）
     flipped = [i for i in range(m) if b[i] < 0.0]
     for i in flipped:
         A[i] = [-v for v in A[i]]
         b[i] = -b[i]
-    # 均衡：先列后行，因子全是 2 的幂（精确）。x = D·x'，c' = D·c；行 i 乘 r_i ⇒ y_i = r_i·y'_i。
+    # 均衡：先列后行，因子全是 2 的幂（精确）。基的编号不受影响。
     ec = [-_exp2(max((abs(A[i][j]) for i in range(m)), default=0.0)) for j in range(n)]
     A = [[ldexp(A[i][j], ec[j]) for j in range(n)] for i in range(m)]
     cq = [ldexp(c[j], ec[j]) for j in range(n)]
@@ -429,22 +445,9 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
     _certified_optimize(S, cost1, allow1, tol, lambda e, d: False, phase=1)
     x = S.xB(b)
     ft1 = S.ftol(b)
-    # 各行按自身右端项的尺度计；舍入量级以内的人工变量值不算
     art = sum(max(0.0, x[i] - ft1[i]) / S.nu[S.basis[i]] for i in range(m) if S.basis[i] >= n)
     if art > _INFEAS:
-        # Farkas 证书（2026-09-27）：一阶段的对偶 y 满足 yᵀA_j ≤ 0（原变量列约化成本 ≥ 0）与 yᵀb = Σ人工 > 0。
-        # 在**原始未缩放**数据上核验；核验不过就抛错——"不可行"与"最优""无界"一样必须带证书，不许静默
-        # （复核者实测：尺度极差的可行问题曾被静默判为 infeasible）。证书随结果返回（LPResult.y）。
-        yq1 = S.duals(cost1)
-        y1 = [ldexp(yq1[i], er[i]) for i in range(m)]
-        for i in flipped:
-            y1[i] = -y1[i]
-        ymax = max((abs(v) for v in yq1), default=0.0)
-        ybar = [ldexp(ymax, er[i]) for i in range(m)]        # 各行乘子的量级（原单位）：舍入噪声 ~ eps·ȳ_i
-        if not _farkas_verifies(A0, bvec0, y1, ybar):
-            raise RuntimeError("phase one ended with positive infeasibility but the Farkas certificate "
-                               "does not verify on the original data; refusing to report infeasible")
-        return LPResult(INFEASIBLE, [0.0] * n, float("nan"), y1, S.iters, list(S.basis))
+        return INFEASIBLE, list(S.basis), -1, S.iters
 
     # 人工变量若仍在基里（退化），换出去：取该行 (B⁻¹A) 绝对值最大的原变量列；换不出说明该行冗余，留着（值恒 0）
     for i in range(m):
@@ -465,32 +468,250 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
     allow2 = [True] * n + [False] * m
     st, info = _certified_optimize(S, cost2, allow2, tol, ray_ok, phase=2)
     if st == UNBOUNDED:
-        e, d = info
-        ray = _ray(S, e, d, ec)
-        return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [0.0] * m, S.iters, list(S.basis), ray)
+        return UNBOUNDED, list(S.basis), info[0], S.iters
+    return OPTIMAL, list(S.basis), -1, S.iters
 
-    xb = S.xB(b)
-    ft2 = S.ftol(b)
-    xn = [0.0] * n                            # 规整单位里的解
-    for i in range(m):
-        j = S.basis[i]
-        if j < n:
-            xn[j] = xb[i] if xb[i] > 0.0 else 0.0 if xb[i] >= -ft2[i] else xb[i]
-        elif abs(xb[i]) > max(_INFEAS * S.nu[j], ft2[i]):
-            raise RuntimeError(f"simplex left an artificial variable at {xb[i]!r} in a redundant row")
-    _guard_residual(A, b, xn, S.nu)
-    yq = S.duals(cost2)
-    _guard_gap(cost2, xn, b, yq)
-    x = [ldexp(xn[j], ec[j] + es) for j in range(n)]
-    y = [ldexp(yq[i], er[i] - ek) for i in range(m)]
-    for i in flipped:
-        y[i] = -y[i]
-    return LPResult(OPTIMAL, x, sum(ci * xi for ci, xi in zip(c0, x)), y, S.iters, list(S.basis))
+
+_U = 2.0 ** -53
+
+
+class _Exact:
+    """原始数据的有理数副本（b 取负规则与 `_float_solve` 相同），以及三种状态的**精确证书**。
+
+    Fraction(float) 无损，所以这里核验的就是调用方给的那个 LP 本身，不是它的近似。
+    逐列的符号判定（约化成本 ≥ 0、Farkas 的 yᵀA_j ≤ 0）先用浮点算、带严格的舍入误差界过滤：误差界之外的符号
+    直接定论，误差界之内的那一列才用有理数重算——结论与全用有理数逐位相同，只是快。"""
+
+    def __init__(self, A: list[list[float]], b: list[float], c: list[float]):
+        m, n = len(A), len(c)
+        self.m, self.n = m, n
+        self.flip = [b[i] < 0.0 for i in range(m)]
+        self.Af = [[-v if self.flip[i] else v for v in A[i]] for i in range(m)]     # 取负在浮点里精确
+        self.A = [[Fraction(v) for v in row] for row in self.Af]
+        self.b = [abs(Fraction(v)) for v in b]
+        self.c = [Fraction(v) for v in c]
+        self.cf = [float(v) for v in c]
+        self.colf = [[self.Af[i][j] for i in range(m)] for j in range(n)]
+
+    def col(self, j: int) -> list[Fraction]:
+        if j < self.n:
+            return [self.A[i][j] for i in range(self.m)]
+        return [Fraction(int(i == j - self.n)) for i in range(self.m)]
+
+    def inverse(self, basis: list[int]) -> list[list[Fraction]] | None:
+        """B⁻¹（高斯-若尔当，精确）；B 奇异返回 None。"""
+        m = self.m
+        cols = [self.col(j) for j in basis]
+        M = [[cols[k][i] for k in range(m)] + [Fraction(int(i == r)) for r in range(m)] for i in range(m)]
+        for cc in range(m):
+            p = next((i for i in range(cc, m) if M[i][cc] != 0), None)
+            if p is None:
+                return None
+            M[cc], M[p] = M[p], M[cc]
+            pv = M[cc][cc]
+            if pv != 1:
+                M[cc] = [v / pv for v in M[cc]]
+            for i in range(m):
+                f = M[i][cc]
+                if i != cc and f != 0:
+                    M[i] = [a - f * bb for a, bb in zip(M[i], M[cc])]
+        return [row[m:] for row in M]
+
+    def reduced_sign(self, cost: list[Fraction], costf: list[float], y: list[Fraction], yf: list[float],
+                     j: int) -> tuple[int, float]:
+        """原变量列 j 的约化成本 r_j = cost_j − yᵀA_j 的**精确**符号（−1/0/+1）与一个浮点估值。
+
+        浮点估值 s 的误差界：y 取整误差 ≤ u|y|，点积舍入 ≤ γ_{m+1}·(|cost_j| + Σ|y_i A_ij|)；取 E = (m+4)·u·(…)·1.0625。
+        |s| > E 时符号即定论，否则用有理数重算。"""
+        col = self.colf[j]
+        s = costf[j]
+        a = abs(s)
+        for yi, v in zip(yf, col):
+            if v != 0.0:
+                t = yi * v
+                s -= t
+                a += abs(t)
+        E = (self.m + 4) * _U * a * 1.0625 + 1e-300
+        if s > E:
+            return 1, s
+        if s < -E:
+            return -1, s
+        r = cost[j] - sum((y[i] * self.A[i][j] for i in range(self.m) if self.A[i][j] != 0), Fraction(0))
+        return (r > 0) - (r < 0), float(r)
+
+    def certify(self, status: str, basis: list[int], e: int, iters: int) -> LPResult | None:
+        """精确核验候选；成立则返回（浮点化的）结果，不成立返回 None。
+
+        · OPTIMAL：x_B = B⁻¹b ≥ 0、基里的人工变量恰为 0；y = c_Bᵀ B⁻¹；每个原变量列 r_j = c_j − yᵀA_j ≥ 0。
+          于是 x 可行、y 对偶可行、cᵀx = bᵀy——弱对偶即最优，精确成立；
+        · UNBOUNDED：同上的原始可行；d = B⁻¹A_e 各分量 ≤ 0（人工变量行 = 0）、c_e − c_Bᵀd < 0——
+          x + t·(e_e − d) 对所有 t ≥ 0 可行且目标无下界；
+        · INFEASIBLE：y = 1_artᵀ B⁻¹（一阶段对偶）满足 yᵀA_j ≤ 0（每个原变量列）且 yᵀb > 0——Farkas。"""
+        m, n = self.m, self.n
+        if len(basis) != m or len(set(basis)) != m or any(not (0 <= j < n + m) for j in basis):
+            return None
+        Binv = self.inverse(basis)
+        if Binv is None:
+            return None
+        zero = Fraction(0)
+        if status == INFEASIBLE:
+            cb = [Fraction(int(j >= n)) for j in basis]
+            y = [sum((cb[i] * Binv[i][k] for i in range(m) if cb[i] != 0), zero) for k in range(m)]
+            if not sum((yk * bk for yk, bk in zip(y, self.b)), zero) > 0:
+                return None
+            yf = [float(v) for v in y]
+            zc, zf = [zero] * n, [0.0] * n                 # 以 0 为"成本"：yᵀA_j ≤ 0 ⇔ 0 − yᵀA_j ≥ 0
+            for j in range(n):
+                if self.reduced_sign(zc, zf, y, yf, j)[0] < 0:
+                    return None
+            yo = [float(-v if self.flip[i] else v) for i, v in enumerate(y)]
+            return LPResult(INFEASIBLE, [0.0] * n, float("nan"), yo, iters, list(basis))
+        xB = [sum((r * bb for r, bb in zip(row, self.b) if r != 0), zero) for row in Binv]
+        for i, j in enumerate(basis):
+            if xB[i] < 0 or (j >= n and xB[i] != 0):
+                return None
+        cb = [self.c[j] if j < n else zero for j in basis]
+        y = [sum((cb[i] * Binv[i][k] for i in range(m) if cb[i] != 0), zero) for k in range(m)]
+        if status == UNBOUNDED:
+            if not (0 <= e < n) or e in basis:
+                return None
+            ce = self.col(e)
+            d = [sum((r * a for r, a in zip(row, ce) if a != 0), zero) for row in Binv]
+            for i, j in enumerate(basis):
+                if d[i] > 0 or (j >= n and d[i] != 0):
+                    return None
+            if not self.c[e] - sum((cb[i] * d[i] for i in range(m)), zero) < 0:
+                return None
+            ray = [0.0] * n
+            ray[e] = 1.0
+            for i, j in enumerate(basis):
+                if j < n:
+                    ray[j] = float(-d[i])
+            return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [0.0] * m, iters, list(basis), ray)
+        if status != OPTIMAL:
+            return None
+        yf = [float(v) for v in y]
+        inb = set(basis)
+        for j in range(n):
+            if j not in inb and self.reduced_sign(self.c, self.cf, y, yf, j)[0] < 0:
+                return None
+        xe = [zero] * n
+        for i, j in enumerate(basis):
+            if j < n:
+                xe[j] = xB[i]
+        obj = sum((cj * xj for cj, xj in zip(self.c, xe) if xj != 0), zero)
+        yo = [float(-v if self.flip[i] else v) for i, v in enumerate(y)]
+        return LPResult(OPTIMAL, [float(v) for v in xe], float(obj), yo, iters, list(basis))
+
+
+def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], int, int]:
+    """有理数两阶段**修正**单纯形。返回 (status, basis, entering, pivots)。
+
+    只维护精确的 B⁻¹（m × m，秩一更新）；定价用 Dantzig（`reduced_sign` 的浮点过滤 + 有理数定论），连续
+    2m + 10 次退化换基后改用 Bland（最小下标入基、最小基下标出基），精确算术里由此有限步终止。
+    热启动：给定的基非奇异、且其基解精确可行（人工变量为 0）时直接从它开始二阶段；否则从人工基冷启动一阶段。"""
+    m, n = X.m, X.n
+    N = n + m
+    zero, one = Fraction(0), Fraction(1)
+    pivots = 0
+
+    def run(Binv, basis, xB, cost, costf, allowed, phase2):
+        nonlocal pivots
+        degenerate, bland = 0, False
+        while True:
+            cb = [cost[j] for j in basis]
+            y = [sum((cb[i] * Binv[i][k] for i in range(m) if cb[i] != 0), zero) for k in range(m)]
+            yf = [float(v) for v in y]
+            inb = set(basis)
+            enter, best = -1, 0.0
+            for j in allowed:
+                if j in inb:
+                    continue
+                if j < n:
+                    sg, s = X.reduced_sign(cost, costf, y, yf, j)
+                else:                                   # 人工列 e_k：r = cost_j − y_k
+                    r = cost[j] - y[j - n]
+                    sg, s = (r > 0) - (r < 0), float(r)
+                if sg < 0:
+                    if bland:
+                        enter = j
+                        break
+                    if enter < 0 or s < best:
+                        enter, best = j, s
+            if enter < 0:
+                return OPTIMAL, -1
+            ce = X.col(enter)
+            d = [sum((r * a for r, a in zip(row, ce) if a != 0), zero) for row in Binv]
+            leave, theta = -1, None
+            for i in range(m):
+                if phase2 and basis[i] >= n and d[i] != 0:
+                    rt = zero                           # 人工变量必须留在 0：任何非零分量都在 0 步长处挡住
+                elif d[i] > 0:
+                    rt = xB[i] / d[i]
+                else:
+                    continue
+                if theta is None or rt < theta or (rt == theta and basis[i] < basis[leave]):
+                    theta, leave = rt, i
+            if leave < 0:
+                return UNBOUNDED, enter
+            degenerate = degenerate + 1 if theta == 0 else 0
+            if degenerate > 2 * m + 10:
+                bland = True
+            pv = d[leave]
+            rowp = [v / pv for v in Binv[leave]]
+            for i in range(m):
+                if i != leave and d[i] != 0:
+                    f = d[i]
+                    Binv[i] = [a - f * bb for a, bb in zip(Binv[i], rowp)]
+                    xB[i] -= theta * f
+            Binv[leave] = rowp
+            xB[leave] = theta
+            basis[leave] = enter
+            pivots += 1
+
+    basis = Binv = xB = None
+    if start is not None and len(start) == m and len(set(start)) == m and all(0 <= j < N for j in start):
+        B0 = X.inverse(list(start))
+        if B0 is not None:
+            x0 = [sum((r * bb for r, bb in zip(row, X.b) if r != 0), zero) for row in B0]
+            if all(x0[i] >= 0 and (start[i] < n or x0[i] == 0) for i in range(m)):
+                basis, Binv, xB = list(start), B0, x0
+    if basis is None:                                 # 冷启动一阶段：人工基 = 单位阵
+        basis = list(range(n, N))
+        Binv = [[Fraction(int(i == k)) for k in range(m)] for i in range(m)]
+        xB = list(X.b)
+        cost1 = [zero] * n + [one] * m
+        run(Binv, basis, xB, cost1, [float(v) for v in cost1], list(range(N)), False)
+        if any(basis[i] >= n and xB[i] != 0 for i in range(m)):
+            return INFEASIBLE, basis, -1, pivots
+    for i in range(m):                                # 把值为 0 的人工变量换出基（任意非零原变量元都行）
+        if basis[i] >= n:
+            inb = set(basis)
+            for j in range(n):
+                if j in inb:
+                    continue
+                a = sum((Binv[i][k] * X.A[k][j] for k in range(m) if X.A[k][j] != 0), zero)
+                if a != 0:
+                    ce = X.col(j)
+                    d = [sum((r * v for r, v in zip(row, ce) if v != 0), zero) for row in Binv]
+                    rowp = [v / a for v in Binv[i]]
+                    for r_ in range(m):
+                        if r_ != i and d[r_] != 0:
+                            Binv[r_] = [p - d[r_] * q for p, q in zip(Binv[r_], rowp)]
+                    Binv[i] = rowp
+                    basis[i] = j
+                    pivots += 1
+                    break
+    xB = [sum((r * bb for r, bb in zip(row, X.b) if r != 0), zero) for row in Binv]
+    cost2 = X.c + [zero] * m
+    st, e = run(Binv, basis, xB, cost2, X.cf + [0.0] * m, list(range(n)), True)
+    return st, basis, e, pivots
 
 
 def _certified_optimize(S: _Revised, cost: list[float], allowed: list[bool], tol: float, ray_ok,
                         *, phase: int) -> tuple[str, object]:
-    """优化 + 独立核验：最终基上重新求逆，约化成本必须 ≥ −_DUAL_CHECK（相对）；不过就收紧定价阈值再迭代。"""
+    """浮点层的优化 + 清理：最终基上重新求逆，约化成本 ≥ −_DUAL_CHECK（相对）；不过就收紧定价阈值再迭代，
+    三轮仍不过也照样交出候选（精确层会判定）。这里的一切阈值只影响候选的质量，不影响答案。"""
     ptol = tol
     for _ in range(_CLEANUP_ROUNDS):
         st, info = S.optimize(cost, allowed, ptol, ray_ok)
@@ -507,8 +728,7 @@ def _certified_optimize(S: _Revised, cost: list[float], allowed: list[bool], tol
         if S.dual_violation(cost, allowed) <= _DUAL_CHECK:
             return OPTIMAL, None
         ptol = min(ptol, _DUAL_CHECK) * 0.1
-    raise RuntimeError(f"simplex phase {phase} could not reach a verified optimal basis "
-                       f"(dual violation {S.dual_violation(cost, allowed)!r})")
+    return OPTIMAL, None                              # 核验没过也交出去：精确层会判定并在必要时接着走
 
 
 def _ray(S: _Revised, e: int, d: list[float], ec: list[int]) -> list[float]:
@@ -554,29 +774,6 @@ def _ray_verifies(A0, c0, S: _Revised, e: int, d: list[float], ec: list[int]) ->
     sc = sum(abs(ci * v) for ci, v in zip(c0, ray))
     return cd < -_RAY_CHECK * sc
 
-def _guard_residual(A: list[list[float]], b: list[float], x: list[float], nu: list[float]) -> None:
-    """粗差守卫：基解必须满足 Ax = b、x ≥ 0（逐行、逐变量相对，规整单位）。
-
-    若在极小主元上失稳，读出来的基解会整行违反约束，而单纯形照样报 OPTIMAL——那是最坏的失败方式（静默给错值）。
-    判据：|A_i x − b_i| ≤ _RESIDUAL_GUARD·(|b_i| + Σ_j|A_ij x_j|) + _CERT_NOISE·X·Σ_j|A_ij|ν_j，
-    x_j ≥ −_RESIDUAL_GUARD·ν_j·max(1, X)，X = max_j |x_j|/ν_j。第二项是**舍入噪声项**：b_i = 0、各项贡献本身
-    只有舍入量级的行（x_j 是 ~eps·ν_j 的噪声）在纯相对判据下是 噪声/噪声 ≈ 1；噪声项按变量的自然尺度计，
-    不按全局最大值计，所以右端项 1e-11 的行照样查得出整行违反。
-    **没有与问题无关的绝对下限**（2026-09-27 订正）：旧判据 ≤ 1e-7·(1 + 行尺度) 里的"1"是绝对量，右端项全局归一后
-    量级 1e-11 的行（旧写法里 c·A 乘进列、上限行右端 1 的黏聚行）整行违反 99% 也照样放行，
-    报 optimal、α 高估 75%（复核者 LP 层探针 39/48 静默给错）。"""
-    X = max((abs(v) / nu[j] for j, v in enumerate(x)), default=0.0)   # 最大变量，以其自然尺度计
-    for j, v in enumerate(x):
-        if v < -_RESIDUAL_GUARD * nu[j] * max(1.0, X):
-            raise RuntimeError(f"simplex lost primal feasibility: x[{j}] = {v!r} (scaled units, natural scale {nu[j]!r})")
-    for i, (Ai, bi) in enumerate(zip(A, b)):
-        ax = sum(a * v for a, v in zip(Ai, x))
-        scale = abs(bi) + sum(abs(a * v) for a, v in zip(Ai, x))
-        noise = _CERT_NOISE * X * sum(abs(a) * nu[j] for j, a in enumerate(Ai))
-        if abs(ax - bi) > _RESIDUAL_GUARD * scale + noise:
-            raise RuntimeError(f"simplex lost feasibility: row {i} residual {ax - bi!r} "
-                               f"(scaled units, row scale {scale!r})")
-
 def _natural_scales(A: list[list[float]], b: list[float]) -> list[float]:
     """各变量在规整单位里的**自然尺度** ν_j = min(1, max_i |b_i|/|A_ij|)（取遍 A_ij ≠ 0 且 b_i ≠ 0 的行；
     没有这样的行时 ν_j = 1）；人工变量 k 的列是单位向量 e_k，ν = min(1, |b_k|)（b_k = 0 时 1）。
@@ -600,48 +797,6 @@ def _natural_scales(A: list[list[float]], b: list[float]) -> list[float]:
         nu.append(min(1.0, abs(b[k])) if b[k] != 0.0 else 1.0)
     return nu
 
-
-def _farkas_verifies(A0: list[list[float]], b0: list[float], y: list[float], ybar: list[float]) -> bool:
-    """Farkas 证书核验（原始未缩放数据）：yᵀb > 0 显著，且每列 yᵀA_j ≤ 0（到舍入）。
-
-    判据（ȳ_i = max|y'|·2^{er_i}：规整单位里乘子的最大量级、折回原单位；nz_j = Σ_i ȳ_i|A_ij|，nb = Σ_i ȳ_i|b_i|）：
-      列：    yᵀA_j ≤ 1e-9·Σ_i|y_i A_ij| + _NOISE_FLOOR·nz_j     （y 的噪声带条件数放大：实测到 7.2e-15·nz）
-      右端：  yᵀb  > 1e-9·Σ_i|y_i b_i| + _CERT_NOISE·nb        （只需高出舍入底：恒载 (1, −1e12) 的水平分量
-                                                                 无物可挡时 yᵀb/nb = 1e-12，仍是真不可行）
-      分离：  yᵀb / nb ≥ 1e3·max_j (yᵀA_j)⁺ / nz_j             （证书的余量远大于它容许的列违约）
-    只用逐项相对判据时，与证书正交的列（精确 yᵀA_j = 0）是 噪声/噪声 ≈ 1（09-27 实测 48/1000 假抛错）。
-    容差版 Farkas 的含义：若 x ≥ 0 可行，则 yᵀb = Σ_j (yᵀA_j) x_j ≤ Σ_j ε_j x_j，于是任何可行解都得比问题的
-    自然尺度大 ~1e3 倍以上——"不可行"即"在这个分辨率内不可行"。"""
-    m = len(A0)
-    n = len(A0[0]) if m else 0
-    yb = sum(y[i] * b0[i] for i in range(m))
-    sb = sum(abs(y[i] * b0[i]) for i in range(m))
-    nb = sum(ybar[i] * abs(b0[i]) for i in range(m))
-    if not (yb > 0.0 and yb > 1e-9 * sb + _CERT_NOISE * nb):
-        return False
-    worst = 0.0
-    for j in range(n):
-        v = sum(y[i] * A0[i][j] for i in range(m))
-        sc = sum(abs(y[i] * A0[i][j]) for i in range(m))
-        nz = sum(ybar[i] * abs(A0[i][j]) for i in range(m))
-        if v > 1e-9 * sc + _NOISE_FLOOR * nz:
-            return False
-        if v > 0.0 and nz > 0.0:
-            worst = max(worst, v / nz)
-    return yb >= 1e3 * worst * nb
-
-def _guard_gap(c: list[float], x: list[float], b: list[float], y: list[float]) -> None:
-    """相对对偶间隙守卫（规整单位）：|cᵀx − bᵀy| ≤ _GAP_CHECK·(Σ|c_j x_j| + Σ|y_i b_i|) + 噪声项。
-
-    噪声项 _CERT_NOISE·(max|y|·Σ|b_i| + max|c|·Σ|x_j|)：最优值恰为 0 的问题（α = 0 的极限状态）里各项都是
-    舍入量级，纯相对判据是 噪声/噪声 ≈ 1（2026-09-27 实测 16/12000 假抛错，间隙 1e-17 对尺度 1e-17）。"""
-    p = sum(ci * xi for ci, xi in zip(c, x))
-    d = sum(yi * bi for yi, bi in zip(y, b))
-    scale = sum(abs(ci * xi) for ci, xi in zip(c, x)) + sum(abs(yi * bi) for yi, bi in zip(y, b))
-    noise = _CERT_NOISE * (max((abs(v) for v in y), default=0.0) * sum(abs(v) for v in b)
-                            + max((abs(v) for v in c), default=0.0) * sum(abs(v) for v in x))
-    if abs(p - d) > _GAP_CHECK * scale + noise:
-        raise RuntimeError(f"simplex duality gap {p - d!r} exceeds {_GAP_CHECK} relative (scale {scale!r})")
 
 def maximize(A: list[list[float]], b: list[float], c: list[float], **kw) -> LPResult:
     """max cᵀx s.t. Ax = b, x ≥ 0。"""

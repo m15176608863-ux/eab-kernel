@@ -84,8 +84,8 @@ def test_rounding_level_load_component_is_not_certified_as_capacity():
     （物理上不可行），浮点 LP 却能用 α = 1/1.22e-16 = 8.17e15 让 α·1.22e-16 = 1 托住单位自重——
     浮点意义上的真最优，物理上的荒谬值（验证者模糊测试 limfuzz 种子 11 的 7 例，修复前基线答 infeasible，
     M0.2 返修前曾静默返回 optimal α ≈ 8e15）。必须判回 infeasible，而不是给一个天文数字。
-    （2026-09-27 起由 `limit._clean` 负责：4u 量级以内的荷载分量与 0 不可区分，进 LP 之前置 0；
-    比舍入大、但仍撑不起答案的分量由不确定度 U 负责，见下一道门。）"""
+    （由可分辨性检查负责：浮点数据的精确最优确实是 8.17e15，但推 16 倍舍入就不可行，于是报 infeasible。
+    09-27 一度改由"荷载清洗"把 4u 以内的分量置 0，清洗在近纯力偶上误伤真实力矩，已撤回。）"""
     cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
     dead = wrench((0.0, -1.0), (0.0, 0.7), (0.0, 0.0), 2)
     live = wrench((cos(pi), sin(pi)), (0.0, 0.0), (0.0, 0.0), 2)
@@ -98,18 +98,18 @@ def test_rounding_level_load_component_is_not_certified_as_capacity():
 
 
 @pytest.mark.parametrize("v,expect", [(1e-6, "optimal"), (1e-9, "optimal"), (1e-10, "raise"), (1e-11, "raise"),
-                                      (1e-13, "raise"), (1e-14, "infeasible"), (1e-15, "infeasible"),
+                                      (1e-13, "raise"), (1e-14, "raise"), (3e-15, "infeasible"), (1e-15, "infeasible"),
                                       (5e-16, "infeasible"), (2e-16, "infeasible")])
 def test_small_load_component_resolvability_has_three_regimes(v, expect):
     """同一几何，活荷载写成 (−1, v)：v 是**本意**的竖向分量，力矩平衡给 α = 1/v（实数里精确）。
-    α 对活荷载输入舍入的相对不确定度 U ≈ 8.9e-16 / v（`limit._live_uncertainty`），于是三个区间：
+    α 对活荷载输入舍入的相对不确定度 U ≈ 4.4e-16 / v（`limit._live_uncertainty`，舍入模型 `_wrench_rounding`），
+    于是三个区间：
       · U ≤ 1e-6（v ≥ ~1e-9）：认证，α·v = 1 到 1e-12；
-      · 1e-6 < U 且推 16 倍舍入驱动仍不翻号：抛 RuntimeError（α 有意义但给不出 1e-6，不给假精度）；
-      · 推 16 倍舍入就翻号、且推后的问题带 Farkas 证书地不可行：infeasible（答案靠舍入级分量撑着）；
-        v ≤ 4u 的分量在进 LP 之前就被 `_clean` 置 0（2e-16 这一格），同样 infeasible。
-    牙：删掉 U 判据，1e-10…1e-13 会返回 optimal 1e10…1e13；删掉"推一下"，1e-14…5e-16 会抛错而不是 infeasible；
-    删掉清洗，2e-16 走 U 路径，结论不变——清洗的牙在上一道门（sin π，U 路径上它是 raise 还是 infeasible 取决于
-    力矩舍入，清洗使它与 v 无关地确定）。"""
+      · U > 1e-6 且把活荷载推 ±16 倍舍入后两侧都仍可行：实测变化超标，抛 RuntimeError（α 有意义但给不出 1e-6）；
+      · 推 16 倍舍入就（带精确 Farkas 证书地）不可行：infeasible（答案靠舍入级分量撑着）。
+      边界随舍入模型定：16·4u·(|M| + |F|·R) ≈ 7e-15，所以 1e-14 在"抛错"一侧、3e-15 在"不可行"一侧。
+    牙：删掉可分辨性检查，1e-10…1e-14 会返回 optimal 1e10…1e14、3e-15…2e-16 返回 3e14…5e15；
+    删掉"推一下后不可行即报 infeasible"，3e-15…2e-16 会抛错。"""
     cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
     dead = wrench((0.0, -1.0), (0.0, 0.7), (0.0, 0.0), 2)
     live = wrench((-1.0, v), (0.0, 0.0), (0.0, 0.0), 2)
@@ -123,12 +123,59 @@ def test_small_load_component_resolvability_has_three_regimes(v, expect):
         assert r.uncertainty <= 1e-6 and abs(r.alpha * v - 1.0) <= 1e-12, (r.alpha, r.uncertainty)
 
 
+def _exact_status_alpha(cts, dead, live, dim, k):
+    """同一 LP（形心参考点、黏聚列取力的单位）的精确状态与最优值；oracle 只用 Fraction（test_lp_certificates._exact_max）。"""
+    from test_lp_certificates import _exact_max
+    from eab.limit import _build_columns, _shift_wrench
+    nw = 3 if dim == 2 else 6
+    oc = tuple(sum(ct.point[i] for ct in cts) / len(cts) for i in range(dim))
+    dc, lc = _shift_wrench(list(dead), oc, dim), _shift_wrench(list(live), oc, dim)
+    C = _build_columns(cts, oc, dim, k, unit_cohesion=True)
+    cols = C.cols + [lc]
+    ncol = len(cols) + C.n_rows
+    A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
+    b = [-v for v in dc]
+    for r_i in range(C.n_rows):
+        row = [0.0] * ncol
+        for j, rj in enumerate(C.row_of):
+            if rj == r_i:
+                row[j] = 1.0
+        row[len(cols) + r_i] = 1.0
+        A.append(row)
+        b.append(C.cap[r_i])
+    st, obj = _exact_max(A, b, [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows)
+    return st, (float(obj) if obj is not None else None)
+
+
+def _genuinely_unresolvable(cts, dead, live, dim, k, rng):
+    """独立判定"活荷载差 1e-12 相对就答案大变"：四次**各分量独立**的随机扰动（力分量 ±1e-12·|F|，
+    力矩分量 ±1e-12·(|M| + |F|·R)），精确状态有变或精确 α 的相对跳动 > 1e-6 即为真不可分辨。
+    只转动荷载方向不够——绕作用点转保持"作用线过接触点"这种刀刃（宽模糊种子 11 #127 正是这样）。"""
+    Fn = sum(v * v for v in live[:dim]) ** 0.5
+    Mn = sum(v * v for v in live[dim:]) ** 0.5
+    R = max(sum(v * v for v in ct.point) ** 0.5 for ct in cts)
+    sc = [Fn] * dim + [Mn + Fn * R] * (len(live) - dim)
+    base = _exact_status_alpha(cts, dead, live, dim, k)
+    for _ in range(4):
+        pert = [v + rng.choice((-1.0, 1.0)) * 1e-12 * s for v, s in zip(live, sc)]
+        st = _exact_status_alpha(cts, dead, pert, dim, k)
+        if st[0] != base[0]:
+            return True
+        if st[0] == "optimal" and abs(st[1] - base[1]) > 1e-6 * max(abs(base[1]), 1e-300):
+            return True
+    return False
+
+
 @pytest.mark.parametrize("seed", [11])
 def test_broad_fuzz_has_no_astronomical_load_factors(seed):
     """验证者的宽模糊生成器（1–5 个任意朝向接触、带黏聚、W ∈ {1, 10}）：optimal 的荷载因子不许超过
-    自然尺度的 1e10 倍——那种数只可能来自舍入级的荷载分量。1000 例，零抛错。
+    自然尺度的 1e10 倍——那种数只可能来自舍入级的荷载分量。1000 例。
     （恒载 ≥ 1e6 时这个粗判据本身会漏：舍入驱动的 α = 5.4e15 < 1e10·W。那一类由
-    tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load 看护。）"""
+    tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load 看护。）
+    **允许**"不认证"的抛错，但每一例都要由独立 oracle 确认是真刀刃（`_genuinely_unresolvable`），且不超过 1%。
+    这个生成器会把几个接触放在同一点、法向任意，θ = π 带舍入分量——LP 层精确之后，浮点数据上靠近奇异基撑出来的
+    "最优"（例：精确 α = 2.88，荷载差 1e-12 就回到 5.09）如实报不认证；旧的浮点求解器因主元阈值避开了近奇异基，
+    碰巧给出物理上合理的数，但那不可认证。"""
     rng = random.Random(seed)
     raised, huge = [], []
     for t in range(1000):
@@ -154,8 +201,11 @@ def test_broad_fuzz_has_no_astronomical_load_factors(seed):
         try:
             r = limit_load(cts, dead, live, dim=dim, k=k)
         except RuntimeError as e:
-            raised.append((t, str(e)[:80])); continue
+            raised.append((t, str(e)[:80], cts, dead, live, dim, k)); continue
         if r.status == "optimal" and r.alpha > 1e10 * (W + 2.5 * nc):
             huge.append((t, r.alpha))
-    assert raised == [], raised[:5]
     assert huge == [], huge[:5]
+    assert len(raised) <= 10, [x[:2] for x in raised]
+    orng = random.Random(1000 + seed)
+    false_raise = [x[:2] for x in raised if not _genuinely_unresolvable(*x[2:], orng)]
+    assert false_raise == [], false_raise

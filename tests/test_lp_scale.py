@@ -154,10 +154,10 @@ def test_phase_one_rounding_noise_is_not_reported_as_infeasible():
         _certify(A, bs, c, r)
 
 
-def test_numerical_breakdown_raises_instead_of_returning_a_wrong_optimum(monkeypatch):
-    """lp.py 的声称（纪律 C）：基解若不再满足 Ax = b（数值失稳），solve 抛 RuntimeError。
-    这里在二阶段核验之后把基逆的第 0 行整体拨偏 0.1（缺陷注入到求解路径内部，读出基解之前），模拟失稳。
-    （2026-09-24 改写：旧版注入到表格法的 `_simplex_core`，修正单纯形里没有表格。）"""
+def test_numerical_breakdown_cannot_change_the_answer(monkeypatch):
+    """lp.py 的声称（纪律 C）：浮点层失稳不改变答案——答案来自有理数层对候选基的精确求解（返修三，2026-09-27；
+    此前的契约是"失稳即抛 RuntimeError"）。这里在二阶段核验之后把浮点基逆的第 0 行整体拨偏 0.1（缺陷注入到求解
+    路径内部，读出基解之前），答案必须与未注入时逐位相同。牙：让 solve 直接信浮点层读出的基解，这道门就红。"""
     import eab.lp as lp
 
     real = lp._certified_optimize
@@ -169,10 +169,11 @@ def test_numerical_breakdown_raises_instead_of_returning_a_wrong_optimum(monkeyp
         return st, info
 
     A, b, c = _system(0)
-    assert solve(A, b, c).status == OPTIMAL
+    ref = solve(A, b, c)
+    assert ref.status == OPTIMAL
     monkeypatch.setattr(lp, "_certified_optimize", corrupt)
-    with pytest.raises(RuntimeError):
-        solve(A, b, c)
+    r = solve(A, b, c)
+    assert (r.status, r.x, r.obj, r.y) == (ref.status, ref.x, ref.obj, ref.y)
 
 
 def test_premature_optimality_is_caught_by_the_dual_check(monkeypatch):

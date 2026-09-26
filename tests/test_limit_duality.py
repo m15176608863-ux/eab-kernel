@@ -330,8 +330,11 @@ def test_unequal_cohesion_row_duals_are_aligned_with_their_contacts():
 
 
 def test_three_d_row_duals_equal_each_contacts_cohesive_dissipation():
-    """(c) 的三维版：纯黏聚四角 cA = (1, 2, 1.5, 0.5)，推力过 cA 加权形心、切向基架对准推力：
-    唯一最优机构是沿推力的单位平动，第 i 行黏聚耗散 = cA_i·|v_t| = cA_i。"""
+    """(c) 的三维版：纯黏聚四角 cA = (1, 2, 1.5, 0.5)，推力过 cA 加权形心、切向基架对准推力。
+    沿推力的单位平动是一个最优机构，第 i 行黏聚耗散 = cA_i·|v_t| = cA_i——注入它，自校验必须通过。
+    **订正（2026-09-27）**：原说明写"唯一最优机构"，不成立。黏聚圆做了 k 边形线性化，对偶面上有一族最优机构
+    （LP 层改为精确之后实测：带转动的机构 row_duals = (0.969, 1.561, 1.801, 0.669)，同样通过自校验）；
+    旧门能过只因浮点层恰好选中了平动。对整个对偶面都成立的是：α = Σ cA、行对偶之和 = α（无恒载做功）、自校验通过。"""
     th = 0.3
     u = (cos(th), sin(th), 0.0)
     q = tuple(sum(cA * p[i] for p, cA in zip(_QUAD, _CA)) / sum(_CA) for i in range(2)) + (0.0,)
@@ -340,8 +343,13 @@ def test_three_d_row_duals_equal_each_contacts_cohesive_dissipation():
     live = wrench(u, q, o, 3)
     r = limit_load(cts, dead, live, dim=3, origin=o, k=8)
     assert r.alpha == pytest.approx(sum(_CA), rel=1e-12)
-    assert r.row_duals == pytest.approx(_CA, rel=1e-9)
+    assert sum(r.row_duals) == pytest.approx(r.alpha, rel=1e-12) and min(r.row_duals) >= 0.0
     assert check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
+    r.mechanism = list(u) + [0.0, 0.0, 0.0]                  # 关于 origin 的平动旋量：v = u、ω = 0
+    r.row_duals = list(_CA)
+    assert check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
+    r.row_duals = list(_CA[::-1])                              # 牙：行对偶错配，自校验必须不通过
+    assert not check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
 
 
 def test_check_duality_rejects_a_zero_mechanism():

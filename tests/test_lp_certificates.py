@@ -1,19 +1,26 @@
-"""M0.2 返修二（2026-09-27）的门：**求解器报出的每一种状态都带证书，判据里没有与问题无关的绝对量。**
+"""M0.2 LP 返修的门。契约（返修三，2026-09-27）：**LP 的答案对给定的浮点数据精确成立**。
 
-复核者对 43d1e50 的结论（一条 critical、三条 major）逐条对应这里的门：
-  · critical：舍入噪声线 ν ∝ κ(B) 在病态但合理的基上盖过真实约化成本——N-mm-MPa 单位的大岩块静默 infeasible、
-    不变性格子 α 偏低 67%。→ `test_rock_block_in_n_mm_mpa_units_matches_the_closed_form`、
-    `test_accuracy_against_the_exact_rational_optimum`；
-  · major：可分辨性上限"α ≤ 1e10·α_nat"在恒载 ≥ 1e6 时漏掉舍入驱动的 α = 5.4e15。
-    → `test_rounding_driven_load_factor_is_not_certified_at_any_dead_load`；
-  · major：LP 层喂旧写法（c·A 乘进列、力矩关于全局原点）时静默给错，0/48。
-    → `test_old_badly_scaled_limit_formulation_is_correct_or_loud`；
-  · minor：`_norm` 平方溢出。→ `test_extreme_load_magnitudes_do_not_overflow`；
-  · 新增契约：INFEASIBLE 必带经核验的 Farkas 证书。→ 前三个门。
+浮点修正单纯形只负责给候选（状态 + 基），有理数层在原始数据上精确核验：OPTIMAL 核原始可行 + 对偶可行
+（弱对偶即最优）、UNBOUNDED 核可行 + 射线、INFEASIBLE 核 Farkas；核验不过就用有理数单纯形从候选基接着走完。
+浮点层的一切阈值只影响速度。这一步之前的两轮（返修一：噪声线 ∝ κ(B)；返修二：六类相对阈值 + 容差版证书）
+都在复核里被找到了静默错——浮点阈值兑现不了"绝不静默给错"，这里不再尝试。
+
+复核者 reverify3（6fbc369）的发现逐条对应这里的门：
+  · critical（新回归）：荷载清洗用 |M|/|F| 当长度，近纯力偶把它撑到 1e16，恒载偏心被清零、α 静默偏高 2–3.8 倍
+    → `test_near_pure_couple_does_not_erase_the_dead_load_moment`（荷载清洗已撤回）；
+  · major：纯对角缩放把有界 LP 报 UNBOUNDED；残差/间隙噪声项放过行违约 67%、目标错 3.4 倍的解
+    → `test_reverify3_lp_counterexamples_are_answered_exactly`；
+  · major：最优性证书 ν ≤ 1 封顶，静默次优 1e-5..50% → `test_optimality_is_exact_when_the_step_is_huge`；
+  · major：容差版 Farkas 把相对差 1e-10 的可行 LP 报 INFEASIBLE → `test_nearly_parallel_rows_are_feasible_exactly`；
+  · major：可分辨性只查 optimal，UTM 与旋转框架下倾覆/无物可挡的块体报 unbounded
+    → `test_rounding_driven_unbounded_status_is_not_certified`、`test_status_is_frame_invariant_on_a_frictionless_floor`；
+  · major：工程坐标下的普通问题假抛错 → `test_far_site_ordinary_problems_do_not_raise`；
+  · 门的牙：精确层的每一种证书都有"浮点层说谎"的注入门（`test_a_lying_float_layer_cannot_change_the_answer`）。
+更早的（43d1e50 的 critical、res_probe、_norm 溢出）门保留。
 
 oracle 与被测代码不共用原语（纪律 A）：精确 LP（`_exact_max`）只用 Fraction、自带 Bland 两阶段，不碰 lp.py；
-极限分析的真值用闭式。唯一例外是精度门用 `_build_columns` 造同一个 LP——它核验的是**求解器**在给定 LP 上的精度，
-不是建模。
+极限分析的真值用闭式。精度门与三维扭转门用 `_build_columns` 造同一个 LP——它核验的是**求解器**在给定 LP 上的
+精度，不是建模。
 """
 
 import random
@@ -24,7 +31,7 @@ import pytest
 
 import eab.lp as lp
 from eab.limit import LimitContact, _build_columns, _shift_wrench, limit_load, wrench
-from eab.lp import INFEASIBLE, OPTIMAL, maximize, solve
+from eab.lp import INFEASIBLE, OPTIMAL, UNBOUNDED, maximize, solve
 
 
 # ---------------------------------------------------------------- 精确有理数 LP（独立 oracle）
@@ -120,26 +127,58 @@ def test_infeasible_status_carries_a_farkas_certificate(name):
     for j in range(len(c)):
         v = sum(y[i] * Fraction(A[i][j]) for i in range(len(A)))
         scale = sum(abs(y[i] * Fraction(A[i][j])) for i in range(len(A))) + ymax * max(abs(Fraction(A[i][j])) for i in range(len(A)))
-        assert v <= Fraction(1, 10 ** 9) * scale, (name, j, float(v))
-        assert v * 10 ** 6 <= yb or v <= 0, (name, j)      # 容差版证书也要远离"可行"：违约 ≪ yᵀb
+        assert v <= Fraction(1, 10 ** 9) * scale, (name, j, float(v))       # y 是精确证书舍入成浮点，只差舍入
 
 
-def test_farkas_verifier_rejects_non_certificates():
-    """`_farkas_verifies` 本身有牙：真证书过，取反、某列变正、yᵀb = 0 都不过。"""
-    A = [[1.0, 1.0], [1.0, 1.0]]
-    b = [1.0, 2.0]
-    ybar = [1.0, 1.0]
-    assert lp._farkas_verifies(A, b, [-1.0, 1.0], ybar)
-    assert not lp._farkas_verifies(A, b, [1.0, -1.0], ybar)          # yᵀb < 0
-    assert not lp._farkas_verifies(A, b, [0.0, 1.0], ybar)           # yᵀA_j = 1 > 0
-    assert not lp._farkas_verifies(A, [1.0, 1.0], [-1.0, 1.0], ybar)  # yᵀb = 0
+def test_exact_certificate_rejects_wrong_candidates():
+    """`_Exact.certify` 本身有牙：对的候选过，错的状态、次优基、不可行基、错的入基列都不过（返回 None）。"""
+    A = [[1.0, 1.0, 1.0, 0.0], [1.0, 3.0, 0.0, 1.0]]
+    b = [4.0, 6.0]
+    c = [-3.0, -2.0, 0.0, 0.0]                      # 最优基 {x1, s2}：x = (4, 0, 0, 2)，obj = −12
+    X = lp._Exact(A, b, c)
+    good = X.certify(OPTIMAL, [0, 3], -1, 0)
+    assert good is not None and good.obj == -12.0 and good.x == [4.0, 0.0, 0.0, 2.0]
+    assert X.certify(OPTIMAL, [2, 3], -1, 0) is None           # 可行但次优（x1 的约化成本 −3）
+    assert X.certify(OPTIMAL, [1, 3], -1, 0) is None           # x2 = 4、s2 = −6：不可行
+    assert X.certify(INFEASIBLE, [0, 3], -1, 0) is None        # 可行问题没有 Farkas 证书
+    assert X.certify(UNBOUNDED, [0, 3], 1, 0) is None          # 有界问题没有无界射线
+    Xi = lp._Exact([[1.0, 1.0], [1.0, 1.0]], [1.0, 2.0], [1.0, 0.0])
+    assert Xi.certify(INFEASIBLE, [0, 3], -1, 0) is not None   # y = (−1, 1)：yᵀA = 0、yᵀb = 1 > 0
+    assert Xi.certify(INFEASIBLE, [2, 3], -1, 0) is None       # 人工基的 y = (1, 1)：yᵀA_j = 2 > 0，不是证书
+    assert Xi.certify(OPTIMAL, [0, 3], -1, 0) is None          # 人工变量 = 1 ≠ 0
 
 
-def test_an_unverified_infeasibility_is_never_reported(monkeypatch):
-    """接线的牙：证书核验不过时 solve 必须抛错，不许报 INFEASIBLE（旧版一阶段 Σ人工 > 1e-8 就直接报）。"""
-    monkeypatch.setattr(lp, "_farkas_verifies", lambda *a: False)
-    with pytest.raises(RuntimeError, match="Farkas"):
-        solve(*INFEASIBLE_LPS["parallel rows"])
+LIES = ["infeasible", "unbounded", "suboptimal", "raise", "garbage-basis"]
+
+
+@pytest.mark.parametrize("lie", LIES)
+@pytest.mark.parametrize("case", ["optimal", "infeasible", "unbounded"])
+def test_a_lying_float_layer_cannot_change_the_answer(monkeypatch, lie, case):
+    """精确层的牙：把浮点层换成一个**说谎**的候选（报错状态、次优基、抛错、编号越界的基），solve 的答案仍须
+    与真实答案逐位相同。去掉精确核验（直接信候选）这道门就红。"""
+    LPS = {"optimal": ([[1.0, 1.0, 1.0, 0.0], [1.0, 3.0, 0.0, 1.0]], [4.0, 6.0], [-3.0, -2.0, 0.0, 0.0]),
+           "infeasible": ([[1.0, 1.0], [1.0, 1.0]], [1.0, 2.0], [1.0, 0.0]),
+           "unbounded": ([[1.0, -1.0, 0.0], [0.0, 1.0, -1.0]], [1.0, 0.0], [-1.0, 0.0, 0.0])}
+    A, b, c = LPS[case]
+    truth = solve(A, b, c)
+    assert truth.status == case and _exact_max(A, b, [-v for v in c])[0] == {"optimal": "optimal", "infeasible":
+                                                                              "infeasible", "unbounded": "unbounded"}[case]
+    m, n = len(A), len(c)
+
+    def liar(*a, **k):
+        if lie == "raise":
+            raise RuntimeError("float layer broke down")
+        if lie == "infeasible":
+            return INFEASIBLE, list(range(n, n + m)), -1, 0
+        if lie == "unbounded":
+            return UNBOUNDED, list(range(m)), 0, 0
+        if lie == "suboptimal":
+            return OPTIMAL, list(range(n, n + m)), -1, 0
+        return OPTIMAL, [n + m + 5] * m, -1, 0
+
+    monkeypatch.setattr(lp, "_float_solve", liar)
+    r = solve(A, b, c)
+    assert r.status == truth.status and r.x == truth.x and (r.obj == truth.obj or case != "optimal"), (lie, case, r)
 
 
 # ---------------------------------------------------------------- LP 层：旧写法（尺度极差）要么对、要么抛
@@ -190,29 +229,18 @@ OLD_GRID = [(L, c, seed, off) for L in (20.0, 200.0) for c in (1e5, 1e6, 1e7) fo
             for off in ((0.0, 0.0, 0.0), (1000.0, 2000.0, 300.0), (-3.1e4, 7.3e3, 1.2e3), (5e5, 4.2e6, 300.0))]
 
 
-def test_old_badly_scaled_limit_formulation_is_correct_or_loud():
-    """lp.py 的契约对任何调用方成立，不靠 limit_load 的形心平移兜底：48 个旧写法 LP，每个要么 α 对到 1e-7，
-    要么抛 RuntimeError，**绝不**静默给出错的 optimal / infeasible / unbounded（43d1e50：0/48 对、静默 infeasible；
-    本次返修前一版：静默 unbounded——射线核验的噪声项 1e-14·max(行尺度) 吞掉了右端项 1 的黏聚上限行）。
-    另外要求原点处、不转动的 6 例全对：不能靠"一律抛错"过这道门。"""
-    silent, correct = [], 0
-    must = []
+def test_old_badly_scaled_limit_formulation_is_answered_exactly():
+    """lp.py 的契约对任何调用方成立，不靠 limit_load 的形心平移兜底：48 个旧写法 LP（c·A 乘进列、力矩关于全局原点，
+    尺度跨 ~20 个量级）**全部**答对到 1e-9，不许抛错（43d1e50：0/48 对、静默 infeasible；返修二：28 对 20 抛错）。"""
+    wrong = []
     for L, c, seed, off in OLD_GRID:
         R = _rot(seed) if seed is not None else ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
         cts, dead, live, full = _block(L, c, 0.6, off, R)
         A, b, cc, ia = _old_formulation(cts, dead, live)
-        try:
-            r = maximize(A, b, cc)
-        except RuntimeError:
-            continue
-        ok = r.status == OPTIMAL and abs(r.x[ia] - full) <= 1e-7 * full
-        correct += ok
-        if not ok:
-            silent.append((L, c, seed, off, r.status, r.x[ia] if r.status == OPTIMAL else None, full))
-        if seed is None and off == (0.0, 0.0, 0.0):
-            must.append(ok)
-    assert silent == [], silent[:4]
-    assert must and all(must), must
+        r = maximize(A, b, cc)
+        if not (r.status == OPTIMAL and abs(r.x[ia] - full) <= 1e-9 * full):
+            wrong.append((L, c, seed, off, r.status, r.x[ia] if r.status == OPTIMAL else None, full))
+    assert wrong == [], wrong[:4]
 
 
 # ---------------------------------------------------------------- 可分辨性：舍入驱动的 α 在任何恒载下都不认证
@@ -290,7 +318,7 @@ def _nmm_block(Lm, c_MPa, off_m):
 @pytest.mark.parametrize("off", [(0.0, 0.0, 0.0), (3e3, 5e3, 200.0)])
 def test_rock_block_in_n_mm_mpa_units_matches_the_closed_form(Lm, c_MPa, off):
     """复核者的 critical：43d1e50 上 300–1000 m 的岩块静默报 infeasible、200 m 的抛自校验错（58752a5 答对）。
-    根因是噪声线 ν ∝ κ(B) 盖过真约化成本；现在最优性按"目标的相对改进量"判（`_Revised.dual_violation`）。"""
+    根因是噪声线 ν ∝ κ(B) 盖过真约化成本；现在 LP 层对给定数据精确。"""
     cts, dead, live, full = _nmm_block(Lm, c_MPa, off)
     r = limit_load(cts, dead, live, dim=3, k=8)
     assert r.status == "optimal" and r.alpha == pytest.approx(full, rel=1e-9), (r.status, r.alpha, full)
@@ -384,16 +412,183 @@ def _exact_alpha(cts, dead, live, dim, k):
 
 
 # 09-27 对 3000 例做精确对照时误差最大的几例（43d1e50 在其中最多偏低 5.3e-7，58752a5 最多 1.07e-7；
-# 最优性判据改为"目标的相对改进量"之后最多偏低 1.03e-8、偏高 7.5e-13）
-SI_WORST = [(1, 1149), (1, 1455), (1, 1071), (1, 1333), (1, 14), (2, 92), (2, 1033), (2, 1058), (2, 261), (2, 64)]
+# 返修二在全部 3000 例上最多偏低 2.56e-8——seed 2 #1314；返修二的提交说明写"1.03e-8"只对 344 例子集成立，那是错的）
+SI_WORST = [(1, 1149), (1, 1455), (1, 1071), (1, 1333), (1, 14), (2, 92), (2, 1033), (2, 1058), (2, 261), (2, 64), (2, 1314)]
 
 
 @pytest.mark.parametrize("seed,index", SI_WORST)
 def test_accuracy_against_the_exact_rational_optimum(seed, index):
-    """α 与同一 LP 的精确有理数最优值比：偏低 ≤ 3e-8，偏高（不安全一侧）≤ 1e-11。"""
+    """α 与同一 LP 的精确有理数最优值比：只差最后一次舍入（≤ 4e-16）。"""
     cts, dead, live, dim, k = _si_case(seed, index)
     exact = _exact_alpha(cts, dead, live, dim, k)
     r = limit_load(cts, dead, live, dim=dim, k=k)
     assert r.status == "optimal"
     rel = (r.alpha - exact) / exact
-    assert -3e-8 <= rel <= 1e-11, (seed, index, r.alpha, exact, rel)
+    assert abs(rel) <= 4e-16, (seed, index, r.alpha, exact, rel)
+
+
+# ---------------------------------------------------------------- reverify3（6fbc369 的复核）
+
+REVERIFY3_LPS = {
+    'garbage_rowscaled_value_3.4x': ([[-8.368754207750232e-12, 6831982296.599667, 8201.28523767056, 26030.844651961896, 0.0, 631541088.217536, 302777439689654.2, 4.573089731011056e-09], [-1.347377950984315e-10, -1.0064598389061568e-05, 7.684668012815144e-12, 0.0, 7.882424472748099e-15, 9.303606395853716e-07, -4.652650149358183e-13, 1.347377950984315e-10], [0.0, 2.744347610749496e-11, 0.11406848400927411, 0.0, -3.900130356638073e-05, 2761.9886132341853, 1.2686536340010844e-06, -4.0]],
+        [981440.6126003581, 4.181001142174844e-10, -10.801702031015154],
+        [2.0, 149395.3256650662, 0.22813696801854821, 2.0, -4.6185326022636316e-05, -2761.9886132341853, 13812457435.44855, -1.0]),
+    'garbage_rowscaled_value_13pct': ([[0.04957547721837632, 0.0, 0.0, 0.0387647679846757, -1.7357993092318347e-06, 0.3874393396707602, 0.0], [4.608321653021526e-11, 4.4356506397002795e-22, -5.066942811348993e-13, 3.494455185457507e-13, -3.49501655919656e-15, -5.221858797978847e-10, 1.3943811976221881e-08], [-19293.85956831491, 6.49340484246648e-07, -53.03497151655614, 0.0, 3.9742141583131487, -88706.50547086835, 0.0], [-7.519248443658545e-11, 1.0122500183621948e-21, 1.0334457074888127e-13, 9.017367238279508e-11, -6.1953604500650626e-15, 1.0371272541543693e-09, 2.63876062441034e-24], [-314.5973558671834, -7.427400942273327e-09, -1.2219675661763816, 184.63815033856812, 0.06818783681375735, 2529.550340366131, 0.0]],
+        [5132212.064735526, -0.025378898724736098, 36368394286113.66, 0.058858236355711774, -155371213176.41406],
+        [0.0, -1.34621169382412e-11, 0.0027488005356715735, 1.0, -8.239334684159824e-05, 17.442411566726367, 382.07924347702243]),
+    'pure_scaling_bounded_reported_unbounded_A': ([[-2407427058840.042, -2.0, 2.9418126137105775e-12, -676085418712.8226, 0.5, 0.0, -2.0, 6.493052856440445e-05, 16951.97540822329], [-1.4130265688361896e+20, 134158790.09181298, 0.0003946700209322451, -4.535140088661453e+19, -234777882.66067272, 0.0, 134158790.09181298, -8711.001152222403, 284282063804.17554], [-18.284938064468314, 0.0, 8.937485560187618e-23, -0.6418771838829093, -3.0380879864793826e-11, -5.3166539763389195e-11, -3.0380879864793826e-11, 1.7260657643886435e-15, 0.0], [-9.128466657813816e+16, -37917.93659664247, -1.7847594266540918e-06, 4.486258707116774e+16, 151671.74638656987, 0.0, -303343.49277313973, -39.392506644665126, 642783928.716853]],
+        [-0.025043375347237183, -1414647.9732212536, -6.106740322083484e-13, -2998.7151113130267],
+        [335624119848.9495, 0.8364717475859764, 0.0, 0.0, 1.3941195793099606, 0.2788239158619921, -0.06970597896549803, 5.4312552699948543e-05, 0.0]),
+    'pure_scaling_bounded_reported_unbounded_B': ([[-140260389997.24377, -1122083119977.9502, 1790315942278021.2, 0.0, 1016480.2598825705, 0.0, -958050.809908178], [1.2257174598462264e-10, -2.451434919692453e-10, 0.0, 0.012739675793535464, 5.55180618950751e-16, 176.82383769074397, -5.980201767926822e-17], [0.5, 0.5, -1595.528807449846, 0.0, -9.058867759302405e-07, -120217915549.72736, 0.0], [2.0, -4.0, -1595.528807449846, 0.0, -9.058867759302405e-07, 2404358310994.547, 2.4394699283622322e-06]],
+        [-4838983454904.91, 2.1450055547308964e-10, -0.25, 5.75],
+        [-6.720386958197493e-09, -6.720386958197493e-09, 5.361285494507172e-06, 0.17462334073563945, 0.0, 2423.732735406226, 0.0]),
+}
+
+
+@pytest.mark.parametrize("name", sorted(REVERIFY3_LPS))
+def test_reverify3_lp_counterexamples_are_answered_exactly(name):
+    """复核者的 LP 层反例（来源 reverify3/lp_defect_cases.json）：纯对角缩放的有界 LP 曾报 UNBOUNDED；
+    垃圾元 + 行缩放 6.7e-11 时残差/间隙噪声项放过行违约 67%、目标错 3.4 倍（另一例错 13%）。答案须与精确最优逐位一致。"""
+    A, b, c = REVERIFY3_LPS[name]
+    st, obj = _exact_max(A, b, [-v for v in c])
+    r = solve(A, b, c)
+    assert st == "optimal" and r.status == OPTIMAL
+    assert r.obj == float(-obj), (name, r.obj, float(-obj))
+
+
+@pytest.mark.parametrize("eta", [1e-5, 1e-8, 1e-10])
+@pytest.mark.parametrize("d", [1e-10, 5e-11, 1e-11])
+def test_optimality_is_exact_when_the_step_is_huge(eta, d):
+    """min −x1 + x2 + (1−d)x3，x1 − x2 − x3 = 1，ηx2 + ηx3 + s = 1：约化成本 −d 的列步长 1/η。返修二的最优性证书
+    把"还能改进多少"估成 |r_j|·ν_j（ν ≤ 1），漏掉 d/η 的改进，静默次优 1e-5..50%。"""
+    A = [[1.0, -1.0, -1.0, 0.0], [0.0, eta, eta, 1.0]]
+    for c in ([-1.0, 1.0, 1.0 - d, 0.0], [-1.0, 1.0 - d, 1.0, 0.0]):              # 两种列序
+        st, obj = _exact_max(A, [1.0, 1.0], [-v for v in c])
+        r = solve(A, [1.0, 1.0], c)
+        assert st == "optimal" and r.status == OPTIMAL and r.obj == float(-obj), (eta, d, r.obj, float(-obj))
+
+
+@pytest.mark.parametrize("d", [1e-6, 1e-8, 1e-10, 1e-11, 1e-12, 1e-13])
+def test_nearly_parallel_rows_are_feasible_exactly(d):
+    """x1 − x2 = 1、−x1 + (1+d)x2 − s = 0、min x2：浮点数据上精确最优 1/((1+d) − 1)。返修二的容差版 Farkas
+    （列判据 1e-9 相对）把 d ≤ 1e-10 报成 INFEASIBLE。"""
+    A = [[1.0, -1.0, 0.0], [-1.0, 1.0 + d, -1.0]]
+    st, obj = _exact_max(A, [1.0, 0.0], [0.0, -1.0, 0.0])
+    r = solve(A, [1.0, 0.0], [0.0, 1.0, 0.0])
+    assert st == "optimal" and r.status == OPTIMAL and r.obj == float(-obj), (d, r.status, r.obj)
+
+
+@pytest.mark.parametrize("xg", [0.5, 0.2, -0.3])
+@pytest.mark.parametrize("sign", [1.0, -1.0])
+def test_near_pure_couple_does_not_erase_the_dead_load_moment(xg, sign):
+    """复核者的 critical：活荷载 = 一个力 + 它转 π 后的力（合力只剩 sin π 的舍入残差、力偶 ∓1）。返修二的荷载清洗
+    用 L = |M|/|F| ~ 1e16 当长度，把恒载偏心的真实力矩当噪声清零，α 静默偏高 2 倍。闭式：绕一个支点倾覆，
+    α·1 = W·(1 − sign·xg)。"""
+    W, o = 10.0, (0.0, 0.0)
+    cts = [LimitContact((-1.0, 0.0), (0.0, 1.0), 0.5), LimitContact((1.0, 0.0), (0.0, 1.0), 0.5)]
+    dead = wrench((0.0, -W), (xg, 0.7), o, 2)
+    g = (cos(pi), sin(pi))
+    live = [a + bb for a, bb in zip(wrench((sign, 0.0), (0.0, 0.5), o, 2), wrench((sign * g[0], sign * g[1]), (0.0, -0.5), o, 2))]
+    assert live[1] != 0.0                                   # 前提：合力确实只剩舍入残差
+    r = limit_load(cts, dead, live, dim=2, k=8)
+    assert r.status == "optimal" and r.alpha == pytest.approx(W * (1.0 - sign * xg), rel=1e-12), (r.status, r.alpha)
+
+
+@pytest.mark.parametrize("xg,yg", [(0.0, 0.0), (0.7, 0.0), (0.7, 0.4), (-0.8, 0.5)])
+@pytest.mark.parametrize("off", [(0.0, 0.0, 0.0), (1e3, 2e3, 100.0)])
+def test_near_pure_torsion_does_not_erase_the_dead_load_moment(xg, yg, off):
+    """三维版：扭矩由一个力与它转 π 后的力构成，恒载偏心。真值用同一 LP 的精确有理数最优（返修二返回 6.788，真值 1.8）。"""
+    o = (0.0, 0.0, 0.0)
+    cts = [LimitContact((off[0] + sx, off[1] + 0.6 * sy, off[2]), (0.0, 0.0, 1.0), 0.6) for sx in (-1.0, 1.0) for sy in (-1.0, 1.0)]
+    dead = wrench((0.0, 0.0, -10.0), (off[0] + xg, off[1] + yg, off[2] + 0.5), o, 3)
+    g = (cos(pi), sin(pi), 0.0)
+    live = [a + bb for a, bb in zip(wrench((1.0, 0.0, 0.0), (off[0], off[1] + 0.5, off[2] + 0.3), o, 3),
+                                   wrench(g, (off[0], off[1] - 0.5, off[2] + 0.3), o, 3))]
+    exact = _exact_alpha(cts, dead, live, 3, 8)
+    r = limit_load(cts, dead, live, dim=3, k=8)
+    assert r.status == "optimal" and abs(r.alpha - exact) <= 4e-16 * exact, (r.alpha, exact)
+
+
+def _floor(W, H, a, T, press):
+    """无摩擦地面双接触，恒载 (H, −W)，活荷载沿地面法向压（θ = 3π/2 的舍入分量）或向上提；整体转 a、平移 T。"""
+    Rm = lambda v: (cos(a) * v[0] - sin(a) * v[1], sin(a) * v[0] + cos(a) * v[1])
+    P = lambda q: (Rm(q)[0] + T[0], Rm(q)[1] + T[1])
+    o = (0.0, 0.0)
+    cts = [LimitContact(P((x, 0.0)), Rm((0.0, 1.0)), 0.0) for x in (-1.0, 1.0)]
+    lv = (cos(3 * pi / 2), sin(3 * pi / 2)) if press else (0.0, 1.0)
+    return cts, wrench(Rm((H, -W)), P((0.0, 0.5)), o, 2), wrench(Rm(lv), P((0.0, 0.0)), o, 2)
+
+
+@pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+@pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+@pytest.mark.parametrize("press", [True, False])
+def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+    """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+    地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+    cts, dead, live = _floor(W, H, a, T, press)
+    r = limit_load(cts, dead, live, dim=2, k=8)
+    assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+
+
+@pytest.mark.parametrize("frame", [(0.0, (0.0, 0.0), 1.0, 1.0), (-2.2145790363256497, (0.0, 0.0), 1.0, 1.0),
+                                   (0.0, (456126.84150283627, 6015705.33931258), 1.0, 1.0),
+                                   (-2.2145790363256497, (456126.84150283627, 6015705.33931258), 0.8333772175908678, 1273009.369168711),
+                                   (-2.2145790363256497, (456126.84150283627, 6015705.33931258), 1.0, 1.0)])
+def test_rounding_driven_unbounded_status_is_not_certified(frame):
+    """57° 斜坡上的双接触块体，重心在底外——自重下必倾覆，对任何 α 都不可行；活荷载沿底面线水平推，对接触点
+    没有力矩。放到 UTM 坐标（并旋转、换单位）后，内部平移带进舍入级的力矩，浮点数据的精确 LP 变成"大 α 可行且无界"，
+    返修二报 unbounded（α = ∞，不安全）。无界结论要对最小可行荷载因子做可分辨性检查。"""
+    a, T, s, f = frame
+    raw = [((1.0, 0.0), (-0.8414709848078965, 0.5403023058681398), 1.0, 0.0),
+           ((1.5, 0.0), (-0.8414709848078965, 0.5403023058681398), 0.2, 1.0)]
+    Rm = lambda v: (cos(a) * v[0] - sin(a) * v[1], sin(a) * v[0] + cos(a) * v[1])
+    P = lambda q: tuple(s * Rm(q)[i] + T[i] for i in range(2))
+    o = (0.0, 0.0)
+    cts = [LimitContact(P(pp), Rm(n), mu, cohesion=(c * f / (s * s) if c else 0.0), area=(s * s if c else 0.0)) for pp, n, mu, c in raw]
+    dead = wrench(tuple(f * v for v in Rm((0.0, -10.0))), P((0.0, 0.7)), o, 2)
+    live = wrench(tuple(f * v for v in Rm((1.0, 0.0))), P((0.0, 0.0)), o, 2)
+    r = limit_load(cts, dead, live, dim=2, k=4)
+    assert r.status == "infeasible", (frame, r.status, r.alpha)
+
+
+def test_genuine_self_locking_stays_unbounded():
+    """反面：真正的自锁（μ = 0.5 的地面上向下压，陡于摩擦角）在任何框架下都是 unbounded，不许被可分辨性检查误伤。"""
+    for rot, t in ((0.0, (0.0, 0.0)), (0.37, (3e4, -2e3)), (-1.1, (5e5, 4e6))):
+        for b in (1.3, 1.5707963267948966):
+            r2 = lambda q: (cos(rot) * q[0] - sin(rot) * q[1], sin(rot) * q[0] + cos(rot) * q[1])
+            P = lambda q: tuple(r2(q)[i] + t[i] for i in range(2))
+            cts = [LimitContact(P((x, 0.0)), r2((0.0, 1.0)), 0.5) for x in (-1.0, 1.0)]
+            o = (0.0, 0.0)
+            r = limit_load(cts, wrench(r2((0.0, -10.0)), P((0.0, 0.0)), o, 2),
+                           wrench(r2((cos(b), -sin(b))), P((0.0, 0.0)), o, 2), dim=2, k=8)
+            assert r.status == "unbounded", (rot, t, b, r.status, r.alpha)
+
+
+def test_far_site_ordinary_problems_do_not_raise():
+    """返修二在工程坐标下对普通问题假抛错（"lost feasibility"、"phase 2 could not reach a verified optimal basis"），
+    58752a5 能答对。(1) limfuzz 种子 11 #428 缩到 0.3 m、放到 (69103, 632, −686) m、力 ×673；
+    (2) 1.6 km 块体在 ~3.7e5 m、旋转、离自锁 1e-6。"""
+    raw = [((-1.0, 0.6, 0.0), (0.29552020666133955, 0.0, 0.955336489125606), 0.5, 1.0),
+           ((1.0, 0.0, 0.0), (0.29552020666133955, 0.0, 0.955336489125606), 0.0, 0.0),
+           ((1.0, -0.6, 0.0), (0.0, 0.0, 1.0), 0.2, 1.0),
+           ((1.0, 0.0, 0.0), (0.22602632124962302, 0.19037934406737264, 0.955336489125606), 0.0, 0.0),
+           ((0.0, 0.0, 0.0), (0.0, 0.0, 1.0), 0.5, 0.0)]
+    T, s_, f = (69103.39558006787, 631.9118509093739, -686.3994450252582), 0.1588708301703475, 672.7007425936694
+    P = lambda q: tuple(s_ * q[i] + T[i] for i in range(3))
+    o = (0.0, 0.0, 0.0)
+    cts = [LimitContact(P(pp), n, mu, cohesion=(c * f / (s_ * s_) if c else 0.0), area=(s_ * s_ if c else 0.0)) for pp, n, mu, c in raw]
+    dead = wrench((0.0, 0.0, -10.0 * f), P((0.1, 0.0, 0.5)), o, 3)
+    live = wrench((0.5403023058681398 * f, 0.8414709848078965 * f, 0.0), P((0.0, 0.0, 0.0)), o, 3)
+    r = limit_load(cts, dead, live, dim=3, k=5)
+    assert r.status == "optimal" and r.alpha == pytest.approx(5.0851978197377745, rel=1e-9)
+    c446 = {"dead": [5.418618323048547, -1.1061630817624266, 8.33156520142934, -2045.4953791880591, 3074612.9626349164, 409539.74748117576],
+            "live": [0.4465721357977319, -0.5432124825482392, 0.7109806792964424, 222.71060203906802, 262360.5074112805, 200312.11867136968],
+            "n": (-0.5418618323048547, 0.11061630817624266, -0.8331565201429341),
+            "tg": (-0.08515729993178223, -0.9934255446176218, -0.07651092451088154),
+            "p": [(-367720.3723412959, 406.83661235054404, 508.7967332916722), (-369055.97619069595, 453.943791558735, 1383.6906502196396),
+                  (-367856.3975299352, -1180.0020640040568, 386.5827487255254), (-369192.00137933524, -1132.894884795866, 1261.4766656534928)]}
+    cts = [LimitContact(pp, c446["n"], 0.5, tangent=c446["tg"]) for pp in c446["p"]]
+    bb = pi / 2 - atan(0.5) - 1e-6
+    exact = 0.5 * 10 / (cos(bb) - 0.5 * sin(bb))
+    r = limit_load(cts, c446["dead"], c446["live"], dim=3, k=8)
+    assert r.status == "optimal" and abs(r.alpha - exact) <= (r.uncertainty + 1e-9) * exact, (r.alpha, exact, r.uncertainty)

@@ -43,13 +43,17 @@ y_w 是动体的虚速度旋量（`LimitResult.mechanism`），y_r 是各黏聚�
     旧写法把 c·A 乘进列里，列均衡后上限行的系数 ~ 1/(c·A·力臂)，SI 单位下落到阈值以下。
 所有判据（活动接触、容许性、互补、间隙）都是**相对**的。门：tests/test_invariance_limit.py（纪律 F）。
 
-**可分辨性（2026-09-27）**：浮点 LP 的"最优"可能完全靠荷载里舍入级的分量撑着（θ = π 的推力带 sin π = 1.22e-16
-的竖向分量，α = 8.17e15）。两道关：
-  · 进 LP 之前，与 0 在输入精度内不可区分的荷载分量（≤ 4u 的量级，`_wrench_rounding` 不含坐标项）置 0（`_clean`）；
-  · 解出之后，算 α 对活荷载**输入舍入**的相对不确定度 U = Σ|y_i|·e_i / |yᵀW_live|（`_live_uncertainty`；
-    e_i 含调用方在工程坐标上算力矩带进的 u·|p|·|F|），报在 `LimitResult.uncertainty`。U > 1e-6 不认证：
-    把活荷载沿最削弱驱动的方向推 16 倍舍入就不可行（带 Farkas 证书）⇒ 报 infeasible，否则抛 RuntimeError。
-  近自锁的真实大荷载因子 U ≈ 4u/余量，离自锁 1e-9 以内都照常认证。
+**可分辨性（2026-09-27）**：LP 层对给定浮点数据**精确**（见 lp.py），但数据本身可能带着舍入级的分量——
+θ = π 的推力带 sin π = 1.22e-16 的竖向分量，浮点数据的精确最优是 α = 8.17e15，物理上是荒谬值。
+解出之后算 α 对活荷载**输入舍入**的相对不确定度 U = Σ|y_i|·e_i / |yᵀW_live|（`_live_uncertainty`；
+e_i 见 `_wrench_rounding`，含调用方在工程坐标上算力矩带进的 u·|p|·|F|），报在 `LimitResult.uncertainty`。
+U > 1e-6 不认证：把活荷载沿最削弱驱动的方向推 16 倍舍入就（带精确 Farkas 证书地）不可行 ⇒ 报 infeasible，
+否则抛 RuntimeError。近自锁的真实大荷载因子 U ≈ 4u/余量。荷载进 LP 之前**不做清洗**（09-27 一度把 4u 以内的
+分量置 0，清洗用的长度 |M|/|F| 在近纯力偶上被撑到 1e16，把真实力矩清掉、α 静默偏高 2–3.8 倍，已撤回）。
+诚实边界：U 只计活荷载的舍入；恒载与接触法向的舍入不计，所以 α → 0 的近极限平衡态上 α 的相对精度可能
+远差于 U（复核者实测 α ~ 1e-11 时 1e-5 量级），那里应看 α 的绝对量。可行性本身落在刀刃上时（浮点数据精确不可行、
+差 1e-12 又可行，或反过来推 16 倍舍入就不可行），状态按数据精确给出、报 infeasible——偏保守一侧（宽生成器 limfuzz
+每 3000 例约 5 例，09-27 逐例用独立有理数 oracle 核过）。
   门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes、tests/test_lp_certificates.py。
 
 ## 诚实条款
@@ -290,45 +294,16 @@ _FLIP = 16.0           # "分辨率内不可行"的扰动幅度：活荷载各�
 _U_IN = 4.0 * 2.0 ** -53   # 调用方构造荷载旋量（三角函数、叉积、平移）的相对舍入量级
 
 
-def _load_length(dead_c: list[float], live_c: list[float], dim: int, arm: float) -> float:
-    """荷载的特征长度 L = max(arm, |M_dead|/|F_dead|, |M_live|/|F_live|)（内部参考点下）。
+def _wrench_rounding(w: list[float], dim: int, R: float) -> list[float]:
+    """旋量各分量（内部参考点下）的**输入舍入量级** e_i。
 
-    arm = 接触点到形心的最大距离；单接触时 arm = 0，用荷载自身的力臂顶上，否则力矩分量的舍入会被尺度 0 藏起来。"""
-    fd, fl = _norm(dead_c[:dim]), _norm(live_c[:dim])
-    md, ml = _norm(dead_c[dim:]), _norm(live_c[dim:])
-    L = arm
-    if fd > 0.0:
-        L = max(L, md / fd)
-    if fl > 0.0:
-        L = max(L, ml / fl)
-    return L
-
-
-def _wrench_rounding(w: list[float], dim: int, L: float, C: float) -> list[float]:
-    """旋量各分量的**输入舍入量级** e_i（内部参考点下）。
-
-    力分量 e_F = u·s_F；力矩分量 e_M = u·(ŝ_M + s_F·C)，u = _U_IN。其中 s_F = |F| + |M|/L，ŝ_M = s_F·L
-    （L = 0 时 s_F = |F|、ŝ_M = |M|），C = 接触点到调用方 origin 的最大距离——调用方关于 origin 算力矩 p × F 时
-    带进 u·|p|·|F| 的舍入，块体放在工程坐标上（C/L ~ 1e6）时这一项主导。对刚体运动与单位缩放按量纲协变。"""
+    力分量 e_F = u·|F|（旋转框架里每个分量都带整个力的舍入），力矩分量 e_M = u·(|M| + |F|·R)，u = _U_IN，
+    R = 接触点到调用方 origin 的最大距离：调用方关于 origin 算力矩 p × F、以及内部平移 M − d × F，
+    各带进 ~u·|p|·|F| 的舍入，块体放在工程坐标上时这一项主导。**不用 |M|/|F| 当长度**（2026-09-27 订正）：
+    近纯力偶的荷载只剩舍入级的合力，|M|/|F| 被撑到 ~1e16，曾把另一荷载的真实力矩当噪声清零、α 静默偏高
+    2–3.8 倍（复核者 reverify3 的 critical）。对刚体运动与单位缩放按量纲协变。"""
     fl, ml = _norm(w[:dim]), _norm(w[dim:])
-    if L > 0.0:
-        sF = fl + ml / L
-        sM = sF * L
-    else:
-        sF, sM = fl, ml
-    return [_U_IN * sF] * dim + [_U_IN * (sM + sF * C)] * (len(w) - dim)
-
-
-def _clean(w: list[float], e: list[float]) -> list[float]:
-    """|w_i| ≤ e_i 的分量置 0：它们与 0 在输入精度内不可区分（sin π = 1.22e-16 这种）。
-
-    清洗用的 e_i **不含**坐标项（C = 0，只清 4u 量级的纯舍入垃圾）：含坐标项时远坐标块体（C/L ~ 1e5）上
-    1e-10·F·L 量级的真实力矩分量也被清掉，α 偏离精确浮点最优 1.7e-7（09-27 精确有理数对照实测）。
-    坐标项只进不确定度 U（见 `_live_uncertainty`），不改输入。
-
-    2026-09-27：θ = π 的推力关于形心的力矩只剩 6.1e-17 这一个垃圾元时，LP 的行均衡把它放大成 O(1)、
-    把右端项的全局归一整体带偏，一阶段在舍入级的负值上"修复可行性"失败而抛错（宽模糊 2/1000）。"""
-    return [0.0 if abs(v) <= ei else v for v, ei in zip(w, e)]
+    return [_U_IN * fl] * dim + [_U_IN * (ml + fl * R)] * (len(w) - dim)
 
 
 def _live_uncertainty(y: list[float], live_c: list[float], e: list[float]) -> float:
@@ -376,16 +351,12 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     dvec = tuple(oc[i] - origin[i] for i in range(dim))
     dead_c = _shift_wrench(list(dead), dvec, dim)
     live_c = _shift_wrench(list(live), dvec, dim)
-    # 输入舍入以内的荷载分量置 0（见 `_clean`），不确定度 U 用同一个舍入模型（见下面"可分辨性"）
-    arm = max((_norm(tuple(ct.point[i] - oc[i] for i in range(dim))) for ct in contacts), default=0.0)
-    Cmag = max((_norm(tuple(ct.point[i] - origin[i] for i in range(dim))) for ct in contacts), default=0.0)
-    Lc = _load_length(dead_c, live_c, dim, arm)
-    dead_c = _clean(dead_c, _wrench_rounding(dead_c, dim, Lc, 0.0))
-    live_c = _clean(live_c, _wrench_rounding(live_c, dim, Lc, 0.0))
-    e_in = _wrench_rounding(live_c, dim, Lc, Cmag)
+    # 活荷载的输入舍入量级（不确定度 U 用，见下面"可分辨性"）。荷载本身**不做任何清洗**。
+    Rmag = max((_norm(tuple(ct.point[i] - origin[i] for i in range(dim))) for ct in contacts), default=0.0)
+    e_in = _wrench_rounding(live_c, dim, Rmag)
     C = _build_columns(contacts, oc, dim, k, unit_cohesion=True)
 
-    def _solve(live_v: list[float]):
+    def _solve(live_v: list[float], sense: float = 1.0):
         cols = C.cols + [live_v]                       # α 也是一个非负变量
         ncol = len(cols) + C.n_rows                    # 末尾追加各黏聚行的松弛变量
         A = [[cols[j][i] if j < len(cols) else 0.0 for j in range(ncol)] for i in range(nw)]
@@ -398,37 +369,63 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
             row[len(cols) + r_i] = 1.0                 # 松弛
             A.append(row)
             b.append(C.cap[r_i])                       # 力的单位：Σμ_coh + s = c·A
-        c = [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows
+        c = [0.0] * len(C.cols) + [sense] + [0.0] * C.n_rows      # sense = −1：最小可行荷载因子
         return maximize(A, b, c) if lp_tol is None else maximize(A, b, c, tol=lp_tol)
 
+    ia = len(C.cols)
+
+    def _resolvable(res, sense: float):
+        """(U, 判定, 迭代数)：判定 ∈ {"ok", "infeasible", "unresolved"}，见下面"可分辨性"注释。"""
+        a0 = res.x[ia]
+        y = list(res.y[:nw])
+        U0 = _live_uncertainty(y, live_c, e_in)
+        if U0 <= _UNCERTAIN:
+            return U0, "ok", 0
+        drive = sum(yi * li for yi, li in zip(y, live_c))
+        sgn = 1.0 if drive > 0.0 else -1.0
+        push = [sgn * (1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei for yi, ei in zip(y, e_in)]
+        rm = _solve([li - pi for li, pi in zip(live_c, push)], sense)
+        rp = _solve([li + pi for li, pi in zip(live_c, push)], sense)
+        its = rm.iterations + rp.iterations
+        if "infeasible" in (rm.status, rp.status):
+            return U0, "infeasible", its
+        if rm.status == OPTIMAL and rp.status == OPTIMAL and a0 > 0.0:
+            U = max(abs(rm.x[ia] - a0), abs(rp.x[ia] - a0)) / (_FLIP * a0)
+            return U, ("ok" if U <= _UNCERTAIN else "unresolved"), its
+        return U0, "unresolved", its
+
     r = _solve(live_c)
-    if r.status != OPTIMAL:
-        return LimitResult(r.status, float("inf") if r.status == UNBOUNDED else float("nan"),
-                           [], [], iterations=r.iterations)
-    alpha = r.x[len(C.cols)]
-    # 可分辨性（2026-09-27 重写；原版 09-25 用"α 超过自然荷载尺度 1e10 倍"作上限，恒载大时漏）：
-    # α 的输入舍入不确定度 U（见 `_live_uncertainty`）超过 _UNCERTAIN 就不认证。再分两种：
-    # 沿"最削弱该机构驱动"的方向把活荷载各分量推 _FLIP 倍舍入量级（δ_i = −sign(y_i)·_FLIP·e_i，驱动一阶地
-    # 变为 1 − _FLIP·U）；若这一推就翻号（_FLIP·U > 1）且推后的问题带 Farkas 证书地不可行 ⇒ 如实报
-    # infeasible（"在 16 倍输入舍入之内不可行"，答案本来就靠舍入分量撑着）；否则抛错不认证
-    # （本意就很小的荷载分量、或离自锁 < ~1e-10 的几何：α 有意义但到不了 1e-6，不给假精度）。
+    # 可分辨性（2026-09-27）：LP 层对给定浮点数据精确，但数据可能带着舍入级的分量（θ = π 的推力带 sin π 的竖向分量，
+    # 浮点数据的精确最优是 α = 8.17e15）。一阶不确定度 U（见 `_live_uncertainty`）≤ _UNCERTAIN 即认证——任何一个
+    # 最优机构给出的一阶界都成立。U 超标时**不**凭这个机构下结论：对偶退化时最优机构不唯一，近奇异基上的机构分量
+    # 可达 ~1e16，一阶 U 会把普通推力判成"不可分辨"（09-27 实测宽模糊 2/1000）。改为把活荷载沿该机构最敏感的方向推
+    # ±_FLIP 倍舍入量级（δ_i = ∓sign(y_i)·_FLIP·e_i），精确重解两次，看 α 的**实际**变化（`_resolvable`）：
+    #   任一侧不可行（精确 Farkas）⇒ 报 infeasible（"在 16 倍输入舍入之内不可行"，答案靠舍入级分量撑着）；
+    #   两侧都 optimal 且实测相对变化 / _FLIP ≤ _UNCERTAIN ⇒ 认证，uncertainty 报实测值；
+    #   否则抛错不认证（本意就很小的荷载分量、离自锁 < ~1e-10 的几何：α 有意义但到不了 1e-6，不给假精度）。
+    # UNBOUNDED 同样要查（复核者 reverify3：UTM 坐标下会倾覆的块体报"承载无限"，靠的是内部平移带进的舍入级力矩）：
+    # 无界的前提是可行，所以对最小可行荷载因子 α_min 做同一检查；α_min = 0（不靠活荷载就可行）时无需检查。
     # 门：tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes（三个区间）、
-    # tests/test_lp_certificates.py（任意恒载下的舍入驱动、近自锁在报告的 U 之内）。
-    y_mech = list(r.y[:nw])
-    U = _live_uncertainty(y_mech, live_c, e_in)
-    if U > _UNCERTAIN:
-        if _FLIP * U > 1.0:
-            drive = sum(yi * li for yi, li in zip(y_mech, live_c))
-            sgn = 1.0 if drive > 0.0 else -1.0
-            live_p = [li - sgn * (1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei
-                      for li, yi, ei in zip(live_c, y_mech, e_in)]
-            try:
-                rp = _solve(live_p)
-            except RuntimeError:
-                rp = None
-            if rp is not None and rp.status == "infeasible":
-                return LimitResult("infeasible", float("nan"), [], [], iterations=r.iterations + rp.iterations,
-                                   uncertainty=U)
+    # tests/test_lp_certificates.py（任意恒载下的舍入驱动、近自锁在报告的 U 之内、退化机构不误判、UTM 倾覆）。
+    if r.status == UNBOUNDED:
+        rmin = _solve(live_c, -1.0)
+        U, verdict, its = 0.0, "ok", 0
+        if rmin.status == OPTIMAL and rmin.x[ia] > 0.0:
+            U, verdict, its = _resolvable(rmin, -1.0)
+        its += r.iterations + rmin.iterations
+        if verdict == "infeasible":
+            return LimitResult("infeasible", float("nan"), [], [], iterations=its, uncertainty=U)
+        if verdict == "unresolved":
+            raise RuntimeError(f"limit_load: unbounded capacity is not certified: the least feasible load factor "
+                               f"{rmin.x[ia]:.6e} has relative uncertainty {U:.1e} from input rounding (> {_UNCERTAIN:.0e})")
+        return LimitResult(UNBOUNDED, float("inf"), [], [], iterations=its, uncertainty=U)
+    if r.status != OPTIMAL:
+        return LimitResult(r.status, float("nan"), [], [], iterations=r.iterations)
+    alpha = r.x[ia]
+    U, verdict, its = _resolvable(r, 1.0)
+    if verdict == "infeasible":
+        return LimitResult("infeasible", float("nan"), [], [], iterations=r.iterations + its, uncertainty=U)
+    if verdict == "unresolved":
         raise RuntimeError(f"limit_load: load factor {alpha:.6e} has relative uncertainty {U:.1e} from input "
                            f"rounding (> {_UNCERTAIN:.0e}); it depends on rounding-level load components or "
                            f"near-self-locking geometry and is not certified")
