@@ -475,6 +475,14 @@ def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
 _U = 2.0 ** -53
 
 
+def _fl(v: Fraction) -> float:
+    """有理数 → 浮点（正确舍入）；超出浮点范围时给 ±inf 而不是抛 OverflowError（近奇异基上精确解可以超出范围）。"""
+    try:
+        return float(v)
+    except OverflowError:
+        return float("inf") if v > 0 else float("-inf")
+
+
 class _Exact:
     """原始数据的有理数副本（b 取负规则与 `_float_solve` 相同），以及三种状态的**精确证书**。
 
@@ -532,12 +540,13 @@ class _Exact:
                 s -= t
                 a += abs(t)
         E = (self.m + 4) * _U * a * 1.0625 + 1e-300
-        if s > E:
-            return 1, s
-        if s < -E:
-            return -1, s
+        if s == s and a < float("inf"):                    # 有非有限值（溢出）时误差界失效，一律交有理数
+            if s > E:
+                return 1, s
+            if s < -E:
+                return -1, s
         r = cost[j] - sum((y[i] * self.A[i][j] for i in range(self.m) if self.A[i][j] != 0), Fraction(0))
-        return (r > 0) - (r < 0), float(r)
+        return (r > 0) - (r < 0), _fl(r)
 
     def certify(self, status: str, basis: list[int], e: int, iters: int) -> LPResult | None:
         """精确核验候选；成立则返回（浮点化的）结果，不成立返回 None。
@@ -559,12 +568,12 @@ class _Exact:
             y = [sum((cb[i] * Binv[i][k] for i in range(m) if cb[i] != 0), zero) for k in range(m)]
             if not sum((yk * bk for yk, bk in zip(y, self.b)), zero) > 0:
                 return None
-            yf = [float(v) for v in y]
+            yf = [_fl(v) for v in y]
             zc, zf = [zero] * n, [0.0] * n                 # 以 0 为"成本"：yᵀA_j ≤ 0 ⇔ 0 − yᵀA_j ≥ 0
             for j in range(n):
                 if self.reduced_sign(zc, zf, y, yf, j)[0] < 0:
                     return None
-            yo = [float(-v if self.flip[i] else v) for i, v in enumerate(y)]
+            yo = [_fl(-v if self.flip[i] else v) for i, v in enumerate(y)]
             return LPResult(INFEASIBLE, [0.0] * n, float("nan"), yo, iters, list(basis))
         xB = [sum((r * bb for r, bb in zip(row, self.b) if r != 0), zero) for row in Binv]
         for i, j in enumerate(basis):
@@ -586,11 +595,11 @@ class _Exact:
             ray[e] = 1.0
             for i, j in enumerate(basis):
                 if j < n:
-                    ray[j] = float(-d[i])
+                    ray[j] = _fl(-d[i])
             return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [0.0] * m, iters, list(basis), ray)
         if status != OPTIMAL:
             return None
-        yf = [float(v) for v in y]
+        yf = [_fl(v) for v in y]
         inb = set(basis)
         for j in range(n):
             if j not in inb and self.reduced_sign(self.c, self.cf, y, yf, j)[0] < 0:
@@ -600,8 +609,8 @@ class _Exact:
             if j < n:
                 xe[j] = xB[i]
         obj = sum((cj * xj for cj, xj in zip(self.c, xe) if xj != 0), zero)
-        yo = [float(-v if self.flip[i] else v) for i, v in enumerate(y)]
-        return LPResult(OPTIMAL, [float(v) for v in xe], float(obj), yo, iters, list(basis))
+        yo = [_fl(-v if self.flip[i] else v) for i, v in enumerate(y)]
+        return LPResult(OPTIMAL, [_fl(v) for v in xe], _fl(obj), yo, iters, list(basis))
 
 
 def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], int, int]:
@@ -621,7 +630,7 @@ def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], 
         while True:
             cb = [cost[j] for j in basis]
             y = [sum((cb[i] * Binv[i][k] for i in range(m) if cb[i] != 0), zero) for k in range(m)]
-            yf = [float(v) for v in y]
+            yf = [_fl(v) for v in y]
             inb = set(basis)
             enter, best = -1, 0.0
             for j in allowed:
@@ -631,7 +640,7 @@ def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], 
                     sg, s = X.reduced_sign(cost, costf, y, yf, j)
                 else:                                   # 人工列 e_k：r = cost_j − y_k
                     r = cost[j] - y[j - n]
-                    sg, s = (r > 0) - (r < 0), float(r)
+                    sg, s = (r > 0) - (r < 0), _fl(r)
                 if sg < 0:
                     if bland:
                         enter = j
@@ -681,7 +690,7 @@ def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], 
         Binv = [[Fraction(int(i == k)) for k in range(m)] for i in range(m)]
         xB = list(X.b)
         cost1 = [zero] * n + [one] * m
-        run(Binv, basis, xB, cost1, [float(v) for v in cost1], list(range(N)), False)
+        run(Binv, basis, xB, cost1, [_fl(v) for v in cost1], list(range(N)), False)
         if any(basis[i] >= n and xB[i] != 0 for i in range(m)):
             return INFEASIBLE, basis, -1, pivots
     for i in range(m):                                # 把值为 0 的人工变量换出基（任意非零原变量元都行）
