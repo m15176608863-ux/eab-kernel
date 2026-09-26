@@ -585,7 +585,7 @@ _NEEDS_GEOM = pytest.mark.xfail(strict=True, reason=(
     "c*eps*C/l rounding floor -- vertex_cone_contains covers3.py:53-64 has the same pattern as edge_arc_contains:80); "
     "face-face contact VF covers sit on the cone boundary and are dropped once coordinates carry eps*C noise. "
     "Verified 2026-09-24: adding a c*eps*C/l floor to those two predicates alone turns all six cells green."))
-G2_MOTIONS = [pytest.param(s, tm, id=f"s{s:g}_t{tm:g}", marks=[_NEEDS_GEOM] if (s < 1.0 and tm > 0.0) else [])
+G2_MOTIONS = [pytest.param(s, tm, id=f"s{s:g}_t{tm:g}", marks=[])
               for s in (1e-3, 1.0, 1e3) for tm in (0.0, 1e3, 1e5)]
 
 
@@ -594,9 +594,19 @@ def _moved(d, s, tm):
                   for k, vs in d["verts"].items()}
 
 
-def _row_digest(r):
-    return (tuple(r["pair"]), r["legacy"], r["mine"], r["n_covers"], len(r["band"]), len(r["penetration"]),
-            len(r["violations"]))
+def _row_digest(r, blocks):
+    """行摘要。键 (动块, 顶点, 面号) 里的**面号**是凸包的枚举序，不是物理量：m2-geom 换成 Quickhull 后
+    面的排列随坐标变化（2026-09-27 合并时实测 cb2 顶面在恒等与 ×1e3 下分别是 5 号与 4 号）。所以面号换成
+    该面的**顶点集合**——夹具顶点编号在刚体运动与缩放下保持不变，这才是可比的身份。"""
+    def canon(keys, pair):
+        out = []
+        for vblk, vidx, gi in keys:
+            host = pair[1] if vblk == pair[0] else pair[0]
+            out.append((vblk, vidx, tuple(sorted(blocks[host].faces[gi]))))
+        return sorted(out)
+    pair = tuple(r["pair"])
+    return (pair, canon(r["legacy"], pair), canon(r["mine"], pair), r["n_covers"], len(r["band"]),
+            len(r["penetration"]), len(r["violations"]))
 
 
 @pytest.mark.parametrize("s,tm", G2_MOTIONS)
@@ -606,12 +616,13 @@ def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm
     窗口、带、容差随单位缩放。门必须照绿，块对、legacy/内核键、盖数、带/贯入/违规计数与恒等变换逐项相同。
     b6468f3 上 s=1e-3、|t| ≥ 1e3 六格全红（共面归并在原点系里量平面偏移，顶面两片三角不归并，面号错位）；
     本组修了拓扑那一半（凸包/归并挪到块局部坐标、容差抬到舍入下限），剩下的是内核 covers3 的法锥判据没有舍入下限
-    （面-面坐落的 VF 盖卡在锥边界上），属 m2-geom——六格标 strict xfail，别组修好即 XPASS 报红、逼合并者摘标记。"""
-    ref = [_row_digest(r) for r in compare(path)["rows"]]
+    （面-面坐落的 VF 盖卡在锥边界上），属 m2-geom——六格曾标 strict xfail。2026-09-27 合并：m2-geom 的 angular_floor
+    已补上，xfail 标记摘除；合并时另发现摘要用面号（凸包枚举序）不可比，改用面的顶点集合（见 _row_digest）。"""
+    ref = [_row_digest(r, load_case(path)[2]) for r in compare(path)["rows"]]
     d = json.loads(path.read_text(encoding="utf-8"))
     _moved(d, s, tm)
     p = tmp_path / f"{path.stem}_moved.json"
     p.write_text(json.dumps(d), encoding="utf-8")
     res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
     _assert_g2_gate(res, band=G2_BAND * s)
-    assert [_row_digest(r) for r in res["rows"]] == ref
+    assert [_row_digest(r, load_case(p)[2]) for r in res["rows"]] == ref

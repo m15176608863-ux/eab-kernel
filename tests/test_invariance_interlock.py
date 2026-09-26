@@ -206,7 +206,7 @@ def test_escape_tied_set_is_invariant_up_to_the_declared_resolution(rot, t, s, r
     """并列集（谓词分辨不开的接触盖）：分辨率不由舍入地板主导的格子上与参考**相同**；地板主导的格子
     （1e-3 的块放到 1e5 坐标）上分辨率更粗，只要求参考的并列盖一个不少，多出的每个都在声明的分辨带内。"""
     if (rot, t, s) == ("z0.7", 1e5, 1e-3):
-        request.applymarker(pytest.mark.xfail(strict=True, reason=_NEEDS_GEOM_COVERS))
+        pass  # 2026-09-27 合并：m2-geom 已修（该格 XPASS(strict)），xfail 摘除
     A, L = _ilock(rot, t, s)
     R = ROT_Z[rot]
     for off in OFFSETS:
@@ -240,7 +240,7 @@ def test_brute_oracle_is_exact_zero_at_rest_and_scales(rot, t, s):
 
 
 @pytest.mark.parametrize("rot,t,s", [
-    pytest.param("z0.7", 1e5, 1e-3, marks=pytest.mark.xfail(strict=True, reason=_NEEDS_GEOM_COVERS)),
+    pytest.param("z0.7", 1e5, 1e-3),  # 2026-09-27 合并：m2-geom 已修，xfail 摘除
     ("I", 1e5, 1e-3), ("I", 0.0, 1e3), ("z0.7", 1e3, 1.0)])
 def test_dilatancy_profile_is_rigid_motion_and_unit_invariant(rot, t, s):
     """dilatancy_profile：横移方向随旋转、δ 随缩放；h ×s、中心差分剪胀比不变、决定性盖标签逐字相同。
@@ -410,7 +410,7 @@ def test_margin_layer_is_rigid_motion_and_unit_invariant(name, rot, t, s, reques
     舍入级间距（1e-14 ≠ 0）；绝对容差下 1e5 坐标上 1e-3 的块另有 m2-geom 的格子（strict xfail）。"""
     reason = _margin_xfail(name, rot, t, s)
     if reason:
-        request.applymarker(pytest.mark.xfail(strict=True, reason=reason))
+        pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
     kind, A0, B0, d0, lab0, ties = _margin_ref(name)
     R = ROT_3[rot]
     A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
@@ -463,7 +463,7 @@ def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request
     **逐字相同**——舍入意义上同距的盖（平行面、平行棱）按枚举序裁决，不按舍入噪声。"""
     reason = _LABEL_XFAIL.get((name, rot, t, s))
     if reason:
-        request.applymarker(pytest.mark.xfail(strict=True, reason=reason))
+        pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
     _, A0, B0, d0, lab0, _ = _margin_ref(name)
     R = ROT_3[rot]
     A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
