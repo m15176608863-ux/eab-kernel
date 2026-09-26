@@ -154,24 +154,51 @@ def test_phase_one_rounding_noise_is_not_reported_as_infeasible():
         _certify(A, bs, c, r)
 
 
-def test_numerical_breakdown_raises_instead_of_returning_a_wrong_optimum(monkeypatch):
-    """lp.py 的声称（纪律 C）：基解若不再满足 Ax = b（表格失稳），solve 抛 RuntimeError。
-    这里人为在二阶段结束后把表格一行的右端项拨偏 0.1，模拟失稳。"""
+def test_numerical_breakdown_cannot_change_the_answer(monkeypatch):
+    """lp.py 的声称（纪律 C）：浮点层失稳不改变答案——答案来自有理数层对候选基的精确求解（返修三，2026-09-27；
+    此前的契约是"失稳即抛 RuntimeError"）。这里在二阶段核验之后把浮点基逆的第 0 行整体拨偏 0.1（缺陷注入到求解
+    路径内部，读出基解之前），答案必须与未注入时逐位相同。牙：让 solve 直接信浮点层读出的基解，这道门就红。"""
     import eab.lp as lp
 
-    real = lp._simplex_core
+    real = lp._certified_optimize
 
-    def corrupt(T, basis, ncols, *, allowed, tol, max_iter):
-        st, it = real(T, basis, ncols, allowed=allowed, tol=tol, max_iter=max_iter)
-        if allowed is None:                     # 二阶段
-            T[0][-1] += 0.1
-        return st, it
+    def corrupt(S, cost, allowed, tol, ray_ok, *, phase):
+        st, info = real(S, cost, allowed, tol, ray_ok, phase=phase)
+        if phase == 2:
+            S.Binv[0] = [v + 0.1 for v in S.Binv[0]]
+        return st, info
 
     A, b, c = _system(0)
-    assert solve(A, b, c).status == OPTIMAL
-    monkeypatch.setattr(lp, "_simplex_core", corrupt)
-    with pytest.raises(RuntimeError):
-        solve(A, b, c)
+    ref = solve(A, b, c)
+    assert ref.status == OPTIMAL
+    monkeypatch.setattr(lp, "_certified_optimize", corrupt)
+    r = solve(A, b, c)
+    assert (r.status, r.x, r.obj, r.y) == (ref.status, ref.x, ref.obj, ref.y)
+
+
+def test_premature_optimality_is_caught_by_the_dual_check(monkeypatch):
+    """lp.py 的声称（纪律 C）：OPTIMAL 必过与 tol 无关的对偶可行性核验（G6 minor 24 / major 1）。
+    牙：让二阶段的第一次定价谎报"没有入基列"（等价于把入基阈值放宽到无穷），核验必须发现约化成本为负、
+    继续迭代，最终结果过本文件的独立证书。"""
+    import eab.lp as lp
+
+    A, b, c = _system(3)
+    ref = solve(A, b, c)
+    _certify(A, b, c, ref)
+    real = lp._Revised.price
+    state = {"lied": False}
+
+    def lying_price(self, cost, y, allowed, tol):
+        if not allowed[-1] and not state["lied"]:        # 二阶段（人工列不许入基）第一次
+            state["lied"] = True
+            return -1
+        return real(self, cost, y, allowed, tol)
+
+    monkeypatch.setattr(lp._Revised, "price", lying_price)
+    r = solve(A, b, c)
+    assert state["lied"]
+    _certify(A, b, c, r)
+    assert r.obj == pytest.approx(ref.obj, rel=1e-12)
 
 
 @pytest.mark.parametrize("seed", SEEDS)

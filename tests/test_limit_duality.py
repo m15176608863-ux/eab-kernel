@@ -166,12 +166,45 @@ def test_slack_and_drive_complementarity_are_checked():
     d = _assert_duality(r, cts, dead, live, 2)
     assert r.row_duals == pytest.approx([0.0, 0.0], abs=1e-12)         # 转动机构在基面上无切向滑移
     r.row_duals = [0.5, 0.5]
-    assert check_duality(r, cts, dead, live, dim=2, origin=o)["complementarity"] >= 0.5 - 1e-12
+    # 订正（2026-09-25）：原断言 complementarity ≥ 0.5 绑的是旧归一化（|y_r| / G）。互补违约现以该行自身的
+    # 耗散量级 c·A·V̂ 为尺度（V̂ 为机构特征速度，见 limit._speed_scale），注入的 y_r = 0.5 相对 c·A = 100 为
+    # 0.5 / (100·V̂) ≈ 5e-3——仍比 tol = 1e-7 大四个数量级以上。牙没变，刻度换了：断言"远超容差且 ok 为假"。
+    dbad = check_duality(r, cts, dead, live, dim=2, origin=o)
+    assert dbad["complementarity"] > 1e3 * 1e-7 and not dbad["ok"]
     r.row_duals = [0.0, 0.0]
     r.mechanism = [2.0 * v for v in r.mechanism]
     d2 = check_duality(r, cts, dead, live, dim=2, origin=o)
-    assert d2["drive"] == pytest.approx(2.0) and d2["complementarity"] >= 1.0 - 1e-12
+    # 订正（2026-09-27）：驱动违约现按驱动点积自身的舍入尺度 max(1, Σ|y_i W_i|) 相对化（远坐标下平动与转动大量
+    # 相消，旧的绝对 |驱动 − 1| 把 2⁻²³ 的舍入判成违约）。放大 2 倍时尺度为 2，读数 |2 − 1| / 2 = 0.5，仍是容差的 5e6 倍。
+    assert d2["drive"] == pytest.approx(2.0) and d2["complementarity"] >= 0.5 - 1e-12 and not d2["ok"]
     assert d["complementarity"] < 1e-9
+
+
+def test_unused_cohesion_row_complementarity_is_checked_on_the_slack_branch():
+    """未用满的黏聚行 ⟹ y_r = 0，这条互补必须由 check_duality 的**松弛分支**报出来（复核者 R5：上面那道门注入的
+    y_r 经由活动黏聚列的功率被看到，把松弛分支整个删掉它照样绿）。
+
+    构造：两个无摩擦黏聚接触上的方块，活荷载竖直向上、过形心——纯提离，α = W 时**全零接触力**恰好平衡。
+    LP 在这个退化最优点上可以合法地选一对互相抵消的黏聚剪力（实测 L 用 +cA、R 用 −cA，两行用满），
+    所以这里把原始解换成同样最优的全零解（先核验它 ok），两行松弛都是满的。注入的 y_r 于是只能从松弛分支读出：
+    活动列路径没有受力列可看，驱动不变。
+    牙：把松弛分支删掉（`if slack > tol and yr[r_i] != 0.0` 恒假），complementarity 读 0，本门红。"""
+    W = 10.0
+    o = (0.0, 0.0)
+    cts = [LimitContact((-1.0, 0.0), (0.0, 1.0), 0.0, cohesion=100.0, area=1.0, label=("L",)),
+           LimitContact((1.0, 0.0), (0.0, 1.0), 0.0, cohesion=100.0, area=1.0, label=("R",))]
+    dead = wrench((0.0, -W), (0.0, 1.5), o, 2)
+    live = wrench((0.0, 1.0), (0.0, 1.5), o, 2)
+    r = limit_load(cts, dead, live, dim=2, origin=o)
+    assert r.status == "optimal" and r.alpha == pytest.approx(W, rel=1e-12)
+    assert r.row_duals == pytest.approx([0.0, 0.0], abs=1e-12)
+    r.lambdas = [0.0] * len(r.lambdas)                                  # 同样最优的全零原始解
+    d = check_duality(r, cts, dead, live, dim=2, origin=o)
+    assert d["ok"] and d["complementarity"] < 1e-9, d
+    for row in range(2):
+        r.row_duals = [0.5 if i == row else 0.0 for i in range(2)]
+        dbad = check_duality(r, cts, dead, live, dim=2, origin=o)
+        assert dbad["complementarity"] > 1e3 * 1e-7 and not dbad["ok"], (row, dbad)
 
 
 def test_argument_shape_guards():
@@ -199,3 +232,132 @@ def test_mechanism_admissibility_accounts_for_cohesion_rows():
     assert mechanism_is_admissible(r.mechanism, cts, dim=2, origin=o, row_duals=r.row_duals)
     assert not mechanism_is_admissible(r.mechanism, cts, dim=2, origin=o, row_duals=[0.0, 0.0])
     assert not mechanism_is_admissible([1.0, -0.5, 0.0], cts, dim=2, origin=o)   # 向下贯入
+
+
+# ---------------------------------------------------------------- G6 major 15：黏聚列与 row_duals 的有牙门
+#
+# 旧门的黏聚算例全是等值 cA、关于原点镜像、参考点在原点、只沿 +x 推——三个变异（黏聚列力矩反号、二维黏聚单向、
+# row_duals 反序）全套 1209 照绿。下面三组门各针对一个变异，变异注入 `_build_columns` / `limit_load` 内部验证过会红
+# （记录见提交说明）。纪律 E：位形不关于接触形心对称、cA 互不相等、参考点取非对称点。
+
+_QUAD = [(-1.0, -0.6, 0.0), (1.2, -0.5, 0.0), (0.9, 0.7, 0.0), (-0.8, 0.6, 0.0)]
+_CA = [1.0, 2.0, 1.5, 0.5]
+
+
+def _asym_cohesive_block(origin, *, mu=0.2, k=16, th=0.3, tangent=None, live_at=(0.3, -0.1, 0.4)):
+    cts = [LimitContact(p, (0.0, 0.0, 1.0), mu, cohesion=cA, area=1.0, label=(f"c{i}",), tangent=tangent)
+           for i, (p, cA) in enumerate(zip(_QUAD, _CA))]
+    dead = wrench((0.0, 0.0, -10.0), (0.1, 0.05, 0.7), origin, 3)
+    live = wrench((cos(th), sin(th), 0.0), live_at, origin, 3)
+    return cts, dead, live
+
+
+@pytest.mark.parametrize("k", [8, 16])
+def test_cohesive_capacity_is_independent_of_the_moment_reference_point(k):
+    """(a) 变异"黏聚列力矩反号"的门：不对称四边形底、四个互不相等的 cA、推力作用在块内偏心高处（有扭转与倾覆分量），
+    参考点取 (0,0,0)、(5,−3,2)、(−0.7,0.4,−11)：α 必须相同（物理不变量），且对偶自校验过。"""
+    alphas = []
+    for o in [(0.0, 0.0, 0.0), (5.0, -3.0, 2.0), (-0.7, 0.4, -11.0)]:
+        cts, dead, live = _asym_cohesive_block(o, k=k)
+        r = limit_load(cts, dead, live, dim=3, origin=o, k=k)
+        assert r.status == "optimal"
+        assert check_duality(r, cts, dead, live, dim=3, origin=o, k=k)["ok"]
+        alphas.append(r.alpha)
+    assert alphas[1] == pytest.approx(alphas[0], rel=1e-9) and alphas[2] == pytest.approx(alphas[0], rel=1e-9)
+    assert 0.0 < alphas[0] < 0.2 * 10.0 + sum(_CA)
+
+
+def test_two_d_cohesion_reference_point_invariance_with_unequal_contacts():
+    """(a) 的二维版：两接触 cA = 3、1，推力作用在高处（有倾覆），参考点 (0,0) 与 (0.7,−1.3) 给出同一个 α。"""
+    alphas = []
+    for o in [(0.0, 0.0), (0.7, -1.3)]:
+        cts = [LimitContact((-1.0, 0.0), (0.0, 1.0), 0.2, cohesion=3.0, area=1.0),
+               LimitContact((1.5, 0.0), (0.0, 1.0), 0.2, cohesion=1.0, area=1.0)]
+        dead = wrench((0.0, -10.0), (0.1, 1.0), o, 2)
+        live = wrench((1.0, 0.0), (0.0, 1.2), o, 2)
+        r = limit_load(cts, dead, live, dim=2, origin=o)
+        assert r.status == "optimal"
+        assert check_duality(r, cts, dead, live, dim=2, origin=o)["ok"]
+        alphas.append(r.alpha)
+    assert alphas[1] == pytest.approx(alphas[0], rel=1e-9)
+
+
+@pytest.mark.parametrize("sign", [1.0, -1.0])
+def test_two_d_pure_cohesion_resists_both_directions(sign):
+    """(b) 变异"二维黏聚单向"的门：纯黏聚两接触（cA = 3、3），沿 +x 与 −x 推，α 都 = ΣcA = 6
+    （旧门只推 +x；把黏聚方向 (+t, −t) 改成 (+t, +t) 时 −x 给出 0）。"""
+    cts, dead, _ = _pure_cohesion()
+    live = wrench((sign, 0.0), (0.0, 0.0), (0.0, 0.0), 2)
+    r = limit_load(cts, dead, live, dim=2, origin=(0.0, 0.0))
+    assert r.status == "optimal" and r.alpha == pytest.approx(6.0, rel=1e-12), (sign, r.alpha)
+    assert r.row_duals == pytest.approx([3.0, 3.0], rel=1e-12)
+
+
+@pytest.mark.parametrize("th", [0.0, 0.7, 2.0, 3.3, 4.9])
+def test_three_d_pure_cohesion_resists_every_direction(th):
+    """(b) 的三维版：纯黏聚（μ = 0）四角 cA 不等，推力沿 θ 且作用在 cA 加权形心（全部黏聚同向发挥时无扭转），
+    显式切向基架对准推力 ⇒ α = ΣcA 精确；默认基架 ⇒ α ∈ [cos(π/k), 1]·ΣcA。"""
+    u = (cos(th), sin(th), 0.0)
+    q = tuple(sum(cA * p[i] for p, cA in zip(_QUAD, _CA)) / sum(_CA) for i in range(2)) + (0.0,)
+    o = (0.0, 0.0, 0.0)
+    for tangent, k in ((u, 8), (None, 8), (None, 5)):
+        cts, dead, _ = _asym_cohesive_block(o, mu=0.0, k=k, tangent=tangent)
+        live = wrench(u, q, o, 3)
+        r = limit_load(cts, dead, live, dim=3, origin=o, k=k)
+        assert r.status == "optimal", (th, tangent, k)
+        if tangent is not None:
+            assert r.alpha == pytest.approx(sum(_CA), rel=1e-12), (th, r.alpha)
+        else:
+            assert cos(pi / k) * sum(_CA) * (1 - 1e-12) <= r.alpha <= sum(_CA) * (1 + 1e-12), (th, k, r.alpha)
+
+
+def test_unequal_cohesion_row_duals_are_aligned_with_their_contacts():
+    """(c) 变异"row_duals 反序"的门：二维纯黏聚 cA = 3（左）、1（右），推 +x。手算对偶（见文件头）唯一：
+    机构 (1, 0, 0)、y_r = (cA_L, cA_R) = (3, 1)。反序后 check_duality 必须判不容许（黏聚列功率 −2）。"""
+    cts = [LimitContact((-1.0, 0.0), (0.0, 1.0), 0.0, cohesion=3.0, area=1.0),
+           LimitContact((1.0, 0.0), (0.0, 1.0), 0.0, cohesion=1.0, area=1.0)]
+    o = (0.0, 0.0)
+    dead = wrench((0.0, -10.0), (0.0, 0.0), o, 2)
+    live = wrench((1.0, 0.0), (0.0, 0.0), o, 2)
+    r = limit_load(cts, dead, live, dim=2, origin=o)
+    assert r.alpha == pytest.approx(4.0, rel=1e-12)
+    assert r.mechanism == pytest.approx([1.0, 0.0, 0.0], abs=1e-12)
+    assert r.row_duals == pytest.approx([3.0, 1.0], rel=1e-12)
+    assert check_duality(r, cts, dead, live, dim=2, origin=o)["ok"]
+    r.row_duals = r.row_duals[::-1]
+    d = check_duality(r, cts, dead, live, dim=2, origin=o)
+    assert not d["admissible"] and d["worst_power"] == pytest.approx(-2.0, rel=1e-12)
+
+
+def test_three_d_row_duals_equal_each_contacts_cohesive_dissipation():
+    """(c) 的三维版：纯黏聚四角 cA = (1, 2, 1.5, 0.5)，推力过 cA 加权形心、切向基架对准推力。
+    沿推力的单位平动是一个最优机构，第 i 行黏聚耗散 = cA_i·|v_t| = cA_i——注入它，自校验必须通过。
+    **订正（2026-09-27）**：原说明写"唯一最优机构"，不成立。黏聚圆做了 k 边形线性化，对偶面上有一族最优机构
+    （LP 层改为精确之后实测：带转动的机构 row_duals = (0.969, 1.561, 1.801, 0.669)，同样通过自校验）；
+    旧门能过只因浮点层恰好选中了平动。对整个对偶面都成立的是：α = Σ cA、行对偶之和 = α（无恒载做功）、自校验通过。"""
+    th = 0.3
+    u = (cos(th), sin(th), 0.0)
+    q = tuple(sum(cA * p[i] for p, cA in zip(_QUAD, _CA)) / sum(_CA) for i in range(2)) + (0.0,)
+    o = (5.0, -3.0, 2.0)
+    cts, dead, _ = _asym_cohesive_block(o, mu=0.0, k=8, tangent=u)
+    live = wrench(u, q, o, 3)
+    r = limit_load(cts, dead, live, dim=3, origin=o, k=8)
+    assert r.alpha == pytest.approx(sum(_CA), rel=1e-12)
+    assert sum(r.row_duals) == pytest.approx(r.alpha, rel=1e-12) and min(r.row_duals) >= 0.0
+    assert check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
+    r.mechanism = list(u) + [0.0, 0.0, 0.0]                  # 关于 origin 的平动旋量：v = u、ω = 0
+    r.row_duals = list(_CA)
+    assert check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
+    r.row_duals = list(_CA[::-1])                              # 牙：行对偶错配，自校验必须不通过
+    assert not check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
+
+
+def test_check_duality_rejects_a_zero_mechanism():
+    """G6 critical 19 的自校验盲区：旧 `check_duality` 只在 α > tol 时看驱动，α = 0 + 零机构被判
+    "容许、间隙 0、互补 0"。驱动 yᵀW_live ≥ 1 是 α 列的对偶约束：零机构（驱动 0）必须判不容许。"""
+    cts, dead, live = _pure_cohesion()
+    r = limit_load(cts, dead, live, dim=2, origin=(0.0, 0.0))
+    r.alpha, r.mechanism, r.row_duals = 0.0, [0.0, 0.0, 0.0], [0.0, 0.0]
+    r.lambdas = [0.0 for _ in r.lambdas]
+    d = check_duality(r, cts, dead, live, dim=2, origin=(0.0, 0.0))
+    assert d["drive"] == 0.0 and not d["admissible"] and not d["ok"]

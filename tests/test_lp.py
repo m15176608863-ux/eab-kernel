@@ -225,3 +225,196 @@ def test_redundant_rows_are_tolerated():
     r = solve(A, [3.0, 6.0], [1.0, 2.0])
     assert r.status == OPTIMAL
     assert r.obj == pytest.approx(3.0, abs=1e-9)
+
+
+# ---------------------------------------------------------------- G6（2026-09-24）的 LP 级回归门
+
+def test_tiny_rhs_infeasibility_is_detected_at_any_scale():
+    """G6 minor 4：右端项旧实现只在 max b > 1 时归一，max|b| ≲ 1e-10 的不可行系统（x = 1e-11 与 x = 3e-11）
+    被判 OPTIMAL。现在右端项双向归一：任何 2 的幂缩放下都必须 INFEASIBLE；同量级的可行系统仍 OPTIMAL、解精确按比例。"""
+    for p in (-80, -40, -20, 0, 20, 40):
+        s = 2.0 ** p
+        assert solve([[1.0], [1.0]], [1e-11 * s, 3e-11 * s], [1.0]).status == INFEASIBLE, p
+        r = solve([[1.0], [1.0]], [1e-11 * s, 1e-11 * s], [1.0])
+        assert r.status == OPTIMAL and r.x == [1e-11 * s], (p, r.x)
+
+
+def test_homogeneous_system_is_solved_and_its_ray_certified():
+    """b ≡ 0（齐次）单独处理：可行（x = 0）；有改进射线时报 UNBOUNDED，返回的射线由本文件 Fraction 精确核验。"""
+    A = [[1.0, -1.0, 0.0], [0.0, 1.0, -1.0]]
+    r = solve(A, [0.0, 0.0], [1.0, 1.0, 1.0])
+    assert r.status == OPTIMAL and r.obj == 0.0
+    r = solve(A, [0.0, 0.0], [-1.0, 0.0, 0.0])
+    assert r.status == UNBOUNDED and r.ray is not None
+    d = [Fraction(v) for v in r.ray]
+    assert all(v >= 0 for v in d) and any(v > 0 for v in d)
+    assert all(sum(Fraction(a) * v for a, v in zip(row, d)) == 0 for row in A)
+    assert -d[0] < 0
+
+
+@pytest.mark.parametrize("W", [1.0, 1e6, 1e10, 1e12, 1e15, 1e-12])
+def test_objective_magnitude_does_not_hide_an_improving_column(W):
+    """G6 critical 19 的 LP 级复现：变量序 (s, α)，max α s.t. s + W·α = W ⇒ α = 1。
+    松弛列排在前面，旧实现（Bland）一阶段就停在 {s} 上，二阶段 α 列的目标系数只随列因子缩放（c_α·2^−e ~ 1/W），
+    入基检验用绝对 1e-10：W ≳ 1e10 时 α 列永远进不了基，报 OPTIMAL 且 α = 0。"""
+    r = maximize([[1.0, W]], [W], [0.0, 1.0])
+    assert r.status == OPTIMAL
+    assert r.x[1] == pytest.approx(1.0, rel=1e-12), (W, r.x)
+    assert r.obj == pytest.approx(1.0, rel=1e-12)
+    assert r.y[0] * W == pytest.approx(1.0, rel=1e-12)          # 对偶：y·W ≥ c_α = 1 取等
+
+
+@pytest.mark.parametrize("seed", range(12))
+def test_objective_scaling_by_a_power_of_two_is_bitwise_invariant(seed):
+    """c → 2^p·c：目标归一因子是 2 的幂，求解逐位不变——x、基、迭代数相同，y 与最优值逐位乘 2^p。
+    （旧实现 p = −40 时约化成本全在绝对阈值以下，直接在初始基上报"最优"。p = −1070 看护目标归一本身：
+    入基判据已是相对的，只有到了次正规数的量级（y·A 的舍入是绝对的 2^−1074），不归一才会出错——
+    2026-09-24 的变异实验里，去掉目标归一时只有这一格报红。规整因子记成指数、用 ldexp 施加，
+    因子本身（如 2^1072）不可表示也不上溢。）"""
+    rng = random.Random(100 + seed)
+    m, n = 3, 7
+    A = [[float(rng.randint(-3, 4)) for _ in range(n)] for _ in range(m)]
+    x0 = [float(rng.randint(0, 3)) for _ in range(n)]
+    b = [sum(A[i][j] * x0[j] for j in range(n)) for i in range(m)]
+    c = [float(rng.randint(0, 4)) for _ in range(n)]
+    ref = solve(A, b, c)
+    assert ref.status == OPTIMAL
+    for p in (-1070, -1000, -60, -40, 40, 1000):           # −1070：c 落进次正规数
+        s = 2.0 ** p
+        r = solve(A, b, [s * v for v in c])
+        assert r.status == OPTIMAL, (seed, p)
+        assert r.x == ref.x and r.basis == ref.basis and r.iterations == ref.iterations, (seed, p)
+        assert r.y == [s * v for v in ref.y], (seed, p)
+
+
+def test_beale_cycling_example_reaches_the_optimum():
+    """Beale（1955）的经典循环例：Dantzig 规则 + 最小下标平局在精确算术里就会 6 步一周期。
+    现在的实现检测到基重复即扰动右端项，必须终止并给出暴力枚举的最优值 −1/20。"""
+    A = [[0.25, -60.0, -1.0 / 25.0, 9.0, 1.0, 0.0, 0.0],
+         [0.5, -90.0, -1.0 / 50.0, 3.0, 0.0, 1.0, 0.0],
+         [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]]
+    b = [0.0, 0.0, 1.0]
+    c = [-0.75, 150.0, -0.02, 6.0, 0.0, 0.0, 0.0]
+    bf = brute_min(A, b, c)
+    assert bf is not None and bf[0] == pytest.approx(-0.05, abs=1e-12)
+    r = solve(A, b, c)
+    assert r.status == OPTIMAL
+    assert r.obj == pytest.approx(bf[0], abs=1e-12)
+    for j in range(len(c)):
+        red = c[j] - sum(r.y[i] * A[i][j] for i in range(len(A)))
+        assert red > -1e-9, (j, red)
+
+
+def test_a_dropped_bounding_row_is_never_reported_as_unbounded(monkeypatch):
+    """契约：UNBOUNDED 只在射线经原始 A 核验后才报。牙：把比值检验的两条噪声线都抬到顶（全局线 = max|d|、
+    逐分量线 = Σ|B⁻¹_ik||A_ke| ≥ |d_i|，**每一行**都被当成噪声——
+    G6 critical 0 里黏聚上限行掉出比值检验的机制推到极端），有界问题仍须 OPTIMAL 且值对：射线核验不过，
+    退回最大正元换基（间谍确认这条退路真的被走到）。"""
+    import eab.lp as lp
+
+    A = [[1.0, 1.0, 1.0, 0.0], [1.0, 3.0, 0.0, 1.0]]
+    b = [4.0, 6.0]
+    c = [3.0, 2.0, 0.0, 0.0]
+    assert brute_unbounded(A, [-v for v in c]) is None
+    assert maximize(A, b, c).obj == pytest.approx(12.0, abs=1e-12)
+    calls = []
+    real = lp._Revised.ratio
+
+    def spy(self, d, x, dn, *, noise=None):
+        calls.append(noise)
+        return real(self, d, x, dn, noise=noise)
+
+    monkeypatch.setattr(lp, "_PIV_NOISE", 1.0)
+    monkeypatch.setattr(lp, "_PIV_NOISE_GLOBAL", 1.0)
+    monkeypatch.setattr(lp._Revised, "ratio", spy)
+    r = maximize(A, b, c)
+    assert r.status == OPTIMAL and r.obj == pytest.approx(12.0, abs=1e-9)
+    assert 0.0 in calls                                    # 退路（noise = 0）被走到
+
+
+def test_anti_cycling_breaks_the_classic_beale_cycle(monkeypatch):
+    """防循环的门（G6 major 2：旧实现 k=128 时 Bland 在浮点下 409 步一周期，与"保证有限步终止"的文档不符）。
+
+    Beale（1955）的例子从松弛基 {x5, x6, x7} 出发、用 Dantzig 入基 + 教科书比值检验（最小比值、平局取最小行号），
+    精确算术里 6 步回到原基。这里把 `_Revised.ratio` 换成教科书规则（注入到被测路径内部），
+    `optimize` 必须检测到基重复、扰动右端项、撤扰动后用对偶单纯形修复，最终停在最优值 −1/20。
+    间谍确认：基序列确实回到过起点（真循环）、对偶单纯形确实被调用。"""
+    import eab.lp as lp
+
+    A = [[0.25, -60.0, -1.0 / 25.0, 9.0, 1.0, 0.0, 0.0],
+         [0.5, -90.0, -1.0 / 50.0, 3.0, 0.0, 1.0, 0.0],
+         [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]]
+    b = [0.0, 0.0, 1.0]
+    c = [-0.75, 150.0, -0.02, 6.0, 0.0, 0.0, 0.0]
+
+    def textbook_ratio(self, d, x, dn, *, noise=None):
+        best, p = None, -1
+        for i, di in enumerate(d):
+            if di > 1e-12:
+                t = max(x[i], 0.0) / di
+                if best is None or t < best:
+                    best, p = t, i
+        return p
+
+    hist, cleanups = [], []
+    real_pivot, real_ds = lp._Revised.pivot, lp._Revised.dual_simplex
+
+    def pivot(self, p, e, d):
+        real_pivot(self, p, e, d)
+        hist.append(tuple(sorted(self.basis)))
+
+    def ds(self, *a, **k):
+        cleanups.append(1)
+        return real_ds(self, *a, **k)
+
+    monkeypatch.setattr(lp._Revised, "ratio", textbook_ratio)
+    monkeypatch.setattr(lp._Revised, "pivot", pivot)
+    monkeypatch.setattr(lp._Revised, "dual_simplex", ds)
+    S = lp._Revised(A, b, 1000)
+    S.basis = [4, 5, 6]
+    S.inbasis = [j in (4, 5, 6) for j in range(10)]
+    S.reinvert()
+    cost = c + [0.0, 0.0, 0.0]
+    st, _ = S.optimize(cost, [True] * 7 + [False] * 3, 1e-10, lambda e, d: False)
+    assert st == OPTIMAL
+    assert hist[5] == (4, 5, 6)                            # 第 6 次换基回到起点：真循环
+    assert cleanups                                        # 扰动 → 撤扰动 → 对偶单纯形
+    x = S.xB(b)
+    assert min(x) >= -1e-12
+    assert sum(cost[S.basis[i]] * x[i] for i in range(3)) == pytest.approx(-0.05, abs=1e-12)
+
+
+def test_unbounded_ray_is_verified_against_the_unscaled_matrix():
+    """真无界：返回的射线满足 d ≥ 0、Ad = 0（Fraction 精确）、cᵀd < 0；列量级悬殊（1e-8 与 1e8）不影响。"""
+    A = [[1e8, -1e-8, 0.0], [0.0, 2.0, -1.0]]
+    c = [-1.0, 0.0, 0.0]
+    r = solve(A, [1e8, 0.0], c)
+    assert r.status == UNBOUNDED and r.ray is not None
+    d = r.ray
+    assert min(d) >= 0.0
+    for row in A:
+        assert abs(sum(a * v for a, v in zip(row, d))) <= 1e-12 * sum(abs(a * v) for a, v in zip(row, d))
+    assert sum(ci * v for ci, v in zip(c, d)) < 0.0
+
+
+def test_tiny_objective_coefficients_are_not_ignored():
+    """入基判据相对于列自己的量级（|c_j| + Σ|y_i A_ij|），不是绝对阈值：目标系数跨 12 个量级（混合单位）时，
+    1e-12 的那一项同样要被最优化。变量序 (s1, s2, x1, x2)，max x1 + 1e-12·x2，x1 + s1 = 1，x2 + s2 = 1
+    ⇒ x = (0, 0, 1, 1)。松弛列排在前面，一阶段结束在 {s1, s2} 上，二阶段必须把两列都换进来；
+    绝对阈值（目标归一之后 1e-10）会把 x2 的约化成本 −5e-13 当成 0，停在 x2 = 0 的次优基上（核验会抓到，
+    但清理用的仍是绝对阈值，只能抛错）。"""
+    A = [[1.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 1.0]]
+    r = maximize(A, [1.0, 1.0], [0.0, 0.0, 1.0, 1e-12])
+    assert r.status == OPTIMAL
+    assert r.x == [0.0, 0.0, 1.0, 1.0]
+    assert r.y == pytest.approx([1.0, 1e-12], rel=1e-12)
+
+
+def test_a_small_but_genuine_pivot_bounds_the_step():
+    """比值检验的阈值相对于入基方向的最大元，且有一层噪声线：一条真正约束步长的行，其元比同列最大元小 11 个量级
+    （1e-11，在稳定线 1e-9 之下、噪声线 1e-13 之上）时仍须约束步长。max x s.t. 1e-11·x + s1 = 1、−x + s2 = 0
+    ⇒ x = 1e11。旧实现的绝对阈值 1e-10 把第一行漏掉，报 UNBOUNDED（G6 critical 0 在 LP 层的机制）。"""
+    A = [[1e-11, 1.0, 0.0], [-1.0, 0.0, 1.0]]
+    r = maximize(A, [1.0, 0.0], [1.0, 0.0, 0.0])
+    assert r.status == OPTIMAL
+    assert r.x[0] == pytest.approx(1e11, rel=1e-12)
