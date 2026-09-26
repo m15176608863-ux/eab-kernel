@@ -123,6 +123,23 @@ def test_small_load_component_resolvability_has_three_regimes(v, expect):
         assert r.uncertainty <= 1e-6 and abs(r.alpha * v - 1.0) <= 1e-12, (r.alpha, r.uncertainty)
 
 
+def test_a_large_first_order_uncertainty_alone_does_not_reject(monkeypatch):
+    """一阶 U 只是按**一个**最优机构算的界；对偶退化时最优机构不唯一，近奇异基上的机构分量可达 ~1e16，一阶 U 会虚高
+    （09-27 宽模糊种子 11 #495：普通推力 (cos 1, sin 1) 的一阶 U = 28）。所以 U 超标时要推 ±16 倍舍入、精确重解，
+    看 α 的**实际**变化再下结论。这里把一阶 U 强行设成 1（模拟退化机构），对一个本来稳定的问题（μ = 0.5 的地面上
+    平推，α = μW）必须仍然认证，且报告的是实测不确定度。牙：只用一阶 U（不做精确重解），这道门就红。
+    反面：同样注入之下，sin π 的舍入驱动例仍然判 infeasible（推一下就不可行）。"""
+    import eab.limit as LM
+    monkeypatch.setattr(LM, "_live_uncertainty", lambda y, live, e: 1.0)
+    o = (0.0, 0.0)
+    cts = [LimitContact((-1.0, 0.0), (0.0, 1.0), 0.5), LimitContact((1.0, 0.0), (0.0, 1.0), 0.5)]
+    r = limit_load(cts, wrench((0.0, -10.0), (0.3, 0.2), o, 2), wrench((1.0, 0.0), (0.0, 0.0), o, 2), dim=2, k=8)
+    assert r.status == "optimal" and r.alpha == pytest.approx(5.0, rel=1e-15) and r.uncertainty <= 1e-6, r
+    cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
+    r = limit_load(cts, wrench((0.0, -1.0), (0.0, 0.7), o, 2), wrench((cos(pi), sin(pi)), o, o, 2), dim=2, k=8)
+    assert r.status == "infeasible"
+
+
 def _exact_status_alpha(cts, dead, live, dim, k):
     """同一 LP（形心参考点、黏聚列取力的单位）的精确状态与最优值；oracle 只用 Fraction（test_lp_certificates._exact_max）。"""
     from test_lp_certificates import _exact_max
