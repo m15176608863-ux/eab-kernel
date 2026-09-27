@@ -465,6 +465,34 @@ def test_g2_pair_seen_only_by_the_kernel_is_red(tmp_path):
         _assert_g2_gate(res)
 
 
+_PAIRS_WINDOW_MUTANT = ("kernel_pairs(blocks, max(window, band), tol)", "kernel_pairs(blocks, window, tol)")
+
+
+@pytest.mark.parametrize("gap", [0.5, 1.0])
+def test_g2_pair_seen_only_in_the_band_is_red(tmp_path, gap):
+    """G6 第二轮 minor：块对并集里"内核在**带内**有盖"那一半（kernel_pairs 用 max(window, band)）没有门——上面的例子
+    是零间隙，窗口 1e-6 也看得见。块 3 悬在块 2 上方 gap（0 < gap ≤ 带宽 1）：legacy 为空、只有带内盖，门必须红；
+    把块对枚举窗口改回 window 的变异（G6 复核实测全套照绿）下 (3,2) 从对账里消失——同一夹具上一并断言。"""
+    def lift(d):
+        d["verts"]["3"] = [[x, y, z + 1.0 + gap] for x, y, z in d["verts"]["2"]]
+    case = _fake_case(tmp_path, lift)
+    rows = {tuple(r["pair"]): r for r in compare(case)["rows"]}
+    assert (3, 2) in rows and rows[(3, 2)]["legacy"] == [] and rows[(3, 2)]["band"], sorted(rows)
+    with pytest.raises(AssertionError, match="legacy 侧为空"):
+        _assert_g2_gate(compare(case))
+    mutant_rows = {tuple(r["pair"]) for r in _mutant_g2(*_PAIRS_WINDOW_MUTANT).compare(case)["rows"]}
+    assert (3, 2) not in mutant_rows, sorted(mutant_rows)
+
+
+def test_g2_pair_outside_the_band_is_not_reconciled(tmp_path):
+    """对照：块 3 悬在块 2 上方 1.5（带外），(3,2) 不进对账，门不因它报红。"""
+    def lift(d):
+        d["verts"]["3"] = [[x, y, z + 2.5] for x, y, z in d["verts"]["2"]]
+    res = compare(_fake_case(tmp_path, lift))
+    assert (3, 2) not in {tuple(r["pair"]) for r in res["rows"]}
+    _assert_g2_gate(res)
+
+
 # ---------------------------------------------------------------- G6 minor 29：带收所有盖类 + 带内无贯入
 
 def _low_dim(kind, gap):

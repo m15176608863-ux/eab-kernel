@@ -23,8 +23,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import asin, atan2, pi
 
-from .geom import (Point, Poly, add, angle_floor, coord_scale, cross, dot, edge, neg, norm, outward_normal, reflect,
-                   round_floor, sub, turn_angle, turn_floor, unit, zero_length_edges)
+from .geom import (Point, Poly, add, angle_floor, convex_hull, coord_scale, cross, dot, edge, neg, norm, outward_normal, reflect,
+                   round_floor, signed_area, sub, turn_angle, turn_floor, unit, zero_length_edges)
 
 
 @dataclass(slots=True)
@@ -300,39 +300,58 @@ def _edge_angle(P: Poly, i: int) -> float:
     return a if a >= 0.0 else a + 2 * pi
 
 
-def _poly_angle_floor(P: Poly) -> float:
-    """多边形各边极角的舍入下限 c·eps·C/ℓ_min（纪律 F）。"""
-    return angle_floor(coord_scale(P), min(_edge_len(P, k) for k in range(len(P))))
+def _hull_defect(P: Poly) -> float:
+    """P 的顶点落在其凸包边界以内的最大深度（长度）：凸多边形为 0，平直顶点经刚体运动后的微凹为舍入级。"""
+    H = convex_hull(P)
+    if len(H) < 3:
+        return 0.0
+    return max(min(dot(outward_normal(H, k), sub(H[k], v)) for k in range(len(H))) for v in P)
 
 
 def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float = 0.0) -> EntranceBlock:
     """A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角合并，每条边带盖标签。
 
-    平行边（极角相等，角容差 tol——弧度、无量纲）合并成一条 FF 边。零长边（连续重复顶点）清晰报错（审查 C19）。
-    容差（纪律 F）：合并容差与"极角下降"的吞没阈值都用极角舍入下限 c·eps·C/ℓ_min（旧版分别是调用方的 tol 与
-    绝对 1e-9 rad——平行边经旋转/平移后极角差 ~eps·C/ℓ，不合并就多出 VE+EV 两条零长 facet）。
+    tol 为**长度**容差（调用方单位），抬到舍入下限 c·eps·C（C = A、B 的坐标量级）。两处用它，都逐特征、按长度判：
+      · 平行边合并：B 的边 e_P 与 −A 的边 e_Q 同向且 |e_P × e_Q| ≤ t·min(|e_P|, |e_Q|) 才并成一条 FF 边。
+        并后的 FF 面以 B 的边法向过合并起点，偏离真实的两段边界至多 |e_Q|·|sin Δθ| ≤ t——合并不引入超过 t 的误差；
+      · 凸性前提：顶点落在自身凸包边界以内的深度 ≤ t（平直顶点经刚体运动后的舍入级微凹）才吞下它的极角下降，
+        否则清晰报错（审查 r4c：微凹被 +2π 级联静默吃掉，产出非凸 E）。
+    旧版（M0.2 到 cad2ffc）两处都用**角度**：tol 是弧度，再抬到极角舍入下限 c·eps·C/ℓ_min，ℓ_min 取**整个多边形**
+    的最短边——多边形上一条 1e-8 的短边放在 1e5 处，下限就是 0.14 rad，夹角 0.1 rad 的两条长边被并成 FF，
+    成员判定静默答反（与三维 covers3 的 G6 critical 同类）；membership_convex 还把长度 tol 直接当弧度传进来（G6 major）。
+    零长边（连续重复顶点）清晰报错（审查 C19）。
     """
     for name, poly in (("A", A), ("B", B)):
         bad = zero_length_edges(poly)
         if bad:
             raise ValueError(f"zero-length edge {bad[0]} in {name} (consecutive duplicate vertex {poly[bad[0]]}); "
                              f"strip duplicates at the reader boundary")
+    t = max(tol, round_floor(coord_scale(A, B)))
+    for name, poly in (("A", A), ("B", B)):
+        if signed_area(poly) <= 0.0:
+            raise ValueError(f"input polygon {name} is not counter-clockwise (signed area {signed_area(poly):.3e})")
+        dfc = _hull_defect(poly)
+        if dfc > t:
+            raise ValueError(f"input polygon {name} not convex: a vertex lies {dfc:.3e} inside its convex hull "
+                             f"(tolerance {t:.3e})")
     P = B
     Q = reflect(A)                # Q[k] = −A[k]；Q 的边 k = −(A 的边 k)
     n, m = len(P), len(Q)
     iP, iQ = _start_index(P), _start_index(Q)
     angP = [_edge_angle(P, (iP + k) % n) for k in range(n)]
     angQ = [_edge_angle(Q, (iQ + k) % m) for k in range(m)]
-    fP, fQ = _poly_angle_floor(P), _poly_angle_floor(Q)
-    # 从最低点出发的凸 CCW 多边形，边角在 [0, 2π) 内非降。只吞舍入级（≤ 极角舍入下限）的下降；
-    # 更大的下降说明输入不是一般位置的凸多边形（审查 r4c：微凹被 +2π 级联静默吃掉，产出非凸 E）。
-    for arr, fl in ((angP, fP), (angQ, fQ)):
+    eP = [sub(*reversed(edge(P, (iP + k) % n))) for k in range(n)]
+    eQ = [sub(*reversed(edge(Q, (iQ + k) % m))) for k in range(m)]
+    # 从最低点出发的凸 CCW 多边形，边角在 [0, 2π) 内非降；下降处夹平。上面两道前提之后，剩下的下降只有两种：
+    # 凸包以内 ≤ t 的微凹顶点（平直顶点的舍入级微凹，夹平即可），或顶点都在凸包上、却绕了不止一圈的非简单多边形
+    # （五角星——凸包深度为 0，看不见）。后者在凸包顶点上真右转，下降必过 π/2。
+    for arr, name in ((angP, "B"), (angQ, "A")):
         for k in range(1, len(arr)):
             if arr[k] < arr[k - 1]:
-                if arr[k - 1] - arr[k] > fl:
-                    raise ValueError(f"input polygon not convex in general position: edge angle drops by {arr[k - 1] - arr[k]:.3e} rad at edge {k}")
+                if arr[k - 1] - arr[k] > pi / 2:
+                    raise ValueError(f"input polygon {name} not convex: edge angle drops by "
+                                     f"{arr[k - 1] - arr[k]:.3e} rad at edge {k} (winds more than once)")
                 arr[k] = arr[k - 1]
-    tol = max(tol, fP + fQ)
     i = j = 0
     cur = add(P[iP], Q[iQ])
     verts = [add(cur, a0)]
@@ -346,7 +365,8 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
             take_q = True
         else:
             d = angP[i] - angQ[j]
-            if abs(d) <= tol:
+            ep, eq = eP[i], eQ[j]
+            if dot(ep, eq) > 0.0 and abs(cross(ep, eq)) <= t * min(norm(ep), norm(eq)):
                 take_p = take_q = True
             elif d < 0:
                 take_p = True
@@ -393,7 +413,9 @@ def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
                       eb: EntranceBlock | None = None) -> int:
     """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界（恰好接触）/ -1 外部（分离）。
 
-    tol 为长度容差，抬到舍入下限 c·eps·C（C = B 与 A+x 的坐标量级；纪律 F）。"""
+    tol 为长度容差，抬到舍入下限 c·eps·C（C = B 与 A+x 的坐标量级；纪律 F）。不给 eb 时用同一个长度 tol 构造 E
+    （convex_entrance_block 的 tol 也是长度）。旧版 convex_entrance_block 收的是弧度，这里却把长度 tol 原样传进去：
+    毫米单位、tol = 1 mm 时 57° 以内的边都被并成 FF，三角压方块判"分离"（G6 第二轮 major）。"""
     if eb is None:
         eb = convex_entrance_block(A, B, (0.0, 0.0), tol)
     tol = max(tol, round_floor(max(coord_scale(B), coord_scale(A) + max(abs(x[0]), abs(x[1])))))
@@ -408,17 +430,28 @@ def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
 def local_facets(A: Poly, B: Poly, tol: float = 0.0) -> set[tuple[str, int, int]]:
     """凸情形下用局部法锥规则得到的全部严格有效盖（不设窗口、不限边内）。
 
-    定理检验（命题 4/5）：应与 convex_entrance_block 的 facet 标签集合（去 FF）完全相同。
+    定理检验（命题 4/5）：应与 convex_entrance_block 的 facet 标签集合（去 FF、去 `ambiguous_facets`）完全相同。
     """
+    return _local_facets(A, B, tol, True)
+
+
+def ambiguous_facets(A: Poly, B: Poly, tol: float = 0.0) -> set[tuple[str, int, int]]:
+    """局部法锥规则判为"有效但不严格"的盖：对方边法向落在顶点法锥的边界带内（角容差 = 长度 tol 或舍入下限在
+    所涉最短边上张的角）。这类盖在容差内说不清是不是 E 的 facet——全局构造可能把它并进 FF、也可能留作一条极短的
+    精确 facet（一条几个 ulp 长的短边就是这样），标签比对时两边都不计。"""
+    return _local_facets(A, B, tol, False)
+
+
+def _local_facets(A: Poly, B: Poly, tol: float, strict: bool) -> set[tuple[str, int, int]]:
     out: set[tuple[str, int, int]] = set()
     for ia in range(len(A)):
         for jb in range(len(B)):
             c = ve_cover(A, ia, B, jb, tol)
-            if c is not None and c.strict:
+            if c is not None and c.strict == strict:
                 out.add(c.label())
     for ka in range(len(A)):
         for ib in range(len(B)):
             c = ev_cover(A, ka, B, ib, tol)
-            if c is not None and c.strict:
+            if c is not None and c.strict == strict:
                 out.add(c.label())
     return out

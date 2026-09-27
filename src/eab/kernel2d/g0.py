@@ -20,7 +20,7 @@ import math
 import random
 from dataclasses import dataclass, field
 
-from .covers import convex_entrance_block, enumerate_covers, local_facets, membership_convex
+from .covers import ambiguous_facets, convex_entrance_block, enumerate_covers, local_facets, membership_convex
 from .geom import EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, polygons_overlap, round_floor, translate
 
 
@@ -32,6 +32,7 @@ class G0Report:
     facet_local: int = 0
     facet_global: int = 0
     facet_symmetric_diff: list[tuple[str, int, int]] = field(default_factory=list)
+    facet_ambiguous: int = 0           # 局部规则判"容差内说不清"的盖，两边都不计（covers.ambiguous_facets）
     hull_vertex_mismatch: int = 0      # 第三票：E 顶点集 vs conv{b−a} 顶点集（不经法向/法锥/合并）
 
     @property
@@ -69,7 +70,7 @@ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: floa
               band: float | None = None) -> G0Report:
     """A、B 凸 CCW。逐样本：暴力相交谓词 vs E 成员谓词；再比对局部/全局 facet 集合。
 
-    tol（长度，缺省 1e-12·L）：暴力谓词的接触带与法锥判据；E 的平行边合并用它张的角 tol/L。band（长度，缺省
+    tol（长度，缺省 1e-12·L）：暴力谓词的接触带与法锥判据，也是 E 的平行边合并容差（长度）。band（长度，缺省
     1e-9·L）：成员谓词的边界带，带内样本跳过。旧版缺省是绝对 1e-12 / 1e-9，第三票的顶点比对是 round(·, 9)——
     旋转后坐标 1e3 处的方块对就因舍入落在不同的 1e-9 格子里报 4 个"顶点失配"（G6 纪律 F 复现）。
     """
@@ -78,10 +79,11 @@ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: floa
     L = char_length(A, B)
     tol = 1e-12 * L if tol is None else tol
     band = 1e-9 * L if band is None else band
-    eb = convex_entrance_block(A, B, (0.0, 0.0), tol / L)
-    glob = {lab for lab in eb.facets if lab[0] != "FF"}
+    eb = convex_entrance_block(A, B, (0.0, 0.0), tol)
+    amb = ambiguous_facets(A, B, tol)
+    glob = {lab for lab in eb.facets if lab[0] != "FF"} - amb
     loc = local_facets(A, B, tol)
-    rep.facet_local, rep.facet_global = len(loc), len(glob)
+    rep.facet_local, rep.facet_global, rep.facet_ambiguous = len(loc), len(glob), len(amb)
     rep.facet_symmetric_diff = sorted(loc ^ glob)
     # 第三票（审查 r7）：标签集相等对"outward_normal 整体反号"是盲的；E 的顶点集必须等于
     # 差点集 {b − a} 的凸包顶点集——这条检验不经过法向、法锥或合并规则。

@@ -136,7 +136,8 @@ def _raw_contacts(case_dir):
     out = {}
     for ln in lines[1:]:
         d = dict(zip(head, ln.split(",")))
-        out[(int(d["step"]), int(d["contact"]))] = {"p1": int(d["p1"]), "p2": int(d["p2"])}
+        out[(int(d["step"]), int(d["contact"]))] = {"p1": int(d["p1"]), "p2": int(d["p2"]), "p3": int(float(d["p3"])),
+                                                     "mtype": int(float(d["mtype"]))}
     return out
 
 
@@ -156,4 +157,55 @@ def test_bdda_df_feature_ids_are_in_the_loaded_polygon(case_dir):
     for r in recs:
         sg, want = geoms[r.step], raw[(r.step, r.contact_index)]
         assert (r.extra["raw_p1"], r.extra["raw_p2"]) == (want["p1"], want["p2"])
-        assert (r.feature_a.index, r.feature_b.index) == (sg.canon(want["p1"]), sg.canon(want["p2"]))
+        assert r.feature_a.index == sg.canon(want["p1"])
+        assert r.feature_b.index in (sg.canon(want["p2"]), sg.canon(want["p3"]))
+
+
+@pytest.mark.parametrize("case_dir", _DF_WITH_VERTS, ids=lambda p: p.name)
+def test_bdda_df_feature_b_follows_the_kernel_naming(case_dir):
+    """G6 第二轮 minor：feature_b 曾一律是 Feature(块, 'edge', p2)——p2 是 legacy 边 p3→p2 的**终点**，内核与 bb52_g0
+    都以起点命名边；v-v 记录（mtype 1）的 B 特征还被标成 edge。现在：v-e 记录的 feature_b 是边 {p2, p3} 在载入后
+    CCW 多边形里的起点（它在环上的后继就是另一端点），v-v 记录是顶点 p2。"""
+    from eab.kernel2d.geom import signed_area
+    from eab.readers.bdda_geom import load_step_geometries
+    recs = bdda_df.load_records(case_dir)
+    geoms = load_step_geometries(case_dir / "bdda_debug_verts.csv")
+    raw = _raw_contacts(case_dir)
+    kinds = {0: 0, 1: 0}
+    for r in recs:
+        sg, want = geoms[r.step], raw[(r.step, r.contact_index)]
+        g = sg.blocks[r.feature_b.block]
+        assert signed_area(g.poly) > 0.0
+        kinds[want["mtype"]] += 1
+        if want["mtype"] == 1:
+            assert (r.feature_b.kind, r.feature_b.index) == ("vertex", sg.canon(want["p2"])), r
+            continue
+        assert r.feature_b.kind == "edge" and "_edge_not_adjacent" not in r.extra, r
+        i = g.vidx.index(r.feature_b.index)
+        succ = g.vidx[(i + 1) % len(g.vidx)]
+        assert {r.feature_b.index, succ} == {sg.canon(want["p2"]), sg.canon(want["p3"])}, (r.step, r.contact_index)
+    assert kinds[0] > 0
+
+
+def test_bdda_df_feature_b_covers_both_contact_kinds():
+    """上面的门在 v-v 一侧不空：bb52_N10、bbW025_N10、studio 各有 v-v 记录。"""
+    n_vv = sum(1 for d in _DF_WITH_VERTS for w in _raw_contacts(d).values() if w["mtype"] == 1)
+    assert n_vv >= 20, n_vv
+
+
+@pytest.mark.parametrize("name", ["studio_20260712", "sensor_20260624"])
+def test_bdda_df_state_fields_come_only_from_df22(name):
+    """G6 第二轮 minor：某 (step, contact) 没有 df22 行时，旧版把 contacts.csv 的转移态（m0_2 / o3 / o4）抄进 mode / gap /
+    shear，studio 与 sensor 第 2 步 54/54 条记录把上一步的携带值报成本步状态、无任何标记。现在状态字段留空，
+    携带值只在 mode_init / gap_ref / slip_ref。"""
+    from eab.contact_record import Mode
+    case_dir = FIX / "bdda_df" / name
+    if not case_dir.exists():
+        pytest.skip("fixture missing")
+    recs = bdda_df.load_records(case_dir)
+    missing = [r for r in recs if "df22_oc_iter" not in r.extra]
+    assert len(missing) >= 54, len(missing)
+    for r in missing:
+        assert (r.mode, r.raw_mode, r.gap, r.shear, r.mode_prev) == (Mode.UNKNOWN, None, None, None, None), r
+        assert r.mode_init is not None and r.gap_ref is not None and r.slip_ref is not None, r
+    assert any(r.mode != Mode.UNKNOWN for r in recs if "df22_oc_iter" in r.extra)

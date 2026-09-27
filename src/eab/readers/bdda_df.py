@@ -16,6 +16,15 @@
 重复号被剥掉，legacy 接触表却常用它们引用首边：bb52_N10 的 540 条里 feature_b 120 条、feature_a 40 条是这种号）；
 原始 p1/p2 留在 extra['raw_p1'] / extra['raw_p2']。缺 verts.csv 时顶点号是原始号（无从规范化）。
 门：tests/test_readers_roundtrip.py::test_bdda_df_feature_ids_are_in_the_loaded_polygon。
+
+feature_b 的命名（G6 第二轮 minor）：与内核同一约定——边以载入后 CCW 多边形里的**起点**命名（kernel2d.geom.edge(P, i)
+= (P[i], P[i+1])，tools/bb52_g0.py 同）。legacy 的边是 p2–p3，全部夹具里 p3 都是 p2 的 CCW 前驱，边的起点是 p3；
+读取器不假设这一点，有 verts.csv 时按载入多边形的邻接定起点，两者不相邻时退回 p2 并记 extra['_edge_not_adjacent']；
+缺 verts.csv 时按实测约定取 p3。mtype 1（v-v）的 B 特征是**顶点** p2，不是边（旧版一律写成 edge p2）。
+
+状态字段只来自 df22（G6 第二轮 minor）：某 (step, contact) 没有 df22 行时 mode = UNKNOWN、raw_mode/gap/shear 留空，
+contacts.csv 的转移态只进 mode_init / gap_ref / slip_ref——旧版把转移态抄进状态字段，studio/sensor 第 2 步
+54/54 条记录把上一步的携带值报成本步状态，且无任何标记。
 """
 
 from __future__ import annotations
@@ -104,11 +113,31 @@ def read_verts_csv(path: Path) -> dict[int, dict[int, dict[int, tuple[float, flo
     return out
 
 
+def _edge_start(sg, block: int, p2: int, p3: float | None, extra: dict) -> int:
+    """legacy 边 p2–p3 在载入后 CCW 多边形里的起点顶点号（内核的边命名）。"""
+    if p3 is None:
+        return sg.canon(p2) if sg is not None else p2
+    p3 = int(p3)
+    if sg is None or block not in sg.blocks:
+        return p3                                  # 无几何：按实测约定（p3 是 p2 的 CCW 前驱）
+    a, b = sg.canon(p2), sg.canon(p3)
+    vs = sg.blocks[block].vidx
+    n = len(vs)
+    for i, v in enumerate(vs):
+        if v == b and vs[(i + 1) % n] == a:
+            return b
+        if v == a and vs[(i + 1) % n] == b:
+            return a
+    extra["_edge_not_adjacent"] = True
+    return a
+
+
 def load_records(dump_dir: Path) -> list[ContactRecord]:
     """合并 contacts + df18 (+ df22 末次判定) 为 ContactRecord 列表，按 (step, contact) 排序。
 
     contacts.csv 是主表（每步每接触一行）；df18 提供块号/几何/系数；df22 提供本步最后一次
-    开闭判定作为 mode。三者缺任一则相应字段留空，不报错——读取器不许丢信息，也不许编信息。
+    开闭判定作为 mode / gap / shear。三者缺任一则相应字段留空，不报错——读取器不许丢信息，也不许编信息
+    （缺 df22 时不拿 contacts.csv 的转移态充当本步状态，它们只在 mode_init / gap_ref / slip_ref 里）。
     """
 
     dump_dir = Path(dump_dir)
@@ -164,16 +193,21 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
         elif "o2" in c:
             params = (float(c["o2"]),)
 
-        raw_mode = j.m0_new if j else (int(c["m0_2"]) if "m0_2" in c else None)
+        raw_mode = j.m0_new if j else None
         raw_prev = j.m0_prev if j else None
         raw_init = int(c["m0_2"]) if "m0_2" in c else None
 
         sg = geoms.get(step)
         canon = sg.canon if sg is not None else (lambda v: v)
-        fa = Feature(block_a, "vertex", canon(int(c["p1"]))) if ("p1" in c and block_a >= 0) else None
-        fb = Feature(block_b, "edge", canon(int(c["p2"]))) if ("p2" in c and block_b >= 0) else None
-
         extra: dict = {}
+        fa = Feature(block_a, "vertex", canon(int(c["p1"]))) if ("p1" in c and block_a >= 0) else None
+        fb = None
+        if "p2" in c and block_b >= 0:
+            if cover == CoverType.VV:
+                fb = Feature(block_b, "vertex", canon(int(c["p2"])))
+            else:
+                fb = Feature(block_b, "edge", _edge_start(sg, block_b, int(c["p2"]), c.get("p3"), extra))
+
         if "p1" in c:
             extra["raw_p1"] = int(c["p1"])
         if "p2" in c:
@@ -207,8 +241,8 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
             raw_mode=raw_mode,
             mode_prev=BDDA_MODE.get(raw_prev, Mode.UNKNOWN) if raw_prev is not None else None,
             raw_mode_prev=raw_prev,
-            gap=j.o3 if j else (float(c["o3"]) if "o3" in c else None),
-            shear=(j.o4,) if j else ((float(c["o4"]),) if "o4" in c else None),
+            gap=j.o3 if j else None,
+            shear=(j.o4,) if j else None,
             mode_init=BDDA_MODE.get(raw_init, Mode.UNKNOWN) if raw_init is not None else None,
             raw_mode_init=raw_init,
             gap_ref=float(c["o3"]) if "o3" in c else None,

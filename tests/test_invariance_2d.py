@@ -356,7 +356,7 @@ CONVEX_CASES = [("squares", SQ, SQ), ("square_diamond", SQ, DIAMOND), ("brick_sq
 
 
 def _facet_set(A, B):
-    return sorted(convex_entrance_block(A, B, (0.0, 0.0), 1e-12).facets)
+    return sorted(convex_entrance_block(A, B, (0.0, 0.0), 0.0).facets)     # tol 是长度：只用舍入下限
 
 
 @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)

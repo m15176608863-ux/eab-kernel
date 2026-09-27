@@ -240,11 +240,15 @@ def centroid(poly: Poly) -> Point:
 
 def orient2d(a: Point, b: Point, c: Point) -> int:
     """cross(b − a, c − a) 的**精确**符号（+1 左转 / 0 共线 / −1 右转）：浮点快路 + Shewchuk 误差界过滤，
-    界内退到 Fraction 精确算术。浮点输入本身就是精确有理数，所以结果对这组浮点坐标是精确的。"""
+    界内退到 Fraction 精确算术。浮点输入本身就是精确有理数，所以结果对这组浮点坐标是精确的。
+
+    误差界 = Shewchuk 的相对项 (3u + 16u²)(|detleft| + |detright|) + 绝对项 2⁻¹⁰⁷³：相对项假设不下溢，乘积落进
+    次正规区时舍入误差是绝对的（每个乘积至多 2⁻¹⁰⁷⁵），坐标差 ~1e-154 以下时只靠相对项会把错号当真（G6 第二轮 minor：
+    两个 −3.46e-309 的乘积之差给出 +5e-324，精确值为负）。乘积上溢时界为 inf，照样退到 Fraction。"""
     detleft = (a[0] - c[0]) * (b[1] - c[1])
     detright = (a[1] - c[1]) * (b[0] - c[0])
     det = detleft - detright
-    bound = 3.3306690738754716e-16 * (abs(detleft) + abs(detright))
+    bound = 3.3306690738754716e-16 * (abs(detleft) + abs(detright)) + 2.0 ** -1073
     if det > bound:
         return 1
     if -det > bound:

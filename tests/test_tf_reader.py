@@ -76,6 +76,10 @@ _PROBE_CORE_COLS = {"step", "time", "block_a", "block_b", "contact_index", "cont
                     "shear_dx", "shear_dy", "shear_dz"}
 
 
+# 状态码 → Mode 的期望映射，测试自带一份（零共用：不从 eab 导入 TF_MODE）。依据见 contact_record.TF_MODE 的注释。
+_TF_MODE_ORACLE = {0: "OPEN", 1: "SLIDING", 2: "LOCKED", 3: "TENSION", 4: "UNVERIFIED", 5: "UNVERIFIED", 6: "UNVERIFIED"}
+
+
 def _assert_rows_agree(stage, probes):
     """逐行、逐字段、精确相等地对账（G6 major 16）：原先只比拓扑/计数/标量 gap·area，法向、接触点、法向力、
     剪切、contact_index 五个变异全套照绿。现在 ContactRecord 的每个物理字段都对原始 TSV 独立解析的值做
@@ -102,6 +106,9 @@ def _assert_rows_agree(stage, probes):
             assert rec.cover.value == {"0": "NN", "1": "NE", "2": "VF", "3": "EE"}[o["contact_type"]], ("cover", rec.cover)
             assert (rec.raw_mode, rec.raw_mode_prev) == (int(o["contact_state"]), int(o["previous_contact_state"])), \
                 ("state", rec.raw_mode, rec.raw_mode_prev, o["contact_state"], o["previous_contact_state"])
+            assert (rec.mode.value, rec.mode_prev.value) == (_TF_MODE_ORACLE[int(o["contact_state"])],
+                                                             _TF_MODE_ORACLE[int(o["previous_contact_state"])]), \
+                ("mode", rec.mode, rec.mode_prev, o["contact_state"], o["previous_contact_state"])
             assert rec.entrance_index == int(o["contact_entry"]), ("entrance_index", rec.entrance_index, o["contact_entry"])
             assert rec.gap == f["gap"], ("gap", rec.gap, o["gap"])
             assert rec.length_or_area == f["area"], ("area", rec.length_or_area, o["area"])
@@ -162,6 +169,15 @@ READER_MUTANTS = {
     "drop_last_probe_row": ("    for r in _rows(probe_path):", "    for r in _rows(probe_path)[:-1]:", "probe rows"),
     "drop_first_stage_row": ("    for r in _rows(path):", "    for r in _rows(path)[1:]:", "stage rows"),
     "cover_2_as_ee": ('ctype = int(r["contact_type"])', 'ctype = 3', "raw_cover"),
+    # G6 第二轮 minor：映射后的 mode / mode_prev 没人比，这一个变异让 864 条 fine 探针记录全成 OPEN，全套照绿
+    "mode_prev_const_open": ("mode_prev=TF_MODE.get(prev, Mode.UNKNOWN)", "mode_prev=Mode.OPEN", "mode"),
+}
+# 列对调的变异：夹具里每行 state == prev（见 test_tf_fixtures_never_exercise_states_4_5_6），逐行门在夹具上看不见，
+# 由下面 state ≠ prev 的合成行看护
+MODE_COLUMN_MUTANTS = {
+    "mode_from_prev_column": ("mode=TF_MODE.get(state, Mode.UNKNOWN)", "mode=TF_MODE.get(prev, Mode.UNKNOWN)"),
+    "mode_prev_from_state_column": ("mode_prev=TF_MODE.get(prev, Mode.UNKNOWN)",
+                                    "mode_prev=TF_MODE.get(state, Mode.UNKNOWN)"),
 }
 
 
@@ -195,19 +211,44 @@ def test_tf_mode_states_4_5_6_are_unverified_not_asserted():
     assert (TF_MODE[0], TF_MODE[1], TF_MODE[2], TF_MODE[3]) == (Mode.OPEN, Mode.SLIDING, Mode.LOCKED, Mode.TENSION)
 
 
-def test_tf_unverified_state_keeps_its_raw_code(tmp_path):
+def _synthetic_probe(tmp_path, states):
+    """合成探针表：每行 (contact_state, previous_contact_state)，其余列取占位值。"""
     head = ("step time event mr n1 trigger_block top_platen_block contact_index block_a block_b involves_top_pair "
             "contact_state previous_contact_state contact_entry contact_type gap area normal_force px py pz nx ny nz "
             "shear_dx shear_dy shear_dz shear_norm status_closed pair_role").split()
     rows = []
-    for st in (4, 5, 6, 1):
+    for st, pv in states:
         v = {k: "0" for k in head}
-        v.update(contact_state=str(st), previous_contact_state=str(st), contact_type="2", event="retry",
+        v.update(contact_state=str(st), previous_contact_state=str(pv), contact_type="2", event="retry",
                  pair_role="x", time="0.0")
         rows.append("\t".join(v[k] for k in head))
     p = tmp_path / "probe.tsv"
     p.write_text("\t".join(head) + "\n" + "\n".join(rows) + "\n", encoding="utf-8")
-    recs = tf_probe.load_records(p)
+    return p
+
+
+_STATE_CHANGES = [(1, 2), (2, 1), (0, 3), (3, 0), (4, 2), (2, 6)]
+
+
+def _assert_modes_follow_their_own_columns(recs):
+    got = [(r.mode.value, r.mode_prev.value, r.raw_mode, r.raw_mode_prev) for r in recs]
+    assert got == [(_TF_MODE_ORACLE[s], _TF_MODE_ORACLE[p], s, p) for s, p in _STATE_CHANGES], got
+
+
+def test_tf_mode_and_mode_prev_are_mapped_from_their_own_columns(tmp_path):
+    """state ≠ prev 的合成行（G6 第二轮 minor）：mode 只来自 contact_state、mode_prev 只来自 previous_contact_state。"""
+    _assert_modes_follow_their_own_columns(tf_probe.load_records(_synthetic_probe(tmp_path, _STATE_CHANGES)))
+
+
+@pytest.mark.parametrize("mut", sorted(MODE_COLUMN_MUTANTS))
+def test_tf_mode_column_gate_has_teeth(mut, monkeypatch, tmp_path):
+    _mutant_reader(monkeypatch, *MODE_COLUMN_MUTANTS[mut])
+    with pytest.raises(AssertionError):
+        _assert_modes_follow_their_own_columns(tf_probe.load_records(_synthetic_probe(tmp_path, _STATE_CHANGES)))
+
+
+def test_tf_unverified_state_keeps_its_raw_code(tmp_path):
+    recs = tf_probe.load_records(_synthetic_probe(tmp_path, [(4, 4), (5, 5), (6, 6), (1, 1)]))
     assert [(r.mode.value, r.raw_mode) for r in recs] == [("UNVERIFIED", 4), ("UNVERIFIED", 5), ("UNVERIFIED", 6),
                                                           ("SLIDING", 1)]
 
