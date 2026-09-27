@@ -146,6 +146,11 @@ def test_exact_certificate_rejects_wrong_candidates():
     assert Xi.certify(INFEASIBLE, [0, 3], -1, 0) is not None   # y = (−1, 1)：yᵀA = 0、yᵀb = 1 > 0
     assert Xi.certify(INFEASIBLE, [2, 3], -1, 0) is None       # 人工基的 y = (1, 1)：yᵀA_j = 2 > 0，不是证书
     assert Xi.certify(OPTIMAL, [0, 3], -1, 0) is None          # 人工变量 = 1 ≠ 0
+    # UNBOUNDED 候选的基里有值为 0 的人工变量、且它沿射线要变化（d_i ≠ 0）：射线不成立（G6 第二轮 minor：这一子检查
+    # 删掉全套照绿，说谎的候选能让有界 LP（min −x0，−x0 + x1 = 0，x1 = 0，最优 0）被认证为无界）
+    Xa = lp._Exact([[-1.0, 1.0], [0.0, 1.0]], [0.0, 0.0], [-1.0, 0.0])
+    assert Xa.certify(UNBOUNDED, [2, 3], 0, 0) is None
+    assert solve([[-1.0, 1.0], [0.0, 1.0]], [0.0, 0.0], [-1.0, 0.0]).obj == 0.0
 
 
 LIES = ["infeasible", "unbounded", "suboptimal", "raise", "raise-overflow", "raise-value", "garbage-basis"]
@@ -235,7 +240,8 @@ OLD_GRID = [(L, c, seed, off) for L in (20.0, 200.0) for c in (1e5, 1e6, 1e7) fo
 
 def test_old_badly_scaled_limit_formulation_is_answered_exactly():
     """lp.py 的契约对任何调用方成立，不靠 limit_load 的形心平移兜底：48 个旧写法 LP（c·A 乘进列、力矩关于全局原点，
-    尺度跨 ~20 个量级）**全部**答对到 1e-9，不许抛错（43d1e50：0/48 对、静默 infeasible；返修二：28 对 20 抛错）。"""
+    尺度跨 ~20 个量级）**全部**答对到 1e-9，不许抛错（43d1e50：0/48 对——用当前夹具重放是 28 格错值 optimal、11 格 unbounded、4 格 infeasible、5 格抛错，G6 第二轮订正，
+    原写"静默 infeasible"不准；返修二：28 对 20 抛错）。"""
     wrong = []
     for L, c, seed, off in OLD_GRID:
         R = _rot(seed) if seed is not None else ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))

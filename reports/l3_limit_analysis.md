@@ -149,6 +149,8 @@ N = 100 压在互锁块上，加横向荷载：
 
 ## M0 之后（2026-09-24）
 
+> **已被取代（2026-09-27）**：本节描述的是 M0 时的求解器。M0.2 起 LP 的契约改为**对给定数据精确**（浮点单纯形只给候选、有理数层核验三种证书，见 `src/eab/lp.py` 模块文档与 `tests/test_lp_certificates.py`）：下文的残差守卫 `_guard_residual` 已删除；`lp.solve` 不再把浮点层的失败抛给调用方，改走有理数兜底；右端项已是双向归一（G6 minor 4）；`test_lp_fail_loud.py` 的门改名 `test_answer_is_correct`、不再放行抛错。自校验（`check_duality`）在 M0.3 补上了静力一侧并改在接触形心判定（`tests/test_limit_selfcheck.py`）。下文保留作历史记录。
+
 一句话：**求解器曾在三类输入上悄悄给错答案，现在要么答对、要么抛错；对偶解读机构时有一处本来就不唯一；
 L3 第一次被一条从夹具到承载力的完整路径检验过，结果与纸笔闭式吻合到 1e-9。**
 （端到端门 b26d7f5、它的修订 8376ec2、以及跟进 `limit.py` 模块文档的 094861c 都是直接提交到 main 的，没有经过独立验证者复核；G6 独立重审尚未跑。）
@@ -191,7 +193,7 @@ L3 第一次被一条从夹具到承载力的完整路径检验过，结果与�
   `::test_plan_regression_cells_equal_patton`、`::test_old_tight_lp_tolerance_no_longer_breaks_feasibility`（显式传回 1e-12 也 optimal）；
 - `test_lp_scale.py::test_column_scaling_does_not_change_the_answer`（种子 0/1/9/18/42/48 × 列 ×1e2/1e4/1e-4）、
   `::test_phase_one_rounding_noise_is_not_reported_as_infeasible`（种子 9、tol = 1e-12、b ×1…1e6）、
-  `::test_numerical_breakdown_raises_instead_of_returning_a_wrong_optimum`、`::test_power_of_two_rhs_scaling_is_bitwise_proportional`；
+  `::test_numerical_breakdown_cannot_change_the_answer`、`::test_power_of_two_rhs_scaling_is_bitwise_proportional`；
 - 静默错值那一例就是 `test_limit_duality.py::test_three_d_cohesive_block_duality_in_general_direction[16-10000.0-1.0]`
   （及 `[16-10000.0-0.001]`），断言 α ≤ μW + 4cA 且对偶三项成立。
 
@@ -207,7 +209,7 @@ gap = 0.3 的倾覆算例旧默认给 3.1746，刚体真值 10/3 ≈ 3.3333，�
 还没解决的：守卫把"静默错值"变成了"响亮报错"，但没有把病态问题变成可解。在上面那个黏聚 ×1e4、k = 16 的算例上
 **显式**把 `lp_tol` 调到 1e-12，新求解器会抛 `RuntimeError`（默认 `lp_tol` 下 optimal 且正确）。
 "收紧 lp_tol"这个方向现在由 8376ec2 新增的 `tests/test_lp_fail_loud.py` 看着，它钉的是契约本身——**要么答对、要么抛 `RuntimeError`、绝不静默给错**：
-`::test_answer_is_correct_or_the_solver_raises`（lp_tol 取默认/1e-9/1e-12/1e-14 × 荷载/几何尺度 4 组 × k = 5/16，共 32 例）只允许
+`::test_answer_is_correct`（lp_tol 取默认/1e-9/1e-12/1e-14 × 荷载/几何尺度 4 组 × k = 5/16，共 32 例）只允许
 "optimal 且落在径向夹逼 [cos(π/k), 1]·(μW + ΣcA) 内"或"抛错"两种结果；显式传紧容差时黏聚 ×1e4 算例会抛错，契约允许；
 默认容差下审查那一例必须答出来（`::test_default_tolerance_answers_the_audited_case`）。契约不要求哪一格必须抛错，所以"1e-12 会抛"是实测，不是门。
 这个文件与端到端门的修订一样随 8376ec2 直接进 main，写本文时没有独立复核记录。

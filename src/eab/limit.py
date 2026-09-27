@@ -175,6 +175,17 @@ def _twist_back(y: list[float], d: Vec, dim: int) -> list[float]:
             om[0], om[1], om[2]]
 
 
+def _twist_forward(y: list[float], d: Vec, dim: int) -> list[float]:
+    """关于 o 的速度旋量 → 关于 o + d 的速度旋量（`_twist_back` 的逆）：v_{o+d} = v_o − d × ω。"""
+    if dim == 2:
+        return [y[0] - y[2] * d[1], y[1] + y[2] * d[0], y[2]]
+    om = y[3:]
+    return [y[0] - (d[1] * om[2] - d[2] * om[1]),
+            y[1] - (d[2] * om[0] - d[0] * om[2]),
+            y[2] - (d[0] * om[1] - d[1] * om[0]),
+            om[0], om[1], om[2]]
+
+
 def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
     """切向基架。二维 t = n 转 +90°（随转动协变）。三维默认按全局坐标轴选 t₁（不协变，见诚实条款），
     给了 `tangent` 时取它在切平面上的投影；两种情况 t₂ = n × t₁。"""
@@ -215,7 +226,7 @@ def friction_generators(normal: Vec, mu: float, dim: int, k: int = 8,
 
 @dataclass(slots=True)
 class LimitContact:
-    """极限分析看到的一个接触：位置、法向（固定体推动体的方向）、摩擦、可选黏聚力与面积。
+    """极限分析看到的一个接触：位置、法向（固定体推动体的方向；构造时归一化为单位向量）、摩擦、可选黏聚力与面积。
 
     `tangent`（仅三维、可选）：内接棱锥的第一条棱朝向（取其在切平面上的投影）。不给则用全局基架
     `_tangents(n)`——它不随刚体转动协变（见模块诚实条款）。"""
@@ -226,6 +237,15 @@ class LimitContact:
     area: float = 0.0
     label: tuple | None = None
     tangent: Vec | None = None
+
+    def __post_init__(self):
+        """法向归一化（G6 第二轮 major：曾不检查也不归一，三维摩擦与黏聚承载力随 |n| 缩放——|n| = 1e-3 时报 500、
+        真值 0.5，自校验照样放行）。|n| 为 0 或非有限时抛 ValueError。二维纯摩擦的锥角本就与 |n| 无关。"""
+        m = max((abs(v) for v in self.normal), default=0.0)
+        if not (m > 0.0 and m != float("inf")):
+            raise ValueError(f"contact normal must be a finite nonzero vector, got {self.normal!r}")
+        n = sum((v / m) ** 2 for v in self.normal) ** 0.5
+        self.normal = tuple(v / m / n for v in self.normal)
 
 
 _SIDES = ("a", "b", "mid")
@@ -622,7 +642,11 @@ def mechanism_is_admissible(mech: list[float], contacts: list[LimitContact], *,
     nw = 3 if dim == 2 else 6
     if len(mech) != nw:
         raise ValueError(f"mechanism must have {nw} components for dim={dim}, got {len(mech)}")
-    C = _build_columns(contacts, origin, dim, k)
+    # 在接触形心判定（见 `check_duality`：调用方坐标系里的尺度被 |ω|·|o' − o| 放大，UTM 下放行贯入的机构）
+    oc = (tuple(sum(ct.point[i] for ct in contacts) / len(contacts) for i in range(dim)) if contacts
+          else tuple(origin[:dim]))
+    mech = _twist_forward(list(mech), tuple(oc[i] - origin[i] for i in range(dim)), dim)
+    C = _build_columns(contacts, oc, dim, k)
     if row_duals is not None and len(row_duals) != C.n_rows:
         raise ValueError(f"row_duals has {len(row_duals)} entries, contacts give {C.n_rows} cohesion rows")
     p, s, rs, _ = _scales(mech, row_duals, C, dim)
@@ -662,8 +686,15 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
       · `ok` = admissible 且 duality_gap_rel ≤ tol 且 complementarity ≤ tol。
     `worst_power`、`duality_gap` 仍给出原始（有量纲）值，`worst_power_rel` 是 min_j p_j / 尺度_j。
 
-    列由 `_build_columns` 给出，与 `limit_load` **共用**（纪律 A 的如实声明）：这里验证的是
-    "LP 的解与它自己的列一致"，不能替代对列构造本身的门（闭式 α、手算机构，见 tests/test_limit_duality.py）。
+    **静力一侧**（2026-09-27，G6 第二轮 major）：`static_residual_rel` = ‖Σλ_j w_j + W_dead + α·W_live‖ 按力、力矩分块
+    除以各自的物理尺度（Σ|λ_j||w_j| + |W_dead| + α|W_live|，力矩块再加 力尺度 × 接触臂），另查 λ ≥ 0、各黏聚行 Σλ ≤ 1、
+    α ≥ 0（`static_ok`）。旧版只查机构一侧，只能证明"α 不低于真值"——不安全的一侧；LP 列代码丢了参考点时 α = 15
+    （闭式 10）照样 ok。
+    **在接触形心判定**（同上，major）：荷载按 m' = m − d × f、机构按 v' = v − d × ω 平移到接触点形心 o'（浮点，
+    舍入 ~u·|o' − o|/L），列在 o' 处用 `_build_columns` 的**浮点**路径独立构造。于是各尺度是物理尺度：旧版在调用方坐标系
+    里判定，尺度被 |ω|·|o' − o| 放大 ~|p|/L 倍（UTM 下 ~4e6），tol = 1e-7 实际放宽成 O(1)，α×0.5、×2 都被放行。
+    与 `limit_load` 的关系（纪律 A 的如实声明）：两边共用的只有锥棱与黏聚方向（`friction_generators`/`_tangents`，
+    它们是模型定义）；力矩与荷载平移 `limit_load` 用有理数（`_exact_wrench`/`_exact_shift`），这里用浮点，互不共用。
     `res` 必须是用同一组 contacts / dim / k 算出的 optimal 结果；列数或对偶段长度对不上直接 ValueError，
     不做错位比较（审查 C1/C24：旧版只按摩擦棱重建列表，带黏聚力时与 res.lambdas 错位、且截掉了 y_r）。
     """
@@ -672,12 +703,28 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
     if origin is None:
         origin = (0.0,) * dim
     nw = 3 if dim == 2 else 6
-    C = _build_columns(contacts, origin, dim, k)
+    oc = (tuple(sum(ct.point[i] for ct in contacts) / len(contacts) for i in range(dim)) if contacts
+          else tuple(origin[:dim]))
+    dvec = tuple(oc[i] - origin[i] for i in range(dim))
+    C = _build_columns(contacts, oc, dim, k)
     if len(res.lambdas) != len(C.cols) or len(res.mechanism) != nw or len(res.row_duals) != C.n_rows:
         raise ValueError(
             f"result does not match these contacts/dim/k: {len(res.lambdas)} lambdas vs {len(C.cols)} columns, "
             f"{len(res.mechanism)} mechanism vs {nw}, {len(res.row_duals)} row duals vs {C.n_rows} rows")
-    y, yr = res.mechanism, res.row_duals
+    dead = _shift_wrench(list(dead), dvec, dim)
+    live = _shift_wrench(list(live), dvec, dim)
+    y, yr = _twist_forward(list(res.mechanism), dvec, dim), res.row_duals
+    # 静力一侧：平衡残差（力、力矩分块，物理尺度）与 λ、黏聚行、α 的符号
+    arm = max((_norm(tuple(ct.point[i] - oc[i] for i in range(dim))) for ct in contacts), default=0.0)
+    lam = list(res.lambdas)
+    resid = [sum(l * w[i] for l, w in zip(lam, C.cols)) + dead[i] + res.alpha * live[i] for i in range(nw)]
+    fsc = sum(abs(l) * _norm(w[:dim]) for l, w in zip(lam, C.cols)) + _norm(dead[:dim]) + abs(res.alpha) * _norm(live[:dim])
+    msc = (sum(abs(l) * _norm(w[dim:]) for l, w in zip(lam, C.cols)) + _norm(dead[dim:])
+           + abs(res.alpha) * _norm(live[dim:]) + fsc * arm)
+    static_rel = max(_norm(resid[:dim]) / fsc if fsc > 0.0 else _norm(resid[:dim]),
+                     _norm(resid[dim:]) / msc if msc > 0.0 else _norm(resid[dim:]))
+    rows_ok = all(sum(l for l, rj in zip(lam, C.row_of) if rj == r_i) <= 1.0 + tol for r_i in range(C.n_rows))
+    static_ok = static_rel <= tol and min(lam, default=0.0) >= 0.0 and rows_ok and res.alpha >= 0.0
     power, pscale, rscale, V = _scales(y, yr, C, dim, loads=(dead, live))
     drive = _dot(y, live)
     # 驱动的舍入尺度：远坐标下 yᵀW_live 是平动项与转动项的大量相消（块体 2 cm、离原点 4000 km 时 Σ|y_i W_i| ~ 1e2，
@@ -712,4 +759,5 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
     return {"admissible": admissible, "worst_power": worst_raw, "worst_power_rel": worst_rel,
             "drive": drive, "upper_bound": upper, "alpha": res.alpha,
             "duality_gap": gap, "duality_gap_rel": gap_rel, "complementarity": comp,
-            "ok": admissible and gap_rel <= tol and comp <= tol}
+            "static_residual_rel": static_rel, "static_ok": static_ok,
+            "ok": admissible and gap_rel <= tol and comp <= tol and static_ok}

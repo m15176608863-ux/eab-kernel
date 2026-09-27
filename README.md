@@ -94,7 +94,7 @@ cc5d7cf 按原字节重新入库，`.gitattributes` 设 `* -text`，本仓库本
 - LP 在纪律 B 的尺度格子上还有毛病（2026-09-24 订正：此处原写"~3e-10 的主元、~1e3 的残差"，这两个数没人复核过，删去）。复核得到的是：M0 前的原始链路（cc5d7cf 的 `limit.py` + `lp.py`）在三维扁块四角黏聚（μ = 0.2、各 cA = 1.5·s）、荷载 ×1e4 时**报 `optimal` 却给错值**：k = 16 时承载力是解析上界的 2.12 倍（169757 vs 夹逼 [78463, 80000]），**k = 5 时承载力为负**（−492664 vs 夹逼 [64721, 80000]）；荷载不放大（s = 1）时同一算例正确（7.919 ∈ [6.472, 8]）。复现：`git archive cc5d7cf src` 解到临时目录，跑 `tests/test_lp_fail_loud.py` 里 `_cohesive_block(1e4, 1.0)` 同款算例（2026-09-24 实跑）。
   另外两个：列放大 1e2/1e4 时假不可行；一阶段舍入噪声造成的"无界"被报成不可行。修法是 2 的幂行列均衡、右端归一化、残差守卫；
   数值崩溃时现在抛错，不再返回一个错的最优（`test_lp_scale.py::test_column_scaling_does_not_change_the_answer`、
-  `::test_phase_one_rounding_noise_is_not_reported_as_infeasible`、`::test_numerical_breakdown_raises_instead_of_returning_a_wrong_optimum`；
+  `::test_phase_one_rounding_noise_is_not_reported_as_infeasible`、`::test_numerical_breakdown_cannot_change_the_answer`；
   荷载 ×1e4 加黏聚力的格子在 `test_limit_duality.py`）。（2026-09-27 注：下面描述的是 M0 时的契约；M0.2 起 LP 的契约改为
   "答案对给定数据精确"，这些格子现在一律答对，见 AGENTS.md §3。）"要么答对、要么抛 RuntimeError、绝不静默给错"这条契约由 8376ec2 新增的
   `test_lp_fail_loud.py` 钉住（lp_tol 取默认/1e-9/1e-12/1e-14 × 4 种荷载与几何尺度 × k = 5/16，共 32 格）：全部 32 格中有 6 格抛 RuntimeError，全都落在显式传 1e-12 / 1e-14 的 16 格里

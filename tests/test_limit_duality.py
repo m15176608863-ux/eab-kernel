@@ -265,6 +265,17 @@ def test_cohesive_capacity_is_independent_of_the_moment_reference_point(k):
         alphas.append(r.alpha)
     assert alphas[1] == pytest.approx(alphas[0], rel=1e-9) and alphas[2] == pytest.approx(alphas[0], rel=1e-9)
     assert 0.0 < alphas[0] < 0.2 * 10.0 + sum(_CA)
+    # （G6 第二轮 minor：limit_load 总在接触形心求解，上面的 α 相等本身是空断言。有内容的是：返回的机构关于调用方
+    # origin，必须按速度旋量规律变换 v_{o2} = v_{o1} − (o2 − o1) × ω；check_duality 的静力一侧用独立的浮点列核对了 λ。）
+    mechs = []
+    for o in [(0.0, 0.0, 0.0), (5.0, -3.0, 2.0)]:
+        cts, dead, live = _asym_cohesive_block(o, k=k)
+        mechs.append(limit_load(cts, dead, live, dim=3, origin=o, k=k).mechanism)
+    om = mechs[0][3:]
+    d = (5.0, -3.0, 2.0)
+    v2 = [mechs[0][0] - (d[1] * om[2] - d[2] * om[1]), mechs[0][1] - (d[2] * om[0] - d[0] * om[2]),
+          mechs[0][2] - (d[0] * om[1] - d[1] * om[0])]
+    assert mechs[1][:3] == pytest.approx(v2, rel=1e-9, abs=1e-9) and mechs[1][3:] == pytest.approx(om, rel=1e-12)
 
 
 def test_two_d_cohesion_reference_point_invariance_with_unequal_contacts():

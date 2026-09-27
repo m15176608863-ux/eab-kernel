@@ -31,12 +31,11 @@ def _cohesive_block(s, g):
 @pytest.mark.parametrize("lp_tol", [None, 1e-9, 1e-12, 1e-14, 1e-4, 1e-3])     # 1e-4/1e-3：G6 minor 24 的放宽方向
 @pytest.mark.parametrize("s,g", [(1.0, 1.0), (1e4, 1.0), (1e4, 1e-3), (1e-3, 1e3)])
 @pytest.mark.parametrize("k", [5, 16])
-def test_answer_is_correct_or_the_solver_raises(lp_tol, s, g, k):
+def test_answer_is_correct(lp_tol, s, g, k):
+    """（2026-09-27 收紧，G6 第二轮 major）M0.2 起 LP 对给定数据精确、浮点层的失败不抛给调用方，所以这些格子——包括显式
+    传很紧 lp_tol 的——一律必须答对、不许抛错。旧版在这里放行 RuntimeError，"一律答对"的声称没有门。"""
     cts, dead, live, full = _cohesive_block(s, g)
-    try:
-        r = limit_load(cts, dead, live, dim=3, origin=(0.0, 0.0, 0.0), k=k, lp_tol=lp_tol)
-    except RuntimeError:
-        return                                        # 契约允许：数值崩溃必须抛出
+    r = limit_load(cts, dead, live, dim=3, origin=(0.0, 0.0, 0.0), k=k, lp_tol=lp_tol)
     assert r.status == "optimal", (lp_tol, s, g, k, r.status)
     assert cos(pi / k) * full * (1 - 1e-9) <= r.alpha <= full * (1 + 1e-9), (lp_tol, s, g, k, r.alpha, full)
 
