@@ -286,7 +286,9 @@ def test_a_short_edge_elsewhere_does_not_merge_long_edges(C, tiny):
     tiny = 1e-8 放在 1e5 处下限 0.14 rad，这对长边被并成 FF，成员判定 16/2000 答反、g0 报红。"""
     B = _chamfered_square(C, tiny)
     eb = convex_entrance_block(TILTED_TRIANGLE, B)
-    assert not any(f[0] == "FF" for f in eb.facets), eb.facets
+    # 两条长边夹 0.1 rad，绝不许并；削角那条 tiny 边在 1e6 处方向本身是噪声（c·eps·C/tiny ≫ 1 rad），它与长边并成 FF
+    # 在契约误差（≤ t + 2·c·eps·C）之内，允许——所以只禁止 B 的非削角边（0、1、3、4）出现在 FF 里
+    assert not any(f[0] == "FF" and f[2] != 2 for f in eb.facets), eb.facets
     rng = random.Random(1)
     wrong, n = [], 0
     for _ in range(1500):
@@ -309,7 +311,7 @@ def test_parallel_edges_of_very_different_lengths_merge_within_the_length_tolera
     big = [(C, C), (C + 1.0, C), (C + 1.0, C + 1.0), (C, C + 1.0)]
     small = [(0.0, 0.0), (1e-6, 0.0), (1e-6, 1e-6), (0.0, 1e-6)]
     assert sum(f[0] == "FF" for f in convex_entrance_block(small, big, tol=1e-9).facets) == 4
-    d = 1e-8                                         # 长边（1）端点偏出 1e-8 = 10·t
+    d = 1e-6                                         # 长边（1）倾 1e-6 rad：远大于 1e-6 短边的方向噪声 c·eps·C/1e-6 ≈ 1.4e-8 rad
     tilted = [(0.0, 0.0), (1e-6, 0.0), (1e-6, 1e-6), (0.0, 1e-6)]
     big_t = [(C, C), (C + 1.0, C + d), (C + 1.0, C + 1.0), (C, C + 1.0)]
     labels = convex_entrance_block(tilted, big_t, tol=1e-9).facets
@@ -382,3 +384,42 @@ def test_non_convex_or_clockwise_input_is_refused(name):
         convex_entrance_block(bad, SQUARE, tol=1e-9)
     with pytest.raises(ValueError, match="not"):
         convex_entrance_block(SQUARE, bad, tol=1e-9)
+
+
+@pytest.mark.parametrize("seed", range(10))
+def test_true_parallel_edges_with_length_ratio_1000_merge_after_rotation(seed):
+    """G6 第三轮 minor：单位方块对 1000 × 1 的薄矩形（真平行边，长短边比 1000），随机旋转后 s = 1e-3、|t| = 1e3：叉积噪声
+    ~eps·C·|e_long| 超过 t·min|e|，旧版不并，E 多出一个微折点，第三票（凸包顶点集）假红 15/20。现在 4 条 FF，g0 三票通过。"""
+    RECT = [(0.0, 0.0), (1000.0, 0.0), (1000.0, 1.0), (0.0, 1.0)]
+    rng = random.Random(seed)
+    s, tm = 1e-3, 1e3
+    th, phi = rng.uniform(0, 2 * math.pi), rng.uniform(0, 2 * math.pi)
+    c, sn = math.cos(th), math.sin(th)
+    f = lambda P: [(s * (c * p[0] - sn * p[1]) + tm * math.cos(phi), s * (sn * p[0] + c * p[1]) + tm * math.sin(phi)) for p in P]
+    A, B = f(SQUARE), f(RECT)
+    eb = convex_entrance_block(A, B)
+    assert sum(l[0] == "FF" for l in eb.facets) == 4, eb.facets
+    rep = g0_convex(A, B, samples=100, seed=1)
+    assert rep.passed, (rep.mismatches[:2], rep.facet_symmetric_diff, rep.hull_vertex_mismatch)
+
+
+def test_a_vertex_fifty_tolerances_inside_the_hull_is_rejected():
+    """G6 第三轮 minor：凸性前提"顶点在凸包以内深度 ≤ t"的牙——深 50·t 的微凹必须拒收（阈值放宽 100 倍就会被当平直顶点吞掉）。"""
+    from eab.kernel2d.geom import coord_scale, round_floor
+    t = round_floor(coord_scale(SQUARE))
+    P = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 50.0 * t), (0.0, 1.0)]
+    with pytest.raises(ValueError, match="not convex"):
+        convex_entrance_block(SQUARE, P)
+    P2 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 0.5 * t), (0.0, 1.0)]       # 半个容差：夹平即可
+    assert len(convex_entrance_block(SQUARE, P2).facets) >= 4
+
+
+@pytest.mark.parametrize("C", [1.0, 1e5])
+def test_the_length_tolerance_is_the_slack_for_the_long_edge_rotation(C):
+    """两条长边（1）夹 δ：长边转到并后法向的位移 δ·1 ≤ tol 才并——δ = tol/2 并、δ = 2·tol 不并。两边自己的方向噪声
+    c·eps·C ≤ 1.4e-9 rad 远小于 tol = 1e-7，所以这里并或不并全由 tol 决定（突变体"忽略 t"必须在这里变红）。"""
+    tol = 1e-7
+    for d, n_ff in ((0.5 * tol, 4), (2.0 * tol, 3)):
+        big = [(C, C), (C + 1.0, C + d), (C + 1.0, C + 1.0), (C, C + 1.0)]
+        labels = convex_entrance_block(SQUARE, big, tol=tol).facets
+        assert sum(f[0] == "FF" for f in labels) == n_ff, (C, d, labels)

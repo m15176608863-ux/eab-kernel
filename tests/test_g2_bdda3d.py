@@ -654,3 +654,15 @@ def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm
     res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
     _assert_g2_gate(res, band=G2_BAND * s)
     assert [_row_digest(r, load_case(p)[2]) for r in res["rows"]] == ref
+
+
+@pytest.mark.parametrize("C,h", [(0.0, 1e-6), (1e5, 1e-6), (1e6, 1e-5)])
+def test_polyhedron_with_aliases_keeps_a_small_chamfer_at_any_coordinate_magnitude(C, h):
+    """G6 第三轮 minor：1 km 立方体一个角削去 h 的倒角（10 顶点 7 面）：旧版把绝对地板当相对容差传给凸包，C = 1e5 时倒角
+    顶点被吸进厚平面带、再被当"非凸包角点"抛错。"""
+    from g2_bdda3d import polyhedron_with_aliases
+    L = 1000.0
+    pts = [(0, 0, 0), (L, 0, 0), (L, L, 0), (0, L, 0), (0, 0, L), (L, 0, L), (L - h, L, L), (0, L, L), (L, L - h, L), (L, L, L - h)]
+    pts = [(x + C, y + C, z + C) for x, y, z in pts]
+    P, _ = polyhedron_with_aliases(pts, block=1)
+    assert len(P.faces) == 7 and P.manifold_issues() == []

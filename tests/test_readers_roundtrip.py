@@ -209,3 +209,15 @@ def test_bdda_df_state_fields_come_only_from_df22(name):
         assert (r.mode, r.raw_mode, r.gap, r.shear, r.mode_prev) == (Mode.UNKNOWN, None, None, None, None), r
         assert r.mode_init is not None and r.gap_ref is not None and r.slip_ref is not None, r
     assert any(r.mode != Mode.UNKNOWN for r in recs if "df22_oc_iter" in r.extra)
+
+
+def test_bdda3d_state_fields_are_empty_without_a_per_step_judgment():
+    """G6 第三轮 minor：3-b-dda 的入口 dict 只有转移进来的 m0init，没有本步开闭判定——mode 必须留 UNKNOWN、raw_mode 留空，
+    携带值只在 mode_init（与 bdda_df 缺 df22 时同一口径）。"""
+    from eab.contact_record import Mode
+    p = FIX / "bdda3d" / "cb2_locked.json"
+    if not p.exists():
+        pytest.skip("fixture missing")
+    recs = bdda3d.load_records(p)
+    assert recs and all(r.mode == Mode.UNKNOWN and r.raw_mode is None for r in recs)
+    assert all(r.mode_init is not None and r.raw_mode_init is not None for r in recs)

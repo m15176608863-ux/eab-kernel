@@ -325,8 +325,10 @@ def test_g0_three_votes_are_invariant(name, rot, tmag, s):
     _, M, A, B = _cell(name, rot, tmag, s)
     r = g0_convex3(A, B, samples=12, seed=1)
     assert r.passed, (r.mismatches[:2], r.facet_symmetric_diff[:4], r.hull_vertices, r.e_vertices)
-    assert (r.facet_local, r.hull_vertices, r.e_vertices) == (rb.facet_local, rb.hull_vertices, rb.e_vertices)
-    assert rb.facet_ambiguous == 0
+    assert r.facet_local == rb.facet_local
+    assert rb.facet_ambiguous == 0 and rb.e_vertices_ambiguous == 0
+    assert r.e_vertices + r.e_vertices_ambiguous == rb.e_vertices
+    assert r.hull_vertices + r.e_vertices_ambiguous == rb.hull_vertices
     if r.facet_ambiguous == 0:
         assert (r.facet_global, r.facet_degenerate, r.facet_local_dropped) == (rb.facet_global, rb.facet_degenerate, 0)
     else:

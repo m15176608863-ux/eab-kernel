@@ -63,10 +63,10 @@
 >   门的指向改到 `test_failure_mode_is_read_off_invariants_of_the_dual_face`），不改代码与测试。
 > - 合起来，b1bbd27 之后主干上 6f157ac、b26d7f5、77600c9、8376ec2、094861c 五件都没有经过独立验证者（`git log --oneline --no-merges b1bbd27..094861c`）。
 
-## 现状（2026-09-24）
+## 现状（2026-10-10）
 
-全套 **1209** 个测试全绿（测试基线 8376ec2；094861c 只改 docstring，测试数不变，本次在 094861c 上重跑同为 1209 passed；
-`python -X utf8 -m pytest -q -p no:cacheprovider`，主树与一份新鲜克隆各跑了一遍）。
+全套 **5706** 个测试全绿（2026-10-10，G6 第三轮修复后的工作树；09-24 时为 1209，M0.2/M0.3/M1 的不变性元门与分辨率门把数目抬到这里；
+`python -X utf8 -m pytest -q -p no:cacheprovider`）。
 表里每个 ✔ 后面的括号给出看护它的测试（纪律 C：写不出测试的不打 ✔）。文件名省略 `tests/` 前缀。
 
 | 层 | 状态 |
@@ -205,7 +205,7 @@ cc5d7cf 按原字节重新入库，`.gitattributes` 设 `* -text`，本仓库本
 ## 运行
 
 ```bash
-python -X utf8 -m pytest -q -p no:cacheprovider     # 全套 1209（测试基线 8376ec2，094861c 上相同）；夹具已入库，不需要先导入
+python -X utf8 -m pytest -q -p no:cacheprovider     # 全套 5706（2026-10-10）；夹具已入库，不需要先导入
 python -X utf8 tools/tia_sensitivity.py
 ```
 

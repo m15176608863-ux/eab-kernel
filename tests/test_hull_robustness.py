@@ -121,7 +121,7 @@ def test_rotated_box_pair_hull_has_exactly_eight_vertices_on_the_first_build(see
 
 def test_sliver_fallback_removes_the_middle_of_three_collinear_vertices(monkeypatch):
     """兜底的牙：把并列裁决换回"按下标"（旧版），旋转方块对一次构建得到 9 个顶点与一个细条面（法向是垃圾，
-    有输入点"外露" 0.16）；外壳必须排除居中的那个顶点、重建成 8 个顶点。再把兜底关掉，自检必须抛错。"""
+    有输入点"外露" 0.16）；外壳必须排除居中的那个顶点、重建成 8 个顶点。再把兜底关掉，细条面就留下来了。"""
     import inspect
     R = _rot(3)
     A = _rotated(box(half=(1.0, 1.0, 1.0)), R)
@@ -140,8 +140,7 @@ def test_sliver_fallback_removes_the_middle_of_three_collinear_vertices(monkeypa
     H = G3._quickhull(diffs, 1e-12)                                    # 兜底把它修回 8 个（不放大容差）
     assert len(H.verts) == 8 and H.volume() == pytest.approx(72.0, rel=1e-12)
     monkeypatch.setattr(G3, "_sliver_middle_vertex", lambda P, eps: None)
-    with pytest.raises(HullNumericalFailure):
-        G3._quickhull(diffs, 1e-12)
+    assert len(G3._quickhull(diffs, 1e-12).verts) == 9                 # 没有兜底就带着细条面返回（自检按面噪声放宽，看不见它）
 
 
 # ---------------------------------------------------------------- 自检与噪声底的牙（G6 第二轮点名"关掉照绿"）
@@ -191,8 +190,11 @@ def test_noise_floor_in_the_hull_has_teeth(monkeypatch):
     diffs = [sub(b, a) for a in A.verts for b in B.verts]
     assert len(G3._quickhull(diffs, 1e-14).verts) == 8
     monkeypatch.setattr(G3, "noise_floor", lambda C: 0.0)
-    with pytest.raises((HullNumericalFailure, ValueError)):
-        G3._quickhull(diffs, 1e-14)
+    try:
+        H = G3._quickhull(diffs, 1e-14)
+    except (HullNumericalFailure, ValueError):
+        return                                                       # 自检抓到噪声级的"非凸"
+    assert len(H.verts) > 8, len(H.verts)                            # 或者把舍入噪声点都收成了顶点
 
 
 # ---------------------------------------------------------------- 随机家族：脊 + 针（G6 复核者的 300 抽样）
@@ -223,3 +225,23 @@ def test_ridge_needle_family_never_needs_tolerance_escalation(seed):
         mod._quickhull = saved
     assert calls == [1e-12], calls                                  # 一次成功，不放大
     assert _worst_outside(H, diffs) <= 4.0 * max(1e-12 * 6.0, G3.noise_floor(5.0)) + 1e-15
+
+
+@pytest.mark.parametrize("seed", range(30))
+def test_rotated_ridge_needle_family_builds_without_escalation(seed):
+    """G6 第三轮 major：同一家族加一个一般旋转后，旧版 300 例里 47 例 _quickhull(1e-12) 自检失败、靠放大容差自救——
+    细条三角的法向噪声没进自检。现在自检按面自己的法向噪声放宽，一次建成。"""
+    rng = random.Random(500 + seed)
+    h = 10 ** rng.uniform(-9, -4)
+    r = 10 ** rng.uniform(math.log10(3e-4), -1)
+    sec = [(-1.0, -1.0), (1.0, -1.0), (1.0, 0.0), (0.0, h), (-1.0, 0.0)]
+    B = Polyhedron([(-2.0, y, z) for y, z in sec] + [(2.0, y, z) for y, z in sec],
+                   [(4, 3, 2, 1, 0), (5, 6, 7, 8, 9)] + [(i, (i + 1) % 5, 5 + (i + 1) % 5, 5 + i) for i in range(5)])
+    A = convex_hull_3d([(0.3, 0.0, h + 0.05)] + [(0.3 + r * math.cos(t), r * math.sin(t), h + 1.05)
+                                                 for t in (0.1, 2.1943951, 4.2887902)])
+    R = _rot(seed + 1)
+    A, B = _rotated(A, R), _rotated(B, R)
+    diffs = [sub(b, a) for a in A.verts for b in B.verts]
+    H = G3._quickhull(diffs, 1e-12)                                   # 不经 convex_hull_3d 的放大
+    assert H.manifold_issues() == []
+    assert len(H.verts) >= 20

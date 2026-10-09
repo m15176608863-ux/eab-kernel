@@ -304,7 +304,9 @@ def _unwrapped_angles(a0: float, edges: list[Point], name: str) -> list[float]:
     """从最低点出发的凸 CCW 多边形各边的方向角，按**相邻边转角累加**得到（不跨 0/2π 缝）。
 
     首边理想方向角 ∈ [0, π)，舍入可使它成 −δ（_edge_angle 映到 2π − δ），减回去。之后每条边 = 前一条 + 转角
-    atan2(e₀ × e₁, e₀ · e₁)；转角为负的只有凸包深度 ≤ t 的微凹顶点（上面已核过），夹平成 0。
+    atan2(e₀ × e₁, e₀ · e₁)，**负转角照记**（微凹顶点给 −舍入级；方向测不准的短边进出两个转角互相抵消——相邻两个
+    转角之和恒等于邻边的直接夹角，所以短边再离谱也只污染它自己的角，不传给后面的长边；旧版把负转角夹平成 0，
+    一条方向反了的短边会把其后所有长边的角一起抬高）。各边角的单调性与短边的角由 _angle_windows 按凸性修复。
     总转角（含末边回到首边）必须是 2π：绕圈不止一次的非简单多边形（五角星，顶点都在凸包上、深度检验看不见）总转角是 4π。
     M0.3 第一版按 [0, 2π) 里的极角判"下降 > π/2 即绕圈"：平直顶点落在最底边上、刚体运动后微凹时，两条相邻边的极角成 δ 与
     2π − δ，后面的下降 ≈ 3π/2 被当成绕圈误拒（G6 第三轮 major）。"""
@@ -315,12 +317,29 @@ def _unwrapped_angles(a0: float, edges: list[Point], name: str) -> list[float]:
     for k in range(1, len(edges)):
         turn = atan2(cross(edges[k - 1], edges[k]), dot(edges[k - 1], edges[k]))
         total += turn
-        angs.append(angs[-1] + max(turn, 0.0))
+        angs.append(angs[-1] + turn)
     total += atan2(cross(edges[-1], edges[0]), dot(edges[-1], edges[0]))
     if abs(total - 2 * pi) > 1e-6:
         raise ValueError(f"input polygon {name} not convex: total turning angle {total:.6f} rad is not 2π "
                          f"(the boundary winds more than once)")
     return angs
+
+
+def _angle_windows(angs: list[float], edges: list[Point], rfl: float) -> tuple[list[float], list[float], list[float]]:
+    """每条边**真实**方向角的可行窗 [lo_k, hi_k] 与修到窗内的角。
+
+    两条约束：|真角 − 测角_k| ≤ rfl/|e_k|（方向噪声，纪律 F 的逐特征口径，rfl 是这个多边形自己的 c·eps·C）；
+    真角沿 CCW 单调不减、绕一圈恰 2π（凸性）。合起来是单调包络：lo_k = max_j (测角_j − 噪声_j − 2π[j>k])，
+    hi_k = min_j (测角_j + 噪声_j + 2π[j<k])。长边的窗就是 ±噪声；短到方向测不准的边（针底、倒角，噪声可达
+    几弧度）被相邻长边夹住——它的方向不确定度是邻边之间的角距，不是 rfl/|e|。平行边合并只许在两条边的窗相交时发生：
+    否则一条 1e-10 的倒角边会与任何同向长边"平行"，并进去后扫描线把那条长边的角当成倒角边的角，后面的顶点-边配对
+    整体错位，成员判定差 O(1)（G6 第三轮修复第一版的回归，1500 点里错 52 点）。"""
+    n = len(angs)
+    nz = [rfl / norm(e) for e in edges]
+    lo = [max(angs[j] - nz[j] - (2 * pi if j > k else 0.0) for j in range(n)) for k in range(n)]
+    hi = [min(angs[j] + nz[j] + (2 * pi if j < k else 0.0) for j in range(n)) for k in range(n)]
+    fixed = [min(max(a, lo[k]), hi[k]) for k, a in enumerate(angs)]
+    return lo, hi, fixed
 
 
 def _hull_defect(P: Poly) -> float:
@@ -335,8 +354,12 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
     """A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角合并，每条边带盖标签。
 
     tol 为**长度**容差（调用方单位），抬到舍入下限 c·eps·C（C = A、B 的坐标量级）。两处用它，都逐特征、按长度判：
-      · 平行边合并：B 的边 e_P 与 −A 的边 e_Q 同向且 |e_P × e_Q| ≤ t·min(|e_P|, |e_Q|) 才并成一条 FF 边。
-        并后的 FF 面以 B 的边法向过合并起点，偏离真实的两段边界至多 |e_Q|·|sin Δθ| ≤ t——合并不引入超过 t 的误差；
+      · 平行边合并：B 的边 e_P 与 −A 的边 e_Q 同向、两边真实方向角的可行窗（_angle_windows：各自坐标量级下的方向噪声
+        rfl/|e|，再被相邻边按凸性夹住）相交到 t/max(|e_P|, |e_Q|) 以内才并成一条 FF 边——长边转到并后法向的位移 ≤ t，
+        短边的位移更小。并后的 FF 面以**较长边**的法向过合并起点，偏离真实的两段边界至多 t + 两边方向噪声×短边长。
+        长边之间这与 |e_P × e_Q| ≤ t·min|e| + rfl_P|e_Q| + rfl_Q|e_P| 等价（叉积自身的舍入；真平行边经旋转后长短边比
+        ≥ 64 时不加它就不并，E 多出一个落在凸包边中部的微折点，G6 第三轮 minor）；噪声按**各自**多边形的坐标量级算
+        （原点处 1e-6 的方块对 1e5 处倾 1e-6 rad 的长边：方块自己的边方向是准的，不许并）。
       · 凸性前提：顶点落在自身凸包边界以内的深度 ≤ t（平直顶点经刚体运动后的舍入级微凹）才吞下它的极角下降，
         否则清晰报错（审查 r4c：微凹被 +2π 级联静默吃掉，产出非凸 E）。
     旧版（M0.2 到 cad2ffc）两处都用**角度**：tol 是弧度，再抬到极角舍入下限 c·eps·C/ℓ_min，ℓ_min 取**整个多边形**
@@ -349,7 +372,8 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
         if bad:
             raise ValueError(f"zero-length edge {bad[0]} in {name} (consecutive duplicate vertex {poly[bad[0]]}); "
                              f"strip duplicates at the reader boundary")
-    t = max(tol, round_floor(coord_scale(A, B)))
+    rfl = round_floor(coord_scale(A, B))
+    t = max(tol, rfl)
     for name, poly in (("A", A), ("B", B)):
         if signed_area(poly) <= 0.0:
             raise ValueError(f"input polygon {name} is not counter-clockwise (signed area {signed_area(poly):.3e})")
@@ -363,8 +387,8 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
     iP, iQ = _start_index(P), _start_index(Q)
     eP = [sub(*reversed(edge(P, (iP + k) % n))) for k in range(n)]
     eQ = [sub(*reversed(edge(Q, (iQ + k) % m))) for k in range(m)]
-    angP = _unwrapped_angles(_edge_angle(P, iP), eP, "B")
-    angQ = _unwrapped_angles(_edge_angle(Q, iQ), eQ, "A")
+    loP, hiP, angP = _angle_windows(_unwrapped_angles(_edge_angle(P, iP), eP, "B"), eP, round_floor(coord_scale(P)))
+    loQ, hiQ, angQ = _angle_windows(_unwrapped_angles(_edge_angle(Q, iQ), eQ, "A"), eQ, round_floor(coord_scale(Q)))
     i = j = 0
     cur = add(P[iP], Q[iQ])
     verts = [add(cur, a0)]
@@ -379,7 +403,8 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
         else:
             d = angP[i] - angQ[j]
             ep, eq = eP[i], eQ[j]
-            if dot(ep, eq) > 0.0 and abs(cross(ep, eq)) <= t * min(norm(ep), norm(eq)):
+            slack = t / max(norm(ep), norm(eq))          # 长边转到并后法向的位移 ≤ t
+            if dot(ep, eq) > 0.0 and loP[i] <= hiQ[j] + slack and loQ[j] <= hiP[i] + slack:
                 take_p = take_q = True
             elif d < 0:
                 take_p = True
@@ -415,9 +440,16 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
 def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
     """E 的一条 facet 在平移 x 下的有符号间隙（>0 参考点在该 facet 外侧）。"""
     kind, ai, bj = label
-    if kind in ("VE", "FF"):
+    if kind == "VE":
         nB = outward_normal(B, bj)
-        return dot(nB, sub(add(A[ai], x), edge(B, bj)[0]))   # FF：ai 为 A 该平行边的起点顶点
+        return dot(nB, sub(add(A[ai], x), edge(B, bj)[0]))
+    if kind == "FF":
+        # 平行贴边：facet 过点 b_j0 − a_i0（两条边的起点，ai 是 A 该平行边的起点顶点），外法向取**两条边里长的那条**的
+        # 法向——短边（在工程坐标上可能短到方向是纯噪声，c·eps·C/|e| ≫ 1）的法向不可用（G6 第三轮 minor 的后半）
+        b0, b1 = edge(B, bj)
+        a0, a1 = edge(A, ai)
+        n = outward_normal(B, bj) if norm(sub(b1, b0)) >= norm(sub(a1, a0)) else neg(outward_normal(A, ai))
+        return dot(n, sub(add(a0, x), b0))
     nA = outward_normal(A, ai)
     return dot(nA, sub(B[bj], add(edge(A, ai)[0], x)))
 

@@ -283,11 +283,22 @@ def cone_relint_direction(g: list[Vec3], tol: float = 1e-12) -> Vec3 | None:
     return unit(neg(p))
 
 
+def cone_intersection_margin(A: Polyhedron, ia: int, B: Polyhedron, ib: int) -> tuple[float, float]:
+    """(ia, ib) 的锥相交裕度：(原点到约束法向凸包的距离 |p|, 两顶点入射棱方向噪声的最大者)。
+    |p| > 噪声 ⟺ N_B(b) 与 −N_A(a) 的相对内部相交（命题 4 的零维盖条件，Gordan）；|p| 落在噪声量级以内时
+    "是不是 E 的顶点"在这组坐标的精度下说不清（G0 票三把这种对两边都不计，见 g03）。"""
+    noise = max((nz for _, nz in A.vertex_edges(ia) + B.vertex_edges(ib)), default=0.0)
+    gs = [unit(x) for x in cone_constraints(A, ia, B, ib) if norm(x) > 1e-300]
+    if not gs:
+        return 0.0, noise
+    return norm(closest_point_of_convex_hull_to_origin(gs)), noise
+
+
 def cones_intersect_relint(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 1e-12) -> bool:
     """(ia, ib) 是否给出 ∂E 的一个顶点（命题 4 的零维盖条件）。tol 是角度，另加两个顶点入射棱方向噪声的最大者
     （平行棱在旋转 / 远坐标下只平行到 eps·C/ℓ，锥的交恰退化成低维时不许被噪声判成有内部）。"""
-    noise = max((nz for _, nz in A.vertex_edges(ia) + B.vertex_edges(ib)), default=0.0)
-    return cone_relint_direction(cone_constraints(A, ia, B, ib), max(tol, noise)) is not None
+    dist, noise = cone_intersection_margin(A, ia, B, ib)
+    return dist > max(tol, noise)
 
 
 def _project_on_face(p: Vec3, P: Polyhedron, fi: int) -> tuple[Vec3, float]:
@@ -346,7 +357,7 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
     """A 的棱 ea 对 B 的棱 eb（交叉）。候选法向 ±unit(t_B × t_A)，取落在两条弧相对内部者。
 
     弧判据的输入对各自的棱**按构造正交化**（叉积对近平行棱只正交到 eps/sinθ）。平行判据（丢弃型）只用两条棱的
-    方向噪声：噪声内平行的一对由 VE3/EV3 表达（最近点落在重叠段端点，漏掉的至多 ~2·c·eps·C）。参数段判据按
+    方向噪声：噪声内平行的一对由 VE3/EV3 表达（平行时距离沿重叠段为常数，端点垂足恰是最短距离）。参数段判据按
     **各自的棱长**：s ∈ [−λ/|e_A|, 1 + λ/|e_A|]（λ = extent_tol 抬到长度舍入地板）。见证点钳进两条棱段。"""
     tA, tB = A.edge_dir(ea), B.edge_dir(eb)
     c = cross(tB, tA)
@@ -354,10 +365,13 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         return None
     n = unit(c)
     fl = max(extent_tol, _pair_floor(A, B))
+    # 候选法向 ±unit(t_B × t_A) 自己带着两条棱的方向噪声（短棱主导：1.7 mm 的棱在 1e6 处 8e-6 rad）——弧判据的
+    # 角容差要把它算进去，否则局部侧会把按自己的噪声分不清的 facet 判成"严格"，与凸包侧说不清的口径不一致（G6 第三轮 major）
+    ang = tol + A.edge_noise(ea) + B.edge_noise(eb)
     best: Cover3 | None = None
     for cand in (n, neg(n)):
-        sb = edge_arc_contains(B, eb, _orth(cand, tB), tol)
-        sa = edge_arc_contains(A, ea, _orth(neg(cand), tA), tol)
+        sb = edge_arc_contains(B, eb, _orth(cand, tB), ang)
+        sa = edge_arc_contains(A, ea, _orth(neg(cand), tA), ang)
         if sb < 0 or sa < 0:
             continue
         pa0, pb0 = A.verts[ea[0]], B.verts[eb[0]]
@@ -366,11 +380,23 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         pr = _closest_params(pa0, dA, pb0, dB)
         if pr is None:
             continue
-        s, t = pr
-        g = dot(cand, sub(add(pa0, mul(dA, s)), add(pb0, mul(dB, t))))
+        s, _ = pr
+        # 一致的见证对：qa 取 A 棱直线上的 s 处，qb 取 **qa 在 B 棱直线上的垂足**（t 由 qa 定，不独立求）。
+        # 近平行棱（夹角 θ）上 _closest_params 的 s、t 各带 ~eps/sin²θ 的误差且互不相关，独立求出的两点沿棱错位
+        # (Δs − Δt)·|e|，见证距离偏大 (Δs − Δt)²|e|²/(2d)（θ = 1e-5、d = 1e-3 时 2e-10，远超自校验窗口；G6 第三轮 major）。
+        # 距离对"沿棱滑动"不敏感（θ²Δs²/2d），所以 s 的误差无妨，错位才要命。gap 沿 facet 法向，与 s、t 无关。
+        qa = add(pa0, mul(dA, s))
+        t = dot(sub(qa, pb0), dB) / dot(dB, dB)
+        qb = add(pb0, mul(dB, t))
+        g = dot(cand, sub(qa, qb))
         ba, bb = fl / norm(dA), fl / norm(dB)
         in_ext = (-ba <= s <= 1.0 + ba) and (-bb <= t <= 1.0 + bb)
-        qa, qb = add(pa0, mul(dA, _clamp01(s))), add(pb0, mul(dB, _clamp01(t)))
+        if not 0.0 <= s <= 1.0:
+            qa = add(pa0, mul(dA, _clamp01(s)))                     # 钳到棱段端点，另一点重取垂足（仍一致）
+            qb = add(pb0, mul(dB, _clamp01(dot(sub(qa, pb0), dB) / dot(dB, dB))))
+        elif not 0.0 <= t <= 1.0:
+            qb = add(pb0, mul(dB, _clamp01(t)))
+            qa = add(pa0, mul(dA, _clamp01(dot(sub(qb, pa0), dA) / dot(dA, dA))))
         cov = Cover3("EE", ("edge", ea[0], ea[1]), ("edge", eb[0], eb[1]), cand, g, qa, qb,
                      (s, t), None, sb == 1 and sa == 1, in_ext)
         if best is None or abs(cov.gap) < abs(best.gap):

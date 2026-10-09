@@ -19,8 +19,9 @@ import pytest
 import eab.margin as M
 from eab.dual import Dual
 from eab.kernel3d.geom3 import Polyhedron, box, brute_feature_distance, convex_hull_3d, merge_coplanar, tetra
-from eab.margin import (INSIDE, OUTSIDE, body_distance, effective_geom_tol, inflated_membership, margin_contacts,
-                        margin_gap_from_frozen_cover, rounding_floor)
+from eab.kernel3d.geom3 import polyhedra_overlap
+from eab.margin import (INSIDE, ON_BOUNDARY, OUTSIDE, PENETRATING, body_distance, contact_resolution, effective_geom_tol,
+                        inflated_membership, margin_contacts, margin_gap_from_frozen_cover, rounding_floor)
 
 
 def _roof(h, t):
@@ -203,6 +204,198 @@ def test_body_distance_refuses_witnesses_that_are_not_on_the_bodies(monkeypatch)
                 c.point_a = tuple(b + 0.5 * (a - b) for a, b in zip(c.point_a, c.point_b))
         return out
     monkeypatch.setattr(M, "enumerate_covers3", shrink)
+    A, B = _small_pair(1e-3, 1.0)
+    with pytest.raises(RuntimeError, match="self-check"):
+        body_distance(A, B)
+
+
+# ---------------------------------------------------------------- G6 第三轮：相触分辨率只有一把尺
+
+def _rotq(seed):
+    import random
+    rng = random.Random(9100 + seed)
+    q = [rng.gauss(0.0, 1.0) for _ in range(4)]
+    n = math.sqrt(sum(c * c for c in q))
+    w, x, y, z = (c / n for c in q)
+    return ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+            (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+            (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+
+
+def _motion(P, R, t):
+    return Polyhedron([tuple(t[i] + sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in P.verts], list(P.faces))
+
+
+@pytest.mark.parametrize("tmag", [0.0, 1e5, 1e6])
+def test_penetration_answers_are_monotone_through_the_resolution_window(tmag):
+    """G6 第三轮 critical：|t| = 1e6 时舍入地板 ≈ geom_tol_eff，旧版把贯入深度落在 (geom_tol, geom_tol + 舍入] 的一对当
+    **正间距**报出、答 OUTSIDE（fail-unsafe）。现在钳零与哨兵用同一把尺 ctol：深度 ≤ ctol 答 0 / ON_BOUNDARY，更深给哨兵，
+    任何深度都不许答正间距或 OUTSIDE，且随深度单调。"""
+    R = _rotq(7)
+    t = tuple(tmag * c for c in (0.6, -0.48, 0.64))
+    B = _motion(box((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), R, t)
+    A0 = _motion(box((1.51, 0.5, 0.5), (0.51, 0.3, 0.5)), R, t)
+    gt = effective_geom_tol(A0, B)
+    ct = contact_resolution(A0, B)
+    seen = []
+    for k in (0.5, 1.2, 1.5, 3.0, 10.0, 30.0):
+        p = k * gt
+        A = _motion(box((1.51 - p, 0.5, 0.5), (0.51, 0.3, 0.5)), R, t)      # A 咬进 B 深 p
+        d, lab = body_distance(A, B)
+        m0 = inflated_membership(A, B, delta=0.0)
+        mc = margin_contacts(A, B, delta=1e-8)
+        assert d == 0.0, (tmag, k, d, lab)                                   # 绝不报正间距
+        assert m0 in (ON_BOUNDARY, INSIDE), (tmag, k, m0)
+        assert mc and all(c.closed for c in mc), (tmag, k, mc)                # δ = 1e-8 下必有已闭合的接触
+        seen.append(1 if lab == (PENETRATING,) else 0)
+        if p > 2.5 * ct:
+            assert lab == (PENETRATING,), (tmag, k, lab)
+    assert seen == sorted(seen), seen                                        # 单调：相触 … 哨兵
+
+
+@pytest.mark.parametrize("rot", [0.0, 0.3, 1.1])
+@pytest.mark.parametrize("gap", [1e-10, 1e-8, 1e-6])
+def test_a_tiny_block_near_a_huge_block_is_judged_the_same_in_every_orientation(rot, gap):
+    """G6 第三轮 major：1 cm 方块悬在 200 m 方块顶面上方 gap。谓词的"在表面上"带是被测体的 1e-12·diag（3.5e-10），大于
+    小块给出的 geom_tol_eff（1.7e-11）；旧版未旋转时报 1e-10 的间距，转 0.3 rad 后答 PENETRATING。现在相触分辨率
+    ctol 含谓词自己的分辨率：gap 低于它两种朝向都答相触（0 / ON_BOUNDARY），高于它都答出 gap。"""
+    def rotx(P, a):
+        c, s = math.cos(a), math.sin(a)
+        return Polyhedron([(x, c * y - s * z, s * y + c * z) for x, y, z in P.verts], list(P.faces))
+    B = rotx(box((0.0, 0.0, 0.0), (100.0, 100.0, 100.0)), rot)
+    A = rotx(box((30.0, 20.0, 100.0 + 0.005 + gap), (0.005, 0.005, 0.005)), rot)
+    ct = contact_resolution(A, B)
+    d, lab = body_distance(A, B)
+    m = inflated_membership(A, B, delta=0.0)
+    assert lab != (PENETRATING,), (rot, gap, lab)
+    if gap <= ct:
+        assert d == 0.0 and m == ON_BOUNDARY, (rot, gap, d, m, ct)
+    else:
+        assert d == pytest.approx(gap, rel=1e-6) and m == OUTSIDE, (rot, gap, d, m, ct)
+
+
+@pytest.mark.parametrize("S", [10.0, 100.0])
+@pytest.mark.parametrize("g", [2e-9, 1e-8, 1e-7])
+def test_a_corner_on_the_floor_plane_but_outside_the_face_is_separated(S, g):
+    """G6 第三轮 major：方块转 45° 坐在四面体底面所在的 z = 0 平面上，最近角点在面内离底边 g（块共用地板：DDA 最普通的位形）。
+    旧版把顶点"落在对方面平面上、面内在多边形外 ≤ 1e-9·diag"判成边界，谓词答相触，裕度层再升成 PENETRATING / INSIDE
+    （S = 100 时 g 到 58 倍 geom_tol_eff 都如此）。"""
+    r2 = math.sqrt(0.5)
+    B = tetra((0.0, 0.0, 0.0), (S, 0.0, 0.0), (0.0, S, 0.0), (0.0, 0.0, S))
+    c = ((S + r2 + g * math.sqrt(2.0)) / 2,) * 2 + (0.5,)
+    P = box(half=(0.5, 0.5, 0.5))
+    A = Polyhedron([(c[0] + r2 * x - r2 * y, c[1] + r2 * x + r2 * y, c[2] + z) for x, y, z in P.verts], list(P.faces))
+    ct = contact_resolution(A, B)
+    bd = brute_feature_distance(A, B)
+    assert bd == pytest.approx(g, rel=1e-6)
+    d, lab = body_distance(A, B)
+    assert lab != (PENETRATING,), (S, g, lab)
+    if g > ct:
+        assert polyhedra_overlap(A, B, effective_geom_tol(A, B)) == -1
+        assert d == pytest.approx(g, rel=1e-6) and inflated_membership(A, B, delta=0.0) == OUTSIDE
+    else:
+        assert d == 0.0
+
+
+@pytest.mark.parametrize("k", [2.5, 3.0, 10.0, 20.0])
+def test_a_thin_sliver_penetration_is_detected_above_twice_the_resolution(k):
+    """G6 第三轮 major：接触锥证人旧版只按 10 倍阶梯试探，一般朝向下深 (tol, ~20·tol) 的薄片贯入一个探针都落不进去、答"相触"。
+    现在沿切锥内部方向走到交集最深处：凸体上深于 2 倍分辨率的贯入一定判 1。"""
+    R = _rotq(7)
+    B = _motion(box((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), R, (0.0, 0.0, 0.0))
+    A0 = _motion(box((1.51, 0.5, 0.5), (0.51, 0.3, 0.5)), R, (0.0, 0.0, 0.0))
+    gt = effective_geom_tol(A0, B)
+    A = _motion(box((1.51 - k * gt, 0.5, 0.5), (0.51, 0.3, 0.5)), R, (0.0, 0.0, 0.0))
+    assert polyhedra_overlap(A, B, gt) == 1, (k, gt)
+
+
+# ---------------------------------------------------------------- G6 第三轮 major：近平行棱
+
+@pytest.mark.parametrize("theta,gap", [(1e-5, 1e-3), (1e-6, 0.1), (1e-7, 1e-3), (1e-8, 1e-8), (3e-4, 0.02)])
+def test_nearly_parallel_edges_give_the_exact_distance(theta, gap):
+    """B 的顶棱沿 x，A 的底棱在 z = gap、绕 z 转 θ：真最近对是两棱内部点、距离恰为 gap。旧版 EE 见证点的 s、t 独立求、
+    各带 ~eps/sin²θ 的误差，两点沿棱错位，见证距离偏大（θ = 1e-8 时偏 0.4），自校验误抛。"""
+    B = tetra((-1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, -0.8, -1.5), (0.0, 0.9, -1.4))
+    c, s, x0 = math.cos(theta), math.sin(theta), 0.1
+    A = tetra((x0 - 0.7 * c, -0.7 * s, gap), (x0 + 0.7 * c, 0.7 * s, gap), (x0 - 0.1, -0.7, 1.3 + gap), (x0 + 0.2, 0.8, 1.2 + gap))
+    bd = brute_feature_distance(A, B)
+    assert bd == pytest.approx(gap, rel=1e-9)
+    d, lab = body_distance(A, B)
+    assert lab != (PENETRATING,) and d == pytest.approx(gap, rel=1e-9), (theta, gap, d, lab)
+    assert inflated_membership(A, B, delta=2 * gap) == INSIDE and inflated_membership(A, B, delta=0.5 * gap) == OUTSIDE
+
+
+# ---------------------------------------------------------------- G6 第三轮 minor：零长棱 / 零面积面要清晰报错
+
+def test_zero_length_edges_are_a_clear_error_in_three_d():
+    """面环里插入重复顶点（网格导出常见）：manifold_issues 要报出零长棱；盖枚举与裕度层抛带棱号的 ValueError，
+    不是 ZeroDivisionError。"""
+    from eab.kernel3d.covers3 import enumerate_covers3
+    b = box()
+    v = list(b.verts) + [b.verts[1]]
+    faces = []
+    for f in b.faces:
+        f = list(f)
+        if 1 in f:
+            f.insert(f.index(1) + 1, 8)
+        faces.append(tuple(f))
+    P = Polyhedron(v, faces)
+    assert any("zero length" in m for m in P.manifold_issues()), P.manifold_issues()
+    with pytest.raises(ValueError, match="zero-length edge"):
+        enumerate_covers3(P, box((3.0, 0.0, 0.0)), window=float("inf"))
+    with pytest.raises(ValueError, match="zero-length edge"):
+        body_distance(P, box((3.0, 0.0, 0.0)))
+
+
+def test_edges_that_round_to_duplicates_at_engineering_coordinates_are_rejected_loudly():
+    """1e-8 的短棱在 1e6 处按 1e-3 缩放后低于 eps·C，顶点舍入成重合：manifold_issues 必须报出来，裕度层抛 ValueError。"""
+    A = _blunt_needle((0.3, 0.0, 5e-3 + 0.05), 0.1, 1.0, 1e-8)
+    B = _roof(5e-3, (0.0, 0.0, 0.0))
+    R = _rotq(7)
+    t = (6e5, -4.8e5, 6.4e5)
+    s = 1e-3
+    mv = lambda P: Polyhedron([tuple(t[i] + s * sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in P.verts], list(P.faces))
+    As, Bs = mv(A), mv(B)
+    if any(As.verts[e[0]] == As.verts[e[1]] for e in As.edges()):
+        assert As.manifold_issues()
+        with pytest.raises(ValueError):
+            body_distance(As, Bs)
+
+
+# ---------------------------------------------------------------- G6 第三轮 major：G0 门在工程坐标上要分清"分辨不了"与"不一致"
+
+@pytest.mark.parametrize("rot,tmag", [(7, 0.0), (7, 1e3), (7, 1e5), (7, 1e6), (0, 1e6)])
+def test_g0_three_votes_on_the_ridge_pair_at_engineering_coordinates(rot, tmag):
+    """针底 1.7 mm 的短棱在 1e3 处的方向噪声 5e-9 rad，而两个真 E 顶点的锥相交裕度只有 1e-9：旧版票三一刀切成"不是顶点"、
+    凸包侧按长度容差保留它们，报失配；票二在 1e6 处把法向只差 2e-9 rad 的两个 EE facet 并成退化 facet 而不报歧义。
+    现在：说不清的顶点对与 facet 两边都不计并如实报出，门必须通过；原点处没有任何歧义。"""
+    from eab.kernel3d.g03 import g0_convex3
+    B0 = _roof(1e-6, (0.0, 0.0, 0.0))
+    A0 = _needle((0.3, 0.0, 1e-6 + 0.05), 0.001, 1.0)
+    R = _rotq(rot) if rot else ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+    t = tuple(tmag * c for c in (0.6, -0.48, 0.64))
+    A, B = _motion(A0, R, t), _motion(B0, R, t)
+    rep = g0_convex3(A, B, samples=12, seed=1)
+    assert rep.passed, (tmag, rep)
+    if tmag == 0.0:
+        assert rep.facet_ambiguous == 0 and rep.e_vertices_ambiguous == 0 and rep.e_vertices == 22, rep
+    else:
+        # 两个"针尖级"E 顶点（锥相交裕度 ~1e-9）在工程坐标上或被记为说不清、或两边都认为低于分辨率
+        assert 20 <= rep.e_vertices + rep.e_vertices_ambiguous <= 22, rep
+        assert rep.facet_ambiguous <= 2 and rep.e_vertices_ambiguous <= 4 and rep.facet_local_dropped <= 4, rep
+
+
+def test_margin_self_check_catches_a_relative_1e_6_witness_error(monkeypatch):
+    """G6 第三轮 minor：自校验阈值（4·舍入）要有牙——注入相对 1e-6 的见证距离误差必须抛错。"""
+    real = M.enumerate_covers3
+
+    def skew(A, B, **kw):
+        out = real(A, B, **kw)
+        for c in out:
+            if c.point_a is not None and c.point_b is not None:
+                c.point_a = tuple(b + (1.0 + 1e-6) * (a - b) for a, b in zip(c.point_a, c.point_b))
+        return out
+    monkeypatch.setattr(M, "enumerate_covers3", skew)
     A, B = _small_pair(1e-3, 1.0)
     with pytest.raises(RuntimeError, match="self-check"):
         body_distance(A, B)

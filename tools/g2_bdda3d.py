@@ -95,10 +95,11 @@ def polyhedron_with_aliases(pts: list[tuple[float, float, float]], tol: float = 
                 break
     alias: dict[int, int] = {i: rep[i] for i in range(n) if rep[i] != i}
     reps = [i for i in range(n) if rep[i] == i]
-    # geom3 的两个容差接口混量纲（convex_hull_3d 的 tol 既当长度又当体积；merge_coplanar 的 tol 既比单位法向差、
-    # 又比平面偏移），按各自需要的舍入下限取大：法向差 ~eps·C/L，平面偏移与可见性 ~eps·C。
-    hull = merge_coplanar(convex_hull_3d([loc[i] for i in reps], max(1e-12, fl)),
-                          max(tol, fl / L if L > 0.0 else 0.0))
+    # convex_hull_3d 的 tol 是**相对**点集对角线的（M0.2 起），merge_coplanar 的 tol 是**角度**（弧度，内部再加逐面的
+    # 法向噪声）：去重长度 tol 不进这两个接口。旧版把绝对地板 fl 当相对容差传给凸包（C = 1e6 的 1 km 块：厚平面带放大
+    # L 倍到 2.5e-5 m，真实的小倒角被吸进去、再被当"非凸包角点"抛错）、把长度 tol 当角度传给归并（G6 第三轮 minor）。
+    hull = merge_coplanar(convex_hull_3d([loc[i] for i in reps], max(1e-12, fl / L if L > 0.0 else 0.0)),
+                          max(1e-12, fl / L if L > 0.0 else 0.0))
     remap: dict[int, int] = {}
     for hi, hv in enumerate(hull.verts):
         best, bd = None, float("inf")

@@ -62,8 +62,10 @@ def record_from_entrance(c: dict[str, Any], *, step: int = 0, index: int = 0,
         ref_points=ref_points,
         length_or_area=float(c["area"]) if "area" in c else None,
         params=(float(c["t1"]), float(c["t2"])) if ("t1" in c and "t2" in c) else (),
-        mode=BDDA3D_MODE.get(raw_init, Mode.UNKNOWN) if raw_init is not None else Mode.UNKNOWN,
-        raw_mode=raw_init,
+        # 状态字段只来自本步判定；3-b-dda 的入口 dict 只有转移进来的 m0init，没有本步开闭判定 → mode 留 UNKNOWN，
+        # 携带值只在 mode_init（与 bdda_df 缺 df22 时同一口径，G6 第三轮 minor）
+        mode=Mode.UNKNOWN,
+        raw_mode=None,
         mode_init=BDDA3D_MODE.get(raw_init, Mode.UNKNOWN) if raw_init is not None else None,
         raw_mode_init=raw_init,
         gap_ref=float(c["o3t"]) if c.get("o3t") is not None else None,

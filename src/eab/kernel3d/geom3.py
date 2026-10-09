@@ -189,6 +189,9 @@ class Polyhedron:
             p = sub(self.verts[f[i]], o)
             q = sub(self.verts[f[(i + 1) % k]], o)
             n = add(n, cross(p, q))
+        if n == (0.0, 0.0, 0.0):
+            raise ValueError(f"face {fi} {f} has zero area (collinear or coincident vertices); "
+                             f"strip duplicates at the reader boundary")
         return unit(n)
 
     def face_area(self, fi: int) -> float:
@@ -275,7 +278,11 @@ class Polyhedron:
         return cache.get(vi, [])
 
     def edge_dir(self, e: tuple[int, int]) -> Vec3:
-        return unit(sub(self.verts[e[1]], self.verts[e[0]]))
+        d = sub(self.verts[e[1]], self.verts[e[0]])
+        if d == (0.0, 0.0, 0.0):
+            raise ValueError(f"zero-length edge {e} (consecutive duplicate vertex at {self.verts[e[0]]}); "
+                             f"strip duplicates at the reader boundary (readers.bdda_geom.strip_duplicate_vertices)")
+        return unit(d)
 
     def dihedral_turn(self, e: tuple[int, int]) -> float:
         """棱 e 的二面转角（弧度）：凸棱 >0、平棱 =0、反射（凹）棱 <0。需恰好两个相邻面。
@@ -369,6 +376,9 @@ class Polyhedron:
         ③ 有符号体积为正（整体朝向朝外）。面绕向错会静默污染所有盖的法向，必须有门。
         """
         issues: list[str] = []
+        for e in self.edges():
+            if self.verts[e[0]] == self.verts[e[1]]:
+                issues.append(f"edge {e}: zero length (consecutive duplicate vertex at {self.verts[e[0]]})")
         for e, trav in ((e, self.edge_traversals(e)) for e in self.edges()):
             if len(trav) != 2:
                 issues.append(f"edge {e}: {len(trav)} traversals (need 2)")
@@ -383,6 +393,9 @@ class Polyhedron:
         for fi, f in enumerate(self.faces):
             if len(f) < 3:
                 issues.append(f"face {fi}: only {len(f)} vertices")
+                continue
+            if self.face_area(fi) == 0.0:
+                issues.append(f"face {fi}: zero area")
                 continue
             if len(f) == 3:
                 continue
@@ -463,6 +476,15 @@ def face_polygon_locate(x: Vec3, P: Polyhedron, fi: int, tol: float = 0.0) -> in
     return 1 if wn != 0 else -1
 
 
+def _distance_to_face_polygon(x: Vec3, P: Polyhedron, fi: int) -> float:
+    """x（已在面平面上）到面多边形的面内距离：在多边形内（含边界）为 0，否则是到边界折线的最短距离。"""
+    if face_polygon_locate(x, P, fi, 0.0) >= 0:
+        return 0.0
+    f = P.faces[fi]
+    V = P.verts
+    return min(_point_segment_distance(x, V[f[i]], V[f[(i + 1) % len(f)]]) for i in range(len(f)))
+
+
 def point_in_face_polygon(x: Vec3, P: Polyhedron, fi: int, tol: float = 0.0) -> bool:
     """x（已在面平面上）落在面 fi 的多边形内或其 tol 边界带内。见 `face_polygon_locate`。"""
     return face_polygon_locate(x, P, fi, tol) >= 0
@@ -510,11 +532,13 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
     fl = noise_floor(max(C, abs(p[0]), abs(p[1]), abs(p[2])))
     tol = max(tol, fl)
     normals = [P.face_normal(fi) for fi in range(len(P.faces))]
-    # 边界：点到任一面多边形的距离 ≤ tol（先投影到面平面，再判多边形）
+    # 边界：点到任一面**多边形**的欧氏距离 ≤ tol（投影在多边形内取 |d0|，在外取 √(d0² + 面内到边界的距离²)）。
+    # 旧版分两步各用一个 tol 带（到平面 ≤ tol、投影点到多边形 ≤ tol），真实距离到 √2·tol 的点也判"相触"，
+    # 与裕度层按 tol 一把尺的口径不一致（G6 第二轮 minor、第三轮 major 的一半）。
     for fi, f in enumerate(P.faces):
         n = normals[fi]
         d0 = dot(n, sub(p, P.verts[f[0]]))
-        if abs(d0) <= tol and point_in_face_polygon(add(p, mul(n, -d0)), P, fi, tol):
+        if abs(d0) <= tol and hypot(d0, _distance_to_face_polygon(add(p, mul(n, -d0)), P, fi)) <= tol:
             return 0
     diag = diag or 1.0
     eps_edge = max(1e-9 * diag, fl)  # 射线交点离棱这么近即视为退化命中（相对尺度）
@@ -522,9 +546,11 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
     for fi, f in enumerate(P.faces):
         n = normals[fi]
         d0 = dot(n, sub(p, P.verts[f[0]]))
-        if abs(d0) <= eps_t and point_in_face_polygon(add(p, mul(n, -d0)), P, fi, eps_edge):
+        if abs(d0) <= eps_t and point_in_face_polygon(add(p, mul(n, -d0)), P, fi, tol):
             # 起点在射线法的分辨率之下就落在表面上：任何方向都会 t≈0 命中，奇偶无从谈起。
             # 返回"边界"是正确答案（2026-09-18 实测：偏移 3.3e-10 > tol=1e-12 的点）。
+            # 面内判定的边界带是调用方的 tol：旧版用射线退化带 eps_edge = 1e-9·diag，顶点落在对方某面的平面上、
+            # 面内却在多边形外 ≤ 1e-9·diag 的（块共用地板：DDA 最普通的位形）被判"边界"，裕度层再升成贯入（G6 第三轮 major）。
             return 0
     for d in _ray_directions():
         crossings = 0
@@ -537,10 +563,18 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
             t = dot(n, sub(P.verts[f[0]], p)) / den
             if t < -eps_t:
                 continue
+            if t <= eps_t:
+                # 起点就在这个面的平面上：它在多边形内（含 tol 带）的情形上面的捷径已答 0；落在多边形外的（块共用地板、
+                # 角点在对方底面之外 g > tol）这里不是交叉也不是退化——用调用方的 tol 判，不用 1e-9·diag 的射线退化带
+                # （G6 第三轮 major：旧版把这种点当退化、所有方向退化后答"边界"，裕度层再升成贯入）
+                if face_polygon_locate(p, P, fi, tol) < 0:
+                    continue
+                degenerate = True
+                break
             loc = face_polygon_locate(add(p, mul(d, t)), P, fi, eps_edge)
             if loc < 0:
                 continue
-            if loc == 0 or t <= eps_t:
+            if loc == 0:
                 degenerate = True
                 break
             crossings += 1
@@ -600,7 +634,8 @@ def polyhedra_overlap(A: Polyhedron, B: Polyhedron, tol: float = 0.0) -> int:
       它把离某个面平面 ≤ 1e-12·diag 的点判"在表面上"（射线奇偶在那个深度分辨不了，见其文档），所以贯入深度
       ≲ 1e-12·diag 的一对答 0（相触），从不答成假的 1 或 −1（G6 第二轮 minor；门：tests/test_geom3_overlap_witness.py
       ::test_overlap_resolution_is_documented）。
-    · 完备性的诚实边界：**凸体**上"贯入深于上述分辨率 ⟹ 判 1"是精确的（接触锥证人）；非凸体只在交集的某个
+    · 完备性的诚实边界：**凸体**上"贯入深于上述分辨率的 **2 倍** ⟹ 判 1"是精确的（接触锥证人沿切锥内部方向走到交集
+      最深处，深 p/2 的点要比分辨率带还深才算"严格在内"）；非凸体只在交集的某个
       角点落在两体的凸局部上时精确，否则仍依赖微推启发式与采样，薄交集可能漏判成 0 / −1。
       任何情形都不会误报 1（每个证人都经 point_in_polyhedron 严格复验）。
     """
@@ -823,10 +858,22 @@ def _contact_cone_witness(A: Polyhedron, B: Polyhedron, tol: float,
         if g is None:
             continue
         d, depth = g
-        for k in range(1, 10):
-            eps = step * 10.0 ** (-k)
-            if eps * depth <= 2.0 * tol:
-                break
+        # 沿 d 能走多远不出任一体：对两体每个 n·d > 0、x 不在其平面上的面，平面距离 (n·v₀ − n·x)/(n·d) 取最小。
+        # 凸体上取它的一半就是沿 d 最深的点（薄片贯入 p 时深 ~p/2）；旧版只按 10 倍阶梯试探、eps·depth ≤ 2·tol 即停，
+        # 一般朝向下 p ∈ (tol, ~20·tol) 的贯入一个探针都落不进去、答"相触"（G6 第三轮 major）。
+        emax = step
+        for P in (A, B):
+            for fi, f in enumerate(P.faces):
+                n = P.face_normal(fi)
+                nd = dot(n, d)
+                if nd > 0.0:
+                    h = dot(n, sub(P.verts[f[0]], x))
+                    if h > 0.0:
+                        emax = min(emax, h / nd)
+        probes = [0.5 * emax, 0.25 * emax] + [e for e in (step * 10.0 ** (-k) for k in range(1, 10)) if e < emax]
+        for eps in probes:
+            if eps * depth <= tol:              # 探针离各活动面平面 eps·depth，要比边界带 tol 深才算"严格在内"
+                continue
             q = add(x, mul(d, eps))
             if point_in_polyhedron(q, A, tol) == 1 and point_in_polyhedron(q, B, tol) == 1:
                 return q, bool(ee)
@@ -958,13 +1005,19 @@ def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
         skip.add(vidx[bad])
     else:
         raise HullNumericalFailure("convex_hull_3d: could not eliminate sliver faces (numerical failure)")
-    # 自检（在兜底之后）：每个输入点在每个面的 eps_d 内侧（容许 4 倍：法向本身的舍入）；流形闭合在构建里已查。
+    # 自检（在兜底之后）：每个输入点在每个面的 eps_d 内侧（容许 4 倍），再加该面**自己的法向噪声 × 力臂**——
+    # 细条三角（高只略大于兜底阈值）的法向只准到 c·eps·C·周长/(2·面积)，远点对它的平面距离带着这个噪声；旋转过的
+    # 脊 + 针差点集上 300 例里 47 例因此在 1e-12 下自检失败、只能放大容差（G6 第三轮 major）。流形闭合在构建里已查。
     # 法向用三角自己的叉积，不经 Polyhedron.face_normal（凸包是 G0 的 oracle 之一，不许与被测的法向代码共用）
     C = coord_scale(*pts)
+    fl = noise_floor(C)
     for f in P.faces:
         o, a, b = P.verts[f[0]], P.verts[f[1]], P.verts[f[2]]
-        n = unit(cross(sub(a, o), sub(b, o)))
-        if max(dot(n, sub(q, o)) for q in pts) > 4.0 * eps_d + noise_floor(C):
+        cr = cross(sub(a, o), sub(b, o))
+        area2 = norm(cr)
+        n = unit(cr)
+        fn = fl * (norm(sub(a, o)) + norm(sub(b, a)) + norm(sub(o, b))) / area2
+        if max(dot(n, sub(q, o)) - fn * norm(sub(q, o)) for q in pts) > 4.0 * eps_d + fl:
             raise HullNumericalFailure("convex_hull_3d: result is not convex within tolerance (numerical failure)")
     return P
 

@@ -55,10 +55,11 @@
   （G6 critical 的等高 X 交叉已由 m2-geom 的接触锥证人修复并合并，门：tests/test_geom3_overlap_witness.py）。
   谓词的有效分辨率是 max(geom_tol_eff, 1e-12·diag)，且按到面平面的距离计：深度不超过 geom_tol_eff·sin(接触面夹角)
   时判相触，深于 geom_tol_eff 时一定给哨兵，介于两者之间可能提前给哨兵（偏安全侧；G6 第二轮 minor）。
-- **相触分辨率 geom_tol（纪律 F，2026-09-24 M0.2）。** 间距或贯入深度在 geom_tol_eff 以内即"相触"：
-  `body_distance` 返回 **0.0**（标签是实现最小见证的那个盖），`margin_contacts` 里见证距离 ≤ geom_tol_eff
-  的盖 distance 钳为 0、margin_gap = −δ、normal None（零距离处见证方向无定义；亚容差贯入时 a − b 还是反的）。
-  深度超过 geom_tol_eff 的贯入给哨兵。于是回答随贯入深度**单调**：分离 d → 相触 0 → 亚容差贯入 0 → 哨兵，
+- **相触分辨率（纪律 F，2026-09-24 M0.2；2026-10-10 统一成一把尺 `contact_resolution`）。** 间距或贯入深度在
+  ctol = max(geom_tol_eff, 1e-12·diag) + 舍入地板 以内即"相触"：`body_distance` 返回 **0.0**（标签是实现最小见证的那个盖），
+  `margin_contacts` 里见证距离 ≤ ctol 的盖 distance 钳为 0、margin_gap = −δ、normal None（零距离处见证方向无定义；
+  亚容差贯入时 a − b 还是反的）。谓词答"相触"而没有见证落在 ctol 内、或谓词答"贯入"，给哨兵。于是回答随贯入深度**单调**：
+  分离 d → 相触 0 → 亚容差贯入 0 → 哨兵，
   成员判定 OUTSIDE → ON_BOUNDARY/INSIDE → INSIDE（修前浅于 geom_tol 的贯入把见证距离 ≈ 贯入深度当间距报出，
   δ < p 时答"安全"，比恰好相触还"安全"——G6 minor[28]）。代价：真实间距 ≤ geom_tol_eff 时报 0（在分辨率以下，
   且偏向安全侧）。门：`tests/test_margin_penetration.py::test_contact_resolution_is_monotone_in_depth`。
@@ -163,32 +164,43 @@ def _witnesses(A: Polyhedron, B: Polyhedron, tol: float) -> list[tuple]:
     return out
 
 
+def contact_resolution(A: Polyhedron, B: Polyhedron, geom_tol: float | None = None) -> float:
+    """相触分辨率 ctol = max(geom_tol_eff, 谓词自己的分辨率 1e-12·diag) + 舍入地板——裕度层**唯一**的那把尺：
+    见证距离 ≤ ctol 钳为 0；谓词答"相触"而没有见证落在 ctol 内才算贯入。
+    G6 第三轮 critical：旧版钳零用 geom_tol_eff、收下见证表用 geom_tol_eff + 舍入，工程坐标下（|t| = 1e6 时舍入 ≈ geom_tol_eff）
+    贯入深度落在两者之间的一对被当**正间距**报出、答"安全"；major：谓词把离面平面 ≤ 1e-12·diag（被测的那个体的对角线）的点
+    判"在表面上"，两体尺寸比 ≥ 1e3 时这个带大于 geom_tol_eff，一个明明分离的小块经一次旋转被答成贯入。"""
+    diag = max(A.metrics()[1], B.metrics()[1])
+    return max(effective_geom_tol(A, B, geom_tol), 1e-12 * diag) + rounding_floor(A, B)
+
+
 def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None):
-    """裕度层的共同前处理：(geom_tol_eff, 舍入地板, 见证表 | None=贯入, 是否在相触分辨率内)。
+    """裕度层的共同前处理：(相触分辨率 ctol, 舍入地板, 见证表 | None=贯入, 是否在相触分辨率内)。
 
     自校验（M0.3，G6 第二轮两条 critical 之后）：分离时（谓词答 −1）盖路径的最小见证距离必须与
-    `brute_feature_distance`（全部特征对取最小，不经任何法锥或容差）在舍入内相等，否则抛 RuntimeError——
+    `brute_feature_distance`（全部特征对、不经法锥）在舍入内相等，否则抛 RuntimeError——
     盖枚举漏掉最近特征对（报远处的盖、答"安全"）或见证点不在两体上（距离少报）都不许静默返回。
-    相触时（谓词答 0）必须有见证落在相触分辨率内；没有（比 2·geom_tol_eff 还薄的体被分辨带"蚀穿"，G6 第二轮
-    minor）按贯入处理——三个入口一致答"已违约"，偏安全侧。
+    相触时（谓词答 0）必须有见证落在相触分辨率 ctol 内；没有（比 2·ctol 还薄的体被分辨带"蚀穿"，或谓词在它自己的
+    分辨率下看到了见证表看不到的接触）按贯入处理——三个入口一致答"已违约"，偏安全侧。
     """
     gtol = effective_geom_tol(A, B, geom_tol)
+    ctol = contact_resolution(A, B, geom_tol)
     state = polyhedra_overlap(A, B, gtol)
     if state == 1:
-        return gtol, 0.0, None, True
+        return ctol, 0.0, None, True
     wits = _witnesses(A, B, tol)
     dmin = min((w for _, w, _ in wits), default=float("inf"))
     rnd = rounding_floor(A, B)
     if state == 0:
-        if dmin > gtol + rnd:
-            return gtol, 0.0, None, True
-        return gtol, rnd, wits, True
+        if dmin > ctol:
+            return ctol, 0.0, None, True
+        return ctol, rnd, wits, True
     truth = brute_feature_distance(A, B)
     if abs(dmin - truth) > 4.0 * rnd:
         raise RuntimeError(f"margin self-check failed: the covers give distance {dmin!r} but the nearest feature pair "
                            f"is {truth!r} apart (rounding {rnd:.3g}); the cover enumeration "
                            + ("missed the nearest pair" if dmin > truth else "returned witnesses off the bodies"))
-    return gtol, rnd, wits, dmin <= gtol
+    return ctol, rnd, wits, dmin <= ctol
 
 
 def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float | None = None
@@ -197,17 +209,17 @@ def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: 
 
     贯入深于 geom_tol_eff（`polyhedra_overlap(A, B, geom_tol_eff) == 1`）时返回哨兵 `(0.0, ("PENETRATING",))`：
     此时盖的见证距离不是间距（见模块诚实条款），不许把它当距离报出去。
-    间距或贯入深度在 geom_tol_eff 以内（相触分辨率）时返回 **0.0** 与实现最小见证的盖标签。
+    间距或贯入深度在相触分辨率 ctol（`contact_resolution`）以内时返回 **0.0** 与实现最小见证的盖标签。
     geom_tol=None 时 geom_tol_eff 随尺度（见 `effective_geom_tol`）。舍入意义上同距的盖按枚举序取第一个。
     完备性（不丢最近特征对）由 Phase 2 的距离完备性门保证。
     """
-    gtol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
+    ctol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
     if wits is None:
         return 0.0, (PENETRATING,)
     if not wits:
         return (0.0 if contact else float("inf")), None
     c, w, _ = _tie_groups(wits, lambda t: t[1], rnd)[0]
-    return (0.0 if contact and w <= gtol else w), c.label()
+    return (0.0 if contact and w <= ctol else w), c.label()
 
 
 # ------------------------------------------------------------------ 裕度接触
@@ -234,15 +246,15 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
     贯入深于 geom_tol_eff 时返回**单个已闭合的哨兵**
     `MarginContact(("PENETRATING",), distance=0, margin_gap=−δ, normal=None)`——
     裕度谓词只回答"已违约"，与 `inflated_membership` 的 INSIDE 一致（fail-safe）。
-    两体在相触分辨率内（间距或贯入深度 ≤ geom_tol_eff）时，见证距离 ≤ geom_tol_eff 的盖 distance 钳为 0、
+    两体在相触分辨率 ctol（`contact_resolution`）内时，见证距离 ≤ ctol 的盖 distance 钳为 0、
     margin_gap = −δ、normal None——与 `body_distance` 的 0.0 一致，结果随贯入深度单调。
     """
-    gtol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
+    ctol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
     if wits is None:
         return [MarginContact((PENETRATING,), 0.0, 0.0 - delta, None, None, None)]
     out: list[MarginContact] = []
     for c, w, n in wits:
-        if contact and w <= gtol:
+        if contact and w <= ctol:
             w, n = 0.0, None
         if w > delta + band:
             continue
