@@ -110,9 +110,9 @@ def _farthest_pair(P: list[Vec3]) -> tuple[float, Vec3, Vec3]:
 
 
 def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedron,
-                 fl: float, area_tol: float) -> list[tuple[Vec3, int, int, bool, frozenset, frozenset, bool]]:
+                 fl: float, area_tol: float) -> list[tuple]:
     """凸包侧：conv{b − a} 的每个 facet → (支撑定向外法向, dim F_A, dim F_B, 是否支撑自洽, F_A 下标集, F_B 下标集,
-    是否在噪声内说不清)。
+    说不清时的宽带种子集 (ia0, ib0)，否则 None)。
 
     F_A = A 上使 n·a 最小的顶点集（−A 在 n 方向的支撑面），F_B = B 上使 n·b 最大的顶点集。
     E 的 facet = F_B ⊕ (−F_A) 是二维的；严格 ⟺ (0,2) VF、(2,0) FV、(1,1) EE；其余为退化。
@@ -123,11 +123,11 @@ def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedr
       1. 三角法向 n0 + 宽带（4·fl + 力臂 × n0 的噪声）给出**种子**支撑集 F_A⁰、F_B⁰ 与自洽性（全部差点落在非正侧）；
       2. 从种子支撑特征**重算**法向：A 面的平面、B 面的平面、A 棱 × B 棱——这些由物体自己的顶点算，良态；
          取与 n0 最近的候选；若第二个候选在噪声内同样说得通，记 ambiguous；
-      3. 用重算的法向、逐顶点的紧带（4·fl + 法向噪声 × 到锚点的距离，锚点是该体的极值顶点）定最终支撑集；
-         有顶点落在紧带与 4 倍紧带之间的，也记 ambiguous。
+      3. 用重算的法向、逐顶点的紧带（fl + 法向噪声 × 到锚点的距离，锚点是该体的极值顶点）定最终支撑集；
+         有顶点落在紧带的 1/4 与 4 倍之间的（阈值两侧都算），也记 ambiguous。
     同一 facet 的多个三角按支撑顶点集组合去重。ambiguous 的 facet 两边都不计（见 facet_vote3）。
     旧版：法向就用三角的、支撑带是人为的 1e-9·L、facet 按法向夹角 1e-7 去重。"""
-    out: list[tuple[Vec3, int, int, bool, frozenset, frozenset, bool]] = []
+    out: list[tuple] = []
     seen: set[tuple[frozenset, frozenset]] = set()
     for f in hull.faces:
         o = hull.verts[f[0]]
@@ -153,8 +153,10 @@ def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedr
             ok = False                                          # 不是支撑平面：凸包不自洽
         amin = min(dot(n0, a) for a in A.verts)
         bmax = max(dot(n0, b) for b in B.verts)
-        FA0 = [a for a in A.verts if dot(n0, a) <= amin + band0]
-        FB0 = [b for b in B.verts if dot(n0, b) >= bmax - band0]
+        ia0 = frozenset(i for i, a in enumerate(A.verts) if dot(n0, a) <= amin + band0)
+        ib0 = frozenset(i for i, b in enumerate(B.verts) if dot(n0, b) >= bmax - band0)
+        FA0 = [A.verts[i] for i in ia0]
+        FB0 = [B.verts[i] for i in ib0]
         cands: list[tuple[Vec3, float]] = []
         for P in (FA0, FB0):
             if len(P) >= 3:
@@ -186,26 +188,28 @@ def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedr
         kb = max(range(len(B.verts)), key=lambda i: dot(n1, B.verts[i]))
         ia: set[int] = set()
         ib: set[int] = set()
+        # 紧带 = 长度地板 + 法向噪声 × 到锚点的距离（与 covers3 的逐特征口径一致：局部侧判"严格"的门槛正是
+        # 噪声 × 棱长 = fl）；落在阈值两侧 4 倍以内的顶点都算说不清——不许一边按 1 倍噪声判严格、另一边按 4 倍并掉
         for i, a in enumerate(A.verts):
             gap = dot(n1, sub(a, A.verts[ka]))
-            tight = 4.0 * fl + noise * norm(sub(a, A.verts[ka]))
+            tight = fl + noise * norm(sub(a, A.verts[ka]))
             if gap <= tight:
                 ia.add(i)
-            elif gap <= 4.0 * tight:
+            if 0.25 * tight < gap <= 4.0 * tight and i != ka:
                 ambiguous = True
         for i, b in enumerate(B.verts):
             gap = dot(n1, sub(B.verts[kb], b))
-            tight = 4.0 * fl + noise * norm(sub(b, B.verts[kb]))
+            tight = fl + noise * norm(sub(b, B.verts[kb]))
             if gap <= tight:
                 ib.add(i)
-            elif gap <= 4.0 * tight:
+            if 0.25 * tight < gap <= 4.0 * tight and i != kb:
                 ambiguous = True
         key = (frozenset(ia), frozenset(ib))
         if key in seen:
             continue
         seen.add(key)
         out.append((n1, _affine_dim([A.verts[i] for i in ia], 4.0 * fl), _affine_dim([B.verts[i] for i in ib], 4.0 * fl),
-                    ok, key[0], key[1], ambiguous))
+                    ok, key[0], key[1], (ia0, ib0) if ambiguous else None))
     return out
 
 
@@ -248,11 +252,11 @@ def facet_vote3(A: Polyhedron, B: Polyhedron, facets: set[tuple], hull: Polyhedr
     amb: list[tuple[frozenset, frozenset]] = []
     diff: list[tuple] = []
     n_deg = 0
-    for n, da, db, ok, ia, ib, ambiguous in _hull_facets(A, B, diffs, hull, fl, area_tol):
+    for n, da, db, ok, ia, ib, seed in _hull_facets(A, B, diffs, hull, fl, area_tol):
         if not ok or (da, db) not in ((0, 2), (2, 0), (1, 1), (1, 2), (2, 1), (2, 2)):
             diff.append(("hull_anomaly", key(n), da, db))
-        elif ambiguous:
-            amb.append((ia, ib))
+        elif seed is not None:
+            amb.append(seed)                                    # 说不清：按宽带种子集丢标签（整个不确定区都不计）
         elif (da, db) in ((0, 2), (2, 0), (1, 1)):
             strict.append((n, da, db, ia, ib))
         else:

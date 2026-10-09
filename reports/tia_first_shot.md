@@ -111,7 +111,12 @@ h、tanψ（除峰值行）、∂h/∂amp 在打印精度内与原表相同，�
    做纯解析运算——与 DDA 冻结活动集后解析可微同构。δ 本身也种成一个对偶通道，
    于是 tanψ 不是差分出来的，而是同一次求值的导数通道。
    **补注（2026-09-24）**：冻结的"片"内部可微，"划"（片与片的交界）上不可微。原实现在交界上照样报出冻结那一片的单侧导数，
-   不加任何标记——这正是上面 ∂h/∂phase 那一列的来源。现在 `tools/tia_sensitivity.py::sensitivity_at` 对该点**所有并列活跃的盖**（按高度相对 1e-9 判并列）逐通道求对偶导数，导数差超过 `DERIV_TOL` = 1e-9 就标不可微，`derivative_range` 取 [最小, 最大]；这是精确的一阶判据，不用步长 ε。门用与盖路径零共用的解析逃逸高度的单侧差商（ε = 1e-7）核对它（`tests/test_interlock_sensitivity.py::test_differentiability_flag_agrees_with_one_sided_quotients`）。
+   不加任何标记——这正是上面 ∂h/∂phase 那一列的来源。现在 `tools/tia_sensitivity.py::sensitivity_at` 对该点**所有并列活跃的盖**逐通道求对偶导数，`derivative_range` 取 [最小, 最大]。
+   并列按**法向间隙 ≤ geom_tol_eff**（与谓词同一把尺，M0.2 之前按高度相对 1e-9，与谓词不一致、陡坡上给错支）；导数一致性的容差随尺度
+   `_deriv_tol = (DERIV_RTOL + 16ρ)·max(|lo|, |hi|, unit)`。这个判据只在谓词的分辨带之外成立（带内的点一律报两支）。
+   **过期声明（2026-09-27 G6 第二轮 minor，2026-10-10 记）**：入库的 `reports/tia_sensitivity.json` 与下面两张表里"cover"一列、
+   以及不可微行上 `dh_dphase` 的代表值，是修复前的产物：并列活跃盖里挑哪个当代表已变（19 行标签不同，不可微行的标量换成了另一侧的
+   单侧导数）。h、differentiable、derivative_range 与现 HEAD 逐位一致。读者以 `derivative_range` 为准，不要读单个代表值。门用与盖路径零共用的解析逃逸高度的单侧差商（ε = 1e-7）核对它（`tests/test_interlock_sensitivity.py::test_differentiability_flag_agrees_with_one_sided_quotients`）。
 
 ## 门
 

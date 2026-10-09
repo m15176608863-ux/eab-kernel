@@ -57,9 +57,11 @@
 - **F · 刚体运动与单位不变性是每个几何/力学 API 的元门；阈值只许相对。** G6（09-24）6 条 critical 有 5 条同一个根因：
   绝对容差遍布内核，而测试从不平移、从不旋转、从不放到工程坐标上。纪律 B 的"尺度格子"只把荷载与黏聚一起放大、
   块体始终在原点且轴对齐，一条都碰不到。所以：
-  (1) 每个几何/力学 API 都要有元门：随机旋转 + 大平移（1e3–1e6）+ 单位缩放下，结果必须按应有的方式变换
-  （距离 ×s、承载比不变、状态不变、标签一致置换）。门：`tests/test_invariance_limit.py`、`tests/test_invariance_interlock.py`、
-  `tests/test_kernel2d_review.py` 等（M0.2 三组各自的不变性门）；
+  (1) 每个几何/力学 API 都要有元门：随机旋转 + 大平移（|t| ∈ {0, 1e3, 1e5}；三维几何门另含 1e6）+ 单位缩放下，结果必须按
+  应有的方式变换（距离 ×s、承载比不变、状态不变、标签一致置换）。门：`tests/test_invariance_geom.py`（m2-geom）、
+  `tests/test_invariance_2d.py`（m2-legacy）、`tests/test_invariance_limit.py`（m2-lp）、`tests/test_invariance_interlock.py`
+  （m2-theory）——M0.2 四组各自的不变性门（`test_kernel2d_review.py` 只是 09-18 对抗审查的点状回归门，不是不变性门）；
+  M0.3 另有特征尺度 ≪ 坐标量级的角落门：`tests/test_margin_resolution.py`（短棱 1e-8、间隙 1e-9、|t| = 1e6）；
   (2) **阈值 = max(按问题尺度的相对量, 按舍入量级的噪声量)**：没有与问题无关的绝对数，也没有随条件数 κ 膨胀的量。
   M0.2 LP 返修一、二踩过的五个坑每一个都违反了这条：逐列相对判据在正交列上是 噪声/噪声；噪声线 ∝ κ(B) 在病态基上
   盖过真信号、静默早停；全局尺度判据放过目标很小时的次优；绝对可行性下限放过右端项 1e-11 的整行违反；跨行的全局

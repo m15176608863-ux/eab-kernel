@@ -48,10 +48,12 @@ cb2 里 (4,7,6) 与 (4,6,5) 并存。所以匹配必须把三元组归约到"它
 2. **`violations` 为空**：legacy 有门不认识的入口类（目前 np 以外全部，**包括 ee**）即红；窗口内出现 VF/FV 以外的内核盖、
    或两个盖归到同一个键，也红。不再有静默的"不支持"桶
    （`test_g2_gate_red_on_fabricated_ee_legacy_entrance`、`test_g2_gate_red_on_extra_kernel_ee_cover`）。
-3. **VF/FV 带必须空**：`G2_WINDOW < |gap| ≤ G2_BAND = 1.0` 的 VF/FV 盖一律进 `band`，非空即红——这就是旧窗口 1.0 时代那颗牙，
-   窗口收窄后单独保留。带必须空的理由是几何的：一个只用内联算术的长方体 oracle 表明，|gap| ≤ 1.0 内只有 4 个零间隙坐落，
-   下一个 VF/FV 在 2.0（`test_g2_band_is_geometrically_empty`）。带只收 VF/FV：gap 恰为 1.0 的 VE3/EV3/VV3 是合法的，不触发
-   （`test_g2_band_ignores_low_dim_covers_at_gap_one`）。**带宽是夹具几何的量**，几何缩放时要按同一比例传 `band`。
+3. **带必须空（所有盖类）**：`G2_WINDOW < |gap| ≤ G2_BAND = 1.0` 的 in-extent 盖**不分种类**一律进 `band`，非空即红——
+   这就是旧窗口 1.0 时代那颗牙，窗口收窄后单独保留。带必须空的理由是几何的：一个只用内联算术的长方体 oracle 表明，
+   |gap| ≤ 1.0 内只有 4 个零间隙坐落，下一个在 2.0（`test_g2_band_is_geometrically_empty`）。
+   （2026-09-27 订正，G6 minor 29：旧版带只收 VF/FV、并说 gap 恰为 1.0 的 VE3/EV3/VV3 合法不触发——那是错的，带内任何
+   盖都说明枚举多出了东西；门：`test_g2_band_catches_every_cover_kind`、`test_g2_band_is_empty_for_every_cover_kind`。）
+   另有一条独立判据 **带内无贯入**：枚举窗口内 gap < −G2_WINDOW 的 in-extent 盖即红。**带宽是夹具几何的量**，几何缩放时要按同一比例传 `band`。
 4. **枚举窗口必须伸到带宽**（`enumerated_window ≥ band`）。这一条是第二轮复核逼出来的，见下。
 
 **C17 的第二轮复核判"无牙"，已补（6f157ac；合并后直接进 main，未经独立复核者复核）。** 第一轮修好后，g4 组合并（b1bbd27）时的第二轮复核发现带内检测只在"枚举完再追加的假盖"上测过：

@@ -5,7 +5,7 @@ G6（`reports/g6_20260924.md`）的 6 条 critical 里 5 条同根：**绝对容
 施加相似变换
 
     p ↦ t + s·R·p        R：固定种子的非轴对齐旋转（外加恒等旋转作纯平移格）
-                         |t| ∈ {0, 1e3, 1e5}（方向固定、非轴对齐），s ∈ {1e-3, 1, 1e3}
+                         |t| ∈ {0, 1e3, 1e5, 1e6}（方向固定、非轴对齐），s ∈ {1e-3, 1, 1e3}
 
 结果必须按应有的方式变换：
   · 距离 ×s（body_distance、margin_contacts 的见证距离、distance_to_convex_entrance、support_gaps3）；
@@ -42,7 +42,7 @@ from eab.margin import (INSIDE, OUTSIDE, PENETRATING, body_distance, distance_to
 EPS = 2.220446049250313e-16
 T_DIR = (0.6, -0.48, 0.64)                   # 单位向量，非轴对齐
 ROTS = (0, 7, 11)                            # 0 = 恒等旋转（纯平移 / 纯缩放格）
-TRANS = (0.0, 1e3, 1e5)
+TRANS = (0.0, 1e3, 1e5, 1e6)                # 1e6：G6 第二轮点名的盲区（两条 critical 都在 |t| ≥ 1e5 的角落）
 SCALES = (1e-3, 1.0, 1e3)
 CELLS = [(r, t, s) for r in ROTS for t in TRANS for s in SCALES if (r, t, s) != (0, 0.0, 1.0)]
 CELL_IDS = [f"R{r}-t{t:g}-s{s:g}" for r, t, s in CELLS]

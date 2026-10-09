@@ -13,8 +13,11 @@
 ## 先说结论
 
 1. **凸情形的核心命题 1、3(i)、4、5、6(i)、6(iii) 已实现且有门**，而且门的 oracle 大多不经被测代码（暴力相交谓词、显式 conv{b−a}、纸笔闭式）；
-   **2(i)（位置无关）已实现但无门**，只有附录 A.3 的一次性复核；**2(ii) 间接有门**。（2026-09-27 订正：原文把 2 也算进"都已实现且有门"，
-   与本文件自己的表矛盾。G6 minor 21 用变异确认：让 `local_facets3` 在 A 沿 x 平移超过 3 时丢一个标签，全套照绿。）
+   **2(i)（位置无关）已实现且有门**：`test_kernel3d_covers.py::test_proposition_2i_position_independence` 带两条变异牙
+   （m2-geom 68c311b；此外 `test_invariance_geom.py` 在平移下覆盖 `local_facets3`）；**2(ii) 间接有门**。
+   （2026-09-27 订正：原文把 2 也算进"都已实现且有门"，与本文件自己的表矛盾；G6 minor 21 当时用变异确认"让 `local_facets3`
+   在 A 沿 x 平移超过 3 时丢一个标签，全套照绿"——那是 68c311b 之前的状态，在现 HEAD 上同一变异让 2(i) 门与不变性门共 106 条红。
+   2026-10-10 再订正：上一次订正把状态说低了。）
 2. **命题 4 的"一般位置"前提，代码的处理方式是"不另起退化类型"**：平行贴面、棱平行于面、平行棱-棱都用**非严格**的普通盖来表达，凸成员谓词改用 E 的全部支撑半空间（不再依赖一般位置）。成员、距离、票二、票三在退化输入上都有门。**没做的是把一个退化族收成一个盖**：三维的 `FF` / `FE` / `EEP`（`Cover3.kind` 注释）与 `contact_record.CoverType` 里的 `FF` / `FE` / `EE_PAR` 有名无实，全仓没有产出者；二维 `FF` 只在凸全局构造 `convex_entrance_block` 里出现（`covers.py:318`），局部枚举不产出。
 3. **首入（命题 7）**：二维只有一个静态函数，只对"B 凸或已侵入"成立，凹块分离时选错边（本表复核时实测复现）；三维**零实现**；全仓没有按运动轨迹定义的首入。
 4. **穿透深度（命题 3(ii)）、碰撞锥（命题 8）没有实现。**
@@ -38,9 +41,9 @@
 
 | 命题 | 一句话 | 前提 | 实现 | 看护的测试 | 状态 |
 |---|---|---|---|---|---|
-| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:269 convex_entrance_block`（按极角合并）；三维凸：显式 conv{b−a}，`margin.py:159 entrance_block_convex`、`g03.py:186-187`（票三） | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**。凹：**未实现**（没有全局 E，M3） |
-| **1·注3** 三分判据 | a₀ 在 E 外=分离，在内部=重叠，在边界=恰好接触 | 同上 | `covers.py:349 membership_convex`、`covers3.py:474 membership_convex3`，都返回 −1/1/0 | `test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x`（含 t=1.0、t=−2.0 两个恰相触的分界点，判 0）、`::test_membership_box_vs_box_matches_closed_form`、`::test_membership_tetra_vs_offcenter_box_matches_closed_form`（×1e-3/×1e3）、`test_kernel2d_g0.py::test_degenerate_parallel_edges_membership_still_exact` | 凸：**已实现+有门**。注意 G0 票一会跳过边界带，"=0"这一支只在闭式分界点上有门。凹：**未实现**——`polygons_overlap`（`geom.py:215`）/`polyhedra_overlap`（`geom3.py:435`）只是暴力 oracle，不是 E 的判据 |
-| **2(i)** 位置无关 | E 只依赖形状与朝向，可以预计算 | 只平移、不转动 | 结构上成立：法锥判据只读方向；`facet_gap`/`facet_gap3` 对平移是仿射的；`g0_convex3` 只算一次 `local_facets3` 给全部样本用（`g03.py:183`） | 没有专门的测试 | **已实现无门**。本表复核：20 次随机整体平移下 `local_facets3` 标签集不变、facet 间隙差 < 1e-12（附录 A.3） |
+| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:311 convex_entrance_block`（按极角合并）；三维凸：显式 conv{b−a}，`margin.py:279 entrance_block_convex`、`g03.py:186-187`（票三） | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**。凹：**未实现**（没有全局 E，M3） |
+| **1·注3** 三分判据 | a₀ 在 E 外=分离，在内部=重叠，在边界=恰好接触 | 同上 | `covers.py:412 membership_convex`、`covers3.py:587 membership_convex3`，都返回 −1/1/0 | `test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x`（含 t=1.0、t=−2.0 两个恰相触的分界点，判 0）、`::test_membership_box_vs_box_matches_closed_form`、`::test_membership_tetra_vs_offcenter_box_matches_closed_form`（×1e-3/×1e3）、`test_kernel2d_g0.py::test_degenerate_parallel_edges_membership_still_exact` | 凸：**已实现+有门**。注意 G0 票一会跳过边界带，"=0"这一支只在闭式分界点上有门。凹：**未实现**——`polygons_overlap`（`geom.py:376`）/`polyhedra_overlap`（`geom3.py:582`）只是暴力 oracle，不是 E 的判据 |
+| **2(i)** 位置无关 | E 只依赖形状与朝向，可以预计算 | 只平移、不转动 | 结构上成立：法锥判据只读方向；`facet_gap`/`facet_gap3` 对平移是仿射的；`g0_convex3` 只算一次 `local_facets3` 给全部样本用（`g03.py:183`） | `test_kernel3d_covers.py::test_proposition_2i_position_independence`（+ `::test_position_independence_gate_has_teeth_*` 两条牙）、`test_invariance_geom.py::test_cover_labels_and_strictness_are_invariant` | **已实现+有门**（附录 A.3 的一次性复核已升格为门） |
 | **2(ii)** 凸性传递 | A、B 凸 ⟹ E 凸 | A、B 凸 | 作为前提被使用：凸成员谓词 = 若干半空间间隙取最大值 | 间接：票一（成员谓词 vs 暴力谓词逐样本一致） | **已实现，间接有门** |
 | **2(iii)** 紧性 | 紧+紧 ⟹ E 紧 | 块体有界 | 不需要实现（输入都是有界多面体） | — | 不适用 |
 | **3(i)** 距离恒等式 | a₀ 到 E 的距离 = 两块的距离 | 无条件 | 凸：`margin.py:169 distance_to_convex_entrance`（显式 E）对 `margin.py:82 body_distance`（盖路径）；这正是 `margin.py` 的"定理二" | `test_margin.py::test_config_space_distance_equals_body_distance`（3 个种子，每种子分离样本 > 40）、牙 `::test_theorem_two_gate_has_teeth_shrinking_the_nearest_point_is_caught` | 凸：**已实现+有门**。凹：没有显式 E，恒等式本身量不了；能量的是"盖给的距离 = 暴力距离"（距离完备性，见第六节） |
@@ -184,7 +187,7 @@
 - **第一层（重新发现）**：E 本身、距离恒等式、二维 NFP 构造。代码把它们当标准结果实现（显式 conv{b−a}、定理二），这是对的；文档里不应把它们写成本仓库或石根华的贡献。
 - **第二层（可能新，须用对参照系）**：
   - 第 1 条"带语义、可证完备的盖系统"：本仓库给出的是**弱完备**的门（第四节 (d)），强完备（凹块成员判定）缺裁剪，不能主张。
-  - 第 2 条"与开闭迭代衔接"：G4 已给出否定性数据（静态几何先验只抓到 82 个翻转里的 5 个，见 03 砖一的回写），不能主张盖系统能预测活动集。
+  - 第 2 条"与开闭迭代衔接"：G4 已给出否定性数据（静态几何先验只抓到 61 个真翻转里的 5 个（09-27 按 df22 终判订正，原 5/82），见 03 砖一的回写），不能主张盖系统能预测活动集。
   - 第 4 条"接触不确定性的消解"= 首入：三维未实现，不能主张。
 - **第三层（红线）**：扫了 README、AGENTS、reports、docs 里的优先性措辞。`AGENTS.md:3` 在 HEAD 上原写"石根华入口块 E(A,B) 理论的**第一份实现**"——00 §3.3 引的 Zhao et al. 2020 就是更早的实现，所以这句不成立。本批已改为"一份独立实现"，订正见 `AGENTS.md:5-7`。`docs/sibling_observations.md` 里的"第一份"指姊妹仓库之间的对账通道，不涉及学术优先性，不算越线。
 
