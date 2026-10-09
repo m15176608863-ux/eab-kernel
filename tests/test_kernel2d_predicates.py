@@ -316,6 +316,52 @@ def test_parallel_edges_of_very_different_lengths_merge_within_the_length_tolera
     assert sum(f[0] == "FF" for f in labels) == 3, labels     # 其余三对仍严格平行
 
 
+ROW = [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)]
+FLAT = [(0.0, 0.0), (1.0, 0.0), (2.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.5, 1.0), (0.0, 1.0)]
+
+
+@pytest.mark.parametrize("quarter", [0, 1, 2, 3])
+def test_a_t_vertex_one_ulp_above_the_lowest_edge_is_still_convex(quarter):
+    """G6 第三轮 major：单位方块底边中点的 T 形顶点高出弦一个 ulp（工程坐标 1e5 处的舍入级微凹），凸包深度 1.5e-11 ≪ t，
+    is_convex 判凸——但 M0.3 第一版按 [0, 2π) 里的极角判"下降 > π/2 即绕圈"，微凹落在最底边上时相邻边极角成 δ 与 2π − δ，
+    后面的下降 ≈ 3π/2 被误拒。四个朝向（每转 90°）都必须正常返回同一组 facet，成员判定与暴力一致。"""
+    C = 1e5
+    P = [(C, C), (C + 1.0, math.nextafter(C, math.inf)), (C + 2.0, C), (C + 2.0, C + 1.0), (C, C + 1.0)]
+    for _ in range(quarter):
+        P = [(-y, x) for x, y in P]
+    eb = convex_entrance_block(SQUARE, P)
+    # A 的四条边与 B 的边平行：4 条 FF，B 的底边被 T 形顶点拆成两段、只能并一段，另一段成 VE → 5 条 facet，无零长 facet
+    assert sorted(f[0] for f in eb.facets) == ["FF", "FF", "FF", "FF", "VE"], eb.facets
+    assert all(math.dist(eb.vertices[i], eb.vertices[(i + 1) % len(eb.vertices)]) > 0.5 for i in range(len(eb.vertices)))
+    rng = random.Random(quarter)
+    cx, cy = (sum(p[0] for p in P) / 5, sum(p[1] for p in P) / 5)
+    n = 0
+    for _ in range(300):
+        x = (cx + rng.uniform(-2.0, 2.0), cy + rng.uniform(-2.0, 2.0))
+        m = membership_convex(SQUARE, P, x, 1e-9)
+        b = polygons_overlap(translate(SQUARE, x), P, 1e-9)
+        if m != 0 and b != 0:
+            n += 1
+            assert m == b, (x, m, b)
+    assert n > 200
+
+
+@pytest.mark.parametrize("P", [ROW, FLAT], ids=["row", "flat"])
+@pytest.mark.parametrize("quarter", [0, 1, 2, 3])
+@pytest.mark.parametrize("s", [1e-3, 1.0, 1e3])
+@pytest.mark.parametrize("tmag", [0.0, 1e3, 1e5, 1e6])
+def test_flat_vertices_survive_every_axis_aligned_rigid_motion(P, quarter, s, tmag):
+    """复核者的 480 格扫描：带平直顶点的凸块 × 四个朝向 × 三个单位 × 四个平移，convex_entrance_block 必须都能构造，
+    facet 数与原位相同（平直顶点不产生 FF、也不产生零长 facet）。"""
+    Q = [(s * x, s * y) for x, y in P]
+    for _ in range(quarter):
+        Q = [(-y, x) for x, y in Q]
+    Q = [(x + 0.6 * tmag, y - 0.8 * tmag) for x, y in Q]
+    ref = convex_entrance_block(SQUARE, P).facets
+    got = convex_entrance_block([(s * x + 0.6 * tmag, s * y - 0.8 * tmag) for x, y in SQUARE] if False else SQUARE, Q).facets
+    assert len(got) == len(ref) and sorted(f[0] for f in got) == sorted(f[0] for f in ref), (got, ref)
+
+
 _N_ARC = 8000
 BAD_INPUTS = {
     "clockwise_square": [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0)],

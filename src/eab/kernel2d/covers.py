@@ -300,6 +300,29 @@ def _edge_angle(P: Poly, i: int) -> float:
     return a if a >= 0.0 else a + 2 * pi
 
 
+def _unwrapped_angles(a0: float, edges: list[Point], name: str) -> list[float]:
+    """从最低点出发的凸 CCW 多边形各边的方向角，按**相邻边转角累加**得到（不跨 0/2π 缝）。
+
+    首边理想方向角 ∈ [0, π)，舍入可使它成 −δ（_edge_angle 映到 2π − δ），减回去。之后每条边 = 前一条 + 转角
+    atan2(e₀ × e₁, e₀ · e₁)；转角为负的只有凸包深度 ≤ t 的微凹顶点（上面已核过），夹平成 0。
+    总转角（含末边回到首边）必须是 2π：绕圈不止一次的非简单多边形（五角星，顶点都在凸包上、深度检验看不见）总转角是 4π。
+    M0.3 第一版按 [0, 2π) 里的极角判"下降 > π/2 即绕圈"：平直顶点落在最底边上、刚体运动后微凹时，两条相邻边的极角成 δ 与
+    2π − δ，后面的下降 ≈ 3π/2 被当成绕圈误拒（G6 第三轮 major）。"""
+    if a0 > pi:
+        a0 -= 2 * pi
+    angs = [a0]
+    total = 0.0
+    for k in range(1, len(edges)):
+        turn = atan2(cross(edges[k - 1], edges[k]), dot(edges[k - 1], edges[k]))
+        total += turn
+        angs.append(angs[-1] + max(turn, 0.0))
+    total += atan2(cross(edges[-1], edges[0]), dot(edges[-1], edges[0]))
+    if abs(total - 2 * pi) > 1e-6:
+        raise ValueError(f"input polygon {name} not convex: total turning angle {total:.6f} rad is not 2π "
+                         f"(the boundary winds more than once)")
+    return angs
+
+
 def _hull_defect(P: Poly) -> float:
     """P 的顶点落在其凸包边界以内的最大深度（长度）：凸多边形为 0，平直顶点经刚体运动后的微凹为舍入级。"""
     H = convex_hull(P)
@@ -338,20 +361,10 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
     Q = reflect(A)                # Q[k] = −A[k]；Q 的边 k = −(A 的边 k)
     n, m = len(P), len(Q)
     iP, iQ = _start_index(P), _start_index(Q)
-    angP = [_edge_angle(P, (iP + k) % n) for k in range(n)]
-    angQ = [_edge_angle(Q, (iQ + k) % m) for k in range(m)]
     eP = [sub(*reversed(edge(P, (iP + k) % n))) for k in range(n)]
     eQ = [sub(*reversed(edge(Q, (iQ + k) % m))) for k in range(m)]
-    # 从最低点出发的凸 CCW 多边形，边角在 [0, 2π) 内非降；下降处夹平。上面两道前提之后，剩下的下降只有两种：
-    # 凸包以内 ≤ t 的微凹顶点（平直顶点的舍入级微凹，夹平即可），或顶点都在凸包上、却绕了不止一圈的非简单多边形
-    # （五角星——凸包深度为 0，看不见）。后者在凸包顶点上真右转，下降必过 π/2。
-    for arr, name in ((angP, "B"), (angQ, "A")):
-        for k in range(1, len(arr)):
-            if arr[k] < arr[k - 1]:
-                if arr[k - 1] - arr[k] > pi / 2:
-                    raise ValueError(f"input polygon {name} not convex: edge angle drops by "
-                                     f"{arr[k - 1] - arr[k]:.3e} rad at edge {k} (winds more than once)")
-                arr[k] = arr[k - 1]
+    angP = _unwrapped_angles(_edge_angle(P, iP), eP, "B")
+    angQ = _unwrapped_angles(_edge_angle(Q, iQ), eQ, "A")
     i = j = 0
     cur = add(P[iP], Q[iQ])
     verts = [add(cur, a0)]
