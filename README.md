@@ -67,7 +67,7 @@
 
 ## 现状（2026-10-10）
 
-全套 **5706** 个测试全绿（2026-10-10，G6 第三轮修复后的工作树；09-24 时为 1209，M0.2/M0.3/M1 的不变性元门与分辨率门把数目抬到这里；
+全套 **6717** 个测试全绿（2026-10-10，G6 第三轮全部修复后的工作树 9e88720；09-24 时为 1209，M0.2/M0.3/M1 的不变性元门与分辨率门把数目抬到这里；
 `python -X utf8 -m pytest -q -p no:cacheprovider`）。
 **复核覆盖（2026-10-10）**：下表里写着"未经复核·待 G6"的行（跨层端到端、L4、L5 TIA、L2 定理门、L1 三维票一/票三）已被 G6 第二轮（lp-limit / theory-fidelity / legacy-2d / gate-quality 镜头）与第三轮（geometry-3d / gate-quality / claims-vs-code / lp-limit 镜头）读过并报出缺陷（两份报告的 coverage_notes 逐路写明读了什么）；按规矩，"✔"只在 M0 退出（0 critical / 0 major）后升级，所以那些字样先不动。
 表里每个 ✔ 后面的括号给出看护它的测试（纪律 C：写不出测试的不打 ✔）。文件名省略 `tests/` 前缀。
@@ -208,7 +208,7 @@ cc5d7cf 按原字节重新入库，`.gitattributes` 设 `* -text`，本仓库本
 ## 运行
 
 ```bash
-python -X utf8 -m pytest -q -p no:cacheprovider     # 全套 5706（2026-10-10）；夹具已入库，不需要先导入
+python -X utf8 -m pytest -q -p no:cacheprovider     # 全套 6717（2026-10-10）；夹具已入库，不需要先导入
 python -X utf8 tools/tia_sensitivity.py
 ```
 
