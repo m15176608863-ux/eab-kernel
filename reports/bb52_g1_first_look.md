@@ -1,5 +1,7 @@
 # bb52 第一次对照：G1（对 legacy）与 G0（自证）——2026-09-18
 
+> **状态（2026-10-10）**：本报告是当时的快照，未随 M0.2 / M0.3 / G6 三轮更新；其中的数字、行号与"门"的指向以 README 现状表、`docs/canon_map.md` 与 `reports/g6c_20261010.md` 为准。G6 第三轮的完整性批评者指出这四份报告三轮无人读——这里只加状态横幅，不逐条重验。
+
 对象：b-DDA 的 bb52（11 块，3 凸 8 凹，最大块 52 顶点/44 反射顶点），步 1 初始位形（全贴合）。
 legacy 侧：`bdda_debug_contacts.csv`（df05 产出）；eab 侧：`eab.kernel2d.covers.enumerate_covers`。
 

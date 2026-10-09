@@ -197,3 +197,35 @@ def test_g0_gate_works_at_every_scale_random_pairs(seed, scale):
     assert r.passed, (r.facet_symmetric_diff[:3], r.hull_vertices, r.e_vertices, r.mismatches[:2])
     assert (r.facet_local, r.facet_global, r.hull_vertices, r.e_vertices) ==         (r0.facet_local, r0.facet_global, r0.hull_vertices, r0.e_vertices)
 
+
+
+# ---------------------------------------------------------------- G6 第三轮 major：说不清的 facet 被报成 hull_anomaly
+
+def _quat_rotation(seed: int):
+    import math
+    rng = random.Random(seed)
+    q = [rng.gauss(0.0, 1.0) for _ in range(4)]
+    n = math.sqrt(sum(c * c for c in q))
+    w, x, y, z = (c / n for c in q)
+    return ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+            (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+            (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+
+
+@pytest.mark.parametrize("seed", range(20))
+@pytest.mark.parametrize("yaw", [1e-3, 3e-4, 1e-4])
+def test_yawed_stack_passes_g0_under_random_rotations(yaw, seed):
+    """1 m 方块绕 z 偏航 yaw 搁在 2 m 板上方 0.1，再整体随机旋转：旧版 facet_vote3 先查"异常"后查"说不清"，紧带支撑集
+    退化成 (0,0)/(1,0) 的歧义 facet 被报成 hull_anomaly（yaw 1e-3 时 2/20 姿态、3e-4 时 15/20、1e-4 时 17/20 门红）；
+    根因是 _hull_facets 棱×棱候选的噪声没除 sinθ，近平行最远点对以 4e-14 的自报噪声压过 3e-16 的精确平面候选。
+    现在 20 个姿态全部通过、对称差为空、无 hull_anomaly。"""
+    import math
+    from eab.kernel3d.geom3 import Polyhedron
+    c, s = math.cos(yaw), math.sin(yaw)
+    A0 = box(center=(0.0, 0.0, 1.1), half=(0.5, 0.5, 0.5))
+    A0 = Polyhedron([(c * x - s * y, s * x + c * y, z) for x, y, z in A0.verts], list(A0.faces))
+    B0 = box(half=(1.0, 1.0, 0.5))
+    R = _quat_rotation(seed)
+    xf = lambda P: Polyhedron([tuple(sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in P.verts], list(P.faces))
+    r = g0_convex3(xf(A0), xf(B0), samples=12, seed=0)
+    assert r.passed and r.facet_symmetric_diff == [] and not any(d[0] == "hull_anomaly" for d in r.facet_symmetric_diff), r

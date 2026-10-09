@@ -155,6 +155,36 @@ def _pair_sliver():
     return box((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), box((1.49, 0.5, 0.5), (0.51, 0.3, 0.5))
 
 
+def _pair_yaw(theta: float):
+    """近平行棱对（G6 第三轮 major：EE 候选法向噪声未除 sinθ、票二候选噪声同病）：1 m 方块绕 z 偏航 θ 搁在 2 m 板上方 0.1。
+    解析距离 0.1（四个 VF 并列）；恒等格里 EE 候选恰是面法向、判边界，一经旋转叉积被舍入倾斜 ~1e-11 rad。"""
+    B = box(half=(1.0, 1.0, 0.5))
+    A = _slab(theta, (0.0, 0.0, 1.1), (0.5, 0.5, 0.5))
+    return A, B
+
+
+def _pair_ridge_needle():
+    """展示算例脊 + 针的**可分辨**版本（G6 第三轮 major：G0 三票对脊高 1e-6、针底 1e-3 的原版在 |t| ≥ 200 起不具平移不变性）：
+    脊高 1e-3 的屋脊（两坡面夹 2e-3 rad），底半径 0.3 的尖锥，尖端在脊线正上方 0.05。解析距离 0.05：VE3(尖, 脊)；
+    尖端在两坡面上的投影落在坡面之外 5e-5，所以两个 VF 不在程。原版在 ×1e-3、|t| ≥ 1e5 的格上脊高 1e-9 m 低于坐标舍入
+    1.4e-9——那是诚实的"分辨不了"，由 tests/test_margin_resolution.py 的脊对三票门按三态看护，不属于本元门的等式口径。"""
+    h = 1e-3
+    sec = [(-1.0, -1.0), (1.0, -1.0), (1.0, 0.0), (0.0, h), (-1.0, 0.0)]
+    B = Polyhedron([(-2.0, y, z) for y, z in sec] + [(2.0, y, z) for y, z in sec],
+                   [(4, 3, 2, 1, 0), (5, 6, 7, 8, 9)] + [(i, (i + 1) % 5, 5 + (i + 1) % 5, 5 + i) for i in range(5)])
+    A = convex_hull_3d([(0.3, 0.0, h + 0.05)] + [(0.3 + 0.3 * math.cos(t), 0.3 * math.sin(t), h + 1.05)
+                                                 for t in (0.1, 2.1943951, 4.2887902)])
+    return A, B
+
+
+def _pair_size_ratio():
+    """两体尺寸比 100（G6 第三轮 major：point_in_polyhedron 的面内边界带随**大**体的对角线）：小方块的底面与大方块的顶面共面、
+    在面内落在大方块之外 1e-3。解析距离 1e-3（两条平行棱）。"""
+    B = box(half=(50.0, 50.0, 50.0))
+    A = box(center=(50.0 + 0.5 + 1e-3, 0.0, 50.5), half=(0.5, 0.5, 0.5))
+    return A, B
+
+
 # name → (构造器, 真 overlap, 解析距离（贯入为 None）, 裕度 δ, 是否凸对（跑成员/G0/E）, 尺度 L)
 PAIRS = {
     "tetra_box_vv": (_pair_tetra_box_vv, -1, 0.1, 0.2, True, 3.0),
@@ -164,6 +194,11 @@ PAIRS = {
     "x_cross": (_pair_x_cross, 1, None, 0.05, True, 3.0),
     "stack_touch": (_pair_stack_touch, 0, 0.0, 0.05, True, 4.0),
     "sliver": (_pair_sliver, 1, None, 0.05, True, 3.0),
+    # G6 第三轮（2026-10-10）：八路报出的三维 major 全坐在旧格子外——把它们的几何放进来
+    "yaw_1e-5": (lambda: _pair_yaw(1e-5), -1, 0.1, 0.2, True, 4.0),
+    "yaw_1e-3": (lambda: _pair_yaw(1e-3), -1, 0.1, 0.2, True, 4.0),
+    "ridge_needle": (_pair_ridge_needle, -1, 0.05, 0.1, True, 5.0),
+    "size_ratio": (_pair_size_ratio, -1, 1e-3, 2e-3, True, 100.0),
 }
 PAIR_NAMES = list(PAIRS)
 
@@ -346,3 +381,17 @@ def test_merge_coplanar_face_count_is_invariant(rot, tmag, s):
     H = merge_coplanar(convex_hull_3d(W))
     assert len(H.faces) == 6 and H.manifold_issues() == [], len(H.faces)
     assert H.volume() == pytest.approx(1.2 * s ** 3, rel=1e-7)
+
+
+# ================================================================ G6 第三轮 minor：票二"说不清"带宽的牙
+
+@pytest.mark.parametrize("tmag,amb,dropped,glob", [(1e5, 0, 0, 39), (1e6, 1, 2, 37)])
+def test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells(tmag, amb, dropped, glob):
+    """带 (tight/16, 4·tight] 此前没有牙：删掉第二候选判据、把带改成 1/100–100 倍或单侧 1–4 倍，G03 组 + 本文件 1748 例照绿。
+    generic 对在 R7、s = 1e-3 的两个格上（精确算术复核过）：|t| = 1e5 时全部 39 个 facet 都是真 facet、带内比值 23.6/28.3
+    必须判清楚（上限 4 不许漂到 ≥ 24）；|t| = 1e6 时恰一个 facet 落在带内（比值 2.825）、丢两个局部标签（下限 1/16 不许收到
+    不含 2.825）。"""
+    base = _base("generic")
+    M = Motion(7, tmag, 1e-3)
+    r = g0_convex3(M.poly(base["A"]), M.poly(base["B"]), samples=12, seed=1)
+    assert r.passed and (r.facet_ambiguous, r.facet_local_dropped, r.facet_global) == (amb, dropped, glob), r

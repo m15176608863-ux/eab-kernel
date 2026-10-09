@@ -22,7 +22,7 @@ y_w 是动体的虚速度旋量（`LimitResult.mechanism`），y_r 是各黏聚�
 （符号约定见 `mechanism_is_admissible`：正 = 分离），而强对偶
 α* = −y_wᵀW_dead + Σ y_r 就是上限定理的功率平衡（外力功率 = 黏聚耗散；摩擦在关联流动下不耗散）。
 **所以静力下限与运动上限由同一次求解同时给出，精确算术里二者相等——这是这一层的自校验结构。**
-浮点里"相等"要靠核验，不靠定理：`limit_load` 返回 optimal 之前在**调用方的坐标系里**跑一遍
+浮点里"相等"要靠核验，不靠定理：`limit_load` 返回 optimal 之前把荷载与机构平移到**接触形心**跑一遍
 `check_duality`（相对判据），机构不容许、驱动不为 1、相对间隙或互补超标就抛 RuntimeError
 （2026-09-24 订正：旧文"必然相等"在 G6 的大块体 + 黏聚算例上不成立，上限曾少 41.8%）。
 门：tests/test_invariance_limit.py、tests/test_limit_scale.py::test_self_check_rejects_a_corrupted_mechanism。
@@ -88,13 +88,14 @@ u·|p|·|F|），报在 `LimitResult.uncertainty`。U > 1e-6 时把活荷载推 
 - **二维的摩擦锥线性化是精确的**（锥恰有两条极棱）；三维用 k 边内接棱锥，是**偏安全**的近似：
   内接 ⇒ 容许集变小 ⇒ 承载力不高于精确锥。量化：正 k 边形的内切圆半径是外接圆的 cos(π/k) 倍，
   所以内接棱锥 ⊇ 摩擦系数 μ·cos(π/k) 的精确圆锥——**承载力夹在 μ·cos(π/k) 与 μ 两个精确锥的解之间**。
-  纯滑动（承载力正比于切向能力）时相对短缺 ∈ [0, 1 − cos(π/k)]：滑动方向正对一条棱时为 0，
-  平分两棱时取到上界。误差取决于滑动方向相对切向基架的夹角，**不随 k 单调**
+  纯滑动（承载力正比于切向能力）时相对短缺 ∈ [0, 1 − cos(π/k)]：**摩擦阻力方向**（滑动方向的反向）正对一条棱时为 0，
+  平分两棱时取到上界；k 为偶数时棱扇中心对称、按滑动方向说等价，k 为奇数时"滑动方向正对一条棱"恰是最坏情形
+  （G6 第三轮 minor）。误差取决于阻力方向相对切向基架的夹角，**不随 k 单调**
   （互锁算例 4|k 时恰有一条棱落在荷载平面内而精确，k=5 反而明显变差）。
   门：tests/test_limit.py 的三个锥线性化门，tests/test_limit_scale.py 的 Patton 全格。
 - **三维棱扇的朝向默认不随刚体转动协变。** 默认切向基架由 `_tangents(n)` 按全局坐标轴选取（球面上不存在处处连续的
   切向场，任何"默认"都做不到协变），所以把整个模型转一下，α 可以在上面的 [cos(π/k), 1] 夹逼内变。
-  需要严格协变（或想让某条棱对准预期滑动方向）时，给 `LimitContact.tangent`：基架 t₁ 取它在切平面上的投影，
+  需要严格协变（或想让某条棱对准预期的摩擦阻力方向，即滑动方向的反向）时，给 `LimitContact.tangent`：基架 t₁ 取它在切平面上的投影，
   t₂ = n × t₁，随模型一起转即严格不变。门：tests/test_invariance_limit.py 的两个门。
 - 刚体、小变形、接触位置在加载中**不变**——极限分析的标准前提。几何非线性不在内。
 - 只做**单个动体对固定边界**。多体机构需要把各体的自由度并进同一组平衡方程（未实现）。
@@ -106,6 +107,8 @@ u·|p|·|F|），报在 `LimitResult.uncertainty`。U > 1e-6 时把活荷载推 
 """
 
 from __future__ import annotations
+
+import math
 
 from dataclasses import dataclass, field
 from fractions import Fraction
@@ -242,7 +245,8 @@ class LimitContact:
         """法向归一化（G6 第二轮 major：曾不检查也不归一，三维摩擦与黏聚承载力随 |n| 缩放——|n| = 1e-3 时报 500、
         真值 0.5，自校验照样放行）。|n| 为 0 或非有限时抛 ValueError。二维纯摩擦的锥角本就与 |n| 无关。"""
         m = max((abs(v) for v in self.normal), default=0.0)
-        if not (m > 0.0 and m != float("inf")):
+        if not (m > 0.0 and all(math.isfinite(v) for v in self.normal)):   # NaN 在任一分量都拒：max() 对 NaN 的比较恒假
+
             raise ValueError(f"contact normal must be a finite nonzero vector, got {self.normal!r}")
         n = sum((v / m) ** 2 for v in self.normal) ** 0.5
         self.normal = tuple(v / m / n for v in self.normal)
@@ -407,7 +411,7 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     `lp_tol`：LP 的入基（最优性）相对阈值（None = lp.solve 的默认值）。它只影响迭代路径：
     LP 返回 optimal 前按固定阈值核验对偶可行性，放宽的 lp_tol 早停时会被清理（G6 minor 24）。
 
-    返回 optimal 之前，在调用方的坐标系里跑 `check_duality`（相对判据 1e-7）：不容许、驱动 ≠ 1、
+    返回 optimal 之前，在接触形心处跑 `check_duality`（相对判据 1e-7）：不容许、驱动 ≠ 1、
     相对间隙或互补超标即抛 RuntimeError——"自带上下限自校验"是代码行为，不是一句文档。
     """
     if origin is None:
@@ -546,7 +550,7 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
                       uncertainty=U)
     d = check_duality(res, contacts, dead, live, dim=dim, origin=origin, k=k, tol=_SELF_CHECK)
     if not d["ok"]:
-        raise RuntimeError(f"limit_load self-check failed in the caller's frame: "
+        raise RuntimeError(f"limit_load self-check failed (duality check at the contact centroid): "
                            f"{ {key: d[key] for key in ('admissible', 'worst_power_rel', 'drive', 'duality_gap_rel', 'complementarity')} }")
     return res
 

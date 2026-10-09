@@ -116,7 +116,7 @@ h、tanψ（除峰值行）、∂h/∂amp 在打印精度内与原表相同，�
    `_deriv_tol = (DERIV_RTOL + 16ρ)·max(|lo|, |hi|, unit)`。这个判据只在谓词的分辨带之外成立（带内的点一律报两支）。
    **过期声明（2026-09-27 G6 第二轮 minor，2026-10-10 记）**：入库的 `reports/tia_sensitivity.json` 与下面两张表里"cover"一列、
    以及不可微行上 `dh_dphase` 的代表值，是修复前的产物：并列活跃盖里挑哪个当代表已变（19 行标签不同，不可微行的标量换成了另一侧的
-   单侧导数）。h、differentiable、derivative_range 与现 HEAD 逐位一致。读者以 `derivative_range` 为准，不要读单个代表值。门用与盖路径零共用的解析逃逸高度的单侧差商（ε = 1e-7）核对它（`tests/test_interlock_sensitivity.py::test_differentiability_flag_agrees_with_one_sided_quotients`）。
+   单侧导数）。differentiable、derivative_range 与修复后的 HEAD 逐位一致；h / h_float / tan_psi / dh_damp 当时只在打印精度内一致（逐位差 ≤ 6e-16，入库版出自 77600c9 时代的求值次序；G6 第三轮 minor）。**2026-10-10 已在 HEAD 上重跑 `tools/tia_sensitivity.py` 重新入库**，此后入库文件就是 HEAD 的产物；下面两张表的"cover"列与 dh_dphase 代表值仍是修复前的文字。读者以 `derivative_range` 为准，不要读单个代表值。门用与盖路径零共用的解析逃逸高度的单侧差商（ε = 1e-7）核对它（`tests/test_interlock_sensitivity.py::test_differentiability_flag_agrees_with_one_sided_quotients`）。
 
 ## 门
 

@@ -170,7 +170,9 @@ def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedr
             lb, b0, b1 = _farthest_pair(FB0)
             cr = cross(sub(b1, b0), sub(a1, a0))
             if la > 4.0 * fl and lb > 4.0 * fl and norm(cr) > 0.0:
-                cands.append((unit(cr), fl * (1.0 / la + 1.0 / lb)))
+                # 叉积只正交到 eps/sinθ：近平行的最远点对给出的候选噪声要除以 sinθ = |cr|/(la·lb)，否则它以 4e-14 的自报噪声
+                # 压过 3e-16 的精确平面候选、紧带随之排掉其余面顶点（G6 第三轮 major：偏航 1e-3 的叠放方块随机旋转后门红）
+                cands.append((unit(cr), fl * (1.0 / la + 1.0 / lb) * (la * lb / norm(cr))))
         ambiguous = False
         n1, noise = n0, noise0
         if cands:
@@ -256,10 +258,11 @@ def facet_vote3(A: Polyhedron, B: Polyhedron, facets: set[tuple], hull: Polyhedr
     diff: list[tuple] = []
     n_deg = 0
     for n, da, db, ok, ia, ib, seed in _hull_facets(A, B, diffs, hull, fl, area_tol):
-        if not ok or (da, db) not in ((0, 2), (2, 0), (1, 1), (1, 2), (2, 1), (2, 2)):
-            diff.append(("hull_anomaly", key(n), da, db))
-        elif seed is not None:
+        if seed is not None:
             amb.append(seed)                                    # 说不清：按宽带种子集丢标签（整个不确定区都不计）
+        elif not ok or (da, db) not in ((0, 2), (2, 0), (1, 1), (1, 2), (2, 1), (2, 2)):
+            # 说不清优先于异常（G6 第三轮 major：已标 ambiguous、但紧带支撑集退化成 (0,0)/(1,0) 的 facet 曾被报成 hull_anomaly）
+            diff.append(("hull_anomaly", key(n), da, db))
         elif (da, db) in ((0, 2), (2, 0), (1, 1)):
             strict.append((n, da, db, ia, ib))
         else:

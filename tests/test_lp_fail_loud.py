@@ -5,6 +5,8 @@
 2026-09-24 文档核查者又发现：显式传很紧的 lp_tol（如 1e-12）时同一算例会抛 RuntimeError（残差守卫）——
 这正是契约允许的"抛错"一支，但此前没有门看着。本文件把契约本身钉住：
 在一组刻意刁钻的容差与尺度上，结果只能是 (a) optimal 且落在解析夹逼内，或 (b) 抛 RuntimeError。
+2026-10-10：M0.2 的精确 LP 之后，本文件的 32 格在 HEAD 上全部走 (a)（docs/canon_map.md 附录 A.9 复跑 raises 0 / answered 32）；
+(b) 仍是契约允许的一支，只是这组格子上不再出现。
 
 oracle：径向夹逼 α ∈ [cos(π/k), 1]·(μW + ΣcA)，纸笔推出（推导见 test_limit_duality.py 同名算例 docstring），
 不调用求解器内部。

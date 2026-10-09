@@ -426,3 +426,33 @@ def test_g6_12_polygons_overlap_against_exact_ear_clip_area_oracle():
             if (got == 1) != truth:
                 wrong.append((P, (cx, cy), got, truth))
     assert wrong == [], (len(wrong), wrong[:1])
+
+
+# ---------------------------------------------------------------- G6 第三轮 major（门无牙）：凸性前提的阈值 t 没有门钉住
+
+@pytest.mark.parametrize("depth_over_t,accepted", [(2.0, False), (0.5, True)])
+def test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start(depth_over_t, accepted):
+    """"顶点在凸包以内深度 ≤ t 才吞、> t 清晰报错"此前没有门钉住阈值——放宽到 1e5·t 全套照绿；r4c 门的凹顶点紧挨最低起点，
+    走的是别的分支。这里凹顶点放在顶边中点（不挨起点）：深度 2·t 必须以"inside its convex hull"报错（不接受 winds 口径）；
+    深度 0.5·t 必须接受，且在凹坑附近 ±50·t 的平移带上成员判定与暴力谓词只在离某条 facet ≤ 2·t 处允许不同。"""
+    import random
+    from eab.kernel2d.covers import convex_entrance_block, membership_convex, facet_gap
+    from eab.kernel2d.geom import polygons_overlap, translate
+    SQ = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    tol = 1e-9                                            # 单位坐标下 t = max(tol, 64·eps·C) = tol
+    A = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - depth_over_t * tol), (0.0, 1.0)]
+    if not accepted:
+        with pytest.raises(ValueError, match="inside its convex hull"):
+            convex_entrance_block(A, SQ, tol=tol)
+        return
+    eb = convex_entrance_block(A, SQ, tol=tol)
+    rng = random.Random(3)
+    n_near = 0
+    for _ in range(2000):
+        x = (rng.uniform(-0.9, 0.9), -1.0 + rng.uniform(-50.0, 50.0) * tol)     # A 的顶边贴着 SQ 的底边
+        mem = membership_convex(A, SQ, x, tol, eb=eb)
+        brute = polygons_overlap(translate(A, x), SQ, 0.0)
+        if mem != brute:
+            assert min(abs(facet_gap(A, SQ, lab, x)) for lab in eb.facets) <= 2.0 * tol, (x, mem, brute)
+            n_near += 1
+    assert n_near <= 200

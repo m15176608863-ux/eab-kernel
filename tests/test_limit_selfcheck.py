@@ -45,10 +45,21 @@ def test_normal_length_does_not_change_the_capacity(nscale):
     assert limit_load(ctsn, d, l, dim=2).alpha == pytest.approx(limit_load(cts1, d, l, dim=2).alpha, rel=1e-12)
 
 
-@pytest.mark.parametrize("bad", [(0.0, 0.0, 0.0), (float("inf"), 0.0, 1.0), (float("nan"), 0.0, 1.0)])
+_NAN, _INF = float("nan"), float("inf")
+
+
+@pytest.mark.parametrize("bad", [(0.0, 0.0, 0.0), (_INF, 0.0, 1.0), (0.0, _INF, 1.0), (0.0, 1.0, -_INF),
+                                 (_NAN, 0.0, 1.0), (1.0, _NAN, 0.0), (0.0, 1.0, _NAN)])
 def test_a_degenerate_normal_is_rejected(bad):
+    """G6 第三轮 minor：旧检查靠 max() 对 NaN 的比较语义，只有 NaN 在第 0 个分量时才拒——(1, nan, 0) 被归一成全 NaN 法向。"""
     with pytest.raises(ValueError, match="normal"):
         LimitContact((0.0, 0.0, 0.0), bad, 0.5)
+
+
+@pytest.mark.parametrize("bad", [(1.0, _NAN), (_NAN, 1.0), (_INF, 1.0), (0.0, 0.0)])
+def test_a_degenerate_two_d_normal_is_rejected(bad):
+    with pytest.raises(ValueError, match="normal"):
+        LimitContact((0.0, 0.0), bad, 0.5)
 
 
 @pytest.mark.parametrize("T", [(5.0, -3.0, 2.0), (-0.7, 0.4, -11.0), (5e5, 4.4e6, 100.0)])

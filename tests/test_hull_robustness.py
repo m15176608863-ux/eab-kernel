@@ -227,10 +227,12 @@ def test_ridge_needle_family_never_needs_tolerance_escalation(seed):
     assert _worst_outside(H, diffs) <= 4.0 * max(1e-12 * 6.0, G3.noise_floor(5.0)) + 1e-15
 
 
+@pytest.mark.parametrize("tm,s", [(0.0, 1.0), (1e3, 1.0), (1e5, 1e-3), (1e6, 1e3)])
 @pytest.mark.parametrize("seed", range(30))
-def test_rotated_ridge_needle_family_builds_without_escalation(seed):
+def test_rotated_ridge_needle_family_builds_without_escalation(seed, tm, s):
     """G6 第三轮 major：同一家族加一个一般旋转后，旧版 300 例里 47 例 _quickhull(1e-12) 自检失败、靠放大容差自救——
-    细条三角的法向噪声没进自检。现在自检按面自己的法向噪声放宽，一次建成。"""
+    细条三角的法向噪声没进自检。现在自检按面自己的法向噪声放宽，一次建成；平移到 1e3–1e6、缩放 1e-3–1e3 同样
+    （审查者的 300 例旋转+平移+缩放扫描在修后 0 例放大）。"""
     rng = random.Random(500 + seed)
     h = 10 ** rng.uniform(-9, -4)
     r = 10 ** rng.uniform(math.log10(3e-4), -1)
@@ -240,8 +242,43 @@ def test_rotated_ridge_needle_family_builds_without_escalation(seed):
     A = convex_hull_3d([(0.3, 0.0, h + 0.05)] + [(0.3 + r * math.cos(t), r * math.sin(t), h + 1.05)
                                                  for t in (0.1, 2.1943951, 4.2887902)])
     R = _rot(seed + 1)
-    A, B = _rotated(A, R), _rotated(B, R)
+    t = (0.6 * tm, -0.48 * tm, 0.64 * tm)
+    mv = lambda P: Polyhedron([tuple(t[i] + s * sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in P.verts],
+                              list(P.faces))
+    A, B = mv(A), mv(B)
     diffs = [sub(b, a) for a in A.verts for b in B.verts]
     H = G3._quickhull(diffs, 1e-12)                                   # 不经 convex_hull_3d 的放大
     assert H.manifold_issues() == []
     assert len(H.verts) >= 20
+    calls = []
+    real = G3._quickhull
+    monkey = lambda p, tol: (calls.append(tol), real(p, tol))[1]
+    import eab.kernel3d.geom3 as mod
+    mod._quickhull = monkey
+    try:
+        convex_hull_3d(diffs, tol=1e-12)
+    finally:
+        mod._quickhull = real
+    assert calls == [1e-12], calls
+
+
+def test_max_tol_cap_raises_instead_of_escalating_forever(monkeypatch):
+    """max_tol 封顶的牙：让 _quickhull 在 tol < 1e-8 时一律自检失败，convex_hull_3d(tol=1e-12, max_tol=1e-10) 必须抛
+    HullNumericalFailure，max_tol=1e-8 时放大到 1e-8 建成。"""
+    import eab.kernel3d.geom3 as mod
+    real = mod._quickhull
+    calls = []
+
+    def flaky(points, tol):
+        calls.append(tol)
+        if tol < 1e-8:
+            raise HullNumericalFailure("forced")
+        return real(points, tol)
+    monkeypatch.setattr(mod, "_quickhull", flaky)
+    pts = list(box(half=(1.0, 0.5, 0.3)).verts)
+    with pytest.raises(HullNumericalFailure):
+        convex_hull_3d(pts, tol=1e-12, max_tol=1e-10)
+    assert max(calls) <= 1e-10
+    calls.clear()
+    assert len(convex_hull_3d(pts, tol=1e-12, max_tol=1e-8).verts) == 8
+    assert calls[-1] == pytest.approx(1e-8)

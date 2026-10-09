@@ -25,7 +25,8 @@
   · 每个判据另加**被测特征自己**的方向噪声（geom3：棱 c·eps·C/|e|、面法向 c·eps·C·周长/(2·面积)、
     二面角 = 两相邻面之和）——平行面 / 平行棱这类**精确**退化关系在旋转、平移到工程坐标、单位缩放之后
     仍判为同一边界态，盖标签与 strict 字段不变（tests/test_invariance_geom.py）；
-  · "丢弃型"判定（平棱、平行棱、顶点落在棱线上）只用舍入噪声，不用调用方 tol；
+  · "丢弃型"判定（平棱、平行棱、顶点落在棱线上）只用舍入噪声，不用调用方 tol；噪声之外另加 1e-12 的无量纲下限
+    （轴对齐、原点处噪声估计可为 0，严格比较会把恰好相等的退化判反；这是 ulp 级的保护，不是容差，G6 第三轮 minor 记）；
   · 长度容差是另一个参数 `extent_tol`（调用方单位，缺省 0），只用于"投影落在面内 / 最近点落在段内"的边界带，
     抬到两体坐标量级处的舍入地板 c·eps·C（`_pair_floor`）。棱参数带是它除以**该棱的长度**，面内判定的边界带
     再加上"间隙 × 面法向噪声"（投影点随法向噪声的漂移）。裕度层用缺省（只有舍入），互锁层传它的谓词分辨率；
@@ -367,7 +368,10 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
     fl = max(extent_tol, _pair_floor(A, B))
     # 候选法向 ±unit(t_B × t_A) 自己带着两条棱的方向噪声（短棱主导：1.7 mm 的棱在 1e6 处 8e-6 rad）——弧判据的
     # 角容差要把它算进去，否则局部侧会把按自己的噪声分不清的 facet 判成"严格"，与凸包侧说不清的口径不一致（G6 第三轮 major）
-    ang = tol + A.edge_noise(ea) + B.edge_noise(eb)
+    # 候选法向 unit(t_B × t_A) **自身**的方向噪声：叉积只正交到 eps/sinθ，两棱的方向噪声被 1/|c| = 1/sinθ 放大。
+    # G6 第三轮 major：偏航 1e-5 rad 的叠放方块，恒等位形下候选恰是面法向、判边界；一经旋转叉积被舍入倾斜 ~1e-11 rad
+    # ≫ tol + 面噪声，翻成 strict，local_facets3 多出假 strict EE，G0 票二报 local_only（不变性网格 22/35 格不同于恒等格）
+    ang = tol + (A.edge_noise(ea) + B.edge_noise(eb)) / norm(c)
     best: Cover3 | None = None
     for cand in (n, neg(n)):
         sb = edge_arc_contains(B, eb, _orth(cand, tB), ang)
@@ -389,7 +393,12 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         t = dot(sub(qa, pb0), dB) / dot(dB, dB)
         qb = add(pb0, mul(dB, t))
         g = dot(cand, sub(qa, qb))
-        ba, bb = fl / norm(dA), fl / norm(dB)
+        # 棱参数带 = 长度带 / 棱长 + 杠杆项：棱方向噪声 rfl/|e| × 到对方见证点的距离 |g|，再除以棱长（投影点随方向噪声的漂移，
+        # 与面内判定的"间隙 × 面法向噪声"同一口径）。远离的棱对（|g| = 101、|e| = 1）参数舍入 ~ rfl·|g|/|e|² 是 rfl/|e| 的百倍，
+        # 恰在段端点上的边界态盖在工程坐标下曾被判出程（不变性元门 2026-10-10 加入尺寸比 100 的对后暴露）
+        rfl = _pair_floor(A, B)
+        ba = (fl + abs(g) * rfl / norm(dA)) / norm(dA)
+        bb = (fl + abs(g) * rfl / norm(dB)) / norm(dB)
         in_ext = (-ba <= s <= 1.0 + ba) and (-bb <= t <= 1.0 + bb)
         if not 0.0 <= s <= 1.0:
             qa = add(pa0, mul(dA, _clamp01(s)))                     # 钳到棱段端点，另一点重取垂足（仍一致）
@@ -436,11 +445,15 @@ def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: f
     if gap <= fl:
         return None
     n = _orth(v, t)
-    sb = edge_arc_contains(B, eb, n, tol)
-    sa = vertex_cone_contains(A, ia, neg(n), tol)
+    # 见证方向**自身**的舍入噪声：v 由坐标 ~C 相减得到，绝对误差 ~fl，方向只准到 fl/|v|（尺寸比 100 的对平移到 1e3、
+    # 间隙 1e-6 时 1e-5 rad）；恰落在弧 / 锥边界上的真实盖（小方块底面与大方块顶面共面）此前在工程坐标下被丢，
+    # 原点处却保留——不变性元门 2026-10-10 加入该对后暴露。与 ee_cover 的候选噪声 /sinθ 同一政策：判据加被测方向自己的噪声
+    dn = fl / gap
+    sb = edge_arc_contains(B, eb, n, tol + dn)
+    sa = vertex_cone_contains(A, ia, neg(n), tol + dn)
     if sb < 0 or sa < 0:
         return None
-    band = max(extent_tol, fl) / norm(d)
+    band = (max(extent_tol, fl) + gap * fl / norm(d)) / norm(d)      # 长度带 + 杠杆项（同 ee_cover）
     return Cover3("VE3", ("vertex", ia), ("edge", eb[0], eb[1]), n, gap, a, add(p0, mul(d, _clamp01(s))), (s,), None,
                   sb == 1 and sa == 1, -band <= s <= 1.0 + band)
 
@@ -461,11 +474,12 @@ def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: f
     if gap <= fl:
         return None
     n = _orth(v, t)
-    sb = vertex_cone_contains(B, ib, n, tol)
-    sa = edge_arc_contains(A, ea, neg(n), tol)
+    dn = fl / gap                                  # 见证方向自身的噪声，同 ve3_cover
+    sb = vertex_cone_contains(B, ib, n, tol + dn)
+    sa = edge_arc_contains(A, ea, neg(n), tol + dn)
     if sb < 0 or sa < 0:
         return None
-    band = max(extent_tol, fl) / norm(d)
+    band = (max(extent_tol, fl) + gap * fl / norm(d)) / norm(d)      # 长度带 + 杠杆项（同 ee_cover）
     return Cover3("EV3", ("edge", ea[0], ea[1]), ("vertex", ib), n, gap, add(p0, mul(d, _clamp01(s))), b, (s,), None,
                   sb == 1 and sa == 1, -band <= s <= 1.0 + band)
 
@@ -485,7 +499,8 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) 
     if norm(v) <= _pair_floor(A, B):
         return Cover3("VV3", ("vertex", ia), ("vertex", ib), None, 0.0, a, b, (), None, True, True)
     n = unit(v)
-    active = (vertex_cone_contains(B, ib, n, tol) >= 0 and vertex_cone_contains(A, ia, neg(n), tol) >= 0)
+    dn = _pair_floor(A, B) / norm(v)               # 分离方向自身的噪声，同 ve3_cover
+    active = (vertex_cone_contains(B, ib, n, tol + dn) >= 0 and vertex_cone_contains(A, ia, neg(n), tol + dn) >= 0)
     return Cover3("VV3", ("vertex", ia), ("vertex", ib), n, norm(v), a, b, (), None, True, active)
 
 
@@ -572,9 +587,11 @@ def facet_normal3(A: Polyhedron, B: Polyhedron, label: tuple) -> Vec3:
     if kind == "EE":
         ea = (af[1], af[2])
         eb = (bf[1], bf[2])
-        tB = B.edge_dir(eb)
-        n = unit(cross(tB, A.edge_dir(ea)))
-        if edge_arc_contains(B, eb, _orth(n, tB), 1e-9) < 0:   # 取与 B 的弧一致的朝向（按构造正交后判）
+        tB, tA = B.edge_dir(eb), A.edge_dir(ea)
+        c = cross(tB, tA)
+        n = unit(c)
+        ctol = 1e-9 + (A.edge_noise(ea) + B.edge_noise(eb)) / norm(c)     # 候选自身的方向噪声（同 ee_cover）
+        if edge_arc_contains(B, eb, _orth(n, tB), ctol) < 0:   # 取与 B 的弧一致的朝向（按构造正交后判）
             n = neg(n)
         return n
     raise ValueError(f"not a facet label: {label}")

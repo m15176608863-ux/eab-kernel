@@ -1147,7 +1147,10 @@ def _quickhull_once(pts: list[Vec3], tol: float, skip: set[int]) -> tuple[Polyhe
         f = faces[fid]
         return orient3d(verts[f[0]], verts[f[1]], verts[f[2]], p)
 
-    pending: set[int] = set()                         # 暂判"在包上/内"的点：不加入，但最后复查
+    # 暂判"在包上/内"的点：不加入，待外点耗尽后按当前各面再核一遍。凸包只增不减，闭判据下这些点不会变成"清楚在外"，
+    # 复查只防面平面的舍入；审查者 300 例（旋转 + 平移 + 缩放）扫描在有无复查下结果逐项相同——它是保险，不是修复，
+    # 也没有一颗能让它变红的牙（2026-10-10 G6 第三轮订正：bcb30f4 提交说明"复查在 47 例里起作用"不成立）
+    pending: set[int] = set()
 
     def assign(i: int, fids) -> None:
         if i in skip:

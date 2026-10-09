@@ -372,3 +372,35 @@ def test_check_duality_rejects_a_zero_mechanism():
     r.lambdas = [0.0 for _ in r.lambdas]
     d = check_duality(r, cts, dead, live, dim=2, origin=(0.0, 0.0))
     assert d["drive"] == 0.0 and not d["admissible"] and not d["ok"]
+
+
+# ---------------------------------------------------------------- G6 第三轮 minor：静力侧四项辅助子检查没有牙
+
+def test_static_side_sub_checks_reject_hand_edited_results():
+    """check_duality 的黏聚行 Σλ ≤ 1、λ ≥ 0、α ≥ 0 三项对 limit_load 自产的 optimal 是冗余的（精确 LP 已保证），
+    只在调用方手工构造 LimitResult 时才有分辨力——所以此前把任一项改成恒真全套照绿。这里取两条黏聚缝上的倾覆方块，
+    对同一黏聚行的两根反向列各加 0.75（合力不变、Σλ = 1.5）、各减 0.2（合力不变、一根变负）、α 取负（荷载反向），
+    三种手改都必须被 static_ok / ok 拒绝；未改的结果必须通过。"""
+    from eab.limit import LimitContact, check_duality, limit_load, wrench
+    W, BH = 10.0, 3.0
+    cts = [LimitContact((-1.0, 0.0), (0.0, 1.0), 0.0, cohesion=100.0, area=1.0, label=("L",)),
+           LimitContact((1.0, 0.0), (0.0, 1.0), 0.0, cohesion=100.0, area=1.0, label=("R",))]
+    dead = wrench((0.0, -W), (0.0, BH / 2), (0.0, 0.0), 2)
+    live = wrench((1.0, 0.0), (0.0, BH), (0.0, 0.0), 2)
+    kw = dict(dim=2, origin=(0.0, 0.0))
+    r = limit_load(cts, dead, live, **kw)
+    assert r.status == "optimal" and check_duality(r, cts, dead, live, **kw)["ok"]
+    # 列序：每个接触 [摩擦棱 ±, 黏聚列 ±]——lam[2]、lam[3] 是左缝的两根反向黏聚列
+    r = limit_load(cts, dead, live, **kw)
+    lam = list(r.lambdas); lam[2] += 0.75; lam[3] += 0.75; r.lambdas = lam
+    chk = check_duality(r, cts, dead, live, **kw)
+    assert not chk["static_ok"] and not chk["ok"], chk
+    r = limit_load(cts, dead, live, **kw)
+    lam = list(r.lambdas); lam[2] -= 0.2; lam[3] -= 0.2; r.lambdas = lam
+    assert min(r.lambdas) < 0.0
+    chk = check_duality(r, cts, dead, live, **kw)
+    assert not chk["static_ok"] and not chk["ok"], chk
+    r = limit_load(cts, dead, live, **kw)
+    r.alpha = -r.alpha
+    chk = check_duality(r, cts, dead, [-v for v in live], **kw)
+    assert not chk["static_ok"], chk

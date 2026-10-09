@@ -399,3 +399,31 @@ def test_margin_self_check_catches_a_relative_1e_6_witness_error(monkeypatch):
     A, B = _small_pair(1e-3, 1.0)
     with pytest.raises(RuntimeError, match="self-check"):
         body_distance(A, B)
+
+
+# ---------------------------------------------------------------- G6 第三轮 minor：自校验阈值 4·rnd 没有牙
+
+@pytest.mark.parametrize("rel", [1e-6, -1e-6, 0.0])
+def test_margin_self_check_catches_sub_ppm_witness_errors(monkeypatch, rel):
+    """把盖路径的见证距离整体乘 (1 ± 1e-6)——远高于舍入地板 ~1e-14、远低于现有粗错的门——三个入口都必须抛 RuntimeError
+    （旧版把阈值放宽到相对 1e-3，1639 例照绿）；只偏 1·rnd（rel = 0 这格）不许抛，锁住阈值的下限。"""
+    import eab.margin as M
+    from eab.margin import margin_contacts
+    A, B = box(center=(0.0, 0.0, 1.6), half=(0.5, 0.5, 0.5)), box(half=(1.0, 1.0, 0.5))      # 间隙 0.6
+    rnd = M.rounding_floor(A, B)
+    real = M.cover_witness
+
+    def skew(c):
+        w = real(c)
+        if w is None:
+            return None
+        f = (1.0 + rel) if rel else (1.0 + rnd / w[0] if w[0] > 0.0 else 1.0)
+        return (w[0] * f, w[1])
+    monkeypatch.setattr(M, "cover_witness", skew)
+    for call in (lambda: body_distance(A, B), lambda: margin_contacts(A, B, delta=0.3),
+                 lambda: inflated_membership(A, B, delta=0.3)):
+        if rel:
+            with pytest.raises(RuntimeError, match="self-check"):
+                call()
+        else:
+            call()
