@@ -243,8 +243,8 @@ def test_g2_gate_has_teeth_a_dropped_cover_is_caught(monkeypatch):
     orig = cv.vf_cover
     state = {"key": None}
 
-    def lossy(A, ia, B, fb, tol=0.0):
-        c = orig(A, ia, B, fb, tol)
+    def lossy(A, ia, B, fb, tol=0.0, extent_tol=0.0):
+        c = orig(A, ia, B, fb, tol, extent_tol)
         # 必须同时满足 in_extent **与窗口**才是会进最终清单的盖；
         # 只看 in_extent 会丢掉一个本来就被窗口滤掉的盖，门当然不会红（2026-09-20 踩过）。
         # 丢的是**同一个**（顶点, 面）——每次调用都丢，不按调用次数（compare 现在先做块对发现、再枚举，

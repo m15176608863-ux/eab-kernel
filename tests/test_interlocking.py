@@ -85,6 +85,34 @@ def test_g0_distance_completeness_on_concave_interlocking_pair(seed):
     assert rep.worst_abs_error < 1e-9
 
 
+def _scaled_pair(s):
+    from eab.kernel3d.geom3 import Polyhedron
+    A, L = interlocking_pair(nx=4, ny=2, amp=0.25)
+    sc = lambda P: Polyhedron([tuple(s * c for c in v) for v in P.verts], list(P.faces))
+    return sc(A), sc(L)
+
+
+@pytest.mark.parametrize("s", [1e-3, 1.0, 1e3])
+def test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth(s, monkeypatch):
+    """G6 第二轮 minor：旧门的判据是绝对的 atol·max(1, 真值)——同一个无量纲误差在 s = 1 报红、s = 1e-3 放行。
+    现在（相对 L）：三个尺度上样本数一致、都通过；注入相对 1e-6 的见证距离误差，三个尺度都必须抓到。"""
+    import eab.kernel3d.covers3 as cv
+    A, L = _scaled_pair(s)
+    rep = g0_distance_completeness3(A, L, radius=0.35 * s, samples=40, seed=1, atol=1e-9)
+    ref = g0_distance_completeness3(*_scaled_pair(1.0), radius=0.35, samples=40, seed=1, atol=1e-9)
+    assert rep.passed and (rep.samples, rep.skipped_intersecting) == (ref.samples, ref.skipped_intersecting), rep
+    real = cv.enumerate_covers3
+
+    def skew(A_, B_, **kw):
+        out = real(A_, B_, **kw)
+        for c in out:
+            if c.point_a is not None and c.point_b is not None:
+                c.point_a = tuple(b + (1.0 + 1e-6) * (a - b) for a, b in zip(c.point_a, c.point_b))
+        return out
+    monkeypatch.setattr(cv, "enumerate_covers3", skew)
+    assert not g0_distance_completeness3(A, L, radius=0.35 * s, samples=40, seed=1, atol=1e-9).passed
+
+
 def test_g0_distance_completeness_on_merged_interlocking_pair():
     """归并后的互锁块：y = ±0.5 侧面是**凹十边形**（审查 C7 的现场）。
 

@@ -325,8 +325,15 @@ def test_g0_three_votes_are_invariant(name, rot, tmag, s):
     _, M, A, B = _cell(name, rot, tmag, s)
     r = g0_convex3(A, B, samples=12, seed=1)
     assert r.passed, (r.mismatches[:2], r.facet_symmetric_diff[:4], r.hull_vertices, r.e_vertices)
-    assert (r.facet_local, r.facet_global, r.facet_degenerate, r.hull_vertices, r.e_vertices) == \
-        (rb.facet_local, rb.facet_global, rb.facet_degenerate, rb.hull_vertices, rb.e_vertices)
+    assert (r.facet_local, r.hull_vertices, r.e_vertices) == (rb.facet_local, rb.hull_vertices, rb.e_vertices)
+    assert rb.facet_ambiguous == 0
+    if r.facet_ambiguous == 0:
+        assert (r.facet_global, r.facet_degenerate, r.facet_local_dropped) == (rb.facet_global, rb.facet_degenerate, 0)
+    else:
+        # 凸包侧的分辨率以下（generic 在 |t| = 1e5、s = 1e-3：B 的一条 5.5e-5 长的棱与 A 的面只差 4.9e-4 rad，
+        # 这个特征的"高度" 2.7e-8 只是 C·eps 的 ~30 倍）：允许少量 facet 说不清，但要如实报出，且不许多于两个
+        assert r.facet_ambiguous <= 2 and r.facet_local_dropped <= 2 * r.facet_ambiguous, r
+        assert r.facet_global + r.facet_ambiguous <= rb.facet_global + rb.facet_degenerate
 
 
 @pytest.mark.parametrize("rot,tmag,s", CELLS, ids=CELL_IDS)

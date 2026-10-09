@@ -217,7 +217,9 @@ def test_position_independence_gate_has_teeth_absolute_edge_direction(monkeypatc
                 other = e[1] if e[0] == vi else e[0]
                 out.append(_unit(self.verts[other]))
         return out
+    # 顶点锥判据走 vertex_edges（方向 + 逐棱噪声，M0.3），VV3 的锥交走 vertex_edge_dirs：同一个变异打进两处
     monkeypatch.setattr(geom3.Polyhedron, "vertex_edge_dirs", bad_dirs)
+    monkeypatch.setattr(geom3.Polyhedron, "vertex_edges", lambda self, vi: [(d, 0.0) for d in bad_dirs(self, vi)])
     bad = _position_independence_violations(A, B)
     assert bad and bad[0][0] == "labels", bad[:2]
 

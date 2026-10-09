@@ -325,3 +325,48 @@ def test_overlap_is_exact_on_random_convex_pairs_with_coplanar_faces(frame):
     if frame == "identity":
         assert counts[0] >= 5, counts
 
+
+
+# ---------------------------------------------------------------- M0.3（G6 第二轮两条 minor）
+
+def _Rq(seed):
+    rng = random.Random(seed)
+    q = [rng.gauss(0, 1) for _ in range(4)]
+    n = math.sqrt(sum(c * c for c in q))
+    w, x, y, z = (c / n for c in q)
+    return ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+            (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+            (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+
+
+def _rigid(P, R):
+    return Polyhedron([tuple(sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in P.verts], list(P.faces))
+
+
+def _rotz(P, th, c=(0.0, 0.0, 0.0)):
+    C, S = math.cos(th), math.sin(th)
+    return Polyhedron([(C * x - S * y + c[0], S * x + C * y + c[1], z + c[2]) for x, y, z in P.verts], list(P.faces))
+
+
+@pytest.mark.parametrize("seed", [0, 8, 13])
+def test_rotated_thin_plates_crossing_are_overlapping_at_zero_tolerance(seed):
+    """20 × 0.02 × 1 的两块细板 X 形交叉（真实贯入），整体刚体旋转后 tol = 0：旧版的活动面判据只用长度地板，
+    薄面在棱-棱交点处的平面距离（法向噪声 × 力臂 ≈ 2.7e-13）超过地板 1.2e-13 被丢，答"接触"。"""
+    from eab.kernel3d.geom3 import box
+    a, b, o = 1.0683100556795084, 1.2782236262301914, (-1.49930015429593, -1.0462052031617162, 0.0)
+    A0 = _rotz(box(half=(10.0, 0.01, 0.5)), a, o)
+    B0 = _rotz(box(half=(10.0, 0.01, 0.5)), b)
+    assert polyhedra_overlap(A0, B0) == 1
+    R = _Rq(seed)
+    A, B = _rigid(A0, R), _rigid(B0, R)
+    assert polyhedra_overlap(A, B) == 1 and polyhedra_overlap(B, A) == 1
+
+
+@pytest.mark.parametrize("ov,want", [(1e-10, 1), (1e-11, 1), (1e-13, 0), (1e-14, 0)])
+def test_overlap_resolution_is_documented(ov, want):
+    """文档写明的有效分辨率 max(tol_eff, 1e-12·diag)：两个单位方块面对面贯入 ov。深于它答 1，浅于它答 0（相触），
+    从不答成 −1。"""
+    from eab.kernel3d.geom3 import box
+    A = box((0.0, 0.0, 0.0), (0.5, 0.5, 0.5))
+    B = box((1.0 - ov, 0.0, 0.0), (0.5, 0.5, 0.5))
+    assert polyhedra_overlap(A, B) == want

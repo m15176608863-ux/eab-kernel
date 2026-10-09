@@ -20,11 +20,21 @@
   棱 e：  N(e) = {d ⊥ t_e} ∩ {两相邻面法向张成的楔}；relint ⟺ 严格在两法向之间（要求凸二面角）。
   面 f：  N(f) = 外法向单条射线。
 
-容差（纪律 F，2026-09-24 G6 之后）：调用方的 tol 同时被当作角度（单位向量点积、二面角、弧、
-棱参数）与长度（面内判定、触碰）用；两种用法各自加舍入噪声地板（`_pair_tols`）：
-  角度  ang = max(tol, c·eps·C/ℓ)      长度  lng = max(tol, c·eps·C)
-C 为两体坐标量级、ℓ 为最短棱长。于是平行面 / 平行棱这类**精确**退化关系在旋转、平移到工程坐标、
-单位缩放之后仍判为同一边界态，盖标签与 strict 字段不变（tests/test_invariance_geom.py）。
+容差（纪律 F；2026-09-27 M0.3 改为逐特征、量纲分明）：
+  · 调用方的 `tol` **只是角度**（单位向量点积、弧、锥），只会放宽"闭条件成立"（多收边界态的盖），从不当长度用；
+  · 每个判据另加**被测特征自己**的方向噪声（geom3：棱 c·eps·C/|e|、面法向 c·eps·C·周长/(2·面积)、
+    二面角 = 两相邻面之和）——平行面 / 平行棱这类**精确**退化关系在旋转、平移到工程坐标、单位缩放之后
+    仍判为同一边界态，盖标签与 strict 字段不变（tests/test_invariance_geom.py）；
+  · "丢弃型"判定（平棱、平行棱、顶点落在棱线上）只用舍入噪声，不用调用方 tol；
+  · 长度容差是另一个参数 `extent_tol`（调用方单位，缺省 0），只用于"投影落在面内 / 最近点落在段内"的边界带，
+    抬到两体坐标量级处的舍入地板 c·eps·C（`_pair_floor`）。棱参数带是它除以**该棱的长度**，面内判定的边界带
+    再加上"间隙 × 面法向噪声"（投影点随法向噪声的漂移）。裕度层用缺省（只有舍入），互锁层传它的谓词分辨率；
+  · 见证点（point_a / point_b）一律**落在两体上**：棱参数钳进 [0, 1]，投影落在面外时取面多边形上的最近点。于是
+    任何被收下的盖，见证距离都不小于真实间距；平棱被判平时，相邻面上的 VF 见证点钳到那条棱上，恰是它的距离。
+M0.2 的 `_pair_tols` 把整对物体的最短棱当 ℓ（一条极短的棱让全部特征的角容差变大，真棱脊被判平、盖被丢）、
+把调用方 tol 同时当长度用（裕度层的 1e-9 成了绝对长度，小模型的真最近 VE3 被丢），棱参数带 −ang ≤ s ≤ 1 + ang
+把长度当无量纲带（大块体角点处见证点越出棱端 ang·|棱|）——G6 第二轮两条 critical、一条 major。
+门：tests/test_margin_resolution.py。
 """
 
 from __future__ import annotations
@@ -32,16 +42,41 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import atan2
 
-from .geom3 import (Polyhedron, Vec3, add, angle_between, cross, dot, mul, neg, noise_floor, norm,
-                    point_in_face_polygon, sub, unit)
+from . import geom3
+from .geom3 import Polyhedron, Vec3, add, angle_between, cross, dot, mul, neg, noise_floor, norm, sub, unit
 
 
-def _pair_tols(A: Polyhedron, B: Polyhedron, tol: float) -> tuple[float, float]:
-    """(ang, lng)：调用方 tol 加上两体的舍入噪声地板（见模块文档"容差"）。"""
-    CA, _, la = A.metrics()
-    CB, _, lb = B.metrics()
-    fl = noise_floor(max(CA, CB))
-    return max(tol, fl / min(la, lb)), max(tol, fl)
+def _pair_floor(A: Polyhedron, B: Polyhedron) -> float:
+    """两体坐标量级处的长度舍入地板 c·eps·C（见模块文档"容差"）。"""
+    return noise_floor(max(A.metrics()[0], B.metrics()[0]))
+
+
+def _clamp01(s: float) -> float:
+    return 0.0 if s < 0.0 else (1.0 if s > 1.0 else s)
+
+
+def _closest_on_face_boundary(x: Vec3, P: Polyhedron, fi: int) -> Vec3:
+    """面 fi 的边界折线上离 x 最近的点（x 已在面平面上、落在多边形外或边上时，它就是面多边形上的最近点）。"""
+    f = P.faces[fi]
+    best, bd = f and P.verts[f[0]], float("inf")
+    for i in range(len(f)):
+        a, b = P.verts[f[i]], P.verts[f[(i + 1) % len(f)]]
+        d = sub(b, a)
+        dd = dot(d, d)
+        q = a if dd <= 0.0 else add(a, mul(d, _clamp01(dot(sub(x, a), d) / dd)))
+        w = sub(x, q)
+        if dot(w, w) < bd:
+            best, bd = q, dot(w, w)
+    return best
+
+
+def _face_witness(x: Vec3, g: float, P: Polyhedron, fi: int, lng: float) -> tuple[Vec3, bool]:
+    """顶点在面 fi 平面上的投影 x（有符号间隙 g）→ (面多边形上的见证点, in_extent)。
+    in_extent 的边界带 = lng + |g|·面法向噪声（投影点随法向噪声的漂移）；见证点：投影严格在内取投影，否则取边界最近点。"""
+    locate = geom3.face_polygon_locate          # 经模块属性调用：面内判定只有这一个实现（tests/test_geom3_face_polygon.py）
+    if locate(x, P, fi, lng + abs(g) * P.face_noise(fi)) < 0:
+        return x, False
+    return (x if locate(x, P, fi, 0.0) == 1 else _closest_on_face_boundary(x, P, fi)), True
 
 
 def _orth(v: Vec3, t: Vec3) -> Vec3:
@@ -75,44 +110,49 @@ def vertex_cone_contains(P: Polyhedron, vi: int, d: Vec3, tol: float = 0.0) -> i
     """d 相对顶点 vi 的局部法锥：1 严格内部 / 0 边界 / -1 外部。
 
     判据 d·e_i ≤ 0（e_i 为入射棱单位方向）：全严格则在相对内部。反射顶点的锥自动为空或退化。
-    tol 是角度，另加 P 的方向噪声地板 c·eps·C/ℓ。
+    tol 是角度（调用方的容差，含 d 自身的方向噪声——由调用方算进来）；每条入射棱另加**它自己**的方向噪声
+    c·eps·C/|e_i|（M0.3：M0.2 用整体最短棱）。
     """
-    tol = max(tol, P.angular_floor())
-    dirs = P.vertex_edge_dirs(vi)
-    if not dirs:
+    edges = P.vertex_edges(vi)
+    if not edges:
         return -1
-    worst = max(dot(d, e) for e in dirs)
-    if worst < -tol:
-        return 1
-    if worst <= tol:
-        return 0
-    return -1
+    strict = True
+    for e, noise in edges:
+        m = dot(d, e)
+        t = tol + noise
+        if m > t:
+            return -1
+        if m >= -t:
+            strict = False
+    return 1 if strict else 0
 
 
 def edge_arc_contains(P: Polyhedron, e: tuple[int, int], d: Vec3, tol: float = 0.0) -> int:
     """d 相对棱 e 的局部法锥（两相邻面法向之间的球面弧）：1 严格内 / 0 边界 / -1 外。
 
     要求 d ⊥ t_e（容差内），且 d 严格落在两法向张成的凸楔中；凹二面角（反射棱）返回 -1。
-    tol 是角度，另加 P 的方向噪声地板。正交性判据对单位向量是无量纲的；调用方（ve3 / ev3 / ee /
-    facet_normal3 / frozen_ee_sign）一律**按构造**把 d 对 t_e 正交化后再传进来（G6 critical 6：
-    此前 d = unit(a − q) 带着 ∝ eps·|坐标|/间隙 的棱向分量，小间隙或远坐标下真最近对被这里拒掉）。
+    tol 是角度（调用方的容差）；两法向各加**自己面**的法向噪声，正交性加这条棱的方向噪声（M0.3 逐特征）。
+    "平棱"（丢弃型判定）只用这条棱的二面角噪声，不用调用方 tol：真实的缓棱脊（二面转角 2e-6 rad）必须保留。
+    正交性判据对单位向量是无量纲的；调用方（ve3 / ev3 / ee / facet_normal3 / frozen_ee_sign）一律**按构造**
+    把 d 对 t_e 正交化后再传进来（G6 critical 6：此前 d = unit(a − q) 带着 ∝ eps·|坐标|/间隙 的棱向分量，
+    小间隙或远坐标下真最近对被这里拒掉）。
     """
-    tol = max(tol, P.angular_floor())
     fs = P.edge_faces(e)
     if len(fs) != 2:
         return -1
-    if P.dihedral_turn(e) <= tol:          # 平棱或凹棱：弧退化/为空
+    if P.dihedral_turn(e) <= P.dihedral_noise(e):          # 平棱（噪声内）或凹棱：弧退化/为空
         return -1
     t = P.edge_dir(e)
-    if abs(dot(d, t)) > tol + 1e-12:
+    if abs(dot(d, t)) > tol + P.edge_noise(e) + 1e-12:
         return -1
     n1, n2 = P.face_normal(fs[0]), P.face_normal(fs[1])
+    f1, f2 = P.face_noise(fs[0]), P.face_noise(fs[1])
     # 在垂直于 t 的平面内比较极角：d 必须严格在 n1 与 n2 之间（走凸的那一侧）
     w = angle_between(n1, n2)
     a1 = angle_between(n1, d)
     a2 = angle_between(n2, d)
-    if a1 + a2 <= w + tol + 1e-12:
-        if a1 > tol and a2 > tol:
+    if a1 + a2 <= w + tol + f1 + f2 + 1e-12:
+        if a1 > tol + f1 and a2 > tol + f2:
             return 1
         return 0
     return -1
@@ -244,10 +284,10 @@ def cone_relint_direction(g: list[Vec3], tol: float = 1e-12) -> Vec3 | None:
 
 
 def cones_intersect_relint(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 1e-12) -> bool:
-    """(ia, ib) 是否给出 ∂E 的一个顶点（命题 4 的零维盖条件）。tol 是角度，另加两体的方向噪声地板
+    """(ia, ib) 是否给出 ∂E 的一个顶点（命题 4 的零维盖条件）。tol 是角度，另加两个顶点入射棱方向噪声的最大者
     （平行棱在旋转 / 远坐标下只平行到 eps·C/ℓ，锥的交恰退化成低维时不许被噪声判成有内部）。"""
-    ang, _ = _pair_tols(A, B, tol)
-    return cone_relint_direction(cone_constraints(A, ia, B, ib), ang) is not None
+    noise = max((nz for _, nz in A.vertex_edges(ia) + B.vertex_edges(ib)), default=0.0)
+    return cone_relint_direction(cone_constraints(A, ia, B, ib), max(tol, noise)) is not None
 
 
 def _project_on_face(p: Vec3, P: Polyhedron, fi: int) -> tuple[Vec3, float]:
@@ -259,34 +299,32 @@ def _project_on_face(p: Vec3, P: Polyhedron, fi: int) -> tuple[Vec3, float]:
 
 # ------------------------------------------------------------------ 三类 facet 盖
 #
-# in_extent（投影落在面多边形内）一律用 geom3.point_in_face_polygon：面可以非凸
+# in_extent（投影落在面多边形内）一律用 geom3.face_polygon_locate：面可以非凸
 # （merge_coplanar 归并出的十边形侧面、L 块顶底面）。此前这里自带一份半平面核判据，
 # 只对凸面正确（2026-09-21 审查 C7：L 块臂上的 VF 盖 in_extent=False 被丢）。
 
-def vf_cover(A: Polyhedron, ia: int, B: Polyhedron, fb: int, tol: float = 0.0) -> Cover3 | None:
-    """A 的顶点 ia 对 B 的面 fb。有效 ⟺ −n_f ∈ relint N_A(ia)。"""
-    ang, lng = _pair_tols(A, B, tol)
+def vf_cover(A: Polyhedron, ia: int, B: Polyhedron, fb: int, tol: float = 0.0, extent_tol: float = 0.0) -> Cover3 | None:
+    """A 的顶点 ia 对 B 的面 fb。有效 ⟺ −n_f ∈ relint N_A(ia)。锥判据的方向是 B 的面法向，加上它的噪声。"""
     nB = B.face_normal(fb)
-    side = vertex_cone_contains(A, ia, neg(nB), ang)
+    side = vertex_cone_contains(A, ia, neg(nB), tol + B.face_noise(fb))
     if side < 0:
         return None
     a = A.verts[ia]
     proj, g = _project_on_face(a, B, fb)
-    return Cover3("VF", ("vertex", ia), ("face", fb), nB, g, a, proj, (),
-                  B.face_area(fb), side == 1, point_in_face_polygon(proj, B, fb, lng))
+    wit, inside = _face_witness(proj, g, B, fb, max(extent_tol, _pair_floor(A, B)))
+    return Cover3("VF", ("vertex", ia), ("face", fb), nB, g, a, wit, (), B.face_area(fb), side == 1, inside)
 
 
-def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
+def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, extent_tol: float = 0.0) -> Cover3 | None:
     """A 的面 fa 对 B 的顶点 ib。有效 ⟺ −n_A(fa) ∈ relint N_B(ib)。分离法向 = −n_A。"""
-    ang, lng = _pair_tols(A, B, tol)
     nA = A.face_normal(fa)
-    side = vertex_cone_contains(B, ib, neg(nA), ang)
+    side = vertex_cone_contains(B, ib, neg(nA), tol + A.face_noise(fa))
     if side < 0:
         return None
     b = B.verts[ib]
     proj, g = _project_on_face(b, A, fa)     # g = n_A·(b − a0)：>0 表示 B 顶点在 A 面外侧
-    return Cover3("FV", ("face", fa), ("vertex", ib), neg(nA), g, proj, b, (),
-                  A.face_area(fa), side == 1, point_in_face_polygon(proj, A, fa, lng))
+    wit, inside = _face_witness(proj, g, A, fa, max(extent_tol, _pair_floor(A, B)))
+    return Cover3("FV", ("face", fa), ("vertex", ib), neg(nA), g, wit, b, (), A.face_area(fa), side == 1, inside)
 
 
 def _closest_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, float] | None:
@@ -304,21 +342,22 @@ def _closest_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, floa
 
 
 def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, int],
-             tol: float = 0.0) -> Cover3 | None:
+             tol: float = 0.0, extent_tol: float = 0.0) -> Cover3 | None:
     """A 的棱 ea 对 B 的棱 eb（交叉）。候选法向 ±unit(t_B × t_A)，取落在两条弧相对内部者。
 
-    弧判据的输入对各自的棱**按构造正交化**（叉积对近平行棱只正交到 eps/sinθ）；参数段判据 s、t
-    与平行判据用角度容差 ang，间隙是长度。"""
-    ang, _ = _pair_tols(A, B, tol)
+    弧判据的输入对各自的棱**按构造正交化**（叉积对近平行棱只正交到 eps/sinθ）。平行判据（丢弃型）只用两条棱的
+    方向噪声：噪声内平行的一对由 VE3/EV3 表达（最近点落在重叠段端点，漏掉的至多 ~2·c·eps·C）。参数段判据按
+    **各自的棱长**：s ∈ [−λ/|e_A|, 1 + λ/|e_A|]（λ = extent_tol 抬到长度舍入地板）。见证点钳进两条棱段。"""
     tA, tB = A.edge_dir(ea), B.edge_dir(eb)
     c = cross(tB, tA)
-    if norm(c) <= ang + 1e-12:               # 平行棱：退化盖，另行处理
+    if norm(c) <= A.edge_noise(ea) + B.edge_noise(eb) + 1e-12:     # 平行棱（噪声内）：退化盖，另行处理
         return None
     n = unit(c)
+    fl = max(extent_tol, _pair_floor(A, B))
     best: Cover3 | None = None
     for cand in (n, neg(n)):
-        sb = edge_arc_contains(B, eb, _orth(cand, tB), ang)
-        sa = edge_arc_contains(A, ea, _orth(neg(cand), tA), ang)
+        sb = edge_arc_contains(B, eb, _orth(cand, tB), tol)
+        sa = edge_arc_contains(A, ea, _orth(neg(cand), tA), tol)
         if sb < 0 or sa < 0:
             continue
         pa0, pb0 = A.verts[ea[0]], B.verts[eb[0]]
@@ -328,10 +367,10 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         if pr is None:
             continue
         s, t = pr
-        qa = add(pa0, mul(dA, s))
-        qb = add(pb0, mul(dB, t))
-        g = dot(cand, sub(qa, qb))
-        in_ext = (-ang <= s <= 1.0 + ang) and (-ang <= t <= 1.0 + ang)
+        g = dot(cand, sub(add(pa0, mul(dA, s)), add(pb0, mul(dB, t))))
+        ba, bb = fl / norm(dA), fl / norm(dB)
+        in_ext = (-ba <= s <= 1.0 + ba) and (-bb <= t <= 1.0 + bb)
+        qa, qb = add(pa0, mul(dA, _clamp01(s))), add(pb0, mul(dB, _clamp01(t)))
         cov = Cover3("EE", ("edge", ea[0], ea[1]), ("edge", eb[0], eb[1]), cand, g, qa, qb,
                      (s, t), None, sb == 1 and sa == 1, in_ext)
         if best is None or abs(cov.gap) < abs(best.gap):
@@ -341,7 +380,8 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
 
 # ------------------------------------------------------------------ 低维与退化盖
 
-def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: float = 0.0) -> Cover3 | None:
+def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: float = 0.0,
+              extent_tol: float = 0.0) -> Cover3 | None:
     """A 的顶点 × B 的棱 → ∂E 的棱（一维盖）。有效 ⟺ N_B(eb) 的弧与 −N_A(ia) 的锥相交（闭）。
 
     实现上取分离方向 = 顶点到棱的最短向量（若最近点在段内），再验它同时落在两个锥里。
@@ -353,51 +393,55 @@ def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: f
     q 的绝对坐标），再对棱方向正交化一遍。此前 v = a − q，q = p0 + d·s 的舍入给 unit(v) 一个
     ∝ eps·|坐标|/间隙 的棱向分量，间隙 < 1e-7（原点）或 < 1e-5（坐标 1e3）时被弧判据拒掉，
     body_distance 跳到远处的盖（2.0000001 而非 1e-7），裕度层判"安全"。
+
+    M0.3：顶点落在棱线上（丢弃型）只看长度舍入地板 fl，不看调用方 tol（裕度层的 1e-9 曾在这里成了绝对长度，
+    间隙 1e-9 的真最近对被丢）；棱参数带 λ/|e|（λ = extent_tol 抬到地板，除以**这条棱**的长度）；见证点钳进棱段。
     """
-    ang, lng = _pair_tols(A, B, tol)
+    fl = _pair_floor(A, B)
     a = A.verts[ia]
     p0 = B.verts[eb[0]]
     d = sub(B.verts[eb[1]], p0)
     w = sub(a, p0)
     s = dot(w, d) / dot(d, d)
-    q = add(p0, mul(d, s))
     v = sub(w, mul(d, s))
     t = unit(d)
     v = sub(v, mul(t, dot(v, t)))
     gap = norm(v)
-    if gap <= lng:
+    if gap <= fl:
         return None
     n = _orth(v, t)
-    sb = edge_arc_contains(B, eb, n, ang)
-    sa = vertex_cone_contains(A, ia, neg(n), ang)
+    sb = edge_arc_contains(B, eb, n, tol)
+    sa = vertex_cone_contains(A, ia, neg(n), tol)
     if sb < 0 or sa < 0:
         return None
-    return Cover3("VE3", ("vertex", ia), ("edge", eb[0], eb[1]), n, gap, a, q, (s,), None,
-                  sb == 1 and sa == 1, -ang <= s <= 1.0 + ang)
+    band = max(extent_tol, fl) / norm(d)
+    return Cover3("VE3", ("vertex", ia), ("edge", eb[0], eb[1]), n, gap, a, add(p0, mul(d, _clamp01(s))), (s,), None,
+                  sb == 1 and sa == 1, -band <= s <= 1.0 + band)
 
 
-def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
-    """A 的棱 × B 的顶点 → ∂E 的棱。strict 口径与"按构造正交"同 ve3_cover。"""
-    ang, lng = _pair_tols(A, B, tol)
+def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: float = 0.0,
+              extent_tol: float = 0.0) -> Cover3 | None:
+    """A 的棱 × B 的顶点 → ∂E 的棱。strict、按构造正交、丢弃判据、参数带与见证点的口径同 ve3_cover。"""
+    fl = _pair_floor(A, B)
     b = B.verts[ib]
     p0 = A.verts[ea[0]]
     d = sub(A.verts[ea[1]], p0)
     w = sub(b, p0)
     s = dot(w, d) / dot(d, d)
-    q = add(p0, mul(d, s))
     v = neg(sub(w, mul(d, s)))              # q − b
     t = unit(d)
     v = sub(v, mul(t, dot(v, t)))
     gap = norm(v)
-    if gap <= lng:
+    if gap <= fl:
         return None
     n = _orth(v, t)
-    sb = vertex_cone_contains(B, ib, n, ang)
-    sa = edge_arc_contains(A, ea, neg(n), ang)
+    sb = vertex_cone_contains(B, ib, n, tol)
+    sa = edge_arc_contains(A, ea, neg(n), tol)
     if sb < 0 or sa < 0:
         return None
-    return Cover3("EV3", ("edge", ea[0], ea[1]), ("vertex", ib), n, gap, q, b, (s,), None,
-                  sb == 1 and sa == 1, -ang <= s <= 1.0 + ang)
+    band = max(extent_tol, fl) / norm(d)
+    return Cover3("EV3", ("edge", ea[0], ea[1]), ("vertex", ib), n, gap, add(p0, mul(d, _clamp01(s))), b, (s,), None,
+                  sb == 1 and sa == 1, -band <= s <= 1.0 + band)
 
 
 def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
@@ -407,55 +451,56 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) 
       strict    = 两锥**相对内部相交** ⟺ 这对顶点确实给出 ∂E 的一个顶点（命题 4）；
       in_extent = 分离方向 a − b 落在交锥内 ⟺ 参考点到 E 的最近特征正是这个顶点（活跃）。
     """
-    ang, lng = _pair_tols(A, B, tol)
     a, b = A.verts[ia], B.verts[ib]
-    is_vertex = cones_intersect_relint(A, ia, B, ib, max(ang, 1e-12))
+    is_vertex = cones_intersect_relint(A, ia, B, ib, max(tol, 1e-12))
     if not is_vertex:
         return None
     v = sub(a, b)
-    if norm(v) <= lng:
+    if norm(v) <= _pair_floor(A, B):
         return Cover3("VV3", ("vertex", ia), ("vertex", ib), None, 0.0, a, b, (), None, True, True)
     n = unit(v)
-    active = (vertex_cone_contains(B, ib, n, ang) >= 0 and vertex_cone_contains(A, ia, neg(n), ang) >= 0)
+    active = (vertex_cone_contains(B, ib, n, tol) >= 0 and vertex_cone_contains(A, ia, neg(n), tol) >= 0)
     return Cover3("VV3", ("vertex", ia), ("vertex", ib), n, norm(v), a, b, (), None, True, active)
 
 
 # ------------------------------------------------------------------ 枚举
 
 def enumerate_covers3(A: Polyhedron, B: Polyhedron, *, window: float, tol: float = 0.0,
-                      require_in_extent: bool = True, include_low_dim: bool = True) -> list[Cover3]:
+                      require_in_extent: bool = True, include_low_dim: bool = True,
+                      extent_tol: float = 0.0) -> list[Cover3]:
     """当前位形下所有有效且在距离窗口内的三维盖。
 
     有效 = 法锥**闭**条件成立（判据 ≥ 0）；strict 只是盖上的一个字段，**任何一类盖都不按
     strict 过滤**。低维盖尤其不能过滤（2026-09-21 审查 C10 实测）：平行棱-棱最近对
     （EEP 退化，ee_cover 对平行棱返回 None）只由边界态 VE3/EV3 表达，一旦按 strict 过滤，
     margin.body_distance 的距离完备性就丢（tests/test_margin.py 三例红）。
+    tol 是角度（法锥判据），extent_tol 是长度（in_extent 的边界带），见模块文档"容差"。
     """
     out: list[Cover3] = []
     for ia in range(len(A.verts)):
         for fb in range(len(B.faces)):
-            c = vf_cover(A, ia, B, fb, tol)
+            c = vf_cover(A, ia, B, fb, tol, extent_tol)
             if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
                 out.append(c)
     for fa in range(len(A.faces)):
         for ib in range(len(B.verts)):
-            c = fv_cover(A, fa, B, ib, tol)
+            c = fv_cover(A, fa, B, ib, tol, extent_tol)
             if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
                 out.append(c)
     for ea in A.edges():
         for eb in B.edges():
-            c = ee_cover(A, ea, B, eb, tol)
+            c = ee_cover(A, ea, B, eb, tol, extent_tol)
             if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
                 out.append(c)
     if include_low_dim:
         for ia in range(len(A.verts)):
             for eb in B.edges():
-                c = ve3_cover(A, ia, B, eb, tol)
+                c = ve3_cover(A, ia, B, eb, tol, extent_tol)
                 if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
                     out.append(c)
         for ea in A.edges():
             for ib in range(len(B.verts)):
-                c = ev3_cover(A, ea, B, ib, tol)
+                c = ev3_cover(A, ea, B, ib, tol, extent_tol)
                 if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
                     out.append(c)
         for ia in range(len(A.verts)):
@@ -540,7 +585,7 @@ def support_gaps3(A: Polyhedron, B: Polyhedron, x: Vec3) -> list[float]:
 
 
 def membership_convex3(A: Polyhedron, B: Polyhedron, x: Vec3, tol: float = 0.0,
-                       facets: set[tuple] | None = None) -> int:
+                       facets: set[tuple] | None = None, *, ang_tol: float = 1e-12) -> int:
     """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界 / -1 外部。A、B 凸，**不要求一般位置**。
 
     E 的 facet 法向只有三类来源：B 的面法向、−(A 的面法向)、严格交叉棱-棱（命题 4）。
@@ -550,9 +595,12 @@ def membership_convex3(A: Polyhedron, B: Polyhedron, x: Vec3, tol: float = 0.0,
 
     2026-09-21 审查 C2（critical）：此前只对 strict facet 取 max——平行面生成的 facet 全被丢，
     四面体 vs 方块在 +x 侧恒判"相交"，两个轴对齐方块对空集取 max 崩溃。
+
+    tol 是**长度**（边界带，调用方单位，抬到舍入地板）；不给 facets 时用**角度** ang_tol 求局部 facet。旧版把同一个
+    tol 两处都用：tol = 1e-3·s、s = 1e3 时角容差 1 rad，严格 EE facet 全被丢，分离的一对判"相交"（G6 第二轮 minor）。
     """
     if facets is None:
-        facets = local_facets3(A, B, tol)
+        facets = local_facets3(A, B, ang_tol)
     g = max(support_gaps3(A, B, x) + [facet_gap3(A, B, lab, x) for lab in facets])
     # 边界带加舍入地板（纪律 F）：间隙由量级 C 的坐标相减得到，恰相触的位形在远坐标下是 ±eps·C 的噪声
     tol = max(tol, noise_floor(max(A.metrics()[0] + max(abs(c) for c in x), B.metrics()[0])))

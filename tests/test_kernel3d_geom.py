@@ -235,8 +235,7 @@ def test_convex_hull_is_similarity_invariant_on_degenerate_and_generic_sets(seed
         assert H.volume() == pytest.approx(vol0 * scale ** 3, rel=1e-7)
         if pts is LATTICE:
             assert len(merge_coplanar(H).faces) == 6
-            from eab.kernel3d.g03 import _hull_extreme_vertices
-            assert len(_hull_extreme_vertices(H)) == 8
+            assert len(H.verts) == 8                 # 格点里的面内/棱上点不成为凸包顶点（M0.3）
 
 
 # ================================================================ G6 minor 7：面接触在旋转 / 工程坐标下仍是"相触"

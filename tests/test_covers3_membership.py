@@ -202,15 +202,15 @@ def _vertices_of_tetra_box_E():
 
 
 def test_g0_vote3_counts_only_extreme_points_on_degenerate_input():
-    """退化输入上 conv{b − a} 的三角网格会保留落在 facet 内部/棱上的点——它们不是 E 的顶点。
-    票三必须只数极点：tetra vs box 的 E 恰有 13 个顶点（上面的精确枚举），box vs box 恰 8 个。"""
+    """退化输入（64 个差点里大量落在 facet 内部/棱上）：凸包的**顶点集**必须恰是 E 的顶点集——
+    tetra vs box 的 E 恰有 13 个顶点（上面的精确枚举），box vs box 恰 8 个。旧 Quickhull 把共面/共线点留作三角
+    网格顶点、靠一道"极点筛"补救；M0.3 起凸包自己保证（全局最远者优先 + 并列按离质心最远裁决 + 细条面兜底）。"""
     truth = _vertices_of_tetra_box_E()
     assert len(truth) == 13
-    from eab.kernel3d.g03 import _hull_extreme_vertices
     from eab.kernel3d.geom3 import convex_hull_3d, sub
     T, B = _tetra(), box(half=(1.0, 1.0, 1.0))
     hull = convex_hull_3d([sub(b, a) for a in T.verts for b in B.verts], tol=1e-12)
-    got = {tuple(round(c, 7) + 0.0 for c in v) for v in _hull_extreme_vertices(hull)}
+    got = {tuple(round(c, 7) + 0.0 for c in v) for v in hull.verts}
     assert got == {tuple(float(c) for c in p) for p in truth}
     rep = g0_convex3(_tetra(), box(half=(1.0, 1.0, 1.0)), samples=0)
     assert rep.hull_vertices == rep.e_vertices == 13 and rep.hull_vertex_mismatch == 0, rep
@@ -315,3 +315,36 @@ def test_closest_point_on_raw_minkowski_points_matches_the_box_distance(seed, sc
     B2 = _rotated(box(center=(1.5, 0.2, -0.9), half=(2.0, 0.5, 3.0)), R, scale)
     p2 = closest_point_of_convex_hull_to_origin([sub(b, a) for a in A.verts for b in B2.verts])
     assert norm(p2) == 0.0
+
+
+@pytest.mark.parametrize("s", [1.0, 1e3])
+def test_membership_without_facets_keeps_length_and_angle_apart(s):
+    """G6 第二轮 minor：不给 facets 时，旧版把长度带 tol 同时当局部 facet 的角容差——tol = 1e-3·s、s = 1e3 时角容差
+    1 rad，严格 EE facet 全被丢，分离的一对判"相交"（600 个随机偏移里 8 个）。oracle：暴力谓词 polyhedra_overlap。"""
+    import random as _r
+
+    from eab.kernel3d.geom3 import Polyhedron, box, mul, polyhedra_overlap, tetra
+    rng = _r.Random(4)
+    q = [rng.gauss(0, 1) for _ in range(4)]
+    n = math.sqrt(sum(c * c for c in q))
+    w, x, y, z = (c / n for c in q)
+    R = ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+         (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+         (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+    T = tetra((0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+    A = Polyhedron([mul(tuple(sum(R[i][j] * v[j] for j in range(3)) for i in range(3)), s) for v in T.verts],
+                   list(T.faces))
+    B0 = box(half=(1.0, 0.7, 0.5))
+    B = Polyhedron([mul(v, s) for v in B0.verts], list(B0.faces))
+    tol = 1e-3 * s
+    rng = _r.Random(9)
+    wrong, n_cmp = [], 0
+    for _ in range(600):
+        xo = mul(tuple(rng.uniform(-2.5, 2.5) for _ in range(3)), s)
+        brute = polyhedra_overlap(A.translated(xo), B, tol)
+        got = membership_convex3(A, B, xo, tol)
+        if brute != 0 and got != 0:
+            n_cmp += 1
+            if brute != got:
+                wrong.append((xo, brute, got))
+    assert n_cmp > 500 and wrong == [], (n_cmp, len(wrong), wrong[:2])

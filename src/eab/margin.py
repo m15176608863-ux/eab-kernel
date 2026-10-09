@@ -51,8 +51,10 @@
   `inflated_membership` 答 INSIDE；`margin_gap_from_frozen_cover` 对哨兵抛 ValueError（没有冻结盖）。
   违约多深要靠贯入深度（未实现）。门：`tests/test_margin_penetration.py`。安全裕度问题本来就活在
   分离侧，这不是缺陷但必须写明。
-  贯入守卫的可靠性等于 `polyhedra_overlap` 的可靠性：谓词漏判的贯入（G6 critical：等高 X 交叉，
-  m2-geom 在修）在这里同样漏判，本层不另设第二道谓词。
+  贯入守卫的可靠性等于 `polyhedra_overlap` 的可靠性：谓词漏判的贯入在这里同样漏判，本层不另设第二道谓词
+  （G6 critical 的等高 X 交叉已由 m2-geom 的接触锥证人修复并合并，门：tests/test_geom3_overlap_witness.py）。
+  谓词的有效分辨率是 max(geom_tol_eff, 1e-12·diag)，且按到面平面的距离计：深度不超过 geom_tol_eff·sin(接触面夹角)
+  时判相触，深于 geom_tol_eff 时一定给哨兵，介于两者之间可能提前给哨兵（偏安全侧；G6 第二轮 minor）。
 - **相触分辨率 geom_tol（纪律 F，2026-09-24 M0.2）。** 间距或贯入深度在 geom_tol_eff 以内即"相触"：
   `body_distance` 返回 **0.0**（标签是实现最小见证的那个盖），`margin_contacts` 里见证距离 ≤ geom_tol_eff
   的盖 distance 钳为 0、margin_gap = −δ、normal None（零距离处见证方向无定义；亚容差贯入时 a − b 还是反的）。
@@ -65,10 +67,12 @@
   （地板 64·eps·C 盖住工程坐标上顶点坐标自身的舍入）。显式给 `geom_tol` 时按**绝对长度**解释，但同样不低于
   舍入地板。`inflated_membership` 的边界带 `atol` 同理（默认 max(1e-12·L, 64·eps·C)）。修前两者都是绝对
   1e-9 / 1e-12：边长 1e-9 的整体嵌套答 OUTSIDE（C14 的尺度变体），1e5 坐标上相触的两体在 δ = 0 时答 OUTSIDE。
-  盖枚举的 `tol`（法锥判据，作用在单位向量上，无量纲）不随尺度；但 covers3 里另有几处绝对容差
-  （G6 critical：棱弧正交性、单形退化）在 1e-3 尺度的块放到 1e5 坐标时丢掉真最近的低维盖——
-  那是 m2-geom 的文件，本层的不变性元门在这些格子上是 strict xfail
-  （`tests/test_invariance_interlock.py::test_margin_layer_is_rigid_motion_and_unit_invariant`）。
+  盖枚举的 `tol`（法锥判据，作用在单位向量上，无量纲）不随尺度；M0.3 起它**只是**角度——covers3 不再把它当
+  长度用（M0.2 曾把 1e-9 同时当绝对长度地板，块体 < 1 m 时间隙 ≤ 1e-9 的真最近 VE3 被丢，G6 第二轮 critical），
+  面内/段内的长度带是另一个参数 `extent_tol`（本层用缺省：只有舍入地板）。
+- **自校验（M0.3）。** 分离时盖路径的最小见证距离与 `brute_feature_distance`（全部特征对、不经法锥）在舍入内相等，
+  否则抛 RuntimeError；相触分辨率内没有见证落在带内的（比 2·geom_tol_eff 还薄的体）按贯入处理。
+  门：`tests/test_margin_resolution.py`。
 - **并列裁决按枚举序。** 多个盖在舍入意义上同距（平行面、平行棱）时，`body_distance` 取枚举序第一个，
   `margin_contacts` 在同距组内也按枚举序排——变换保留顶点/面编号，所以刚体运动下标签逐字不变。
 - 距离由盖枚举给出，其**完备性**（法锥筛选不丢最近特征对）由 `g0_distance_completeness3` 看着。
@@ -82,8 +86,8 @@ from dataclasses import dataclass
 from .dual import Number
 from .kernel3d.covers3 import closest_point_of_convex_hull_to_origin, enumerate_covers3
 from .kernel3d.frozen import frozen_gap, frozen_normal
-from .kernel3d.geom3 import (Polyhedron, Vec3, add, convex_hull_3d, norm, polyhedra_overlap,
-                             sub, unit)
+from .kernel3d.geom3 import (Polyhedron, Vec3, add, brute_feature_distance, convex_hull_3d, norm,
+                             polyhedra_overlap, sub, unit)
 
 OUTSIDE, ON_BOUNDARY, INSIDE = -1, 0, 1
 PENETRATING = "PENETRATING"            # 贯入哨兵标签：("PENETRATING",)
@@ -160,14 +164,31 @@ def _witnesses(A: Polyhedron, B: Polyhedron, tol: float) -> list[tuple]:
 
 
 def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None):
-    """裕度层的共同前处理：(geom_tol_eff, 舍入地板, 见证表 | None=贯入, 是否在相触分辨率内)。"""
+    """裕度层的共同前处理：(geom_tol_eff, 舍入地板, 见证表 | None=贯入, 是否在相触分辨率内)。
+
+    自校验（M0.3，G6 第二轮两条 critical 之后）：分离时（谓词答 −1）盖路径的最小见证距离必须与
+    `brute_feature_distance`（全部特征对取最小，不经任何法锥或容差）在舍入内相等，否则抛 RuntimeError——
+    盖枚举漏掉最近特征对（报远处的盖、答"安全"）或见证点不在两体上（距离少报）都不许静默返回。
+    相触时（谓词答 0）必须有见证落在相触分辨率内；没有（比 2·geom_tol_eff 还薄的体被分辨带"蚀穿"，G6 第二轮
+    minor）按贯入处理——三个入口一致答"已违约"，偏安全侧。
+    """
     gtol = effective_geom_tol(A, B, geom_tol)
     state = polyhedra_overlap(A, B, gtol)
     if state == 1:
         return gtol, 0.0, None, True
     wits = _witnesses(A, B, tol)
     dmin = min((w for _, w, _ in wits), default=float("inf"))
-    return gtol, rounding_floor(A, B), wits, state == 0 or dmin <= gtol
+    rnd = rounding_floor(A, B)
+    if state == 0:
+        if dmin > gtol + rnd:
+            return gtol, 0.0, None, True
+        return gtol, rnd, wits, True
+    truth = brute_feature_distance(A, B)
+    if abs(dmin - truth) > 4.0 * rnd:
+        raise RuntimeError(f"margin self-check failed: the covers give distance {dmin!r} but the nearest feature pair "
+                           f"is {truth!r} apart (rounding {rnd:.3g}); the cover enumeration "
+                           + ("missed the nearest pair" if dmin > truth else "returned witnesses off the bodies"))
+    return gtol, rnd, wits, dmin <= gtol
 
 
 def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float | None = None
@@ -256,8 +277,14 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
 # ------------------------------------------------------------------ 凸情形的独立 oracle
 
 def entrance_block_convex(A: Polyhedron, B: Polyhedron) -> Polyhedron:
-    """显式造出 E(A,B) = conv{b − a}（**仅凸体**）。用作定理二的独立 oracle。"""
-    return convex_hull_3d([sub(b, a) for a in A.verts for b in B.verts])
+    """显式造出 E(A,B) = conv{b − a}（**仅凸体**）。用作定理二的独立 oracle。
+
+    凸包的容差带上**原坐标**的舍入地板：差点本身只有 L 量级，噪声却是 eps·|原坐标|（工程坐标下 1e5 ~ 1e6），
+    凸包自己只看得见差点坐标，算出的地板小 5 个量级，只能靠 ×100 逐级放大自救（M0.3 之前）。"""
+    pts = [sub(b, a) for a in A.verts for b in B.verts]
+    lo, hi = A.aabb()[0], A.aabb()[1]
+    L = max(norm(sub(hi, lo)), norm(sub(*reversed(B.aabb()))), rounding_floor(A, B))
+    return convex_hull_3d(pts, tol=max(1e-12, 4.0 * rounding_floor(A, B) / L))
 
 
 def nearest_point_on_convex_entrance(E: Polyhedron, x: Vec3) -> Vec3:

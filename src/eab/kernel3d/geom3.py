@@ -8,18 +8,22 @@
 2. 面积/体积/质心相对第一个顶点累加，防远偏移抵消；
 3. "内点"必须是**保证在内**的点，不能用质心（凹体质心可在体外）。
 
-**容差政策（纪律 F，2026-09-24 G6 之后）**：本模块与 covers3 / g03 不再有"对坐标量纲裸用"的绝对阈值。
-一切判据的有效容差取
+**容差政策（纪律 F，2026-09-24 G6 之后；2026-09-27 M0.3 改为逐特征）**：本模块与 covers3 / g03 不再有
+"对坐标量纲裸用"的绝对阈值。一切判据的有效容差取
     长度  tol_eff = max(调用方 tol, c·eps·C)            C = 坐标量级 max|x_i|
-    角度  ang_eff = max(调用方 tol, c·eps·C / ℓ)        ℓ = 最短棱长（方向由坐标差给出，误差 ~ eps·C/ℓ）
+    角度  被测特征自己的噪声：棱方向 c·eps·C/|e|（`edge_noise`）、面法向 c·eps·C·周长/(2·面积)（`face_noise`）、
+          二面角 = 两相邻面法向噪声之和（`dihedral_noise`）
 c = NOISE_ULPS（64）。调用方 tol 的语义不变（它是调用方想要的容差）；地板只吸收**舍入噪声**，
 保证刚体运动（旋转 + 平移到工程坐标）与单位缩放不改变任何判决（tests/test_invariance_geom.py）。
+M0.2 的角度地板取**整个物体的最短棱** c·eps·C/ℓ_min（`angular_floor`，已删）：一条极短的棱让全部特征的角容差
+一起变大，二面转角 0.01 rad 的真棱脊被判平（G6 第二轮 critical，tests/test_margin_resolution.py）。
 convex_hull_3d 的 tol 是**相对**容差（乘点集尺度 L）；g03 的 tol / band 亦然。
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from fractions import Fraction
 from itertools import combinations
 import math
 from math import atan2, hypot, sqrt
@@ -39,6 +43,36 @@ def noise_floor(C: float) -> float:
 def coord_scale(*pts: Vec3) -> float:
     """点的坐标量级 max|x_i|。"""
     return max((abs(c) for p in pts for c in p), default=0.0)
+
+
+_O3D_ERR = 7.771561172376096e-16          # Shewchuk orient3d 的过滤界系数 (7 + 56u)·u
+
+
+def orient3d(a: Vec3, b: Vec3, c: Vec3, p: Vec3) -> int:
+    """det[b − a, c − a, p − a] 的**精确**符号：+1 p 在 (a, b, c) 右手法向一侧 / 0 共面 / −1 另一侧。
+    浮点快路 + Shewchuk 误差界过滤（相对项乘以置换和，另加次正规绝对项），界内退到 Fraction 精确算术。
+    浮点输入是精确有理数，结果对这组坐标精确——凸包的可见性判定靠它（M0.3，"精确谓词、非精确构造"）。
+    下面按 Shewchuk 的展开式算 det[a − p, b − p, c − p]，它与上式反号（p 在右手法向一侧时为负），返回时取反。"""
+    adx, ady, adz = a[0] - p[0], a[1] - p[1], a[2] - p[2]
+    bdx, bdy, bdz = b[0] - p[0], b[1] - p[1], b[2] - p[2]
+    cdx, cdy, cdz = c[0] - p[0], c[1] - p[1], c[2] - p[2]
+    bdxcdy, cdxbdy = bdx * cdy, cdx * bdy
+    cdxady, adxcdy = cdx * ady, adx * cdy
+    adxbdy, bdxady = adx * bdy, bdx * ady
+    det = adz * (bdxcdy - cdxbdy) + bdz * (cdxady - adxcdy) + cdz * (adxbdy - bdxady)
+    perm = ((abs(bdxcdy) + abs(cdxbdy)) * abs(adz) + (abs(cdxady) + abs(adxcdy)) * abs(bdz)
+            + (abs(adxbdy) + abs(bdxady)) * abs(cdz))
+    bound = _O3D_ERR * perm + 2.0 ** -1000
+    if det > bound:
+        return -1
+    if -det > bound:
+        return 1
+    F = Fraction
+    ax, ay, az = F(a[0]) - F(p[0]), F(a[1]) - F(p[1]), F(a[2]) - F(p[2])
+    bx, by, bz = F(b[0]) - F(p[0]), F(b[1]) - F(p[1]), F(b[2]) - F(p[2])
+    cx, cy, cz = F(c[0]) - F(p[0]), F(c[1]) - F(p[1]), F(c[2]) - F(p[2])
+    d = az * (bx * cy - cx * by) + bz * (cx * ay - ax * cy) + cz * (ax * by - bx * ay)
+    return (d < 0) - (d > 0)
 
 
 def sub(a: Vec3, b: Vec3) -> Vec3:
@@ -94,6 +128,8 @@ class Polyhedron:
     _edir: dict[tuple[int, int], list[tuple[int, int, int]]] | None = field(default=None, repr=False)
     # 纯函数缓存（Polyhedron 视为不可变：translated / reflected 都新建对象）
     _normals: list | None = field(default=None, repr=False, compare=False)
+    _face_noise: list | None = field(default=None, repr=False, compare=False)
+    _vedges: dict | None = field(default=None, repr=False, compare=False)
     _metrics: tuple[float, float, float] | None = field(default=None, repr=False, compare=False)
     _interior: Vec3 | None = field(default=None, repr=False, compare=False)
 
@@ -108,10 +144,30 @@ class Polyhedron:
             self._metrics = (C, L, ell if ell > 0.0 else (L if L > 0.0 else 1.0))
         return self._metrics
 
-    def angular_floor(self) -> float:
-        """方向（单位向量点积、二面角）的舍入噪声地板 c·eps·C/ℓ。"""
-        C, _, ell = self.metrics()
-        return noise_floor(C) / ell
+    def edge_noise(self, e: tuple[int, int]) -> float:
+        """棱 e 的单位方向的舍入噪声 c·eps·C/|e|（弧度）：刚体运动把顶点挪动 ~eps·C，方向随之转这么多。
+        只看**这条棱自己**的长度（纪律 F 的逐特征口径）。零长棱为 +inf。"""
+        ell = norm(sub(self.verts[e[1]], self.verts[e[0]]))
+        return noise_floor(self.metrics()[0]) / ell if ell > 0.0 else float("inf")
+
+    def face_noise(self, fi: int) -> float:
+        """面 fi 的单位外法向的舍入噪声（弧度）：顶点挪动 δ = c·eps·C 时 Newell 向量（= 2·面积·n）至多变
+        δ·周长，方向至多转 δ·周长/(2·面积)。三角形上 2·面积/周长 是内切圆半径——细条三角的法向本来就不准。
+        退化面（面积 0）为 +inf。缓存。"""
+        cache = self._face_noise
+        if cache is None:
+            cache = self._face_noise = [None] * len(self.faces)
+        v = cache[fi]
+        if v is None:
+            f = self.faces[fi]
+            per = sum(norm(sub(self.verts[f[(i + 1) % len(f)]], self.verts[f[i]])) for i in range(len(f)))
+            area2 = 2.0 * self.face_area(fi)
+            v = cache[fi] = noise_floor(self.metrics()[0]) * per / area2 if area2 > 0.0 else float("inf")
+        return v
+
+    def dihedral_noise(self, e: tuple[int, int]) -> float:
+        """棱 e 二面转角的舍入噪声：两相邻面法向噪声之和。平棱经刚体运动后转角在 ±它以内。"""
+        return sum(self.face_noise(fi) for fi in self.edge_faces(e))
 
     # ---------------- 拓扑 ----------------
     def face_normal(self, fi: int) -> Vec3:
@@ -198,6 +254,25 @@ class Polyhedron:
                 if norm(d) > 0.0:
                     out.append(unit(d))
         return out
+
+    def vertex_edges(self, vi: int) -> list[tuple[Vec3, float]]:
+        """顶点 vi 的入射棱：(由 vi 指向邻点的单位方向, 该棱的方向噪声 `edge_noise`)。零长棱跳过。缓存。"""
+        cache = self._vedges
+        if cache is None:
+            cache = self._vedges = {}
+            for a, b in self.edges():
+                cache.setdefault(a, []).append(b)
+                cache.setdefault(b, []).append(a)
+            fl = noise_floor(self.metrics()[0])
+            for v, nbrs in cache.items():
+                out = []
+                for w in dict.fromkeys(nbrs):
+                    d = sub(self.verts[w], self.verts[v])
+                    ell = norm(d)
+                    if ell > 0.0:
+                        out.append((unit(d), fl / ell))
+                cache[v] = out
+        return cache.get(vi, [])
 
     def edge_dir(self, e: tuple[int, int]) -> Vec3:
         return unit(sub(self.verts[e[1]], self.verts[e[0]]))
@@ -325,20 +400,18 @@ class Polyhedron:
         return issues
 
     def is_convex(self, tol: float = 1e-12) -> bool:
-        """tol 是角度；另加方向的舍入噪声地板（平棱在旋转 / 远坐标下的转角是 ±噪声，不许判成反射）。"""
-        tol = max(tol, self.angular_floor())
+        """tol 是角度；另加该棱二面角的舍入噪声（平棱在旋转 / 远坐标下的转角是 ±噪声，不许判成反射）。"""
         for e in self.edges():
             if len(self.edge_faces(e)) != 2:
                 return False
-            if self.dihedral_turn(e) < -tol:
+            if self.dihedral_turn(e) < -max(tol, self.dihedral_noise(e)):
                 return False
         return True
 
     def reflex_edges(self, tol: float = 1e-12) -> list[tuple[int, int]]:
-        tol = max(tol, self.angular_floor())
         out = []
         for e in self.edges():
-            if len(self.edge_faces(e)) == 2 and self.dihedral_turn(e) < -tol:
+            if len(self.edge_faces(e)) == 2 and self.dihedral_turn(e) < -max(tol, self.dihedral_noise(e)):
                 out.append(e)
         return out
 
@@ -429,7 +502,9 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
     三角会溢出非凸多边形（2026-09-21 审查 C6：L 块凹口里落在底面平面上的点被判"边界"）。
 
     容差（纪律 F）：边界带取 max(tol, c·eps·C)，C 为 P 与 p 的坐标量级——远坐标下面平面上的点
-    算出的 d0 是 ±eps·C 量级的噪声，tol=0 时不能拿它的符号当内外（G6 minor 7）。
+    算出的 d0 是 ±eps·C 量级的噪声，tol=0 时不能拿它的符号当内外（G6 minor 7）。另有一条射线法自身的
+    分辨率：离某个面平面 ≤ max(1e-12·diag, c·eps·C) 且投影在面内的点答 0（起点贴着表面时射线处处 t≈0 命中，
+    奇偶无从谈起）——所以 1 的有效分辨率是 max(tol, 1e-12·diag, c·eps·C)。
     """
     C, diag, _ = P.metrics()
     fl = noise_floor(max(C, abs(p[0]), abs(p[1]), abs(p[2])))
@@ -521,7 +596,11 @@ def polyhedra_overlap(A: Polyhedron, B: Polyhedron, tol: float = 0.0) -> int:
       见 `_contact_cone_witness`：对凸体完备。棱-棱相交（距离 ≤ tol）也记为"相触"——闭包相交而
       内部不交、又没有顶点相触的交叉面接触，此前被判 −1。
     · 容差：tol_eff = max(tol, c·eps·C)，C 为两体坐标量级（纪律 F，G6 minor 7）。
-    · 完备性的诚实边界：**凸体**上"内部相交 ⟹ 判 1"是精确的（接触锥证人）；非凸体只在交集的某个
+    · **有效分辨率**是 max(tol_eff, 1e-12·diag)（diag 为 AABB 对角线）：每个证人都经 point_in_polyhedron 复验，
+      它把离某个面平面 ≤ 1e-12·diag 的点判"在表面上"（射线奇偶在那个深度分辨不了，见其文档），所以贯入深度
+      ≲ 1e-12·diag 的一对答 0（相触），从不答成假的 1 或 −1（G6 第二轮 minor；门：tests/test_geom3_overlap_witness.py
+      ::test_overlap_resolution_is_documented）。
+    · 完备性的诚实边界：**凸体**上"贯入深于上述分辨率 ⟹ 判 1"是精确的（接触锥证人）；非凸体只在交集的某个
       角点落在两体的凸局部上时精确，否则仍依赖微推启发式与采样，薄交集可能漏判成 0 / −1。
       任何情形都不会误报 1（每个证人都经 point_in_polyhedron 严格复验）。
     """
@@ -646,12 +725,17 @@ def _edge_edge_contacts(A: Polyhedron, B: Polyhedron, tol: float) -> list[Vec3]:
 
 
 def _active_normals(P: Polyhedron, x: Vec3, tol: float) -> list[Vec3]:
-    """x（在 P 的边界上）处的活动面外法向：面平面距离 ≤ tol 且投影落在面多边形（含 tol 带）内。"""
+    """x（在 P 的边界上）处的活动面外法向：面平面距离 ≤ tol + |x − v₀|·面法向噪声、且投影落在面多边形（含 tol 带）内。
+
+    面平面距离 d = n·(x − v₀) 的舍入不只是长度地板：n 的方向噪声（`face_noise`）乘力臂 |x − v₀|。旧版只用长度地板，
+    细长板（20 × 0.02 × 1）X 形交叉、刚体旋转后，薄面在棱-棱交点处的平面距离 2.7e-13 > 地板 1.2e-13，薄面掉出活动集，
+    Gordan 方向不是真内部方向，tol = 0 时 polyhedra_overlap 把贯入答成"接触"（G6 第二轮 minor）。"""
     out = []
     for fi, f in enumerate(P.faces):
         n = P.face_normal(fi)
-        d = dot(n, sub(x, P.verts[f[0]]))
-        if abs(d) <= tol and face_polygon_locate(add(x, mul(n, -d)), P, fi, tol) >= 0:
+        w = sub(x, P.verts[f[0]])
+        d = dot(n, w)
+        if abs(d) <= tol + norm(w) * P.face_noise(fi) and face_polygon_locate(add(x, mul(n, -d)), P, fi, tol) >= 0:
             out.append(n)
     return out
 
@@ -833,13 +917,15 @@ class HullNumericalFailure(ValueError):
 _HULL_TOL_MAX = 1e-6                 # 自适应放大容差的上限（相对 L）
 
 
-def convex_hull_3d(points: list[Vec3], tol: float = 1e-12) -> Polyhedron:
+def convex_hull_3d(points: list[Vec3], tol: float = 1e-12, *, max_tol: float = _HULL_TOL_MAX) -> Polyhedron:
     """凸包（面为三角形，外看 CCW）。Quickhull：初始单形取良态，逐次加入离当前凸包最远的外点。
 
-    自适应：tol 是**最小**相对容差。输入若带着调用方看不见的上游舍入（例如远坐标下两体坐标相减得到的
-    Minkowski 差点：点本身 ~L 量级，噪声却是 eps·|原坐标|），近共面点在 tol 下互相矛盾、自检失败，
-    就按 ×100 放大重建，至多 1e-6·L；仍失败则抛 HullNumericalFailure（ValueError 的子类）。
-    放大只改变"哪些点算共面"，不移动任何顶点：凸包顶点始终是输入点。
+    自适应：tol 是**最小**相对容差。自检失败时按 ×100 放大重建，至多 max_tol（缺省 1e-6·L）；仍失败则抛
+    HullNumericalFailure（ValueError 的子类）。放大只改变"哪些点算共面"，不移动任何顶点，但会**抹平**高度低于
+    容差的真实特征——不能接受的调用方（G0 门）把 max_tol 设为自己的分辨率，越过就抛错而不是静默变粗。
+    M0.3 之前放大是常态：厚平面规则把"离每个面都 ≤ eps_d"的点永久丢掉，面被替换后它们可能远在新面之外
+    （1e-6 的棱脊 + 1 m 细针的 Minkowski 差点上差 1e-3），干净的原点输入也要放大到 1e-6·L 才过自检，g0_convex3
+    因此在正确的凸对上报红（G6 第二轮 major）。现在这些点留在待查池里、最后对全部面复查（见 `_quickhull`）。
     """
     if not 0.0 <= tol < 1e-3:
         raise ValueError(f"convex_hull_3d: tol is a relative tolerance (fraction of the point-set diameter), "
@@ -849,24 +935,80 @@ def convex_hull_3d(points: list[Vec3], tol: float = 1e-12) -> Polyhedron:
         try:
             return _quickhull(points, t)
         except HullNumericalFailure:
-            if t >= _HULL_TOL_MAX:
+            if t >= max_tol:
                 raise
-            t = min(max(t, 1e-14) * 100.0, _HULL_TOL_MAX)
+            t = min(max(t, 1e-14) * 100.0, max_tol)
 
 
 def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
-    """convex_hull_3d 的一次构建（固定容差）。
+    """convex_hull_3d 的一次构建（固定容差）：`_quickhull_once` 加细条面兜底。
+
+    兜底（M0.3）：若结果里有"细条三角"——最短高 ≤ 4·eps_d，即一个顶点落在另两个顶点所在直线的容差带里——
+    那个居中的顶点是冗余顶点（它在另两点之间，离凸包 ≤ 容差），把它排除后重建；至多重建 64 次。
+    细条面的法向是舍入噪声，精确谓词对共线三点对任何点都答"共面"，自检也看不出来——所以必须按几何消掉。
+    全局最远者优先的加点顺序让它极少触发（见 `_quickhull_once`）。
+    """
+    pts = list(dict.fromkeys(points))
+    skip: set[int] = set()
+    for _ in range(64):
+        P, vidx, eps_d = _quickhull_once(pts, tol, skip)
+        bad = _sliver_middle_vertex(P, eps_d)
+        if bad is None:
+            break
+        skip.add(vidx[bad])
+    else:
+        raise HullNumericalFailure("convex_hull_3d: could not eliminate sliver faces (numerical failure)")
+    # 自检（在兜底之后）：每个输入点在每个面的 eps_d 内侧（容许 4 倍：法向本身的舍入）；流形闭合在构建里已查。
+    # 法向用三角自己的叉积，不经 Polyhedron.face_normal（凸包是 G0 的 oracle 之一，不许与被测的法向代码共用）
+    C = coord_scale(*pts)
+    for f in P.faces:
+        o, a, b = P.verts[f[0]], P.verts[f[1]], P.verts[f[2]]
+        n = unit(cross(sub(a, o), sub(b, o)))
+        if max(dot(n, sub(q, o)) for q in pts) > 4.0 * eps_d + noise_floor(C):
+            raise HullNumericalFailure("convex_hull_3d: result is not convex within tolerance (numerical failure)")
+    return P
+
+
+def _sliver_middle_vertex(P: Polyhedron, eps_d: float) -> int | None:
+    """P 的第一个细条三角（最短高 ≤ 4·eps_d）里居中的那个顶点的下标；没有细条面返回 None。"""
+    for f in P.faces:
+        a, b, c = (P.verts[i] for i in f)
+        area2 = norm(cross(sub(b, a), sub(c, a)))
+        edges = [(norm(sub(b, a)), f[2]), (norm(sub(c, b)), f[0]), (norm(sub(a, c)), f[1])]   # (边长, 对顶点)
+        emax, _ = max(edges)
+        if emax > 0.0 and area2 / emax <= 4.0 * eps_d:
+            # 三点近共线：沿最长边方向取参数，居中者冗余
+            i_far, j_far = [i for i in f if i != max(edges)[1]]
+            u = sub(P.verts[j_far], P.verts[i_far])
+            t = sorted(((dot(sub(P.verts[i], P.verts[i_far]), u), i) for i in f))
+            return t[1][1]
+    return None
+
+
+def _quickhull_once(pts: list[Vec3], tol: float, skip: set[int]) -> tuple[Polyhedron, list[int], float]:
+    """convex_hull_3d 的一次构建（固定容差）。返回 (凸包, 每个凸包顶点对应的 pts 下标, eps_d)。
+    skip 里的点不作顶点（细条面兜底排除的冗余点），但仍参加收尾自检。
 
     **tol 是相对容差**（2026-09-24 G6 major 27 / minor 9）：距离判据用 eps_d = max(tol·L, c·eps·C)，
     L 为点集 AABB 对角线、C 为坐标量级（纪律 F）。此前三处绝对 1e-12——基四面体体积（∝ s³）、
     重复点距离与可见性（∝ s）——在旋转 ×1e3 的退化 Minkowski 点集上给出非流形凸包（体积 1387 vs 144）
     或 face_normal 除零；尺度 ≤ 1e-5 时报"共面"。
       · 初始单形：离 AABB 最长轴一端最远的点 → 离该线最远 → 离该面最远（良态，不取"前四个非退化点"）；
-      · 每步取某个面的外点集里离面最远的点，从该面出发 BFS 可见面（距离 > eps_d），视界成环、补锥；
-      · 距任何面都 ≤ eps_d 的点视为在凸包上/内，不加入（共面/共线点不会成为三角网格顶点）；
+      · 每步取**全局**离面最远的外点（不是某个面自己的最远点），并列（距离差 ≤ eps_d）时取**离全体点质心最远**者
+        （`pick`）：到凸集的距离是凸函数、|q − c|² 是严格凸函数，凸组合点在前者上不超过、在后者上严格小于它的
+        生成点——所以棱/面内部的点永远不会先于端点成为顶点，端点都加入之后它落进容差带、不再成为顶点。
+        旧版按面取最远点、并列按下标：棱中间的差点与端点到面的距离只差舍入，中点先成为顶点，留下三点近共线的
+        细条三角（旋转的方块对上 9 个顶点、法向垃圾）。初始单形的四个点同样按此裁决。
+        从该面出发 BFS 可见面，视界成环、补锥。可见性是**精确谓词**
+        `orient3d` 的闭判据（p 在面平面上或外侧即可见）：当前面集恰是已加入顶点的精确凸包，闭可见区是一个
+        拓扑圆盘，视界棱的另一侧严格不可见，锥面永不退化。厚阈值 eps_d **只**用来选外点（> eps_d 才算外点）。
+        旧版用厚阈值判可见性，可见区里 0 < dist ≤ eps_d 的面被判"不可见"、挖出洞，视界成两圈，锥面横穿凸包
+        （G6 第二轮 major：1e-6 棱脊 + 细针的差点集要放大到 1e-6·L 才过自检）；
+      · 距任何面都 ≤ eps_d 的点暂不加入（共面/共线点不成为三角网格顶点），但**不丢**：进待查池。主循环结束后
+        待查池对全部最终面复查，越出 eps_d 的重新作为外点继续构建，直到没有（qhull 的"共面点"处理；旧版厚平面
+        规则永久丢弃）；
       · 收尾自检：流形闭合、每个输入点都在每个面的 eps_d 内侧，否则**抛错**——不静默返回坏凸包。
     """
-    pts = list(dict.fromkeys(points))
     if len(pts) < 4:
         raise ValueError("need >= 4 non-degenerate points")
     xs = [p[0] for p in pts]
@@ -877,11 +1019,21 @@ def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
     eps_d = max(tol * L, noise_floor(coord_scale(lo, hi)))
     if L <= eps_d:
         raise ValueError("points are coincident")
+    cen = (sum(xs) / len(pts), sum(ys) / len(pts), sum(zs) / len(pts))
+
+    def pick(cands, key) -> int:
+        """key 最大者；并列（差 ≤ eps_d）时取离质心最远者（严格凸的裁决，凸组合点输给生成点）。"""
+        vals = [(key(i), i) for i in cands]
+        top = max(v for v, _ in vals)
+        tied = [i for v, i in vals if v >= top - eps_d]
+        return max(tied, key=lambda i: dot(sub(pts[i], cen), sub(pts[i], cen)))
+
     # ---- 良态初始单形
     ax = max(range(3), key=lambda i: hi[i] - lo[i])
-    i0 = min(range(len(pts)), key=lambda i: pts[i][ax])
+    cand = [i for i in range(len(pts)) if i not in skip]
+    i0 = pick(cand, lambda i: -pts[i][ax])
     p0 = pts[i0]
-    i1 = max(range(len(pts)), key=lambda i: norm(sub(pts[i], p0)))
+    i1 = pick(cand, lambda i: norm(sub(pts[i], p0)))
     if norm(sub(pts[i1], p0)) <= eps_d:
         raise ValueError("points are coincident")
     u = unit(sub(pts[i1], p0))
@@ -889,16 +1041,17 @@ def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
     def off_line(p: Vec3) -> float:
         w = sub(p, p0)
         return norm(sub(w, mul(u, dot(w, u))))
-    i2 = max(range(len(pts)), key=lambda i: off_line(pts[i]))
+    i2 = pick(cand, lambda i: off_line(pts[i]))
     if off_line(pts[i2]) <= eps_d:
         raise ValueError("points are collinear")
     nrm = unit(cross(sub(pts[i1], p0), sub(pts[i2], p0)))
-    i3 = max(range(len(pts)), key=lambda i: abs(dot(nrm, sub(pts[i], p0))))
+    i3 = pick(cand, lambda i: abs(dot(nrm, sub(pts[i], p0))))
     if abs(dot(nrm, sub(pts[i3], p0))) <= eps_d:
         raise ValueError("points are coplanar")
 
     verts: list[Vec3] = [pts[i0], pts[i1], pts[i2], pts[i3]]
     base = [i0, i1, i2, i3]
+    vidx: list[int] = list(base)
     if dot(nrm, sub(pts[i3], p0)) > 0.0:          # 第四点在 (0,1,2) 的正侧 ⇒ (0,2,1) 朝外
         tri0 = [(0, 2, 1), (0, 1, 3), (1, 2, 3), (2, 0, 3)]
     else:
@@ -937,30 +1090,58 @@ def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
         n, g = planes[fid]
         return dot(n, sub(p, g))
 
-    for f in tri0:
-        add_face(f)
-    for i, p in enumerate(pts):
-        if i in base:
-            continue
+    def above(fid: int, p: Vec3) -> int:
+        f = faces[fid]
+        return orient3d(verts[f[0]], verts[f[1]], verts[f[2]], p)
+
+    pending: set[int] = set()                         # 暂判"在包上/内"的点：不加入，但最后复查
+
+    def assign(i: int, fids) -> None:
+        if i in skip:
+            return
         best, bd = None, eps_d
-        for fid in faces:
-            d = dist(fid, p)
+        for fid in fids:
+            d = dist(fid, pts[i])
             if d > bd:
                 best, bd = fid, d
         if best is not None:
             outside[best].append(i)
+        else:
+            pending.add(i)
+
+    for f in tri0:
+        add_face(f)
+    for i in range(len(pts)):
+        if i not in base:
+            assign(i, list(faces))
 
     guard = 0
+    in_hull = set(base)
+    def farthest() -> tuple[int, int] | None:
+        """全局最远的外点 (面, 点)；并列按离质心最远裁决（见函数文档）。"""
+        ds = [(dist(fid, pts[i]), fid, i) for fid, lst in outside.items() for i in lst]
+        if not ds:
+            return None
+        top = max(d for d, _, _ in ds)
+        tied = [(fid, i) for d, fid, i in ds if d >= top - eps_d]
+        return max(tied, key=lambda t: dot(sub(pts[t[1]], cen), sub(pts[t[1]], cen)))
+
     while True:
-        fid0 = next((fid for fid in faces if outside[fid]), None)
-        if fid0 is None:
-            break
+        pick = farthest()
+        if pick is None:
+            recheck = [i for i in pending if i not in in_hull]
+            pending.clear()
+            for i in recheck:
+                assign(i, list(faces))
+            pick = farthest()
+            if pick is None:
+                break
         guard += 1
         if guard > 4 * len(pts) + 16:
             raise HullNumericalFailure("convex_hull_3d: did not converge (numerical failure)")
-        ip = max(outside[fid0], key=lambda i: dist(fid0, pts[i]))
+        fid0, ip = pick
         p = pts[ip]
-        # BFS 可见面（连通）
+        # BFS 可见面（连通）：精确谓词的闭判据 orient3d ≥ 0（见函数文档）。
         visible = {fid0}
         stack = [fid0]
         while stack:
@@ -968,7 +1149,7 @@ def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
             f = faces[fid]
             for i in range(3):
                 nb = owner[(f[(i + 1) % 3], f[i])]
-                if nb not in visible and dist(nb, p) > eps_d:
+                if nb not in visible and above(nb, p) >= 0:
                     visible.add(nb)
                     stack.append(nb)
         horizon = []
@@ -978,6 +1159,9 @@ def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
                 a, b = f[i], f[(i + 1) % 3]
                 if owner[(b, a)] not in visible:
                     horizon.append((a, b))
+        starts = [a for a, _ in horizon]
+        if len(set(starts)) != len(starts):
+            raise HullNumericalFailure("convex_hull_3d: visible region is not a disk (numerical failure)")
         orphans: list[int] = []
         for fid in visible:
             orphans.extend(outside.pop(fid))
@@ -988,31 +1172,24 @@ def _quickhull(points: list[Vec3], tol: float) -> Polyhedron:
                 if owner.get(e) == fid:
                     del owner[e]
         verts.append(p)
+        vidx.append(ip)
+        in_hull.add(ip)
+        pending.discard(ip)
         vp = len(verts) - 1
         new = [add_face((a, b, vp)) for a, b in horizon]
         for i in orphans:
-            if i == ip:
-                continue
-            best, bd = None, eps_d
-            for fid in new:
-                d = dist(fid, pts[i])
-                if d > bd:
-                    best, bd = fid, d
-            if best is not None:
-                outside[best].append(i)
+            if i != ip:
+                assign(i, new)            # 不在新面外侧的孤儿进待查池，最后对全部面复查
 
-    # 自检：流形闭合 + 每个输入点在每个面的 eps_d 内侧（容许 4 倍：法向本身的舍入）
+    # 流形闭合自检；"每个输入点在每个面内侧"的自检在 _quickhull 里、细条面兜底之后做
     for (a, b) in owner:
         if (b, a) not in owner:
             raise HullNumericalFailure("convex_hull_3d: open surface (numerical failure)")
-    for fid in faces:
-        if max(dist(fid, q) for q in pts) > 4.0 * eps_d + noise_floor(coord_scale(lo, hi)):
-            raise HullNumericalFailure("convex_hull_3d: result is not convex within tolerance "
-                                       "(numerical failure)")
     flist = list(faces.values())
     used = sorted({i for f in flist for i in f})
     remap = {old: new_ for new_, old in enumerate(used)}
-    return Polyhedron([verts[i] for i in used], [tuple(remap[i] for i in f) for f in flist])
+    return (Polyhedron([verts[i] for i in used], [tuple(remap[i] for i in f) for f in flist]),
+            [vidx[i] for i in used], eps_d)
 
 
 def merge_coplanar(P: "Polyhedron", tol: float = 1e-9) -> "Polyhedron":
@@ -1034,31 +1211,31 @@ def merge_coplanar(P: "Polyhedron", tol: float = 1e-9) -> "Polyhedron":
     （洞贴着外边界的 pinch）或多于一个环（面上有洞），该区域不是简单多边形、Polyhedron 表示
     不了，**明确抛 ValueError**；走环有步数上界，任何输入都不会挂死。
 
-    共面判据（2026-09-24 G6 minor 8，纪律 F）：法向差 < ang = max(tol, c·eps·C/ℓ)（单位向量，
-    地板吸收远坐标下由坐标差算出的法向噪声）；平面偏移**相对首顶点**量取 d = n·(v − v_0)，
-    差 < ang·L + c·eps·C。此前用 d = n·v 与绝对 1e-9：d 的舍入 ∝ |v|，旋转过的方块放到 1e4 以外
-    就把同一平面的两个三角留成两个面（12 而非 6）。
+    共面判据（2026-09-24 G6 minor 8，纪律 F）：法向差 < ang（单位向量）；平面偏移**相对首顶点**量取
+    d = n·(v − v_0)，差 < ang·L + c·eps·C。ang = max(tol, 两个面各自的法向噪声之和)（M0.3 改为逐面：M0.2 用
+    整体最短棱 c·eps·C/ℓ_min，一条极短的棱让真实的缓棱脊两侧被并成一个面）。此前用 d = n·v 与绝对 1e-9：
+    d 的舍入 ∝ |v|，旋转过的方块放到 1e4 以外就把同一平面的两个三角留成两个面（12 而非 6）。
     """
-    C, Ldiag, ell = P.metrics()
-    ang = max(tol, noise_floor(C) / ell)
-    off_tol = ang * Ldiag + noise_floor(C)
+    C, Ldiag, _ = P.metrics()
     o = P.verts[0]
-    groups: list[tuple[Vec3, float, list[int]]] = []
+    groups: list[tuple[Vec3, float, float, list[int]]] = []
     for fi in range(len(P.faces)):
         n = P.face_normal(fi)
         d = dot(n, sub(P.verts[P.faces[fi][0]], o))
+        fn = P.face_noise(fi)
         hit = None
-        for gi, (gn, gd, _) in enumerate(groups):
-            if norm(sub(gn, n)) < ang and abs(gd - d) < off_tol:
+        for gi, (gn, gd, gfn, _) in enumerate(groups):
+            ang = max(tol, fn + gfn)
+            if norm(sub(gn, n)) < ang and abs(gd - d) < ang * Ldiag + noise_floor(C):
                 hit = gi
                 break
         if hit is None:
-            groups.append((n, d, [fi]))
+            groups.append((n, d, fn, [fi]))
         else:
-            groups[hit][2].append(fi)
+            groups[hit][3].append(fi)
 
     faces: list[Face] = []
-    for _, _, fis in groups:
+    for _, _, _, fis in groups:
         for comp in _edge_connected_components(P, fis):
             if len(comp) == 1:
                 faces.append(P.faces[comp[0]])

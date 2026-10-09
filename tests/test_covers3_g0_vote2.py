@@ -71,9 +71,9 @@ def test_vote2_has_teeth_every_single_dropped_facet_is_caught(monkeypatch):
 def test_vote2_has_teeth_a_spurious_label_is_caught(monkeypatch):
     """多报也要红：往严格集合里塞一个不是 facet 的标签（一个非支撑的 VF）。
 
-    VF 的法向是 B 的面法向，而一般位置下每个 B 面法向都是某个严格 facet 的法向——所以这个注入
-    **只能**走到 duplicate 分支（G6 minor 17：原断言写"local_only 或 duplicate"，local_only 从未被测到）。
-    local_only 分支的牙见下面的 test_vote2_has_teeth_a_non_facet_ee_is_reported_local_only。"""
+    M0.3 起票二按**组合**配对（标签的顶点集 ⊆ 凸包 facet 的支撑集），不按法向夹角：非支撑的 VF 的顶点不在
+    该 facet 的 A 侧支撑集里，报 local_only（旧版按法向配对只能报 duplicate——它的法向确实是某个 facet 的法向）。
+    duplicate 分支的牙见 test_vote2_two_labels_on_one_plane_are_reported_duplicate。"""
     A, B = _random_pair(0)
     full = local_facets3(A, B, 1e-12)
     used = {(lab[1][1], lab[2][1]) for lab in full if lab[0] == "VF"}
@@ -82,7 +82,19 @@ def test_vote2_has_teeth_a_spurious_label_is_caught(monkeypatch):
     monkeypatch.setattr(g03, "local_facets3", lambda a, b, t: set(full) | {bogus})
     rep = g0_convex3(A, B, samples=0, seed=0)
     assert not rep.passed
-    assert [e[0] for e in rep.facet_symmetric_diff] == ["duplicate"], rep.facet_symmetric_diff
+    assert rep.facet_symmetric_diff == [("local_only", bogus)], rep.facet_symmetric_diff
+
+
+def test_vote2_two_labels_on_one_plane_are_reported_duplicate():
+    """duplicate 分支：三角化的方块（凸包输出）对四面体——同一个平面被拆成两个三角，一个顶点对它给出两个 VF
+    标签，而凸包侧只有一个 facet（支撑集 = 整个面）。第二个标签报 duplicate。"""
+    from eab.kernel3d.geom3 import Polyhedron
+    tri_box = convex_hull_3d(box(half=(1.0, 1.0, 1.0)).verts)
+    assert len(tri_box.faces) == 12
+    t = tetra((3.0, 0.2, 0.1), (4.0, 0.3, 0.2), (3.2, 1.0, 0.4), (3.3, 0.1, 1.0))
+    rep = g0_convex3(t, tri_box, samples=0)
+    kinds = [e[0] for e in rep.facet_symmetric_diff]
+    assert kinds and set(kinds) == {"duplicate"}, rep.facet_symmetric_diff
 
 
 def test_vote2_accounts_for_degenerate_facets_tetra_box():
@@ -143,9 +155,9 @@ def test_vote2_has_teeth_a_non_facet_ee_is_reported_local_only(monkeypatch, seed
 
 
 @pytest.mark.parametrize("seed", range(6))
-def test_vote2_non_supporting_fv_is_reported_duplicate(monkeypatch, seed):
-    """非支撑的 FV（A 的面配错了 B 的顶点）：法向 −n_A 本身是一个严格 facet 的法向，故只能走 duplicate。
-    （VF/FV 标签的法向由面决定，永远落在某个 facet 上；能走 local_only 的只有 EE——上一条测的就是它。）"""
+def test_vote2_non_supporting_fv_is_reported_local_only(monkeypatch, seed):
+    """非支撑的 FV（A 的面配错了 B 的顶点）：法向 −n_A 是某个严格 facet 的法向，但配错的 B 顶点不在该 facet 的
+    B 侧支撑集里——组合配对报 local_only（旧版按法向配对报 duplicate）。"""
     A, B = _random_pair(seed)
     full = local_facets3(A, B, 1e-12)
     fv = sorted(lab for lab in full if lab[0] == "FV")[0]
@@ -153,7 +165,7 @@ def test_vote2_non_supporting_fv_is_reported_duplicate(monkeypatch, seed):
     monkeypatch.setattr(g03, "local_facets3", lambda a, b, t: set(full) | {bogus})
     rep = g0_convex3(A, B, samples=0, seed=seed)
     assert not rep.passed
-    assert [e[0] for e in rep.facet_symmetric_diff] == ["duplicate"], rep.facet_symmetric_diff
+    assert rep.facet_symmetric_diff == [("local_only", bogus)], rep.facet_symmetric_diff
 
 
 # ---------------------------------------------------------------- G6 minor 9：G0 门自身的尺度格（纪律 B）

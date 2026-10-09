@@ -112,20 +112,24 @@ def _cover_escape_z(cover) -> tuple[float, float] | None:
     return -cover.gap / nz, nz
 
 
-def _cover_at(Az: Polyhedron, B: Polyhedron, label: tuple, tol: float):
+def _cover_at(Az: Polyhedron, B: Polyhedron, label: tuple, tol: float, extent_tol: float):
     """同一对特征（面盖）在 A 抬升后的位形 Az 上重新求盖。有效性只看法向与法锥，与平移无关。"""
     kind, af, bf = label
     if kind == "VF":
-        return vf_cover(Az, af[1], B, bf[1], tol)
+        return vf_cover(Az, af[1], B, bf[1], tol, extent_tol)
     if kind == "FV":
-        return fv_cover(Az, af[1], B, bf[1], tol)
+        return fv_cover(Az, af[1], B, bf[1], tol, extent_tol)
     if kind == "EE":
-        return ee_cover(Az, (af[1], af[2]), B, (bf[1], bf[2]), tol)
+        return ee_cover(Az, (af[1], af[2]), B, (bf[1], bf[2]), tol, extent_tol)
     return None
 
 
-def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float) -> tuple[list[tuple], float]:
-    """完备候选集 [(z, 标签, n_z, 枚举序号)]（z 升序）与法向间隙的舍入地板 r。见 `escape_candidates`。"""
+def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_tol: float
+                ) -> tuple[list[tuple], float]:
+    """完备候选集 [(z, 标签, n_z, 枚举序号)]（z 升序）与法向间隙的舍入地板 r。见 `escape_candidates`。
+    extent_tol 是谓词分辨率 geom_tol_eff（长度）：z* 处接触点落在面内 / 段内的边界带与谓词同一把尺——谓词分不开
+    的折点两侧，另一支的接触点只越出它的面 ~|Δδ|，照样是候选（并列集因此报出两支，G6 minor[11]）。M0.2 靠把角度
+    tol = 1e-9 当绝对长度用碰巧给出了这条带（单位缩放下不对），M0.3 把两种角色拆开。"""
     At = A.translated(offset)
     r = rounding_floor(At, B)
     raw: list[tuple] = []
@@ -146,14 +150,14 @@ def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float) -> tuple
             continue
         if z_prev is None or z - z_prev > r:
             z_prev, Az = z, At.translated((0.0, 0.0, z))
-        c = _cover_at(Az, B, lab, tol)
+        c = _cover_at(Az, B, lab, tol, extent_tol)
         if c is not None and c.in_extent:
             out.append((z, lab, nz, idx))
     return out, r
 
 
-def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float = 1e-9
-                      ) -> list[tuple[float, tuple]]:
+def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float = 1e-9,
+                      geom_tol: float | None = None) -> list[tuple[float, tuple]]:
     """盖给出的**完备候选高度集**：每个法向朝上的盖解一个 gap(z)=0，升序返回 (z, 标签)。
 
     in_extent 在**各自的 z* 处**判，不在 z=0 处判：
@@ -170,7 +174,8 @@ def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float 
     法向间隙在舍入地板（64·eps·C）以内的负高度记为 0（旧：绝对 −1e-12，工程坐标上会把相触的盖丢掉）。
     门：tests/test_interlock_escape.py。
     """
-    return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol)[0]]
+    gtol = effective_geom_tol(A.translated(offset), B, geom_tol)
+    return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
 
 
 def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
@@ -193,7 +198,7 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     """
     At = A.translated(offset)
     gtol = effective_geom_tol(At, B, geom_tol)
-    cands, r = _candidates(A, B, offset, tol)
+    cands, r = _candidates(A, B, offset, tol, gtol)
     if polyhedra_overlap(At, B, gtol) != 1:
         return EscapeSolution(0.0, None, len(cands))
     z_prev, penetrating = None, True
