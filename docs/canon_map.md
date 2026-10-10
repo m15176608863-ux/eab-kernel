@@ -22,7 +22,7 @@
    在 A 沿 x 平移超过 3 时丢一个标签，全套照绿"——那是 68c311b 之前的状态，在现 HEAD 上同一变异让 2(i) 门与不变性门共 106 条红。
    2026-10-10 再订正：上一次订正把状态说低了。）
 2. **命题 4 的"一般位置"前提，代码的处理方式是"不另起退化类型"**：平行贴面、棱平行于面、平行棱-棱都用**非严格**的普通盖来表达，凸成员谓词改用 E 的全部支撑半空间（不再依赖一般位置）。成员、距离、票二、票三在退化输入上都有门。**没做的是把一个退化族收成一个盖**：三维的 `FF` / `FE` / `EEP`（`Cover3.kind` 注释）与 `contact_record.CoverType` 里的 `FF` / `FE` / `EE_PAR` 有名无实，全仓没有产出者；二维 `FF` 只在凸全局构造 `convex_entrance_block` 里出现（`covers.py:419`），局部枚举不产出。
-3. **首入（命题 7）**：二维只有一个静态函数，只对"B 凸或已侵入"成立，凹块分离时选错边（本表复核时实测复现）；三维自 2026-10-10 起有第一版（`entrance3.py:204 first_entrance3`，**按运动方向定义**、有门、未经独立重审，M2）；二维仍是静态简化版。
+3. **首入（命题 7）**：二维只有一个静态函数，只对"B 凸或已侵入"成立，凹块分离时选错边（本表复核时实测复现）；三维自 2026-10-10 起有第一版（`entrance3.py:204 first_entrance3`，**按运动方向定义**、有门、未经独立重审，M2）；二维按运动定义的版本同日落地（`kernel2d/entrance.py:80 first_entrance`：凸对用 E 的 H 表示闭式求进入时刻、凹对用局部盖 + 谓词裁决、已侵入取最短出口；bb52 真几何上 53 条 legacy 顶点-边接触逐条对账）。旧的静态简化版 `first_entrance_for_vertex` 保留作参考。
 4. **穿透深度（命题 3(ii)）、碰撞锥（命题 8）没有实现。**
 5. **`margin.py` 的"定理一到四"是本仓库自己编的号**，正本里没有这四个编号。但内容上一、二、四在正本都有出处（03 §1.1、01 命题 3(i)、03 §1.3 与 01 命题 6）；定理三的后半句（KKT 乘子 = 虚拟接触力）是 03 §1.2 的主张，代码没实现。真正属于本仓库的只有 Lipschitz 常数 2/δ 这个定量推论，而代码里给的一句理由不够，推导补在第三节。这一条与审查盲区 4（GAP3）"在 03 里没有对应""自创的定理"的说法相反，第三节开头是对审查的订正。
 6. **"局部盖不构成凹块的全局判据"这条实测结论，和正本对石根华机器"一般凹 + 可证完备"的定位有张力**：局部盖对凹块只做到"∂E 被盖住"（有门），做不到"盖就是 ∂E"——本表复核时构造了一个严格有效、间隙为 0 的盖恰好落在 int E 里的例子。缺的是 00 §3.3 提到、正本自己标着"未核实"的那一步：**盖之间的裁剪**。01 开头说"凹块情形单独说明"，全文其实没有这段说明。
@@ -57,7 +57,7 @@
 | **6(i)** 外侧光滑 | E 外距离函数可微，梯度 = (x − P_E(x))/d，局部 C^{1,1} | E 闭凸 | `margin.py:311 inflated_normal`（凸，显式 E）；冻结路径对平移 x 的导数（`frozen.py:103 frozen_normal`、`:131 frozen_gap`） | `test_margin.py::test_inflated_normal_is_lipschitz`、牙 `::test_lipschitz_gate_has_teeth`（随机/常向量/径向/局部反号四种错误实现全抓）、`::test_lipschitz_gate_global_pairs_have_their_own_teeth`、`test_frozen_lowdim.py::test_low_dim_frozen_gradient_is_the_inflated_normal_of_the_explicit_entrance_block` | 凸：**已实现+有门** |
 | **6(ii)** 内侧分片线性 | 侵入深度是有限个仿射函数的 min，在脊集上梯度跳 | a₀ ∈ int E，E 凸 | 无（依赖 3(ii)）。**类比**：L5 逃逸高度 h(δ) 也是"有限个盖的零间隙高度里取一个"的分片线性函数，拐点在并列切换处；`tools/tia_sensitivity.py:93 sensitivity_at` 在那里标 `differentiable=False`。方向固定为竖直，不是侵入深度，只是同类结构 | 类比部分：`test_interlock_sensitivity.py::test_phase_derivative_at_phase_zero_is_flagged_on_every_default_row`、`::test_differentiability_flag_agrees_with_one_sided_quotients` | **未实现**（正本意义下）；同类拐点在 L5 已被检测 |
 | **6(iii)** 边界集值 | ∂E 上法向在 facet 内唯一，在棱、顶点处集值 | E 凸 | 盖带维数标签（`VV`/`VV3` 零维、`VE3`/`EV3` 一维）；重合时法向给 `None`（`covers.py:168` vv_cover、`covers3.py:500`） | `test_margin.py::test_inflation_turns_a_set_valued_normal_into_a_single_valued_one`（同一 E 顶点、两个法向；膨胀后单值且 \|n₁−n₂\| = \|x₁−x₂\|/δ 精确） | 凸：**已实现+有门** |
-| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `covers.py:254 first_entrance_for_vertex`：单个顶点对块 B，边内有效 VE 盖里取最大间隙，没有就退到活跃 VV。静态函数，不接收运动方向；库内无调用者（只有测试调用）。三维：`entrance3.py:204 first_entrance3`（沿 x0 + t·d 的首入：facet 型盖给候选、精确谓词裁决、集值点报并列集）+ `shortest_exit3`（已侵入取最短出口）+ `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版 2026-10-10） | 二维只有 `test_kernel2d_g0.py::test_first_entrance_picks_shallowest_penetration`（凸 B、已侵入、一个例子）；三维 `test_entrance3.py`（闭式、随机凸对对不经盖的 oracle、刚体运动、漏候选必抛错）、`test_entrance3_concave.py`（台阶 / 微台阶 / V 槽 / 倒方台）、`test_entrance3_g2.py`（三份 bdda3d 夹具上首入 FF 的成员逐条还原 legacy 的 4 个 np 入口） | **部分（二维）/ 三维第一版有门·未经 G6**。二维对"凹 B + 分离"**错**（docstring 自认；本表复现见第四节 (b)） |
+| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `covers.py:254 first_entrance_for_vertex`：单个顶点对块 B，边内有效 VE 盖里取最大间隙，没有就退到活跃 VV。静态函数，不接收运动方向；库内无调用者（只有测试调用）。三维：`entrance3.py:204 first_entrance3`（沿 x0 + t·d 的首入：facet 型盖给候选、精确谓词裁决、集值点报并列集）+ `shortest_exit3`（已侵入取最短出口）+ `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版 2026-10-10） | 二维：`entrance.py:80 first_entrance`（按运动方向；凸对闭式、凹对局部盖 + 谓词裁决）+ `shortest_exit`，门 `test_kernel2d_entrance.py`（闭式、凹台阶对不经盖的 oracle、30 对随机凸对、刚体运动到 1e6、bb52 53 条 legacy v-e 对账）；旧静态版只有 `test_kernel2d_g0.py::test_first_entrance_picks_shallowest_penetration`；三维 `test_entrance3.py`（闭式、随机凸对对不经盖的 oracle、刚体运动、漏候选必抛错）、`test_entrance3_concave.py`（台阶 / 微台阶 / V 槽 / 倒方台）、`test_entrance3_g2.py`（三份 bdda3d 夹具上首入 FF 的成员逐条还原 legacy 的 4 个 np 入口） | **二维、三维第一版都有门·未经 G6**（凹块首入靠谓词裁决、无完备性保证，局部规则到不了的位形抛错不静默）。二维对"凹 B + 分离"**错**（docstring 自认；本表复现见第四节 (b)） |
 | **8** 碰撞锥 / 速度障碍 | CC = 从 a₀ 看 E 的正锥；VO 是它平移到 v_B；推论：盖分解经中心投影给碰撞锥一个"首撞模态"分划 | 匀速相对运动 | 无。沿射线找首个 ∂E 点的计算只以两种特例存在：二维 `g0.py:217 brute_ray_exit`（oracle，不带盖标签）；三维 `interlock.py:159 escape_candidates` / `:181 escape_height_covers`（方向固定 +z，带盖标签） | — | **未实现** |
 
 ---
@@ -73,7 +73,7 @@
 | **§1.3 C^{1,1} 正则化** | 球膨胀后边界 C^{1,1}、法向处处唯一，接触不确定性消失 | = `margin.py` 定理四；同 01 命题 6(i)(iii) 两行 | 同 01 命题 6(i)、6(iii) 两行 | 凸：**已实现+有门**。"Moreau–Yosida 式"的说法没有门，只是表述 |
 | **K1** 配对约化 | 两形状的相互作用 → 一点相对 E 的位置 | 成员谓词、盖枚举 | 同命题 1 | 凸：已实现+有门；凹：只有盖枚举 |
 | **K2** 边界语义化 | ∂E 分成有限个带模态标签的盖，每盖给点、法向、进入量 | `Cover`/`Cover3`（标签、`point_a`/`point_b`、`normal`、`gap`） | 同命题 4、5 | **已实现+有门**（凸完备；凹只到"∂E 被覆盖"） |
-| **K3** 首入裁决 | 集值点上"谁先被进入"做确定性选择 | 同命题 7 | 同命题 7（三维：并列集按枚举序裁决、如实报 `tied_labels`） | **部分（二维）/ 三维第一版有门·未经 G6** |
+| **K3** 首入裁决 | 集值点上"谁先被进入"做确定性选择 | 同命题 7 | 同命题 7（二维、三维：并列集按枚举序裁决、如实报 `tied_labels`） | **二维、三维第一版有门·未经 G6** |
 | **K4** 互补结构 | 约束激活 ⟺ 乘子非零 | L3 极限分析：下限 LP（静力容许）+ 对偶机构，`limit.py:401 limit_load`、`:667 check_duality`（强对偶含黏聚耗散、互补残差） | `test_limit.py`、`test_limit_duality.py`、`test_end_to_end_cb2.py`（`b26d7f5`，`8376ec2` 返修；均未经独立复核）、`test_lp_fail_loud.py`（"要么答对、要么抛 RuntimeError、绝不静默给错"；`8376ec2`；G6 第二轮 lp-limit 镜头与第三轮 claims-vs-code 镜头读过；HEAD 上 A.9 的 32 格全部答出、0 格抛错，见 A.9 的 2026-10-10 复跑） | **部分**：只有极限状态的互补，没有开闭迭代/活动集求解 |
 | **K5** 有限覆盖 + 不等式代数 | 连续几何 → 有限可枚举组合代数 | 有限枚举：是（`enumerate_covers`/`enumerate_covers3` 是有限对的循环）。"角的代数"：无 | 同命题 4 | **部分** |
 | **砖一** 几何引导活动集 | 盖胞腔结构作为活动集切换的先验 | G4 实验，03 已写入"静态版关闭" | `test_g4_multistep.py` | 已有否定性结果（不是实现） |
@@ -163,7 +163,7 @@
 ## 五、"正本有、代码无"
 
 1. **命题 3(ii) 穿透深度**，以及依赖它的 **6(ii)** 内侧分片线性结构。裕度层贯入时只给哨兵，不给深度。
-2. **命题 7 首入**：三维 M2 第一版（按运动方向定义，2026-10-10）待独立重审；二维凹块分离情形与按运动定义的二维版未做；EEP 退化族没有自己的合并规则（由 VF/FV 边界态表达）。
+2. **命题 7 首入**：二维与三维的 M2 第一版（按运动方向定义，2026-10-10）待独立重审；二维旧静态版对凹块分离情形的错已被新版绕开（新版凹对靠谓词裁决）；EEP 退化族没有自己的合并规则（由 VF/FV 边界态表达）。
 3. **命题 8 碰撞锥 / 速度障碍 / 截断 VO**，以及"盖分解经中心投影成为碰撞锥分划"的推论。
 4. **命题 4 退化族作为一个盖**：三维 `FF`/`FE`/`EEP`（及 `CoverType` 的 `EE_PAR`）有类型名、无产出者；二维 `FF` 只由凸全局构造产出，局部枚举不产出（M2）。
 5. **凹块的全局 E、成员判据、盖裁剪**（01 引言承诺的"凹块情形单独说明"、00 §3.3 的裁剪；M3）。

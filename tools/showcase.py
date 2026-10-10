@@ -5,7 +5,8 @@
 四幅图：(1) 薄拱的推力线与四铰机构（M1 多体极限分析）；(2) 承载力随摩擦的曲线，对照铰机构上限与叠放块闭式；
 (3) bb52 真实 DDA 几何上的盖枚举与一对凸块的入口块 E(A,B)；(4) 三维裕度接触（棱脊 + 细针，原点与 1e6 m 处）；
 (5) 互锁块的逃逸高度剖面（TIA）；(6) 三维首入（M2）：倾斜方块沿运动方向落到板上的首入点、接触法向与并列的局部盖，
-以及凹台阶上的首入。只读夹具与库，不改任何东西。
+以及凹台阶上的首入；(7) 二维首入（M2 二维版）：凸对走 E 的闭式（射线打到 ∂E）、凹台阶走局部盖 + 谓词，
+以及 bb52 真几何上 legacy 顶点-边接触的逐条对账（拉开再沿边法向落回，首入就是 legacy 那条）。只读夹具与库，不改任何东西。
 """
 
 from __future__ import annotations
@@ -24,8 +25,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "tools"))
 
-from eab.kernel2d.covers import convex_entrance_block, enumerate_covers      # noqa: E402
-from eab.kernel2d.geom import translate                                     # noqa: E402
+from eab.kernel2d.covers import convex_entrance_block, enumerate_covers, ve_cover   # noqa: E402
+from eab.kernel2d.entrance import first_entrance as first_entrance2, first_entrance_brute as first_entrance_brute2  # noqa: E402
+from eab.kernel2d.geom import outward_normal, polygons_overlap, translate    # noqa: E402
 from eab.kernel3d.entrance3 import first_entrance3, first_entrance_brute          # noqa: E402
 from eab.kernel3d.geom3 import Polyhedron, box, brute_feature_distance, convex_hull_3d  # noqa: E402
 from eab.limit import LimitContact, wrench                                 # noqa: E402
@@ -430,6 +432,159 @@ def fig_entrance3():
     plt.close(fig)
 
 
+# ---------------------------------------------------------------- 7. 二维首入（M2 二维版）
+
+def _rot(P, th):
+    c, s_ = math.cos(th), math.sin(th)
+    return [(c * x - s_ * y, s_ * x + c * y) for x, y in P]
+
+
+def _bb52_legacy_reconcile():
+    """与 tests/test_kernel2d_entrance.py 的 bb52 门同一口径：每条 legacy 顶点-边接触（mtype 0）沿该边内法向逼近，
+    首入（或最短出口）的并列集须含它；返回逐条记录（含按哪一条款对上）。"""
+    import bb52_g0
+    blocks, alias = bb52_g0.load_blocks(step=1)
+    v2b = {v: b for b, dct in blocks.items() for v in dct["vidx"]}
+    loc = {v: i for b, dct in blocks.items() for i, v in enumerate(dct["vidx"])}
+    FIT, CONE = 1e-6, math.sin(math.radians(3.0))
+    recs = []
+    for mtype, p1, p2, p3, _, _ in bb52_g0.legacy_contacts(step=1):
+        if mtype != 0:
+            continue
+        p1, p2, p3 = (alias.get(v, v) for v in (p1, p2, p3))
+        ba, bb = v2b[p1], v2b[p2]
+        A, B = blocks[ba]["poly"], blocks[bb]["poly"]
+        ia, i2, i3 = loc[p1], loc[p2], loc[p3]
+        nb = len(B)
+        jb = i2 if (i2 + 1) % nb == i3 else i3
+        c = ve_cover(A, ia, B, jb, FIT, cone_tol=CONE)
+        if c is None or abs(c.gap) > FIT:
+            recs.append(dict(a=ba, b=bb, ia=ia, jb=jb, status="not_a_cover"))
+            continue
+        nB = outward_normal(B, jb)
+        d = (-nB[0], -nB[1])
+        if polygons_overlap(A, B, FIT) == 1:
+            recs.append(dict(a=ba, b=bb, ia=ia, jb=jb, status="penetrating_skipped"))
+            continue
+        e = first_entrance2(A, B, (0.0, 0.0), d, tol=FIT, t_max=1.0)
+        labels = e.tied_labels
+        how = None
+        if ("VE", ia, jb) in labels:
+            how = "same_label"
+        elif any(lab[0] == "VE" and lab[1] == ia for lab in labels):
+            how = "same_vertex_other_branch"
+        elif any(p is not None and math.dist(p, A[ia]) <= FIT for p in (e.point_a, e.point_b)):
+            how = "same_point"
+        elif e.normal is not None and abs(e.normal[0] * nB[1] - e.normal[1] * nB[0]) <= 1e-6 and e.t <= FIT:
+            how = "same_plane"
+        elif e.kind == "entrance" and abs(e.t - c.gap) <= FIT:
+            how = "same_time"
+        recs.append(dict(a=ba, b=bb, ia=ia, jb=jb, status="matched" if how else "MISS", how=how, kind=e.kind, t=e.t,
+                         label=e.label, nB=nB))
+    return blocks, recs
+
+
+def fig_entrance2():
+    def draw(ax, A, B, x0, d, e, title, E=None, a0=None, tmax_ray=None):
+        ax.add_patch(MplPolygon(B, closed=True, fc="#e9e4da", ec=INK, lw=0.9))
+        A0 = translate(A, x0)
+        ax.add_patch(MplPolygon(A0, closed=True, fc="#f3f0ea", ec=GREY, lw=0.7, ls="--"))
+        Ae = translate(A, e.x)
+        ax.add_patch(MplPolygon(Ae, closed=True, fc="#d3e3ec", ec=ACC2, lw=1.1, alpha=0.9))
+        if E is not None:
+            ax.add_patch(MplPolygon(E, closed=True, fc="none", ec=ACC, lw=1.3, ls="-", alpha=0.8))
+        ref = a0 if a0 is not None else tuple(sum(p[i] for p in A) / len(A) for i in range(2))
+        r0 = (ref[0] + x0[0], ref[1] + x0[1])
+        r1 = (ref[0] + e.x[0], ref[1] + e.x[1])
+        ax.annotate("", xy=r1, xytext=r0, arrowprops=dict(arrowstyle="->", color=GREY, lw=1.0, ls="--"))
+        if tmax_ray is not None:
+            r2 = (r0[0] + tmax_ray * d[0], r0[1] + tmax_ray * d[1])
+            ax.plot([r1[0], r2[0]], [r1[1], r2[1]], ":", color=GREY, lw=0.8)
+        ax.plot([r0[0]], [r0[1]], "o", color=ACC2, ms=4)
+        p, n = e.point_b, e.normal
+        ax.plot([p[0]], [p[1]], "o", color=ACC, ms=5.5, zorder=5)
+        L = 0.28 * max(abs(d[0]), abs(d[1]), 1.0)
+        ax.annotate("", xy=(p[0] + L * n[0], p[1] + L * n[1]), xytext=p,
+                    arrowprops=dict(arrowstyle="-|>", color=ACC, lw=1.8), zorder=6)
+        ax.set_aspect("equal")
+        ax.set_title(title, fontsize=8.6)
+        ax.axis("off")
+
+    SQ = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    SLAB = [(-1.5, -0.4), (1.5, -0.4), (1.5, 0.0), (-1.5, 0.0)]           # 薄一点、短一点，让整个 E 露出来
+    STEP = [(0.0, 0.0), (2.0, 0.0), (2.0, 0.5), (1.0, 0.5), (1.0, 1.0), (0.0, 1.0)]
+    # (a) 转 0.3 rad 的方块沿 (0.25, −1) 落向板：凸对 → E 的闭式；射线 a0 + t·d 打到 ∂E 的点就是首入
+    A = translate(_rot(SQ, 0.3), (-0.6, 1.3))
+    d = (0.25, -1.0)
+    e = first_entrance2(A, SLAB, (0.0, 0.0), d)
+    bt = first_entrance_brute2(A, SLAB, (0.0, 0.0), d, t_max=3.0)
+    eb = convex_entrance_block(A, SLAB, (0.0, 0.0))
+    a0 = A[0]
+    E = [(x + a0[0], y + a0[1]) for x, y in eb.vertices]
+    # (b) 凹台阶：方块从右上方沿 (−1, −0.5) 滑入，先碰竖板（局部盖 + 谓词裁决，oracle 对照）
+    Ac = translate(SQ, (1.4, 0.9))
+    dc = (-1.0, -0.5)
+    ec = first_entrance2(Ac, STEP, (0.0, 0.0), dc, t_max=3.0)
+    btc = first_entrance_brute2(Ac, STEP, (0.0, 0.0), dc, t_max=3.0, steps=600)
+    # (c) bb52：legacy 53 条顶点-边接触逐条对账；画一对（把 A 沿边外法向拉开 0.3 再落回，首入落在 legacy 那条上）
+    blocks, recs = _bb52_legacy_reconcile()
+    hist = {}
+    for r in recs:
+        k = r["status"] if r["status"] != "matched" else "matched:" + r["how"]
+        hist[k] = hist.get(k, 0) + 1
+    pick = None
+    for r in recs:
+        if r["status"] != "matched":
+            continue
+        Ab, Bb = blocks[r["a"]]["poly"], blocks[r["b"]]["poly"]
+        nB = r["nB"]
+        s = 0.3
+        x0 = (s * nB[0], s * nB[1])
+        if polygons_overlap(translate(Ab, x0), Bb, 1e-6) != -1:
+            continue
+        ep = first_entrance2(Ab, Bb, x0, (-nB[0], -nB[1]), tol=1e-6, t_max=1.0)
+        if ep.kind == "entrance" and abs(ep.t - s) <= 1e-5 and ("VE", r["ia"], r["jb"]) in ep.tied_labels:
+            pick = (r, Ab, Bb, x0, (-nB[0], -nB[1]), ep, s)
+            break
+    NUM["entrance2"] = {
+        "convex": {"t": e.t, "brute": bt, "label": list(e.label), "normal": list(e.normal), "tied": len(e.tied_labels),
+                   "E_vertices": len(eb.vertices)},
+        "step": {"t": ec.t, "brute": btc, "label": list(ec.label), "normal": list(ec.normal), "candidates": ec.n_candidates},
+        "bb52_legacy": {"n": len(recs), "hist": hist,
+                        "pulled_back_example": None if pick is None else
+                        {"A": pick[0]["a"], "B": pick[0]["b"], "ia": pick[0]["ia"], "jb": pick[0]["jb"], "pull": pick[6],
+                         "t": pick[5].t, "label": list(pick[5].label), "tied": len(pick[5].tied_labels)}},
+    }
+    fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.3), gridspec_kw={"width_ratios": [1.15, 1.0, 1.0]})
+    draw(axes[0], A, SLAB, (0.0, 0.0), d, e,
+         f"(a) 凸对：E(A,B)（红框，挂在 a0）闭式；射线打到 ∂E 的 {e.label[0]} facet\nt* = {e.t:.4f}（谓词 oracle {bt:.4f}），并列 {len(e.tied_labels)}",
+         E=E, a0=a0, tmax_ray=0.5)
+    axes[0].set_xlim(-3.0, 2.0)
+    axes[0].set_ylim(-1.9, 2.8)
+    draw(axes[1], Ac, STEP, (0.0, 0.0), dc, ec,
+         f"(b) 凹台阶：局部盖给候选、谓词裁决；先碰竖板 {ec.label[0]}\nt* = {ec.t:.4f}（oracle {btc:.4f}），候选 {ec.n_candidates} 条",
+         tmax_ray=0.4)
+    axes[1].set_xlim(-0.2, 2.8)
+    axes[1].set_ylim(-0.2, 2.2)
+    if pick is not None:
+        r, Ab, Bb, x0, dp, ep, s = pick
+        draw(axes[2], Ab, Bb, x0, dp, ep,
+             f"(c) bb52 块 {r['a']} 对块 {r['b']}：拉开 {s} 再沿边法向落回\n首入并列集（{len(ep.tied_labels)} 条）含 legacy 的 (顶点 {r['ia']}, 边 {r['jb']})，t* = {ep.t:.4f}",
+             tmax_ray=0.15)
+        axes[2].autoscale()
+        axes[2].margins(0.12)
+    else:
+        axes[2].text(0.5, 0.5, "bb52 夹具缺失或无可画的非侵入对", ha="center", va="center", transform=axes[2].transAxes)
+        axes[2].axis("off")
+    ok = sum(v for k, v in hist.items() if k.startswith("matched"))
+    skip = hist.get("penetrating_skipped", 0)
+    fig.suptitle(f"二维首入（命题 7 的二维版）：沿运动方向第一次触及 ∂E 的点定接触点与法向；bb52 legacy 53 条顶点-边接触"
+                 f"：{ok} 条对上、{skip} 条已微量贯入不硬对、{hist.get('MISS', 0)} 条对不上", fontsize=9.2)
+    fig.tight_layout(rect=(0, 0, 1, 0.91))
+    fig.savefig(OUT / "entrance2.png")
+    plt.close(fig)
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     fig_arch()
@@ -438,6 +593,7 @@ def main() -> int:
     fig_margin3d()
     fig_tia()
     fig_entrance3()
+    fig_entrance2()
     (OUT / "numbers.json").write_text(json.dumps(NUM, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(NUM, ensure_ascii=False, indent=1))
     return 0
