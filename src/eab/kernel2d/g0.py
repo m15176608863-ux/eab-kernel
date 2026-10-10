@@ -1,8 +1,15 @@
 """G0 自证门：理论原生 oracle。
 
 E(A,B) 的成员谓词可以暴力验证——随机采样参考点平移 x，直接做多边形相交测试，与盖系统给出的
-判定比对。凸情形要求逐样本恒等（去掉 |gap| ≤ band 的边界带）；同时检验"局部法锥规则 = 全局
-Minkowski facet 结构"（命题 4/5）。这条门不依赖任何 legacy。
+判定比对；同时检验"局部法锥规则 = 全局 Minkowski facet 结构"（命题 4/5）。这条门不依赖任何 legacy。
+
+**凸情形是精确的定理检验**（2026-10-10，E2）：三票都在有理数上做、零容差、不跳过任何样本——
+  票一  成员（精确 E 的 facet 符号）== 暴力谓词（两份精确耳切逐对三角形的精确分离轴，`exact.polygons_overlap_exact`），
+        样本含随机平移与 E 的全部顶点、facet 中点（07 §五要的"边界点"）；
+  票二  局部法锥规则的严格集（精确符号）== 全局 Minkowski 的非 FF facet 集；
+  票三  E 的严格凸顶点集 == conv{b − a} 的精确凸包顶点集（差点 b − a 在 Fraction 上算，不舍入）。
+此前三票都带"分辨带"与"说不清"豁免（票一跳过带内样本、票二票三的 ambiguous 两边不计），第五轮复核指出这些豁免本身
+就是第二把尺，且边界类（恰相触）从未被探测。输入须精确凸（否则 `convex_entrance_block` 清晰报错）。
 
 凹情形没有局部成员谓词（E 非凸，facet 间隙取 max 或 min 都不成立），G0 改检验同一条定理
 "∂E ⊆ ∪ 有效盖的平移线段"的两面：分离样本上的**距离完备性**（`g0_distance_completeness`，与三维
@@ -20,7 +27,10 @@ import math
 import random
 from dataclasses import dataclass, field
 
-from .covers import ambiguous_facets, convex_entrance_block, enumerate_covers, local_facets, membership_convex
+from fractions import Fraction
+
+from .covers import ambiguous_facets, enumerate_covers, local_facets, membership_convex
+from .exact import entrance_block_exact, hull_exact_fr, polygons_overlap_exact, strict_vertices
 from .geom import (EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, cross, norm, polygons_overlap, round_floor, sub,
                    translate)
 
@@ -33,9 +43,10 @@ class G0Report:
     facet_local: int = 0
     facet_global: int = 0
     facet_symmetric_diff: list[tuple[str, int, int]] = field(default_factory=list)
-    facet_ambiguous: int = 0           # 局部规则判"容差内说不清"的盖，两边都不计（covers.ambiguous_facets）
-    hull_vertex_mismatch: int = 0      # 第三票：E 顶点集 vs conv{b−a} 顶点集（不经法向/法锥/合并）
-    hull_vertex_ambiguous: int = 0     # 第三票里折点离弦 ≤ 凸包弦距容差、两边口径下都说不清的顶点数（两边都不计）
+    facet_ambiguous: int = 0           # 局部规则判"恰在法锥边界上"的 VE / EV 数（精确 = 0，对应精确平行；只报数，不豁免）
+    hull_vertex_mismatch: int = 0      # 第三票：E 严格凸顶点集 vs conv{b−a} 精确凸包顶点集（不经法向/法锥/合并）
+    hull_vertex_ambiguous: int = 0     # 恒为 0（精确之后没有"说不清"；字段保留只为兼容）
+    boundary_probes: int = 0           # 票一里恰在 ∂E 附近的探针数（E 的顶点与 facet 中点）
 
     @property
     def passed(self) -> bool:
@@ -70,57 +81,26 @@ def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: fl
 
 def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: float | None = None,
               band: float | None = None) -> G0Report:
-    """A、B 凸 CCW。逐样本：暴力相交谓词 vs E 成员谓词；再比对局部/全局 facet 集合。
-
-    tol（长度，缺省 1e-12·L）：暴力谓词的接触带与法锥判据，也是 E 的平行边合并容差（长度）。band（长度，缺省
-    1e-9·L）：成员谓词的边界带，带内样本跳过。旧版缺省是绝对 1e-12 / 1e-9，第三票的顶点比对是 round(·, 9)——
-    旋转后坐标 1e3 处的方块对就因舍入落在不同的 1e-9 格子里报 4 个"顶点失配"（G6 纪律 F 复现）。
-    """
+    """A、B 精确凸、CCW。三票精确（见模块文档）。`tol` / `band` 不再参与任何判定（保留只为兼容调用方）。"""
     rng = random.Random(seed)
     rep = G0Report()
-    L = char_length(A, B)
-    tol = 1e-12 * L if tol is None else tol
-    band = 1e-9 * L if band is None else band
-    eb = convex_entrance_block(A, B, (0.0, 0.0), tol)
-    amb = ambiguous_facets(A, B, tol)
-    glob = {lab for lab in eb.facets if lab[0] != "FF"} - amb
-    loc = local_facets(A, B, tol)
-    rep.facet_local, rep.facet_global, rep.facet_ambiguous = len(loc), len(glob), len(amb)
+    ex = entrance_block_exact(A, B)
+    glob = {f.label for f in ex.facets if f.label[0] != "FF"}
+    loc = local_facets(A, B)
+    rep.facet_local, rep.facet_global, rep.facet_ambiguous = len(loc), len(glob), len(ambiguous_facets(A, B))
     rep.facet_symmetric_diff = sorted(loc ^ glob)
-    # 第三票（审查 r7）：标签集相等对"outward_normal 整体反号"是盲的；E 的顶点集必须等于
-    # 差点集 {b − a} 的凸包顶点集——这条检验不经过法向、法锥或合并规则。
-    # 顶点按距离配对（容差 1e-9·L + 舍入下限 × 累加步数），不按 round(·, 9) 的格子。
-    # 差点 b − a 的量级小，但带着 A、B 原坐标的舍入 ~eps·C：共线判据的下限必须按原坐标量级取。
-    hull = convex_hull([(b[0] - a[0], b[1] - a[1]) for a in A for b in B], round_floor(coord_scale(A, B)))
-    mtol = 1e-9 * L + round_floor(coord_scale(A, B)) * (len(A) + len(B))
-
-    def near(v, W):
-        return any(math.hypot(v[0] - w[0], v[1] - w[1]) <= mtol for w in W)
-    # 第四轮 regress 镜头（2026-10-10）：合法的 E 只保证**点集**相等，不保证顶点集相等——B 的短边对 A 的长边带一个真实微倾 d
-    # （d ≫ 两边方向噪声，合法地不并成 FF），折点离弦 |e_s|·d 却低于凸包的弦距容差（舍入地板）时，convex_hull 按弦距丢掉折点、
-    # E 保留它：两边口径下这个顶点都"说不清"。按弦距 ≤ 地板（加配对容差）判为 ambiguous，两边都不计（与三维 e_vertices_ambiguous
-    # 同一做法）；旧版一刀切成失配，24 格里 13 格假红，而票一、票二都干净。
-    hfl = round_floor(coord_scale(A, B))
-
-    def chord_height(W, k):
-        p, q = W[k - 1], W[(k + 1) % len(W)]
-        pq = sub(q, p)
-        return abs(cross(pq, sub(W[k], p))) / norm(pq) if norm(pq) > 0.0 else 0.0
-    e_only = [k for k, v in enumerate(eb.vertices) if not near(v, hull)]
-    h_only = [k for k, h in enumerate(hull) if not near(h, eb.vertices)]
-    amb_e = [k for k in e_only if chord_height(eb.vertices, k) <= 4.0 * hfl + mtol]
-    amb_h = [k for k in h_only if chord_height(hull, k) <= 4.0 * hfl + mtol]
-    rep.hull_vertex_ambiguous = len(amb_e) + len(amb_h)
-    rep.hull_vertex_mismatch = (len(e_only) - len(amb_e)) + (len(h_only) - len(amb_h))
-    for x in sample_translations(A, B, samples, rng):
-        cov = membership_convex(A, B, x, band, eb)
-        if cov == 0:
-            rep.band_skipped += 1
-            continue
-        brute = polygons_overlap(translate(A, x), B, tol)
-        if brute == 0:
-            rep.band_skipped += 1
-            continue
+    # 第三票：差点 b − a 精确（Fraction 相减不舍入），凸包精确（共线点不作顶点）
+    H = set(hull_exact_fr([(Fraction(b[0]) - Fraction(a[0]), Fraction(b[1]) - Fraction(a[1])) for a in A for b in B]))
+    E = {ex.vertices[k] for k in strict_vertices(ex)}
+    rep.hull_vertex_mismatch = len(E ^ H)
+    # 第一票：随机平移 + E 的顶点与 facet 中点（07 §五的"边界点"探针；舍入成浮点后落在 ∂E 两侧或恰在其上）
+    probes = sample_translations(A, B, samples, rng)
+    bnd = [(float(v[0]), float(v[1])) for v in ex.vertices]
+    bnd += [(float(f.start[0] + f.direction[0] / 2), float(f.start[1] + f.direction[1] / 2)) for f in ex.facets]
+    rep.boundary_probes = len(bnd)
+    for x in probes + bnd:
+        cov = membership_convex(A, B, x)
+        brute = polygons_overlap_exact(A, B, x)
         rep.samples += 1
         if brute != cov:
             rep.mismatches.append((x, brute, cov))

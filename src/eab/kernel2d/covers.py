@@ -12,6 +12,13 @@
 接触法向统一取"B 指向 A 的分离方向"：VE 用 n_B(j)，EV 用 −n_A(k)，VV 用 unit(a − b)。
 间隙 gap 沿该法向度量，>0 分离、<0 侵入、=0 接触。
 
+**凸路径是精确的**（2026-10-10，G6 第五轮之后，`docs/exact_predicates_plan.md` 的 E2）：`convex_entrance_block` /
+`membership_convex` / `local_facets` / `ambiguous_facets` 的全部分支判定（凸性、极角序、平行、法锥有效性、成员）都在
+`kernel2d/exact.py` 里对给定浮点坐标精确求值，只有精确平行同向的边才并成 FF；`facet_gap` 只是构造量（facet 自己那条边的
+法向）。此前的"方向可行窗 + 噪声内共线链"一套浮点带宽在五轮复核里每轮都漏（第五轮 critical：宽窗把 1e-14 的倒角边与 60°
+的边并成 FF、链法向取了别的 facet 的边，真实压入 0.15 判"分离"），已删除。
+局部单盖（`ve_cover` / `ev_cover` / `vv_cover` / `enumerate_covers`，凹块路径的候选生成器与 legacy 对账的窗口化入口）
+仍是浮点 + 容差，下面这段说的是它们：
 容差（纪律 F，M0.2）：`tol` / `seg_tol` / `window` 是长度（调用方单位，换单位随之缩放），库内抬到舍入下限
 c·eps·C；法锥判据的角容差 `cone_tol` 是无量纲的（sin 单位）——缺省（None）时取长度容差在所涉最短边上张的角
 tol/ℓ（旧版直接把长度 tol 当角度用，单位缩放 ×1e3 时角容差也跟着 ×1e3，bb52 真几何上盖集随单位而变），
@@ -21,10 +28,13 @@ tol/ℓ（旧版直接把长度 tol 当角度用，单位缩放 ×1e3 时角容�
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 from math import asin, atan2, pi
 
-from .geom import (Point, Poly, add, angle_floor, convex_hull, coord_scale, cross, dot, edge, neg, norm, outward_normal, reflect,
-                   round_floor, signed_area, sub, turn_angle, turn_floor, unit, zero_length_edges)
+from .exact import (convexity_violation, entrance_block_exact, ev_side_exact, membership_exact,
+                    polygons_overlap_exact, ve_side_exact)
+from .geom import (Point, Poly, add, angle_floor, coord_scale, cross, dot, edge, neg, norm, outward_normal,
+                   round_floor, sub, turn_angle, turn_floor, unit)
 
 
 @dataclass(slots=True)
@@ -97,35 +107,6 @@ def _project(p: Point, a: Point, b: Point) -> tuple[float, Point]:
 def _edge_len(P: Poly, k: int) -> float:
     p, q = edge(P, k)
     return norm(sub(q, p))
-
-
-def _chain_normal(P: Poly, k: int) -> tuple[Point, int]:
-    """边 k 所在"噪声内共线链"里最长那条边的外法向与下标。
-
-    相邻两边的夹角 ≤ 两边方向噪声之和（各 rfl/|e|）就算同一条直线：T 形顶点把一条边拆成两段、倒角边只有几个 ulp 长，都是这种。
-    短边自己的外法向只准到 rfl/|e|，拿它当整个 E 的半平面，在离它 D 远处错 D·rfl/|e|——G6 第四轮 critical：T 形顶点的短边
-    旋转到 1e3 处后法向偏 4.9e-6 rad，离它 0.3 远的参考点压进 1e-6 却被这条 facet 判"在外"。链里最长边的法向误差 rfl/|e_long|，
-    乘上 D ≤ E 的尺寸 ~ |e_long| 仍是 rfl 级。链的延伸以**当前最长边**为基准判共线（方向是纯噪声的倒角边不能把两条 90° 的
-    长边串成一链）。与 facet_gap 的 FF 分支"取较长边的法向"同一政策（判据要加被测方向自己的噪声，这是第四处遗漏）。"""
-    n = len(P)
-    rfl = round_floor(coord_scale(P))
-
-    def collinear(i: int, j: int) -> bool:
-        pi, qi = edge(P, i)
-        pj, qj = edge(P, j)
-        ei, ej = sub(qi, pi), sub(qj, pj)
-        return dot(ei, ej) > 0.0 and abs(cross(ei, ej)) <= rfl * (norm(ei) + norm(ej))
-    best = k
-    for step in (1, -1):
-        j = k
-        for _ in range(n - 1):
-            j2 = (j + step) % n
-            if j2 == k or not collinear(best, j2):
-                break
-            j = j2
-            if _edge_len(P, j) > _edge_len(P, best):
-                best = j
-    return outward_normal(P, best), best
 
 
 # ---------------------------------------------------------------- 单个盖
@@ -327,226 +308,88 @@ class EntranceBlock:
     vv: list[tuple[int, int]]                 # 每个顶点对应的 (A 顶点, B 顶点)
 
 
-def _start_index(P: Poly) -> int:
-    return min(range(len(P)), key=lambda i: (P[i][1], P[i][0]))
-
-
-def _edge_angle(P: Poly, i: int) -> float:
-    p, q = edge(P, i)
-    a = atan2(q[1] - p[1], q[0] - p[0])
-    return a if a >= 0.0 else a + 2 * pi
-
-
-def _unwrapped_angles(a0: float, edges: list[Point], name: str, rfl: float = 0.0) -> list[float]:
-    """从最低点出发的凸 CCW 多边形各边的方向角，按**相邻边转角累加**得到（不跨 0/2π 缝）。
-
-    首边理想方向角 ∈ [0, π)，舍入可使它成 −δ（_edge_angle 映到 2π − δ），减回去。之后每条边 = 前一条 + 转角
-    atan2(e₀ × e₁, e₀ · e₁)，**负转角照记**（微凹顶点给 −舍入级；方向测不准的短边进出两个转角互相抵消——相邻两个
-    转角之和恒等于邻边的直接夹角，所以短边再离谱也只污染它自己的角，不传给后面的长边；旧版把负转角夹平成 0，
-    一条方向反了的短边会把其后所有长边的角一起抬高）。各边角的单调性与短边的角由 _angle_windows 按凸性修复。
-    总转角（含末边回到首边）必须是 2π：绕圈不止一次的非简单多边形（五角星，顶点都在凸包上、深度检验看不见）总转角是 4π。
-    M0.3 第一版按 [0, 2π) 里的极角判"下降 > π/2 即绕圈"：平直顶点落在最底边上、刚体运动后微凹时，两条相邻边的极角成 δ 与
-    2π − δ，后面的下降 ≈ 3π/2 被当成绕圈误拒（G6 第三轮 major）。"""
-    if a0 > pi:
-        a0 -= 2 * pi
-    angs = [a0]
-    total = 0.0
-    def _turn(e0: Point, e1: Point, k: int) -> float:
-        t = atan2(cross(e0, e1), dot(e0, e1))
-        # 转角 ≈ ±π = 边界沿自己的边折回（"尖刺"：一个顶点落在非相邻边的线上、随后折回再凹拐）：总转角仍是 2π、凸包深度
-        # 也可以 ≤ t，三道凸性检查都放过它，却造出深陷凸包的非凸 E（G6 第四轮 minor）。折回只能在两边方向噪声之和以内判
-        nz = rfl / norm(e0) + rfl / norm(e1)
-        # 方向噪声超过 π/2 的边（几个 ulp 长的倒角边）方向不可知，折回无从判——交给方向可行窗按凸性夹住，这里不判
-        if nz < 0.5 * pi and abs(t) >= pi - nz - 1e-12:
-            raise ValueError(f"input polygon {name} folds back on itself at edge {k} (turning angle {t:.6f} rad ≈ ±π)")
-        return t
-    for k in range(1, len(edges)):
-        turn = _turn(edges[k - 1], edges[k], k)
-        total += turn
-        angs.append(angs[-1] + turn)
-    total += _turn(edges[-1], edges[0], 0)
-    if abs(total - 2 * pi) > 1e-6:
-        raise ValueError(f"input polygon {name} not convex: total turning angle {total:.6f} rad is not 2π "
-                         f"(the boundary winds more than once)")
-    return angs
-
-
-def _angle_windows(angs: list[float], edges: list[Point], rfl: float) -> tuple[list[float], list[float], list[float]]:
-    """每条边**真实**方向角的可行窗 [lo_k, hi_k] 与修到窗内的角。
-
-    两条约束：|真角 − 测角_k| ≤ rfl/|e_k|（方向噪声，纪律 F 的逐特征口径，rfl 是这个多边形自己的 c·eps·C）；
-    真角沿 CCW 单调不减、绕一圈恰 2π（凸性）。合起来是单调包络：lo_k = max_j (测角_j − 噪声_j − 2π[j>k])，
-    hi_k = min_j (测角_j + 噪声_j + 2π[j<k])。长边的窗就是 ±噪声；短到方向测不准的边（针底、倒角，噪声可达
-    几弧度）被相邻长边夹住——它的方向不确定度是邻边之间的角距，不是 rfl/|e|。平行边合并只许在两条边的窗相交时发生：
-    否则一条 1e-10 的倒角边会与任何同向长边"平行"，并进去后扫描线把那条长边的角当成倒角边的角，后面的顶点-边配对
-    整体错位，成员判定差 O(1)（G6 第三轮修复第一版的回归，1500 点里错 52 点）。"""
-    n = len(angs)
-    nz = [rfl / norm(e) for e in edges]
-    lo = [max(angs[j] - nz[j] - (2 * pi if j > k else 0.0) for j in range(n)) for k in range(n)]
-    hi = [min(angs[j] + nz[j] + (2 * pi if j < k else 0.0) for j in range(n)) for k in range(n)]
-    fixed = [min(max(a, lo[k]), hi[k]) for k, a in enumerate(angs)]
-    return lo, hi, fixed
-
-
-def _hull_defect(P: Poly) -> float:
-    """P 的顶点落在其凸包边界以内的最大深度（长度）：凸多边形为 0，平直顶点经刚体运动后的微凹为舍入级。"""
-    H = convex_hull(P)
-    if len(H) < 3:
-        return 0.0
-    return max(min(dot(outward_normal(H, k), sub(H[k], v)) for k in range(len(H))) for v in P)
-
-
 def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float = 0.0) -> EntranceBlock:
-    """A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角合并，每条边带盖标签。
+    """A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角归并，每条边带盖标签 (kind, A 的下标, B 的下标)。
 
-    tol 为**长度**容差（调用方单位），抬到舍入下限 c·eps·C（C = A、B 的坐标量级）。两处用它，都逐特征、按长度判：
-      · 平行边合并：B 的边 e_P 与 −A 的边 e_Q 同向、两边真实方向角的可行窗（_angle_windows：各自坐标量级下的方向噪声
-        rfl/|e|，再被相邻边按凸性夹住）相交到 t/max(|e_P|, |e_Q|) 以内才并成一条 FF 边——长边转到并后法向的位移 ≤ t，
-        短边的位移更小。并后的 FF 面以**较长边**的法向过合并起点，偏离真实的两段边界至多 t + 两边方向噪声×短边长。
-        长边之间这与 |e_P × e_Q| ≤ t·min|e| + rfl_P|e_Q| + rfl_Q|e_P| 等价（叉积自身的舍入；真平行边经旋转后长短边比
-        ≥ 64 时不加它就不并，E 多出一个落在凸包边中部的微折点，G6 第三轮 minor）；噪声按**各自**多边形的坐标量级算
-        （原点处 1e-6 的方块对 1e5 处倾 1e-6 rad 的长边：方块自己的边方向是准的，不许并）。
-      · 凸性前提：顶点落在自身凸包边界以内的深度 ≤ t（平直顶点经刚体运动后的舍入级微凹）才吞下它的极角下降，
-        否则清晰报错（审查 r4c：微凹被 +2π 级联静默吃掉，产出非凸 E）。
-    旧版（M0.2 到 cad2ffc）两处都用**角度**：tol 是弧度，再抬到极角舍入下限 c·eps·C/ℓ_min，ℓ_min 取**整个多边形**
-    的最短边——多边形上一条 1e-8 的短边放在 1e5 处，下限就是 0.14 rad，夹角 0.1 rad 的两条长边被并成 FF，
-    成员判定静默答反（与三维 covers3 的 G6 critical 同类）；membership_convex 还把长度 tol 直接当弧度传进来（G6 major）。
-    零长边（连续重复顶点）清晰报错（审查 C19）。
+    **精确**（`kernel2d.exact.entrance_block_exact`）：凸性、极角序、平行全部在 Fraction 上判，只有**精确**平行同向的
+    两条边才并成 FF；顶点 b_j − a_i 先精确算、再加 a0 后舍入成浮点输出。输入须**精确**凸（平直顶点允许；零长边、反射顶点、
+    折回、绕圈不止一次都清晰报 ValueError）——刚体运动把平直顶点舍入成微凹时，这里如实拒收，调用方改走凹块路径
+    （`enumerate_covers` + 精确谓词），不再像旧版那样在容差内"吞下"微凹（那正是五轮复核里静默错判的来源之一）。
+    `tol` 不再参与任何判定（保留参数只为兼容调用方）；需要"容差内平行"的口径（如 legacy 的平行贴边）由 L5 适配器显式给窗。
     """
     for name, poly in (("A", A), ("B", B)):
-        bad = zero_length_edges(poly)
-        if bad:
-            raise ValueError(f"zero-length edge {bad[0]} in {name} (consecutive duplicate vertex {poly[bad[0]]}); "
-                             f"strip duplicates at the reader boundary")
-    rfl = round_floor(coord_scale(A, B))
-    t = max(tol, rfl)
-    for name, poly in (("A", A), ("B", B)):
-        if signed_area(poly) <= 0.0:
-            raise ValueError(f"input polygon {name} is not counter-clockwise (signed area {signed_area(poly):.3e})")
-        dfc = _hull_defect(poly)
-        if dfc > t:
-            raise ValueError(f"input polygon {name} not convex: a vertex lies {dfc:.3e} inside its convex hull "
-                             f"(tolerance {t:.3e})")
-    P = B
-    Q = reflect(A)                # Q[k] = −A[k]；Q 的边 k = −(A 的边 k)
-    n, m = len(P), len(Q)
-    iP, iQ = _start_index(P), _start_index(Q)
-    eP = [sub(*reversed(edge(P, (iP + k) % n))) for k in range(n)]
-    eQ = [sub(*reversed(edge(Q, (iQ + k) % m))) for k in range(m)]
-    rflP, rflQ = round_floor(coord_scale(P)), round_floor(coord_scale(Q))
-    loP, hiP, angP = _angle_windows(_unwrapped_angles(_edge_angle(P, iP), eP, "B", rflP), eP, rflP)
-    loQ, hiQ, angQ = _angle_windows(_unwrapped_angles(_edge_angle(Q, iQ), eQ, "A", rflQ), eQ, rflQ)
-    i = j = 0
-    cur = add(P[iP], Q[iQ])
-    verts = [add(cur, a0)]
-    facets: list[tuple[str, int, int]] = []
-    vv = [(iQ % m, iP % n)]
-    while i < n or j < m:
-        take_p = take_q = False
-        if j >= m:
-            take_p = True
-        elif i >= n:
-            take_q = True
-        else:
-            d = angP[i] - angQ[j]
-            ep, eq = eP[i], eQ[j]
-            slack = t / max(norm(ep), norm(eq))          # 长边转到并后法向的位移 ≤ t
-            if dot(ep, eq) > 0.0 and loP[i] <= hiQ[j] + slack and loQ[j] <= hiP[i] + slack:
-                take_p = take_q = True
-            elif d < 0:
-                take_p = True
-            else:
-                take_q = True
-        bi = (iP + i) % n
-        aj = (iQ + j) % m
-        if take_p and take_q:
-            p0, p1 = edge(P, bi)
-            q0, q1 = edge(Q, aj)
-            step = add(sub(p1, p0), sub(q1, q0))
-            facets.append(("FF", aj, bi))
-            i += 1
-            j += 1
-        elif take_p:
-            p0, p1 = edge(P, bi)
-            step = sub(p1, p0)
-            facets.append(("VE", aj, bi))          # B 的边 bi 与 A 的顶点 aj
-            i += 1
-        else:
-            q0, q1 = edge(Q, aj)
-            step = sub(q1, q0)
-            facets.append(("EV", aj, bi))          # A 的边 aj 与 B 的顶点 bi
-            j += 1
-        cur = add(cur, step)
-        verts.append(add(cur, a0))
-        vv.append(((iQ + j) % m, (iP + i) % n))
-    verts.pop()   # 闭合点 = 起点
-    vv.pop()
-    return EntranceBlock(verts, facets, vv)
+        why = convexity_violation(poly)
+        if why is not None:
+            raise ValueError(f"input polygon {name} not convex: {why}")
+    ex = entrance_block_exact(A, B)
+    fa0 = (Fraction(a0[0]), Fraction(a0[1]))
+    verts = [(float(v[0] + fa0[0]), float(v[1] + fa0[1])) for v in ex.vertices]
+    return EntranceBlock(verts, [f.label for f in ex.facets], list(ex.pairs))
+
+
+def _facet_normal_own(A: Poly, B: Poly, label: tuple[str, int, int]) -> tuple[Point, Point]:
+    """facet 的外法向（B → A 的分离方向）与它过的一点（未加平移）：取 facet **自己那条边**的法向。
+    FF 的两条边精确平行，取较长边的法向（浮点构造更准，方向相同）。"""
+    kind, ai, bj = label
+    if kind == "VE":
+        return outward_normal(B, bj), sub(edge(B, bj)[0], A[ai])
+    if kind == "EV":
+        return neg(outward_normal(A, ai)), sub(B[bj], edge(A, ai)[0])
+    b0, b1 = edge(B, bj)
+    a0, a1 = edge(A, ai)
+    n = outward_normal(B, bj) if norm(sub(b1, b0)) >= norm(sub(a1, a0)) else neg(outward_normal(A, ai))
+    return n, sub(b0, a0)
 
 
 def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
-    """E 的一条 facet 在平移 x 下的有符号间隙（>0 参考点在该 facet 外侧）。"""
-    kind, ai, bj = label
-    # 法向一律取该边所在噪声内共线链里最长边的（_chain_normal）：短边的法向误差 × 杠杆距离会超过成员容差
-    if kind == "VE":
-        nB, _ = _chain_normal(B, bj)
-        return dot(nB, sub(add(A[ai], x), edge(B, bj)[0]))
-    if kind == "FF":
-        # 平行贴边：facet 过点 b_j0 − a_i0（两条边的起点，ai 是 A 该平行边的起点顶点），外法向取**两条链里长的那条**的
-        # 法向——短边（在工程坐标上可能短到方向是纯噪声，c·eps·C/|e| ≫ 1）的法向不可用（G6 第三轮 minor 的后半）
-        b0, _ = edge(B, bj)
-        a0, _ = edge(A, ai)
-        nb, kb = _chain_normal(B, bj)
-        na, ka = _chain_normal(A, ai)
-        n = nb if _edge_len(B, kb) >= _edge_len(A, ka) else neg(na)
-        return dot(n, sub(add(a0, x), b0))
-    nA, _ = _chain_normal(A, ai)
-    return dot(nA, sub(B[bj], add(edge(A, ai)[0], x)))
+    """E 的一条 facet 在平移 x 下的有符号间隙（>0 参考点在该 facet 外侧）。**构造量**：facet 自己那条边的单位外法向点乘
+    (x − facet 上一点)；成员与首入的**分支**判定不看它的符号（见 `membership_convex`、`entrance.first_entrance`）。"""
+    n, p = _facet_normal_own(A, B, label)
+    return dot(n, sub(x, p))
 
 
 def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
                       eb: EntranceBlock | None = None) -> int:
     """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界（恰好接触）/ -1 外部（分离）。
 
-    tol 为长度容差，抬到舍入下限 c·eps·C（C = B 与 A+x 的坐标量级；纪律 F）。不给 eb 时用同一个长度 tol 构造 E
-    （convex_entrance_block 的 tol 也是长度）。旧版 convex_entrance_block 收的是弧度，这里却把长度 tol 原样传进去：
-    毫米单位、tol = 1 mm 时 57° 以内的边都被并成 FF，三角压方块判"分离"（G6 第二轮 major）。"""
-    if eb is None:
-        eb = convex_entrance_block(A, B, (0.0, 0.0), tol)
-    tol = max(tol, round_floor(max(coord_scale(B), coord_scale(A) + max(abs(x[0]), abs(x[1])))))
-    g = max(facet_gap(A, B, lab, x) for lab in eb.facets)
-    if g > tol:
-        return -1
-    if g < -tol:
-        return 1
-    return 0
+    **对给定浮点坐标精确**：A、B 精确凸时用精确 E 的 facet 符号（`exact.membership_exact`），否则（刚体运动把平直顶点舍入成
+    微凹）用一般简单多边形的精确相交（`exact.polygons_overlap_exact`）——两条路答案相同，凸路径只是快。`x` 的加法也在
+    Fraction 上做。`tol`（长度，缺省 0）只是**报告带**：精确答案非 0 但离 E 的边界 ≤ tol 时报 0；它不改变带外的答案，
+    也不抬到任何舍入下限。`eb` 保留只为兼容旧调用（精确路径自己构造）。"""
+    if convexity_violation(A) is None and convexity_violation(B) is None:
+        ex = entrance_block_exact(A, B)
+        s = membership_exact(A, B, x, ex)
+        if s == 0 or tol <= 0.0:
+            return s
+        gaps = [facet_gap(A, B, f.label, x) for f in ex.facets]
+        return 0 if abs(max(gaps)) <= tol else s
+    s = polygons_overlap_exact(A, B, x)
+    if s == 0 or tol <= 0.0:
+        return s
+    from .geom import polygons_overlap, translate
+    return 0 if polygons_overlap(translate(A, x), B, tol) == 0 else s
 
 
 def local_facets(A: Poly, B: Poly, tol: float = 0.0) -> set[tuple[str, int, int]]:
-    """凸情形下用局部法锥规则得到的全部严格有效盖（不设窗口、不限边内）。
-
-    定理检验（命题 4/5）：应与 convex_entrance_block 的 facet 标签集合（去 FF、去 `ambiguous_facets`）完全相同。
-    """
-    return _local_facets(A, B, tol, True)
+    """凸情形下局部法锥规则（命题 5）给出的全部**严格**有效 VE / EV 标签，精确判（`exact.ve_side_exact` /
+    `ev_side_exact`）。定理检验：与 `convex_entrance_block` 的非 FF facet 标签集合**精确相等**（零容差）。`tol` 不参与。"""
+    return _local_facets(A, B, 1)
 
 
 def ambiguous_facets(A: Poly, B: Poly, tol: float = 0.0) -> set[tuple[str, int, int]]:
-    """局部法锥规则判为"有效但不严格"的盖：对方边法向落在顶点法锥的边界带内（角容差 = 长度 tol 或舍入下限在
-    所涉最短边上张的角）。这类盖在容差内说不清是不是 E 的 facet——全局构造可能把它并进 FF、也可能留作一条极短的
-    精确 facet（一条几个 ulp 长的短边就是这样），标签比对时两边都不计。"""
-    return _local_facets(A, B, tol, False)
+    """局部法锥规则判为"恰在法锥边界上"的 VE / EV（精确判据 = 0）：对方边与本顶点的一条邻边**精确**平行，
+    全局构造里它们并进 FF（或在平直顶点处成为相邻共线 facet）。`tol` 不参与。"""
+    return _local_facets(A, B, 0)
 
 
-def _local_facets(A: Poly, B: Poly, tol: float, strict: bool) -> set[tuple[str, int, int]]:
+def _local_facets(A: Poly, B: Poly, want: int) -> set[tuple[str, int, int]]:
     out: set[tuple[str, int, int]] = set()
     for ia in range(len(A)):
         for jb in range(len(B)):
-            c = ve_cover(A, ia, B, jb, tol)
-            if c is not None and c.strict == strict:
-                out.add(c.label())
+            if ve_side_exact(A, ia, B, jb) == want:
+                out.add(("VE", ia, jb))
     for ka in range(len(A)):
         for ib in range(len(B)):
-            c = ev_cover(A, ka, B, ib, tol)
-            if c is not None and c.strict == strict:
-                out.add(c.label())
+            if ev_side_exact(A, ka, B, ib) == want:
+                out.add(("EV", ka, ib))
     return out

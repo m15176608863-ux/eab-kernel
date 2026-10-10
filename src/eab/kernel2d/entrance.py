@@ -19,7 +19,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .covers import (Cover, _chain_normal, convex_entrance_block, enumerate_covers, ev_cover, facet_gap, ve_cover)
+from .covers import (Cover, _facet_normal_own, convex_entrance_block, enumerate_covers, ev_cover, facet_gap, ve_cover)
+from .exact import convexity_violation
 from .geom import (Point, Poly, add, coord_scale, dot, edge, is_convex, neg, norm, outward_normal, polygons_overlap,
                    round_floor, sub, translate)
 
@@ -39,17 +40,8 @@ class Entrance2:
 
 
 def _facet_normal(A: Poly, B: Poly, label: tuple) -> Point:
-    """facet 的外法向（B → A 的分离方向），与 `facet_gap` 同一口径（噪声内共线链里最长边的法向）。"""
-    kind, ai, bj = label
-    if kind == "VE":
-        return _chain_normal(B, bj)[0]
-    if kind == "EV":
-        return neg(_chain_normal(A, ai)[0])
-    nb, kb = _chain_normal(B, bj)
-    na, ka = _chain_normal(A, ai)
-    lb = norm(sub(*reversed(edge(B, kb))))
-    la = norm(sub(*reversed(edge(A, ka))))
-    return nb if lb >= la else neg(na)
+    """facet 的外法向（B → A 的分离方向），与 `facet_gap` 同一口径（facet 自己那条边的法向；凸路径的 facet 由精确层给出）。"""
+    return _facet_normal_own(A, B, label)[0]
 
 
 def _facet_points(A: Poly, B: Poly, label: tuple, x: Point) -> tuple[Point, Point]:
@@ -86,7 +78,7 @@ def first_entrance(A: Poly, B: Poly, x0: Point, d: Point, *, tol: float = 0.0, t
     ctol = max(tol, r)
     if polygons_overlap(translate(A, x0), B, ctol) == 1:
         return shortest_exit(A, B, x0, tol=tol)
-    if is_convex(A, r) and is_convex(B, r):
+    if convexity_violation(A) is None and convexity_violation(B) is None:      # 精确凸才走凸路径（E2）
         return _first_entrance_convex(A, B, x0, d, ctol, r, t_max)
     return _first_entrance_concave(A, B, x0, d, ctol, r, t_max)
 

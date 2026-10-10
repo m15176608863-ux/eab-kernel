@@ -171,7 +171,12 @@ def strict_vertices(eb: ExactEntranceBlock) -> list[int]:
 
 def hull_exact(points: list[Point]) -> list[FPoint]:
     """点集的精确凸包顶点（CCW，单调链，**共线点一律不作顶点**）。输入是浮点，比较与转向全部在 Fraction 上做。"""
-    pts = sorted(set(_fr(p) for p in points))
+    return hull_exact_fr([_fr(p) for p in points])
+
+
+def hull_exact_fr(points: list[FPoint]) -> list[FPoint]:
+    """同 `hull_exact`，输入已是 Fraction 点（如精确差点 b − a）。"""
+    pts = sorted(set(points))
     if len(pts) <= 2:
         return pts
 
