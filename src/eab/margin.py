@@ -54,7 +54,9 @@
   贯入守卫的可靠性等于 `polyhedra_overlap` 的可靠性：谓词漏判的贯入在这里同样漏判，本层不另设第二道谓词
   （G6 critical 的等高 X 交叉已由 m2-geom 的接触锥证人修复并合并，门：tests/test_geom3_overlap_witness.py）。
   谓词的有效分辨率是 max(geom_tol_eff, 1e-12·diag)，且按到面平面的距离计：深度不超过 geom_tol_eff·sin(接触面夹角)
-  时判相触，深于 geom_tol_eff 时一定给哨兵，介于两者之间可能提前给哨兵（偏安全侧；G6 第二轮 minor）。
+  时判相触，深于相触分辨率 ctol = max(geom_tol_eff, 1e-12·diag) + 舍入地板（下一条）时一定给哨兵；(geom_tol_eff, ctol] 之间的贯入答"相触"
+  （偏安全侧：接触判闭合，不当间距报）——这是 2026-10-10 统一成一把尺之后的口径（G6 第四轮 minor：此前这里仍写"深于 geom_tol_eff
+  一定给哨兵"，与下一条矛盾）。
 - **相触分辨率（纪律 F，2026-09-24 M0.2；2026-10-10 统一成一把尺 `contact_resolution`）。** 间距或贯入深度在
   ctol = max(geom_tol_eff, 1e-12·diag) + 舍入地板 以内即"相触"：`body_distance` 返回 **0.0**（标签是实现最小见证的那个盖），
   `margin_contacts` 里见证距离 ≤ ctol 的盖 distance 钳为 0、margin_gap = −δ、normal None（零距离处见证方向无定义；
@@ -167,7 +169,7 @@ def _witnesses(A: Polyhedron, B: Polyhedron, tol: float) -> list[tuple]:
 def contact_resolution(A: Polyhedron, B: Polyhedron, geom_tol: float | None = None) -> float:
     """相触分辨率 ctol = max(geom_tol_eff, 谓词自己的分辨率 1e-12·diag) + 舍入地板——裕度层**唯一**的那把尺：
     见证距离 ≤ ctol 钳为 0；谓词答"相触"而没有见证落在 ctol 内才算贯入。
-    G6 第三轮 critical：旧版钳零用 geom_tol_eff、收下见证表用 geom_tol_eff + 舍入，工程坐标下（|t| = 1e6 时舍入 ≈ geom_tol_eff）
+    G6 第三轮（Find 阶段报 critical、经验证定 major）：旧版钳零用 geom_tol_eff、收下见证表用 geom_tol_eff + 舍入，工程坐标下（|t| = 1e6 时舍入 ≈ geom_tol_eff）
     贯入深度落在两者之间的一对被当**正间距**报出、答"安全"；major：谓词把离面平面 ≤ 1e-12·diag（被测的那个体的对角线）的点
     判"在表面上"，两体尺寸比 ≥ 1e3 时这个带大于 geom_tol_eff，一个明明分离的小块经一次旋转被答成贯入。"""
     diag = max(A.metrics()[1], B.metrics()[1])

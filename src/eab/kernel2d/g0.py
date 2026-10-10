@@ -21,7 +21,8 @@ import random
 from dataclasses import dataclass, field
 
 from .covers import ambiguous_facets, convex_entrance_block, enumerate_covers, local_facets, membership_convex
-from .geom import EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, polygons_overlap, round_floor, translate
+from .geom import (EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, cross, norm, polygons_overlap, round_floor, sub,
+                   translate)
 
 
 @dataclass(slots=True)
@@ -34,6 +35,7 @@ class G0Report:
     facet_symmetric_diff: list[tuple[str, int, int]] = field(default_factory=list)
     facet_ambiguous: int = 0           # 局部规则判"容差内说不清"的盖，两边都不计（covers.ambiguous_facets）
     hull_vertex_mismatch: int = 0      # 第三票：E 顶点集 vs conv{b−a} 顶点集（不经法向/法锥/合并）
+    hull_vertex_ambiguous: int = 0     # 第三票里折点离弦 ≤ 凸包弦距容差、两边口径下都说不清的顶点数（两边都不计）
 
     @property
     def passed(self) -> bool:
@@ -94,8 +96,22 @@ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: floa
 
     def near(v, W):
         return any(math.hypot(v[0] - w[0], v[1] - w[1]) <= mtol for w in W)
-    rep.hull_vertex_mismatch = (sum(not near(v, hull) for v in eb.vertices)
-                                + sum(not near(h, eb.vertices) for h in hull))
+    # 第四轮 regress 镜头（2026-10-10）：合法的 E 只保证**点集**相等，不保证顶点集相等——B 的短边对 A 的长边带一个真实微倾 d
+    # （d ≫ 两边方向噪声，合法地不并成 FF），折点离弦 |e_s|·d 却低于凸包的弦距容差（舍入地板）时，convex_hull 按弦距丢掉折点、
+    # E 保留它：两边口径下这个顶点都"说不清"。按弦距 ≤ 地板（加配对容差）判为 ambiguous，两边都不计（与三维 e_vertices_ambiguous
+    # 同一做法）；旧版一刀切成失配，24 格里 13 格假红，而票一、票二都干净。
+    hfl = round_floor(coord_scale(A, B))
+
+    def chord_height(W, k):
+        p, q = W[k - 1], W[(k + 1) % len(W)]
+        pq = sub(q, p)
+        return abs(cross(pq, sub(W[k], p))) / norm(pq) if norm(pq) > 0.0 else 0.0
+    e_only = [k for k, v in enumerate(eb.vertices) if not near(v, hull)]
+    h_only = [k for k, h in enumerate(hull) if not near(h, eb.vertices)]
+    amb_e = [k for k in e_only if chord_height(eb.vertices, k) <= 4.0 * hfl + mtol]
+    amb_h = [k for k in h_only if chord_height(hull, k) <= 4.0 * hfl + mtol]
+    rep.hull_vertex_ambiguous = len(amb_e) + len(amb_h)
+    rep.hull_vertex_mismatch = (len(e_only) - len(amb_e)) + (len(h_only) - len(amb_h))
     for x in sample_translations(A, B, samples, rng):
         cov = membership_convex(A, B, x, band, eb)
         if cov == 0:

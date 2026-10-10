@@ -307,17 +307,23 @@ def test_two_d_pure_cohesion_resists_both_directions(sign):
 @pytest.mark.parametrize("th", [0.0, 0.7, 2.0, 3.3, 4.9])
 def test_three_d_pure_cohesion_resists_every_direction(th):
     """(b) 的三维版：纯黏聚（μ = 0）四角 cA 不等，推力沿 θ 且作用在 cA 加权形心（全部黏聚同向发挥时无扭转），
-    显式切向基架对准推力 ⇒ α = ΣcA 精确；默认基架 ⇒ α ∈ [cos(π/k), 1]·ΣcA。"""
+    显式切向基架对准**摩擦阻力方向**（推力的反向）⇒ α = ΣcA 精确；对准推力本身时偶数 k 等价、奇数 k 恰是最坏情形
+    cos(π/k)·ΣcA（limit.py 诚实条款；G6 第四轮 regress 镜头：旧文档串写"对准推力 ⇒ 精确"，且只跑 k = 8 永远看不见）；
+    默认基架 ⇒ α ∈ [cos(π/k), 1]·ΣcA。"""
     u = (cos(th), sin(th), 0.0)
+    nu = (-u[0], -u[1], 0.0)
     q = tuple(sum(cA * p[i] for p, cA in zip(_QUAD, _CA)) / sum(_CA) for i in range(2)) + (0.0,)
     o = (0.0, 0.0, 0.0)
-    for tangent, k in ((u, 8), (None, 8), (None, 5)):
+    for tangent, k, want in ((u, 8, "exact"), (nu, 8, "exact"), (nu, 5, "exact"), (nu, 7, "exact"),
+                             (u, 5, "worst"), (u, 7, "worst"), (None, 8, "band"), (None, 5, "band")):
         cts, dead, _ = _asym_cohesive_block(o, mu=0.0, k=k, tangent=tangent)
         live = wrench(u, q, o, 3)
         r = limit_load(cts, dead, live, dim=3, origin=o, k=k)
         assert r.status == "optimal", (th, tangent, k)
-        if tangent is not None:
-            assert r.alpha == pytest.approx(sum(_CA), rel=1e-12), (th, r.alpha)
+        if want == "exact":
+            assert r.alpha == pytest.approx(sum(_CA), rel=1e-12), (th, k, r.alpha)
+        elif want == "worst":
+            assert r.alpha == pytest.approx(cos(pi / k) * sum(_CA), rel=1e-12), (th, k, r.alpha)
         else:
             assert cos(pi / k) * sum(_CA) * (1 - 1e-12) <= r.alpha <= sum(_CA) * (1 + 1e-12), (th, k, r.alpha)
 

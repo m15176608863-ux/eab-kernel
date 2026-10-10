@@ -274,3 +274,19 @@ def test_g6_13_exit_completeness_with_short_direction_is_green():
 def test_exit_completeness_needs_one_direction_per_translation():
     with pytest.raises(ValueError, match="one direction per translation"):
         g0_exit_completeness(SQUARE, SQUARE, [(0.3, 0.2)], [])
+
+
+# ---------------------------------------------------------------- G6 第四轮 regress 镜头：第三票对真实微倾的假红
+
+@pytest.mark.parametrize("C", [1e5, 1e6])
+@pytest.mark.parametrize("Ls", [1e-3, 1e-2, 1e-1])
+@pytest.mark.parametrize("d", [1e-8, 1e-7, 1e-6, 1e-5])
+def test_vote_three_treats_kinks_below_the_hull_chord_tolerance_as_ambiguous(C, Ls, d):
+    """A = 单位方块在 (C, C)，B = 原点处边长 Ls 的方块、底边一端抬 Ls·d（倾 d rad，远大于两边的方向噪声，所以合法地不并成 FF）：
+    折点离弦 Ls·d 落在（合并窗, round_floor(C)] 之间时 convex_hull 按弦距丢掉它、E 保留它——旧版第三票报 hull_vertex_mismatch = 1
+    假红（24 格里 13 格），票一 2000 样本 0 失配、票二对称差空。现在这种顶点两边都不计、记 hull_vertex_ambiguous。"""
+    A = [(C, C), (C + 1.0, C), (C + 1.0, C + 1.0), (C, C + 1.0)]
+    B = [(0.0, 0.0), (Ls, Ls * d), (Ls, Ls), (0.0, Ls)]
+    r = g0_convex(A, B, samples=400, seed=1)
+    assert r.passed, (C, Ls, d, r.hull_vertex_mismatch, r.hull_vertex_ambiguous, r.facet_symmetric_diff, r.mismatches[:2])
+    assert r.hull_vertex_ambiguous <= 2
