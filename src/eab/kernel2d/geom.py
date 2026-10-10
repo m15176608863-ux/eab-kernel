@@ -422,8 +422,10 @@ def reflect(poly: Poly) -> Poly:
 
 
 def convex_hull(points: list[Point], tol: float = 0.0) -> Poly:
-    """单调链凸包（CCW）。离弦 ≤ tol 的点视为共线、不作顶点；tol 为长度容差，抬到舍入下限 c·eps·C
-    （纪律 F：理想共线的点经旋转/平移后偏离弦 ~eps·C，不许时而成顶点时而不成）。"""
+    """单调链凸包（CCW）。tol 为长度容差，抬到舍入下限 c·eps·C（纪律 F：理想共线的点经旋转/平移后偏离弦 ~eps·C，
+    不许时而成顶点时而不成）。**口径如实**（G6 第四轮 minor）：共线判定是单调链里按 x 序相邻三点的**局部**弦距检验，容差下不传递——
+    结果是精确凸包顶点的子集，但不保证每个顶点离其两侧邻点的弦 > tol（亚容差微倾的差点集可以留下离弦 < tol 的顶点）。
+    g0 第三票对这类顶点按"折点离弦 ≤ 容差 ⇒ 说不清"处理，不当失配。"""
     pts = sorted(set(points))
     if len(pts) <= 2:
         return pts

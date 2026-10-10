@@ -427,3 +427,22 @@ def test_margin_self_check_catches_sub_ppm_witness_errors(monkeypatch, rel):
                 call()
         else:
             call()
+
+
+@pytest.mark.parametrize("k,raises", [(50.0, True), (2.0, False)])
+def test_margin_self_check_threshold_is_pinned_at_a_few_rounding_units(monkeypatch, k, raises):
+    """第四轮 minor：ppm 级牙只锁住 [1·rnd, 1e-6·d] 的窗（4·rnd 放大 100 倍照绿）。把见证距离偏 50·rnd 必须抛、偏 2·rnd 不抛。"""
+    import eab.margin as M
+    A, B = box(center=(0.0, 0.0, 1.6), half=(0.5, 0.5, 0.5)), box(half=(1.0, 1.0, 0.5))
+    rnd = M.rounding_floor(A, B)
+    real = M.cover_witness
+
+    def skew(c):
+        w = real(c)
+        return None if w is None else (w[0] + k * rnd, w[1])
+    monkeypatch.setattr(M, "cover_witness", skew)
+    if raises:
+        with pytest.raises(RuntimeError, match="self-check"):
+            body_distance(A, B)
+    else:
+        body_distance(A, B)

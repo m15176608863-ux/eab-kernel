@@ -4,7 +4,8 @@
 
 - `D:\E(A, B)\01 E(A,B) 理论内核·精细版.md`（下称 **01**）——命题 1–8；
 - `D:\E(A, B)\03 广义接触·裕度即接触与理论内核的去岩石化.md`（下称 **03**）——膨胀恒等式、KKT、C^{1,1} 正则化、五件套 K1–K5；
-- `D:\E(A, B)\00 石根华 E(A,B)·理论内核与向外发展分析.md`（下称 **00**）——谱系与三层诚实分类（§4.6）。
+- `D:\E(A, B)\00 石根华 E(A,B)·理论内核与向外发展分析.md`（下称 **00**）——谱系与三层诚实分类（§4.6）；
+- `D:\E(A, B)\07 程序设计·统一接触内核方案.md`（下称 **07**）——设计正本：五层架构、ContactRecord 契约、G0–G5 门体系、Phase 0–5（2026-10-10 第四轮盲区 3 之后补入，见第八节）。
 
 **状态更新（2026-10-10，G6 第三轮之后）**：本表带函数名的 `file:line` 指针（两种写法）与下文点名的无名区间指针已按 HEAD 校正（10-10 三次：第三轮后 34 处，第四轮 claims-vs-code / regress / provenance-canon 三路镜头又报 13 处，一并改；指针会随代码再次过期——以函数名为准、行号只作辅助）（第三轮 claims-vs-code 与 kernel-2d-readers 两个镜头各报 13/17 处过期）；下段"HEAD 094861c / 1209 passed / 尚未经过 G6"是 09-24 写表时的口径，此后 G6 第二轮（09-27，`reports/g6b_20260927.md`）与第三轮（10-10，`reports/g6c_20261010.md`）都读过本表；K4 行与附录 A.9 的 LP 契约数字按 HEAD 复跑订正（见各处 2026-10-10 注）。"正本对代码"（审查 GAP3）三轮都没有一路打开 `D:\E(A, B)` 的三份正本核对——**仍开放**。
 
@@ -349,3 +350,27 @@ for k in (5, 16):
                 print("raise", k, s, g, tol); continue
             assert r.status == "optimal" and cos(pi / k) * full * (1 - 1e-9) <= r.alpha <= full * (1 + 1e-9)
 ```
+
+
+## 八、设计正本 07 对代码（2026-10-10 补；四轮审查没有一路打开过 07）
+
+| 07 的条目 | 代码现状 | 偏差 / 状态 |
+|---|---|---|
+| §四 ContactRecord（身份 / 步内冻结 / 状态 / 转移 / 溯源四组字段） | `src/eab/contact_record.py`：四组字段齐，`cover_type` 枚举含 FF / FE / EE_PAR | 三维 FF / FE 自 M2 第一版（`entrance3.merge_degenerate`）起有产出，EE_PAR 仍有名无实 |
+| §六 Phase 0 "写六种现有表示的读取器" | 三种：`readers/bdda_df.py`、`readers/bdda3d.py`、`readers/tf_probe.py` | **bdda2 SoA 导出、DDA4.x 审计输出**两种未写（DDA4.x 只有逐步汇总、无逐接触导出，见 sibling_observations） |
+| §六 Phase 0 "15 例 2D 家族与 3DDA 8 个 benchmark 的接触快照入库" | `fixtures/`：bdda_df 48 份生成型 + 原件；bdda3d 3 份；tf 探针 3 份 | 3DDA 侧是 3 份探针抽样，不是"8 个 benchmark 的接触快照"；G2 对 tf05 探针只做了普查（test_tf_reader），没做逐接触同构 |
+| §五 G0 自证门 | 二维 `kernel2d/g0.py`、三维 `kernel3d/g03.py`（三票） | 凹块只有距离 / 出口完备性（二维）与距离完备性（三维），成员谓词无门（待 M3） |
+| §五 G1 二维同构门 | `tests/test_bb52_g1.py`（bb52 53/53）、G4 多步（`tools/g4_multistep.py`） | 只对 bb52 一例做了一级门；"15 例家族"未逐例对账 |
+| §五 G2 三维同构门（vs tf05 / bdda3d） | `tools/g2_bdda3d.py`、`tests/test_g2_bdda3d.py`、`tests/test_entrance3_g2.py` | 只对 bdda3d 的**手写**入口清单（cases.py）；tf05 探针侧无同构门；"逐接触 gap/法向 1e-12"未做 |
+| §五 G3 对偶门 | `tests/test_dual.py`、`test_interlock_sensitivity.py`（G3 收敛阶 1.9995） | "批量 vs 单通道逐位、零跳过审计"未做（那是 bdda2 的 Scalar 纪律，eab2 未开工） |
+| §五 G4 活动集门（砖一，go/no-go） | 已做并**关闭**（5/61，09-27 订正） | 07 的 Phase 1 执行记录仍写 5/82 的旧口径（正本只读，未回写） |
+| §五 G5 差异台账 | 无 | 未开（tf05 的 az=2°、平行入口择一与盖理论的分歧没有逐条记录） |
+| §六 Phase 2 三维凸内核（三类 facet 盖、低维盖、退化盖、首入） | `kernel3d/covers3.py`（VF/FV/EE/VE3/EV3/VV3）、`entrance3.py`（首入 + FF/FE 合并，M2 第一版） | 退化盖只在首入合并里有，`enumerate_covers3` 仍不产出 FF/FE/EEP；首入未经 G6 |
+| §六 Phase 3 凹块局部角覆盖 | 无（M3） | 未动；凹块仍靠暴力谓词裁决（`interlock.py`） |
+| §六 Phase 4 可微与互补（Scalar 纪律、活动集方法、MLCP） | `dual.py`、`kernel3d/frozen.py`（冻结盖可微）；L3 极限分析 `limit.py` / `limit_multi.py`（07 未规划） | 开闭迭代改写为显式活动集方法、MLCP 交叉核对**未做**；极限分析是 07 之外加的一层（L3 互补层） |
+| §六 Phase 5 接缝与切换（bdda2 `BDDA_DETECT`、bdda3d 引入 eab、tf.cpp 只探针） | 无（M4） | 未动；按 README 规矩等 M0 退出 + M2 首入落地 |
+| §七 各仓库改动清单（姊妹仓库只读 / 只加接缝） | 本仓库从未改姊妹仓库（AGENTS 红线） | 一致 |
+| §八 风险（tf06 顺序继承、顺序即物理、az=2°、单人带宽、两仓库无远程） | "顺序即物理"落实为同构门而非逐字节；其余是姊妹仓库事务 | 3DDA / 3-b-dda 的远程备份状态本仓库不掌握；本仓库自己也无远程（第四轮盲区 1） |
+
+一句话：07 的 Phase 0–2 大体落地但**规模缩水**（读取器 6→3、G2 只对手写清单、G5 未开），Phase 1 的 G4 go/no-go 按计划执行并关闭了砖一，
+Phase 3/5 未动，Phase 4 走了 07 没规划的极限分析路线。07 的 Phase 1 执行记录与 03 砖一回写一样停在 09-18 的口径。

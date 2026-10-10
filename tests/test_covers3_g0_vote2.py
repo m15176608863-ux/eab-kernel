@@ -218,7 +218,9 @@ def test_yawed_stack_passes_g0_under_random_rotations(yaw, seed):
     """1 m 方块绕 z 偏航 yaw 搁在 2 m 板上方 0.1，再整体随机旋转：旧版 facet_vote3 先查"异常"后查"说不清"，紧带支撑集
     退化成 (0,0)/(1,0) 的歧义 facet 被报成 hull_anomaly（yaw 1e-3 时 2/20 姿态、3e-4 时 15/20、1e-4 时 17/20 门红）；
     根因是 _hull_facets 棱×棱候选的噪声没除 sinθ，近平行最远点对以 4e-14 的自报噪声压过 3e-16 的精确平面候选。
-    现在 20 个姿态全部通过、对称差为空、无 hull_anomaly。"""
+    现在 20 个姿态全部通过、对称差为空、无 hull_anomaly。
+    **看护范围**（第四轮盲区 4）：这个几何的全部 facet 都是退化的（facet_local = facet_global = 0、facet_degenerate = 10），它只看护
+    hull_anomaly 回归；"说不清优先于异常"与"棱×棱候选噪声 /sinθ"各自的牙在 tests/test_g03_two_rulers.py（屋脊对、截角方块）。"""
     import math
     from eab.kernel3d.geom3 import Polyhedron
     c, s = math.cos(yaw), math.sin(yaw)
@@ -229,3 +231,4 @@ def test_yawed_stack_passes_g0_under_random_rotations(yaw, seed):
     xf = lambda P: Polyhedron([tuple(sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in P.verts], list(P.faces))
     r = g0_convex3(xf(A0), xf(B0), samples=12, seed=0)
     assert r.passed and r.facet_symmetric_diff == [] and not any(d[0] == "hull_anomaly" for d in r.facet_symmetric_diff), r
+    assert (r.facet_local, r.facet_global, r.facet_degenerate) == (0, 0, 10), r
