@@ -332,10 +332,20 @@ MARGIN_CASES = {
     # 贯入：顶点在体内；棱-棱贯入（交叉方条，无任何顶点在对方体内）
     "deep": ("pen", lambda: (_tet().translated((0.0, 0.0, 0.3)), _box())),
     "crossbars": ("pen", lambda: (box((0.0, 0.0, 0.45), (2.0, 0.2, 0.1)), box((0.0, 0.0, 0.0), (0.2, 2.0, 0.4)))),
+    # 偏航 1e-5 rad 的方块叠在方块上方 0.06：最近对含 EE（候选法向恰在 B 顶棱弧的边界上，EE 冻结朝向的边界态；
+    # G6 第五轮 major：frozen_ee_sign 漏了候选法向自身的噪声 /sinθ，一经旋转 + 平移就把朝向判反，冻结 gap 给 −d）
+    "sep_ee_yaw": ("sep", lambda: _yawed_stack(1e-5, 0.06)),
     # 凹体：互锁块（nx=3 以控制耗时）抬起后分离 / 横移咬进
     "ilock_sep": ("sep", lambda: _ilock_pair((0.11, -0.07, 0.3))),
     "ilock_bite": ("pen", lambda: _ilock_pair((0.12, 0.0, 0.0))),
 }
+
+
+def _yawed_stack(yaw, gap):
+    c, sn = math.cos(yaw), math.sin(yaw)
+    top = box(center=(0.0, 0.0, 1.0 + gap), half=(0.5, 0.5, 0.5))
+    A = Polyhedron([(c * x - sn * y, sn * x + c * y, z) for x, y, z in top.verts], list(top.faces))
+    return A, box(half=(0.5, 0.5, 0.5))
 
 
 def _ilock_pair(off):

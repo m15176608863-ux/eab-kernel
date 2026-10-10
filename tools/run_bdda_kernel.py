@@ -23,6 +23,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 FIX = ROOT / "fixtures" / "bdda_df"
+sys.path.insert(0, str(ROOT / "tools"))
+from ingest_fixtures import upsert_provenance  # noqa: E402
 BDDA = Path(r"D:\b-DDA")
 KERNEL = BDDA / "build" / "kernel" / "df_rebuilt.exe"
 SANDBOX = Path(os.environ.get("CLAUDE_SCRATCHPAD",
@@ -32,6 +34,9 @@ KEEP = ("bdda_debug_contacts.csv", "bdda_debug_verts.csv", "bdda_debug_df18.csv"
         "bdda_debug_df18s2.csv", "bdda_debug_df22s2.csv", "bdda_debug_m0s2.csv", "bdda_debug_m01s2.csv",
         "bdda_debug_detparams.csv", "bdda_debug_cand.csv", "bdda_debug_zsto.csv", "bdda_debug_zsto2.csv",
         "bdda_debug_k2.csv", "bdda_debug_k2step.csv", "bdda_progress.csv", "bdda_resid.csv")
+
+
+NONREPRO = ["bdda_debug_contacts.csv / df18 / m0s2 首步 o3、o4（未初始化残值）", "bdda_progress.csv wall_clock"]
 
 
 def sha256(p: Path) -> str:
@@ -65,9 +70,7 @@ def run(bb: str, db: str, steps: int, source: str, timeout: int = 600) -> Path:
         raise RuntimeError(f"kernel rc={proc.returncode} in {work}")
     dest = FIX / tag
     dest.mkdir(parents=True, exist_ok=True)
-    prov_path = FIX.parent / "PROVENANCE.json"
-    prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {"entries": []}
-    seen = {e["dest"]: e for e in prov["entries"]}
+    entries = []
     copied = 0
     for name in KEEP:
         s = work / name
@@ -76,18 +79,17 @@ def run(bb: str, db: str, steps: int, source: str, timeout: int = 600) -> Path:
         d = dest / name
         shutil.copyfile(s, d)
         rel = f"bdda_df/{tag}/{name}"
-        seen[rel] = {"dest": rel, "source": f"generated: {KERNEL} on df/{'bench/' if source == 'bench' else ''}{bb}+{db} "
+        entries.append({"dest": rel, "source": f"generated: {KERNEL} on df/{'bench/' if source == 'bench' else ''}{bb}+{db} "
                                             f"BDDA_KERNEL_MODE=1 BDDA_DF17_DEBUG=1 BDDA_DUMP_STEPS={steps} (sandbox {work})",
                      "ingested": str(date.today()), "status": "ok", "bytes": d.stat().st_size, "sha256": sha256(d),
                      "kernel_sha256": sha256(KERNEL),
                      # G6 第四轮 provenance 镜头：只记内核哈希分不出"内核变了"与"残值变了"——输入也记哈希；首步 o3/o4 与
-                     # wall_clock 是不可复现列（未初始化残值 / 时间戳），同一 exe、同一输入重跑 16 份里 3 份逐字节不同
+                     # wall_clock 是不可复现列（未初始化残值 / 时间戳），同一 exe、同一输入重跑 16 份里 **4 份**逐字节不同
+                     # （contacts、df18、m0s2 三张表的首步 o3/o4 + progress 的 wall_clock；G6 第五轮沙箱实测三例皆然）
                      "input_sha256": {bb: sha256(src_dir / bb), db: sha256(src_dir / db)},
-                     "nonreproducible": ["bdda_debug_contacts.csv / df18 / m0s2 首步 o3、o4（未初始化残值）",
-                                         "bdda_progress.csv wall_clock"]}
+                     "nonreproducible": NONREPRO})
         copied += 1
-    prov["entries"] = [seen[k] for k in sorted(seen)]
-    prov_path.write_text(json.dumps(prov, ensure_ascii=False, indent=1), encoding="utf-8")
+    upsert_provenance(entries, FIX.parent / "PROVENANCE.json")      # 与 ingest_fixtures 同一写法（显式 CRLF，按 dest 排序）
     print(f"OK {tag}: {copied} files -> {dest}")
     return dest
 

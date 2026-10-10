@@ -202,6 +202,14 @@ def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
         nn = sum(v * v for v in n)
         tn = sum(t * v for t, v in zip(tangent, n)) / nn
         t1 = tuple(tangent[i] - tn * n[i] for i in range(3))
+        # 被测量是投影 |t1|，它的噪声是 ~u·|tangent| 的舍入（纪律 F）：tangent 与 n 在舍入内平行时 t1 是逐分量的舍入垃圾，
+        # 归一化后不在切平面内（n·t1 可达 0.17），内接棱锥被歪斜、承载力静默高估 19%（G6 第五轮 minor）。说不清就报错。
+        lt = sum(v * v for v in tangent) ** 0.5
+        if not sum(v * v for v in t1) ** 0.5 > 64.0 * 2.220446049250313e-16 * lt:
+            raise ValueError(f"tangent {tangent!r} is parallel to normal {n!r} within rounding; it has no resolvable "
+                             f"component in the tangent plane")
+        tn2 = sum(t * v for t, v in zip(t1, n)) / nn                      # 第二遍正交化：余量压到 eps
+        t1 = tuple(t1[i] - tn2 * n[i] for i in range(3))
     ln = sum(v * v for v in t1) ** 0.5
     if not ln > 0.0:
         raise ValueError(f"tangent {tangent!r} has no component in the tangent plane of normal {n!r}")
@@ -706,6 +714,11 @@ def check_duality(res: LimitResult, contacts: list[LimitContact], dead: list[flo
     里判定，尺度被 |ω|·|o' − o| 放大 ~|p|/L 倍（UTM 下 ~4e6），tol = 1e-7 实际放宽成 O(1)，α×0.5、×2 都被放行。
     与 `limit_load` 的关系（纪律 A 的如实声明）：两边共用的只有锥棱与黏聚方向（`friction_generators`/`_tangents`，
     它们是模型定义）；力矩与荷载平移 `limit_load` 用有理数（`_exact_wrench`/`_exact_shift`），这里用浮点，互不共用。
+    **对 α 本身的分辨率**（G6 第五轮 minor，如实写明）：静力块与对偶间隙都按恒载 / 接触力的总量做尺度，所以这一自校验能分辨的
+    α 相对误差是 tol ×（恒载与接触力总量）/（α·|W_live|），**不是** tol。承载力远小于恒载时（滑动 α = μW 的 μ ≤ 1e-4、
+    无摩擦黏聚 α = ΣcA 的 cA/W ≤ 1e-4）注入的 α×0.999 不再被抓，1e-5 时 α×0.99 也放行；μ、cA/W ≥ 1e-3 时都能抓到
+    （tests/test_limit_selfcheck.py）。另一处不对称：这里的速度尺度 V̂ 含荷载作用点速度，`mechanism_is_admissible` 不含，
+    细高体（h/L ≥ 1e3）上 1e-4·ωL 的贯入两边判法不同。这两点是"静力 / 功率的总量尺度"这把尺的固有分辨率，不是 α 的。
     `res` 必须是用同一组 contacts / dim / k 算出的 optimal 结果；列数或对偶段长度对不上直接 ValueError，
     不做错位比较（审查 C1/C24：旧版只按摩擦棱重建列表，带黏聚力时与 res.lambdas 错位、且截掉了 y_r）。
     """

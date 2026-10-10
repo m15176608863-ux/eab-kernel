@@ -153,9 +153,16 @@ def edge_arc_contains(P: Polyhedron, e: tuple[int, int], d: Vec3, tol: float = 0
     w = angle_between(n1, n2)
     a1 = angle_between(n1, d)
     a2 = angle_between(n2, d)
-    if a1 + a2 <= w + tol + f1 + f2 + 1e-12:
+    excess = a1 + a2 - w                     # 楔内为 0（舍入内）；越出某一侧 δ 时为 2δ
+    if excess <= 1e-12:
         if a1 > tol + f1 and a2 > tol + f2:
             return 1
+        return 0
+    # **逐侧**允差（G6 第五轮 critical）：越过 n1 只许 tol + f1、越过 n2 只许 tol + f2。旧判据 excess ≤ tol + f1 + f2
+    # 是对称和——越过 x 面法向 1.41e-3 rad 的方向借倒角三角面的噪声 f2 = 2.2e-3 混进楔内，再按 x 面自己的噪声判"严格"，
+    # local_facets3 多出假 EE，membership_convex3 对真相交位形答"分离"（假间隙 +1.9e-3，所称分辨率的 1e6 倍）。
+    side_noise = f1 if a1 <= a2 else f2      # 越出的是离 d 较近的那一侧法向
+    if 0.5 * excess <= tol + side_noise + 1e-12:
         return 0
     return -1
 
@@ -402,9 +409,15 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         # 棱参数带 = 长度带 / 棱长 + 杠杆项：棱方向噪声 rfl/|e| × 到对方见证点的距离 |g|，再除以棱长（投影点随方向噪声的漂移，
         # 与面内判定的"间隙 × 面法向噪声"同一口径）。远离的棱对（|g| = 101、|e| = 1）参数舍入 ~ rfl·|g|/|e|² 是 rfl/|e| 的百倍，
         # 恰在段端点上的边界态盖在工程坐标下曾被判出程（不变性元门 2026-10-10 加入尺寸比 100 的对后暴露）
+        # 交点沿棱的位置本身是被测量（纪律 F），它的噪声随夹角病态（G6 第五轮）：位置噪声 rfl 把交点挪 rfl/sinθ；
+        # 方向噪声（两棱之和）经间隙杠杆挪 |g|·(n_A + n_B)/sin²θ——两条近平行、上下相距 g 的棱，一条竖向倾斜 δ，
+        # 最近点就沿棱移 g·δ/θ²。偏航 1e-5 的叠放方块（棱长 1e-3、坐标 1e5）实测交点从 s = 0.5 漂到 3.29、整条盖判出程，
+        # 8 条真并列的 EE 里丢 4 条，按枚举序裁决的标签随刚体运动改变。sinθ ≈ 1 时退化为原式（长度带 + 间隙 × 方向噪声）。
         rfl = _pair_floor(A, B)
-        ba = (fl + abs(g) * rfl / norm(dA)) / norm(dA)
-        bb = (fl + abs(g) * rfl / norm(dB)) / norm(dB)
+        sth = norm(c)                                               # sinθ（tA、tB 为单位向量）
+        shift = max(fl, rfl / sth) + abs(g) * (A.edge_noise(ea) + B.edge_noise(eb)) / (sth * sth)
+        ba = shift / norm(dA)
+        bb = shift / norm(dB)
         in_ext = (-ba <= s <= 1.0 + ba) and (-bb <= t <= 1.0 + bb)
         if not 0.0 <= s <= 1.0:
             qa = add(pa0, mul(dA, _clamp01(s)))                     # 钳到棱段端点，另一点重取垂足（仍一致）
@@ -498,7 +511,10 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) 
       in_extent = 分离方向 a − b 落在交锥内 ⟺ 参考点到 E 的最近特征正是这个顶点（活跃）。
     """
     a, b = A.verts[ia], B.verts[ib]
-    is_vertex = cones_intersect_relint(A, ia, B, ib, max(tol, 1e-12))
+    # 丢弃型判据只用舍入噪声（模块政策）：调用方的角容差 tol 只管 active 的边界带，不许当"是不是 E 的顶点"的丢弃阈值——
+    # 锥裕度落在 (噪声, tol] 的真 E 顶点被丢后，没有任何盖实现最近对（VE3/EV3 的参数带盖不住 gap·裕度 的垂足越界），
+    # 裕度层自校验在分离 0.14 的一对上抛错（G6 第五轮 minor：偏航 1e-11 … 1e-9 的两个方块角对角）。
+    is_vertex = cones_intersect_relint(A, ia, B, ib, 1e-12)
     if not is_vertex:
         return None
     v = sub(a, b)

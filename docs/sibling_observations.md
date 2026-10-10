@@ -11,10 +11,17 @@
 - 三维接触枚举（tf04/tf05）目前没有任何独立对账通道（refkernel3d 只覆盖 K/F 装配）。eab-kernel Phase 2 将成为第一份。
 
 ### 导师线 DDA4.x（DDAKernel.cpp 4.5）
-- `contact_topology_audit_output` 只产出**逐步汇总**（`DDA31::ContactTopologyStepAudit`：接触键 = (vertexId, edgeStartId, edgeEndId)，状态 = `m0[i][2]`，去重/无效计数，跨步差分），写进运行报告 JSON 的 `cross_step_contact_topology_audit` 字段；**没有逐接触导出**。eab 对它只能做集合级/计数级对账。若要逐接触对账需内核加导出——导师线不改，仅记录。
+- `contact_topology_audit_output` 只产出**逐步汇总**（`DDA31::ContactTopologyStepAudit`：接触键 = (vertexId, edgeStartId, edgeEndId)，状态 = `m0[i][2]`，去重/无效计数，跨步差分），写进运行报告 JSON 的 `cross_step_contact_topology_audit` 字段。~~没有逐接触导出~~ **订正（2026-10-10，G6 第五轮 major）**：同一份
+  `DDAKernel.cpp` 自带逐接触导出 `contact_diagnostics_v3.tsv`（列头约在 :6118–6125：step、time、contact_index、block_vertex、block_edge、
+  vertex_id、edge_start_id、edge_end_id、joint_material、contact_type、state_previous_iteration、state_current、normal_overlap、normal_stiffness、
+  compressive_normal_force、friction…、slip_increment；逐接触行约在 :19712–19726，对每个 `m0[i][2] != 0` 的闭合接触写一行），受运行参数
+  `contact_diagnostics_output`（默认 0）与科学档位控制。所以逐接触对账的通道**本来就有**，不需要内核加导出；"只能做集合级/计数级对账"的
+  结论撤回。四轮审查都没人核这条外部前提，canon_map 第八节曾据此把 DDA4.x 读取器记成"做不了"。
 
 ### b-DDA
-- `bdda_debug_contacts.csv` 只有顶点号（p1..p3），块号只在 `bdda_debug_df18.csv`；两表必须按 (step, contact) 合并才能得到完整记录。首步 o3/o4 是**未初始化残值**（任意内存垃圾：同一 exe、同一输入重跑，量级从 1e-307 到 9e+56 不等；1e-307 也不是次正规数，最小正规数是 2.2e-308），有限但无意义，读取器原样保留、不清洗——所以对**重跑**产物 `test_fixture_bytes_match_provenance` 会在 contacts/df18/m0s2 三表与 progress 的 wall_clock 上红，分不出"内核变了"与"残值变了"（G6 第四轮 provenance 镜头实测 16 份里 3 份红）；run_bdda_kernel.py 自 2026-10-10 起把输入哈希与不可复现列记进溯源条目。
+- `bdda_debug_contacts.csv` 只有顶点号（p1..p3），块号只在 `bdda_debug_df18.csv`；两表必须按 (step, contact) 合并才能得到完整记录。首步 o3/o4 是**未初始化残值**（任意内存垃圾：同一 exe、同一输入重跑，量级从 1e-307 到 9e+56 不等；1e-307 也不是次正规数，最小正规数是 2.2e-308），有限但无意义，读取器原样保留、不清洗——所以对**重跑**产物 `test_fixture_bytes_match_provenance` 会在 contacts/df18/m0s2 三表与 progress 的 wall_clock 上红，分不出"内核变了"与"残值变了"（G6 第四轮 provenance 镜头报 16 份里 3 份红；第五轮在沙箱对 bb52 / bbF038 / bbW025 各重跑，实为 **4 份**：contacts、df18、m0s2 三张表的首步
+  o3/o4 + progress 的 wall_clock，其余 12 份逐字节一致）；run_bdda_kernel.py 自 2026-10-10 起把输入哈希与不可复现列记进溯源条目，
+  已入库的 48 条生成型条目于同日补记当日输入哈希（`input_sha256_note` 写明是补记、生成时的输入未记录）。
 - `bdda_debug_df18.csv` 同一 (step, contact) 可能多行（逐开闭迭代），读取器保留末行并记 `_df18_rows`。
 
 ### 3-b-dda（bdda3d）

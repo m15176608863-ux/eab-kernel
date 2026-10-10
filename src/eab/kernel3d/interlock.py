@@ -44,7 +44,7 @@ from ..dual import Dual, Number, val
 from ..margin import characteristic_length, effective_geom_tol, rounding_floor
 from .covers3 import ee_cover, enumerate_covers3, fv_cover, vf_cover
 from .frozen import FACET_KINDS, frozen_ee_sign, frozen_gap, frozen_normal  # noqa: F401  (L5 转出的公共入口)
-from .geom3 import Polyhedron, Vec3, dot, polyhedra_overlap, sub
+from .geom3 import Polyhedron, Vec3, cross, dot, norm, polyhedra_overlap, sub
 
 _EPS = sys.float_info.epsilon
 REL_BRUTE_GEOM_TOL = 1e-12         # oracle 的谓词容差：特征长度 L 的相对量
@@ -97,17 +97,33 @@ class EscapeSolution:
     tied_labels: tuple = ()
 
 
-def _cover_escape_z(cover) -> tuple[float, float] | None:
+def _normal_noise(A: Polyhedron, B: Polyhedron, cover) -> float:
+    """盖法向自身的方向噪声（弧度）：VF 取 B 那张面的、FV 取 A 那张面的面法向噪声；EE 取候选 unit(t_B × t_A) 的
+    (n_A + n_B)/sinθ（与 covers3.ee_cover / facet_normal3 同一口径）。"""
+    kind, af, bf = cover.label()
+    if kind == "VF":
+        return B.face_noise(bf[1])
+    if kind == "FV":
+        return A.face_noise(af[1])
+    if kind == "EE":
+        ea, eb = (af[1], af[2]), (bf[1], bf[2])
+        return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+    return 0.0
+
+
+def _cover_escape_z(cover, noise: float = 0.0) -> tuple[float, float] | None:
     """单个盖在竖直线上的零间隙高度与它的 n_z：解 gap(z) = 0。
 
     盖的 gap 沿平移 x 是仿射的：gap(x) = n·(a + x − b)，故 gap(z) = gap(offset) + z·(n·ẑ)。
-    只有 n·ẑ > 0 的盖（抬升能把它拉开）才给出有限的逃逸高度（n 是单位向量，1e-12 无量纲）。
+    只有 n·ẑ **可分辨地** > 0 的盖（抬升能把它拉开）才给出有限的逃逸高度：n_z 是被测量，它的噪声是盖法向自身的方向噪声
+    `noise`（`_normal_noise`）——竖直墙面的 n_z 在工程坐标下是 ~1e-11 的纯舍入，旧的绝对阈值 1e-12 把它当成"朝上"，
+    z = −gap/n_z 是垃圾高度（G6 第五轮 critical：U 形槽里的键在 |t| = 1e5 处报 0.99 / 0.58 / 0.35，真值 0.2）。
     """
     n = cover.normal
     if n is None:
         return None
     nz = n[2]
-    if nz <= 1e-12:
+    if nz <= max(1e-12, noise):
         return None
     return -cover.gap / nz, nz
 
@@ -135,7 +151,7 @@ def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_t
     raw: list[tuple] = []
     for idx, c in enumerate(enumerate_covers3(At, B, window=float("inf"), tol=tol, require_in_extent=False,
                                               include_low_dim=False)):
-        zn = _cover_escape_z(c)
+        zn = _cover_escape_z(c, _normal_noise(At, B, c))
         if zn is None:
             continue
         z, nz = zn
@@ -172,7 +188,8 @@ def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float 
     低维盖（VE3/EV3/VV3）不参与：它们的 gap 是无符号距离（≥ 0），z = −gap/n_z ≤ 0，
     从不给出 z > 0 的候选（旧实现里它们只以 z≈0 出现，随即被裁决循环跳过）。
     法向间隙在舍入地板（64·eps·C）以内的负高度记为 0（旧：绝对 −1e-12，工程坐标上会把相触的盖丢掉）。
-    门：tests/test_interlock_escape.py。
+    门："不漏真解"在 tests/test_interlock_escape.py；"只留真接触"与 z* 处的棱内带 = geom_tol_eff 在
+    tests/test_interlock_candidates_contract.py（G6 第五轮：此前这两半句只被 test_interlock_sensitivity 间接看护）。
     """
     gtol = effective_geom_tol(A.translated(offset), B, geom_tol)
     return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
@@ -194,7 +211,8 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     精度与并列（见模块"容差政策"）：谓词容差 geom_tol_eff 随尺度；高度精确到 geom_tol_eff / n_z
     （谓词分辨率——比真值低这么多的候选谓词也分不出贯入）；`tied_labels` 用同一把尺（法向间隙
     ≤ geom_tol_eff）判，分辨带内的点报出两支、不会"可微却给错支"。胜出盖 = 接受高度上舍入意义的并列组里
-    枚举序第一个，`height` 取它的零间隙高度（冻结闭式在舍入内复现）。
+    枚举序第一个；`height` 取**谓词接受的那个候选高度**（不是胜出盖自己的零间隙高度——二者只差舍入，但胜出盖的 n_z 小时
+    它自己的高度病态；G6 第五轮 critical）。冻结闭式复现胜出盖的零间隙高度，与 height 相差在并列组的舍入带内。
     """
     At = A.translated(offset)
     gtol = effective_geom_tol(At, B, geom_tol)
@@ -221,10 +239,10 @@ def _escape_solution(z: float, nz: float, cands: list[tuple], gtol: float, r: fl
     """
     pos = [t for t in cands if t[0] > 0.0]
     exact = [t for t in pos if abs(t[0] - z) * t[2] <= r * (1.0 + t[2] / nz)]
-    zw, win, _, iw = min(exact, key=lambda t: t[3])
+    _, win, _, iw = min(exact, key=lambda t: t[3])
     band = sorted((t for t in pos if abs(t[0] - z) * t[2] <= gtol + r * (1.0 + t[2] / nz)), key=lambda t: t[3])
     tied = (win,) + tuple(t[1] for t in band if t[3] != iw)
-    return EscapeSolution(zw, win, len(cands), tied)
+    return EscapeSolution(z, win, len(cands), tied)
 
 
 def escape_height_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple,

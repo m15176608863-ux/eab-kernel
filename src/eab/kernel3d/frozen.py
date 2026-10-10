@@ -10,8 +10,8 @@
 from __future__ import annotations
 
 from ..dual import Number, val
-from .covers3 import edge_arc_contains
-from .geom3 import Polyhedron, dot, mul, sub, unit
+from .covers3 import _orth, edge_arc_contains
+from .geom3 import Polyhedron, cross, norm
 
 
 def face_normal_generic(P: Polyhedron, fi: int):
@@ -42,19 +42,29 @@ def ee_normal_generic(A: Polyhedron, ea, B: Polyhedron, eb, sign: float = 1.0):
     return (sign * nx / ln, sign * ny / ln, sign * nz / ln)
 
 
+def _as_float(P: Polyhedron) -> Polyhedron:
+    """顶点坐标里有对偶数时取实部另建一个 float 多面体（择支只在 float 上做）；全是 float 原样返回。"""
+    if all(type(c) is float for v in P.verts for c in v):
+        return P
+    return Polyhedron([tuple(float(val(c)) for c in v) for v in P.verts], list(P.faces))
+
+
 def frozen_ee_sign(A: Polyhedron, B: Polyhedron, ea, eb, tol: float = 1e-9) -> float:
     """float 路径下定出的 EE 法向朝向，作为冻结组合结构的一部分交给对偶路径。
 
-    探针方向对 B 的棱**按构造正交化**后再判弧（与 covers3.ee_cover / facet_normal3 同一口径，
-    G6 critical 6 的同类：叉积对近平行棱只正交到 eps/sinθ）。这里是 float 择支，不进对偶通道。"""
-    n = ee_normal_generic(A, ea, B, eb, 1.0)
-    probe = (val(n[0]), val(n[1]), val(n[2]))
-    tB = tuple(val(c) for c in unit(sub(tuple(val(c) for c in B.verts[eb[1]]),
-                                        tuple(val(c) for c in B.verts[eb[0]]))))
-    for _ in range(2):
-        probe = sub(probe, mul(tB, dot(probe, tB)))
-    probe = unit(probe)
-    return -1.0 if edge_arc_contains(B, eb, probe, tol) < 0 else 1.0
+    与 covers3.facet_normal3 / ee_cover **同一把尺**：候选 unit(t_B × t_A) 对 B 的棱按构造正交化后判弧，
+    弧判据的角容差 = 调用方 tol + 候选法向**自身**的方向噪声 (noise_A(ea) + noise_B(eb)) / |t_B × t_A|
+    （叉积只正交到 eps/sinθ，两条棱的方向噪声被 1/sinθ 放大）。
+    G6 第五轮 major：此前只用 tol，偏航 1e-5 的叠放方块（候选恰在 B 棱弧的边界上）一经一般旋转并平移到 |t| = 1e3，
+    就被判成弧外、取反向——margin_gap_from_frozen_cover 对 body_distance 自己选出的 EE 标签给出 −d（分离判成闭合），
+    而 facet_normal3 与 ee_cover 同一位形给 +d。这里是 float 择支，不进对偶通道。"""
+    Af, Bf = _as_float(A), _as_float(B)
+    tA, tB = Af.edge_dir(ea), Bf.edge_dir(eb)
+    c = cross(tB, tA)
+    nc = norm(c)
+    ctol = tol + (Af.edge_noise(ea) + Bf.edge_noise(eb)) / nc
+    probe = _orth(c, tB)                     # 与 ee_normal_generic(…, +1) 同向（同一叉积 t_B × t_A），按构造 ⊥ t_B
+    return -1.0 if edge_arc_contains(Bf, eb, probe, ctol) < 0 else 1.0
 
 
 # 冻结路径支持的盖种类 = `body_distance` / `escape_candidates` 可能给出的全部种类。
