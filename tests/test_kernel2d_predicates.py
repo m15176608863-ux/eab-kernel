@@ -353,14 +353,16 @@ def test_a_t_vertex_one_ulp_above_the_lowest_edge_is_still_convex(quarter):
 @pytest.mark.parametrize("s", [1e-3, 1.0, 1e3])
 @pytest.mark.parametrize("tmag", [0.0, 1e3, 1e5, 1e6])
 def test_flat_vertices_survive_every_axis_aligned_rigid_motion(P, quarter, s, tmag):
-    """复核者的 480 格扫描：带平直顶点的凸块 × 四个朝向 × 三个单位 × 四个平移，convex_entrance_block 必须都能构造，
+    """复核者扫描的子集（2 × 4 × 3 × 4 = 96 格）：带平直顶点的凸块 × 四个朝向 × 三个单位 × 四个平移，两块一起缩放平移，
+    convex_entrance_block 必须都能构造，
     facet 数与原位相同（平直顶点不产生 FF、也不产生零长 facet）。"""
     Q = [(s * x, s * y) for x, y in P]
     for _ in range(quarter):
         Q = [(-y, x) for x, y in Q]
     Q = [(x + 0.6 * tmag, y - 0.8 * tmag) for x, y in Q]
     ref = convex_entrance_block(SQUARE, P).facets
-    got = convex_entrance_block([(s * x + 0.6 * tmag, s * y - 0.8 * tmag) for x, y in SQUARE] if False else SQUARE, Q).facets
+    # A 侧同样缩放、平移（旧版 `if False else SQUARE` 让 A 永远是原位单位方块——G6 第四轮 minor：门不测它声称的东西）
+    got = convex_entrance_block([(s * x + 0.6 * tmag, s * y - 0.8 * tmag) for x, y in SQUARE], Q).facets
     assert len(got) == len(ref) and sorted(f[0] for f in got) == sorted(f[0] for f in ref), (got, ref)
 
 

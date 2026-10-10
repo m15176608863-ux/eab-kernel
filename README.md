@@ -64,12 +64,19 @@
 > - **094861c**：直接进 main、未经复核，只改 `src/eab/limit.py` 的模块文档（诚实条款："是否转动"不是对偶最优面的一般不变量，
 >   门的指向改到 `test_failure_mode_is_read_off_invariants_of_the_dual_face`），不改代码与测试。
 > - 合起来，b1bbd27 之后主干上 6f157ac、b26d7f5、77600c9、8376ec2、094861c 五件都没有经过独立验证者（`git log --oneline --no-merges b1bbd27..094861c`）。
+>   **订正（2026-10-10）**：这是 09-24 写时的口径；此后 G6 第一轮（09-24，`reports/g6_20260924.json`）、第二轮、第三轮的镜头都读过这几件涉及的
+>   代码与门并报出缺陷（见各轮报告），"没有经过任何独立验证者"保留作历史，不再是现状。
 
 ## 现状（2026-10-10）
 
 全套 **6717** 个测试全绿（2026-10-10，G6 第三轮全部修复后的工作树 9e88720；09-24 时为 1209，M0.2/M0.3/M1 的不变性元门与分辨率门把数目抬到这里；
 `python -X utf8 -m pytest -q -p no:cacheprovider`）。
-**复核覆盖（2026-10-10）**：下表里写着"未经复核·待 G6"的行（跨层端到端、L4、L5 TIA、L2 定理门、L1 三维票一/票三）已被 G6 第二轮（lp-limit / theory-fidelity / legacy-2d / gate-quality 镜头）与第三轮（geometry-3d / gate-quality / claims-vs-code / lp-limit 镜头）读过并报出缺陷（两份报告的 coverage_notes 逐路写明读了什么）；按规矩，"✔"只在 M0 退出（0 critical / 0 major）后升级，所以那些字样先不动。
+**复核覆盖（2026-10-10，第四轮 claims-vs-code 镜头核对后逐文件如实列）**：下表里写着"未经复核·待 G6"的行，按两份报告的 coverage_notes
+实查——**有逐行读的记录**：`tests/test_margin.py`（g6b theory-fidelity，"most of"）、`tests/test_frozen_lowdim.py`（同上）、
+`tests/test_interlock_sensitivity.py`（只有陡折门）、`tests/test_end_to_end_cb2.py`（g6b gate-quality；g6c 只执行）；
+**只有执行 / 变异子集的记录、无人逐行读**：`tests/test_dual.py`（L4）、`tests/test_interlock_escape.py`（L5 TIA）、
+`tests/test_covers3_membership.py`（L1 三维票一/票三）、`tests/test_geom3_merge.py`、`tests/test_geom3_face_polygon.py`（L0）。
+第三轮盲区 gaps[1] 只闭合了一部分，余下五个文件列入第四轮 gate-quality 镜头；在此之前这些行的"未经复核"字样不动，"✔"也只在 M0 退出后升级。
 表里每个 ✔ 后面的括号给出看护它的测试（纪律 C：写不出测试的不打 ✔）。文件名省略 `tests/` 前缀。
 
 | 层 | 状态 |

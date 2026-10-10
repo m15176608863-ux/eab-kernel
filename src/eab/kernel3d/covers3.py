@@ -44,7 +44,8 @@ from dataclasses import dataclass
 from math import atan2
 
 from . import geom3
-from .geom3 import Polyhedron, Vec3, add, angle_between, cross, dot, mul, neg, noise_floor, norm, sub, unit
+from .geom3 import (Polyhedron, Vec3, _exact_line_params, add, angle_between, cross, dot, mul, neg, noise_floor, norm,
+                    sub, unit)
 
 
 def _pair_floor(A: Polyhedron, B: Polyhedron) -> float:
@@ -340,17 +341,21 @@ def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, e
 
 
 def _closest_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, float] | None:
-    """两直线最近点参数（d1、d2 为方向向量，非单位亦可）；平行返回 None。"""
-    a, b, c = dot(d1, d1), dot(d1, d2), dot(d2, d2)
-    den = a * c - b * b
-    if den <= 1e-24 * a * c:                   # sin²θ ≤ 1e-24：平行（相对判据）
+    """两直线最近点参数（d1、d2 为方向向量，非单位亦可）；平行返回 None。
+
+    **叉积式**：n = d1 × d2，s = ((p2 − p1) × d2)·n / |n|²，t = ((p2 − p1) × d1)·n / |n|²。|n|² = a·c·sin²θ 直接算出、
+    不经 a·c − b² 的抵消——旧式 den = a·c − b² 在 θ ≲ 1e-7 时是舍入垃圾，参数相对误差 eps/sin²θ 达 0.02 … 2，见证距离在
+    gap ≲ θ·|e| 时一阶错、in_extent 也按垃圾参数判（G6 第四轮 major：θ = 1e-8、间隙 1e-9 的两条脊棱 body_distance 报 1.8e-9，
+    真值 1.0e-9，膨胀成员判定 fail-unsafe）。平行判据按 |n|² ≤ 1e-24·a·c（sin²θ ≤ 1e-24）。"""
+    a, c = dot(d1, d1), dot(d2, d2)
+    n = cross(d1, d2)
+    nn = dot(n, n)
+    if nn <= 1e-24 * a * c:
         return None
-    w = sub(p1, p2)
-    d = dot(d1, w)
-    e = dot(d2, w)
-    s = (b * e - c * d) / den
-    t = (a * e - b * d) / den
-    return s, t
+    if nn <= 1e-12 * a * c:                         # sin²θ ≤ 1e-12：浮点参数不可信，按坐标精确算（geom3._exact_line_params）
+        return _exact_line_params(p1, d1, p2, d2)
+    w = sub(p2, p1)
+    return dot(cross(w, d2), n) / nn, dot(cross(w, d1), n) / nn
 
 
 def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, int],
@@ -388,7 +393,8 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         # 一致的见证对：qa 取 A 棱直线上的 s 处，qb 取 **qa 在 B 棱直线上的垂足**（t 由 qa 定，不独立求）。
         # 近平行棱（夹角 θ）上 _closest_params 的 s、t 各带 ~eps/sin²θ 的误差且互不相关，独立求出的两点沿棱错位
         # (Δs − Δt)·|e|，见证距离偏大 (Δs − Δt)²|e|²/(2d)（θ = 1e-5、d = 1e-3 时 2e-10，远超自校验窗口；G6 第三轮 major）。
-        # 距离对"沿棱滑动"不敏感（θ²Δs²/2d），所以 s 的误差无妨，错位才要命。gap 沿 facet 法向，与 s、t 无关。
+        # 距离对"沿棱滑动"不敏感（θ²Δs²/2d）只在 gap ≫ θ·|e| 时成立；gap ≲ θ·|e| 时 s 的误差一阶地进见证距离，
+        # 所以 s 本身也要稳（_closest_params 的叉积式，G6 第四轮 major）。gap 沿 facet 法向，与 s、t 无关。
         qa = add(pa0, mul(dA, s))
         t = dot(sub(qa, pb0), dB) / dot(dB, dB)
         qb = add(pb0, mul(dB, t))

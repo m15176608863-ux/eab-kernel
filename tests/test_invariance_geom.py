@@ -385,11 +385,11 @@ def test_merge_coplanar_face_count_is_invariant(rot, tmag, s):
 
 # ================================================================ G6 第三轮 minor：票二"说不清"带宽的牙
 
-@pytest.mark.parametrize("tmag,amb,dropped,glob", [(1e5, 0, 0, 39), (1e6, 1, 2, 37)])
+@pytest.mark.parametrize("tmag,amb,dropped,glob", [(1e5, 0, 0, 39), (1e6, 2, 2, 37)])
 def test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells(tmag, amb, dropped, glob):
     """带 (tight/16, 4·tight] 此前没有牙：删掉第二候选判据、把带改成 1/100–100 倍或单侧 1–4 倍，G03 组 + 本文件 1748 例照绿。
     generic 对在 R7、s = 1e-3 的两个格上（精确算术复核过）：|t| = 1e5 时全部 39 个 facet 都是真 facet、带内比值 23.6/28.3
-    必须判清楚（上限 4 不许漂到 ≥ 24）；|t| = 1e6 时恰一个 facet 落在带内（比值 2.825）、丢两个局部标签（下限 1/16 不许收到
+    必须判清楚（上限 4 不许漂到 ≥ 24）；|t| = 1e6 时恰两个 facet 说不清（凸包按噪声地板建、支撑带按它实际用过的厚度 eps 之后的口径，2026-10-10）、丢两个局部标签（下限 1/16 不许收到
     不含 2.825）。"""
     base = _base("generic")
     M = Motion(7, tmag, 1e-3)

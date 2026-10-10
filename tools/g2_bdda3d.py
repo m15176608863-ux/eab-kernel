@@ -98,8 +98,13 @@ def polyhedron_with_aliases(pts: list[tuple[float, float, float]], tol: float = 
     # convex_hull_3d 的 tol 是**相对**点集对角线的（M0.2 起），merge_coplanar 的 tol 是**角度**（弧度，内部再加逐面的
     # 法向噪声）：去重长度 tol 不进这两个接口。旧版把绝对地板 fl 当相对容差传给凸包（C = 1e6 的 1 km 块：厚平面带放大
     # L 倍到 2.5e-5 m，真实的小倒角被吸进去、再被当"非凸包角点"抛错）、把长度 tol 当角度传给归并（G6 第三轮 minor）。
-    hull = merge_coplanar(convex_hull_3d([loc[i] for i in reps], max(1e-12, fl / L if L > 0.0 else 0.0)),
-                          max(1e-12, fl / L if L > 0.0 else 0.0))
+    # 凸包在局部坐标算（remap 对 loc 比对），**共面归并在原坐标**算、只取面拓扑：merge_coplanar 的逐面法向噪声按它看到的
+    # 坐标量级取 noise_floor，局部坐标里只有 ~L，比原坐标 C 处的真实舍入小 C/L 倍——含短棱 h 的细三角其 Newell 法向误差
+    # ~eps·C/h 超出容差，共面三角不被归并（一般旋转 + C ≥ 1e3 + h/L ≤ 1e-7：90 格 14 格返回 8～10 面，G6 第四轮 minor）
+    _rel = max(1e-12, fl / L if L > 0.0 else 0.0)
+    _hl = convex_hull_3d([loc[i] for i in reps], _rel)
+    _hm = merge_coplanar(Polyhedron([tuple(a + b for a, b in zip(v, o)) for v in _hl.verts], list(_hl.faces)), _rel)
+    hull = Polyhedron(list(_hl.verts), list(_hm.faces))
     remap: dict[int, int] = {}
     for hi, hv in enumerate(hull.verts):
         best, bd = None, float("inf")

@@ -354,7 +354,9 @@ class Polyhedron:
         c = self.centroid()
         if point_in_polyhedron(c, self, 0.0) == 1:
             return c
-        raise ValueError("interior_point: failed to find an interior point")
+        raise ValueError("interior_point: failed to find an interior point — the body is thinner than the coordinate "
+                         "resolution (~2·c·eps·C) or is not a closed manifold; margin / overlap predicates cannot "
+                         "resolve it at these coordinates")
 
     def aabb(self) -> tuple[Vec3, Vec3]:
         xs = [p[0] for p in self.verts]
@@ -546,7 +548,9 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
     for fi, f in enumerate(P.faces):
         n = normals[fi]
         d0 = dot(n, sub(p, P.verts[f[0]]))
-        if abs(d0) <= eps_t and point_in_face_polygon(add(p, mul(n, -d0)), P, fi, tol):
+        # 欧氏带（G6 第四轮 major）：旧版是"离平面 ≤ eps_t 且面内在 tol 带内"的盒带，欧氏距离可达 √(eps_t² + tol²)，两体尺寸比
+        # ≥ 1e3 时 eps_t ≈ gtol，真间距在 (ctol, √2·ctol) 的分离位形被答成相触、裕度层再升成哨兵
+        if abs(d0) <= eps_t and hypot(d0, _distance_to_face_polygon(add(p, mul(n, -d0)), P, fi)) <= max(tol, eps_t):
             # 起点在射线法的分辨率之下就落在表面上：任何方向都会 t≈0 命中，奇偶无从谈起。
             # 返回"边界"是正确答案（2026-09-18 实测：偏移 3.3e-10 > tol=1e-12 的点）。
             # 面内判定的边界带是调用方的 tol：旧版用射线退化带 eps_edge = 1e-9·diag，顶点落在对方某面的平面上、
@@ -564,10 +568,11 @@ def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
             if t < -eps_t:
                 continue
             if t <= eps_t:
-                # 起点就在这个面的平面上：它在多边形内（含 tol 带）的情形上面的捷径已答 0；落在多边形外的（块共用地板、
-                # 角点在对方底面之外 g > tol）这里不是交叉也不是退化——用调用方的 tol 判，不用 1e-9·diag 的射线退化带
+                # 起点就在这个面的平面上：它在多边形内（含带）的情形上面的捷径已答 0；落在多边形外的（块共用地板、
+                # 角点在对方底面之外 g > tol）这里不是交叉也不是退化——用欧氏带判（同上面的捷径），不用 1e-9·diag 的射线退化带
                 # （G6 第三轮 major：旧版把这种点当退化、所有方向退化后答"边界"，裕度层再升成贯入）
-                if face_polygon_locate(p, P, fi, tol) < 0:
+                d0 = dot(n, sub(p, P.verts[f[0]]))
+                if hypot(d0, _distance_to_face_polygon(add(p, mul(n, -d0)), P, fi)) > max(tol, eps_t):
                     continue
                 degenerate = True
                 break
@@ -880,21 +885,54 @@ def _contact_cone_witness(A: Polyhedron, B: Polyhedron, tol: float,
     return None, bool(ee)
 
 
+def _exact_line_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, float] | None:
+    """两直线最近点参数的**有理数精确**求法（对给定的浮点坐标精确）：n = d1 × d2，s = ((p2 − p1) × d2)·n/|n|²，
+    t = ((p2 − p1) × d1)·n/|n|²。近平行（sin²θ ≲ 1e-12）时浮点里 |n|² 与分子都被舍入吞掉（叉积式也只把 eps/sin²θ 降到
+    eps/sinθ，旋转后的棱向量自带舍入，θ = 1e-9 时 s 仍是垃圾）——信息只在坐标的全部位里，所以用 Fraction 算（G6 第四轮 major）。
+    平行（|n|² = 0）返回 None。"""
+    from fractions import Fraction as F
+    P1, D1, P2, D2 = ([F(x) for x in v] for v in (p1, d1, p2, d2))
+    n = [D1[1] * D2[2] - D1[2] * D2[1], D1[2] * D2[0] - D1[0] * D2[2], D1[0] * D2[1] - D1[1] * D2[0]]
+    nn = sum(c * c for c in n)
+    if nn == 0:
+        return None
+    w = [a - b for a, b in zip(P2, P1)]
+    wd2 = [w[1] * D2[2] - w[2] * D2[1], w[2] * D2[0] - w[0] * D2[2], w[0] * D2[1] - w[1] * D2[0]]
+    wd1 = [w[1] * D1[2] - w[2] * D1[1], w[2] * D1[0] - w[0] * D1[2], w[0] * D1[1] - w[1] * D1[0]]
+    return float(sum(a * b for a, b in zip(wd2, n)) / nn), float(sum(a * b for a, b in zip(wd1, n)) / nn)
+
+
 def _seg_seg_distance(p1: Vec3, p2: Vec3, q1: Vec3, q2: Vec3) -> float:
+    """两线段的最短距离：**候选枚举**——内点候选用叉积式参数 s = ((q1 − p1) × d2)·n/|n|²、t = ((q1 − p1) × d1)·n/|n|²
+    （n = d1 × d2，不经 a·c − b² 的抵消），再加四条边上（s ∈ {0, 1}、t ∈ {0, 1}）各一个钳位候选，取最小。
+    G6 第四轮 major：旧版 den = a·c − b² ∝ sin²θ，近平行棱（θ ≲ 1e-7）上 den 是舍入垃圾，s 先算成垃圾再钳位，距离偏向端点垂足
+    （θ = 1e-8、间隙 1e-9 时报 1.8e-9 … 7e-9，且与参数次序有关）；盖路径 covers3._closest_params 用同一公式，两边同错同值，
+    裕度层自校验失明。候选枚举对参数次序对称。"""
     d1, d2 = sub(p2, p1), sub(q2, q1)
-    a, b, c = dot(d1, d1), dot(d1, d2), dot(d2, d2)
-    w = sub(p1, q1)
-    d, e = dot(d1, w), dot(d2, w)
-    den = a * c - b * b
-    if den > 1e-300:
-        s = max(0.0, min(1.0, (b * e - c * d) / den))
-    else:
-        s = 0.0
-    t = (b * s + e) / c if c > 1e-300 else 0.0
-    t = max(0.0, min(1.0, t))
-    s = (b * t - d) / a if a > 1e-300 else 0.0
-    s = max(0.0, min(1.0, s))
-    return norm(sub(add(p1, mul(d1, s)), add(q1, mul(d2, t))))
+    a, c = dot(d1, d1), dot(d2, d2)
+    w = sub(q1, p1)
+
+    def at(s: float, t: float) -> float:
+        return norm(sub(add(p1, mul(d1, s)), add(q1, mul(d2, t))))
+    best = float("inf")
+    n = cross(d1, d2)
+    nn = dot(n, n)
+    if nn > 0.0:
+        if nn <= 1e-12 * a * c:                     # sin²θ ≤ 1e-12：浮点参数不可信，按坐标精确算（_exact_line_params）
+            st = _exact_line_params(p1, d1, q1, d2)
+            s, t = st if st is not None else (-1.0, -1.0)
+        else:
+            s = dot(cross(w, d2), n) / nn
+            t = dot(cross(w, d1), n) / nn
+        if 0.0 <= s <= 1.0 and 0.0 <= t <= 1.0:
+            best = at(s, t)
+    for s in (0.0, 1.0):
+        t = max(0.0, min(1.0, dot(sub(add(p1, mul(d1, s)), q1), d2) / c)) if c > 0.0 else 0.0
+        best = min(best, at(s, t))
+    for t in (0.0, 1.0):
+        s = max(0.0, min(1.0, dot(sub(add(q1, mul(d2, t)), p1), d1) / a)) if a > 0.0 else 0.0
+        best = min(best, at(s, t))
+    return best
 
 
 def _point_face_distance(p: Vec3, P: Polyhedron, fi: int) -> float | None:
@@ -977,10 +1015,25 @@ def convex_hull_3d(points: list[Vec3], tol: float = 1e-12, *, max_tol: float = _
     if not 0.0 <= tol < 1e-3:
         raise ValueError(f"convex_hull_3d: tol is a relative tolerance (fraction of the point-set diameter), "
                          f"got {tol!r}")
+    return convex_hull_3d_eps(points, tol, max_tol=max_tol)[0]
+
+
+def convex_hull_3d_eps(points: list[Vec3], tol: float = 1e-12, *, max_tol: float = _HULL_TOL_MAX) -> tuple[Polyhedron, float]:
+    """同 `convex_hull_3d`，另返回**实际建成时**的厚度容差 eps_d = max(t·L, c·eps·C)（t 是放大后的相对容差）：
+    调用方（G0 票二）的支撑带与细条判据要按凸包真正用过的尺子，而不是请求的尺子（G6 第四轮 major：两把尺）。"""
+    if not 0.0 <= tol < 1e-3:
+        raise ValueError(f"convex_hull_3d: tol is a relative tolerance (fraction of the point-set diameter), "
+                         f"got {tol!r}")
+    pts = list(dict.fromkeys(points))
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    zs = [p[2] for p in pts]
+    lo, hi = (min(xs), min(ys), min(zs)), (max(xs), max(ys), max(zs))
+    L = norm(sub(hi, lo))
     t = tol
     while True:
         try:
-            return _quickhull(points, t)
+            return _quickhull(points, t), max(t * L, noise_floor(coord_scale(lo, hi)))
         except HullNumericalFailure:
             if t >= max_tol:
                 raise

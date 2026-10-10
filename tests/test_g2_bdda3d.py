@@ -657,12 +657,25 @@ def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm
 
 
 @pytest.mark.parametrize("C,h", [(0.0, 1e-6), (1e5, 1e-6), (1e6, 1e-5)])
-def test_polyhedron_with_aliases_keeps_a_small_chamfer_at_any_coordinate_magnitude(C, h):
+@pytest.mark.parametrize("rot", [0, 3, 11])
+def test_polyhedron_with_aliases_keeps_a_small_chamfer_at_any_coordinate_magnitude(C, h, rot):
     """G6 第三轮 minor：1 km 立方体一个角削去 h 的倒角（10 顶点 7 面）：旧版把绝对地板当相对容差传给凸包，C = 1e5 时倒角
-    顶点被吸进厚平面带、再被当"非凸包角点"抛错。"""
+    顶点被吸进厚平面带、再被当"非凸包角点"抛错。第四轮 minor：一般旋转后共面归并在局部坐标里低估法向噪声，返回 8～10 面——
+    归并改在原坐标做；这里加一般旋转格（rot = 0 为恒等）。"""
+    import math
+    import random
     from g2_bdda3d import polyhedron_with_aliases
     L = 1000.0
     pts = [(0, 0, 0), (L, 0, 0), (L, L, 0), (0, L, 0), (0, 0, L), (L, 0, L), (L - h, L, L), (0, L, L), (L, L - h, L), (L, L, L - h)]
+    if rot:
+        rng = random.Random(9100 + rot)
+        q = [rng.gauss(0.0, 1.0) for _ in range(4)]
+        n = math.sqrt(sum(c * c for c in q))
+        w, x, y, z = (c / n for c in q)
+        R = ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+             (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+             (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+        pts = [tuple(sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in pts]
     pts = [(x + C, y + C, z + C) for x, y, z in pts]
     P, _ = polyhedron_with_aliases(pts, block=1)
     assert len(P.faces) == 7 and P.manifold_issues() == []

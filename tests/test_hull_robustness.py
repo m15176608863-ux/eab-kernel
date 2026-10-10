@@ -30,6 +30,23 @@ def _fr_orient(a, b, c, p):
     return (d > 0) - (d < 0)
 
 
+def _exact_worst_outside(H: Polyhedron, pts) -> float:
+    """输入点越出凸包各面的最大有符号距离，Fraction 精确（法向 = 面前三点的叉积，距离 = 点积 / |n|）。"""
+    worst = 0.0
+    for f in H.faces:
+        o, a, b = (tuple(Fraction(c) for c in H.verts[i]) for i in f[:3])
+        u = tuple(x - y for x, y in zip(a, o))
+        v = tuple(x - y for x, y in zip(b, o))
+        n = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
+        nn = n[0] * n[0] + n[1] * n[1] + n[2] * n[2]
+        if nn == 0:
+            continue
+        top = max(sum(ni * (Fraction(pi) - oi) for ni, pi, oi in zip(n, p, o)) for p in pts)
+        if top > 0:
+            worst = max(worst, math.sqrt(float(top * top / nn)))
+    return worst
+
+
 def _worst_outside(H: Polyhedron, pts) -> float:
     return max(dot(H.face_normal(fi), sub(p, H.verts[H.faces[fi][0]])) for fi in range(len(H.faces)) for p in pts)
 
@@ -250,6 +267,10 @@ def test_rotated_ridge_needle_family_builds_without_escalation(seed, tm, s):
     H = G3._quickhull(diffs, 1e-12)                                   # 不经 convex_hull_3d 的放大
     assert H.manifold_issues() == []
     assert len(H.verts) >= 20
+    # 精确凸性 oracle（G6 第四轮 minor：旧门没有凸性断言，把自检的面噪声放宽项放大 100 倍全套照绿）：每个输入点在每个面的
+    # 内侧，越界不超过 4·eps_d（Fraction 精确算；120 格实测最大 0.99·eps_d）
+    eps_d = G3._quickhull_once(list(dict.fromkeys(diffs)), 1e-12, set())[2]
+    assert _exact_worst_outside(H, diffs) <= 4.0 * eps_d, (seed, tm, s, _exact_worst_outside(H, diffs), eps_d)
     calls = []
     real = G3._quickhull
     monkey = lambda p, tol: (calls.append(tol), real(p, tol))[1]
@@ -282,3 +303,47 @@ def test_max_tol_cap_raises_instead_of_escalating_forever(monkeypatch):
     calls.clear()
     assert len(convex_hull_3d(pts, tol=1e-12, max_tol=1e-8).verts) == 8
     assert calls[-1] == pytest.approx(1e-8)
+
+
+def test_exact_convexity_oracle_catches_a_point_the_build_was_made_to_ignore(monkeypatch):
+    """放宽尺度的牙：把一个离最细条面 10·eps_d 的点加进输入、再让构建忽略它（monkeypatch _quickhull_once 的 skip），
+    返回的"凸包"要么被自检抛错，要么被精确 oracle 判越界——两者都不发生才是门失效（自检按面噪声放宽后对细条面附近
+    ≤ fn·力臂 的越界不敏感，凸性由这里的精确 oracle 把关）。"""
+    rng = random.Random(777)
+    h = 10 ** rng.uniform(-9, -4)
+    r = 10 ** rng.uniform(math.log10(3e-4), -1)
+    sec = [(-1.0, -1.0), (1.0, -1.0), (1.0, 0.0), (0.0, h), (-1.0, 0.0)]
+    B = Polyhedron([(-2.0, y, z) for y, z in sec] + [(2.0, y, z) for y, z in sec],
+                   [(4, 3, 2, 1, 0), (5, 6, 7, 8, 9)] + [(i, (i + 1) % 5, 5 + (i + 1) % 5, 5 + i) for i in range(5)])
+    A = convex_hull_3d([(0.3, 0.0, h + 0.05)] + [(0.3 + r * math.cos(t), r * math.sin(t), h + 1.05) for t in (0.1, 2.1943951, 4.2887902)])
+    R = _rot(5)
+    A, B = _rotated(A, R), _rotated(B, R)
+    pts = list(dict.fromkeys(sub(b, a) for a in A.verts for b in B.verts))
+    H0, _, eps_d = G3._quickhull_once(pts, 1e-12, set())
+    # 最细条的面：面噪声 fl·周长/面积最大者
+    fl = G3.noise_floor(G3.coord_scale(*pts))
+    worst_face, worst_fn = None, -1.0
+    for f in H0.faces:
+        o, a, b = (H0.verts[i] for i in f[:3])
+        n = G3.cross(sub(a, o), sub(b, o))
+        area2 = G3.norm(n)
+        per = G3.norm(sub(a, o)) + G3.norm(sub(b, a)) + G3.norm(sub(o, b))
+        fn = fl * per / area2 if area2 > 0 else float("inf")
+        if fn > worst_fn:
+            worst_face, worst_fn = f, fn
+    o, a, b = (H0.verts[i] for i in worst_face[:3])
+    n = G3.unit(G3.cross(sub(a, o), sub(b, o)))
+    cen = tuple((o[i] + a[i] + b[i]) / 3.0 for i in range(3))
+    p_star = tuple(cen[i] + 10.0 * eps_d * n[i] for i in range(3))
+    pts2 = pts + [p_star]
+    idx = len(pts2) - 1
+    real_once = G3._quickhull_once
+
+    def ignoring(points, tol, skip):
+        return real_once(points, tol, set(skip) | {idx})
+    monkeypatch.setattr(G3, "_quickhull_once", ignoring)
+    try:
+        H = G3._quickhull(pts2, 1e-12)
+    except HullNumericalFailure:
+        return                                                      # 自检抓到了
+    assert _exact_worst_outside(H, pts2) > 4.0 * eps_d, "被忽略的外点既没被自检抓到、精确 oracle 也看不见——门失效"

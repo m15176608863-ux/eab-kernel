@@ -337,7 +337,7 @@ def _edge_angle(P: Poly, i: int) -> float:
     return a if a >= 0.0 else a + 2 * pi
 
 
-def _unwrapped_angles(a0: float, edges: list[Point], name: str) -> list[float]:
+def _unwrapped_angles(a0: float, edges: list[Point], name: str, rfl: float = 0.0) -> list[float]:
     """从最低点出发的凸 CCW 多边形各边的方向角，按**相邻边转角累加**得到（不跨 0/2π 缝）。
 
     首边理想方向角 ∈ [0, π)，舍入可使它成 −δ（_edge_angle 映到 2π − δ），减回去。之后每条边 = 前一条 + 转角
@@ -351,11 +351,20 @@ def _unwrapped_angles(a0: float, edges: list[Point], name: str) -> list[float]:
         a0 -= 2 * pi
     angs = [a0]
     total = 0.0
+    def _turn(e0: Point, e1: Point, k: int) -> float:
+        t = atan2(cross(e0, e1), dot(e0, e1))
+        # 转角 ≈ ±π = 边界沿自己的边折回（"尖刺"：一个顶点落在非相邻边的线上、随后折回再凹拐）：总转角仍是 2π、凸包深度
+        # 也可以 ≤ t，三道凸性检查都放过它，却造出深陷凸包的非凸 E（G6 第四轮 minor）。折回只能在两边方向噪声之和以内判
+        nz = rfl / norm(e0) + rfl / norm(e1)
+        # 方向噪声超过 π/2 的边（几个 ulp 长的倒角边）方向不可知，折回无从判——交给方向可行窗按凸性夹住，这里不判
+        if nz < 0.5 * pi and abs(t) >= pi - nz - 1e-12:
+            raise ValueError(f"input polygon {name} folds back on itself at edge {k} (turning angle {t:.6f} rad ≈ ±π)")
+        return t
     for k in range(1, len(edges)):
-        turn = atan2(cross(edges[k - 1], edges[k]), dot(edges[k - 1], edges[k]))
+        turn = _turn(edges[k - 1], edges[k], k)
         total += turn
         angs.append(angs[-1] + turn)
-    total += atan2(cross(edges[-1], edges[0]), dot(edges[-1], edges[0]))
+    total += _turn(edges[-1], edges[0], 0)
     if abs(total - 2 * pi) > 1e-6:
         raise ValueError(f"input polygon {name} not convex: total turning angle {total:.6f} rad is not 2π "
                          f"(the boundary winds more than once)")
@@ -424,8 +433,9 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
     iP, iQ = _start_index(P), _start_index(Q)
     eP = [sub(*reversed(edge(P, (iP + k) % n))) for k in range(n)]
     eQ = [sub(*reversed(edge(Q, (iQ + k) % m))) for k in range(m)]
-    loP, hiP, angP = _angle_windows(_unwrapped_angles(_edge_angle(P, iP), eP, "B"), eP, round_floor(coord_scale(P)))
-    loQ, hiQ, angQ = _angle_windows(_unwrapped_angles(_edge_angle(Q, iQ), eQ, "A"), eQ, round_floor(coord_scale(Q)))
+    rflP, rflQ = round_floor(coord_scale(P)), round_floor(coord_scale(Q))
+    loP, hiP, angP = _angle_windows(_unwrapped_angles(_edge_angle(P, iP), eP, "B", rflP), eP, rflP)
+    loQ, hiQ, angQ = _angle_windows(_unwrapped_angles(_edge_angle(Q, iQ), eQ, "A", rflQ), eQ, rflQ)
     i = j = 0
     cur = add(P[iP], Q[iQ])
     verts = [add(cur, a0)]

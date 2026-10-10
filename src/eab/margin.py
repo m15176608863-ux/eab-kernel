@@ -183,7 +183,9 @@ def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None):
     `brute_feature_distance`（全部特征对、不经法锥）在舍入内相等，否则抛 RuntimeError——
     盖枚举漏掉最近特征对（报远处的盖、答"安全"）或见证点不在两体上（距离少报）都不许静默返回。
     相触时（谓词答 0）必须有见证落在相触分辨率 ctol 内；没有（比 2·ctol 还薄的体被分辨带"蚀穿"，或谓词在它自己的
-    分辨率下看到了见证表看不到的接触）按贯入处理——三个入口一致答"已违约"，偏安全侧。
+    分辨率下看到了见证表看不到的接触）按贯入处理——三个入口一致答"已违约"，偏安全侧。厚度低于坐标舍入 ~2·c·eps·C 的体
+    （1 nm 的薄板搬到 1e5 处）谓词找不到严格内点，三个入口以 ValueError('interior_point: … thinner than the coordinate resolution')
+    响亮失败，不装作答了（G6 第四轮 minor）。
     """
     gtol = effective_geom_tol(A, B, geom_tol)
     ctol = contact_resolution(A, B, geom_tol)
