@@ -79,7 +79,12 @@ def run(bb: str, db: str, steps: int, source: str, timeout: int = 600) -> Path:
         seen[rel] = {"dest": rel, "source": f"generated: {KERNEL} on df/{'bench/' if source == 'bench' else ''}{bb}+{db} "
                                             f"BDDA_KERNEL_MODE=1 BDDA_DF17_DEBUG=1 BDDA_DUMP_STEPS={steps} (sandbox {work})",
                      "ingested": str(date.today()), "status": "ok", "bytes": d.stat().st_size, "sha256": sha256(d),
-                     "kernel_sha256": sha256(KERNEL)}
+                     "kernel_sha256": sha256(KERNEL),
+                     # G6 第四轮 provenance 镜头：只记内核哈希分不出"内核变了"与"残值变了"——输入也记哈希；首步 o3/o4 与
+                     # wall_clock 是不可复现列（未初始化残值 / 时间戳），同一 exe、同一输入重跑 16 份里 3 份逐字节不同
+                     "input_sha256": {bb: sha256(src_dir / bb), db: sha256(src_dir / db)},
+                     "nonreproducible": ["bdda_debug_contacts.csv / df18 / m0s2 首步 o3、o4（未初始化残值）",
+                                         "bdda_progress.csv wall_clock"]}
         copied += 1
     prov["entries"] = [seen[k] for k in sorted(seen)]
     prov_path.write_text(json.dumps(prov, ensure_ascii=False, indent=1), encoding="utf-8")

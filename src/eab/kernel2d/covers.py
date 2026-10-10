@@ -99,6 +99,35 @@ def _edge_len(P: Poly, k: int) -> float:
     return norm(sub(q, p))
 
 
+def _chain_normal(P: Poly, k: int) -> tuple[Point, int]:
+    """边 k 所在"噪声内共线链"里最长那条边的外法向与下标。
+
+    相邻两边的夹角 ≤ 两边方向噪声之和（各 rfl/|e|）就算同一条直线：T 形顶点把一条边拆成两段、倒角边只有几个 ulp 长，都是这种。
+    短边自己的外法向只准到 rfl/|e|，拿它当整个 E 的半平面，在离它 D 远处错 D·rfl/|e|——G6 第四轮 critical：T 形顶点的短边
+    旋转到 1e3 处后法向偏 4.9e-6 rad，离它 0.3 远的参考点压进 1e-6 却被这条 facet 判"在外"。链里最长边的法向误差 rfl/|e_long|，
+    乘上 D ≤ E 的尺寸 ~ |e_long| 仍是 rfl 级。链的延伸以**当前最长边**为基准判共线（方向是纯噪声的倒角边不能把两条 90° 的
+    长边串成一链）。与 facet_gap 的 FF 分支"取较长边的法向"同一政策（判据要加被测方向自己的噪声，这是第四处遗漏）。"""
+    n = len(P)
+    rfl = round_floor(coord_scale(P))
+
+    def collinear(i: int, j: int) -> bool:
+        pi, qi = edge(P, i)
+        pj, qj = edge(P, j)
+        ei, ej = sub(qi, pi), sub(qj, pj)
+        return dot(ei, ej) > 0.0 and abs(cross(ei, ej)) <= rfl * (norm(ei) + norm(ej))
+    best = k
+    for step in (1, -1):
+        j = k
+        for _ in range(n - 1):
+            j2 = (j + step) % n
+            if j2 == k or not collinear(best, j2):
+                break
+            j = j2
+            if _edge_len(P, j) > _edge_len(P, best):
+                best = j
+    return outward_normal(P, best), best
+
+
 # ---------------------------------------------------------------- 单个盖
 
 def _vertex_ring(P: Poly, i: int) -> tuple[Point, Point, Point]:
@@ -204,7 +233,10 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
         return Cover("VV", ia, jb, None, 0.0, None, a, True, a, b)
     u = unit(d)
     au = _ang(u)
-    active = any(best[0] - vt <= au + 2 * pi * k <= best[1] + vt for k in (-1, 0, 1))
+    # 分离方向 u = unit(a − b) 自身的噪声 rfl/|a − b|（三维 ve3/ev3/vv3 第三轮已补 fl/|v|，二维同类第四轮补上）：
+    # 方向恰在交锥边界、两顶点间距远小于坐标量级时，strict 曾随刚体运动对半翻转，盖标签集不再不变（G6 第四轮 major）
+    du = round_floor(max(abs(a[0]), abs(a[1]), abs(b[0]), abs(b[1]))) / dist
+    active = any(best[0] - vt - du <= au + 2 * pi * k <= best[1] + vt + du for k in (-1, 0, 1))
     return Cover("VV", ia, jb, u, dist, None, a, active, a, b)
 
 
@@ -230,8 +262,11 @@ def enumerate_covers(A: Poly, B: Poly, *, window: float, tol: float = 0.0,
             c = ve_cover(A, ia, B, jb, tol, cone_tol)
             if c is not None and abs(c.gap) <= window:
                 if require_in_segment:
+                    # 带 = (长度带 + 杠杆项 |a − b0|·rfl/|e|) / |e|：投影参数还带边方向噪声 × 到顶点的距离（三维第三轮补的同一项；
+                    # 顶点恰投影在短边端点、间隙 ≫ 边长时旧带宽 st/|e| 远小于它，盖随刚体运动随机出入边内带，G6 第四轮 minor）
                     le = _edge_len(B, jb)
-                    if not (-st / le <= c.param <= 1.0 + st / le):
+                    band = (st + lf * norm(sub(A[ia], edge(B, jb)[0])) / le) / le
+                    if not (-band <= c.param <= 1.0 + band):
                         continue
                 out.append(c)
     for ka in range(nA):
@@ -240,7 +275,8 @@ def enumerate_covers(A: Poly, B: Poly, *, window: float, tol: float = 0.0,
             if c is not None and abs(c.gap) <= window:
                 if require_in_segment:
                     le = _edge_len(A, ka)
-                    if not (-st / le <= c.param <= 1.0 + st / le):
+                    band = (st + lf * norm(sub(B[ib], edge(A, ka)[0])) / le) / le
+                    if not (-band <= c.param <= 1.0 + band):
                         continue
                 out.append(c)
     for ia in range(nA):
@@ -267,7 +303,8 @@ def first_entrance_for_vertex(A: Poly, ia: int, B: Poly, *, window: float, tol: 
         if c is None or abs(c.gap) > window:
             continue
         le = _edge_len(B, jb)
-        if not (-st / le <= c.param <= 1.0 + st / le):
+        band = (st + lf * norm(sub(A[ia], edge(B, jb)[0])) / le) / le          # 含杠杆项，同 enumerate_covers
+        if not (-band <= c.param <= 1.0 + band):
             continue
         if best is None or c.gap > best.gap:
             best = c
@@ -440,17 +477,20 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
 def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
     """E 的一条 facet 在平移 x 下的有符号间隙（>0 参考点在该 facet 外侧）。"""
     kind, ai, bj = label
+    # 法向一律取该边所在噪声内共线链里最长边的（_chain_normal）：短边的法向误差 × 杠杆距离会超过成员容差
     if kind == "VE":
-        nB = outward_normal(B, bj)
+        nB, _ = _chain_normal(B, bj)
         return dot(nB, sub(add(A[ai], x), edge(B, bj)[0]))
     if kind == "FF":
-        # 平行贴边：facet 过点 b_j0 − a_i0（两条边的起点，ai 是 A 该平行边的起点顶点），外法向取**两条边里长的那条**的
+        # 平行贴边：facet 过点 b_j0 − a_i0（两条边的起点，ai 是 A 该平行边的起点顶点），外法向取**两条链里长的那条**的
         # 法向——短边（在工程坐标上可能短到方向是纯噪声，c·eps·C/|e| ≫ 1）的法向不可用（G6 第三轮 minor 的后半）
-        b0, b1 = edge(B, bj)
-        a0, a1 = edge(A, ai)
-        n = outward_normal(B, bj) if norm(sub(b1, b0)) >= norm(sub(a1, a0)) else neg(outward_normal(A, ai))
+        b0, _ = edge(B, bj)
+        a0, _ = edge(A, ai)
+        nb, kb = _chain_normal(B, bj)
+        na, ka = _chain_normal(A, ai)
+        n = nb if _edge_len(B, kb) >= _edge_len(A, ka) else neg(na)
         return dot(n, sub(add(a0, x), b0))
-    nA = outward_normal(A, ai)
+    nA, _ = _chain_normal(A, ai)
     return dot(nA, sub(B[bj], add(edge(A, ai)[0], x)))
 
 

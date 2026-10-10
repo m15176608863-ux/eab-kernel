@@ -30,7 +30,7 @@ def source_note(name: str) -> str:
     """PROVENANCE 的来源说明：写清楚知道什么、不知道什么。"""
     return (f"tools/ingest_bdda3d.py 导出：在 {SIBLING} 自己的环境里（子进程，PYTHONPATH=src）运行 "
             f"bdda3d.{BUILDERS[name]}，取 ss.blocks 顶点与入口 dict 列表写 JSON。姊妹仓库版本未记录；"
-            f"入口是 detect.py 的枚举产出还是算例预置列表，未核实。")
+            f"入口是算例预置的手写列表（cases.py 的 build_* 里逐条写死，不是 detect.py 的枚举产出；2026-09-24 G6 盲区 1 核实，2026-10-10 第四轮 provenance 镜头只读复核 D:\3-b-dda\src\bdda3d\cases.py:112-128，refs/t1/t2/d1 可手算复现）。")
 
 # 在子进程里执行的脚本：只读 bdda3d，把 (ss, C) 转成纯 JSON。
 CHILD = r'''

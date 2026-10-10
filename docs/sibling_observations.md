@@ -14,7 +14,7 @@
 - `contact_topology_audit_output` 只产出**逐步汇总**（`DDA31::ContactTopologyStepAudit`：接触键 = (vertexId, edgeStartId, edgeEndId)，状态 = `m0[i][2]`，去重/无效计数，跨步差分），写进运行报告 JSON 的 `cross_step_contact_topology_audit` 字段；**没有逐接触导出**。eab 对它只能做集合级/计数级对账。若要逐接触对账需内核加导出——导师线不改，仅记录。
 
 ### b-DDA
-- `bdda_debug_contacts.csv` 只有顶点号（p1..p3），块号只在 `bdda_debug_df18.csv`；两表必须按 (step, contact) 合并才能得到完整记录。首步 o3/o4 出现 1e-307 量级次正规数（未初始化残值），有限但无意义，读取器原样保留、不清洗。
+- `bdda_debug_contacts.csv` 只有顶点号（p1..p3），块号只在 `bdda_debug_df18.csv`；两表必须按 (step, contact) 合并才能得到完整记录。首步 o3/o4 是**未初始化残值**（任意内存垃圾：同一 exe、同一输入重跑，量级从 1e-307 到 9e+56 不等；1e-307 也不是次正规数，最小正规数是 2.2e-308），有限但无意义，读取器原样保留、不清洗——所以对**重跑**产物 `test_fixture_bytes_match_provenance` 会在 contacts/df18/m0s2 三表与 progress 的 wall_clock 上红，分不出"内核变了"与"残值变了"（G6 第四轮 provenance 镜头实测 16 份里 3 份红）；run_bdda_kernel.py 自 2026-10-10 起把输入哈希与不可复现列记进溯源条目。
 - `bdda_debug_df18.csv` 同一 (step, contact) 可能多行（逐开闭迭代），读取器保留末行并记 `_df18_rows`。
 
 ### 3-b-dda（bdda3d）
@@ -80,8 +80,8 @@
 - 仍不知道的两件事，PROVENANCE 条目里如实写着（`test_bdda3d_provenance_states_what_is_and_is_not_known` 只看护第 (1) 句
   "版本未记录"还在；第 (2) 句目前只是条目文本，没有门）：
   (1) 导出时 3-b-dda 的**修订号没有记录**；
-  (2) 入口列表是 `detect.py` 的**枚举产出**，还是算例里**预置**的列表，**未核实**。
-- 下次重跑导出时把这两件都记下来。
+  (2) ~~入口列表是 `detect.py` 的枚举产出，还是算例里预置的列表，未核实~~——**已核实**（2026-09-24 G6 盲区 1；2026-10-10 第四轮只读复核 `cases.py:112-128`）：是算例里**预置**的手写列表；PROVENANCE 条目与 ingest 脚本的来源说明已同步改写。
+- 下次重跑导出时记下修订号。
 - **导出里分不出 locked 与 sliding**：`fixtures/bdda3d/cb2_locked.json` 与 `cb2_sliding.json` 逐字段比较，只有 `case` 名不同
   （几何、入口节理参数全同），三份 JSON 都没有荷载/驱动字段（2026-09-24 用 json 逐字段 diff 复核）。
   计划 M1 的"cb2 夹具的 sliding/locked 判决"因此做不了，除非重新导出时带上荷载或状态差异（`docs/plan_20260921.md` M1 订正）。

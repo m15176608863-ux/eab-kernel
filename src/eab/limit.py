@@ -251,6 +251,12 @@ class LimitContact:
             raise ValueError(f"contact normal must be a finite nonzero vector, got {self.normal!r}")
         n = sum((v / m) ** 2 for v in self.normal) ** 0.5
         self.normal = tuple(v / m / n for v in self.normal)
+        # G6 第四轮 minor：cohesion / area 为 NaN 或负数曾被 `cohesion > 0 and area > 0` 静默当成"无黏聚"，α 按纯摩擦给出、
+        # 自校验照常通过；mu 为 NaN 只在 Fraction(nan) 处以无关信息报错。非有限输入要在入口响亮失败（与法向同一家族）
+        for name in ("mu", "cohesion", "area"):
+            v = getattr(self, name)
+            if not (math.isfinite(v) and v >= 0.0):
+                raise ValueError(f"contact {name} must be finite and non-negative, got {v!r}")
 
 
 _SIDES = ("a", "b", "mid")

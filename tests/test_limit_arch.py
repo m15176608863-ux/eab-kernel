@@ -204,13 +204,27 @@ def test_capacity_is_monotone_in_friction_and_saturates_at_the_hinge_bound():
     assert alphas[-1] == pytest.approx(best, rel=1e-9)
 
 
-def test_arch_thrust_line_stays_inside_every_joint():
-    """下限定理的几何读法：每条缝上两个角点接触力的合力作用点（推力线）落在缝段之内。"""
+def test_arch_thrust_line_touches_the_hinge_corners_of_the_optimal_mechanism():
+    """推力线的有内容的读法（G6 第四轮 minor：旧门"合力作用点落在缝段内"由 λ ≥ 0 构造保证，是同义反复）：
+    高摩擦下 LP 取四铰机构；按互补，机构张开的那个角点法向力必须为零，推力线恰触到铰角——对枚举出的最优铰机构逐缝核对；
+    其余（粘住的）缝两个角点都可以受压，合力作用点在段内且法向合力 > 0。"""
     bodies, bcs = ARCH5.problem(2.0)
     r = limit_load_multi(bodies, bcs, dim=2)
+    best = min(ARCH5.hinge_mechanisms(), key=lambda t: t[0])
+    assert r.alpha == pytest.approx(best[0], rel=1e-9)
+    js, cs, _ = best[2]                                   # (铰缝, 铰在哪个角点 [0 内弧, 1 外弧], 朝向)
+    hinge_at = {int(j): int(c) for j, c in zip(js, cs)}
+    assert len(hinge_at) == 4
+    ntot = 0.0
+    nf = []
     for j in range(ARCH5.n + 1):
         i0, i1 = 2 * j, 2 * j + 1
         n = bcs[i0].contact.normal
         n0, n1 = (r.contact_forces[i][0] * n[0] + r.contact_forces[i][1] * n[1] for i in (i0, i1))
-        assert n0 >= -1e-12 and n1 >= -1e-12 and n0 + n1 > 0.0
-        assert 0.0 <= n1 / (n0 + n1) <= 1.0
+        nf.append((n0, n1))
+        ntot = max(ntot, n0 + n1)
+    for j, (n0, n1) in enumerate(nf):
+        assert n0 >= -1e-9 * ntot and n1 >= -1e-9 * ntot and n0 + n1 > 1e-9 * ntot, (j, n0, n1)
+        if j in hinge_at:
+            opening = n1 if hinge_at[j] == 0 else n0            # 铰在角 c，另一角张开 → 那里法向力为零
+            assert abs(opening) <= 1e-9 * ntot, (j, hinge_at[j], n0, n1)

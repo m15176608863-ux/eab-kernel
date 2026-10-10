@@ -6,7 +6,7 @@
 - `D:\E(A, B)\03 广义接触·裕度即接触与理论内核的去岩石化.md`（下称 **03**）——膨胀恒等式、KKT、C^{1,1} 正则化、五件套 K1–K5；
 - `D:\E(A, B)\00 石根华 E(A,B)·理论内核与向外发展分析.md`（下称 **00**）——谱系与三层诚实分类（§4.6）。
 
-**状态更新（2026-10-10，G6 第三轮之后）**：本表带函数名的 `file:line` 指针（两种写法）与下文点名的无名区间指针已按 HEAD 校正（10-10 两次：第三轮后 34 处，第四轮 claims-vs-code / regress 镜头又报 10 处，一并改）（第三轮 claims-vs-code 与 kernel-2d-readers 两个镜头各报 13/17 处过期）；下段"HEAD 094861c / 1209 passed / 尚未经过 G6"是 09-24 写表时的口径，此后 G6 第二轮（09-27，`reports/g6b_20260927.md`）与第三轮（10-10，`reports/g6c_20261010.md`）都读过本表；K4 行与附录 A.9 的 LP 契约数字按 HEAD 复跑订正（见各处 2026-10-10 注）。"正本对代码"（审查 GAP3）三轮都没有一路打开 `D:\E(A, B)` 的三份正本核对——**仍开放**。
+**状态更新（2026-10-10，G6 第三轮之后）**：本表带函数名的 `file:line` 指针（两种写法）与下文点名的无名区间指针已按 HEAD 校正（10-10 三次：第三轮后 34 处，第四轮 claims-vs-code / regress / provenance-canon 三路镜头又报 13 处，一并改；指针会随代码再次过期——以函数名为准、行号只作辅助）（第三轮 claims-vs-code 与 kernel-2d-readers 两个镜头各报 13/17 处过期）；下段"HEAD 094861c / 1209 passed / 尚未经过 G6"是 09-24 写表时的口径，此后 G6 第二轮（09-27，`reports/g6b_20260927.md`）与第三轮（10-10，`reports/g6c_20261010.md`）都读过本表；K4 行与附录 A.9 的 LP 契约数字按 HEAD 复跑订正（见各处 2026-10-10 注）。"正本对代码"（审查 GAP3）三轮都没有一路打开 `D:\E(A, B)` 的三份正本核对——**仍开放**。
 
 代码口径：`D:\eab-kernel` main，HEAD `094861c`。数字先在 `8376ec2` 上跑出；其后 `094861c` 只改 `src/eab/limit.py` 模块文档一行（诚实条款改指 `test_failure_mode_is_read_off_invariants_of_the_dual_face`），全套仍 `1209 passed`（`python -X utf8 -m pytest -q -p no:cacheprovider`，主工作树与新鲜克隆各跑一遍）。表里每一个"有门"都在 `094861c` 上跑过，命令见第八节。
 
@@ -43,7 +43,7 @@
 
 | 命题 | 一句话 | 前提 | 实现 | 看护的测试 | 状态 |
 |---|---|---|---|---|---|
-| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:353 convex_entrance_block`（按极角合并）；三维凸：显式 conv{b−a}，`margin.py:291 entrance_block_convex`、`g03.py:186-187`（票三） | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**。凹：**未实现**（没有全局 E，M3） |
+| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:353 convex_entrance_block`（按极角合并）；三维凸：显式 conv{b−a}，`margin.py:291 entrance_block_convex`、`g03.py:383`（票三：锥相交裕度） | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**。凹：**未实现**（没有全局 E，M3） |
 | **1·注3** 三分判据 | a₀ 在 E 外=分离，在内部=重叠，在边界=恰好接触 | 同上 | `covers.py:457 membership_convex`、`covers3.py:630 membership_convex3`，都返回 −1/1/0 | `test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x`（含 t=1.0、t=−2.0 两个恰相触的分界点，判 0）、`::test_membership_box_vs_box_matches_closed_form`、`::test_membership_tetra_vs_offcenter_box_matches_closed_form`（×1e-3/×1e3）、`test_kernel2d_g0.py::test_degenerate_parallel_edges_membership_still_exact` | 凸：**已实现+有门**。注意 G0 票一会跳过边界带，"=0"这一支只在闭式分界点上有门。凹：**未实现**——`polygons_overlap`（`geom.py:376`）/`polyhedra_overlap`（`geom3.py:616`）只是暴力 oracle，不是 E 的判据 |
 | **2(i)** 位置无关 | E 只依赖形状与朝向，可以预计算 | 只平移、不转动 | 结构上成立：法锥判据只读方向；`facet_gap`/`facet_gap3` 对平移是仿射的；`g0_convex3` 只算一次 `local_facets3` 给全部样本用（`g03.py:183`） | `test_kernel3d_covers.py::test_proposition_2i_position_independence`（+ `::test_position_independence_gate_has_teeth_*` 两条牙）、`test_invariance_geom.py::test_cover_labels_and_strictness_are_invariant` | **已实现+有门**（附录 A.3 的一次性复核已升格为门） |
 | **2(ii)** 凸性传递 | A、B 凸 ⟹ E 凸 | A、B 凸 | 作为前提被使用：凸成员谓词 = 若干半空间间隙取最大值 | 间接：票一（成员谓词 vs 暴力谓词逐样本一致） | **已实现，间接有门** |
@@ -134,7 +134,7 @@
 
 - **二维实现**：`covers.py:254 first_entrance_for_vertex`。它是一个**静态规则**：对 A 的一个顶点，在 B 的"投影落在边内的有效 VE 盖"里取间隙最大的一个；没有就退到活跃 VV。它**不接收运动方向**，而正本的首入是按运动定义的（"a₀ 首次触及 ∂E 的点"）。库内没有调用者，只有测试用它。
 - **什么情况下对**：B 凸时，单个顶点已侵入，"最大间隙"就是这个顶点到 B 边界的最短出口——与正本"已侵入取最短出口"在**单个顶点**的意义下一致（不是整个块对的穿透深度）。门只有一条：`test_first_entrance_picks_shallowest_penetration`（凸 B、已侵入、一个例子）。
-- **凹块分离情形：错**。docstring 自己写着（审查 r8，`covers.py:226-228`）。本表复核复现（附录 A.1）：细臂 L 块凹槽里放一个三角形顶点 (0.5, 0.3)，两块分离；边内有效 VE 盖有两个——到水平内边间隙 0.2、到竖直内边间隙 0.4。函数选了 **0.4 那条远边**，而最近的正间隙是 0.2。没有门看着这个错误（它是已知错误，不是回归）。
+- **凹块分离情形：错**。docstring 自己写着（审查 r8，`covers.py:290` 的 docstring）。本表复核复现（附录 A.1）：细臂 L 块凹槽里放一个三角形顶点 (0.5, 0.3)，两块分离；边内有效 VE 盖有两个——到水平内边间隙 0.2、到竖直内边间隙 0.4。函数选了 **0.4 那条远边**，而最近的正间隙是 0.2。没有门看着这个错误（它是已知错误，不是回归）。
 - **三维：2026-10-10 起有第一版**（`src/eab/kernel3d/entrance3.py`，M2：沿运动方向的首入、最短出口、FF/FE 退化族合并；凹体上靠谓词裁决、局部规则到不了的位形抛错不静默）。此前零实现：三维里唯一"沿一个方向找第一个 ∂E 点"的计算是 L5 的逃逸高度（`interlock.py:159 escape_candidates`、`:181 escape_height_covers`），方向固定为 +z，而且是"离开"不是"进入"。
 - 三维首入 M2 第一版已落地（有门、未经 G6）；在独立重审之前 README 只记"有门·未经复核"，不打 ✔。
 
@@ -173,7 +173,7 @@
 
 ## 六、"代码有、正本无"
 
-1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是本仓库在凹块上**唯一有门的 ∂E 命题**，正本没有。证明草稿在 `g0.py:249-252`（出口完备性 docstring）与 `g0.py:185-192`（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:232`。门见第四节 (d)。
+1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是本仓库在凹块上**唯一有门的 ∂E 命题**，正本没有。证明草稿在 `g0.py:249-252`（出口完备性 docstring）与 `g0.py:185-192`（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:435 g0_distance_completeness3`。门见第四节 (d)。
 2. **G0 三票的自证结构**（票一逐样本、票二局部 facet 集 vs 凸包 facet 集、票三 E 顶点 vs conv{b−a} 极点）：是检验方法，不是正本命题。
 3. **定理四的常数 2/δ**（第三节）。
 4. **贯入哨兵口径**：03 §1.1 说"三分判据、距离恒等式、首入准则全部原样继承"；代码在贯入时不继承距离（贯入时盖的见证距离是一个像深度的正数，不是 0），而是统一回答"已违约"（`margin.py:42-53`，门 `test_margin_penetration.py`）。这是对正本的**必要限定**，不是矛盾。
@@ -189,7 +189,7 @@
 - **第一层（重新发现）**：E 本身、距离恒等式、二维 NFP 构造。代码把它们当标准结果实现（显式 conv{b−a}、定理二），这是对的；文档里不应把它们写成本仓库或石根华的贡献。
 - **第二层（可能新，须用对参照系）**：
   - 第 1 条"带语义、可证完备的盖系统"：本仓库给出的是**弱完备**的门（第四节 (d)），强完备（凹块成员判定）缺裁剪，不能主张。
-  - 第 2 条"与开闭迭代衔接"：G4 已给出否定性数据（静态几何先验只抓到 61 个真翻转里的 5 个（09-27 按 df22 终判订正，原 5/82），见 03 砖一的回写），不能主张盖系统能预测活动集。
+  - 第 2 条"与开闭迭代衔接"：G4 已给出否定性数据（静态几何先验只抓到 61 个真翻转里的 5 个（09-27 按 df22 终判订正，原 5/82），03 砖一的 09-18 回写段仍是 82/39/60 的旧口径，订正只在本仓库 `reports/g4_multistep_first_datum.md`；正本只读、未回写），不能主张盖系统能预测活动集。
   - 第 4 条"接触不确定性的消解"= 首入：三维未实现，不能主张。
 - **第三层（红线）**：扫了 README、AGENTS、reports、docs 里的优先性措辞。`AGENTS.md:3` 在 HEAD 上原写"石根华入口块 E(A,B) 理论的**第一份实现**"——00 §3.3 引的 Zhao et al. 2020 就是更早的实现，所以这句不成立。本批已改为"一份独立实现"，订正见 `AGENTS.md:5-7`。`docs/sibling_observations.md` 里的"第一份"指姊妹仓库之间的对账通道，不涉及学术优先性，不算越线。
 

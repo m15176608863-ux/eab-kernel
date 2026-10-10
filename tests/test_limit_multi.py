@@ -113,16 +113,18 @@ def test_a_row_of_blocks_slides_as_a_whole(mu, n):
 
 
 def test_row_side_contacts_carry_the_push_down_the_chain():
-    """三块成排：第一个块间接触传递的水平力 F 在 μ·2W（块间无竖向摩擦）与 μ·2W/(1 − μ²)（块间竖向摩擦把法向荷载
-    从块 0 挪到块 1、2，且 F ≤ μ(2W + μF)）之间——接触力分布**不唯一**，LP 给出其中一个可行的；
-    第二个块间接触同理在 μW 与 μW/(1 − μ²) 之间。α 本身唯一。"""
+    """三块成排：第一个块间接触传递的水平力 F 在 μ·2W/(1 + μ²) 与 μ·2W/(1 − μ²) 之间——块间竖向摩擦可以把法向荷载
+    往两个方向挪（挪向块 1、2：F ≤ μ(2W + μF)；挪向块 0：N₀ = W + μF，F ≥ μ(2W − μF)），接触力分布**不唯一**，LP 给出
+    其中一个可行的；第二个块间接触同理在 μW/(1 + μ²) 与 μW/(1 − μ²) 之间。α 本身唯一。
+    （G6 第四轮 minor：旧区间下界写成 μ·2W，门只因单纯形恰好返回那个顶点才绿；独立手造列的精确 LP 在 α = 15 下
+    min/max F01 实测 [8, 13.33]。）"""
     mu = 0.5
     bodies, bcs, want = _row_2d(mu, 3)
     r = limit_load_multi(bodies, bcs, dim=2)
     side01 = -sum(f[0] for f, bc in zip(r.contact_forces, bcs) if (bc.body_a, bc.body_b) == (0, 1))
     side12 = -sum(f[0] for f, bc in zip(r.contact_forces, bcs) if (bc.body_a, bc.body_b) == (1, 2))
-    assert mu * 20.0 - 1e-9 <= side01 <= mu * 20.0 / (1 - mu * mu) + 1e-9, side01
-    assert mu * 10.0 - 1e-9 <= side12 <= mu * 10.0 / (1 - mu * mu) + 1e-9, side12
+    assert mu * 20.0 / (1 + mu * mu) - 1e-9 <= side01 <= mu * 20.0 / (1 - mu * mu) + 1e-9, side01
+    assert mu * 10.0 / (1 + mu * mu) - 1e-9 <= side12 <= mu * 10.0 / (1 - mu * mu) + 1e-9, side12
 
 
 # ---------------------------------------------------------------- 三维：叠放的两个方块
@@ -205,3 +207,135 @@ def test_bad_body_indices_are_rejected():
         limit_load_multi(bodies, [BodyContact(bcs[0].contact, 2, None)], dim=2)
     with pytest.raises(ValueError):
         limit_load_multi(bodies, [BodyContact(bcs[0].contact, 1, 1)], dim=2)
+
+
+# ---------------------------------------------------------------- G6 第四轮 lp-limit-m1 镜头：M1 的牙
+
+def _stack_plus_far(D, mu=1.2):
+    """叠放两块（顶块倾覆，α = W₂ = 10）+ 远处 D 一块搁在地上（不受活荷载）。"""
+    b1 = LimitBody(wrench((0.0, -30.0), (0.0, 0.5), O2, 2), [0.0] * 3)
+    b2 = LimitBody(wrench((0.0, -10.0), (0.0, 1.5), O2, 2), wrench((1.0, 0.0), (0.0, 2.0), O2, 2))
+    b3 = LimitBody(wrench((0.0, -10.0), (D, 0.5), O2, 2), [0.0] * 3)
+    bcs = [BodyContact(LimitContact((sx, 0.0), (0.0, 1.0), mu), 0, None) for sx in (-1.0, 1.0)]
+    bcs += [BodyContact(LimitContact((sx, 1.0), (0.0, 1.0), mu), 1, 0) for sx in (-1.0, 1.0)]
+    bcs += [BodyContact(LimitContact((D + sx, 0.0), (0.0, 1.0), mu), 2, None) for sx in (-1.0, 1.0)]
+    return [b1, b2, b3], bcs
+
+
+@pytest.mark.parametrize("D", [0.0, 1e2, 1e4, 1e6])
+def test_a_far_body_does_not_loosen_the_self_check(D, monkeypatch):
+    """自校验的尺度是各体自己的：装配体跨度 D（远处一块）不许把 α×0.999 的注入、顶块贯入自己接触的机构、远处块合力
+    挪 1e-3·L 的静力残差放行（旧版在共同形心判定，D = 1e4 起三者全部静默通过）。"""
+    import copy
+    import math
+    bodies, bcs = _stack_plus_far(D)
+    r = limit_load_multi(bodies, bcs, dim=2)
+    assert r.alpha == pytest.approx(10.0, rel=1e-9)
+    # (i) 机构：顶块额外向下平动，幅度为它自己接触点速度的 1e-3
+    y = r.mechanisms[1]
+    sp = max(math.hypot(y[0] - y[2] * p[1], y[1] + y[2] * p[0]) for p in ((-1.0, 1.0), (1.0, 1.0)))
+    mech = [list(m) for m in r.mechanisms]
+    mech[1][1] -= 1e-3 * sp
+    assert not mechanism_is_admissible_multi(mech, bcs, dim=2), D
+    rr = copy.copy(r)
+    rr.mechanisms = mech
+    assert not check_duality_multi(rr, bodies, bcs, dim=2)["ok"], D
+    # (ii) 静力：远处块的法向力从左接触挪到右接触 1e-3（合力不变、该块力矩不平衡）
+    lam = list(r.lambdas)
+    for j in (8, 9):
+        lam[j] -= 1e-3 * 10.0 / 2.0 * 0.5
+    for j in (10, 11):
+        lam[j] += 1e-3 * 10.0 / 2.0 * 0.5
+    rr = copy.copy(r)
+    rr.lambdas = lam
+    d = check_duality_multi(rr, bodies, bcs, dim=2)
+    assert not d["static_ok"] and d["static_residual_rel"] > 1e-5, (D, d["static_residual_rel"])
+    # (iii) 真实调用路径上的 α×0.999 注入
+    real = LM.maximize
+
+    def skew(A, b, c, **kw):
+        res = real(A, b, c, **kw)
+        if res.status == "optimal":
+            ia = [j for j, cj in enumerate(c) if cj != 0.0][0]
+            res.x = list(res.x)
+            res.x[ia] *= 0.999
+        return res
+    monkeypatch.setattr(LM, "maximize", skew)
+    with pytest.raises(RuntimeError, match="self-check"):
+        limit_load_multi(bodies, bcs, dim=2)
+
+
+@pytest.mark.parametrize("v,expect", [(1e-6, "optimal"), (1e-9, "optimal"), (1e-10, "raise"), (1e-13, "raise"),
+                                      (3e-15, "infeasible"), (2e-16, "infeasible")])
+def test_multi_resolvability_has_the_same_three_regimes_as_the_single_body_version(v, expect):
+    """可分辨性筛查（单体版 test_limit_fuzz 的三区间门，多体同构）：删掉筛查、Rmag 置 0 都会让"抛错"区间返回 optimal 1e10…1e13。"""
+    from math import cos, sin
+    cts = [BodyContact(LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0), 0, None)]
+    body = LimitBody(wrench((0.0, -1.0), (0.0, 0.7), O2, 2), wrench((-1.0, v), (0.0, 0.0), O2, 2))
+    if expect == "raise":
+        with pytest.raises(RuntimeError, match="uncertainty"):
+            limit_load_multi([body], cts, dim=2, k=8)
+        return
+    r = limit_load_multi([body], cts, dim=2, k=8)
+    assert r.status == expect, (v, r.status, r.alpha)
+    if expect == "optimal":
+        assert r.uncertainty <= 1e-6 and abs(r.alpha * v - 1.0) <= 1e-12
+
+
+def _stack_cohesive_2d(mu=0.3, W1=30.0, W2=10.0, cA=2.0):
+    b1 = LimitBody(wrench((0.0, -W1), (0.0, 0.5), O2, 2), [0.0] * 3)
+    b2 = LimitBody(wrench((0.0, -W2), (0.0, 1.5), O2, 2), wrench((1.0, 0.0), (0.0, 1.0), O2, 2))
+    bcs = [BodyContact(LimitContact((sx, 0.0), (0.0, 1.0), 10.0), 0, None) for sx in (-1.0, 1.0)]
+    bcs += [BodyContact(LimitContact((sx, 1.0), (0.0, 1.0), mu, cohesion=cA, area=1.0), 1, 0) for sx in (-1.0, 1.0)]
+    return [b1, b2], bcs
+
+
+def test_block_to_block_cohesion_enters_the_multi_body_capacity_and_row_duals():
+    """块间两条黏聚缝（cA = 2 各）：推力作用在缝高处（不倾覆），α = μW₂ + 2cA = 7；row_duals = [2, 2]（黏聚耗散，
+    cap 已乘回：row_duals 不乘 cap 的突变体给 [1, 1] 量级）；自校验通过。"""
+    bodies, bcs = _stack_cohesive_2d()
+    r = limit_load_multi(bodies, bcs, dim=2)
+    assert r.status == "optimal" and r.alpha == pytest.approx(7.0, rel=1e-12), r.alpha
+    assert r.row_duals == pytest.approx([2.0, 2.0], rel=1e-9), r.row_duals
+    assert check_duality_multi(r, bodies, bcs, dim=2)["ok"]
+
+
+def test_multi_static_sub_checks_reject_hand_edited_results():
+    """静力侧子检查的牙（单体版 test_static_side_sub_checks_reject_hand_edited_results 的多体同构）：对同一黏聚行的两根反向列
+    各加 0.75（合力不变、Σλ = 1.5）、各减 0.2（一根变负）、α 取负，三种手改都必须被 static_ok / ok 拒绝。"""
+    import copy
+    bodies, bcs = _stack_cohesive_2d()
+    r = limit_load_multi(bodies, bcs, dim=2)
+    assert check_duality_multi(r, bodies, bcs, dim=2)["ok"]
+    # 列序：每个接触 [摩擦棱 ±, 黏聚列 ±]；地面接触无黏聚 → 列 0-3；块间接触 1 → 列 4-7，其黏聚列是 6、7
+    coh = [j for j, l in enumerate(r.lambdas)]
+    rr = copy.copy(r)
+    lam = list(r.lambdas)
+    lam[6] += 0.75
+    lam[7] += 0.75
+    rr.lambdas = lam
+    chk = check_duality_multi(rr, bodies, bcs, dim=2)
+    assert not chk["static_ok"] and not chk["ok"], chk
+    rr = copy.copy(r)
+    lam = list(r.lambdas)
+    lam[6] -= 0.2
+    lam[7] -= 0.2
+    rr.lambdas = lam
+    assert min(rr.lambdas) < 0.0
+    chk = check_duality_multi(rr, bodies, bcs, dim=2)
+    assert not chk["static_ok"] and not chk["ok"], chk
+    rr = copy.copy(r)
+    rr.alpha = -r.alpha
+    b2 = LimitBody(bodies[1].dead, [-v for v in bodies[1].live])
+    chk = check_duality_multi(rr, [bodies[0], b2], bcs, dim=2)
+    assert not chk["static_ok"], chk
+
+
+@pytest.mark.parametrize("bad", [dict(cohesion=float("nan"), area=1.0), dict(cohesion=3.0, area=float("nan")),
+                                 dict(cohesion=3.0, area=-1.0), dict(cohesion=float("inf"), area=1.0)])
+def test_non_finite_or_negative_cohesion_and_area_are_rejected_loudly(bad):
+    """G6 第四轮 minor：NaN / 负的 cohesion、area 曾被静默当成"无黏聚"——α 按纯摩擦给出（3.0 而真值 9.0）、无任何诊断。"""
+    with pytest.raises(ValueError, match="cohesion|area"):
+        LimitContact((1.0, 0.0), (0.0, 1.0), 0.3, **bad)
+    with pytest.raises(ValueError, match="mu"):
+        LimitContact((1.0, 0.0), (0.0, 1.0), float("nan"))

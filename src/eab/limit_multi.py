@@ -13,9 +13,11 @@ w_j = (g_j, (p_j − o′) × g_j) 关于**共同参考点** o′（全部接触
 （b 固定时 y_b = 0）：**相对速度不得贯入接触**；强对偶 α = −Σ_i y_iᵀW_dead,i + Σ y_r（外力功率 = 黏聚耗散）。
 单体是 nb = 1、全部 b = None 的特例：`limit_load_multi` 对它给出与 `limit_load` 相同的 α（门：tests/test_limit_multi.py）。
 
-自校验（与单体版同一结构，`check_duality_multi`）：静力一侧逐体平衡残差（力、力矩分块，物理尺度）、λ ≥ 0、黏聚行 ≤ 1、α ≥ 0；
-机构一侧逐列相对功率 ≥ 0（相对判据：尺度 Σ|y_a,i w_ij| + Σ|y_b,i w_ij| + |f_j|·V̂）、驱动 Σ y_iᵀW_live,i = 1、强对偶、互补。
-两边都在 o′ 判定、各尺度是物理尺度（单体版 G6 第二轮的教训）。可分辨性筛查沿返回的机构把全部体的活荷载推 ±16 倍舍入、精确重解，
+自校验（与单体版同一结构，`check_duality_multi`）：静力一侧逐体平衡残差（力、力矩分块）**在各体自身的接触形心 o_i 判定**、
+λ ≥ 0、黏聚行 ≤ 1、α ≥ 0；机构一侧逐列相对功率 ≥ 0（相对判据：尺度按**接触点处**两体的物理速度 |g_j|·(|v_a(p_j)| + |v_b(p_j)|)
++ |g_j|·V̂）、驱动 Σ y_iᵀW_live,i = 1（各体在自身形心处）、强对偶、互补。
+各尺度是该体 / 该接触自己的物理尺度，不随装配体跨度放大（G6 第四轮 major：在 o′ 判定时跨度 1e4 的装配体把 α×0.999 静默放行，
+与单体版第二轮"在调用方坐标系判定"同一根因）。可分辨性筛查沿返回的机构把全部体的活荷载推 ±16 倍舍入、精确重解，
 与单体版同一规则。
 
 诚实条款（在单体版的基础上）：
@@ -97,31 +99,64 @@ def _check_bodies(bodies: list[LimitBody], bcs: list[BodyContact], dim: int) -> 
     return nw
 
 
-def _pair_powers(y: list[list[float]], yr: list[float] | None, C, owners_ab, dim: int, loads=()):
-    """逐列相对功率 p_j = (y_a − y_b)ᵀw_j (+ y_r)，尺度 Σ|y_a,i w_ij| + Σ|y_b,i w_ij| + |y_r| + |f_j|·V̂，黏聚行尺度 cap·V̂。"""
+def _pair_powers(y: list[list[float]], yr: list[float] | None, C, owners_ab, dim: int, loads=(),
+                 points=None, oc=None):
+    """逐列相对功率 p_j = (y_a − y_b)ᵀw_j (+ y_r)，按**接触点处的物理速度**算与判尺度。
+
+    各体旋量 y（关于共同参考点 o′）平移到接触点 p_j：v_a(p_j)、v_b(p_j)，p_j = g_j·(v_a − v_b) + y_r（与 (y_a − y_b)ᵀw_j 精确相等），
+    尺度 s_j = |g_j|·(|v_a(p_j)| + |v_b(p_j)|) + |y_r|；V̂ = 各接触点处两体速度与各体**自身**形心处速度（含 |ω|·臂长）的最大者，
+    列尺度再加 |g_j|·V̂，黏聚行尺度 cap·V̂。
+    G6 第四轮 major：此前尺度取在 o′（全部接触的形心），离 o′ 远的体其 ω·|o′ − o_i| 把尺度放大装配体跨度/体尺寸倍——
+    跨度 1e4 时 α×0.999 的注入静默放行、顶块贯入自己接触的机构被判容许；这是单体版第二轮"在调用方坐标系判定"的同一根因。
+    loads：[(体 i 的旋量(关于 o′), 荷载旋量(关于 o′), 该体自身形心相对 o′ 的向量 d_i)]。points / oc 不给时退回 o′ 处的口径（只供旧调用）。"""
     p, s = [], []
+    vmax = 0.0
     for j, (w, rj) in enumerate(zip(C.cols, C.row_of)):
         a, b = owners_ab[C.owner[j]]
         extra = yr[rj] if (rj is not None and yr is not None) else 0.0
-        pj = _dot(y[a], w) + extra
-        sj = _adot(y[a], w) + abs(extra)
-        if b is not None:
-            pj -= _dot(y[b], w)
-            sj += _adot(y[b], w)
+        if points is not None:
+            g = w[:dim]
+            dp = tuple(points[C.owner[j]][q] - oc[q] for q in range(dim))
+            va = _twist_forward(list(y[a]), dp, dim)[:dim]
+            vb = _twist_forward(list(y[b]), dp, dim)[:dim] if b is not None else (0.0,) * dim
+            pj = sum(gq * (vaq - vbq) for gq, vaq, vbq in zip(g, va, vb)) + extra
+            sj = _norm(g) * (_norm(va) + _norm(vb)) + abs(extra)
+            vmax = max(vmax, _norm(va), _norm(vb))
+        else:
+            pj = _dot(y[a], w) + extra
+            sj = _adot(y[a], w) + abs(extra)
+            if b is not None:
+                pj -= _dot(y[b], w)
+                sj += _adot(y[b], w)
         p.append(pj)
         s.append(sj)
-    V = 0.0
-    for w, sj in zip(C.cols, s):
-        f = _norm(w[:dim])
+    V = vmax
+    if points is None:
+        for w, sj in zip(C.cols, s):
+            f = _norm(w[:dim])
+            if f > 0.0:
+                V = max(V, sj / f)
+    for item in loads:
+        yi, W = item[0], item[1]
+        di = item[2] if len(item) > 2 else (0.0,) * dim
+        yo = _twist_forward(list(yi), di, dim)
+        Wo = _shift_wrench(list(W), di, dim)
+        f = _norm(Wo[:dim])
         if f > 0.0:
-            V = max(V, sj / f)
-    for yi, W in loads:
-        f = _norm(W[:dim])
-        if f > 0.0:
-            V = max(V, _adot(yi, W) / f)
+            V = max(V, _adot(yo, Wo) / f)
     scale = [sj + _norm(w[:dim]) * V for w, sj in zip(C.cols, s)]
     rscale = [cap * V for cap in C.cap]
     return p, scale, rscale, V
+
+
+def _body_frames(contacts: list[BodyContact], nb: int, oc: Vec, dim: int):
+    """各体自身的接触形心 o_i（无接触的体取 o′）、o_i − o′、臂长 max|p − o_i|。"""
+    own = [[bc for bc in contacts if i in (bc.body_a, bc.body_b)] for i in range(nb)]
+    oi = [_centroid(own[i], oc, dim) for i in range(nb)]
+    di = [tuple(oi[i][q] - oc[q] for q in range(dim)) for i in range(nb)]
+    arm = [max((_norm(tuple(bc.contact.point[q] - oi[i][q] for q in range(dim))) for bc in own[i]), default=0.0)
+           for i in range(nb)]
+    return oi, di, arm
 
 
 def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, dim: int = 3,
@@ -274,37 +309,44 @@ def check_duality_multi(res: MultiLimitResult, bodies: list[LimitBody], contacts
     ys = [_twist_forward(list(m), dvec, dim) for m in res.mechanisms]
     yr = res.row_duals
     lam = list(res.lambdas)
-    # 静力一侧：逐体平衡残差
+    # 静力一侧：逐体平衡残差，**在各体自身的接触形心 o_i 判定**（力矩块与臂长都是该体自己的物理尺度；G6 第四轮 major：
+    # 在共同形心 o′ 判定时离 o′ 远的体力矩尺度被 fsc·|o′ − o_i| 放大，远处体合力挪 1e-3·L 静默放行）
     static_rel = 0.0
+    oi, di, arms = _body_frames(contacts, nb, oc, dim)
     for i in range(nb):
-        arm = max((_norm(tuple(bc.contact.point[q] - oc[q] for q in range(dim))) for bc in contacts
-                   if i in (bc.body_a, bc.body_b)), default=0.0)
-        resid = [dead[i][q] + res.alpha * live[i][q] for q in range(nw)]
-        fsc = _norm(dead[i][:dim]) + abs(res.alpha) * _norm(live[i][:dim])
-        msc = _norm(dead[i][dim:]) + abs(res.alpha) * _norm(live[i][dim:])
+        dead_i = _shift_wrench(list(dead[i]), di[i], dim)
+        live_i = _shift_wrench(list(live[i]), di[i], dim)
+        resid = [dead_i[q] + res.alpha * live_i[q] for q in range(nw)]
+        fsc = _norm(dead_i[:dim]) + abs(res.alpha) * _norm(live_i[:dim])
+        msc = _norm(dead_i[dim:]) + abs(res.alpha) * _norm(live_i[dim:])
         for j, (l, w) in enumerate(zip(lam, C.cols)):
             a, b = owners_ab[C.owner[j]]
             sgn = 1.0 if a == i else (-1.0 if b == i else 0.0)
             if sgn == 0.0:
                 continue
+            wi = _shift_wrench(list(w), di[i], dim)
             for q in range(nw):
-                resid[q] += sgn * l * w[q]
-            fsc += abs(l) * _norm(w[:dim])
-            msc += abs(l) * _norm(w[dim:])
-        msc += fsc * arm
+                resid[q] += sgn * l * wi[q]
+            fsc += abs(l) * _norm(wi[:dim])
+            msc += abs(l) * _norm(wi[dim:])
+        msc += fsc * arms[i]
         static_rel = max(static_rel,
                          _norm(resid[:dim]) / fsc if fsc > 0.0 else _norm(resid[:dim]),
                          _norm(resid[dim:]) / msc if msc > 0.0 else _norm(resid[dim:]))
     rows_ok = all(sum(l for l, rj in zip(lam, C.row_of) if rj == r_i) <= 1.0 + tol for r_i in range(C.n_rows))
     static_ok = static_rel <= tol and min(lam, default=0.0) >= 0.0 and rows_ok and res.alpha >= 0.0
-    # 机构一侧
-    loads = [(ys[i], dead[i]) for i in range(nb)] + [(ys[i], live[i]) for i in range(nb)]
-    power, pscale, rscale, V = _pair_powers(ys, yr, C, owners_ab, dim, loads)
-    drive = sum(_dot(ys[i], live[i]) for i in range(nb))
-    dscale = max(1.0, sum(_adot(ys[i], live[i]) for i in range(nb)))
-    upper = -sum(_dot(ys[i], dead[i]) for i in range(nb)) + sum(yr)
-    G = (abs(res.alpha) + sum(_adot(ys[i], dead[i]) for i in range(nb)) + sum(abs(v) for v in yr)
-         + sum(_norm(dead[i][:dim]) for i in range(nb)) * V)
+    # 机构一侧：功率在接触点处按物理速度判，荷载功率在各体自身形心处判
+    loads = [(ys[i], dead[i], di[i]) for i in range(nb)] + [(ys[i], live[i], di[i]) for i in range(nb)]
+    power, pscale, rscale, V = _pair_powers(ys, yr, C, owners_ab, dim, loads,
+                                             points=[bc.contact.point for bc in contacts], oc=oc)
+    yo = [_twist_forward(list(ys[i]), di[i], dim) for i in range(nb)]
+    dead_o = [_shift_wrench(list(dead[i]), di[i], dim) for i in range(nb)]
+    live_o = [_shift_wrench(list(live[i]), di[i], dim) for i in range(nb)]
+    drive = sum(_dot(yo[i], live_o[i]) for i in range(nb))
+    dscale = max(1.0, sum(_adot(yo[i], live_o[i]) for i in range(nb)))
+    upper = -sum(_dot(yo[i], dead_o[i]) for i in range(nb)) + sum(yr)
+    G = (abs(res.alpha) + sum(_adot(yo[i], dead_o[i]) for i in range(nb)) + sum(abs(v) for v in yr)
+         + sum(_norm(dead_o[i][:dim]) for i in range(nb)) * V)
     worst_rel = 0.0
     for pj, sj in zip(power, pscale):
         if pj < 0.0:
@@ -350,7 +392,7 @@ def mechanism_is_admissible_multi(mechanisms: list[list[float]], contacts: list[
     C = _build_columns(cts, oc, dim, k)
     if row_duals is not None and len(row_duals) != C.n_rows:
         raise ValueError(f"row_duals has {len(row_duals)} entries, contacts give {C.n_rows} cohesion rows")
-    p, s, rs, _ = _pair_powers(ys, row_duals, C, owners_ab, dim)
+    p, s, rs, _ = _pair_powers(ys, row_duals, C, owners_ab, dim, points=[bc.contact.point for bc in contacts], oc=oc)
     if row_duals is not None and any(v < -tol * sr for v, sr in zip(row_duals, rs)):
         return False
     for pj, sj, rj in zip(p, s, C.row_of):
