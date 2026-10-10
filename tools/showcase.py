@@ -4,7 +4,8 @@
 
 四幅图：(1) 薄拱的推力线与四铰机构（M1 多体极限分析）；(2) 承载力随摩擦的曲线，对照铰机构上限与叠放块闭式；
 (3) bb52 真实 DDA 几何上的盖枚举与一对凸块的入口块 E(A,B)；(4) 三维裕度接触（棱脊 + 细针，原点与 1e6 m 处）；
-(5) 互锁块的逃逸高度剖面（TIA）。只读夹具与库，不改任何东西。
+(5) 互锁块的逃逸高度剖面（TIA）；(6) 三维首入（M2）：倾斜方块沿运动方向落到板上的首入点、接触法向与并列的局部盖，
+以及凹台阶上的首入。只读夹具与库，不改任何东西。
 """
 
 from __future__ import annotations
@@ -25,7 +26,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from eab.kernel2d.covers import convex_entrance_block, enumerate_covers      # noqa: E402
 from eab.kernel2d.geom import translate                                     # noqa: E402
-from eab.kernel3d.geom3 import Polyhedron, brute_feature_distance, convex_hull_3d  # noqa: E402
+from eab.kernel3d.entrance3 import first_entrance3, first_entrance_brute          # noqa: E402
+from eab.kernel3d.geom3 import Polyhedron, box, brute_feature_distance, convex_hull_3d  # noqa: E402
 from eab.limit import LimitContact, wrench                                 # noqa: E402
 from eab.limit_multi import BodyContact, LimitBody, limit_load_multi      # noqa: E402
 from eab.margin import body_distance, inflated_membership, margin_contacts  # noqa: E402
@@ -336,6 +338,98 @@ def fig_tia():
     plt.close(fig)
 
 
+# ---------------------------------------------------------------- 6. 三维首入（M2）
+
+def fig_entrance3():
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+    def rot_xy(P, thx, thy):
+        cx, sx, cy, sy = math.cos(thx), math.sin(thx), math.cos(thy), math.sin(thy)
+        V = []
+        for x, y, z in P.verts:
+            y1, z1 = cx * y - sx * z, sx * y + cx * z
+            x2, z2 = cy * x + sy * z1, -sy * x + cy * z1
+            V.append((x2, y1, z2))
+        return Polyhedron(V, list(P.faces))
+
+    def prism(sec, y0, y1):
+        n = len(sec)
+        V = [(x, y0, z) for x, z in sec] + [(x, y1, z) for x, z in sec]
+        F = [tuple(range(n - 1, -1, -1)), tuple(range(n, 2 * n))] + [(i, (i + 1) % n, (i + 1) % n + n, i + n) for i in range(n)]
+        P = Polyhedron(V, F)
+        return P if P.volume() > 0 else Polyhedron(V, [tuple(reversed(f)) for f in F])
+
+    def draw(ax, A, B, x0, d, e, title):
+        ax.computed_zorder = False                      # 让接触点、法向与轨迹画在面片之上（mpl 3D 默认按深度盖掉它们）
+        faces = [[B.verts[i] for i in f] for f in B.faces]
+        ax.add_collection3d(Poly3DCollection(faces, facecolors="#e9e4da", edgecolors=INK, linewidths=0.6, alpha=0.9, zorder=1))
+        A0 = A.translated(x0)
+        ax.add_collection3d(Poly3DCollection([[A0.verts[i] for i in f] for f in A0.faces], facecolors="#f3f0ea", edgecolors=GREY, linewidths=0.5, alpha=0.35, zorder=2))
+        Ae = A.translated(e.x)
+        ax.add_collection3d(Poly3DCollection([[Ae.verts[i] for i in f] for f in Ae.faces], facecolors="#d3e3ec", edgecolors=ACC2, linewidths=0.7, alpha=0.75, zorder=3))
+        c0 = tuple(sum(v[i] for v in A0.verts) / len(A0.verts) for i in range(3))
+        c1 = tuple(sum(v[i] for v in Ae.verts) / len(Ae.verts) for i in range(3))
+        ax.plot([c0[0], c1[0]], [c0[1], c1[1]], [c0[2], c1[2]], "--", color=GREY, lw=1.2, zorder=6)
+        p, n = e.point_b, e.normal
+        ax.plot([p[0]], [p[1]], [p[2]], "o", color=ACC, ms=6, zorder=10)
+        ax.plot([p[0], p[0] + 0.5 * n[0]], [p[1], p[1] + 0.5 * n[1]], [p[2], p[2] + 0.5 * n[2]], "-", color=ACC, lw=2.4, zorder=10)
+        q = (p[0] + 0.5 * n[0], p[1] + 0.5 * n[1], p[2] + 0.5 * n[2])
+        ax.plot([q[0]], [q[1]], [q[2]], "^", color=ACC, ms=7, zorder=10)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_zticks([])
+        ax.set_title(title, fontsize=9)
+
+    # (a) 绕 x 转 0.3、绕 y 转 0.2 的单位方块，从 (0.1, −0.2, 2.0) 沿 (0.05, 0.02, −1) 落向 2×2×1 的板：最低的顶点先触地
+    slab = box(half=(1.0, 1.0, 0.5))
+    A = rot_xy(box(half=(0.5, 0.5, 0.5)), 0.3, 0.2).translated((0.1, -0.2, 2.0))
+    d = (0.05, 0.02, -1.0)
+    e = first_entrance3(A, slab, (0.0, 0.0, 0.0), d)
+    bt = first_entrance_brute(A, slab, (0.0, 0.0, 0.0), d, t_max=3.0)
+    # (b) 只绕 x 转 0.3：最低的是一条棱 → 棱平行于面（FE），两个 VF 成员
+    Ab = rot_xy(box(half=(0.5, 0.5, 0.5)), 0.3, 0.0).translated((0.1, -0.2, 2.0))
+    eb = first_entrance3(Ab, slab, (0.0, 0.0, 0.0), d)
+    # (c) 凹台阶：方块从右上方滑入，先碰竖板（靠谓词裁决；不经盖的 oracle 对照）
+    step = prism([(0.0, 0.0), (2.0, 0.0), (2.0, 0.5), (1.0, 0.5), (1.0, 1.0), (0.0, 1.0)], -1.0, 1.0)
+    Ac = box(center=(1.9, 0.0, 1.4), half=(0.5, 0.5, 0.5))
+    dc = (-1.0, 0.0, -0.5)
+    ec = first_entrance3(Ac, step, (0.0, 0.0, 0.0), dc, t_max=3.0)
+    btc = first_entrance_brute(Ac, step, (0.0, 0.0, 0.0), dc, t_max=3.0, steps=600)
+    NUM["entrance3"] = {
+        "corner": {"t": e.t, "brute": bt, "label": [e.label[0], list(e.label[1]), list(e.label[2])], "members": len(e.members),
+                   "tied": len(e.tied_labels), "normal": list(e.normal)},
+        "edge": {"t": eb.t, "label": [eb.label[0], list(eb.label[1]), list(eb.label[2])], "members": len(eb.members), "normal": list(eb.normal)},
+        "step": {"t": ec.t, "brute": btc, "label": [ec.label[0], list(ec.label[1]), list(ec.label[2])], "members": len(ec.members),
+                 "normal": list(ec.normal)},
+    }
+    fig = plt.figure(figsize=(11.0, 4.3))
+    ax1 = fig.add_subplot(131, projection="3d")
+    draw(ax1, A, slab, (0.0, 0.0, 0.0), d, e, f"顶点先着地：{e.label[0]}，t* = {e.t:.4f}（oracle {bt:.4f}）")
+    ax1.set_xlim(-1.2, 1.4)
+    ax1.set_ylim(-1.2, 1.2)
+    ax1.set_zlim(-0.5, 2.6)
+    ax1.set_box_aspect((2.6, 2.4, 3.1))
+    ax1.view_init(elev=18, azim=-60)
+    ax2 = fig.add_subplot(132, projection="3d")
+    draw(ax2, Ab, slab, (0.0, 0.0, 0.0), d, eb, f"棱先着地：{eb.label[0]}，{eb.members and len(eb.members)} 个 VF 成员")
+    ax2.set_xlim(-1.2, 1.4)
+    ax2.set_ylim(-1.2, 1.2)
+    ax2.set_zlim(-0.5, 2.6)
+    ax2.set_box_aspect((2.6, 2.4, 3.1))
+    ax2.view_init(elev=18, azim=-60)
+    ax3 = fig.add_subplot(133, projection="3d")
+    draw(ax3, Ac, step, (0.0, 0.0, 0.0), dc, ec, f"凹台阶：先碰竖板，{ec.label[0]}，t* = {ec.t:.3f}（oracle {btc:.3f}）")
+    ax3.set_xlim(-0.2, 2.6)
+    ax3.set_ylim(-1.1, 1.1)
+    ax3.set_zlim(-0.2, 2.2)
+    ax3.set_box_aspect((2.8, 2.2, 2.4))
+    ax3.view_init(elev=18, azim=-120)
+    fig.suptitle("三维首入（命题 7）：沿运动方向第一次触及 ∂E 的点定接触点与法向；虚线是参考点的轨迹，红箭头是法向", fontsize=9.5)
+    fig.tight_layout()
+    fig.savefig(OUT / "entrance3.png")
+    plt.close(fig)
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     fig_arch()
@@ -343,6 +437,7 @@ def main() -> int:
     fig_bb52()
     fig_margin3d()
     fig_tia()
+    fig_entrance3()
     (OUT / "numbers.json").write_text(json.dumps(NUM, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(NUM, ensure_ascii=False, indent=1))
     return 0
