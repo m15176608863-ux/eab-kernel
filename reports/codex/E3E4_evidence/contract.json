@@ -1,0 +1,13 @@
+{
+  "target": "完成 WO-E3E4：二维剩余路径精确化、极限分析有理数自校验及指定第五轮 14 条发现逐条处置",
+  "workspace": "D:/eab-wt/cx-e2",
+  "baseline_head": "e1fbbd4013cc6192b89947561faf0f132e5125ad",
+  "branch": "codex-work",
+  "initial_untracked": ["reports/codex/inputs/"],
+  "scope": ["src/eab/kernel2d", "src/eab/limit.py", "src/eab/limit_multi.py", "src/eab/lp.py (证书传递若必要)", "相关调用点与测试", "README.md", "docs/canon_map.md", "docs/exact_predicates_plan.md", "reports/codex/E3E4_report.md", "reports/codex/E3E4_evidence"],
+  "non_goals": ["姊妹仓库修改", "Git 写操作", "fixtures 修改或删除", "三维几何 E5", "宣称 G6 退出或新鲜工作树验收"],
+  "success_criteria": ["14 个 file:line 处置键完整且含当前基线复现", "仍成立项有修前红门与修后绿门", "无窗口二维分支精确，显式域窗口只放宽", "自校验在同一精确模型上核验", "10 项源码突变逐项记录目标断言或有依据的冗余", "旧门改写逐条说明不弱于旧口径", "全套全绿、记录原样末行和耗时", "文档指针门通过", "初始 fixtures 哈希不变"],
+  "verification": ["PYTHONDONTWRITEBYTECODE=1 python -X utf8 reports/codex/E3E4_evidence/run_pytest.py final_full tests", "PYTHONDONTWRITEBYTECODE=1 python -X utf8 tools/fix_canon_ptrs.py --apply", "突变脚本与 SHA-256 原字节恢复记录", "JSON 清单与范围审计"],
+  "rollback_anchor": ["上述 HEAD 的只读 Git 对象", "initial_manifest.json", "tmp/ 下各子任务原字节备份"],
+  "exceptions": ["用户禁止 worktree/clone；本单只验证当前树，不替代纪律 D 与独立 G6"]
+}

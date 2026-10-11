@@ -1,0 +1,102 @@
+{
+  "changes": [
+    {
+      "nodeid": "tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load",
+      "parameter_cases": 6,
+      "old_contract": "六种恒载及二维/三维原输入，理想竖直物理解释要求status=infeasible。",
+      "new_contract": "原输入/两维均保留，对测试内独立Fraction LP逐格核原始status和alpha.exact，必须optimal；另要求nearby_infeasible及扰动状态含infeasible。",
+      "not_weaker": "原物理风险仍必须显式报告，新增同数据状态/目标精确等式；不再把邻域结果覆盖原始解。"
+    },
+    {
+      "nodeid": "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud",
+      "parameter_cases": 28,
+      "old_contract": "margin<1e-9可抛任意RuntimeError并跳过；否则optimal、U<=1e-6、闭式误差受U限制。",
+      "new_contract": "28格均不许抛错跳过，独立Fraction LP核原status/alpha.exact；原margin>=1e-9 resolved要求和resolved闭式误差不变，小余量unresolved/nearby_infeasible另报且检查扰动证据。",
+      "not_weaker": "消除小余量异常豁免，每格新增精确真值；原可分辨格及闭式误差约束保留。"
+    },
+    {
+      "nodeid": "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor",
+      "parameter_cases": 24,
+      "old_contract": "24个舍入框架不论实际浮点数据均强制status=infeasible。",
+      "new_contract": "全24格逐格独立精确LP状态/alpha核；确实不可行时not_applicable，实际可行时必须nearby_infeasible和infeasible扰动见证。",
+      "not_weaker": "不再对边界舍入数据强加理想状态；零样本豁免且物理风险检测不降低。"
+    },
+    {
+      "nodeid": "tests/test_lp_certificates.py::test_rounding_driven_unbounded_status_is_not_certified",
+      "parameter_cases": 5,
+      "old_contract": "5个原框架一律status=infeasible。",
+      "new_contract": "5格实际数据精确LP状态/alpha全核；原不可行report not_applicable，舍入造成可行/无界则保留原status并明确nearby_infeasible。",
+      "not_weaker": "给定数据精确答案比理想物理覆盖更强，原风险仍必须抓到。"
+    },
+    {
+      "nodeid": "tests/test_lp_certificates.py::test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certified",
+      "parameter_cases": 1,
+      "old_contract": "独立8角扰动盒有有限解后，要求抛RuntimeError。",
+      "new_contract": "原始输入与8角独立oracle全部保留；原status精确无界，resolvability必须unresolved，扰动状态必须含optimal。",
+      "not_weaker": "保留全部原边界证据且新增原始状态/alpha准确性；不以抛错代替风险与解的分开表达。"
+    }
+  ],
+  "parameter_cases_total": 64,
+  "original_input_dropped": 0,
+  "new_skips_or_xfails": 0,
+  "old_tests_after_api": {
+    "summary": "32 failed, 32 passed, 107 deselected in 0.86s",
+    "log": "screen_policy_old_tests_after_api.log",
+    "failed_nodes": [
+      "tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1.0]",
+      "tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000.0]",
+      "tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000.0]",
+      "tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[10000000.0]",
+      "tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000000.0]",
+      "tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000000000.0]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame0]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame1]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame2]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame3]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame0]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame1]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame2]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame3]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame0]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame1]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame2]",
+      "tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame3]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-1000000.0-0.001]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-10.0-1e-08]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-1000000.0-0.1]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-1000000.0-0.001]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-10.0-1e-08]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-1000000.0-0.1]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-1000000.0-0.001]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-10.0-1e-08]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-1000000.0-0.1]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-1000000.0-0.001]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-10.0-1e-08]",
+      "tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-1000000.0-0.1]",
+      "tests/test_lp_certificates.py::test_rounding_driven_unbounded_status_is_not_certified[frame4]",
+      "tests/test_lp_certificates.py::test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certified"
+    ]
+  },
+  "new_gate_on_frozen_old_source": {
+    "summary": "6 failed in 0.34s",
+    "log": "screen_policy_new_gate_on_frozen_old_source.log",
+    "caught_assertion": "assert result.status == status: 'infeasible' != 'optimal'",
+    "method": "isolated subprocess loads frozen old limit.py; no working source overwritten; current lp exact witness additions do not alter old screening policy"
+  },
+  "rewritten_targeted": {
+    "summary": "64 passed, 107 deselected in 0.24s",
+    "log": "screen_policy_rewritten_tests.log"
+  },
+  "full_file": {
+    "summary": "171 passed in 11.67s",
+    "log": "screen_policy_full_lp_certificates.log"
+  },
+  "oracle_correction": {
+    "function": "_exact_limit_lp",
+    "old": "Fraction(C.cap[row]) used rounded float c*A",
+    "new": "Fraction(contact.cohesion)*Fraction(contact.area) from row owner",
+    "why": "oracle now matches independently assembled exact derived model, strengthens equality; no production wrench/shift/LP primitive shared; cone generators remain model definition",
+    "nodeid": "tests/test_lp_certificates.py::_exact_limit_lp"
+  },
+  "baseline_test_file": "tmp/entrance_baseline/test_lp_certificates.py"
+}

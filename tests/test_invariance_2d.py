@@ -33,6 +33,7 @@ from pathlib import Path
 import pytest
 
 from eab.kernel2d.covers import convex_entrance_block, enumerate_covers
+from test_kernel2d_covers_e3 import independent_cover_oracle
 from eab.kernel2d.g0 import (brute_ray_exit, g0_convex, g0_distance_completeness, g0_exit_completeness,
                              random_convex_polygon)
 from eab.kernel2d.geom import interior_point, is_convex, polygons_overlap, reflex_vertices, translate
@@ -121,6 +122,8 @@ if _BB is not None:
 
 
 def _covers(A, B, x, tau, cone_tol, window):
+    # 数学模式的历史噪声 tau 不再传入；legacy 的显式边端窗口保留。
+    tau = tau if cone_tol is not None else 0.0
     covs = enumerate_covers(translate(A, x), B, window=window, tol=tau, cone_tol=cone_tol, seg_tol=tau)
     labels = sorted((c.kind, c.a_index, c.b_index, c.strict) for c in covs)
     gaps = {(c.kind, c.a_index, c.b_index): c.gap for c in covs}
@@ -138,34 +141,52 @@ def _floor_in_reference_units(A, B, motion):
 @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
 @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
 def test_cover_enumeration_is_invariant(case, motion):
-    """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
-
-    **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
-    （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
-    （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
-    sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
-    （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
-    再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
-    每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
-    只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
-    """
+    """每个原始/变换格对独立 Fraction 邻点支持+线性消元 oracle 精确一致。
+    给定浮点数据在边界上的严格性可因舍入改变；不再强迫库用噪声吸收成恒等答案。
+    判据有已测余量的标签仍守刚体/单位不变，浮点构造间隙仍守原误差上界。"""
     name, A, B, x, tau, cone_tol, window = case
     _, theta, s, tm = motion
     ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
     assert ref_labels, name
     pt, vec, poly = _T(theta, s, tm)
+    At, Bt = translate(poly(A), vec(x)), poly(B)
     labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
-    infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
-    wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
-    if wide_labels != ref_labels:
-        assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
-        both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
-        assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
-        return
-    assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+    domain = tau if cone_tol is not None else 0.0
+    assert set(ref_labels) == independent_cover_oracle(translate(A,x), B, window, domain, cone_tol, domain)
+    assert set(labels) == independent_cover_oracle(At, Bt, s*window, s*domain, cone_tol, s*domain), name
+    bound = 128 * EPS * max(abs(z) for P in (At,Bt) for p in P for z in p)
+    for label in set(ref_labels) | set(labels):
+        # 逐标签，而非整个格子的豁免；不稳标签也已经过上面的精确 oracle。
+        if _cover_predicate_margin(label, At, Bt, s*window, s*domain, cone_tol) > bound:
+            assert (label in ref_labels) == (label in labels), (name,label)
     C = max(abs(v) for P in (A, B) for p in poly(P) for v in p)
-    for k, g in ref_gaps.items():
-        assert abs(gaps[k] - s * g) <= s * tau + 1e-12 * s + 1e-13 * C, (name, k, gaps[k], s * g)
+    for k in ref_gaps.keys() & gaps.keys():
+        assert abs(gaps[k] - s * ref_gaps[k]) <= s * tau + 1e-12 * s + 1e-13 * C
+
+
+def _cover_predicate_margin(label, A, B, window, tau, cone_tol):
+    """仅作可分辨性报告的保守长度余量；不给内核提供判定答案。"""
+    kind,i,j,_=label
+    if kind=='EV': return _cover_predicate_margin(('VE',j,i,False),B,A,window,tau,cone_tol)
+    def delta(a,b): return (a[0]-b[0],a[1]-b[1])
+    def cr(a,b): return a[0]*b[1]-a[1]*b[0]
+    def dp(a,b): return a[0]*b[0]+a[1]*b[1]
+    ar=[delta(A[k%len(A)],A[i]) for k in (i-1,i+1)]
+    if kind=='VE':
+        e=delta(B[(j+1)%len(B)],B[j]);le=math.hypot(*e);n=(e[1],-e[0]);d=delta(A[i],B[j])
+        lens=[math.hypot(*r) for r in ar];ell=min(lens+[le]);ct=cone_tol if cone_tol is not None else tau/ell
+        values=[abs(cr(*ar))/(max(lens)), abs(dp(e,d)/le+tau), abs(dp(e,d)/le-le-tau), abs(abs(dp(n,d)/le)-window)]
+        values += [min(abs(dp(n,r)/(le*l)),abs(dp(n,r)/(le*l)+ct))*ell for r,l in zip(ar,lens)]
+        condition=1+max(lens+[le])/ell+math.hypot(*d)/ell
+    else:
+        br=[delta(B[k%len(B)],B[j]) for k in (j-1,j+1)]
+        rs=ar+br;lens=[math.hypot(*r) for r in rs];ell=min(lens);d=delta(A[i],B[j]);dist=math.hypot(*d)
+        ct=cone_tol if cone_tol is not None else tau/ell
+        values=[abs(dist-window),dist]
+        values += [abs(cr(u,v))/(max(math.hypot(*u),math.hypot(*v))) for k,u in enumerate(rs) for v in rs[k+1:]]
+        if dist: values += [min(abs(dp(d,r)/(dist*l)),abs(abs(dp(d,r)/(dist*l))-ct))*min(dist,ell) for r,l in zip(rs,lens)]
+        condition=1+max(lens)/ell+dist/ell
+    return min(values)/condition
 
 
 def _seg_dist(a, b, c, d):
@@ -199,25 +220,23 @@ def _min_edge(P):
 
 
 def test_cover_invariance_unresolvable_cells_are_explained_by_measured_near_parallel_edges():
-    """把"不可分辨带"钉成数：只允许出现在 bb52 真几何上，且每个这样的格子都由 Fraction 精确算出的近平行边对解释——
-    该块对相距 < 0.3 的边对里最小非零 sin 夹角，小于该格子抬高后的角度舍入下限 4·c·eps·C_t/(s·ℓ_min)。
-    2026-09-24 实测：19 个格子（全在 21 块对 × 2 模式 × 9 变换 = 378 格里），sin 夹角 1.7e-8（块 7–8）… 3e-6（块 6–11）。"""
-    bad = []
+    """E3 不再钉旧噪声算法的 19 格；对全部旧网格逐个 changed label 证明余量在舍入报告界内。
+    原网格不删格、不用报告界改答案；每个标签的正确性另由独立精确 oracle 门承担。"""
+    changed=0;stable=0
     for case in COVER_CASES:
-        name, A, B, x, tau, cone_tol, window = case
-        ref, _ = _covers(A, B, x, tau, cone_tol, window)
+        name,A,B,x,tau,cone_tol,window=case
+        ref,_=_covers(A,B,x,tau,cone_tol,window)
         for motion in MOTIONS:
-            fl = _floor_in_reference_units(A, B, motion)
-            wide, _ = _covers(A, B, x, max(tau, 4.0 * fl), cone_tol, window)
-            if wide != ref:
-                bad.append((name, motion, fl))
-    assert all(n.startswith("bb52_") for n, _, _ in bad), [n for n, _, _ in bad]
-    for n, motion, fl in bad:
-        bi, bj = (int(v) for v in n.split("_")[1:3])
-        margin = _min_near_parallel_sin(_BB[bi], _BB[bj])
-        ang_floor = 4.0 * fl / min(_min_edge(_BB[bi]), _min_edge(_BB[bj]))
-        assert margin < ang_floor, (n, motion[0], margin, ang_floor)
-    assert len(bad) == 19, len(bad)
+            _,theta,s,tm=motion;pt,vec,poly=_T(theta,s,tm)
+            At,Bt=translate(poly(A),vec(x)),poly(B)
+            got,_=_covers(poly(A),poly(B),vec(x),s*tau,cone_tol,s*window)
+            bound=128*EPS*max(abs(z) for P in (At,Bt) for p in P for z in p)
+            domain=s*tau if cone_tol is not None else 0.
+            for label in set(ref)^set(got):
+                changed+=1
+                assert _cover_predicate_margin(label,At,Bt,s*window,domain,cone_tol)<=bound,(name,motion[0],label)
+            stable+=len(set(ref)&set(got))
+    assert changed>0 and stable>changed  # 边界变化与稳定标签都真实覆盖，不能空跑。
 
 
 # ---------------------------------------------------------------- polygons_overlap：判定不变（含恰好接触）

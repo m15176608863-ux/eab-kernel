@@ -215,7 +215,7 @@ def fig_bb52():
         for b in sorted(blocks):
             if a >= b:
                 continue
-            covs = [c for c in enumerate_covers(blocks[a]["poly"], blocks[b]["poly"], window=0.05, tol=1e-9) if c.normal is not None]
+            covs = [c for c in enumerate_covers(blocks[a]["poly"], blocks[b]["poly"], window=0.05) if c.normal is not None]
             if covs:
                 pairs += 1
             for c in covs:

@@ -1,0 +1,68 @@
+{
+  "src/eab/kernel2d/covers.py:501": {
+    "severity": "critical",
+    "status": "already_resolved",
+    "resolved_by": "e1fbbd4",
+    "baseline_reproduction": "reports/codex/E3E4_evidence/covers_baseline_reproduction.json",
+    "final_reproduction": "reports/codex/E3E4_evidence/covers_final_reproduction.json",
+    "rerun": "PYTHONDONTWRITEBYTECODE=1 python -X utf8 reports/codex/E3E4_evidence/repro_covers.py --baseline",
+    "evidence": "倒角反例 membership=1，2000 探针 G0 全通过；facet 使用自身法向。",
+    "red_before": null,
+    "gate": null
+  },
+  "src/eab/kernel2d/covers.py:360": {
+    "severity": "major",
+    "status": "already_resolved",
+    "resolved_by": "e1fbbd4",
+    "baseline_reproduction": "reports/codex/E3E4_evidence/covers_baseline_reproduction.json",
+    "final_reproduction": "reports/codex/E3E4_evidence/covers_final_reproduction.json",
+    "rerun": "PYTHONDONTWRITEBYTECODE=1 python -X utf8 reports/codex/E3E4_evidence/repro_covers.py --baseline",
+    "evidence": "当前 HEAD 四种短边均合法构造 7 个 E 顶点；旧转角窗/折回噪声代码已删除。",
+    "red_before": null,
+    "gate": null
+  },
+  "src/eab/kernel2d/covers.py:453": {
+    "severity": "major",
+    "status": "already_resolved",
+    "resolved_by": "e1fbbd4",
+    "baseline_reproduction": "reports/codex/E3E4_evidence/covers_baseline_reproduction.json",
+    "final_reproduction": "reports/codex/E3E4_evidence/covers_final_reproduction.json",
+    "rerun": "PYTHONDONTWRITEBYTECODE=1 python -X utf8 reports/codex/E3E4_evidence/repro_covers.py --baseline",
+    "evidence": "6 格双向 G0 全真；局部严格与全局合并均用 exact，不再存在两把尺。",
+    "red_before": null,
+    "gate": null
+  },
+  "src/eab/kernel2d/geom.py:434": {
+    "severity": "major",
+    "status": "fixed_this_work_order",
+    "resolved_by": "WO-E3E4 working tree; uncommitted",
+    "baseline_reproduction": "reports/codex/E3E4_evidence/covers_baseline_reproduction.json",
+    "final_reproduction": "reports/codex/E3E4_evidence/covers_final_reproduction.json",
+    "rerun": "PYTHONDONTWRITEBYTECODE=1 python -X utf8 reports/codex/E3E4_evidence/repro_covers.py",
+    "evidence": "HEAD 仍缺失真实极点 (1e-15,-1e-3)；新 exact hull 保留，全部输入在各支持线同侧。",
+    "red_before": "reports/codex/E3E4_evidence/covers_red_before.txt",
+    "gate": "tests/test_kernel2d_covers_e3.py::test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop"
+  },
+  "src/eab/kernel2d/covers.py:117": {
+    "severity": "critical",
+    "status": "already_resolved",
+    "resolved_by": "e1fbbd4",
+    "baseline_reproduction": "reports/codex/E3E4_evidence/covers_baseline_reproduction.json",
+    "final_reproduction": "reports/codex/E3E4_evidence/covers_final_reproduction.json",
+    "rerun": "PYTHONDONTWRITEBYTECODE=1 python -X utf8 reports/codex/E3E4_evidence/repro_covers.py --baseline",
+    "evidence": "当前 HEAD 精确拒收微凹凸路径；一般成员两深度均判 1。链法向代码已删除。",
+    "red_before": null,
+    "gate": null
+  },
+  "src/eab/kernel2d/covers.py:238": {
+    "severity": "major",
+    "status": "fixed_this_work_order",
+    "resolved_by": "WO-E3E4 working tree; uncommitted",
+    "baseline_reproduction": "reports/codex/E3E4_evidence/covers_baseline_reproduction.json",
+    "final_reproduction": "reports/codex/E3E4_evidence/covers_final_reproduction.json",
+    "rerun": "PYTHONDONTWRITEBYTECODE=1 python -X utf8 reports/codex/E3E4_evidence/repro_covers.py",
+    "evidence": "HEAD 正常 probe strict=False，但源码内部 du×100 变 strict=True 并多枚举 VV；E3 删除 du 噪声活跃判据，用独立邻点支持与线性消元 oracle 看护全网格。",
+    "red_before": "reports/codex/E3E4_evidence/covers_red_before.txt",
+    "gate": "tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band"
+  }
+}

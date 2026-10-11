@@ -12,6 +12,7 @@ oracle 是闭式（倾覆 α = W·b/h、滑动 α = μW）与手工构造的错�
 """
 
 from math import cos, pi, sin
+from fractions import Fraction
 
 import pytest
 
@@ -91,13 +92,14 @@ def _utm_block():
     return T, cts, dead, live, r
 
 
-@pytest.mark.parametrize("factor", [0.0, 0.5, 0.999, 1.001, 2.0])
+@pytest.mark.parametrize("factor", [0.0, 0.5, 0.999, 1.001, 2.0]
+                         + [1-Fraction(1,10**k) for k in (3,9,30,100)])
 def test_self_check_rejects_wrong_answers_at_engineering_coordinates(factor):
-    """自校验在接触形心判定、用物理尺度：UTM 坐标下（块 2 m、离原点 4.4e6 m）错一个 α 也要抓到。
+    """自校验在调用方原点独立重建有理数模型：UTM 坐标下（块 2 m、离原点 4.4e6 m）任意小的 α 错误也要抓到。
     旧版在调用方坐标系里判定，尺度被 ~|p|/L = 4e6 放大，α×0、×0.5、×2 全部放行。"""
     T, cts, dead, live, r = _utm_block()
     assert check_duality(r, cts, dead, live, dim=3, k=8)["ok"]
-    r.alpha *= factor
+    r.alpha = r.alpha.exact * Fraction(factor)
     d = check_duality(r, cts, dead, live, dim=3, k=8)
     assert not d["ok"], (factor, d)
 
@@ -111,8 +113,9 @@ def test_self_check_rejects_a_penetrating_mechanism_at_engineering_coordinates()
     assert not check_duality(r, cts, dead, live, dim=3, k=8)["ok"]
 
 
-def test_the_limit_load_self_check_raises_on_an_injected_error_at_engineering_coordinates(monkeypatch):
-    """limit_load 内置自检的牙：在 LP 结果上把 α 注入 ×0.999（真实调用路径），UTM 坐标下也必须抛错。"""
+@pytest.mark.parametrize("digits", [3,9,30,100])
+def test_the_limit_load_self_check_raises_on_an_injected_error_at_engineering_coordinates(monkeypatch, digits):
+    """limit_load 内置自检的牙：在 LP 结果上把 α 注入 ×(1-10^-k)，k=3/9/30/100（真实调用路径），UTM 坐标下必须抛错。"""
     real = LM.maximize
 
     def skew(A, b, c, **kw):
@@ -120,7 +123,7 @@ def test_the_limit_load_self_check_raises_on_an_injected_error_at_engineering_co
         if res.status == "optimal":
             ia = [j for j, cj in enumerate(c) if cj != 0.0][0]
             res.x = list(res.x)
-            res.x[ia] *= 0.999
+            res.x[ia] = res.exact_x[ia] * (1-Fraction(1,10**digits))
         return res
 
     T = (5e5, 4.4e6, 100.0)
@@ -144,7 +147,7 @@ def _tipping_2d(T, s=1.0):
 def test_a_penetrating_tipping_mechanism_is_rejected_at_any_site(T, s, frac):
     """倾覆机构（有转动）叠加向下平动、两个接触都以 frac × 接触速度贯入：两个判据在任何场址都必须拒绝。
     G6 第二轮复核者的 cd2.py：旧版在调用方坐标系里判定，机构的平动分量 v = −ω × T ~ |ω|·|T| 把尺度放大 ~|p|/L，
-    UTM 下 100% 贯入仍判容许（块缩小到 s = 0.01 时更甚）；现在在接触形心判定。"""
+    UTM 下 100% 贯入仍判容许（块缩小到 s = 0.01 时更甚）；E4 在调用方原点精确核，不依赖尺度。"""
     import copy
     cts, dead, live = _tipping_2d(T, s)
     r = limit_load(cts, dead, live, dim=2)

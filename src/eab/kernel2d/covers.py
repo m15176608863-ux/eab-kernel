@@ -17,24 +17,22 @@
 `kernel2d/exact.py` 里对给定浮点坐标精确求值，只有精确平行同向的边才并成 FF；`facet_gap` 只是构造量（facet 自己那条边的
 法向）。此前的"方向可行窗 + 噪声内共线链"一套浮点带宽在五轮复核里每轮都漏（第五轮 critical：宽窗把 1e-14 的倒角边与 60°
 的边并成 FF、链法向取了别的 facet 的边，真实压入 0.15 判"分离"），已删除。
-局部单盖（`ve_cover` / `ev_cover` / `vv_cover` / `enumerate_covers`，凹块路径的候选生成器与 legacy 对账的窗口化入口）
-仍是浮点 + 容差，下面这段说的是它们：
-容差（纪律 F，M0.2）：`tol` / `seg_tol` / `window` 是长度（调用方单位，换单位随之缩放），库内抬到舍入下限
-c·eps·C；法锥判据的角容差 `cone_tol` 是无量纲的（sin 单位）——缺省（None）时取长度容差在所涉最短边上张的角
-tol/ℓ（旧版直接把长度 tol 当角度用，单位缩放 ×1e3 时角容差也跟着 ×1e3，bb52 真几何上盖集随单位而变），
-再抬到角度舍入下限 c·eps·C/ℓ。门：tests/test_invariance_2d.py::test_cover_enumeration_is_invariant。
+局部单盖（E3）：默认对给定浮点坐标精确，法锥、VV 锥交/活跃、边内和距离窗全部用 Fraction 符号或平方比较。
+`tol` / `seg_tol` 是调用方明确指定的长度域窗口，`cone_tol` 是 sin 单位的角域窗口；None 角窗由 tol/最短边长给出。
+窗口只放宽有效集、不抬到舍入地板，strict 始终是精确严格性；浮点只构造法向、间隙和见证点。
+门：tests/test_kernel2d_covers_e3.py（精确邻点支持 oracle、零窗口、短棱端点、凸包真极点）。
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction
-from math import asin, atan2, pi
+from functools import lru_cache
+from math import atan2, isfinite
 
 from .exact import (convexity_violation, entrance_block_exact, ev_side_exact, membership_exact,
                     polygons_overlap_exact, ve_side_exact)
-from .geom import (Point, Poly, add, angle_floor, coord_scale, cross, dot, edge, neg, norm, outward_normal,
-                   round_floor, sub, turn_angle, turn_floor, unit)
+from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, sub, unit)
 
 
 @dataclass(slots=True)
@@ -52,6 +50,7 @@ class Cover:
     # VV：(A 的顶点, B 的顶点)。投影参数落在 [0,1] 内时两点都在各自多边形上，见证距离 ≥ 真距离。
     point_a: Point | None = None
     point_b: Point | None = None
+    window_active: bool = False  # VV 显式域窗口放宽的活跃性；绝不冒充精确 strict
 
     def label(self) -> tuple[str, int, int]:
         return (self.kind, self.a_index, self.b_index)
@@ -59,244 +58,243 @@ class Cover:
 
 # ---------------------------------------------------------------- 法锥
 
-def normal_cone(poly: Poly, i: int, tol: float = 0.0) -> tuple[Point, Point] | None:
-    """顶点 i 的法锥（CCW 极角序）：(n_prev, n_next)；反射（凹）顶点返回 None。
+@lru_cache(maxsize=4096)
+def _fr(p):
+    return (Fraction(p[0]), Fraction(p[1]))
 
-    tol 以 sin(转角) 计：turn < -tol 判为反射；平直顶点（turn≈0）保留——其法锥退化为单射线，
-    对应 legacy 里"直边中间的顶点贴在对方边上"这类接触（tol=0 时仍保留 turn==0）。
-    tol 再抬到该顶点转角的舍入下限 `geom.turn_floor`（平直顶点经刚体运动后转角 ±eps·C/ℓ，不许翻成反射）。
-    邻边为零长边时抛 ValueError('zero-length edge ...')（不是 ZeroDivisionError）。
-    """
-    n = len(poly)
-    # 零长邻边先于转角判：atan2(0,0)=0 会把它伪装成"平直顶点"（审查 C19）。清晰报错，不静默跳过——
-    # 跳过会让重复点处那个真实角点失去法锥，距离完备性静默破缺。
-    for k in ((i - 1) % n, i % n):
-        if poly[k] == poly[(k + 1) % n]:
-            raise ValueError(f"zero-length edge {k} at vertex {i % n}: consecutive duplicate vertex {poly[k]}; "
-                             f"strip duplicates at the reader boundary")
-    # 用转角（atan2）判反射：sin 分不清 θ 与 π−θ，会把 178° 的窄缝当作 2° 的近共线放行（审查 r1）。
-    ta = turn_angle(poly, i)
-    if ta < 0.0 and ta < -max(asin(min(max(tol, 0.0), 1.0)), turn_floor(poly, i)):
+
+def _vsub(p, q):
+    return (p[0] - q[0], p[1] - q[1])
+
+
+def _raw_cone(poly, i):
+    """顶点的两条未归一化精确外法向；零边清晰报错。"""
+    ring = tuple(poly[k % len(poly)] for k in (i - 1, i, i + 1))
+    return _raw_cone_ring(ring)
+
+
+@lru_cache(maxsize=4096)
+def _raw_cone_ring(ring):
+    p, a, q = map(_fr, ring)
+    e, f = _vsub(a, p), _vsub(q, a)
+    if e == (0, 0) or f == (0, 0):
+        raise ValueError("zero-length edge at vertex: strip duplicates at the reader boundary")
+    return (e[1], -e[0]), (f[1], -f[0])
+
+
+def _cross_ge_window(u, v, w2):
+    c = cross(u, v)
+    return c >= 0 or c * c <= w2 * dot(u, u) * dot(v, v)
+
+
+def _bisector_positive(lo, hi, v):
+    """v 点乘两单位边界之和的精确符号；平方比较消去两处平方根。"""
+    a, b = dot(lo, v), dot(hi, v)
+    if a >= 0 and b >= 0:
+        return a > 0 or b > 0
+    if a <= 0 and b <= 0:
+        return False
+    cmp = a * a * dot(hi, hi) - b * b * dot(lo, lo)
+    return cmp > 0 if a > 0 else cmp < 0
+
+
+def _cone_accepts(lo, hi, v, w2):
+    return (_cross_ge_window(lo, v, w2) and _cross_ge_window(v, hi, w2)
+            and _bisector_positive(lo, hi, v))
+
+
+def _cone_nonreflex(lo, hi, w2):
+    t = cross(lo, hi)
+    return t >= 0 and (t > 0 or dot(lo, hi) > 0) or (
+        t < 0 and dot(lo, hi) > 0 and t * t <= w2 * dot(lo, lo) * dot(hi, hi))
+
+
+def normal_cone(poly: Poly, i: int, tol: float = 0.0) -> tuple[Point, Point] | None:
+    """顶点法锥的浮点构造；反射判定精确。tol 是显式 sin 角域窗口，只放宽、不抬舍入地板。
+    小反射仅在转角绝对值 < π/2 且 sin 不超过窗口时接纳；零长邻边抛 ValueError。"""
+    lo, hi = _raw_cone(poly, i)
+    if not _cone_nonreflex(lo, hi, Fraction(max(tol, 0.0)) ** 2):
         return None
-    return outward_normal(poly, (i - 1) % n), outward_normal(poly, i)
+    return outward_normal(poly, (i - 1) % len(poly)), outward_normal(poly, i)
 
 
 def cone_width(cone: tuple[Point, Point]) -> float:
-    """法锥角宽（弧度，(-π, π]）：n_prev 到 n_next 的有向转角。平直顶点 0，容差内微反射为负。"""
+    """浮点构造量：两条法向的有符号转角（弧度），不用于精确分支。"""
     return atan2(cross(cone[0], cone[1]), dot(cone[0], cone[1]))
 
 
 def in_cone(cone: tuple[Point, Point], v: Point, tol: float = 0.0) -> int:
-    """v 相对法锥 (n_prev → n_next, CCW)：1 严格内部 / 0 落在边界（容差 tol）/ -1 外部。凸顶点锥角 < π。"""
-    n_prev, n_next = cone
-    c1 = cross(n_prev, v)
-    c2 = cross(v, n_next)
-    if c1 > tol and c2 > tol:
+    """对给定向量精确判：1 严格内部 / 0 边界或显式 sin 角窗 / -1 外部。"""
+    lo, hi, v = _fr(cone[0]), _fr(cone[1]), _fr(v)
+    if cross(lo, v) > 0 and cross(v, hi) > 0:
         return 1
-    if c1 >= -tol and c2 >= -tol and dot(v, add(n_prev, n_next)) > 0:
-        return 0
-    return -1
+    return 0 if _cone_accepts(lo, hi, v, Fraction(max(tol, 0.0)) ** 2) else -1
 
 
 def _project(p: Point, a: Point, b: Point) -> tuple[float, Point]:
-    e = sub(b, a)
-    s = dot(sub(p, a), e) / dot(e, e)
-    return s, add(a, (e[0] * s, e[1] * s))
+    """浮点见证构造；参数先精确相除，分支不消费舍入后的结果。"""
+    P, A, B = _fr(p), _fr(a), _fr(b)
+    e = _vsub(B, A)
+    t = dot(_vsub(P, A), e) / dot(e, e)
+    return float(t), (float(A[0] + t * e[0]), float(A[1] + t * e[1]))
 
 
-def _edge_len(P: Poly, k: int) -> float:
-    p, q = edge(P, k)
-    return norm(sub(q, p))
+def _angle_window2(tol, cone_tol, vectors):
+    """调用方的显式域窗口 sin²；无隐藏噪声项。tol/最短边长用精确平方比。"""
+    if cone_tol is not None:
+        return Fraction(max(cone_tol, 0.0)) ** 2
+    return Fraction(max(tol, 0.0)) ** 2 / min(dot(v, v) for v in vectors)
+
+
+def _ve_side(A, ia, B, jb, tol, cone_tol):
+    lo, hi = _raw_cone(A, ia)
+    b0, b1 = (_fr(p) for p in edge(B, jb))
+    e = _vsub(b1, b0)
+    if e == (0, 0):
+        raise ValueError(f"zero-length edge {jb}")
+    v = (-e[1], e[0])
+    turn, c1, c2 = cross(lo, hi), cross(lo, v), cross(v, hi)
+    if turn >= 0 and (turn > 0 or dot(lo, hi) > 0) and c1 >= 0 and c2 >= 0 and (turn > 0 or dot(lo, v) > 0):
+        return 1 if c1 > 0 and c2 > 0 else 0
+    if tol <= 0 and (cone_tol is None or cone_tol <= 0):
+        return -1
+    w2 = _angle_window2(tol, cone_tol, (lo, hi, e))
+    return 0 if w2 > 0 and _cone_nonreflex(lo, hi, w2) and _cone_accepts(lo, hi, v, w2) else -1
 
 
 # ---------------------------------------------------------------- 单个盖
 
-def _vertex_ring(P: Poly, i: int) -> tuple[Point, Point, Point]:
-    n = len(P)
-    return P[(i - 1) % n], P[i % n], P[(i + 1) % n]
-
-
-def _angle_tols(tol: float, cone_tol: float | None, pts, lengths) -> tuple[float, float, float]:
-    """(法锥角容差, 长度容差张的角, 角度舍入下限)，都无量纲。ℓ = 所涉最短边，C = 所涉点的坐标量级。
-    cone_tol 缺省取 tol/ℓ；两者都抬到 c·eps·C/ℓ。零长边时返回 0（不放宽任何判据；随后的 outward_normal /
-    normal_cone 对零长边清晰报 ValueError，审查 C19）。"""
-    ell = min(lengths)
-    if ell <= 0.0:
-        return 0.0, 0.0, 0.0
-    fl = angle_floor(coord_scale(pts), ell)
-    t_ang = max(tol / ell, fl)
-    return (max(cone_tol, fl) if cone_tol is not None else t_ang), t_ang, fl
-
-
 def ve_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
-    """A 的顶点 ia 对 B 的边 jb。无效（法锥外/反射顶点）返回 None。
-
-    tol：长度容差。cone_tol：法锥判据的角容差（sin 单位，无量纲；None = tol/ℓ，ℓ 为所涉三条边的最短者）。
-    legacy 兼容模式给 sin(h1°)。两者都抬到角度舍入下限 c·eps·C/ℓ（纪律 F）。
-    """
-    nB = outward_normal(B, jb)                       # 零长边在这里清晰报错
-    ap, a, an = _vertex_ring(A, ia)
-    b0, b1 = edge(B, jb)
-    ct, _, _ = _angle_tols(tol, cone_tol, (ap, a, an, b0, b1), (norm(sub(a, ap)), norm(sub(an, a)), norm(sub(b1, b0))))
-    cone = normal_cone(A, ia, ct)
-    if cone is None:
-        return None
-    side = in_cone(cone, neg(nB), ct)
+    """VE 的有效性/严格性默认精确。tol 是显式长度域窗，cone_tol 是显式 sin 角窗；仅扩大有效集。
+    返回 normal/gap/param/point 是浮点构造，不作为枚举的判据。"""
+    side = _ve_side(A, ia, B, jb, tol, cone_tol)
     if side < 0:
         return None
+    a, (b0, b1) = A[ia], edge(B, jb)
+    nB = outward_normal(B, jb)
     s, pt = _project(a, b0, b1)
     return Cover("VE", ia, jb, nB, dot(nB, sub(a, b0)), s, pt, side == 1, a, pt)
 
 
 def ev_cover(A: Poly, ka: int, B: Poly, ib: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
-    """B 的顶点 ib 对 A 的边 ka。容差口径同 `ve_cover`。"""
-    nA = outward_normal(A, ka)
-    bp, b, bn = _vertex_ring(B, ib)
-    a0, a1 = edge(A, ka)
-    ct, _, _ = _angle_tols(tol, cone_tol, (bp, b, bn, a0, a1), (norm(sub(b, bp)), norm(sub(bn, b)), norm(sub(a1, a0))))
-    cone = normal_cone(B, ib, ct)
-    if cone is None:
-        return None
-    side = in_cone(cone, neg(nA), ct)
+    """EV，交换两块后的 VE 判据；显式窗口语义同 ve_cover。"""
+    side = _ve_side(B, ib, A, ka, tol, cone_tol)
     if side < 0:
         return None
+    b, (a0, a1) = B[ib], edge(A, ka)
+    nA = outward_normal(A, ka)
     s, pt = _project(b, a0, a1)
     return Cover("EV", ka, ib, neg(nA), dot(nA, sub(b, a0)), s, pt, side == 1, pt, b)
 
 
-def _ang(v: Point) -> float:
-    return atan2(v[1], v[0])
 
-
-def _span(lo: Point, hi: Point) -> tuple[float, float]:
-    a0, a1 = _ang(lo), _ang(hi)
-    if a1 < a0:
-        a1 += 2 * pi
-    return a0, a1
+def _open_cone(lo, hi, v):
+    return cross(lo, v) > 0 and cross(v, hi) > 0
 
 
 def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
-    """A 的顶点 ia 对 B 的顶点 jb：E 的顶点。有效 ⟺ N_B(b) 与 −N_A(a) 的相对内部相交。
-
-    活跃（strict=True）还要求分离方向 a − b 落在该交锥内，否则参考点离这个 E 顶点不是最近。
-    容差（纪律 F）：法锥用 `_angle_tols` 的角容差；交锥宽度与活跃判据用长度容差张的角 tol/ℓ（旧版直接拿长度 tol
-    当弧度）；锥宽判"退化"用角度舍入下限；两顶点重合判据用长度舍入下限。ℓ 取两顶点的四条邻边的最短者。
-    """
-    ap, a, an = _vertex_ring(A, ia)
-    bp, b, bn = _vertex_ring(B, jb)
-    ct, vt, fl = _angle_tols(tol, cone_tol, (ap, a, an, bp, b, bn),
-                             (norm(sub(a, ap)), norm(sub(an, a)), norm(sub(b, bp)), norm(sub(bn, b))))
-    ca = normal_cone(A, ia, ct)
-    cb = normal_cone(B, jb, ct)
-    if ca is None or cb is None:
+    """VV 锥交有效性精确：两个非退化凸锥的相对内部相交。活跃性用严格精确符号；
+    方向恰在锥边界时不标 strict（该处由 VE/EV 表示）；仅 a == b 才是重合。
+    显式 tol/cone_tol 只放宽 window_active，strict 仍报告精确严格性。"""
+    alo, ahi = _raw_cone(A, ia)
+    blo, bhi = _raw_cone(B, jb)
+    if cross(alo, ahi) <= 0 or cross(blo, bhi) <= 0:
         return None
-    # 锥宽 ≤ 舍入下限（平直顶点或容差内微反射）→ 法锥退化为单射线，相对内部交为空，不是 E 的顶点。
-    # 不能对原始法向做 _span：数值共线顶点的 n_next 略偏 CW 会回绕成 ≈360° 假锥（审查 r3，31% 触发）。
-    wa, wb = cone_width(ca), cone_width(cb)
-    if wa <= fl or wb <= fl:
+    alo, ahi = neg(alo), neg(ahi)
+    rays = (alo, ahi, blo, bhi)
+    # 交锥若非空，其两条边界必取自这四条射线；真边界的正和严格落在交锥内。
+    if not any(_open_cone(alo, ahi, add(u, v)) and _open_cone(blo, bhi, add(u, v))
+               for k, u in enumerate(rays) for v in rays[k + 1:]):
         return None
-    a_lo = _ang(neg(ca[0]))
-    b_lo = _ang(cb[0])
-    s1 = (a_lo, a_lo + wa)
-    s2 = (b_lo, b_lo + wb)
-    best: tuple[float, float] | None = None
-    for k in (-1, 0, 1):
-        lo = max(s1[0], s2[0] + 2 * pi * k)
-        hi = min(s1[1], s2[1] + 2 * pi * k)
-        if best is None or hi - lo > best[1] - best[0]:
-            best = (lo, hi)
-    assert best is not None
-    if best[1] - best[0] <= vt:
-        return None
-    d = sub(a, b)
-    dist = norm(d)
-    if dist <= round_floor(max(abs(a[0]), abs(a[1]), abs(b[0]), abs(b[1]))):
+    a, b = A[ia], B[jb]
+    d = _vsub(_fr(a), _fr(b))
+    if d == (0, 0):
         return Cover("VV", ia, jb, None, 0.0, None, a, True, a, b)
-    u = unit(d)
-    au = _ang(u)
-    # 分离方向 u = unit(a − b) 自身的噪声 rfl/|a − b|（三维 ve3/ev3/vv3 第三轮已补 fl/|v|，二维同类第四轮补上）：
-    # 方向恰在交锥边界、两顶点间距远小于坐标量级时，strict 曾随刚体运动对半翻转，盖标签集不再不变（G6 第四轮 major）
-    du = round_floor(max(abs(a[0]), abs(a[1]), abs(b[0]), abs(b[1]))) / dist
-    active = any(best[0] - vt - du <= au + 2 * pi * k <= best[1] + vt + du for k in (-1, 0, 1))
-    return Cover("VV", ia, jb, u, dist, None, a, active, a, b)
+    active = _open_cone(alo, ahi, d) and _open_cone(blo, bhi, d)
+    w2 = _angle_window2(tol, cone_tol, rays)
+    expanded = w2 > 0 and _cone_accepts(alo, ahi, d, w2) and _cone_accepts(blo, bhi, d, w2)
+    df = (float(d[0]), float(d[1]))
+    return Cover("VV", ia, jb, unit(df), norm(df), None, a, active, a, b, expanded)
 
 
 # ---------------------------------------------------------------- 枚举
 
+def _line_data(p, a, b):
+    P, A, B = _fr(p), _fr(a), _fr(b)
+    e, d = _vsub(B, A), _vsub(P, A)
+    return -cross(e, d), dot(e, e), dot(e, d)
+
+
+def _in_segment_exact(p, a, b, window):
+    _, l2, along = _line_data(p, a, b)
+    excess = max(-along, along - l2, 0)
+    if excess == 0 or window == float("inf"):
+        return True
+    return isfinite(window) and excess * excess <= Fraction(max(window, 0.0)) ** 2 * l2
+
+
+def _in_gap_window(c, A, B, window):
+    if window < 0:
+        return False
+    if window == float("inf"):
+        return True
+    if c.kind == "VV":
+        d = _vsub(_fr(A[c.a_index]), _fr(B[c.b_index]))
+        return dot(d, d) <= Fraction(window) ** 2
+    P, E, i, j = (A, B, c.a_index, c.b_index) if c.kind == "VE" else (B, A, c.b_index, c.a_index)
+    g, l2, _ = _line_data(P[i], *edge(E, j))
+    return g * g <= Fraction(window) ** 2 * l2
+
+
 def enumerate_covers(A: Poly, B: Poly, *, window: float, tol: float = 0.0,
                      require_in_segment: bool = True, cone_tol: float | None = None,
                      seg_tol: float | None = None) -> list[Cover]:
-    """当前位形下所有有效且落在距离窗口内的盖。A、B 均为 CCW。
-
-    window：|gap| ≤ window 才收（对应 legacy 的 d0 搜索距离，两侧对称，调用方再筛）。
-    require_in_segment：VE/EV 的投影参数须在 [0,1]（容差 seg_tol/边长，缺省 tol）。VV 只收活跃的。
-    cone_tol：法锥角容差（sin 单位，无量纲）；严格数学用 0，legacy 兼容用 sin(h1°)；None = tol/ℓ。
-    长度量（window、seg_tol、tol）都抬到舍入下限 c·eps·C（C = 两块的坐标量级；纪律 F）。
-    """
-    lf = round_floor(coord_scale(A, B))
-    st = max(tol if seg_tol is None else seg_tol, lf)
-    window = max(window, lf)
-    out: list[Cover] = []
-    nA, nB = len(A), len(B)
-    for ia in range(nA):
-        for jb in range(nB):
+    """枚举有效盖；window 是 |gap| 的显式距离域窗，seg_tol 是边端外的显式长度域窗（默认 tol）。
+    距离窗/边内/法锥全部精确平方比较，窗口不抬到舍入地板；VV 仅收活跃盖。"""
+    st = tol if seg_tol is None else seg_tol
+    out = []
+    for ia in range(len(A)):
+        for jb in range(len(B)):
             c = ve_cover(A, ia, B, jb, tol, cone_tol)
-            if c is not None and abs(c.gap) <= window:
-                if require_in_segment:
-                    # 带 = (长度带 + 杠杆项 |a − b0|·rfl/|e|) / |e|：投影参数还带边方向噪声 × 到顶点的距离（三维第三轮补的同一项；
-                    # 顶点恰投影在短边端点、间隙 ≫ 边长时旧带宽 st/|e| 远小于它，盖随刚体运动随机出入边内带，G6 第四轮 minor）
-                    le = _edge_len(B, jb)
-                    band = (st + lf * norm(sub(A[ia], edge(B, jb)[0])) / le) / le
-                    if not (-band <= c.param <= 1.0 + band):
-                        continue
+            if c is not None and _in_gap_window(c, A, B, window) and (
+                not require_in_segment or _in_segment_exact(A[ia], *edge(B, jb), st)):
                 out.append(c)
-    for ka in range(nA):
-        for ib in range(nB):
+    for ka in range(len(A)):
+        for ib in range(len(B)):
             c = ev_cover(A, ka, B, ib, tol, cone_tol)
-            if c is not None and abs(c.gap) <= window:
-                if require_in_segment:
-                    le = _edge_len(A, ka)
-                    band = (st + lf * norm(sub(B[ib], edge(A, ka)[0])) / le) / le
-                    if not (-band <= c.param <= 1.0 + band):
-                        continue
+            if c is not None and _in_gap_window(c, A, B, window) and (
+                not require_in_segment or _in_segment_exact(B[ib], *edge(A, ka), st)):
                 out.append(c)
-    for ia in range(nA):
-        for jb in range(nB):
+    for ia in range(len(A)):
+        for jb in range(len(B)):
             c = vv_cover(A, ia, B, jb, tol, cone_tol)
-            if c is not None and c.strict and c.gap <= window:
+            if c is not None and (c.strict or c.window_active) and _in_gap_window(c, A, B, window):
                 out.append(c)
     return out
 
 
+def _signed_gap_key(A, ia, B, jb):
+    g, l2, _ = _line_data(A[ia], *edge(B, jb))
+    return ((g > 0) - (g < 0), g * abs(g) / l2)
+
+
 def first_entrance_for_vertex(A: Poly, ia: int, B: Poly, *, window: float, tol: float = 0.0,
                               cone_tol: float | None = None) -> Cover | None:
-    """顶点 ia 对块 B 的首入盖：投影在边内的有效 VE 盖里取最大间隙（最浅侵入 / 最先被触及）。
-
-    与 tf.cpp 每接触取最大 v1 者作当前入口是同一裁决；无边内 VE 时退到活跃 VV。
-    适用范围：B 凸，或已侵入情形（最短出口）。B 凹且分离时（如 L 形内角）"最大间隙"会选到远边——
-    审查 r8 指出这与命题 7 的"首入"不同，凹块分离情形应取最小正间隙，待 Phase 3 处理。
-    """
-    lf = round_floor(coord_scale(A, B))
-    st, window = max(tol, lf), max(window, lf)
-    best: Cover | None = None
+    """边内有效 VE 里取最大有符号间隙，所有比较精确；没有时退到最短活跃 VV。
+    这是凸 B / 已侵入情形的局部选择器，不是一般凹块的沿路径首入（后者见 entrance.first_entrance）。
+    window/tol/cone_tol 均是调用方显式域窗口，不抬噪声地板。"""
+    ves, vvs = [], []
     for jb in range(len(B)):
         c = ve_cover(A, ia, B, jb, tol, cone_tol)
-        if c is None or abs(c.gap) > window:
-            continue
-        le = _edge_len(B, jb)
-        band = (st + lf * norm(sub(A[ia], edge(B, jb)[0])) / le) / le          # 含杠杆项，同 enumerate_covers
-        if not (-band <= c.param <= 1.0 + band):
-            continue
-        if best is None or c.gap > best.gap:
-            best = c
-    if best is not None:
-        return best
+        if c is not None and _in_gap_window(c, A, B, window) and _in_segment_exact(A[ia], *edge(B, jb), tol):
+            ves.append(c)
+    if ves:
+        return max(ves, key=lambda c: _signed_gap_key(A, ia, B, c.b_index))
     for jb in range(len(B)):
         c = vv_cover(A, ia, B, jb, tol, cone_tol)
-        if c is not None and c.strict and c.gap <= window:
-            if best is None or c.gap < best.gap:
-                best = c
-    return best
+        if c is not None and (c.strict or c.window_active) and _in_gap_window(c, A, B, window):
+            vvs.append(c)
+    return min(vvs, key=lambda c: sum(v*v for v in _vsub(_fr(A[ia]), _fr(B[c.b_index])))) if vvs else None
 
 
 # ---------------------------------------------------------------- 凸情形的全局构造（Minkowski 合并）

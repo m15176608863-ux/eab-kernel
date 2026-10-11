@@ -1,0 +1,61 @@
+..............................................................F......... [ 68%]
+.................................                                        [100%]
+================================== FAILURES ===================================
+_ test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal _
+
+    @pytest.mark.skipif(not (FIX / "bdda_debug_verts.csv").exists(), reason="bb52 fixture missing")
+    def test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal():
+        """bb52 步 1（11 块、8 凹，53 条 legacy 顶点-边接触，初始位形全贴合）：对每条 legacy v-e 接触（mtype 0：p1 顶点、p3→p2 边），
+        让顶点所在块沿该边的**内**法向（−n）逼近另一块——引擎的首入（或已侵入时的最短出口）并列集必须含这条 (VE, 顶点, 边)。
+        这是首入对 legacy 的第一道对账：legacy 认定的接触，引擎沿逼近方向也认它是第一个碰上的。"""
+        sys.path.insert(0, str(ROOT / "tools"))
+        import bb52_g0
+        blocks, alias = bb52_g0.load_blocks(step=1)
+        v2b = {v: b for b, dct in blocks.items() for v in dct["vidx"]}
+        loc = {v: i for b, dct in blocks.items() for i, v in enumerate(dct["vidx"])}
+        misses = []
+        n = n_pen = 0
+        for mtype, p1, p2, p3, _, _ in bb52_g0.legacy_contacts(step=1):
+            if mtype != 0:
+                continue
+            p1, p2, p3 = (alias.get(v, v) for v in (p1, p2, p3))
+            ba, bb = v2b[p1], v2b[p2]
+            assert v2b[p3] == bb
+            A, B = blocks[ba]["poly"], blocks[bb]["poly"]
+            ia = loc[p1]
+            i2, i3 = loc[p2], loc[p3]
+            nb = len(B)
+            jb = i2 if (i2 + 1) % nb == i3 else i3
+            assert {jb, (jb + 1) % nb} == {i2, i3}
+            FIT = 1e-6                                      # 夹具初始位形的贴合精度（G1 门：matched_gap_max_abs < 1e-6）
+            CONE = math.sin(math.radians(3.0))              # legacy 的 h1 = 3° 法锥角容差（G1 门复现 53/53 用的就是它）
+            n += 1
+            # (1) legacy 的这条 v-e 在 legacy 自己的精度下是引擎的有效盖、间隙在贴合精度内
+            c = ve_cover(A, ia, B, jb, FIT, cone_tol=CONE)
+            if c is None or abs(c.gap) > FIT:
+                misses.append((ba, bb, p1, (p3, p2), "legacy v-e not a cover at 3deg/1e-6", None if c is None else c.gap))
+                continue
+            nB = outward_normal(B, jb)
+            d = tuple(-x for x in nB)
+            if polygons_overlap(A, B, FIT) == 1:
+                n_pen += 1                                  # 已微量贯入：legacy 的选择带历史，不与"最浅出口"硬对
+                continue
+            # (2) 引擎沿该边内法向逼近的首入：同一条盖、或同一顶点的集值邻支、或接触点就是这个顶点、或落在同一条接触线上
+            #     （平行边贴合的退化族：legacy 记 A 顶点对 B 边，引擎可能记 B 顶点对 A 边，法向相同）
+            e = first_entrance(A, B, (0.0, 0.0), d, tol=FIT, t_max=1.0)
+            labels = e.tied_labels
+            same_label = ("VE", ia, jb) in labels or any(lab[0] == "VE" and lab[1] == ia for lab in labels)
+            same_point = any(p is not None and math.dist(p, A[ia]) <= FIT for p in (e.point_a, e.point_b))
+            same_plane = e.normal is not None and abs(e.normal[0] * nB[1] - e.normal[1] * nB[0]) <= 1e-6 and e.t <= FIT
+            same_time = e.kind == "entrance" and abs(e.t - c.gap) <= FIT          # legacy 那条在贴合精度内与首入同时被触及
+            if not (same_label or same_point or same_plane or same_time):
+                misses.append((ba, bb, p1, (p3, p2), e.kind, e.label, e.t, labels[:3]))
+        assert n == 53 and n_pen <= 20, (n, n_pen)
+>       assert not misses, (len(misses), misses[:5])
+E       AssertionError: (3, [(4, 1, 108, (40, 41), 'exit', ('VE', 6, 41), ...), (9, 1, 152, (40, 41), 'exit', ('EV', 4, 39), ...), (1, 9, 40, (152, 153), 'exit', ('VE', 39, 4), ...)])
+E       assert not [(4, 1, 108, (40, 41), 'exit', ('VE', 6, 41), ...), (9, 1, 152, (40, 41), 'exit', ('EV', 4, 39), ...), (1, 9, 40, (152, 153), 'exit', ('VE', 39, 4), ...)]
+
+tests\test_kernel2d_entrance.py:219: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal
+1 failed, 104 passed in 5.74s

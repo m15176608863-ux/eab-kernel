@@ -215,9 +215,9 @@ def test_orient2d_is_exact_when_the_products_overflow():
 
 # ---------------------------------------------------------------- (d) convex_hull
 
-def test_hull_of_a_rotated_collinear_strip_has_four_vertices():
+def test_hull_of_a_rotated_collinear_strip_matches_exact_support():
     """一条直线上的点（两端 ±1e5）加一条宽 1 的平行偏移上的两个端点，旋转、平移到 |坐标| ~ 1e5：
-    直线上的中间点经舍入偏离弦 ~eps·C，凸包的舍入地板必须把它们判为共线，恰好 4 个顶点。"""
+    E3 保留 3000 个点集，逐点核对独立 Fraction 全点支持线 oracle；不把舍入后的真极点伪装共线。"""
     rng = random.Random(7)
     sizes = {}
     for _ in range(3000):
@@ -227,9 +227,19 @@ def test_hull_of_a_rotated_collinear_strip_has_four_vertices():
         ts = [rng.uniform(-1e5, 1e5) for _ in range(6)] + [-1e5, 1e5]
         pts = [(o[0] + t * u[0], o[1] + t * u[1]) for t in ts]
         pts += [(o[0] + e * 1e5 * u[0] + v[0], o[1] + e * 1e5 * u[1] + v[1]) for e in (1.0, -1.0)]
-        n = len(convex_hull(pts))
-        sizes[n] = sizes.get(n, 0) + 1
-    assert sizes == {4: 3000}, sizes
+        hull=convex_hull(pts)
+        from fractions import Fraction as F
+        oracle=set()
+        for a in pts:
+            for b in pts:
+                if a==b: continue
+                ds=[(F(b[0])-F(a[0]))*(F(p[1])-F(a[1]))-(F(b[1])-F(a[1]))*(F(p[0])-F(a[0])) for p in pts]
+                if min(ds)>=0:
+                    line=[p for p,d in zip(pts,ds) if d==0]
+                    oracle.update((min(line),max(line)))
+        assert set(hull)==oracle
+        sizes[len(hull)]=sizes.get(len(hull),0)+1
+    assert sum(sizes.values())==3000 and len(sizes)>1, sizes
 
 
 # ---------------------------------------------------------------- (e) membership_convex 不给 eb：单位缩放

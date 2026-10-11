@@ -29,7 +29,7 @@ def test_r3_numerically_collinear_vertex_yields_no_vv():
     from eab.kernel2d.geom import turn_angle
     assert -radians(3.0) < turn_angle(Q, 1) < 0.0
     assert vv_cover(Q, 1, B, 3, 1e-12, sin(radians(3.0))) is None
-    covs = [c for c in enumerate_covers(Q, B, window=5.0, tol=1e-9, cone_tol=sin(radians(3.0))) if c.kind == "VV"]
+    covs = [c for c in enumerate_covers(Q, B, window=5.0, cone_tol=sin(radians(3.0))) if c.kind == "VV"]
     assert all(c.a_index != 1 for c in covs)
 
 
@@ -137,7 +137,7 @@ def test_gap0_sign_of_min_gap_is_not_a_concave_membership_rule():
         for oy in (0.105, 0.11, 0.12, 0.13):
             A = translate(S, (ox, oy))
             assert polygons_overlap(A, L, 1e-12) == -1                 # 真值：分离
-            covs = enumerate_covers(A, L, window=d0, tol=1e-9)
+            covs = enumerate_covers(A, L, window=d0)
             pen = min(c.gap for c in covs if c.kind != "VV")
             culprit = [c for c in covs if c.kind == "VE" and c.b_index == 0 and c.gap < 0]
             assert culprit and not any(c.strict for c in culprit)      # 非严格 VE 盖对外底边
@@ -169,10 +169,10 @@ def test_gap0_sign_of_min_gap_false_negative_wedge_in_channel(dx, dy, scale, off
     A = translate(W, x)
     d0 = 0.19687500000000002 * scale
     assert polygons_overlap(A, C, 1e-12 * scale) == 1                   # 真值：相交
-    covs = [c for c in enumerate_covers(A, C, window=d0, tol=1e-9 * scale) if c.kind != "VV"]
+    covs = [c for c in enumerate_covers(A, C, window=d0) if c.kind != "VV"]
     assert [(c.kind, c.a_index, c.b_index) for c in covs] == [("VE", 2, 4)]
     assert abs(covs[0].gap / scale - (0.05 + dy)) < 1e-9                 # 唯一入窗盖：正间隙
-    tip = {c.b_index: c for c in enumerate_covers(A, C, window=d0, tol=1e-9 * scale, require_in_segment=False)
+    tip = {c.b_index: c for c in enumerate_covers(A, C, window=d0, require_in_segment=False)
            if c.kind == "VE" and c.a_index == 0}
     assert set(tip) == {2, 3}
     assert abs(tip[2].gap / scale + dy) < 1e-9 and abs(tip[3].gap / scale + dx) < 1e-9     # 负间隙……
@@ -205,8 +205,8 @@ def test_c19_zero_length_edge_is_a_clear_error_not_zerodivision(poly, where):
     也不许 convex_entrance_block 报出误导的 "not convex ... drops by 3.142 rad"。"""
     i = next(k for k in range(len(poly)) if poly[k] == poly[(k + 1) % len(poly)])
     for call in (lambda: normal_cone(poly, i), lambda: normal_cone(poly, (i + 1) % len(poly)),
-                 lambda: enumerate_covers(poly, FAR, window=5.0, tol=1e-9),
-                 lambda: enumerate_covers(FAR, poly, window=5.0, tol=1e-9),
+                 lambda: enumerate_covers(poly, FAR, window=5.0),
+                 lambda: enumerate_covers(FAR, poly, window=5.0),
                  lambda: convex_entrance_block(poly, FAR, tol=1e-12)):
         with pytest.raises(ValueError, match="zero-length edge"):
             call()
@@ -265,14 +265,14 @@ def test_c19_loaders_strip_every_cyclic_consecutive_duplicate(tmp_path, monkeypa
     nbr = [(x + shift, y) for x, y in clean]                       # 块 2：右侧的干净邻块
     rows = _ring_rows(1, vid0, raw) + _ring_rows(2, 200, nbr)
     want = {vid0 + k: vid0 + v for k, v in want_alias.items()}
-    ref = sorted((c.kind, round(c.gap / shift, 12)) for c in enumerate_covers(clean, nbr, window=5.0, tol=1e-12))
+    ref = sorted((c.kind, round(c.gap / shift, 12)) for c in enumerate_covers(clean, nbr, window=5.0))
     for who, poly, vidx, alias in _load_both(tmp_path, monkeypatch, rows):
         assert all(poly[k] != poly[(k + 1) % len(poly)] for k in range(len(poly))), (who, poly)
         assert _same_cycle(poly, clean), (who, poly)                # CCW、与干净环同一循环序
         assert {k: v for k, v in alias.items() if k < 200} == want, (who, alias)
         assert len(vidx) == len(poly) and not set(vidx) & set(want), (who, vidx)
         assert set(alias.values()) <= set(vidx) | set(range(200, 204)), (who, alias)   # alias 只指向保留的顶点
-        got = sorted((c.kind, round(c.gap / shift, 12)) for c in enumerate_covers(poly, nbr, window=5.0, tol=1e-12))
+        got = sorted((c.kind, round(c.gap / shift, 12)) for c in enumerate_covers(poly, nbr, window=5.0))
         assert got == ref and ref, (who, got, ref)
 
 

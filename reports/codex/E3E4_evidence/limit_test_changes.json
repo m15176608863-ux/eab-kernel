@@ -1,0 +1,118 @@
+[
+  {
+    "test": "tests/test_limit_arch.py::test_high_friction_arch_collapses_by_the_best_hinge_mechanism[2.0-N5]",
+    "old": "浮点4×4铰链消元、容差-1e-12开闭；近似twists断言admissible",
+    "new": "点先Fraction再相减，独立有理数4×4消元及精确主元/开闭；原α比较与N/μ参数全保留",
+    "not_weaker": "同样assert admissible且oracle更严格，不删格、不宽容差"
+  },
+  {
+    "test": "tests/test_limit_arch.py::test_high_friction_arch_collapses_by_the_best_hinge_mechanism[2.0-N7]",
+    "old": "浮点4×4铰链消元、容差-1e-12开闭；近似twists断言admissible",
+    "new": "点先Fraction再相减，独立有理数4×4消元及精确主元/开闭；原α比较与N/μ参数全保留",
+    "not_weaker": "同样assert admissible且oracle更严格，不删格、不宽容差"
+  },
+  {
+    "test": "tests/test_limit_arch.py::test_high_friction_arch_collapses_by_the_best_hinge_mechanism[5.0-N5]",
+    "old": "浮点4×4铰链消元、容差-1e-12开闭；近似twists断言admissible",
+    "new": "点先Fraction再相减，独立有理数4×4消元及精确主元/开闭；原α比较与N/μ参数全保留",
+    "not_weaker": "同样assert admissible且oracle更严格，不删格、不宽容差"
+  },
+  {
+    "test": "tests/test_limit_arch.py::test_high_friction_arch_collapses_by_the_best_hinge_mechanism[5.0-N7]",
+    "old": "浮点4×4铰链消元、容差-1e-12开闭；近似twists断言admissible",
+    "new": "点先Fraction再相减，独立有理数4×4消元及精确主元/开闭；原α比较与N/μ参数全保留",
+    "not_weaker": "同样assert admissible且oracle更严格，不删格、不宽容差"
+  },
+  {
+    "test": "tests/test_limit_arch.py::test_any_friction_arch_is_bounded_above_by_every_hinge_mechanism[0.4]",
+    "old": "浮点4×4铰链消元、容差-1e-12开闭；近似twists断言admissible",
+    "new": "点先Fraction再相减，独立有理数4×4消元及精确主元/开闭；原α比较与N/μ参数全保留",
+    "not_weaker": "同样assert admissible且oracle更严格，不删格、不宽容差"
+  },
+  {
+    "test": "tests/test_limit_arch.py::test_any_friction_arch_is_bounded_above_by_every_hinge_mechanism[0.7]",
+    "old": "浮点4×4铰链消元、容差-1e-12开闭；近似twists断言admissible",
+    "new": "点先Fraction再相减，独立有理数4×4消元及精确主元/开闭；原α比较与N/μ参数全保留",
+    "not_weaker": "同样assert admissible且oracle更严格，不删格、不宽容差"
+  },
+  {
+    "test": "tests/test_limit_arch.py::test_any_friction_arch_is_bounded_above_by_every_hinge_mechanism[1.0]",
+    "old": "浮点4×4铰链消元、容差-1e-12开闭；近似twists断言admissible",
+    "new": "点先Fraction再相减，独立有理数4×4消元及精确主元/开闭；原α比较与N/μ参数全保留",
+    "not_weaker": "同样assert admissible且oracle更严格，不删格、不宽容差"
+  },
+  {
+    "test": "tests/test_limit_duality.py::test_three_d_row_duals_equal_each_contacts_cohesive_dissipation",
+    "old": "θ=.3手工sin/cos平动被当精确drive=1；反序row拒绝",
+    "new": "θ=.3原α与正常精确自检保留；在原返回机构上反序row仍拒绝；独立证明手工cos/sin drive!=1故拒绝；增加同非对称四角/原点的精确反向轴向人工可行者及反序row拒绝",
+    "not_weaker": "保留原一般方向错配牙；修正错误理想化断言，并新增精确手工对偶面成员"
+  },
+  {
+    "test": "tests/test_limit_multi.py::test_a_far_body_does_not_loosen_the_self_check[digits-D]",
+    "old": "δ=1e-3 ×原4跨度；static_ok=false且static_residual_rel>1e-5",
+    "new": "δ=10^-k，k3/9/30/100 ×原4跨度；static_ok=false且精确残差任一非零",
+    "not_weaker": "保留原格并增任意小注入；精确残差非零比显示归一量有牙且不依赖显示参考点"
+  },
+  {
+    "test": "tests/test_limit_selfcheck.py::test_self_check_rejects_wrong_answers_at_engineering_coordinates[factor]",
+    "old": "factor0/.5/.999/1.001/2",
+    "new": "保留原5格并加Fraction(1)-10^-k，k3/9/30/100；用alpha.exact构造",
+    "not_weaker": "保留原注入幅度与UTM场景，新增超float分辨率"
+  },
+  {
+    "test": "tests/test_limit_selfcheck.py::test_the_limit_load_self_check_raises_on_an_injected_error_at_engineering_coordinates",
+    "old": "真实LP返回路径α×.999",
+    "new": "同原输入，k3/9/30/100的精确α×(1-10^-k)，均必须RuntimeError self-check",
+    "not_weaker": "保留1e-3并增亚ulp注入，误差在返回前被真实调用路径拒绝"
+  },
+  {
+    "test": "tests/test_limit_multi.py::test_self_check_raises_on_an_injected_wrong_alpha",
+    "old": "真实LP返回路径α×.999",
+    "new": "同原输入，k3/9/30/100的精确α×(1-10^-k)，均必须RuntimeError self-check",
+    "not_weaker": "保留1e-3并增亚ulp注入，误差在返回前被真实调用路径拒绝"
+  },
+  {
+    "test": "tests/test_limit_multi.py::test_multi_resolvability_has_the_same_three_regimes_as_the_single_body_version[v-expect-loaded_body]",
+    "old": "6输入仅body0：optimal/抛错/邻域infeasible替换原答案",
+    "new": "原6输入×body0/1：原optimal且exact alpha*v=1 +精确自检，再核三个报告与双边状态",
+    "not_weaker": "保留每条筛查分支牙，新增给定原数据答案不可篡改证明"
+  },
+  {
+    "test": "tests/test_limit_fuzz.py::test_rounding_level_load_component_is_not_certified_as_capacity",
+    "old": "sin(pi)给定数据被改报infeasible",
+    "new": "原optimal且exact alpha*sin(pi)=1 +精确自检；报告nearby_infeasible；精确水平另一原输入仍infeasible",
+    "not_weaker": "保留物理理想化与给定数区别、敏感性告警；新增原精确答案证明"
+  },
+  {
+    "test": "tests/test_limit_fuzz.py::test_small_load_component_resolvability_has_three_regimes[v-expect]",
+    "old": "10输入 optimal/raise/infeasible",
+    "new": "原10输入全exact alpha*v=1及精确自检，分别报告resolved/unresolved/nearby_infeasible并核双边状态",
+    "not_weaker": "不削筛查分支牙，禁止邻域判断篡改原给定数据"
+  },
+  {
+    "test": "tests/test_limit_fuzz.py::test_a_large_first_order_uncertainty_alone_does_not_reject",
+    "old": "强制U=1：稳定例optimal、小分量infeasible",
+    "new": "稳定例保持原精度；小分量原optimal并精确闭式、nearby_infeasible",
+    "not_weaker": "保留推偏重解的牙并多核正确原问题"
+  },
+  {
+    "test": "tests/test_limit_fuzz.py::test_broad_fuzz_has_no_astronomical_load_factors[11]",
+    "old": "1000输入不得返回大α，允许≤1%抛错并独立核真不可分辨",
+    "new": "同1000输入零抛错、unresolved≤1%；大α不得resolved；大α/unresolved全部独立核原精确值与邻域敏感",
+    "not_weaker": "保留敏感性看护并额外核原精确值，不能用错状态隐藏大α"
+  },
+  {
+    "test": "tests/test_limit_selfcheck.py::test_a_penetrating_tipping_mechanism_is_rejected_at_any_site",
+    "old": "docstring称现在在接触形心判定；原T×s×frac参数及闭式/双容许性断言",
+    "new": "仅docstring改称E4在调用方原点精确核、不依赖尺度；所有参数、算式和断言逐字不变",
+    "not_weaker": "纯文档口径修正，门的可执行AST（除docstring外）完全相同",
+    "scope": "docstring_only"
+  },
+  {
+    "test": "tests/test_limit_arch.py::_solve4",
+    "old": "浮点4×4消元，abs(pivot)<1e-12时当奇异",
+    "new": "输入提升Fraction，独立有理数4×4消元，仅精确零主元判奇异",
+    "not_weaker": "不删非零小主元，消除oracle求解器自身舍入；原拱门所有N/μ和容量/容许性断言保留",
+    "scope": "oracle_helper"
+  }
+]

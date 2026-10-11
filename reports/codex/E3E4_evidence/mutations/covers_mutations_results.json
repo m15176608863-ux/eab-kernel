@@ -1,0 +1,156 @@
+[
+  {
+    "id": "D5",
+    "path": "src/eab/kernel2d/covers.py",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=D:\\eab-wt\\cx-e2\\reports\\codex\\E3E4_evidence\\mutations\\D5.xml",
+      "tests/test_kernel2d_covers_e3.py::test_local_no_window_rejects_a_real_reflex_vertex"
+    ],
+    "original_sha256": "2255d8eb80c7ff456ac886178f0e91b2553ebfe319f79f1ee922becdb7a0c787",
+    "original_backup": "reports\\codex\\E3E4_evidence\\tmp\\mutation_backups",
+    "patch_old": "def _ve_side(A, ia, B, jb, tol, cone_tol):\n    lo, hi = _raw_cone(A, ia)\n    b0, b1 = (_fr(p) for p in edge(B, jb))\n    e = _vsub(b1, b0)\n    if e == (0, 0):\n        raise ValueError(f\"zero-length edge {jb}\")\n    v = (-e[1], e[0])\n    turn, c1, c2 = cross(lo, hi), cross(lo, v), cross(v, hi)\n    if turn >= 0 and (turn > 0 or dot(lo, hi) > 0) and c1 >= 0 and c2 >= 0 and (turn > 0 or dot(lo, v) > 0):\n        return 1 if c1 > 0 and c2 > 0 else 0\n    if tol <= 0 and (cone_tol is None or cone_tol <= 0):\n        return -1\n    w2 = _angle_window2(tol, cone_tol, (lo, hi, e))\n    return 0 if w2 > 0 and _cone_nonreflex(lo, hi, w2) and _cone_accepts(lo, hi, v, w2) else -1\n",
+    "patch_new": "def _ve_side(A, ia, B, jb, tol, cone_tol):\n    from math import asin\n    from .geom import angle_floor, coord_scale, turn_angle, turn_floor\n    nB=outward_normal(B,jb)\n    ap,a,an=(A[k%len(A)] for k in (ia-1,ia,ia+1))\n    b0,b1=edge(B,jb)\n    ell=min(norm(sub(a,ap)),norm(sub(an,a)),norm(sub(b1,b0)))\n    fl=angle_floor(coord_scale((ap,a,an,b0,b1)),ell)\n    ct=max(cone_tol,fl) if cone_tol is not None else max(tol/ell,fl)\n    ta=turn_angle(A,ia)\n    if ta<0 and ta < -max(asin(min(max(ct,0.),1.)),turn_floor(A,ia)):\n        return -1\n    lo,hi=outward_normal(A,ia-1),outward_normal(A,ia)\n    v=neg(nB); c1,c2=cross(lo,v),cross(v,hi)\n    if c1>ct and c2>ct: return 1\n    return 0 if c1>=-ct and c2>=-ct and dot(v,add(lo,hi))>0 else -1",
+    "mutant_sha256": "904b5d9fd40b8216dd8439a73c3cc3dd3b5a338b89db5858727300c89782898a",
+    "elapsed_seconds": 0.798955099991872,
+    "returncode": 1,
+    "failures": [
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_local_no_window_rejects_a_real_reflex_vertex[0.0]",
+        "kind": "failure",
+        "message": "AssertionError: no-window local cone must reject exact reflex vertex\nassert Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=2.220446049250313e-16, param=0.5, point=(0.0, 0.5), strict=False, point_a=(2.220446049250313e-16, 0.5), point_b=(0.0, 0.5), window_active=False) is None\n +  where Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=2.220446049250313e-16, param=0.5, point=(0.0, 0.5), strict=False, point_a=(2.220446049250313e-16, 0.5), point_b=(0.0, 0.5), window_active=False) = ve_cover([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (2.220446049250313e-16, 0.5)], 4, [(-1.0, 0.0), (0.0, 0.0), (0.0, 1.0), (-1.0, 1.0)], 1)",
+        "text": "C = 0.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    def test_local_no_window_rejects_a_real_reflex_vertex(C):\n        h=math.ulp(max(C,1.))\n        A=[(C,C),(C+1,C),(C+1,C+1),(C,C+1),(C+h,C+.5)]\n        B=[(C-1,C),(C,C),(C,C+1),(C-1,C+1)]\n>       assert ve_cover(A,4,B,1) is None, \"no-window local cone must reject exact reflex vertex\"\nE       AssertionError: no-window local cone must reject exact reflex vertex\nE       assert Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=2.220446049250313e-16, param=0.5, point=(0.0, 0.5), strict=False, point_a=(2.220446049250313e-16, 0.5), point_b=(0.0, 0.5), window_active=False) is None\nE        +  where Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=2.220446049250313e-16, param=0.5, point=(0.0, 0.5), strict=False, point_a=(2.220446049250313e-16, 0.5), point_b=(0.0, 0.5), window_active=False) = ve_cover([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (2.220446049250313e-16, 0.5)], 4, [(-1.0, 0.0), (0.0, 0.0), (0.0, 1.0), (-1.0, 1.0)], 1)\n\ntests\\test_kernel2d_covers_e3.py:38: AssertionError"
+      },
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_local_no_window_rejects_a_real_reflex_vertex[1000.0]",
+        "kind": "failure",
+        "message": "AssertionError: no-window local cone must reject exact reflex vertex\nassert Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.1368683772161603e-13, param=0.5, point=(1000.0, 1000.5), strict=False, point_a=(1000.0000000000001, 1000.5), point_b=(1000.0, 1000.5), window_active=False) is None\n +  where Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.1368683772161603e-13, param=0.5, point=(1000.0, 1000.5), strict=False, point_a=(1000.0000000000001, 1000.5), point_b=(1000.0, 1000.5), window_active=False) = ve_cover([(1000.0, 1000.0), (1001.0, 1000.0), (1001.0, 1001.0), (1000.0, 1001.0), (1000.0000000000001, 1000.5)], 4, [(999.0, 1000.0), (1000.0, 1000.0), (1000.0, 1001.0), (999.0, 1001.0)], 1)",
+        "text": "C = 1000.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    def test_local_no_window_rejects_a_real_reflex_vertex(C):\n        h=math.ulp(max(C,1.))\n        A=[(C,C),(C+1,C),(C+1,C+1),(C,C+1),(C+h,C+.5)]\n        B=[(C-1,C),(C,C),(C,C+1),(C-1,C+1)]\n>       assert ve_cover(A,4,B,1) is None, \"no-window local cone must reject exact reflex vertex\"\nE       AssertionError: no-window local cone must reject exact reflex vertex\nE       assert Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.1368683772161603e-13, param=0.5, point=(1000.0, 1000.5), strict=False, point_a=(1000.0000000000001, 1000.5), point_b=(1000.0, 1000.5), window_active=False) is None\nE        +  where Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.1368683772161603e-13, param=0.5, point=(1000.0, 1000.5), strict=False, point_a=(1000.0000000000001, 1000.5), point_b=(1000.0, 1000.5), window_active=False) = ve_cover([(1000.0, 1000.0), (1001.0, 1000.0), (1001.0, 1001.0), (1000.0, 1001.0), (1000.0000000000001, 1000.5)], 4, [(999.0, 1000.0), (1000.0, 1000.0), (1000.0, 1001.0), (999.0, 1001.0)], 1)\n\ntests\\test_kernel2d_covers_e3.py:38: AssertionError"
+      },
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_local_no_window_rejects_a_real_reflex_vertex[100000.0]",
+        "kind": "failure",
+        "message": "AssertionError: no-window local cone must reject exact reflex vertex\nassert Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.4551915228366852e-11, param=0.5, point=(100000.0, 100000.5), strict=False, point_a=(100000.00000000001, 100000.5), point_b=(100000.0, 100000.5), window_active=False) is None\n +  where Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.4551915228366852e-11, param=0.5, point=(100000.0, 100000.5), strict=False, point_a=(100000.00000000001, 100000.5), point_b=(100000.0, 100000.5), window_active=False) = ve_cover([(100000.0, 100000.0), (100001.0, 100000.0), (100001.0, 100001.0), (100000.0, 100001.0), (100000.00000000001, 100000.5)], 4, [(99999.0, 100000.0), (100000.0, 100000.0), (100000.0, 100001.0), (99999.0, 100001.0)], 1)",
+        "text": "C = 100000.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    def test_local_no_window_rejects_a_real_reflex_vertex(C):\n        h=math.ulp(max(C,1.))\n        A=[(C,C),(C+1,C),(C+1,C+1),(C,C+1),(C+h,C+.5)]\n        B=[(C-1,C),(C,C),(C,C+1),(C-1,C+1)]\n>       assert ve_cover(A,4,B,1) is None, \"no-window local cone must reject exact reflex vertex\"\nE       AssertionError: no-window local cone must reject exact reflex vertex\nE       assert Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.4551915228366852e-11, param=0.5, point=(100000.0, 100000.5), strict=False, point_a=(100000.00000000001, 100000.5), point_b=(100000.0, 100000.5), window_active=False) is None\nE        +  where Cover(kind='VE', a_index=4, b_index=1, normal=(1.0, -0.0), gap=1.4551915228366852e-11, param=0.5, point=(100000.0, 100000.5), strict=False, point_a=(100000.00000000001, 100000.5), point_b=(100000.0, 100000.5), window_active=False) = ve_cover([(100000.0, 100000.0), (100001.0, 100000.0), (100001.0, 100001.0), (100000.0, 100001.0), (100000.00000000001, 100000.5)], 4, [(99999.0, 100000.0), (100000.0, 100000.0), (100000.0, 100001.0), (99999.0, 100001.0)], 1)\n\ntests\\test_kernel2d_covers_e3.py:38: AssertionError"
+      }
+    ],
+    "last_line": "3 failed in 0.18s",
+    "restored_sha256": "2255d8eb80c7ff456ac886178f0e91b2553ebfe319f79f1ee922becdb7a0c787",
+    "byte_restored": true
+  },
+  {
+    "id": "D6",
+    "path": "src/eab/kernel2d/covers.py",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=D:\\eab-wt\\cx-e2\\reports\\codex\\E3E4_evidence\\mutations\\D6.xml",
+      "tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band"
+    ],
+    "original_sha256": "2255d8eb80c7ff456ac886178f0e91b2553ebfe319f79f1ee922becdb7a0c787",
+    "original_backup": "reports\\codex\\E3E4_evidence\\tmp\\mutation_backups",
+    "patch_old": "return cross(lo, v) > 0 and cross(v, hi) > 0",
+    "patch_new": "return cross(lo, v) >= 0 and cross(v, hi) >= 0",
+    "mutant_sha256": "f2fbb0288a035b9b2ccfbb7f7abb530b539e929de353a8dde02b26a7df0af738",
+    "elapsed_seconds": 0.8964282000088133,
+    "returncode": 1,
+    "failures": [
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_vv_active_exact_support_not_a_roundoff_band[0.0-0.0]",
+        "kind": "failure",
+        "message": "AssertionError: VV activity must match exact neighbor support\nassert True is False\n +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=1e-06, param=None, point=(1e-06, 0.0), strict=True, point_a=(1e-06, 0.0), point_b=(0.0, 0.0), window_active=False).strict\n +  and   False = strict_vv_oracle([(1e-06, 0.0), (1.000001, 0.0), (1.000001, 1.0), (1e-06, 1.0)], 0, [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)], 0)",
+        "text": "C = 0.0, theta = 0.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    @pytest.mark.parametrize(\"theta\", [-5., 0., 5., 45., 50.])\n    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):\n        g=1e-6; a=math.radians(theta)\n        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]\n        B=[(C+u,C+v) for u,v in TRI]\n        c=vv_cover(A,0,B,0)\n        assert c is not None\n>       assert c.strict is strict_vv_oracle(A,0,B,0), \"VV activity must match exact neighbor support\"\nE       AssertionError: VV activity must match exact neighbor support\nE       assert True is False\nE        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=1e-06, param=None, point=(1e-06, 0.0), strict=True, point_a=(1e-06, 0.0), point_b=(0.0, 0.0), window_active=False).strict\nE        +  and   False = strict_vv_oracle([(1e-06, 0.0), (1.000001, 0.0), (1.000001, 1.0), (1e-06, 1.0)], 0, [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)], 0)\n\ntests\\test_kernel2d_covers_e3.py:30: AssertionError"
+      },
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_vv_active_exact_support_not_a_roundoff_band[0.0-1000.0]",
+        "kind": "failure",
+        "message": "AssertionError: VV activity must match exact neighbor support\nassert True is False\n +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=9.999999974752427e-07, param=None, point=(1000.000001, 1000.0), strict=True, point_a=(1000.000001, 1000.0), point_b=(1000.0, 1000.0), window_active=False).strict\n +  and   False = strict_vv_oracle([(1000.000001, 1000.0), (1001.000001, 1000.0), (1001.000001, 1001.0), (1000.000001, 1001.0)], 0, [(1000.0, 1000.0), (999.0, 1001.0), (999.0, 999.0)], 0)",
+        "text": "C = 1000.0, theta = 0.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    @pytest.mark.parametrize(\"theta\", [-5., 0., 5., 45., 50.])\n    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):\n        g=1e-6; a=math.radians(theta)\n        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]\n        B=[(C+u,C+v) for u,v in TRI]\n        c=vv_cover(A,0,B,0)\n        assert c is not None\n>       assert c.strict is strict_vv_oracle(A,0,B,0), \"VV activity must match exact neighbor support\"\nE       AssertionError: VV activity must match exact neighbor support\nE       assert True is False\nE        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=9.999999974752427e-07, param=None, point=(1000.000001, 1000.0), strict=True, point_a=(1000.000001, 1000.0), point_b=(1000.0, 1000.0), window_active=False).strict\nE        +  and   False = strict_vv_oracle([(1000.000001, 1000.0), (1001.000001, 1000.0), (1001.000001, 1001.0), (1000.000001, 1001.0)], 0, [(1000.0, 1000.0), (999.0, 1001.0), (999.0, 999.0)], 0)\n\ntests\\test_kernel2d_covers_e3.py:30: AssertionError"
+      },
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_vv_active_exact_support_not_a_roundoff_band[0.0-100000.0]",
+        "kind": "failure",
+        "message": "AssertionError: VV activity must match exact neighbor support\nassert True is False\n +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=9.999930625781417e-07, param=None, point=(100000.000001, 100000.0), strict=True, point_a=(100000.000001, 100000.0), point_b=(100000.0, 100000.0), window_active=False).strict\n +  and   False = strict_vv_oracle([(100000.000001, 100000.0), (100001.000001, 100000.0), (100001.000001, 100001.0), (100000.000001, 100001.0)], 0, [(100000.0, 100000.0), (99999.0, 100001.0), (99999.0, 99999.0)], 0)",
+        "text": "C = 100000.0, theta = 0.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    @pytest.mark.parametrize(\"theta\", [-5., 0., 5., 45., 50.])\n    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):\n        g=1e-6; a=math.radians(theta)\n        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]\n        B=[(C+u,C+v) for u,v in TRI]\n        c=vv_cover(A,0,B,0)\n        assert c is not None\n>       assert c.strict is strict_vv_oracle(A,0,B,0), \"VV activity must match exact neighbor support\"\nE       AssertionError: VV activity must match exact neighbor support\nE       assert True is False\nE        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=9.999930625781417e-07, param=None, point=(100000.000001, 100000.0), strict=True, point_a=(100000.000001, 100000.0), point_b=(100000.0, 100000.0), window_active=False).strict\nE        +  and   False = strict_vv_oracle([(100000.000001, 100000.0), (100001.000001, 100000.0), (100001.000001, 100001.0), (100000.000001, 100001.0)], 0, [(100000.0, 100000.0), (99999.0, 100001.0), (99999.0, 99999.0)], 0)\n\ntests\\test_kernel2d_covers_e3.py:30: AssertionError"
+      },
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_vv_active_exact_support_not_a_roundoff_band[45.0-0.0]",
+        "kind": "failure",
+        "message": "AssertionError: VV activity must match exact neighbor support\nassert True is False\n +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=1.0000000000000002e-06, pa...476e-07), strict=True, point_a=(7.071067811865476e-07, 7.071067811865476e-07), point_b=(0.0, 0.0), window_active=False).strict\n +  and   False = strict_vv_oracle([(7.071067811865476e-07, 7.071067811865476e-07), (1.0000007071067811, 7.071067811865476e-07), (1.0000007071067811, 1.0000007071067811), (7.071067811865476e-07, 1.0000007071067811)], 0, [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)], 0)",
+        "text": "C = 0.0, theta = 45.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    @pytest.mark.parametrize(\"theta\", [-5., 0., 5., 45., 50.])\n    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):\n        g=1e-6; a=math.radians(theta)\n        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]\n        B=[(C+u,C+v) for u,v in TRI]\n        c=vv_cover(A,0,B,0)\n        assert c is not None\n>       assert c.strict is strict_vv_oracle(A,0,B,0), \"VV activity must match exact neighbor support\"\nE       AssertionError: VV activity must match exact neighbor support\nE       assert True is False\nE        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=1.0000000000000002e-06, pa...476e-07), strict=True, point_a=(7.071067811865476e-07, 7.071067811865476e-07), point_b=(0.0, 0.0), window_active=False).strict\nE        +  and   False = strict_vv_oracle([(7.071067811865476e-07, 7.071067811865476e-07), (1.0000007071067811, 7.071067811865476e-07), (1.0000007071067811, 1.0000007071067811), (7.071067811865476e-07, 1.0000007071067811)], 0, [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)], 0)\n\ntests\\test_kernel2d_covers_e3.py:30: AssertionError"
+      },
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_vv_active_exact_support_not_a_roundoff_band[45.0-1000.0]",
+        "kind": "failure",
+        "message": "AssertionError: VV activity must match exact neighbor support\nassert True is False\n +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=9.99999996149227e-07, para...7071068), strict=True, point_a=(1000.0000007071068, 1000.0000007071068), point_b=(1000.0, 1000.0), window_active=False).strict\n +  and   False = strict_vv_oracle([(1000.0000007071068, 1000.0000007071068), (1001.0000007071068, 1000.0000007071068), (1001.0000007071068, 1001.0000007071068), (1000.0000007071068, 1001.0000007071068)], 0, [(1000.0, 1000.0), (999.0, 1001.0), (999.0, 999.0)], 0)",
+        "text": "C = 1000.0, theta = 45.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    @pytest.mark.parametrize(\"theta\", [-5., 0., 5., 45., 50.])\n    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):\n        g=1e-6; a=math.radians(theta)\n        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]\n        B=[(C+u,C+v) for u,v in TRI]\n        c=vv_cover(A,0,B,0)\n        assert c is not None\n>       assert c.strict is strict_vv_oracle(A,0,B,0), \"VV activity must match exact neighbor support\"\nE       AssertionError: VV activity must match exact neighbor support\nE       assert True is False\nE        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=9.99999996149227e-07, para...7071068), strict=True, point_a=(1000.0000007071068, 1000.0000007071068), point_b=(1000.0, 1000.0), window_active=False).strict\nE        +  and   False = strict_vv_oracle([(1000.0000007071068, 1000.0000007071068), (1001.0000007071068, 1000.0000007071068), (1001.0000007071068, 1001.0000007071068), (1000.0000007071068, 1001.0000007071068)], 0, [(1000.0, 1000.0), (999.0, 1001.0), (999.0, 999.0)], 0)\n\ntests\\test_kernel2d_covers_e3.py:30: AssertionError"
+      },
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_vv_active_exact_support_not_a_roundoff_band[45.0-100000.0]",
+        "kind": "failure",
+        "message": "AssertionError: VV activity must match exact neighbor support\nassert True is False\n +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=9.999998353717593e-07, par...07071), strict=True, point_a=(100000.0000007071, 100000.0000007071), point_b=(100000.0, 100000.0), window_active=False).strict\n +  and   False = strict_vv_oracle([(100000.0000007071, 100000.0000007071), (100001.0000007071, 100000.0000007071), (100001.0000007071, 100001.0000007071), (100000.0000007071, 100001.0000007071)], 0, [(100000.0, 100000.0), (99999.0, 100001.0), (99999.0, 99999.0)], 0)",
+        "text": "C = 100000.0, theta = 45.0\n\n    @pytest.mark.parametrize(\"C\", [0., 1e3, 1e5])\n    @pytest.mark.parametrize(\"theta\", [-5., 0., 5., 45., 50.])\n    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):\n        g=1e-6; a=math.radians(theta)\n        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]\n        B=[(C+u,C+v) for u,v in TRI]\n        c=vv_cover(A,0,B,0)\n        assert c is not None\n>       assert c.strict is strict_vv_oracle(A,0,B,0), \"VV activity must match exact neighbor support\"\nE       AssertionError: VV activity must match exact neighbor support\nE       assert True is False\nE        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=9.999998353717593e-07, par...07071), strict=True, point_a=(100000.0000007071, 100000.0000007071), point_b=(100000.0, 100000.0), window_active=False).strict\nE        +  and   False = strict_vv_oracle([(100000.0000007071, 100000.0000007071), (100001.0000007071, 100000.0000007071), (100001.0000007071, 100001.0000007071), (100000.0000007071, 100001.0000007071)], 0, [(100000.0, 100000.0), (99999.0, 100001.0), (99999.0, 99999.0)], 0)\n\ntests\\test_kernel2d_covers_e3.py:30: AssertionError"
+      }
+    ],
+    "last_line": "6 failed, 9 passed in 0.23s",
+    "restored_sha256": "2255d8eb80c7ff456ac886178f0e91b2553ebfe319f79f1ee922becdb7a0c787",
+    "byte_restored": true
+  },
+  {
+    "id": "D7",
+    "path": "src/eab/kernel2d/geom.py",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=D:\\eab-wt\\cx-e2\\reports\\codex\\E3E4_evidence\\mutations\\D7.xml",
+      "tests/test_kernel2d_covers_e3.py::test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop"
+    ],
+    "original_sha256": "1a332d0893cc2303ddaadf9c12eb3e06edd46fb1f6a7a204862cad4770e811f8",
+    "original_backup": "reports\\codex\\E3E4_evidence\\tmp\\mutation_backups",
+    "patch_old": "def convex_hull(points: list[Point], tol: float = 0.0) -> Poly:\n    \"\"\"给定数据的精确凸包顶点（CCW，浮点输出）；共线点不作为顶点。\n    tol 为兼容参数，已不参与判定或简化：隐式容差单调链会非传递地丢掉远超 tol 的真极点。\n    若需简化，调用方应另行显式简化已构造的精确凸包，不可把简化结果用于几何真值判定。\n    门：tests/test_kernel2d_covers_e3.py::test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop。\n    \"\"\"\n    from .exact import hull_exact\n    return [(float(p[0]), float(p[1])) for p in hull_exact(points)]\n",
+    "patch_new": "def convex_hull(points: list[Point], tol: float = 0.0) -> Poly:\n    \"\"\"单调链凸包（CCW）。tol 为长度容差，抬到舍入下限 c·eps·C（纪律 F：理想共线的点经旋转/平移后偏离弦 ~eps·C，\n    不许时而成顶点时而不成）。**口径如实**（G6 第四轮 minor）：共线判定是单调链里按 x 序相邻三点的**局部**弦距检验，容差下不传递——\n    结果是精确凸包顶点的子集，但不保证每个顶点离其两侧邻点的弦 > tol（亚容差微倾的差点集可以留下离弦 < tol 的顶点）。\n    g0 第三票对这类顶点按\"折点离弦 ≤ 容差 ⇒ 说不清\"处理，不当失配。\"\"\"\n    pts = sorted(set(points))\n    if len(pts) <= 2:\n        return pts\n    t = eff_tol(tol, pts)\n\n    def keep(o: Point, a: Point, b: Point) -> bool:       # a 在弦 o→b 的右侧（外侧）且离弦 > t\n        ob = sub(b, o)\n        return cross(ob, sub(a, o)) < -t * norm(ob)\n\n    lower: list[Point] = []\n    for p in pts:\n        while len(lower) >= 2 and not keep(lower[-2], lower[-1], p):\n            lower.pop()\n        lower.append(p)\n    upper: list[Point] = []\n    for p in reversed(pts):\n        while len(upper) >= 2 and not keep(upper[-2], upper[-1], p):\n            upper.pop()\n        upper.append(p)\n    return lower[:-1] + upper[:-1]\n",
+    "mutant_sha256": "a36edf232d18e710fc3505f5c1bec1527fffee4b20b27bf3d43f74b4f4b66a0d",
+    "elapsed_seconds": 0.8435810000082711,
+    "returncode": 1,
+    "failures": [
+      {
+        "classname": "tests.test_kernel2d_covers_e3",
+        "name": "test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop",
+        "kind": "failure",
+        "message": "AssertionError: true extreme point lost by tolerance-pop chain\nassert (1e-15, -0.001) in [(0.0, 0.0), (0.001, -0.001), (2.0, -0.001), (2.0, 1.0), (1e-15, 1.0)]",
+        "text": "def test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop():\n        pts=[(0.,0.),(1e-15,-1e-3),(1e-15,1.),(1e-3,-1e-3),(2.,-1e-3),(2.,1.)]\n        H=convex_hull(pts)\n>       assert (1e-15,-1e-3) in H, \"true extreme point lost by tolerance-pop chain\"\nE       AssertionError: true extreme point lost by tolerance-pop chain\nE       assert (1e-15, -0.001) in [(0.0, 0.0), (0.001, -0.001), (2.0, -0.001), (2.0, 1.0), (1e-15, 1.0)]\n\ntests\\test_kernel2d_covers_e3.py:61: AssertionError"
+      }
+    ],
+    "last_line": "1 failed in 0.16s",
+    "restored_sha256": "1a332d0893cc2303ddaadf9c12eb3e06edd46fb1f6a7a204862cad4770e811f8",
+    "byte_restored": true
+  }
+]

@@ -1,14 +1,12 @@
 """二维几何原语。纯 Python，零依赖。所有多边形以顶点列表表示，内部统一为逆时针（CCW）。
 
-约定：
-- CCW 多边形边 p->q 的外法向 = 右法向 (dy, -dx)/|e|。
-- 谓词带长度容差 tol（长度量纲，调用方的单位；换单位时随之缩放）。
+约定：CCW 多边形边 p->q 的外法向 = 右法向 (dy, -dx)/|e|。
+E2/E3 的生产分支（covers / entrance）使用 exact 的 Fraction 谓词；本模块的 orient2d 与 convex_hull 也对给定数据精确。
+浮点法向、点积、投影、面积等仅作构造；可分辨性不是对给定浮点数据的判定不确定性。
 
-容差政策（纪律 F，M0.2）：库内部**没有绝对阈值**。调用方给的长度容差一律抬到舍入下限
-    tol_eff = max(tol, c·eps·C)，
-C 为参与运算的坐标量级（max |坐标|）、c = ROUND_C（几十）。道理：坐标量级为 C 的浮点点本身就带 ~eps·C 的表示误差
-（刚体运动、换单位、搬到工程坐标都会引入），任何几何判定都分辨不了比它更近的两种位形。角度侧的对应下限是
-c·eps·C/ℓ（ℓ 为参与的边长：边端点各差 eps·C，法向就差 eps·C/ℓ 弧度）。门：tests/test_invariance_2d.py。
+兼容的旧浮点对照/统计辅助（is_convex / reflex_vertices / point_in_polygon / polygons_overlap）仍保留历史噪声带
+max(tol, ROUND_C·eps·C)，不能作为生产精确答案，也不能把该地板称作调用方域窗口。angle_floor/turn_floor 仍服务
+旧凸性统计，round_floor 仍服务可分辨性报告与旧对照；不是 E3 无调用死代码。移除这些旧对照 API 不在本单范围。
 """
 
 from __future__ import annotations
@@ -245,6 +243,10 @@ def orient2d(a: Point, b: Point, c: Point) -> int:
     误差界 = Shewchuk 的相对项 (3u + 16u²)(|detleft| + |detright|) + 绝对项 2⁻¹⁰⁷³：相对项假设不下溢，乘积落进
     次正规区时舍入误差是绝对的（每个乘积至多 2⁻¹⁰⁷⁵），坐标差 ~1e-154 以下时只靠相对项会把错号当真（G6 第二轮 minor：
     两个 −3.46e-309 的乘积之差给出 +5e-324，精确值为负）。乘积上溢时界为 inf，照样退到 Fraction。"""
+    if any(isinstance(v, Fraction) for p in (a, b, c) for v in p):
+        ax, ay, bx, by, cx, cy = (Fraction(v) for p in (a, b, c) for v in p)
+        det = (ax - cx) * (by - cy) - (ay - cy) * (bx - cx)
+        return (det > 0) - (det < 0)
     detleft = (a[0] - c[0]) * (b[1] - c[1])
     detright = (a[1] - c[1]) * (b[0] - c[0])
     det = detleft - detright
@@ -299,7 +301,11 @@ def triangulate(poly: Poly) -> list[tuple[int, int, int]]:
     （零面积，不丢面积）。剩余三点共线时不出三角。输入须是简单多边形，否则抛 ValueError（不挂死）。
     """
     n = len(poly)
-    idx = list(range(n)) if signed_area(poly) > 0.0 else list(reversed(range(n)))
+    # exact.polygons_overlap_exact 依赖这里；朝向也必须精确，不能让面积下溢/上溢决定耳切方向。
+    o = (Fraction(poly[0][0]), Fraction(poly[0][1]))
+    F = [(Fraction(x) - o[0], Fraction(y) - o[1]) for x, y in poly]
+    area2 = sum((F[k][0] * F[(k + 1) % n][1] - F[k][1] * F[(k + 1) % n][0] for k in range(n)), Fraction(0))
+    idx = list(range(n)) if area2 > 0 else list(reversed(range(n)))
     tris: list[tuple[int, int, int]] = []
     guard = 0
     while len(idx) > 3:
@@ -422,27 +428,10 @@ def reflect(poly: Poly) -> Poly:
 
 
 def convex_hull(points: list[Point], tol: float = 0.0) -> Poly:
-    """单调链凸包（CCW）。tol 为长度容差，抬到舍入下限 c·eps·C（纪律 F：理想共线的点经旋转/平移后偏离弦 ~eps·C，
-    不许时而成顶点时而不成）。**口径如实**（G6 第四轮 minor）：共线判定是单调链里按 x 序相邻三点的**局部**弦距检验，容差下不传递——
-    结果是精确凸包顶点的子集，但不保证每个顶点离其两侧邻点的弦 > tol（亚容差微倾的差点集可以留下离弦 < tol 的顶点）。
-    g0 第三票对这类顶点按"折点离弦 ≤ 容差 ⇒ 说不清"处理，不当失配。"""
-    pts = sorted(set(points))
-    if len(pts) <= 2:
-        return pts
-    t = eff_tol(tol, pts)
-
-    def keep(o: Point, a: Point, b: Point) -> bool:       # a 在弦 o→b 的右侧（外侧）且离弦 > t
-        ob = sub(b, o)
-        return cross(ob, sub(a, o)) < -t * norm(ob)
-
-    lower: list[Point] = []
-    for p in pts:
-        while len(lower) >= 2 and not keep(lower[-2], lower[-1], p):
-            lower.pop()
-        lower.append(p)
-    upper: list[Point] = []
-    for p in reversed(pts):
-        while len(upper) >= 2 and not keep(upper[-2], upper[-1], p):
-            upper.pop()
-        upper.append(p)
-    return lower[:-1] + upper[:-1]
+    """给定数据的精确凸包顶点（CCW，浮点输出）；共线点不作为顶点。
+    tol 为兼容参数，已不参与判定或简化：隐式容差单调链会非传递地丢掉远超 tol 的真极点。
+    若需简化，调用方应另行显式简化已构造的精确凸包，不可把简化结果用于几何真值判定。
+    门：tests/test_kernel2d_covers_e3.py::test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop。
+    """
+    from .exact import hull_exact
+    return [(float(p[0]), float(p[1])) for p in hull_exact(points)]

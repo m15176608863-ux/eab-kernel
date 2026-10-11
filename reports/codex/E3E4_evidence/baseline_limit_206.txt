@@ -1,0 +1,8 @@
+HEAD e1fbbd4
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\E3E4_evidence\tmp\repro_limit_206_limit.py", line 7, in <module>
+    t1,t2=_tangents(n,3,bad); print('n.t1 =', sum(a*b for a,b in zip(n,t1)))   # 0.174, no ValueError
+          ^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\src\eab\limit.py", line 209, in _tangents
+    raise ValueError(f"tangent {tangent!r} is parallel to normal {n!r} within rounding; it has no resolvable "
+ValueError: tangent (1.0, 1.0, 1.0000000000000009) is parallel to normal (0.5773502691896258, 0.5773502691896258, 0.5773502691896258) within rounding; it has no resolvable component in the tangent plane

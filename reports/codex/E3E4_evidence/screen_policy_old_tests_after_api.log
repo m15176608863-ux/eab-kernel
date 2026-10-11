@@ -1,0 +1,743 @@
+FFFFFF................FFFFFFFFFFFFFFFFFFFFFFFF................FF         [100%]
+================================== FAILURES ===================================
+___ test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1.0] ___
+
+W = 1.0
+
+    @pytest.mark.parametrize("W", [1.0, 1e3, 1e6, 1e7, 1e9, 1e12])
+    def test_rounding_driven_load_factor_is_not_certified_at_any_dead_load(W):
+        """无摩擦地面，恒载带 1 的水平分量，活荷载 θ = 3π/2（实数里竖直向下，浮点里水平分量 cos(3π/2) = −1.8e-16）。
+        物理答案 infeasible（水平恒载无物可挡）；浮点 LP 给 α = 1/1.8e-16 = 5.4e15。旧判据"α ≤ 1e10·α_nat"里
+        α_nat 含整个恒载，W ≥ 1e6 时漏过（43d1e50 实测 optimal 5443746451065123）。三维同理（θ = π 的"竖直"推力）。"""
+        assert cos(3 * pi / 2) != 0.0
+        o2 = (0.0, 0.0)
+        r = limit_load([LimitContact((0.0, 0.0), (0.0, 1.0), 0.0)], wrench((1.0, -W), o2, o2, 2),
+                       wrench((cos(3 * pi / 2), sin(3 * pi / 2)), o2, o2, 2), dim=2)
+>       assert r.status == "infeasible", (W, r.status, r.alpha)
+E       AssertionError: (1.0, 'optimal', 5443746451065123.0)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:267: AssertionError
+_ test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000.0] __
+
+W = 1000.0
+
+    @pytest.mark.parametrize("W", [1.0, 1e3, 1e6, 1e7, 1e9, 1e12])
+    def test_rounding_driven_load_factor_is_not_certified_at_any_dead_load(W):
+        """无摩擦地面，恒载带 1 的水平分量，活荷载 θ = 3π/2（实数里竖直向下，浮点里水平分量 cos(3π/2) = −1.8e-16）。
+        物理答案 infeasible（水平恒载无物可挡）；浮点 LP 给 α = 1/1.8e-16 = 5.4e15。旧判据"α ≤ 1e10·α_nat"里
+        α_nat 含整个恒载，W ≥ 1e6 时漏过（43d1e50 实测 optimal 5443746451065123）。三维同理（θ = π 的"竖直"推力）。"""
+        assert cos(3 * pi / 2) != 0.0
+        o2 = (0.0, 0.0)
+        r = limit_load([LimitContact((0.0, 0.0), (0.0, 1.0), 0.0)], wrench((1.0, -W), o2, o2, 2),
+                       wrench((cos(3 * pi / 2), sin(3 * pi / 2)), o2, o2, 2), dim=2)
+>       assert r.status == "infeasible", (W, r.status, r.alpha)
+E       AssertionError: (1000.0, 'optimal', 5443746451065123.0)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:267: AssertionError
+_ test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000.0] _
+
+W = 1000000.0
+
+    @pytest.mark.parametrize("W", [1.0, 1e3, 1e6, 1e7, 1e9, 1e12])
+    def test_rounding_driven_load_factor_is_not_certified_at_any_dead_load(W):
+        """无摩擦地面，恒载带 1 的水平分量，活荷载 θ = 3π/2（实数里竖直向下，浮点里水平分量 cos(3π/2) = −1.8e-16）。
+        物理答案 infeasible（水平恒载无物可挡）；浮点 LP 给 α = 1/1.8e-16 = 5.4e15。旧判据"α ≤ 1e10·α_nat"里
+        α_nat 含整个恒载，W ≥ 1e6 时漏过（43d1e50 实测 optimal 5443746451065123）。三维同理（θ = π 的"竖直"推力）。"""
+        assert cos(3 * pi / 2) != 0.0
+        o2 = (0.0, 0.0)
+        r = limit_load([LimitContact((0.0, 0.0), (0.0, 1.0), 0.0)], wrench((1.0, -W), o2, o2, 2),
+                       wrench((cos(3 * pi / 2), sin(3 * pi / 2)), o2, o2, 2), dim=2)
+>       assert r.status == "infeasible", (W, r.status, r.alpha)
+E       AssertionError: (1000000.0, 'optimal', 5443746451065123.0)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:267: AssertionError
+_ test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[10000000.0] _
+
+W = 10000000.0
+
+    @pytest.mark.parametrize("W", [1.0, 1e3, 1e6, 1e7, 1e9, 1e12])
+    def test_rounding_driven_load_factor_is_not_certified_at_any_dead_load(W):
+        """无摩擦地面，恒载带 1 的水平分量，活荷载 θ = 3π/2（实数里竖直向下，浮点里水平分量 cos(3π/2) = −1.8e-16）。
+        物理答案 infeasible（水平恒载无物可挡）；浮点 LP 给 α = 1/1.8e-16 = 5.4e15。旧判据"α ≤ 1e10·α_nat"里
+        α_nat 含整个恒载，W ≥ 1e6 时漏过（43d1e50 实测 optimal 5443746451065123）。三维同理（θ = π 的"竖直"推力）。"""
+        assert cos(3 * pi / 2) != 0.0
+        o2 = (0.0, 0.0)
+        r = limit_load([LimitContact((0.0, 0.0), (0.0, 1.0), 0.0)], wrench((1.0, -W), o2, o2, 2),
+                       wrench((cos(3 * pi / 2), sin(3 * pi / 2)), o2, o2, 2), dim=2)
+>       assert r.status == "infeasible", (W, r.status, r.alpha)
+E       AssertionError: (10000000.0, 'optimal', 5443746451065123.0)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:267: AssertionError
+_ test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000000.0] _
+
+W = 1000000000.0
+
+    @pytest.mark.parametrize("W", [1.0, 1e3, 1e6, 1e7, 1e9, 1e12])
+    def test_rounding_driven_load_factor_is_not_certified_at_any_dead_load(W):
+        """无摩擦地面，恒载带 1 的水平分量，活荷载 θ = 3π/2（实数里竖直向下，浮点里水平分量 cos(3π/2) = −1.8e-16）。
+        物理答案 infeasible（水平恒载无物可挡）；浮点 LP 给 α = 1/1.8e-16 = 5.4e15。旧判据"α ≤ 1e10·α_nat"里
+        α_nat 含整个恒载，W ≥ 1e6 时漏过（43d1e50 实测 optimal 5443746451065123）。三维同理（θ = π 的"竖直"推力）。"""
+        assert cos(3 * pi / 2) != 0.0
+        o2 = (0.0, 0.0)
+        r = limit_load([LimitContact((0.0, 0.0), (0.0, 1.0), 0.0)], wrench((1.0, -W), o2, o2, 2),
+                       wrench((cos(3 * pi / 2), sin(3 * pi / 2)), o2, o2, 2), dim=2)
+>       assert r.status == "infeasible", (W, r.status, r.alpha)
+E       AssertionError: (1000000000.0, 'optimal', 5443746451065123.0)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:267: AssertionError
+_ test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000000000.0] _
+
+W = 1000000000000.0
+
+    @pytest.mark.parametrize("W", [1.0, 1e3, 1e6, 1e7, 1e9, 1e12])
+    def test_rounding_driven_load_factor_is_not_certified_at_any_dead_load(W):
+        """无摩擦地面，恒载带 1 的水平分量，活荷载 θ = 3π/2（实数里竖直向下，浮点里水平分量 cos(3π/2) = −1.8e-16）。
+        物理答案 infeasible（水平恒载无物可挡）；浮点 LP 给 α = 1/1.8e-16 = 5.4e15。旧判据"α ≤ 1e10·α_nat"里
+        α_nat 含整个恒载，W ≥ 1e6 时漏过（43d1e50 实测 optimal 5443746451065123）。三维同理（θ = π 的"竖直"推力）。"""
+        assert cos(3 * pi / 2) != 0.0
+        o2 = (0.0, 0.0)
+        r = limit_load([LimitContact((0.0, 0.0), (0.0, 1.0), 0.0)], wrench((1.0, -W), o2, o2, 2),
+                       wrench((cos(3 * pi / 2), sin(3 * pi / 2)), o2, o2, 2), dim=2)
+>       assert r.status == "infeasible", (W, r.status, r.alpha)
+E       AssertionError: (1000000000000.0, 'optimal', 5443746451065123.0)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:267: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame0] _
+
+margin = 1e-10, frame = (0.0, (0.0, 0.0), 1.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 5.958644031101473e-06 <= 1e-06
+E        +  where 5.958644031101473e-06 = LimitResult(status='optimal', alpha=44721314742.519226, lambdas=[19999979965.487297, 0.0, 19999979965.487297, 0.0], me...duals=[], uncertainty=5.958644031101473e-06, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame1] _
+
+margin = 1e-10, frame = (0.37, (30000.0, -2000.0), 1.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 6.273694442539508e-06 <= 1e-06
+E        +  where 6.273694442539508e-06 = LimitResult(status='optimal', alpha=44721387237.93492, lambdas=[20000012386.38003, 0.0, 20000012386.46559, 0.0], mecha...duals=[], uncertainty=6.273694442539508e-06, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame2] _
+
+margin = 1e-10, frame = (0.0, (0.0, 0.0), 1000.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 5.958644031101473e-06 <= 1e-06
+E        +  where 5.958644031101473e-06 = LimitResult(status='optimal', alpha=44721314742.519226, lambdas=[19999979965.487297, 0.0, 19999979965.487297, 0.0], me...duals=[], uncertainty=5.958644031101473e-06, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame3] _
+
+margin = 1e-10, frame = (-1.1, (500000.0, 4000000.0), 0.01)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 6.211352745762891e-06 <= 1e-06
+E        +  where 6.211352745762891e-06 = LimitResult(status='optimal', alpha=44721321534.4194, lambdas=[19999983215.009052, 0.0, 19999982790.82575, 0.0], mecha...duals=[], uncertainty=6.211352745762891e-06, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame0] _
+
+margin = 1e-11, frame = (0.0, (0.0, 0.0), 1.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 5.963710819662325e-05 <= 1e-06
+E        +  where 5.963710819662325e-05 = LimitResult(status='optimal', alpha=447209372706.3335, lambdas=[199998111513.28015, 0.0, 199998111513.28015, 0.0], mec...duals=[], uncertainty=5.963710819662325e-05, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame1] _
+
+margin = 1e-11, frame = (0.37, (30000.0, -2000.0), 1.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 6.279391807084373e-05 <= 1e-06
+E        +  where 6.279391807084373e-05 = LimitResult(status='optimal', alpha=447215616132.01416, lambdas=[200000903657.92844, 0.0, 200000903658.32565, 0.0], me...duals=[], uncertainty=6.279391807084373e-05, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame2] _
+
+margin = 1e-11, frame = (0.0, (0.0, 0.0), 1000.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 5.963710819662325e-05 <= 1e-06
+E        +  where 5.963710819662325e-05 = LimitResult(status='optimal', alpha=447209372706.3335, lambdas=[199998111513.28015, 0.0, 199998111513.28015, 0.0], mec...duals=[], uncertainty=5.963710819662325e-05, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame3] _
+
+margin = 1e-11, frame = (-1.1, (500000.0, 4000000.0), 0.01)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 6.216891152953517e-05 <= 1e-06
+E        +  where 6.216891152953517e-05 = LimitResult(status='optimal', alpha=447211618793.89594, lambdas=[199999115043.11017, 0.0, 199999116945.23932, 0.0], me...duals=[], uncertainty=6.216891152953517e-05, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame0] _
+
+margin = 1e-13, frame = (0.0, (0.0, 0.0), 1.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 0.006582556226001098 <= 1e-06
+E        +  where 0.006582556226001098 = LimitResult(status='optimal', alpha=44700740718317.58, lambdas=[19990778978154.176, 0.0, 19990778978154.176, 0.0], mec..._duals=[], uncertainty=0.006582556226001098, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame1] _
+
+margin = 1e-13, frame = (0.37, (30000.0, -2000.0), 1.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 0.006967767414578183 <= 1e-06
+E        +  where 0.006967767414578183 = LimitResult(status='optimal', alpha=44691591148135.234, lambdas=[19986687165984.742, 0.0, 19986687165966.562, 0.0], me..._duals=[], uncertainty=0.006967767414578183, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame2] _
+
+margin = 1e-13, frame = (0.0, (0.0, 0.0), 1000.0)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 0.006582556226001098 <= 1e-06
+E        +  where 0.006582556226001098 = LimitResult(status='optimal', alpha=44700740718317.58, lambdas=[19990778978154.176, 0.0, 19990778978154.176, 0.0], mec..._duals=[], uncertainty=0.006582556226001098, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame3] _
+
+margin = 1e-13, frame = (-1.1, (500000.0, 4000000.0), 0.01)
+
+    @pytest.mark.parametrize("frame", FRAMES)
+    @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
+    def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
+        """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
+        余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
+        余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
+        把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+        cts, dead, live, exact = _lock_case(margin, *frame)
+        try:
+            r = limit_load(cts, dead, live, dim=2, k=8)
+        except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
+            assert margin < 1e-9, (margin, frame, str(e)[:120])
+            return
+        assert r.status == "optimal"
+>       assert r.uncertainty <= 1e-6
+E       AssertionError: assert 0.006899547593305886 <= 1e-06
+E        +  where 0.006899547593305886 = LimitResult(status='optimal', alpha=44742019878830.05, lambdas=[20009239914237.73, 0.0, 20009239245654.633, 0.0], mech..._duals=[], uncertainty=0.006899547593305886, resolvability='unresolved', resolvability_statuses=('optimal', 'optimal')).uncertainty
+
+tests\test_lp_certificates.py:306: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-1000000.0-0.001] _
+
+W = 1000000.0, H = 0.001, a = 0.0, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.001, 0.0, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-10.0-1e-08] _
+
+W = 10.0, H = 1e-08, a = 0.0, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (10.0, 1e-08, 0.0, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-1000000.0-0.1] _
+
+W = 1000000.0, H = 0.1, a = 0.0, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.1, 0.0, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-1000000.0-0.001] _
+
+W = 1000000.0, H = 0.001, a = 0.7, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.001, 0.7, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-10.0-1e-08] _
+
+W = 10.0, H = 1e-08, a = 0.7, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (10.0, 1e-08, 0.7, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-1000000.0-0.1] _
+
+W = 1000000.0, H = 0.1, a = 0.7, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.1, 0.7, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-1000000.0-0.001] _
+
+W = 1000000.0, H = 0.001, a = 0.7, T = (3000.0, -2000.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.001, 0.7, (3000.0, -2000.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-10.0-1e-08] _
+
+W = 10.0, H = 1e-08, a = 0.7, T = (3000.0, -2000.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (10.0, 1e-08, 0.7, (3000.0, -2000.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-1000000.0-0.1] _
+
+W = 1000000.0, H = 0.1, a = 0.7, T = (3000.0, -2000.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.1, 0.7, (3000.0, -2000.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-1000000.0-0.001] _
+
+W = 1000000.0, H = 0.001, a = -2.0, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.001, -2.0, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-10.0-1e-08] _
+
+W = 10.0, H = 1e-08, a = -2.0, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (10.0, 1e-08, -2.0, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_ test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-1000000.0-0.1] _
+
+W = 1000000.0, H = 0.1, a = -2.0, T = (0.0, 0.0), press = True
+
+    @pytest.mark.parametrize("W,H", [(1e6, 1e-3), (10.0, 1e-8), (1e6, 1e-1)])
+    @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
+    @pytest.mark.parametrize("press", [True, False])
+    def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
+        """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
+        地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+        cts, dead, live = _floor(W, H, a, T, press)
+        r = limit_load(cts, dead, live, dim=2, k=8)
+>       assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+E       AssertionError: (1000000.0, 0.1, -2.0, (0.0, 0.0), True, 'optimal', ...)
+E       assert 'optimal' == 'infeasible'
+E         
+E         - infeasible
+E         + optimal
+
+tests\test_lp_certificates.py:563: AssertionError
+_______ test_rounding_driven_unbounded_status_is_not_certified[frame4] ________
+
+frame = (-2.2145790363256497, (456126.84150283627, 6015705.33931258), 1.0, 1.0)
+
+    @pytest.mark.parametrize("frame", [(0.0, (0.0, 0.0), 1.0, 1.0), (-2.2145790363256497, (0.0, 0.0), 1.0, 1.0),
+                                       (0.0, (456126.84150283627, 6015705.33931258), 1.0, 1.0),
+                                       (-2.2145790363256497, (456126.84150283627, 6015705.33931258), 0.8333772175908678, 1273009.369168711),
+                                       (-2.2145790363256497, (456126.84150283627, 6015705.33931258), 1.0, 1.0)])
+    def test_rounding_driven_unbounded_status_is_not_certified(frame):
+        """57° 斜坡上的双接触块体，重心在底外——自重下必倾覆，对任何 α 都不可行；活荷载沿底面线水平推，对接触点
+        没有力矩。放到 UTM 坐标（并旋转、换单位）后，内部平移带进舍入级的力矩，浮点数据的精确 LP 变成"大 α 可行且无界"，
+        返修二报 unbounded（α = ∞，不安全）。无界结论要对最小可行荷载因子做可分辨性检查。"""
+        a, T, s, f = frame
+        raw = [((1.0, 0.0), (-0.8414709848078965, 0.5403023058681398), 1.0, 0.0),
+               ((1.5, 0.0), (-0.8414709848078965, 0.5403023058681398), 0.2, 1.0)]
+        Rm = lambda v: (cos(a) * v[0] - sin(a) * v[1], sin(a) * v[0] + cos(a) * v[1])
+        P = lambda q: tuple(s * Rm(q)[i] + T[i] for i in range(2))
+        o = (0.0, 0.0)
+        cts = [LimitContact(P(pp), Rm(n), mu, cohesion=(c * f / (s * s) if c else 0.0), area=(s * s if c else 0.0)) for pp, n, mu, c in raw]
+        dead = wrench(tuple(f * v for v in Rm((0.0, -10.0))), P((0.0, 0.7)), o, 2)
+        live = wrench(tuple(f * v for v in Rm((1.0, 0.0))), P((0.0, 0.0)), o, 2)
+        r = limit_load(cts, dead, live, dim=2, k=4)
+>       assert r.status == "infeasible", (frame, r.status, r.alpha)
+E       AssertionError: ((-2.2145790363256497, (456126.84150283627, 6015705.33931258), 1.0, 1.0), 'unbounded', inf)
+E       assert 'unbounded' == 'infeasible'
+E         
+E         - infeasible
+E         + unbounded
+
+tests\test_lp_certificates.py:584: AssertionError
+_ test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certified _
+
+    def test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certified():
+        """无界规则的"推后变有限值 ⇒ 不认证"分支（reverify6：可达、却没有门——改成"照样认证无界"或"报不可行"全套照绿）。
+        1 mm 的块体放在 UTM (−2.68e6, −1.17e6)，活荷载作用线过两个接触点：浮点数据的精确模型无界，最小可行荷载因子 2.40，
+        但活荷载在自己的 ±16 倍舍入盒内一动，精确 α 就变成有限值（复核者实测 6.9e4）。这里先用独立 oracle 在盒的 8 个角上
+        求精确解、确认确有有限值（舍入模型按文档独立写：力 4u|F|、力矩 4u(|M_c| + |F|·R)），再要求 limit_load 抛"不认证"。"""
+        import itertools
+        cts = [LimitContact((-2683300.084913029, -1166311.8482405145), (0.9854095035625761, 0.1702002064879991), 1.0),
+               LimitContact((-2683300.085281646, -1166311.8485783334), (0.9854095035625761, 0.1702002064879991), 0.2,
+                            cohesion=1000000.0, area=1e-06)]
+        dead = [-6.756375623672026, 7.372339413771618, -27662239.917033132]
+        live = [-0.7372339413771618, -0.6756375623672026, 953093.6477171098]
+        A, b, c = _exact_limit_lp(cts, dead, live, 2, 4)
+        assert _exact_max(A, b, c)[0] == "unbounded"
+        ia = [j for j, cj in enumerate(c) if cj == 1.0][0]
+        u = Fraction(4) * Fraction(2) ** -53
+        F = [A[i][ia] for i in range(2)]
+        Fn = Fraction(sqrt(float(F[0] ** 2 + F[1] ** 2)))
+        R = Fraction(max(sqrt(sum(v * v for v in ct.point)) for ct in cts))
+        e = [u * Fn, u * Fn, u * (abs(A[2][ia]) + Fn * R)]
+        finite = []
+        for sg in itertools.product((-1, 1), repeat=3):
+            A2 = [row[:] for row in A]
+            for i in range(3):
+                A2[i][ia] = A[i][ia] + sg[i] * 16 * e[i]
+            st, obj = _exact_max(A2, b, c)
+            if st == "optimal":
+                finite.append(float(obj))
+        assert finite, "the ±16e box should contain a finite capacity"
+>       with pytest.raises(RuntimeError, match="unbounded capacity is not certified"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_lp_certificates.py:789: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1.0]
+FAILED tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000.0]
+FAILED tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000.0]
+FAILED tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[10000000.0]
+FAILED tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000000.0]
+FAILED tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load[1000000000000.0]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame0]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame1]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame2]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-10-frame3]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame0]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame1]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame2]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-11-frame3]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame0]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame1]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame2]
+FAILED tests/test_lp_certificates.py::test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud[1e-13-frame3]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-1000000.0-0.001]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-10.0-1e-08]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.0-T0-1000000.0-0.1]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-1000000.0-0.001]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-10.0-1e-08]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T1-1000000.0-0.1]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-1000000.0-0.001]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-10.0-1e-08]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True-0.7-T2-1000000.0-0.1]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-1000000.0-0.001]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-10.0-1e-08]
+FAILED tests/test_lp_certificates.py::test_status_is_frame_invariant_on_a_frictionless_floor[True--2.0-T3-1000000.0-0.1]
+FAILED tests/test_lp_certificates.py::test_rounding_driven_unbounded_status_is_not_certified[frame4]
+FAILED tests/test_lp_certificates.py::test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certified
+32 failed, 32 passed, 107 deselected in 0.86s

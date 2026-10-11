@@ -82,7 +82,7 @@ def classify_completeness_failure(At, B, arg) -> str:
     if t <= 0.0 or t >= 1.0:
         k = j if t <= 0.0 else (j + 1) % len(P_edge)
         ia, jb = (i, k) if a_side else (k, i)
-        c = cv.vv_cover(At, ia, B, jb, TOL)
+        c = cv.vv_cover(At, ia, B, jb)
         what = f"A 顶点 {ia} × B 顶点 {jb}（顶点-顶点实现）"
         if c is None:
             return f"盖漏枚举：{what} 无 VV 盖（法锥相对内部交为空），相邻边端点处的 VE/EV 盖也未接住"
@@ -90,10 +90,10 @@ def classify_completeness_failure(At, B, arg) -> str:
             return f"盖漏枚举：{what} 的 VV 盖不活跃（分离方向落在交锥外）"
         return f"其他：{what} 有活跃 VV 盖（gap {c.gap:.6g}），见证距离却不等于暴力距离"
     if a_side:
-        c = cv.ve_cover(At, i, B, j, TOL)
+        c = cv.ve_cover(At, i, B, j)
         what = f"A 顶点 {i} × B 边 {j} (t={t:.4g})"
     else:
-        c = cv.ev_cover(At, j, B, i, TOL)
+        c = cv.ev_cover(At, j, B, i)
         what = f"B 顶点 {i} × A 边 {j} (t={t:.4g})"
     if c is None:
         return f"盖漏枚举：{what} 被法锥判据拒绝"
@@ -203,7 +203,7 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         g0["exit_agree"] += ex.samples - len(ex.failures)
         g0["exit_worst"] = max(g0["exit_worst"], ex.worst_witness)
         for x, u, t, got, arg in ex.failures:
-            Az = translate(A, (x[0] + t * u[0], x[1] + t * u[1]))
+            Az = translate(translate(A, x), (t * u[0], t * u[1]))
             exit_disagree.append((bi, bj, x, u, t, got, arg, classify_completeness_failure(Az, B, arg)))
 
     return {

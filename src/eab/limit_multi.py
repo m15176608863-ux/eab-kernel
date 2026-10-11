@@ -13,12 +13,11 @@ w_j = (g_j, (p_j − o′) × g_j) 关于**共同参考点** o′（全部接触
 （b 固定时 y_b = 0）：**相对速度不得贯入接触**；强对偶 α = −Σ_i y_iᵀW_dead,i + Σ y_r（外力功率 = 黏聚耗散）。
 单体是 nb = 1、全部 b = None 的特例：`limit_load_multi` 对它给出与 `limit_load` 相同的 α（门：tests/test_limit_multi.py）。
 
-自校验（与单体版同一结构，`check_duality_multi`）：静力一侧逐体平衡残差（力、力矩分块）**在各体自身的接触形心 o_i 判定**、
-λ ≥ 0、黏聚行 ≤ 1、α ≥ 0；机构一侧逐列相对功率 ≥ 0（相对判据：尺度按**接触点处**两体的物理速度 |g_j|·(|v_a(p_j)| + |v_b(p_j)|)
-+ |g_j|·V̂）、驱动 Σ y_iᵀW_live,i = 1（各体在自身形心处）、强对偶、互补。
-各尺度是该体 / 该接触自己的物理尺度，不随装配体跨度放大（G6 第四轮 major：在 o′ 判定时跨度 1e4 的装配体把 α×0.999 静默放行，
-与单体版第二轮"在调用方坐标系判定"同一根因）。可分辨性筛查沿返回的机构把全部体的活荷载推 ±16 倍舍入、精确重解，
-与单体版同一规则。
+自校验（`check_duality_multi`）：独立重建精确力矩列、逐体平衡、非负与黏聚上限；逐列相对功率、驱动、强对偶与互补全部用有理数核。
+没有全局尺度、速度尺度或容差放宽，任意非零可表示错解都会拒绝。返回 float 视图附不可变 `exact` 见证，复制保留；算术/JSON 往返会丢失，
+届时按新给定数核。`contact_forces` 与 `active` 只是截断显示（静力证书是 lambdas）。可分辨性筛查分别在各体接触形心/自身臂长上评估、
+在本体舍入盒内推 ±16 倍舍入后精确移回 LP 公共参考点；其他体的跨度不计入本体噪声。
+分辨性只报告 resolvability/resolvability_statuses，绝不改变原问题的精确 status/alpha；resolved 不是稳定性保证。
 
 诚实条款（在单体版的基础上）：
 - 刚体、小变形、接触位置不变——极限分析的标准前提；多体下"机构"是各体旋量的组合，**不唯一**（对偶最优面），读破坏模式要问
@@ -33,9 +32,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from fractions import Fraction
 
-from .limit import (_FLIP, _SELF_CHECK, _UNCERTAIN, LimitContact, _adot, _build_columns, _dot, _exact_shift,
-                    _exact_wrench, _fl, _live_uncertainty, _norm, _shift_wrench, _twist_back, _twist_forward,
+from .limit import (_FLIP, _SELF_CHECK, _UNCERTAIN, LimitContact, _build_columns, _exact_shift,
+                    _exact_wrench, _fl, _live_uncertainty, _norm, _twist_back, _twist_forward,
                     _wrench_rounding, wrench)
+from .limit import _ExactFloat, _rational, _lp_values, _check_columns, _exact_duality_report
 from .lp import OPTIMAL, UNBOUNDED, maximize
 
 Vec = tuple[float, ...]
@@ -68,6 +68,8 @@ class MultiLimitResult:
     iterations: int = 0
     row_duals: list[float] = field(default_factory=list)
     uncertainty: float = 0.0
+    resolvability: str = "not_applicable"  # resolved / nearby_infeasible / unresolved; never changes status/alpha
+    resolvability_statuses: tuple[str, ...] = ()  # exact statuses after minus/plus input-rounding perturbation
 
 
 def contacts_from_covers_multi(covers, body_a: int, body_b: int | None, *, mu: float, side: str = "a") -> list[BodyContact]:
@@ -99,54 +101,17 @@ def _check_bodies(bodies: list[LimitBody], bcs: list[BodyContact], dim: int) -> 
     return nw
 
 
-def _pair_powers(y: list[list[float]], yr: list[float] | None, C, owners_ab, dim: int, loads=(),
-                 points=None, oc=None):
-    """逐列相对功率 p_j = (y_a − y_b)ᵀw_j (+ y_r)，按**接触点处的物理速度**算与判尺度。
-
-    各体旋量 y（关于共同参考点 o′）平移到接触点 p_j：v_a(p_j)、v_b(p_j)，p_j = g_j·(v_a − v_b) + y_r（与 (y_a − y_b)ᵀw_j 精确相等），
-    尺度 s_j = |g_j|·(|v_a(p_j)| + |v_b(p_j)|) + |y_r|；V̂ = 各接触点处两体速度与各体**自身**形心处速度（含 |ω|·臂长）的最大者，
-    列尺度再加 |g_j|·V̂，黏聚行尺度 cap·V̂。
-    G6 第四轮 major：此前尺度取在 o′（全部接触的形心），离 o′ 远的体其 ω·|o′ − o_i| 把尺度放大装配体跨度/体尺寸倍——
-    跨度 1e4 时 α×0.999 的注入静默放行、顶块贯入自己接触的机构被判容许；这是单体版第二轮"在调用方坐标系判定"的同一根因。
-    loads：[(体 i 的旋量(关于 o′), 荷载旋量(关于 o′), 该体自身形心相对 o′ 的向量 d_i)]。points / oc 不给时退回 o′ 处的口径（只供旧调用）。"""
-    p, s = [], []
-    vmax = 0.0
+def _pair_powers(y, yr, C, owners_ab, dim):
+    """各体关于同一原点的有理数旋量，逐列精确相对功率；不存在全局速度容差。"""
+    ys = [[_rational(v) for v in yi] for yi in y]
+    rows = None if yr is None else [_rational(v) for v in yr]
+    powers = []
     for j, (w, rj) in enumerate(zip(C.cols, C.row_of)):
         a, b = owners_ab[C.owner[j]]
-        extra = yr[rj] if (rj is not None and yr is not None) else 0.0
-        if points is not None:
-            g = w[:dim]
-            dp = tuple(points[C.owner[j]][q] - oc[q] for q in range(dim))
-            va = _twist_forward(list(y[a]), dp, dim)[:dim]
-            vb = _twist_forward(list(y[b]), dp, dim)[:dim] if b is not None else (0.0,) * dim
-            pj = sum(gq * (vaq - vbq) for gq, vaq, vbq in zip(g, va, vb)) + extra
-            sj = _norm(g) * (_norm(va) + _norm(vb)) + abs(extra)
-            vmax = max(vmax, _norm(va), _norm(vb))
-        else:
-            pj = _dot(y[a], w) + extra
-            sj = _adot(y[a], w) + abs(extra)
-            if b is not None:
-                pj -= _dot(y[b], w)
-                sj += _adot(y[b], w)
-        p.append(pj)
-        s.append(sj)
-    V = vmax
-    if points is None:
-        for w, sj in zip(C.cols, s):
-            f = _norm(w[:dim])
-            if f > 0.0:
-                V = max(V, sj / f)
-    for item in loads:
-        yi, W = item[0], item[1]
-        di = item[2] if len(item) > 2 else (0.0,) * dim
-        yo = _twist_forward(list(yi), di, dim)
-        Wo = _shift_wrench(list(W), di, dim)
-        f = _norm(Wo[:dim])
-        if f > 0.0:
-            V = max(V, _adot(yo, Wo) / f)
-    scale = [sj + _norm(w[:dim]) * V for w, sj in zip(C.cols, s)]
-    rscale = [cap * V for cap in C.cap]
-    return p, scale, rscale, V
+        rel = [va - (ys[b][i] if b is not None else 0) for i,va in enumerate(ys[a])]
+        extra = rows[rj] if rj is not None and rows is not None else 0
+        powers.append(sum(v*wi for v,wi in zip(rel,w)) + extra)
+    return powers
 
 
 def _body_frames(contacts: list[BodyContact], nb: int, oc: Vec, dim: int):
@@ -174,8 +139,12 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
     dead_x = [_exact_shift(list(b.dead), origin, oc, dim) for b in bodies]
     live_x = [_exact_shift(list(b.live), origin, oc, dim) for b in bodies]
     live_c = [[_fl(v) for v in lv] for lv in live_x]
-    Rmag = max((_norm(tuple(bc.contact.point[i] - origin[i] for i in range(dim))) for bc in contacts), default=0.0)
-    e_in = [_wrench_rounding(lc, dim, Rmag) for lc in live_c]
+    # 本体的形心与臂长；其他体的跨度不计入本体的输入噪声盒。
+    oi, _, arms = _body_frames(contacts, nb, oc, dim)
+    local_d = [tuple(Fraction(oi[i][q])-Fraction(oc[q]) for q in range(dim)) for i in range(nb)]
+    local_live = [_exact_shift(b.live, origin, oi[i], dim) for i,b in enumerate(bodies)]
+    radii = [arms[i] + _norm(tuple(oi[i][q]-origin[q] for q in range(dim))) for i in range(nb)]
+    e_in = [_wrench_rounding([_fl(v) for v in lv], dim, radii[i]) for i,lv in enumerate(local_live)]
     C = _build_columns(cts, oc, dim, k, unit_cohesion=True)
     Cx = [_exact_wrench(col[:dim], cts[C.owner[j]].point, oc, dim) for j, col in enumerate(C.cols)]
     capx = [Fraction(0)] * C.n_rows
@@ -218,55 +187,62 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
         return maximize(A, b, c, exact=(AX, bX, c), **kw)
 
     def _ys(res):
-        return [list(res.y[i * nw:(i + 1) * nw]) for i in range(nb)]
+        exact_y = _lp_values(res.y, res.exact_y)
+        return [exact_y[i * nw:(i + 1) * nw] for i in range(nb)]
 
     def _U(ys):
-        flat_y = [v for yi in ys for v in yi]
-        flat_l = [v for lc in live_c for v in lc]
+        local_y = [_twist_forward(yi, di, dim) for yi,di in zip(ys,local_d)]
+        flat_y = [_fl(v) for yi in local_y for v in yi]
+        flat_l = [_fl(v) for lc in local_live for v in lc]
         flat_e = [v for ei in e_in for v in ei]
         return _live_uncertainty(flat_y, flat_l, flat_e)
 
     def _pushes(ys):
-        push = [[(1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei for yi, ei in zip(y, e)]
-                for y, e in zip(ys, e_in)]
-        minus = [[li - Fraction(pi) for li, pi in zip(lv, pv)] for lv, pv in zip(live_x, push)]
-        plus = [[li + Fraction(pi) for li, pi in zip(lv, pv)] for lv, pv in zip(live_x, push)]
+        local_y = [_twist_forward(yi, di, dim) for yi,di in zip(ys,local_d)]
+        push_local = [[Fraction((1.0 if yi > 0 else -1.0 if yi < 0 else 0.0) * _FLIP * ei)
+                       for yi,ei in zip(y,e)] for y,e in zip(local_y,e_in)]
+        push = [_exact_shift(pv, oi[i], oc, dim) for i,pv in enumerate(push_local)]
+        minus = [[li - pi for li, pi in zip(lv, pv)] for lv, pv in zip(live_x, push)]
+        plus = [[li + pi for li, pi in zip(lv, pv)] for lv, pv in zip(live_x, push)]
         return _solve(minus), _solve(plus)
 
     r = _solve(live_x)
     if r.status == UNBOUNDED:
-        rmin = _solve(live_x, -1.0)
-        its = r.iterations + rmin.iterations
+        rmin = _solve(live_x,-1.0)
+        its = r.iterations+rmin.iterations
+        U0, resolution, statuses = 0.0, "resolved", ()
         if rmin.status == OPTIMAL and rmin.x[ia] > 0.0:
             ys = _ys(rmin)
             U0 = _U(ys)
             if U0 > _UNCERTAIN:
-                rm, rp = _pushes(ys)
-                its += rm.iterations + rp.iterations
-                if "infeasible" in (rm.status, rp.status):
-                    return MultiLimitResult("infeasible", float("nan"), [], [], iterations=its, uncertainty=U0)
-                if not (rm.status == rp.status == UNBOUNDED):
-                    raise RuntimeError(f"limit_load_multi: unbounded capacity is not certified: pushing the live loads by "
-                                       f"{_FLIP:g}x their input rounding gives {rm.status}/{rp.status}")
-        return MultiLimitResult(UNBOUNDED, float("inf"), [], [], iterations=its)
+                rm,rp = _pushes(ys)
+                its += rm.iterations+rp.iterations
+                statuses = (rm.status,rp.status)
+                resolution = ("nearby_infeasible" if "infeasible" in statuses else
+                              "resolved" if rm.status == rp.status == UNBOUNDED else "unresolved")
+        return MultiLimitResult(UNBOUNDED,float("inf"),[],[],iterations=its,uncertainty=U0,
+                                resolvability=resolution,resolvability_statuses=statuses)
     if r.status != OPTIMAL:
-        return MultiLimitResult(r.status, float("nan"), [], [], iterations=r.iterations)
+        return MultiLimitResult(r.status,float("nan"),[],[],iterations=r.iterations)
     alpha = r.x[ia]
     ys = _ys(r)
     U = _U(ys)
-    its = 0
+    its, resolution, statuses = 0, "resolved", ()
     if U > _UNCERTAIN:
-        rm, rp = _pushes(ys)
-        its = rm.iterations + rp.iterations
-        if "infeasible" in (rm.status, rp.status):
-            return MultiLimitResult("infeasible", float("nan"), [], [], iterations=r.iterations + its, uncertainty=U)
-        if rm.status == OPTIMAL and rp.status == OPTIMAL and alpha > 0.0:
-            U = max(abs(rm.x[ia] - alpha), abs(rp.x[ia] - alpha)) / (_FLIP * alpha)
-        if not (rm.status == OPTIMAL and rp.status == OPTIMAL and alpha > 0.0 and U <= _UNCERTAIN):
-            raise RuntimeError(f"limit_load_multi: load factor {alpha:.6e} has relative uncertainty {U:.1e} from input "
-                               f"rounding (> {_UNCERTAIN:.0e}) and is not certified")
-    raw = r.x[:ncols]
-    lam = [v / C.cap[rj] if rj is not None else v for v, rj in zip(raw, C.row_of)]
+        rm,rp = _pushes(ys)
+        its = rm.iterations+rp.iterations
+        statuses = (rm.status,rp.status)
+        if "infeasible" in statuses:
+            resolution = "nearby_infeasible"
+        elif rm.status == rp.status == OPTIMAL and alpha > 0.0:
+            U = max(abs(rm.x[ia]-alpha),abs(rp.x[ia]-alpha))/(_FLIP*alpha)
+            resolution = "resolved" if U <= _UNCERTAIN else "unresolved"
+        else:
+            resolution = "unresolved"
+    rx, ry = _lp_values(r.x,r.exact_x), _lp_values(r.y,r.exact_y)
+    alpha = _ExactFloat(rx[ia])
+    raw = rx[:ncols]
+    lam = [_ExactFloat(v / capx[rj] if rj is not None else v) for v, rj in zip(raw, C.row_of)]
     fvec = [tuple(raw[j] * C.cols[j][i] for i in range(dim)) for j in range(ncols)]
     fmag = [_norm(f) for f in fvec]
     fmax = max(fmag, default=0.0)
@@ -276,10 +252,11 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
         if on[j]:
             forces[ci] = tuple(forces[ci][i] + fvec[j][i] for i in range(dim))
     active = sorted({cts[C.owner[j]].label for j in range(ncols) if on[j] and cts[C.owner[j]].label is not None})
-    mechs = [_twist_back(list(y), dvec, dim) for y in ys]
-    row_duals = [yv * cap for yv, cap in zip(r.y[nb * nw:], C.cap)]
+    dx = tuple(Fraction(oc[i])-Fraction(origin[i]) for i in range(dim))
+    mechs = [[_ExactFloat(v) for v in _twist_back(y, dx, dim)] for y in ys]
+    row_duals = [_ExactFloat(yv * cap) for yv, cap in zip(ry[nb * nw:], capx)]
     res = MultiLimitResult(OPTIMAL, alpha, lam, mechs, forces, active, r.iterations + its, row_duals=row_duals,
-                           uncertainty=U)
+                           uncertainty=U,resolvability=resolution,resolvability_statuses=statuses)
     d = check_duality_multi(res, bodies, contacts, dim=dim, origin=origin, k=k, tol=_SELF_CHECK)
     if not d["ok"]:
         raise RuntimeError(f"limit_load_multi self-check failed: "
@@ -289,115 +266,44 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
 
 def check_duality_multi(res: MultiLimitResult, bodies: list[LimitBody], contacts: list[BodyContact], *,
                         dim: int = 3, origin: Vec | None = None, k: int = 8, tol: float = 1e-7) -> dict:
-    """多体版的下限/上限自校验（判据与单体版 `check_duality` 一一对应，见模块文档）。"""
+    """逐体静力、逐列相对功率及全局强对偶在有理数上精确核；tol 兼容保留，不改答案。
+
+    静力由 lambdas 核对；contact_forces/active 是按显示 tol 截断的展示字段，不是证书。
+    力矩列独立于 LP 的 `_exact_wrench` 重建；反作用亦由检查器重新装配。
+    """
     if res.status != OPTIMAL:
         raise ValueError(f"check_duality_multi needs an optimal result, got status={res.status!r}")
     if origin is None:
         origin = (0.0,) * dim
     nw = _check_bodies(bodies, contacts, dim)
     nb = len(bodies)
-    cts = [bc.contact for bc in contacts]
-    owners_ab = [(bc.body_a, bc.body_b) for bc in contacts]
-    oc = _centroid(contacts, origin, dim)
-    dvec = tuple(oc[i] - origin[i] for i in range(dim))
-    C = _build_columns(cts, oc, dim, k)
+    C = _check_columns([bc.contact for bc in contacts], origin, dim, k)
     if len(res.lambdas) != len(C.cols) or len(res.mechanisms) != nb or any(len(m) != nw for m in res.mechanisms) \
             or len(res.row_duals) != C.n_rows:
         raise ValueError("result does not match these bodies/contacts/dim/k")
-    dead = [_shift_wrench(list(b.dead), dvec, dim) for b in bodies]
-    live = [_shift_wrench(list(b.live), dvec, dim) for b in bodies]
-    ys = [_twist_forward(list(m), dvec, dim) for m in res.mechanisms]
-    yr = res.row_duals
-    lam = list(res.lambdas)
-    # 静力一侧：逐体平衡残差，**在各体自身的接触形心 o_i 判定**（力矩块与臂长都是该体自己的物理尺度；G6 第四轮 major：
-    # 在共同形心 o′ 判定时离 o′ 远的体力矩尺度被 fsc·|o′ − o_i| 放大，远处体合力挪 1e-3·L 静默放行）
-    static_rel = 0.0
-    oi, di, arms = _body_frames(contacts, nb, oc, dim)
-    for i in range(nb):
-        dead_i = _shift_wrench(list(dead[i]), di[i], dim)
-        live_i = _shift_wrench(list(live[i]), di[i], dim)
-        resid = [dead_i[q] + res.alpha * live_i[q] for q in range(nw)]
-        fsc = _norm(dead_i[:dim]) + abs(res.alpha) * _norm(live_i[:dim])
-        msc = _norm(dead_i[dim:]) + abs(res.alpha) * _norm(live_i[dim:])
-        for j, (l, w) in enumerate(zip(lam, C.cols)):
-            a, b = owners_ab[C.owner[j]]
-            sgn = 1.0 if a == i else (-1.0 if b == i else 0.0)
-            if sgn == 0.0:
-                continue
-            wi = _shift_wrench(list(w), di[i], dim)
-            for q in range(nw):
-                resid[q] += sgn * l * wi[q]
-            fsc += abs(l) * _norm(wi[:dim])
-            msc += abs(l) * _norm(wi[dim:])
-        msc += fsc * arms[i]
-        static_rel = max(static_rel,
-                         _norm(resid[:dim]) / fsc if fsc > 0.0 else _norm(resid[:dim]),
-                         _norm(resid[dim:]) / msc if msc > 0.0 else _norm(resid[dim:]))
-    rows_ok = all(sum(l for l, rj in zip(lam, C.row_of) if rj == r_i) <= 1.0 + tol for r_i in range(C.n_rows))
-    static_ok = static_rel <= tol and min(lam, default=0.0) >= 0.0 and rows_ok and res.alpha >= 0.0
-    # 机构一侧：功率在接触点处按物理速度判，荷载功率在各体自身形心处判
-    loads = [(ys[i], dead[i], di[i]) for i in range(nb)] + [(ys[i], live[i], di[i]) for i in range(nb)]
-    power, pscale, rscale, V = _pair_powers(ys, yr, C, owners_ab, dim, loads,
-                                             points=[bc.contact.point for bc in contacts], oc=oc)
-    yo = [_twist_forward(list(ys[i]), di[i], dim) for i in range(nb)]
-    dead_o = [_shift_wrench(list(dead[i]), di[i], dim) for i in range(nb)]
-    live_o = [_shift_wrench(list(live[i]), di[i], dim) for i in range(nb)]
-    drive = sum(_dot(yo[i], live_o[i]) for i in range(nb))
-    dscale = max(1.0, sum(_adot(yo[i], live_o[i]) for i in range(nb)))
-    upper = -sum(_dot(yo[i], dead_o[i]) for i in range(nb)) + sum(yr)
-    G = (abs(res.alpha) + sum(_adot(yo[i], dead_o[i]) for i in range(nb)) + sum(abs(v) for v in yr)
-         + sum(_norm(dead_o[i][:dim]) for i in range(nb)) * V)
-    worst_rel = 0.0
-    for pj, sj in zip(power, pscale):
-        if pj < 0.0:
-            worst_rel = min(worst_rel, pj / sj if sj > 0.0 else -1.0)
-    for v, sr in zip(yr, rscale):
-        if v < 0.0:
-            worst_rel = min(worst_rel, v / sr if sr > 0.0 else -1.0)
-    admissible = worst_rel >= -tol and drive >= 1.0 - tol * dscale
-    fmag = [abs(l) * _norm(w[:dim]) for l, w in zip(lam, C.cols)]
-    fmax = max(fmag, default=0.0)
-    comp = 0.0
-    for fm, pj, sj in zip(fmag, power, pscale):
-        if fm > tol * fmax and sj > 0.0:
-            comp = max(comp, abs(pj) / sj)
-    for r_i in range(C.n_rows):
-        slack = 1.0 - sum(l for l, rj in zip(lam, C.row_of) if rj == r_i)
-        if slack > tol and yr[r_i] != 0.0:
-            comp = max(comp, abs(yr[r_i]) / rscale[r_i] if rscale[r_i] > 0.0 else 1.0)
-    if res.alpha * abs(drive) > tol * G:
-        comp = max(comp, abs(drive - 1.0) / dscale)
-    gap = abs(upper - res.alpha)
-    gap_rel = gap / G if G > 0.0 else gap
-    return {"admissible": admissible, "worst_power_rel": worst_rel, "drive": drive, "upper_bound": upper,
-            "alpha": res.alpha, "duality_gap": gap, "duality_gap_rel": gap_rel, "complementarity": comp,
-            "static_residual_rel": static_rel, "static_ok": static_ok,
-            "ok": admissible and gap_rel <= tol and comp <= tol and static_ok}
+    cols = []
+    for j,w in enumerate(C.cols):
+        bc = contacts[C.owner[j]]
+        cols.append([v*(int(i == bc.body_a)-int(i == bc.body_b)) for i in range(nb) for v in w])
+    return _exact_duality_report(res.alpha,res.lambdas,res.row_duals,cols,C.row_of,
+                                 [v for b in bodies for v in b.dead], [v for b in bodies for v in b.live],
+                                 [v for m in res.mechanisms for v in m])
 
 
 def mechanism_is_admissible_multi(mechanisms: list[list[float]], contacts: list[BodyContact], *, dim: int = 3,
                                   origin: Vec | None = None, k: int = 8, tol: float = 1e-7,
                                   row_duals: list[float] | None = None) -> bool:
-    """多体机构的容许性：每列相对功率 (y_a − y_b)ᵀw ≥ −tol·尺度（固定边界 y_b = 0）；黏聚列按单体版的口径。"""
+    """每列相对功率在给定数上精确 >= 0；tol 只保留兼容，其他体速度不影响答案。"""
     if origin is None:
         origin = (0.0,) * dim
     nw = 3 if dim == 2 else 6
     if any(len(m) != nw for m in mechanisms):
         raise ValueError(f"each mechanism must have {nw} components for dim={dim}")
-    cts = [bc.contact for bc in contacts]
-    owners_ab = [(bc.body_a, bc.body_b) for bc in contacts]
-    oc = _centroid(contacts, origin, dim)
-    dvec = tuple(oc[i] - origin[i] for i in range(dim))
-    ys = [_twist_forward(list(m), dvec, dim) for m in mechanisms]
-    C = _build_columns(cts, oc, dim, k)
+    C = _check_columns([bc.contact for bc in contacts], origin, dim, k)
     if row_duals is not None and len(row_duals) != C.n_rows:
         raise ValueError(f"row_duals has {len(row_duals)} entries, contacts give {C.n_rows} cohesion rows")
-    p, s, rs, _ = _pair_powers(ys, row_duals, C, owners_ab, dim, points=[bc.contact.point for bc in contacts], oc=oc)
-    if row_duals is not None and any(v < -tol * sr for v, sr in zip(row_duals, rs)):
+    owners_ab = [(bc.body_a,bc.body_b) for bc in contacts]
+    powers = _pair_powers(mechanisms,row_duals,C,owners_ab,dim)
+    if row_duals is not None and any(_rational(v) < 0 for v in row_duals):
         return False
-    for pj, sj, rj in zip(p, s, C.row_of):
-        if rj is not None and row_duals is None:
-            continue
-        if pj < -tol * sj:
-            return False
-    return True
+    return all(p >= 0 for p,rj in zip(powers,C.row_of) if rj is None or row_duals is not None)

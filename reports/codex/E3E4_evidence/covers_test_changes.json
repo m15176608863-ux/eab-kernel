@@ -1,0 +1,450 @@
+{
+  "failures": [
+    {
+      "node": "tests/test_kernel2d_predicates.py::test_hull_of_a_rotated_collinear_strip_has_four_vertices",
+      "old": "3000 个旋转平行细条一律恰 4 顶点",
+      "new": "原 3000 点集，每格精确支持线 oracle 顶点集合全等",
+      "not_weaker": "不把舍入后的真实微小极点丢弃；每个点集直接验证数学凸包，不再只数点。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-06]",
+      "old": "锥边界方向 31 姿态 strict 必须与恒等相同",
+      "new": "原 31 姿态，strict 与独立 Fraction 邻点支持精确一致",
+      "not_weaker": "比不变性更强的逐格正确性；数据真实跨边界不再强迫错答相同。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-07]",
+      "old": "锥边界方向 31 姿态 strict 必须与恒等相同",
+      "new": "原 31 姿态，strict 与独立 Fraction 邻点支持精确一致",
+      "not_weaker": "比不变性更强的逐格正确性；数据真实跨边界不再强迫错答相同。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-08]",
+      "old": "锥边界方向 31 姿态 strict 必须与恒等相同",
+      "new": "原 31 姿态，strict 与独立 Fraction 邻点支持精确一致",
+      "not_weaker": "比不变性更强的逐格正确性；数据真实跨边界不再强迫错答相同。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-06]",
+      "old": "锥边界方向 31 姿态 strict 必须与恒等相同",
+      "new": "原 31 姿态，strict 与独立 Fraction 邻点支持精确一致",
+      "not_weaker": "比不变性更强的逐格正确性；数据真实跨边界不再强迫错答相同。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-07]",
+      "old": "锥边界方向 31 姿态 strict 必须与恒等相同",
+      "new": "原 31 姿态，strict 与独立 Fraction 邻点支持精确一致",
+      "not_weaker": "比不变性更强的逐格正确性；数据真实跨边界不再强迫错答相同。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-08]",
+      "old": "锥边界方向 31 姿态 strict 必须与恒等相同",
+      "new": "原 31 姿态，strict 与独立 Fraction 邻点支持精确一致",
+      "not_weaker": "比不变性更强的逐格正确性；数据真实跨边界不再强迫错答相同。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[1000.0-0.0001]",
+      "old": "短棱端点 31 姿态枚举标签恒等",
+      "new": "原 31 姿态完整标签+strict 与独立 Fraction oracle 全等",
+      "not_weaker": "没有放宽预期、没有删格，既抓漏盖也抓凭空多盖，舍入跨端点按精确数据答。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[1000.0-1e-05]",
+      "old": "短棱端点 31 姿态枚举标签恒等",
+      "new": "原 31 姿态完整标签+strict 与独立 Fraction oracle 全等",
+      "not_weaker": "没有放宽预期、没有删格，既抓漏盖也抓凭空多盖，舍入跨端点按精确数据答。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[100000.0-0.0001]",
+      "old": "短棱端点 31 姿态枚举标签恒等",
+      "new": "原 31 姿态完整标签+strict 与独立 Fraction oracle 全等",
+      "not_weaker": "没有放宽预期、没有删格，既抓漏盖也抓凭空多盖，舍入跨端点按精确数据答。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[100000.0-1e-05]",
+      "old": "短棱端点 31 姿态枚举标签恒等",
+      "new": "原 31 姿态完整标签+strict 与独立 Fraction oracle 全等",
+      "not_weaker": "没有放宽预期、没有删格，既抓漏盖也抓凭空多盖，舍入跨端点按精确数据答。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s0.001_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t1000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t100000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1000_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1000_t1000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s0.001_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1_t1000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1_t100000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1000_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1000_t1000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s0.001_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s0.001_t100000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t1000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t100000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s0.001_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s0.001_t100000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t0]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t1000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t100000]",
+      "old": "变换标签集等于 identity 或两噪声窗口夹逼",
+      "new": "原网格逐格独立 Fraction oracle 全等；已测余量标签继续刚体不变；共有标签保留原 gap 缩放界",
+      "not_weaker": "旧门可放过 du×100；新门带内也必须精确，只有数据变化的变换不变性按明确余量解释。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_invariance_unresolvable_cells_are_explained_by_measured_near_parallel_edges",
+      "old": "噪声算法必须恰有 19 个不可分辨格",
+      "new": "原完整网格，每个变化标签有实际判据余量<=报告舍入界，且 changed>0 stable>changed",
+      "not_weaker": "19 是已删除算法的产物非几何定理；新门逐标签证明变化原因，正确性另逐格精确 oracle 无豁免。",
+      "diagnostic_log": "covers_initial_suite.txt"
+    },
+    {
+      "node": "tests/test_bb52_g1.py::_drop_cone_boundary",
+      "old": "变异 cv.in_cone 丢边界，间接触发距离完备性门",
+      "new": "变异实际生产路径 cv._ve_side 丢边界，保持原距离完备性断言",
+      "not_weaker": "旧符号已经不再被调用；将相同缺陷移到真实被测入口，避免无牙。"
+    },
+    {
+      "node": "tests/test_kernel2d_review.py and tests/test_kernel2d_g0.py (noise-only enumerate arguments)",
+      "old": "给数学候选传 tol=1e-9/1e-12",
+      "new": "删除历史噪声入参，保留原断言与几何",
+      "not_weaker": "不把容差放宽当作真值，精确有效性更严格。"
+    }
+  ],
+  "new_gate_red_before": "12 failed, 9 passed in 0.15s",
+  "new_gate_log": "covers_red_before.txt",
+  "new_tests": [
+    "tests/test_kernel2d_covers_e3.py"
+  ],
+  "additional_changes": [
+    {
+      "node": "tests/test_bb52_g1.py::_drop_cone_boundary",
+      "old_assertion_count": 0,
+      "new_assertion_count": 0,
+      "assertions_unchanged": true,
+      "old": "变异已被新实现绕过的 in_cone",
+      "new": "相同丢非严格盖缺陷注入实际 _ve_side",
+      "not_weaker": "牙必须穿过真实枚举路径；缺陷类别不变而注入点恢复有效。"
+    },
+    {
+      "node": "tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth",
+      "old_assertion_count": 4,
+      "new_assertion_count": 4,
+      "assertions_unchanged": false,
+      "old": "牙/归因必须报红；噪声strict旧投票106/110；VE-only分离侧无感",
+      "new": "所有牙/归因保留；精确strict旧投票630/640逐值等式；VE-only分离侧额外必须抓19/603且逐条归因缺盖",
+      "not_weaker": "改变的是旧噪声strict产物快照，不是牙要求；原出口侧必须抓缺陷不变，新增分离侧也必须抓而更强。"
+    },
+    {
+      "node": "tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth",
+      "old_assertion_count": 5,
+      "new_assertion_count": 7,
+      "assertions_unchanged": true,
+      "old": "牙/归因必须报红；噪声strict旧投票106/110；VE-only分离侧无感",
+      "new": "所有牙/归因保留；精确strict旧投票630/640逐值等式；VE-only分离侧额外必须抓19/603且逐条归因缺盖",
+      "not_weaker": "改变的是旧噪声strict产物快照，不是牙要求；原出口侧必须抓缺陷不变，新增分离侧也必须抓而更强。",
+      "readback_note": "此前CRLF模板插入失败，仅True预期落盘；root补入两断言并读回复验：bb52_readback_gate_result.json，1 passed in26.24s。"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::_covers",
+      "old_assertion_count": 0,
+      "new_assertion_count": 0,
+      "assertions_unchanged": true,
+      "old": "数学/legacy模式都传 tau 噪声",
+      "new": "数学模式显式0，legacy模式保留明示角/边端域窗口",
+      "not_weaker": "helper本无断言；下游每格独立Fraction oracle不使用被测helper，增强数学模式严格性。"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_enumeration_is_invariant",
+      "old_assertion_count": 5,
+      "new_assertion_count": 5,
+      "assertions_unchanged": false,
+      "old": "identity输出或双窗口夹逼作为参考",
+      "new": "原网格每格独立Fraction oracle精确全等，有余量标签仍不变，共有gap保持原缩放界",
+      "not_weaker": "带内不再容许任意一个容差答案；真值全等比旧夹逼更强。"
+    },
+    {
+      "node": "tests/test_invariance_2d.py::test_cover_invariance_unresolvable_cells_are_explained_by_measured_near_parallel_edges",
+      "old_assertion_count": 3,
+      "new_assertion_count": 2,
+      "assertions_unchanged": false,
+      "old": "噪声算法必须恰有19个不可分辨格",
+      "new": "原完整网格逐个变化标签的判据余量需落在报告界，且非空变化/稳定标签均覆盖",
+      "not_weaker": "19是被删除噪声算法产物，不是几何定理；正确性主门每格精确零错不予豁免，报告门量化每个数据边界变化。"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary",
+      "old_assertion_count": 3,
+      "new_assertion_count": 5,
+      "assertions_unchanged": false,
+      "old": "原186个边界姿态与identity strict强制相同",
+      "new": "原186姿态分别对独立Fraction邻点支持oracle全等",
+      "not_weaker": "边界舍入数据不再被强制错答；逐格真值也抓稳定的伪活跃，不只是抓翻转。"
+    },
+    {
+      "node": "tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint",
+      "old_assertion_count": 2,
+      "new_assertion_count": 2,
+      "assertions_unchanged": false,
+      "old": "原124个短棱边端姿态与identity标签相同",
+      "new": "原124姿态完整标签+strict对独立Fraction邻点投影/线性消元oracle全等",
+      "not_weaker": "不删格，额外核对strict并同时拒漏盖/伪盖。"
+    },
+    {
+      "node": "tests/test_kernel2d_predicates.py::test_hull_of_a_rotated_collinear_strip_has_four_vertices",
+      "old_assertion_count": 1,
+      "new_assertion_count": "renamed",
+      "assertions_unchanged": false,
+      "old": "原3000点云均被噪声判4点",
+      "new": "重命名matches_exact_support，原3000点云逐格独立Fraction全点支持线集合全等",
+      "not_weaker": "更强正确性门，保留所有输入并识别舍入后真极点。"
+    },
+    {
+      "node": "tests/test_kernel2d_review.py::test_r3_numerically_collinear_vertex_yields_no_vv",
+      "old_assertion_count": 4,
+      "new_assertion_count": 4,
+      "assertions_unchanged": true,
+      "old": "数学 enumerate_covers / first_entrance_for_vertex 调用传历史 tol=1e-9/1e-12",
+      "new": "只删这些候选调用的噪声 tol；所有原断言及其他 API 入参保持",
+      "not_weaker": "不删断言、不换几何、不扩大容许输出集合；要求原测试在精确无窗候选下成立。"
+    },
+    {
+      "node": "tests/test_kernel2d_review.py::test_gap0_sign_of_min_gap_is_not_a_concave_membership_rule",
+      "old_assertion_count": 4,
+      "new_assertion_count": 4,
+      "assertions_unchanged": true,
+      "old": "数学 enumerate_covers / first_entrance_for_vertex 调用传历史 tol=1e-9/1e-12",
+      "new": "只删这些候选调用的噪声 tol；所有原断言及其他 API 入参保持",
+      "not_weaker": "不删断言、不换几何、不扩大容许输出集合；要求原测试在精确无窗候选下成立。"
+    },
+    {
+      "node": "tests/test_kernel2d_review.py::test_gap0_sign_of_min_gap_false_negative_wedge_in_channel",
+      "old_assertion_count": 8,
+      "new_assertion_count": 8,
+      "assertions_unchanged": true,
+      "old": "数学 enumerate_covers / first_entrance_for_vertex 调用传历史 tol=1e-9/1e-12",
+      "new": "只删这些候选调用的噪声 tol；所有原断言及其他 API 入参保持",
+      "not_weaker": "不删断言、不换几何、不扩大容许输出集合；要求原测试在精确无窗候选下成立。"
+    },
+    {
+      "node": "tests/test_kernel2d_review.py::test_c19_zero_length_edge_is_a_clear_error_not_zerodivision",
+      "old_assertion_count": 0,
+      "new_assertion_count": 0,
+      "assertions_unchanged": true,
+      "old": "数学 enumerate_covers / first_entrance_for_vertex 调用传历史 tol=1e-9/1e-12",
+      "new": "只删这些候选调用的噪声 tol；所有原断言及其他 API 入参保持",
+      "not_weaker": "不删断言、不换几何、不扩大容许输出集合；要求原测试在精确无窗候选下成立。"
+    },
+    {
+      "node": "tests/test_kernel2d_review.py::test_c19_loaders_strip_every_cyclic_consecutive_duplicate",
+      "old_assertion_count": 6,
+      "new_assertion_count": 6,
+      "assertions_unchanged": true,
+      "old": "数学 enumerate_covers / first_entrance_for_vertex 调用传历史 tol=1e-9/1e-12",
+      "new": "只删这些候选调用的噪声 tol；所有原断言及其他 API 入参保持",
+      "not_weaker": "不删断言、不换几何、不扩大容许输出集合；要求原测试在精确无窗候选下成立。"
+    },
+    {
+      "node": "tests/test_kernel2d_g0.py::test_first_entrance_picks_shallowest_penetration",
+      "old_assertion_count": 4,
+      "new_assertion_count": 4,
+      "assertions_unchanged": true,
+      "old": "数学 enumerate_covers / first_entrance_for_vertex 调用传历史 tol=1e-9/1e-12",
+      "new": "只删这些候选调用的噪声 tol；所有原断言及其他 API 入参保持",
+      "not_weaker": "不删断言、不换几何、不扩大容许输出集合；要求原测试在精确无窗候选下成立。"
+    }
+  ],
+  "additional_red_before": {
+    "file": "covers_orientation_red_before.txt",
+    "summary": "3 failed, 5 passed, 22 deselected in 0.18s",
+    "fix": "triangulate 朝向精确面积；Fraction orient2d 不经过浮点过滤"
+  },
+  "followup_failures": [
+    {
+      "node": "tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[strict_cone_only]",
+      "reason": "旧废弃投票计数针对旧噪声strict，不是新精确strict；牙已报红但比较计数过时",
+      "old": "110/106",
+      "new": "640/630; keep exact equality"
+    },
+    {
+      "node": "tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[strict_cone_only]",
+      "reason": "同上",
+      "old": "110/106",
+      "new": "640/630; keep exact equality"
+    },
+    {
+      "node": "tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[drop_VE_subset]",
+      "initial_issue": "EV转调公开ve_cover让VE-only变异误伤EV；已分离构造，共享内部side而不调用公开VE。",
+      "retry_issue": "诊断Az用 A+(x+t*u)，被测G0用(A+x)+t*u；改诊断复刻相同浮点次序，全部缺盖归因断言保留。",
+      "remaining_stale_expectation": "精确无窗枚举现在能捕捉19/603缺VE，旧门规定distance_gate_red=False是旧噪声枚举的快照，不再成立。",
+      "change": "distance_gate_red=True；额外assert(584,603)及每条距离缺陷归因为盖漏枚举；原出口牙和旧投票1186/1186不改。",
+      "final": "covers_bb52_final_green.txt: 1 passed, 16 deselected in 27.58s"
+    }
+  ],
+  "targeted_final": [
+    "covers_final_targeted.txt: 30 passed in 0.08s",
+    "covers_oracle_suite.txt: 474 passed, 434 deselected in 21.00s",
+    "covers_bb52_retry.txt: strict_cone_only two nodes passed; third diagnosed separately",
+    "covers_bb52_final_green.txt: 1 passed, 16 deselected in 27.58s"
+  ],
+  "readback_correction": {
+    "issue": "报告曾先于新增断言实际落盘；LF/CRLF失配已纠正",
+    "targeted_log": "bb52_readback_gate.log",
+    "targeted_result": "1 passed in 26.24s",
+    "full_suite": "最终全套从头重跑，不使用190.110s中止那次"
+  }
+}

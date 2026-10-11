@@ -1,0 +1,124 @@
+...FFF...FFF...                                                          [100%]
+================================== FAILURES ===================================
+__________ test_vv_active_exact_support_not_a_roundoff_band[0.0-0.0] __________
+
+C = 0.0, theta = 0.0
+
+    @pytest.mark.parametrize("C", [0., 1e3, 1e5])
+    @pytest.mark.parametrize("theta", [-5., 0., 5., 45., 50.])
+    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):
+        g=1e-6; a=math.radians(theta)
+        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]
+        B=[(C+u,C+v) for u,v in TRI]
+        c=vv_cover(A,0,B,0)
+        assert c is not None
+>       assert c.strict is strict_vv_oracle(A,0,B,0), "VV activity must match exact neighbor support"
+E       AssertionError: VV activity must match exact neighbor support
+E       assert True is False
+E        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=1e-06, param=None, point=(1e-06, 0.0), strict=True, point_a=(1e-06, 0.0), point_b=(0.0, 0.0), window_active=False).strict
+E        +  and   False = strict_vv_oracle([(1e-06, 0.0), (1.000001, 0.0), (1.000001, 1.0), (1e-06, 1.0)], 0, [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)], 0)
+
+tests\test_kernel2d_covers_e3.py:30: AssertionError
+________ test_vv_active_exact_support_not_a_roundoff_band[0.0-1000.0] _________
+
+C = 1000.0, theta = 0.0
+
+    @pytest.mark.parametrize("C", [0., 1e3, 1e5])
+    @pytest.mark.parametrize("theta", [-5., 0., 5., 45., 50.])
+    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):
+        g=1e-6; a=math.radians(theta)
+        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]
+        B=[(C+u,C+v) for u,v in TRI]
+        c=vv_cover(A,0,B,0)
+        assert c is not None
+>       assert c.strict is strict_vv_oracle(A,0,B,0), "VV activity must match exact neighbor support"
+E       AssertionError: VV activity must match exact neighbor support
+E       assert True is False
+E        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=9.999999974752427e-07, param=None, point=(1000.000001, 1000.0), strict=True, point_a=(1000.000001, 1000.0), point_b=(1000.0, 1000.0), window_active=False).strict
+E        +  and   False = strict_vv_oracle([(1000.000001, 1000.0), (1001.000001, 1000.0), (1001.000001, 1001.0), (1000.000001, 1001.0)], 0, [(1000.0, 1000.0), (999.0, 1001.0), (999.0, 999.0)], 0)
+
+tests\test_kernel2d_covers_e3.py:30: AssertionError
+_______ test_vv_active_exact_support_not_a_roundoff_band[0.0-100000.0] ________
+
+C = 100000.0, theta = 0.0
+
+    @pytest.mark.parametrize("C", [0., 1e3, 1e5])
+    @pytest.mark.parametrize("theta", [-5., 0., 5., 45., 50.])
+    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):
+        g=1e-6; a=math.radians(theta)
+        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]
+        B=[(C+u,C+v) for u,v in TRI]
+        c=vv_cover(A,0,B,0)
+        assert c is not None
+>       assert c.strict is strict_vv_oracle(A,0,B,0), "VV activity must match exact neighbor support"
+E       AssertionError: VV activity must match exact neighbor support
+E       assert True is False
+E        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(1.0, 0.0), gap=9.999930625781417e-07, param=None, point=(100000.000001, 100000.0), strict=True, point_a=(100000.000001, 100000.0), point_b=(100000.0, 100000.0), window_active=False).strict
+E        +  and   False = strict_vv_oracle([(100000.000001, 100000.0), (100001.000001, 100000.0), (100001.000001, 100001.0), (100000.000001, 100001.0)], 0, [(100000.0, 100000.0), (99999.0, 100001.0), (99999.0, 99999.0)], 0)
+
+tests\test_kernel2d_covers_e3.py:30: AssertionError
+_________ test_vv_active_exact_support_not_a_roundoff_band[45.0-0.0] __________
+
+C = 0.0, theta = 45.0
+
+    @pytest.mark.parametrize("C", [0., 1e3, 1e5])
+    @pytest.mark.parametrize("theta", [-5., 0., 5., 45., 50.])
+    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):
+        g=1e-6; a=math.radians(theta)
+        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]
+        B=[(C+u,C+v) for u,v in TRI]
+        c=vv_cover(A,0,B,0)
+        assert c is not None
+>       assert c.strict is strict_vv_oracle(A,0,B,0), "VV activity must match exact neighbor support"
+E       AssertionError: VV activity must match exact neighbor support
+E       assert True is False
+E        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=1.0000000000000002e-06, pa...476e-07), strict=True, point_a=(7.071067811865476e-07, 7.071067811865476e-07), point_b=(0.0, 0.0), window_active=False).strict
+E        +  and   False = strict_vv_oracle([(7.071067811865476e-07, 7.071067811865476e-07), (1.0000007071067811, 7.071067811865476e-07), (1.0000007071067811, 1.0000007071067811), (7.071067811865476e-07, 1.0000007071067811)], 0, [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)], 0)
+
+tests\test_kernel2d_covers_e3.py:30: AssertionError
+________ test_vv_active_exact_support_not_a_roundoff_band[45.0-1000.0] ________
+
+C = 1000.0, theta = 45.0
+
+    @pytest.mark.parametrize("C", [0., 1e3, 1e5])
+    @pytest.mark.parametrize("theta", [-5., 0., 5., 45., 50.])
+    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):
+        g=1e-6; a=math.radians(theta)
+        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]
+        B=[(C+u,C+v) for u,v in TRI]
+        c=vv_cover(A,0,B,0)
+        assert c is not None
+>       assert c.strict is strict_vv_oracle(A,0,B,0), "VV activity must match exact neighbor support"
+E       AssertionError: VV activity must match exact neighbor support
+E       assert True is False
+E        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=9.99999996149227e-07, para...7071068), strict=True, point_a=(1000.0000007071068, 1000.0000007071068), point_b=(1000.0, 1000.0), window_active=False).strict
+E        +  and   False = strict_vv_oracle([(1000.0000007071068, 1000.0000007071068), (1001.0000007071068, 1000.0000007071068), (1001.0000007071068, 1001.0000007071068), (1000.0000007071068, 1001.0000007071068)], 0, [(1000.0, 1000.0), (999.0, 1001.0), (999.0, 999.0)], 0)
+
+tests\test_kernel2d_covers_e3.py:30: AssertionError
+_______ test_vv_active_exact_support_not_a_roundoff_band[45.0-100000.0] _______
+
+C = 100000.0, theta = 45.0
+
+    @pytest.mark.parametrize("C", [0., 1e3, 1e5])
+    @pytest.mark.parametrize("theta", [-5., 0., 5., 45., 50.])
+    def test_vv_active_exact_support_not_a_roundoff_band(C, theta):
+        g=1e-6; a=math.radians(theta)
+        A=[(C+u+g*math.cos(a),C+v+g*math.sin(a)) for u,v in SQ]
+        B=[(C+u,C+v) for u,v in TRI]
+        c=vv_cover(A,0,B,0)
+        assert c is not None
+>       assert c.strict is strict_vv_oracle(A,0,B,0), "VV activity must match exact neighbor support"
+E       AssertionError: VV activity must match exact neighbor support
+E       assert True is False
+E        +  where True = Cover(kind='VV', a_index=0, b_index=0, normal=(0.7071067811865475, 0.7071067811865475), gap=9.999998353717593e-07, par...07071), strict=True, point_a=(100000.0000007071, 100000.0000007071), point_b=(100000.0, 100000.0), window_active=False).strict
+E        +  and   False = strict_vv_oracle([(100000.0000007071, 100000.0000007071), (100001.0000007071, 100000.0000007071), (100001.0000007071, 100001.0000007071), (100000.0000007071, 100001.0000007071)], 0, [(100000.0, 100000.0), (99999.0, 100001.0), (99999.0, 99999.0)], 0)
+
+tests\test_kernel2d_covers_e3.py:30: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band[0.0-0.0]
+FAILED tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band[0.0-1000.0]
+FAILED tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band[0.0-100000.0]
+FAILED tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band[45.0-0.0]
+FAILED tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band[45.0-1000.0]
+FAILED tests/test_kernel2d_covers_e3.py::test_vv_active_exact_support_not_a_roundoff_band[45.0-100000.0]
+6 failed, 9 passed in 0.23s

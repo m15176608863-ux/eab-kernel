@@ -257,18 +257,22 @@ def test_old_badly_scaled_limit_formulation_is_answered_exactly():
 
 @pytest.mark.parametrize("W", [1.0, 1e3, 1e6, 1e7, 1e9, 1e12])
 def test_rounding_driven_load_factor_is_not_certified_at_any_dead_load(W):
-    """无摩擦地面，恒载带 1 的水平分量，活荷载 θ = 3π/2（实数里竖直向下，浮点里水平分量 cos(3π/2) = −1.8e-16）。
-    物理答案 infeasible（水平恒载无物可挡）；浮点 LP 给 α = 1/1.8e-16 = 5.4e15。旧判据"α ≤ 1e10·α_nat"里
-    α_nat 含整个恒载，W ≥ 1e6 时漏过（43d1e50 实测 optimal 5443746451065123）。三维同理（θ = π 的"竖直"推力）。"""
+    """原6种恒载和二维/三维全部保留：给定sin/cos浮点数据有精确大alpha，不得被邻域不可行覆盖。
+    独立Fraction LP核状态/alpha；物理舍入风险另报 nearby_infeasible，仍不能宣称已分辨。"""
     assert cos(3 * pi / 2) != 0.0
-    o2 = (0.0, 0.0)
-    r = limit_load([LimitContact((0.0, 0.0), (0.0, 1.0), 0.0)], wrench((1.0, -W), o2, o2, 2),
-                   wrench((cos(3 * pi / 2), sin(3 * pi / 2)), o2, o2, 2), dim=2)
-    assert r.status == "infeasible", (W, r.status, r.alpha)
-    o3 = (0.0, 0.0, 0.0)
-    r3 = limit_load([LimitContact(o3, (0.0, 0.0, 1.0), 0.0)], wrench((-1.0, 0.0, -W), o3, o3, 3),
-                    wrench((sin(pi), 0.0, cos(pi)), o3, o3, 3), dim=3)
-    assert r3.status == "infeasible", (W, r3.status, r3.alpha)
+    for dim, normal, dead_force, live_force in (
+        (2, (0.,1.), (1.,-W), (cos(3*pi/2),sin(3*pi/2))),
+        (3, (0.,0.,1.), (-1.,0.,-W), (sin(pi),0.,cos(pi))),
+    ):
+        origin=(0.,)*dim
+        cts=[LimitContact(origin,normal,0.)]
+        dead=wrench(dead_force,origin,origin,dim)
+        live=wrench(live_force,origin,origin,dim)
+        result=limit_load(cts,dead,live,dim=dim)
+        status,_=_assert_same_exact_limit_result(result,cts,dead,live,dim,8)
+        assert status=="optimal"
+        assert result.resolvability=="nearby_infeasible", (W,dim,result)
+        assert "infeasible" in result.resolvability_statuses
 
 
 MU, WL = 0.5, 10.0
@@ -292,19 +296,23 @@ FRAMES = [(0.0, (0.0, 0.0), 1.0), (0.37, (3e4, -2e3), 1.0), (0.0, (0.0, 0.0), 1e
 @pytest.mark.parametrize("frame", FRAMES)
 @pytest.mark.parametrize("margin", [1e-3, 1e-6, 1e-8, 1e-9, 1e-10, 1e-11, 1e-13])
 def test_near_self_locking_is_certified_within_its_reported_uncertainty_or_loud(margin, frame):
-    """真实的大荷载因子（离自锁 margin，α ≈ 1.34/margin 量级）照常认证，且误差不超过报告的不确定度 U；
-    余量小到 U > 1e-6 时抛错，不给假精度。U ≈ 4u·κ，κ ≈ 1.34/margin（09-27 实测标定）。
-    余量 ≥ 1e-9 必须认证——包括 2 cm 的块体放在离原点 4000 km 处（C/L = 4e8；本次返修中途，调用方坐标系自校验
-    把驱动 1 + 2⁻²³ 的点积舍入判成违约，曾对这一例抛错）。"""
+    """原28格全保留：不再以抛错豁免小余量，每格精确核同数据LP状态/alpha。
+    旧margin>=1e-9的可分辨要求及resolved时的闭式误差要求保留；小余量风险只另报、不改变精确答案。"""
     cts, dead, live, exact = _lock_case(margin, *frame)
-    try:
-        r = limit_load(cts, dead, live, dim=2, k=8)
-    except RuntimeError as e:                               # loud：不确定度超标、自校验或基奇异，都允许
-        assert margin < 1e-9, (margin, frame, str(e)[:120])
-        return
-    assert r.status == "optimal"
-    assert r.uncertainty <= 1e-6
-    assert abs(r.alpha - exact) <= (r.uncertainty + 1e-9) * exact, (margin, frame, r.alpha, exact, r.uncertainty)
+    r = limit_load(cts, dead, live, dim=2, k=8)
+    status,_ = _assert_same_exact_limit_result(r,cts,dead,live,2,8)
+    assert status == "optimal"
+    if margin >= 1e-9:
+        assert r.resolvability == "resolved", (margin,frame,r.resolvability,r.uncertainty)
+    if r.resolvability == "resolved":
+        assert r.uncertainty <= 1e-6
+        assert abs(r.alpha - exact) <= (r.uncertainty + 1e-9) * exact, (margin, frame, r.alpha, exact, r.uncertainty)
+    elif r.resolvability == "nearby_infeasible":
+        assert margin < 1e-9 and "infeasible" in r.resolvability_statuses
+    else:
+        assert r.resolvability == "unresolved" and margin < 1e-9
+        assert r.uncertainty > 1e-6
+        assert len(r.resolvability_statuses) == 2
 
 
 # ---------------------------------------------------------------- N-mm-MPa、极端量级
@@ -433,8 +441,21 @@ def _exact_limit_lp(cts, dead, live, dim, k):
                 row[j] = Fraction(1)
         row[len(cols) + r_i] = Fraction(1)
         A.append(row)
-        b.append(X(C.cap[r_i]))
+        owner = next(C.owner[j] for j, rj in enumerate(C.row_of) if rj == r_i)
+        b.append(X(cts[owner].cohesion) * X(cts[owner].area))
     return A, b, [0.0] * len(C.cols) + [1.0] + [0.0] * C.n_rows
+
+
+def _assert_same_exact_limit_result(result, cts, dead, live, dim, k):
+    """给定原数据的精确状态/目标；只共享锥方向模型，不共享生产LP、力矩、平移或证书。"""
+    status, value = _exact_max(*_exact_limit_lp(cts, dead, live, dim, k))
+    assert result.status == status, (result.status, status, getattr(result,"resolvability",None))
+    if status == "optimal":
+        assert result.alpha.exact == value, (result.alpha.exact, value)
+        assert float(result.alpha) == float(value)
+    if status == "unbounded":
+        assert result.alpha == float("inf")
+    return status, value
 
 
 def _exact_alpha(cts, dead, live, dim, k):
@@ -556,11 +577,16 @@ def _floor(W, H, a, T, press):
 @pytest.mark.parametrize("a,T", [(0.0, (0.0, 0.0)), (0.7, (0.0, 0.0)), (0.7, (3e3, -2e3)), (-2.0, (0.0, 0.0))])
 @pytest.mark.parametrize("press", [True, False])
 def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
-    """水平恒载 H 无物可挡：物理上对任何 α 都不可行。返修二在旋转框架下报 unbounded（press）或 optimal α = W（lift），
-    地面框架下报 infeasible——状态随坐标系变。现在任何框架都是 infeasible。"""
+    """原24格全保留；舍入后的输入可以改变刀刃状态，不能强制写理想几何的infeasible。
+    每格对独立精确LP零错；原数据不可行则not_applicable，否则必须另报邻域不可行风险。"""
     cts, dead, live = _floor(W, H, a, T, press)
     r = limit_load(cts, dead, live, dim=2, k=8)
-    assert r.status == "infeasible", (W, H, a, T, press, r.status, r.alpha)
+    status,_ = _assert_same_exact_limit_result(r,cts,dead,live,2,8)
+    if status == "infeasible":
+        assert r.resolvability == "not_applicable" and r.resolvability_statuses == ()
+    else:
+        assert r.resolvability == "nearby_infeasible", (W,H,a,T,press,status,r.resolvability)
+        assert "infeasible" in r.resolvability_statuses
 
 
 @pytest.mark.parametrize("frame", [(0.0, (0.0, 0.0), 1.0, 1.0), (-2.2145790363256497, (0.0, 0.0), 1.0, 1.0),
@@ -569,8 +595,8 @@ def test_status_is_frame_invariant_on_a_frictionless_floor(W, H, a, T, press):
                                    (-2.2145790363256497, (456126.84150283627, 6015705.33931258), 1.0, 1.0)])
 def test_rounding_driven_unbounded_status_is_not_certified(frame):
     """57° 斜坡上的双接触块体，重心在底外——自重下必倾覆，对任何 α 都不可行；活荷载沿底面线水平推，对接触点
-    没有力矩。放到 UTM 坐标（并旋转、换单位）后，内部平移带进舍入级的力矩，浮点数据的精确 LP 变成"大 α 可行且无界"，
-    返修二报 unbounded（α = ∞，不安全）。无界结论要对最小可行荷载因子做可分辨性检查。"""
+    没有力矩。UTM/旋转/换单位的舍入数据可以精确变成大alpha可行且无界；此状态不能改写为理想几何的不可行。
+    原5格均对独立精确LP；舍入风险必须另报 nearby_infeasible，不能把无界读成稳健物理结论。"""
     a, T, s, f = frame
     raw = [((1.0, 0.0), (-0.8414709848078965, 0.5403023058681398), 1.0, 0.0),
            ((1.5, 0.0), (-0.8414709848078965, 0.5403023058681398), 0.2, 1.0)]
@@ -581,7 +607,12 @@ def test_rounding_driven_unbounded_status_is_not_certified(frame):
     dead = wrench(tuple(f * v for v in Rm((0.0, -10.0))), P((0.0, 0.7)), o, 2)
     live = wrench(tuple(f * v for v in Rm((1.0, 0.0))), P((0.0, 0.0)), o, 2)
     r = limit_load(cts, dead, live, dim=2, k=4)
-    assert r.status == "infeasible", (frame, r.status, r.alpha)
+    status,_ = _assert_same_exact_limit_result(r,cts,dead,live,2,4)
+    if status == "infeasible":
+        assert r.resolvability == "not_applicable" and r.resolvability_statuses == ()
+    else:
+        assert r.resolvability == "nearby_infeasible", (frame,status,r.resolvability)
+        assert "infeasible" in r.resolvability_statuses
 
 
 def test_genuine_self_locking_stays_unbounded():
@@ -762,7 +793,8 @@ def test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certif
     """无界规则的"推后变有限值 ⇒ 不认证"分支（reverify6：可达、却没有门——改成"照样认证无界"或"报不可行"全套照绿）。
     1 mm 的块体放在 UTM (−2.68e6, −1.17e6)，活荷载作用线过两个接触点：浮点数据的精确模型无界，最小可行荷载因子 2.40，
     但活荷载在自己的 ±16 倍舍入盒内一动，精确 α 就变成有限值（复核者实测 6.9e4）。这里先用独立 oracle 在盒的 8 个角上
-    求精确解、确认确有有限值（舍入模型按文档独立写：力 4u|F|、力矩 4u(|M_c| + |F|·R)），再要求 limit_load 抛"不认证"。"""
+    求精确解、确认确有有限值（舍入模型按文档独立写：力 4u|F|、力矩 4u(|M_c| + |F|·R)），再要求原状态仍无界、
+    resolvability=unresolved及扰动状态含optimal；风险既不能藏掉，也不能改变原答案。"""
     import itertools
     cts = [LimitContact((-2683300.084913029, -1166311.8482405145), (0.9854095035625761, 0.1702002064879991), 1.0),
            LimitContact((-2683300.085281646, -1166311.8485783334), (0.9854095035625761, 0.1702002064879991), 0.2,
@@ -786,8 +818,10 @@ def test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certif
         if st == "optimal":
             finite.append(float(obj))
     assert finite, "the ±16e box should contain a finite capacity"
-    with pytest.raises(RuntimeError, match="unbounded capacity is not certified"):
-        limit_load(cts, dead, live, dim=2, k=4)
+    r = limit_load(cts, dead, live, dim=2, k=4)
+    status,_ = _assert_same_exact_limit_result(r,cts,dead,live,2,4)
+    assert status == "unbounded" and r.resolvability == "unresolved"
+    assert "optimal" in r.resolvability_statuses
 
 
 def test_float_filter_never_decides_a_sign_from_an_overflowed_estimate():

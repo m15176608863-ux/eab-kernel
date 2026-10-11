@@ -1,0 +1,32 @@
+﻿..F                                                                      [100%]
+================================== FAILURES ===================================
+_____________ test_g0_exit_completeness_has_teeth[drop_VE_subset] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004BE3080>
+mutate = <function _drop_ve_subset at 0x00000000046EBD80>
+distance_gate_red = False, old_vote = (1186, 1186)
+
+    @pytest.mark.parametrize("mutate,distance_gate_red,old_vote", [
+        (_drop_cone_boundary, True, (640, 630)),
+        (_drop_ev, True, (897, 892)),
+        (_drop_ve_subset, False, (1186, 1186)),
+    ], ids=["strict_cone_only", "no_EV_covers", "drop_VE_subset"])
+    def test_g0_exit_completeness_has_teeth(monkeypatch, mutate, distance_gate_red, old_vote):
+        """出口完备性要有牙：三种盖枚举缺口都必须让相交样本上的门红，且归因为"盖漏枚举"。
+    
+        drop_VE_subset 是这道门存在的理由之一：分离侧的距离完备性对它无感（603/603），旧投票也无感
+        （1186/1186），只有相交侧的出口检验抓得到——相交的 657 次平移不是"多余的样本"。
+        """
+        mutate(monkeypatch)
+        r = bb52_g0.analyze(samples_per_pair=60, seed=0)
+        assert r["g0_exit_samples"] > 0
+        assert r["g0_exit_agree"] < r["g0_exit_samples"]
+>       assert all(d[-1].startswith("盖漏枚举") for d in r["g0_exit_disagree"]), r["g0_exit_disagree"][:2]
+E       AssertionError: [(1, 2, (-0.12164233272093374, 0.026582354119389556), (0.9564785812980129, 0.2918025420008204), 1.4183731979216982, 0....4546925, 0.16417060456681087), (0.9970357284803291, -0.07693995147970584), 0.655414023400105, 0.6233440488927853, ...)]
+E       assert False
+E        +  where False = all(<generator object test_g0_exit_completeness_has_teeth.<locals>.<genexpr> at 0x0000000004791150>)
+
+tests\test_bb52_g1.py:173: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[drop_VE_subset]
+1 failed, 2 passed, 14 deselected in 44.13s

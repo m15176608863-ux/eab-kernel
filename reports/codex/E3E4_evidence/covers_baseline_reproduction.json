@@ -1,0 +1,113 @@
+{
+  "baseline": true,
+  "source": "e1fbbd4",
+  "findings": {
+    "src/eab/kernel2d/covers.py:117": {
+      "rejection": "input polygon B not convex: reflex vertex 5",
+      "memberships": [
+        1,
+        1
+      ]
+    },
+    "src/eab/kernel2d/covers.py:360": {
+      "vertex_counts": [
+        7,
+        7,
+        7,
+        7
+      ]
+    },
+    "src/eab/kernel2d/covers.py:453": {
+      "grid": [
+        {
+          "C": 0.0,
+          "d": 1.05e-09,
+          "AB_passed": true,
+          "BA_passed": true
+        },
+        {
+          "C": 0.0,
+          "d": 1.25e-09,
+          "AB_passed": true,
+          "BA_passed": true
+        },
+        {
+          "C": 1000.0,
+          "d": 1.05e-09,
+          "AB_passed": true,
+          "BA_passed": true
+        },
+        {
+          "C": 1000.0,
+          "d": 1.25e-09,
+          "AB_passed": true,
+          "BA_passed": true
+        },
+        {
+          "C": 10000.0,
+          "d": 1.05e-09,
+          "AB_passed": true,
+          "BA_passed": true
+        },
+        {
+          "C": 10000.0,
+          "d": 1.25e-09,
+          "AB_passed": true,
+          "BA_passed": true
+        }
+      ]
+    },
+    "src/eab/kernel2d/covers.py:501": {
+      "membership": 1,
+      "g0_passed": true
+    },
+    "src/eab/kernel2d/geom.py:434": {
+      "hull": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.001,
+          -0.001
+        ],
+        [
+          2.0,
+          -0.001
+        ],
+        [
+          2.0,
+          1.0
+        ],
+        [
+          1e-15,
+          1.0
+        ]
+      ],
+      "true_extreme_missing": true
+    },
+    "src/eab/kernel2d/covers.py:238": {
+      "strict": false,
+      "labels": [
+        [
+          "EV",
+          3,
+          0
+        ]
+      ],
+      "internal_du_x100_strict": true,
+      "internal_du_x100_labels": [
+        [
+          "EV",
+          3,
+          0
+        ],
+        [
+          "VV",
+          0,
+          0
+        ]
+      ]
+    }
+  }
+}

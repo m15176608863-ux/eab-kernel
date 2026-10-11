@@ -1,0 +1,160 @@
+﻿F.F....F                                                                 [100%]
+================================== FAILURES ===================================
+_ test_exact_overlap_triangulation_orientation_cannot_underflow[False-1e-200] _
+
+scale = 1e-200, reverse = False
+
+    @pytest.mark.parametrize('scale',[1e-200,1.,1e200])
+    @pytest.mark.parametrize('reverse',[False,True])
+    def test_exact_overlap_triangulation_orientation_cannot_underflow(scale,reverse):
+        """闭式 oracle：有非空内部的同一 L 形与自身内部相交；不用被测几何原语。"""
+        from eab.kernel2d.exact import polygons_overlap_exact
+        P=[(scale*x,scale*y) for x,y in [(0.,0.),(3.,0.),(3.,1.),(1.,1.),(1.,3.),(0.,3.)]]
+        if reverse:P.reverse()
+>       assert polygons_overlap_exact(P,P)==1, 'exact triangulation orientation must not use float area'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_kernel2d_covers_e3.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel2d\exact.py:284: in polygons_overlap_exact
+    ta = [[A[i], A[j], A[k]] for i, j, k in triangulate(A)]
+                                            ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+poly = [(0.0, 0.0), (3e-200, 0.0), (3e-200, 1e-200), (1e-200, 1e-200), (1e-200, 3e-200), (0.0, 3e-200)]
+
+    def triangulate(poly: Poly) -> list[tuple[int, int, int]]:
+        """简单多边形的耳切三角剖分（精确谓词 `orient2d`），返回 CCW 的顶点下标三元组；多边形任意朝向。
+    
+        耳 = 严格凸顶点，其闭三角不含其他剩余顶点。平直顶点（三点共线）不作耳；一轮找不到耳时删一个平直顶点
+        （零面积，不丢面积）。剩余三点共线时不出三角。输入须是简单多边形，否则抛 ValueError（不挂死）。
+        """
+        n = len(poly)
+        idx = list(range(n)) if signed_area(poly) > 0.0 else list(reversed(range(n)))
+        tris: list[tuple[int, int, int]] = []
+        guard = 0
+        while len(idx) > 3:
+            guard += 1
+            if guard > 4 * n * n + 16:
+                raise ValueError("triangulate: no ear found (input not a simple polygon?)")
+            m = len(idx)
+            clipped = False
+            for k in range(m):
+                i0, i1, i2 = idx[k - 1], idx[k], idx[(k + 1) % m]
+                a, b, c = poly[i0], poly[i1], poly[i2]
+                if orient2d(a, b, c) <= 0:
+                    continue
+                if any(orient2d(a, b, poly[j]) >= 0 and orient2d(b, c, poly[j]) >= 0 and orient2d(c, a, poly[j]) >= 0
+                       for j in idx if j not in (i0, i1, i2)):
+                    continue
+                tris.append((i0, i1, i2))
+                idx.pop(k)
+                clipped = True
+                break
+            if not clipped:
+                flat = next((k for k in range(m)
+                             if orient2d(poly[idx[k - 1]], poly[idx[k]], poly[idx[(k + 1) % m]]) == 0), None)
+                if flat is None:
+>                   raise ValueError("triangulate: no ear found (input not a simple polygon?)")
+E                   ValueError: triangulate: no ear found (input not a simple polygon?)
+
+src\eab\kernel2d\geom.py:325: ValueError
+_ test_exact_overlap_triangulation_orientation_cannot_underflow[False-1e+200] _
+
+scale = 1e+200, reverse = False
+
+    @pytest.mark.parametrize('scale',[1e-200,1.,1e200])
+    @pytest.mark.parametrize('reverse',[False,True])
+    def test_exact_overlap_triangulation_orientation_cannot_underflow(scale,reverse):
+        """闭式 oracle：有非空内部的同一 L 形与自身内部相交；不用被测几何原语。"""
+        from eab.kernel2d.exact import polygons_overlap_exact
+        P=[(scale*x,scale*y) for x,y in [(0.,0.),(3.,0.),(3.,1.),(1.,1.),(1.,3.),(0.,3.)]]
+        if reverse:P.reverse()
+>       assert polygons_overlap_exact(P,P)==1, 'exact triangulation orientation must not use float area'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_kernel2d_covers_e3.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel2d\exact.py:284: in polygons_overlap_exact
+    ta = [[A[i], A[j], A[k]] for i, j, k in triangulate(A)]
+                                            ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+poly = [(0.0, 0.0), (3e+200, 0.0), (3e+200, 1e+200), (1e+200, 1e+200), (1e+200, 3e+200), (0.0, 3e+200)]
+
+    def triangulate(poly: Poly) -> list[tuple[int, int, int]]:
+        """简单多边形的耳切三角剖分（精确谓词 `orient2d`），返回 CCW 的顶点下标三元组；多边形任意朝向。
+    
+        耳 = 严格凸顶点，其闭三角不含其他剩余顶点。平直顶点（三点共线）不作耳；一轮找不到耳时删一个平直顶点
+        （零面积，不丢面积）。剩余三点共线时不出三角。输入须是简单多边形，否则抛 ValueError（不挂死）。
+        """
+        n = len(poly)
+        idx = list(range(n)) if signed_area(poly) > 0.0 else list(reversed(range(n)))
+        tris: list[tuple[int, int, int]] = []
+        guard = 0
+        while len(idx) > 3:
+            guard += 1
+            if guard > 4 * n * n + 16:
+                raise ValueError("triangulate: no ear found (input not a simple polygon?)")
+            m = len(idx)
+            clipped = False
+            for k in range(m):
+                i0, i1, i2 = idx[k - 1], idx[k], idx[(k + 1) % m]
+                a, b, c = poly[i0], poly[i1], poly[i2]
+                if orient2d(a, b, c) <= 0:
+                    continue
+                if any(orient2d(a, b, poly[j]) >= 0 and orient2d(b, c, poly[j]) >= 0 and orient2d(c, a, poly[j]) >= 0
+                       for j in idx if j not in (i0, i1, i2)):
+                    continue
+                tris.append((i0, i1, i2))
+                idx.pop(k)
+                clipped = True
+                break
+            if not clipped:
+                flat = next((k for k in range(m)
+                             if orient2d(poly[idx[k - 1]], poly[idx[k]], poly[idx[(k + 1) % m]]) == 0), None)
+                if flat is None:
+>                   raise ValueError("triangulate: no ear found (input not a simple polygon?)")
+E                   ValueError: triangulate: no ear found (input not a simple polygon?)
+
+src\eab\kernel2d\geom.py:325: ValueError
+____ test_fraction_orientation_does_not_route_through_float_filter[scale1] ____
+
+scale = Fraction(100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, 1)
+
+    @pytest.mark.parametrize('scale',[F(1,10**200),F(10**200)])
+    def test_fraction_orientation_does_not_route_through_float_filter(scale):
+        from eab.kernel2d.geom import orient2d
+>       assert orient2d((F(0),F(0)),(scale,F(0)),(F(0),scale))==1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_kernel2d_covers_e3.py:165: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel2d\geom.py:249: in orient2d
+    bound = 3.3306690738754716e-16 * (abs(detleft) + abs(detright)) + 2.0 ** -1073
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\Python312\Lib\fractions.py:632: in reverse
+    return fallback_operator(float(a), float(b))
+                                       ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Fraction(1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000...0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, 1)
+
+    def __float__(self):
+        """float(self) = self.numerator / self.denominator
+    
+        It's important that this conversion use the integer's "true"
+        division rather than casting one side to float before dividing
+        so that ratios of huge integers convert without overflowing.
+    
+        """
+>       return int(self.numerator) / int(self.denominator)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       OverflowError: integer division result too large for a float
+
+C:\Program Files\Python312\Lib\numbers.py:316: OverflowError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_covers_e3.py::test_exact_overlap_triangulation_orientation_cannot_underflow[False-1e-200]
+FAILED tests/test_kernel2d_covers_e3.py::test_exact_overlap_triangulation_orientation_cannot_underflow[False-1e+200]
+FAILED tests/test_kernel2d_covers_e3.py::test_fraction_orientation_does_not_route_through_float_filter[scale1]
+3 failed, 5 passed, 22 deselected in 0.18s

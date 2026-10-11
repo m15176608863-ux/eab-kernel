@@ -1,0 +1,56 @@
+{
+  "modified_old_tests": [
+    {
+      "nodeid": "tests/test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal",
+      "old_contract": "All 53 legacy window covers checked; float overlap(FIT)==1 cases skipped; other cases required window-equivalent entrance.",
+      "new_contract": "Preserve 53 inputs and legacy window/count constraints; independent Fraction edge-intersection/winding initial state on every input; penetrated cases require exit and complete independent exact shallowest-cover label set; nonpenetrated cases require exact boundary contact and original legacy window comparison.",
+      "not_weaker": "No original input removed; previously skipped penetrated inputs now checked independently; false premise from noise-window classification removed, not a tolerance relaxation.",
+      "original_failures": [
+        {
+          "ba": 4,
+          "bb": 1,
+          "p1": 108
+        },
+        {
+          "ba": 9,
+          "bb": 1,
+          "p1": 152
+        },
+        {
+          "ba": 1,
+          "bb": 9,
+          "p1": 40
+        }
+      ],
+      "failure_log": "entrance_targeted.log"
+    }
+  ],
+  "baseline_new_tests": {
+    "summary": "15 failed, 3 passed in 0.18s",
+    "log": "entrance_baseline.log"
+  },
+  "supplemental_frozen_baseline": {
+    "summary": "90 failed, 3 passed in 0.95s",
+    "log": "entrance_frozen_baseline_all_new.log",
+    "limitation": "Frozen old entrance with current covers; many failures are new t_exact attribute, not 90 numerical defects."
+  },
+  "targeted_final": {
+    "summary": "180 passed in 7.65s",
+    "log": "entrance_targeted_final.log"
+  },
+  "new_test_count": 93,
+  "independent_oracles": [
+    "closed-form rectangle/step",
+    "test-inline Fraction convex-piece SAT without production primitives",
+    "test-inline Fraction edge crossing/winding",
+    "test-inline exact local support/projection/squared-distance"
+  ],
+  "mutation_script": "run_entrance_mutations.py",
+  "mutation_status": "prepared; execution delegated to parent serial phase",
+  "baseline_source": "tmp/entrance_baseline/entrance.py",
+  "residual_limits": [
+    "shortest_exit is local shallowest-cover selection, not globally minimal separation for nonconvex pairs",
+    "brute shares exact predicate and discrete sampling can miss isolated contacts; corroboration only",
+    "float output construction can round or underflow; decisions retain rational evidence"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "src/eab/limit.py:206": {
+    "status": "已由 aadc40e 消解",
+    "summary": "原复现的近平行 tangent 在当前 HEAD 已抛 ValueError；原不安全静默值不可复现。本单不改变该筛查。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_206_limit.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_limit_206.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_206_limit.txt",
+    "gate": "tests/test_limit_scale.py"
+  },
+  "src/eab/limit.py:729": {
+    "status": "本单修复",
+    "summary": "无荷载远接触不能放大静力容差：有理数残差逐分量必须为零。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_729_limit.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_limit_729.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_729_limit.txt",
+    "gate": "tests/test_limit_exact_selfcheck.py::test_single_unloaded_far_contact_cannot_hide_a_pure_couple_residual",
+    "red_before": "reports/codex/E3E4_evidence/limit_new_gates_baseline.txt",
+    "red_node": "tests/test_limit_exact_selfcheck.py::test_single_unloaded_far_contact_cannot_hide_a_pure_couple_residual",
+    "red_assertion": "assert not L.check_duality(r,cs,dead,live,dim=2)[\"static_ok\"]",
+    "raw_baseline_also_confirms": "reports/codex/E3E4_evidence/baseline_limit_729.txt"
+  },
+  "src/eab/limit.py:732": {
+    "status": "本单修复",
+    "summary": "μ=1e-5、cA/W=1e-5及细高体使用同一精确自检，不再用总恒载尺度决定答案；k=3,5,9,15,30,100。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_732_limit.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_limit_732.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_732_limit.txt",
+    "gate": "tests/test_limit_exact_selfcheck.py::test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error",
+    "red_before": "reports/codex/E3E4_evidence/limit_new_gates_baseline.txt",
+    "red_node": "tests/test_limit_exact_selfcheck.py::test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_mu-3]",
+    "red_assertion": "assert not d[\"static_ok\"]",
+    "raw_baseline_also_confirms": "reports/codex/E3E4_evidence/baseline_limit_732.txt"
+  },
+  "src/eab/limit_multi.py:147": {
+    "status": "本单修复",
+    "summary": "_pair_powers 改为逐列有理数相对功率，删除全局 vmax 放宽。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_147_limit_multi.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_limit_multi_147.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_147_limit_multi.txt",
+    "gate": "tests/test_limit_exact_selfcheck.py::test_exact_admissibility_has_no_tall_body_or_other_body_speed_tolerance",
+    "red_before": "reports/codex/E3E4_evidence/limit_new_gates_baseline.txt",
+    "red_node": "tests/test_limit_exact_selfcheck.py::test_exact_admissibility_has_no_tall_body_or_other_body_speed_tolerance[3]",
+    "red_assertion": "assert not M.mechanism_is_admissible_multi(ms,[BC(slow,0),BC(fast,1)],dim=2)",
+    "raw_baseline_also_confirms": "reports/codex/E3E4_evidence/baseline_limit_multi_147.txt"
+  },
+  "src/eab/limit_multi.py:177": {
+    "status": "本单修复",
+    "summary": "分辨性在各体自身接触形心与臂长，仍保留该体调用方构造力矩的原点距离噪声，不计其他体；分辨性仅报告、不改原状态。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_177_limit_multi.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_limit_multi_177.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_177_limit_multi.txt",
+    "gate": "tests/test_limit_exact_selfcheck.py::test_multi_resolvability_uses_only_each_bodys_local_frame",
+    "red_before": "reports/codex/E3E4_evidence/limit_new_gates_baseline.txt",
+    "red_node": "tests/test_limit_exact_selfcheck.py::test_multi_resolvability_uses_only_each_bodys_local_frame[100.0-1e-06]",
+    "red_assertion": "assert both.uncertainty == pytest.approx(alone.uncertainty,rel=1e-12)",
+    "raw_baseline_also_confirms": "reports/codex/E3E4_evidence/baseline_limit_multi_177.txt"
+  },
+  "src/eab/limit_multi.py:348": {
+    "status": "本单修复",
+    "summary": "精确强对偶和每项互补，重的无关体不能掩盖静力可行但次优的插值；1e-100仍拒绝。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_348_limit_multi.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_limit_multi_348.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_348_limit_multi.txt",
+    "gate": "tests/test_limit_exact_selfcheck.py::test_multi_exact_duality_rejects_statically_feasible_suboptimal_interpolation",
+    "red_before": "reports/codex/E3E4_evidence/baseline_limit_multi_348_assertion.txt",
+    "red_node": "run_limit_baseline.py repro_limit_348_limit_multi.py --assert-rejected, WD=1e6",
+    "red_assertion": "assert not d[\"ok\"], (WD, rr.alpha, d[\"static_residual_rel\"], d[\"duality_gap_rel\"])",
+    "raw_baseline_also_confirms": "reports/codex/E3E4_evidence/baseline_limit_multi_348.txt"
+  },
+  "tests/test_limit_multi.py:238": {
+    "status": "本单加强",
+    "summary": "原1e-3牙扩成精确10^-k（k=3,9,30,100），原4个跨度格全部保留；同时核精确静力残差非零，不依赖相对显示量。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_238_test.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_test_limit_multi_238.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_test_limit_multi_238.txt",
+    "gate": "tests/test_limit_multi.py::test_a_far_body_does_not_loosen_the_self_check",
+    "red_before": "reports/codex/E3E4_evidence/baseline_test_limit_multi_238_assertion.txt",
+    "red_node": "repro_limit_238_test.py --baseline --assert-rejected, k=9",
+    "red_assertion": "assert not admissible and not ok,(k,admissible,ok)",
+    "raw_baseline_also_confirms": "reports/codex/E3E4_evidence/baseline_test_limit_multi_238.txt"
+  },
+  "tests/test_limit_multi.py:268": {
+    "status": "本单加强",
+    "summary": "基线关闭unbounded筛查后53门仍绿已复现；新门覆盖两邻域分支×loaded_body 0/1，关闭后4条报告断言红；optimal三区间增加loaded_body 1。",
+    "baseline_head": "e1fbbd4",
+    "reproduction_script": "reports/codex/E3E4_evidence/repro_limit_gate_teeth.py",
+    "baseline_output": "reports/codex/E3E4_evidence/baseline_test_limit_multi_268.txt",
+    "current_output": "reports/codex/E3E4_evidence/current_test_limit_multi_268_mutant.txt",
+    "gate": "tests/test_limit_exact_selfcheck.py::test_multi_unbounded_screen_covers_both_rejection_branches_and_nonzero_body",
+    "red_before": "reports/codex/E3E4_evidence/current_test_limit_multi_268_mutant.txt",
+    "red_assertion": "assert r.resolvability == \"nearby_infeasible\" / \"unresolved\"; disabling the production unbounded screen gives resolved",
+    "red_scope": "新增覆盖通过，源码内关闭筛查后4个目标报告断言红；基线原53门对此缺陷全绿"
+  }
+}

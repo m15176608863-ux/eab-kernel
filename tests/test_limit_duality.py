@@ -348,7 +348,8 @@ def test_unequal_cohesion_row_duals_are_aligned_with_their_contacts():
 
 def test_three_d_row_duals_equal_each_contacts_cohesive_dissipation():
     """(c) 的三维版：纯黏聚四角 cA = (1, 2, 1.5, 0.5)，推力过 cA 加权形心、切向基架对准推力。
-    沿推力的单位平动是一个最优机构，第 i 行黏聚耗散 = cA_i·|v_t| = cA_i——注入它，自校验必须通过。
+    理想实数模型的单位平动是最优机构；E4 中浮点三角函数并非精确单位，原算例保留近似闭式比较与精确解核验，
+    手工精确平动改在反向轴向输入上（抵抗力恰为第一条精确锥棱），力矩直接用 Fraction 构造。
     **订正（2026-09-27）**：原说明写"唯一最优机构"，不成立。黏聚圆做了 k 边形线性化，对偶面上有一族最优机构
     （LP 层改为精确之后实测：带转动的机构 row_duals = (0.969, 1.561, 1.801, 0.669)，同样通过自校验）；
     旧门能过只因浮点层恰好选中了平动。对整个对偶面都成立的是：α = Σ cA、行对偶之和 = α（无恒载做功）、自校验通过。"""
@@ -362,7 +363,25 @@ def test_three_d_row_duals_equal_each_contacts_cohesive_dissipation():
     assert r.alpha == pytest.approx(sum(_CA), rel=1e-12)
     assert sum(r.row_duals) == pytest.approx(r.alpha, rel=1e-12) and min(r.row_duals) >= 0.0
     assert check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
+    # 保留一般方向上的原行错配注入；精确返回机构本身不变。
+    import copy
+    wrong = copy.copy(r)
+    wrong.row_duals = r.row_duals[::-1]
+    assert not check_duality(wrong, cts, dead, live, dim=3, origin=o, k=8)["ok"]
     r.mechanism = list(u) + [0.0, 0.0, 0.0]                  # 关于 origin 的平动旋量：v = u、ω = 0
+    r.row_duals = list(_CA)
+    # E4：浮点 sin/cos 的单位平动不满足给定二进制数据的精确驱动/互补；不得用容差认证。
+    from fractions import Fraction
+    drive = sum(Fraction(a)*Fraction(b) for a,b in zip(u,u))
+    assert drive != 1
+    assert not check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
+    # 同样的非对称四角/参考点/不等黏聚，用精确轴向输入补人工对偶面成员与错配的牙。
+    u = (-1.0, 0.0, 0.0)
+    cts, dead, _ = _asym_cohesive_block(o, mu=0.0, k=8, tangent=(1.0, 0.0, 0.0))
+    qy = sum(Fraction(cA)*Fraction(p[1]) for p,cA in zip(_QUAD,_CA))/sum(map(Fraction,_CA))
+    live = [Fraction(-1), Fraction(0), Fraction(0), Fraction(0), Fraction(o[2]), qy-Fraction(o[1])]
+    r = limit_load(cts, dead, live, dim=3, origin=o, k=8)
+    r.mechanism = list(u) + [0.0, 0.0, 0.0]
     r.row_duals = list(_CA)
     assert check_duality(r, cts, dead, live, dim=3, origin=o, k=8)["ok"]
     r.row_duals = list(_CA[::-1])                              # 牙：行对偶错配，自校验必须不通过

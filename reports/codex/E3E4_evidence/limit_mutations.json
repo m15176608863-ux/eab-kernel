@@ -1,0 +1,32 @@
+[
+  {
+    "id": "D8",
+    "file": "src/eab/limit.py",
+    "old": "all(v == 0 for v in residual)",
+    "new": "all(abs(float(v)) <= 1e-7*(sum(abs(float(x)) for x in dead)+sum(abs(float(l)) for l in lam)) for v in residual)",
+    "pytest": [
+      "tests/test_limit_exact_selfcheck.py::test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error"
+    ],
+    "expected": "caught: assert not d[static_ok]"
+  },
+  {
+    "id": "D9",
+    "file": "src/eab/limit.py",
+    "old": "admissible and gap == 0 and complementary and static_ok",
+    "new": "admissible and float(gap) <= 1e-7*(sum(abs(float(v)) for v in dead)*max((abs(float(v)) for v in y),default=0.0)+float(denom)) and complementary and static_ok",
+    "pytest": [
+      "tests/test_limit_exact_selfcheck.py::test_multi_exact_duality_rejects_statically_feasible_suboptimal_interpolation"
+    ],
+    "expected": "benign redundant if escaped: exact complementarity implies strong duality given exact feasibility"
+  },
+  {
+    "id": "D10",
+    "file": "src/eab/limit_multi.py",
+    "old": "    oi, _, arms = _body_frames(contacts, nb, oc, dim)",
+    "new": "    oi = [oc]*nb\n    arms = [max((_norm(tuple(bc.contact.point[q]-oc[q] for q in range(dim))) for bc in contacts),default=0.0)]*nb",
+    "pytest": [
+      "tests/test_limit_exact_selfcheck.py::test_multi_resolvability_uses_only_each_bodys_local_frame"
+    ],
+    "expected": "caught: uncertainty must equal isolated body report"
+  }
+]

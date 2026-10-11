@@ -4,7 +4,7 @@
 基面上的黏聚列）精确功率与尺度都为 0，算出来是 噪声/噪声 ≈ ±1——正确的最优解被判"对偶不可行 / 不容许"，
 limit_load 在单位尺度的普通块体上抛 RuntimeError（验证者物理模糊测试 69/2000，而修复前 0/2000，
 且那 69 个修复前答案都经独立证书核验为最优）。修法见 lp._Revised.noise（范数型舍入噪声线）与
-limit._speed_scale（机构特征速度 V̂）。
+旧版 limit._speed_scale（机构特征速度 V̂）；E4 已由有理数自校验替代，不再用尺度判答案。
 
 两道门：
   · 验证者抽出的两个具体反例，承载力必须等于修复前经独立证书核验的最优值；
@@ -13,6 +13,7 @@ limit._speed_scale（机构特征速度 V̂）。
 """
 
 import random
+from fractions import Fraction
 from math import cos, pi, sin
 
 import pytest
@@ -80,18 +81,15 @@ def test_physical_fuzz_never_raises_at_the_default_tolerance(seed):
 
 
 def test_rounding_level_load_component_is_not_certified_as_capacity():
-    """sin(π) = 1.22e-16：θ = π 的"水平"推力在浮点里带一个舍入级的竖向分量。单点接触撑不住偏心自重
-    （物理上不可行），浮点 LP 却能用 α = 1/1.22e-16 = 8.17e15 让 α·1.22e-16 = 1 托住单位自重——
-    浮点意义上的真最优，物理上的荒谬值（验证者模糊测试 limfuzz 种子 11 的 7 例，修复前基线答 infeasible，
-    M0.2 返修前曾静默返回 optimal α ≈ 8e15）。必须判回 infeasible，而不是给一个天文数字。
-    （由可分辨性检查负责：浮点数据的精确最优确实是 8.17e15，但推 16 倍舍入就不可行，于是报 infeasible。
-    09-27 一度改由"荷载清洗"把 4u 以内的分量置 0，清洗在近纯力偶上误伤真实力矩，已撤回。）"""
+    """舍入级 sin(pi) 保留原问题精确 alpha=1/sin(pi)，邻域不可行另报，不篡改成 infeasible。"""
     cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
     dead = wrench((0.0, -1.0), (0.0, 0.7), (0.0, 0.0), 2)
     live = wrench((cos(pi), sin(pi)), (0.0, 0.0), (0.0, 0.0), 2)
     assert sin(pi) != 0.0                                   # 前提：舍入级分量确实存在
     r = limit_load(cts, dead, live, dim=2, k=8)
-    assert r.status == "infeasible", (r.status, r.alpha)
+    assert r.status == "optimal" and r.alpha.exact * Fraction(sin(pi)) == 1
+    assert r.resolvability == "nearby_infeasible" and "infeasible" in r.resolvability_statuses
+    assert check_duality(r,cts,dead,live,dim=2,k=8)["ok"]
     # 同一几何、推力写成精确水平 (−1, 0)：同样不可行（与舍入无关的物理答案）
     r0 = limit_load(cts, dead, wrench((-1.0, 0.0), (0.0, 0.0), (0.0, 0.0), 2), dim=2, k=8)
     assert r0.status == "infeasible"
@@ -101,26 +99,21 @@ def test_rounding_level_load_component_is_not_certified_as_capacity():
                                       (1e-13, "raise"), (1e-14, "raise"), (3e-15, "infeasible"), (1e-15, "infeasible"),
                                       (5e-16, "infeasible"), (2e-16, "infeasible")])
 def test_small_load_component_resolvability_has_three_regimes(v, expect):
-    """同一几何，活荷载写成 (−1, v)：v 是**本意**的竖向分量，力矩平衡给 α = 1/v（实数里精确）。
-    α 对活荷载输入舍入的相对不确定度 U ≈ 4.4e-16 / v（`limit._live_uncertainty`，舍入模型 `_wrench_rounding`），
-    于是三个区间：
-      · U ≤ 1e-6（v ≥ ~1e-9）：认证，α·v = 1 到 1e-12；
-      · U > 1e-6 且把活荷载推 ±16 倍舍入后两侧都仍可行：实测变化超标，抛 RuntimeError（α 有意义但给不出 1e-6）；
-      · 推 16 倍舍入就（带精确 Farkas 证书地）不可行：infeasible（答案靠舍入级分量撑着）。
-      边界随舍入模型定：16·4u·(|M| + |F|·R) ≈ 7e-15，所以 1e-14 在"抛错"一侧、3e-15 在"不可行"一侧。
-    牙：删掉可分辨性检查，1e-10…1e-14 会返回 optimal 1e10…1e14、3e-15…2e-16 返回 3e14…5e15；
-    删掉"推一下后不可行即报 infeasible"，3e-15…2e-16 会抛错。"""
+    """三个分辨性报告区间不改任何原问题答案；每格均精确核 alpha*v=1 和静力/对偶证书。"""
     cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
     dead = wrench((0.0, -1.0), (0.0, 0.7), (0.0, 0.0), 2)
     live = wrench((-1.0, v), (0.0, 0.0), (0.0, 0.0), 2)
-    if expect == "raise":
-        with pytest.raises(RuntimeError, match="uncertainty"):
-            limit_load(cts, dead, live, dim=2, k=8)
-        return
-    r = limit_load(cts, dead, live, dim=2, k=8)
-    assert r.status == expect, (v, r.status, r.alpha)
-    if expect == "optimal":
-        assert r.uncertainty <= 1e-6 and abs(r.alpha * v - 1.0) <= 1e-12, (r.alpha, r.uncertainty)
+    r = limit_load(cts,dead,live,dim=2,k=8)
+    assert r.status == "optimal" and r.alpha.exact*Fraction(v) == 1
+    assert check_duality(r,cts,dead,live,dim=2,k=8)["ok"]
+    report={"optimal":"resolved","raise":"unresolved","infeasible":"nearby_infeasible"}[expect]
+    assert r.resolvability == report
+    if report == "resolved":
+        assert r.uncertainty <= 1e-6
+    elif report == "nearby_infeasible":
+        assert "infeasible" in r.resolvability_statuses
+    else:
+        assert r.uncertainty > 1e-6 and r.resolvability_statuses == ("optimal","optimal")
 
 
 def test_a_large_first_order_uncertainty_alone_does_not_reject(monkeypatch):
@@ -128,7 +121,7 @@ def test_a_large_first_order_uncertainty_alone_does_not_reject(monkeypatch):
     （09-27 宽模糊种子 11 #495：普通推力 (cos 1, sin 1) 的一阶 U = 28）。所以 U 超标时要推 ±16 倍舍入、精确重解，
     看 α 的**实际**变化再下结论。这里把一阶 U 强行设成 1（模拟退化机构），对一个本来稳定的问题（μ = 0.5 的地面上
     平推，α = μW）必须仍然认证，且报告的是实测不确定度。牙：只用一阶 U（不做精确重解），这道门就红。
-    反面：同样注入之下，sin π 的舍入驱动例仍然判 infeasible（推一下就不可行）。"""
+    反面：同样注入之下，sin π 的原问题仍 optimal，但报告 nearby_infeasible（邻域不可行）。"""
     import eab.limit as LM
     monkeypatch.setattr(LM, "_live_uncertainty", lambda y, live, e: 1.0)
     o = (0.0, 0.0)
@@ -137,7 +130,8 @@ def test_a_large_first_order_uncertainty_alone_does_not_reject(monkeypatch):
     assert r.status == "optimal" and r.alpha == pytest.approx(5.0, rel=1e-15) and r.uncertainty <= 1e-6, r
     cts = [LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0)]
     r = limit_load(cts, wrench((0.0, -1.0), (0.0, 0.7), o, 2), wrench((cos(pi), sin(pi)), o, o, 2), dim=2, k=8)
-    assert r.status == "infeasible"
+    assert r.status == "optimal" and r.alpha.exact*Fraction(sin(pi)) == 1
+    assert r.resolvability == "nearby_infeasible" and "infeasible" in r.resolvability_statuses
 
 
 def _exact_status_alpha(cts, dead, live, dim, k):
@@ -169,16 +163,11 @@ def _genuinely_unresolvable(cts, dead, live, dim, k, rng):
 
 @pytest.mark.parametrize("seed", [11])
 def test_broad_fuzz_has_no_astronomical_load_factors(seed):
-    """验证者的宽模糊生成器（1–5 个任意朝向接触、带黏聚、W ∈ {1, 10}）：optimal 的荷载因子不许超过
-    自然尺度的 1e10 倍——那种数只可能来自舍入级的荷载分量。1000 例。
-    （恒载 ≥ 1e6 时这个粗判据本身会漏：舍入驱动的 α = 5.4e15 < 1e10·W。那一类由
-    tests/test_lp_certificates.py::test_rounding_driven_load_factor_is_not_certified_at_any_dead_load 看护。）
-    **允许**"不认证"的抛错，但每一例都要由独立 oracle 确认是真刀刃（`_genuinely_unresolvable`），且不超过 1%。
-    这个生成器会把几个接触放在同一点、法向任意，θ = π 带舍入分量——LP 层精确之后，浮点数据上靠近奇异基撑出来的
-    "最优"（例：精确 α = 2.88，荷载差 1e-12 就回到 5.09）如实报不认证；旧的浮点求解器因主元阈值避开了近奇异基，
-    碰巧给出物理上合理的数，但那不可认证。"""
+    """保留1000输入：精确答案可有天文值，但必须报告不可分辨，不得伪装稳定或改原status。
+    原先可抛错的至多1%改为 unresolved 报告；每个大值与 unresolved 用独立 oracle 核原问题及邻域。
+    """
     rng = random.Random(seed)
-    raised, huge = [], []
+    raised, huge, unresolved = [], [], []
     for t in range(1000):
         dim = rng.choice([2, 3]); nc = rng.randint(1, 5); cts = []
         for i in range(nc):
@@ -204,9 +193,14 @@ def test_broad_fuzz_has_no_astronomical_load_factors(seed):
         except RuntimeError as e:
             raised.append((t, str(e)[:80], cts, dead, live, dim, k)); continue
         if r.status == "optimal" and r.alpha > 1e10 * (W + 2.5 * nc):
-            huge.append((t, r.alpha))
-    assert huge == [], huge[:5]
-    assert len(raised) <= 10, [x[:2] for x in raised]
-    orng = random.Random(1000 + seed)
-    false_raise = [x[:2] for x in raised if not _genuinely_unresolvable(*x[2:], orng)]
-    assert false_raise == [], false_raise
+            huge.append((t,r,cts,dead,live,dim,k))
+        if r.resolvability == "unresolved":
+            unresolved.append((t,r,cts,dead,live,dim,k))
+    assert raised == [],[x[:2] for x in raised]
+    assert len(unresolved) <= 10,[x[:2] for x in unresolved]
+    orng=random.Random(1000+seed)
+    for t,r,cts,dead,live,dim,k in huge+unresolved:
+        assert r.resolvability != "resolved",(t,r)
+        assert _genuinely_unresolvable(cts,dead,live,dim,k,orng),(t,r)
+        st,alpha=_exact_status_alpha(cts,dead,live,dim,k)
+        assert r.status == st and r.alpha == pytest.approx(alpha,rel=4e-16),(t,r,st,alpha)

@@ -8,12 +8,13 @@
   · **凸对**（A、B 都凸 ⇒ E 凸）：E 有显式的 H 表示（`convex_entrance_block` 的 facet），每条 facet 的间隙沿平移仿射：
     g_i(t) = g_i(x0) + t·(n_i·d)。射线进入凸集的时刻是全部"进入型"facet（n_i·d < 0）时刻的**最大者** t_in，离开时刻是
     "离开型"facet 时刻的最小者 t_out，t_in ≤ t_out 才触及。闭式，不经谓词；取到最大值的 facet 就是首入 facet。
-  · **凹对**：没有全局 E（M3 之前），用局部盖（VE/EV）给完备候选、在各自时刻重验"投影落在边内"、精确谓词 `polygons_overlap`
-    裁决（t* 处相触或相交；t* 前一个分辨步处分离，否则抛 RuntimeError——候选集漏了更早的首入，不静默）；与三维同一结构。
-  · 集值点（首入点落在 E 的顶点上，两条 facet 在分辨率内同时被触及）：按枚举序取第一个作裁决，并列集如实报出（tied_labels）。
+  · **凹对**：没有全局 E（M3 之前），用局部盖（VE/EV）给完备候选、在各自时刻重验"投影落在边内"、精确谓词 `polygons_overlap_exact`
+    裁决（t* 处相触或相交；t* 前全部原始接触事件及相邻事件中点分离，否则抛 RuntimeError——候选集漏了更早的首入，不静默）；与三维同一结构。
+  · 集值点（首入点落在 E 的顶点上，两条 facet 精确同时被触及）：按枚举序取第一个作裁决，并列集如实报出（tied_labels）。
   · x0 已在 E 内（已侵入）：取**最短出口**——在程的 facet 型盖里取间隙最大者（侵入最浅）作接触法向与出口方向。
 E2：凸选路、凸初态、半空间射线裁剪均用精确有理数；facet_gap/法向/接触点只作浮点输出，法向取 facet 自己的边。
-并列标签报告仍按调用方 tol 与舍入量级；凹首入、已侵入后的最短出口保持既有容差路径，不属于凸谓词精确化声明。
+E3：凹路径的平移、零间隙时刻、段内重验、相交与漏候选自检均用 Fraction；最短出口用精确平方距离排序。
+精确并列集 tied_labels 与长度窗/舍入量级的 near_labels 分开；tol 不改 kind、时刻或获选标签。
 """
 
 from __future__ import annotations
@@ -21,10 +22,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 
-from .covers import (Cover, _facet_normal_own, enumerate_covers, ev_cover, facet_gap, ve_cover)
-from .exact import convexity_violation, entrance_block_exact, membership_exact
-from .geom import (Point, Poly, add, coord_scale, dot, edge, neg, norm, outward_normal, polygons_overlap,
-                   round_floor, sub, translate)
+from .covers import _facet_normal_own, enumerate_covers, facet_gap
+from .exact import (convexity_violation, entrance_block_exact, membership_exact,
+                    polygons_overlap_exact, ve_side_exact, ev_side_exact)
+from .geom import Point, Poly, add, coord_scale, dot, edge, norm, round_floor, sub
+from math import sqrt
 
 
 @dataclass(slots=True)
@@ -39,6 +41,8 @@ class Entrance2:
     gap: float = 0.0
     tied_labels: tuple = ()
     n_candidates: int = 0
+    near_labels: tuple = ()           # 可分辨性报告；不得并入精确 tied_labels
+    t_exact: Fraction | None = None   # 射线时刻的精确证据；t/x 仍是浮点构造输出
 
 
 def _facet_normal(A: Poly, B: Poly, label: tuple) -> Point:
@@ -72,25 +76,24 @@ def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> float:
 
 
 def first_entrance(A: Poly, B: Poly, x0: Point, d: Point, *, tol: float = 0.0, t_max: float = float("inf")) -> Entrance2:
-    """沿 x(t) = x0 + t·d 的首入。凸路径选路、初态与射线裁剪精确；tol只影响并列报告。
-    凹路径及已侵入后的 shortest_exit 保持既有长度带/舍入地板口径（E3待做）。"""
-    dn = norm(d)
-    if dn == 0.0:
+    """沿 x(t)=x0+t·d 的精确闭集首入；tol 只作 near_labels 的长度报告窗，不改答案。"""
+    if d[0] == 0 and d[1] == 0:
         raise ValueError("direction must be nonzero")
+    if tol < 0 or t_max < 0:
+        raise ValueError("tol and t_max must be nonnegative")
     r = _floor(A, B, x0, d)
-    ctol = max(tol, r)
-    if convexity_violation(A) is None and convexity_violation(B) is None:      # 精确凸才走凸路径（E2）
+    if convexity_violation(A) is None and convexity_violation(B) is None:
         if membership_exact(A, B, x0) == 1:
             return shortest_exit(A, B, x0, tol=tol)
-        return _first_entrance_convex(A, B, x0, d, ctol, r, t_max)
-    if polygons_overlap(translate(A, x0), B, ctol) == 1:
+        return _first_entrance_convex(A, B, x0, d, tol, r, t_max)
+    if polygons_overlap_exact(A, B, x0) == 1:
         return shortest_exit(A, B, x0, tol=tol)
-    return _first_entrance_concave(A, B, x0, d, ctol, r, t_max)
+    return _first_entrance_concave(A, B, x0, d, tol, r, t_max)
 
 
 def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r: float, t_max: float) -> Entrance2:
     """精确有理数半空间射线裁剪；facet_gap 只在最后输出构造量，不参与去留/时刻分支。
-    tol/r 仅为并列标签报告窗，不能把错过 E 或超过 t_max 的射线变成命中。
+    tol/r 仅为 near_labels 可分辨性报告窗，不能把错过 E 或超过 t_max 的射线变成命中。
     门：test_convex_ray_decisions_do_not_use_constructed_facet_gaps / test_convex_ray_resolves_tiny_slopes_and_misses。
     """
     eb = entrance_block_exact(A, B)
@@ -128,17 +131,20 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
     else:
         return none()
     band2 = Fraction(ctol + r) ** 2
+    near = []
     tied = []
     for t, slope, f in enter:
         ex, ey = f.direction
         if ((t - t_in) * slope) ** 2 <= band2 * (ex * ex + ey * ey):
-            tied.append(f.label)
+            near.append(f.label)
     # 恰在角点/沿边的闭集首触也有活动侧：不只报告进入型 facet。
     for f in eb.facets:
         ex, ey = f.direction
         h = ex * (X[1] + t_in * D[1] - f.start[1]) - ey * (X[0] + t_in * D[0] - f.start[0])
         if h == 0 and f.label not in tied:
             tied.append(f.label)
+            if f.label not in near:
+                near.append(f.label)
     if fbest.label not in tied:
         tied.insert(0, fbest.label)
     tied.sort(key=lambda lab: 0 if lab == fbest.label else 1)
@@ -146,107 +152,178 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
     x = (float(X[0] + D[0] * t_in), float(X[1] + D[1] * t_in))
     pa, pb = _facet_points(A, B, lab, x)
     return Entrance2("entrance", float(t_in), x, lab, _facet_normal(A, B, lab), pa, pb,
-                     facet_gap(A, B, lab, x), tuple(tied), len(enter))
+                     facet_gap(A, B, lab, x), tuple(tied), len(enter), tuple(near), t_in)
 
 
-def _cover_at(A: Poly, B: Poly, label: tuple, x: Point, tol: float) -> Cover | None:
+def _frpoint(p):
+    return (Fraction(p[0]), Fraction(p[1]))
+
+
+def _at(X, D, t):
+    return (X[0] + t * D[0], X[1] + t * D[1])
+
+
+def _feature_data(A, B, label, X, D=(Fraction(0), Fraction(0))):
+    """原坐标有理数：有符号 gap 分子、沿 d 斜率、投影分子、边长平方及投影斜率。
+    不构造单位法向，不把 A+x 舍入成新的输入。"""
     kind, ai, bj = label
-    At = translate(A, x)
     if kind == "VE":
-        return ve_cover(At, ai, B, bj, tol)
-    if kind == "EV":
-        return ev_cover(At, ai, B, bj, tol)
-    return None
-
-
-def _in_segment(c: Cover, A: Poly, B: Poly, x: Point, r: float) -> bool:
-    """投影参数落在边内（带 = 舍入地板 / 边长 + 杠杆项，与 enumerate_covers 同口径）。"""
-    if c.param is None:
-        return True
-    if c.kind == "VE":
-        b0, b1 = edge(B, c.b_index)
-        le = norm(sub(b1, b0))
-        lever = norm(sub(add(A[c.a_index], x), b0))
+        p, q = _frpoint(B[bj]), _frpoint(B[(bj + 1) % len(B)])
+        a = _frpoint(A[ai])
+        v = (a[0] + X[0] - p[0], a[1] + X[1] - p[1])
+        velocity = D
     else:
-        a0, a1 = edge(A, c.a_index)
-        le = norm(sub(a1, a0))
-        lever = norm(sub(B[c.b_index], add(a0, x)))
-    band = (r + r * lever / le) / le
-    return -band <= c.param <= 1.0 + band
+        p, q = _frpoint(A[ai]), _frpoint(A[(ai + 1) % len(A)])
+        b = _frpoint(B[bj])
+        v = (b[0] - p[0] - X[0], b[1] - p[1] - X[1])
+        velocity = (-D[0], -D[1])
+    ex, ey = q[0] - p[0], q[1] - p[1]
+    length2 = ex * ex + ey * ey
+    if length2 == 0:
+        raise ValueError("zero-length edge in entrance candidate")
+    return (ey * v[0] - ex * v[1], ey * velocity[0] - ex * velocity[1],
+            ex * v[0] + ey * v[1], length2, ex * velocity[0] + ey * velocity[1])
+
+
+def _feature_times(data):
+    """零间隙为仿射式：横穿时精确求根；共线平移时保留进入/离开闭线段的端点事件。"""
+    g, slope, projection, length2, projection_slope = data
+    if slope != 0:
+        return (-g / slope,)
+    if g != 0:
+        return ()
+    times = [Fraction(0)] if 0 <= projection <= length2 else []
+    if projection_slope != 0:
+        times += [-projection / projection_slope, (length2 - projection) / projection_slope]
+    return tuple(times)
+
+
+def _all_event_times(A, B, X, D, bound):
+    """未经法锥/候选筛选的全顶点-边事件；仅用于漏候选自校验。
+    相交闭集的首次时刻必有顶点-边接触，含平行滑入的端点。它不是独立 oracle。"""
+    out = {Fraction(0)}
+    for kind in ("VE", "EV"):
+        for ai in range(len(A)):
+            for bj in range(len(B)):
+                out.update(t for t in _feature_times(_feature_data(A, B, (kind, ai, bj), X, D))
+                           if t >= 0 and (bound is None or t <= bound))
+    return sorted(out)
+
+
+def _contact_report(A, B, label, X):
+    """接触点先在 Fraction 上构造再各舍入一次；浮点法向/gap 均不参与选择。"""
+    kind, ai, bj = label
+    g, _, projection, length2, _ = _feature_data(A, B, label, X)
+    parameter = projection / length2
+    if kind == "VE":
+        pa = _at(_frpoint(A[ai]), X, Fraction(1))
+        b0, b1 = _frpoint(B[bj]), _frpoint(B[(bj + 1) % len(B)])
+        pb = (b0[0] + parameter * (b1[0] - b0[0]), b0[1] + parameter * (b1[1] - b0[1]))
+    else:
+        a0, a1 = _frpoint(A[ai]), _frpoint(A[(ai + 1) % len(A)])
+        pa = (a0[0] + X[0] + parameter * (a1[0] - a0[0]), a0[1] + X[1] + parameter * (a1[1] - a0[1]))
+        pb = _frpoint(B[bj])
+    gap = sqrt(float(g * g / length2)) * ((g > 0) - (g < 0))
+    return _facet_normal(A, B, label), tuple(map(float, pa)), tuple(map(float, pb)), gap
+
+
+def _candidate_labels(A, B):
+    # 枚举时不先浮点平移；局部有效性平移不变。tol=0 是数学入口，不是 legacy 域窗口。
+    for c in enumerate_covers(A, B, window=float("inf"), require_in_segment=False):
+        if c.kind in ("VE", "EV"):
+            side = ve_side_exact(A, c.a_index, B, c.b_index) if c.kind == "VE" else ev_side_exact(A, c.a_index, B, c.b_index)
+            if side >= 0:
+                yield c.label()
 
 
 def _first_entrance_concave(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r: float, t_max: float) -> Entrance2:
-    At = translate(A, x0)
-    raw: list[tuple[float, Cover, float, int]] = []
-    for idx, c in enumerate(enumerate_covers(At, B, window=float("inf"), tol=ctol, require_in_segment=False)):
-        if c.kind == "VV" or c.normal is None:
+    """精确候选时刻/段内/相交裁决；t* 前全事件 + 相邻事件中点的精确自检。
+    不能只退一个浮点分辨步：它可能跨过很窄的更早接触区间。"""
+    X, D = _frpoint(x0), _frpoint(d)
+    bound = None if t_max == float("inf") else Fraction(t_max)
+    raw = []
+    for idx, label in enumerate(_candidate_labels(A, B)):
+        for t in _feature_times(_feature_data(A, B, label, X, D)):
+            if t >= 0 and (bound is None or t <= bound):
+                raw.append((t, idx, label))
+    raw.sort(key=lambda q: (q[0], q[1]))
+
+    def state(t):
+        return polygons_overlap_exact(A, B, _at(X, D, t))
+
+    for t, idx, label in raw:
+        x = _at(X, D, t)
+        g, _, projection, length2, _ = _feature_data(A, B, label, x)
+        if g != 0 or not 0 <= projection <= length2:
             continue
-        nd = dot(c.normal, d)
-        if nd >= -1e-12 * norm(d) or c.gap < -r:
+        if state(t) < 0:
             continue
-        t = max(0.0, c.gap / (-nd))
-        if t <= t_max + r / (-nd):
-            raw.append((t, c, nd, idx))
-    raw.sort(key=lambda q: (q[0], q[3]))
-    for t, c, nd, idx in raw:
-        x = add(x0, (d[0] * t, d[1] * t))
-        cc = _cover_at(A, B, c.label(), x, ctol)
-        if cc is None or not _in_segment(cc, A, B, x, r):
-            continue
-        if polygons_overlap(translate(A, x), B, ctol) < 0:
-            continue
-        step = 2.0 * (ctol + r) / (-nd)
-        if t - step > 0.0 and polygons_overlap(translate(A, add(x0, (d[0] * (t - step), d[1] * (t - step)))), B, ctol) >= 0:
-            raise RuntimeError(f"first_entrance: bodies already touch at t = {t - step!r} < candidate {t!r} ({c.label()}); "
-                               f"the cover candidate set missed an earlier entrance")
-        tied: list[tuple] = []
-        for t2, c2, nd2, _ in raw:
-            if abs(t2 - t) * (-nd2) <= ctol + r:
-                c2x = _cover_at(A, B, c2.label(), x, ctol)
-                if c2x is not None and _in_segment(c2x, A, B, x, r):
-                    tied.append(c2.label())
-        tied.sort(key=lambda q: 0 if q == cc.label() else 1)
-        return Entrance2("entrance", t, x, cc.label(), cc.normal, cc.point_a, cc.point_b, cc.gap, tuple(tied), len(raw))
-    ts = sorted({q[0] for q in raw})
-    probes = ts + [0.5 * (a + b) for a, b in zip(ts, ts[1:])]
-    if t_max < float("inf"):                            # 候选为空（或全部出程）时至少沿射线粗探几处，不许静默答"不触及"
-        probes += [t_max * f for f in (1.0, 0.5, 0.25, 0.125)]
-    for tp in probes:
-        if polygons_overlap(translate(A, add(x0, (d[0] * tp, d[1] * tp))), B, ctol) >= 0:
+        prior = [tp for tp in _all_event_times(A, B, X, D, t) if tp < t]
+        probes = prior + ([(prior[-1] + t) / 2] if prior else [])
+        for tp in probes:
+            if state(tp) >= 0:
+                raise RuntimeError(f"first_entrance: bodies already touch at t = {tp!r} < candidate {t!r} ({label}); "
+                                   "the cover candidate set missed an earlier entrance")
+        tied, near = [], []
+        band2 = Fraction(ctol + r) ** 2
+        for t2, _, label2 in raw:
+            g2, _, p2, l2, _ = _feature_data(A, B, label2, x)
+            if 0 <= p2 <= l2:
+                if t2 == t and g2 == 0 and label2 not in tied:
+                    tied.append(label2)
+                if g2 * g2 <= band2 * l2 and label2 not in near:
+                    near.append(label2)
+        tied.sort(key=lambda lab: 0 if lab == label else 1)
+        normal, pa, pb, gap = _contact_report(A, B, label, x)
+        return Entrance2("entrance", float(t), tuple(map(float, x)), label, normal, pa, pb,
+                         gap, tuple(tied), len(raw), tuple(near), t)
+    # 无候选也检查全部原始几何事件，不靠有限粗探漏掉短暂碰撞或无限射线上的触及。
+    for tp in _all_event_times(A, B, X, D, bound):
+        if state(tp) >= 0:
             raise RuntimeError(f"first_entrance: no in-segment cover candidate, yet the bodies touch at t = {tp!r}; "
-                               f"the candidate set missed an earlier entrance")
+                               "the candidate set missed an earlier entrance")
     return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), len(raw))
 
 
 def shortest_exit(A: Poly, B: Poly, x0: Point, *, tol: float = 0.0) -> Entrance2:
-    """已侵入位形的最短出口：在程（投影落在边内）的 VE/EV 盖里取间隙最大者（侵入最浅）。并列按枚举序裁决、如实报出。"""
-    r = _floor(A, B, x0, (0.0, 0.0))
-    ctol = max(tol, r)
-    At = translate(A, x0)
-    cands = [c for c in enumerate_covers(At, B, window=float("inf"), tol=ctol, require_in_segment=True)
-             if c.kind != "VV" and c.normal is not None and c.gap <= ctol + r]
-    if not cands:
+    """已侵入时在程 VE/EV 的最大非正间隙；有理数平方距离选最浅盖，精确同距才并列。
+    这是局部 facet 选择，不声称一般凹对该单次平移能令所有接触同时脱开。tol 只报告 near_labels。"""
+    X = _frpoint(x0)
+    candidates = []
+    for label in _candidate_labels(A, B):
+        g, _, projection, length2, _ = _feature_data(A, B, label, X)
+        if g <= 0 and 0 <= projection <= length2:
+            candidates.append((g * g / length2, label))
+    if not candidates:
         raise RuntimeError("shortest_exit: penetrating configuration with no in-segment facet cover")
-    best = max(cands, key=lambda c: c.gap)
-    tied = [c.label() for c in cands if best.gap - c.gap <= ctol + r]
-    tied.sort(key=lambda q: 0 if q == best.label() else 1)
-    return Entrance2("exit", 0.0, x0, best.label(), best.normal, best.point_a, best.point_b, best.gap, tuple(tied), len(cands))
+    best_distance, label = min(candidates, key=lambda q: q[0])
+    tied = tuple(lab for distance, lab in candidates if distance == best_distance)
+    # sqrt(distance)-sqrt(best) <= band：平方化后的精确有理数比较，不让报告反馈选择。
+    band2 = Fraction(tol + _floor(A, B, x0, (0., 0.))) ** 2
+    near = tuple(lab for distance, lab in candidates
+                 if distance - best_distance - band2 <= 0 or
+                 (distance - best_distance - band2) ** 2 <= 4 * band2 * best_distance)
+    normal, pa, pb, gap = _contact_report(A, B, label, X)
+    return Entrance2("exit", 0.0, x0, label, normal, pa, pb, gap, tied, len(candidates), near, Fraction(0))
 
 
 def first_entrance_brute(A: Poly, B: Poly, x0: Point, d: Point, *, t_max: float, steps: int = 400,
                          tol: float = 0.0) -> float | None:
-    """纪律 A 的 oracle：只用谓词。把 [0, t_max] 均分扫描找到第一个 polygons_overlap ≥ 0 的步，再二分到舍入级。
-    扫描步长必须小于 A 沿 d 穿过 B 的最短时间（由测试负责）。x0 已相触/相交时返回 0；扫描内不触及返回 None。"""
-    r = _floor(A, B, x0, d)
-    ctol = max(tol, r)
+    """精确谓词扫描/二分佐证（不是独立 oracle：与生产共用 polygons_overlap_exact）。
+    [0,t_max] 上所有平移在 Fraction 做；扫描步长仍须小于穿越区间，孤立切触可能漏采。
+    二分到上下界舍入为同一/相邻 float，只控制输出分辨率，不以容差改变相交答案。tol 保留兼容、无判定作用。"""
+    if steps <= 0 or t_max < 0 or t_max == float("inf"):
+        raise ValueError("steps must be positive and t_max finite and nonnegative")
+    X, D = _frpoint(x0), _frpoint(d)
+    bound = Fraction(t_max)
 
-    def state(t: float) -> int:
-        return polygons_overlap(translate(A, add(x0, (d[0] * t, d[1] * t))), B, ctol)
-    if state(0.0) >= 0:
+    def state(t):
+        return polygons_overlap_exact(A, B, _at(X, D, t))
+    if state(Fraction(0)) >= 0:
         return 0.0
-    prev, hit = 0.0, None
+    prev, hit = Fraction(0), None
     for k in range(1, steps + 1):
-        t = t_max * k / steps
+        t = bound * k / steps
         if state(t) >= 0:
             hit = t
             break
@@ -254,11 +331,11 @@ def first_entrance_brute(A: Poly, B: Poly, x0: Point, d: Point, *, t_max: float,
     if hit is None:
         return None
     lo, up = prev, hit
-    ztol = max(1e-13 * (abs(t_max) + 1.0), 8.0 * 2.220446049250313e-16 * t_max)
-    while up - lo > ztol:
-        mid = 0.5 * (lo + up)
+    from math import nextafter, inf
+    while float(lo) != float(up) and nextafter(float(lo), inf) < float(up):
+        mid = (lo + up) / 2
         if state(mid) >= 0:
             up = mid
         else:
             lo = mid
-    return up
+    return float(up)

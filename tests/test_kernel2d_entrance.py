@@ -168,11 +168,76 @@ def test_first_entrance_is_invariant_under_rigid_motion(th, tmag):
 FIX = ROOT / "fixtures" / "bdda_df" / "studio_20260712"
 
 
+def _independent_overlap(A, B, x=(0., 0.)):
+    """独立 Fraction 边交 + winding oracle；不调用生产的相交、耳切、法锥、SAT 或其原语。
+    正面积交来自严格包含、真交叉或同向共线边的正长度交；其余闭集接触记 0。"""
+    from fractions import Fraction as F
+    A = [(F(a)+F(x[0]), F(b)+F(x[1])) for a,b in A]
+    B = [(F(a),F(b)) for a,b in B]
+    def orient(a,b,c):
+        return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+    def on(a,b,p):
+        return orient(a,b,p)==0 and min(a[0],b[0])<=p[0]<=max(a[0],b[0]) and min(a[1],b[1])<=p[1]<=max(a[1],b[1])
+    def inside(p,P):
+        winding=0
+        for i,a in enumerate(P):
+            b=P[(i+1)%len(P)]
+            if on(a,b,p): return 0
+            if a[1]<=p[1]<b[1] and orient(a,b,p)>0: winding+=1
+            if b[1]<=p[1]<a[1] and orient(a,b,p)<0: winding-=1
+        return 1 if winding else -1
+    touch=False
+    for P,Q in ((A,B),(B,A)):
+        for i,a in enumerate(P):
+            b=P[(i+1)%len(P)]
+            for p in (a,((a[0]+b[0])/2,(a[1]+b[1])/2)):
+                state=inside(p,Q)
+                if state==1: return 1
+                touch |= state==0
+    for i,a in enumerate(A):
+        b=A[(i+1)%len(A)]
+        for j,c in enumerate(B):
+            d=B[(j+1)%len(B)]
+            oa,ob,oc,od=orient(a,b,c),orient(a,b,d),orient(c,d,a),orient(c,d,b)
+            if oa*ob<0 and oc*od<0: return 1
+            if oa==ob==oc==od==0:
+                axis=0 if a[0]!=b[0] else 1
+                overlap=min(max(a[axis],b[axis]),max(c[axis],d[axis]))-max(min(a[axis],b[axis]),min(c[axis],d[axis]))
+                if overlap>0 and (b[0]-a[0])*(d[0]-c[0])+(b[1]-a[1])*(d[1]-c[1])>0: return 1
+                touch |= overlap>=0
+            touch |= on(a,b,c) or on(a,b,d) or on(c,d,a) or on(c,d,b)
+    return 0 if touch else -1
+
+
+def _independent_exit_labels(A, B):
+    """原始边代数的独立局部支撑/投影/平方距离；不调用任何生产法锥或 cover。"""
+    from fractions import Fraction as F
+    A,B=[[(F(x),F(y)) for x,y in P] for P in (A,B)]
+    candidates=[]
+    for kind,P,Q in (("VE",A,B),("EV",B,A)):
+        for i,p in enumerate(P):
+            prev,nxt=P[i-1],P[(i+1)%len(P)]
+            u=(p[0]-prev[0],p[1]-prev[1]); v=(nxt[0]-p[0],nxt[1]-p[1])
+            turn=u[0]*v[1]-u[1]*v[0]
+            if turn<0 or (turn==0 and u[0]*v[0]+u[1]*v[1]<=0): continue
+            for j,q in enumerate(Q):
+                r=Q[(j+1)%len(Q)]; ex,ey=r[0]-q[0],r[1]-q[1]
+                if ex*u[1]-ey*u[0]<0 or v[0]*ey-v[1]*ex<0: continue
+                if turn==0 and ex*u[0]+ey*u[1]>=0: continue
+                dx,dy=p[0]-q[0],p[1]-q[1]
+                g=ey*dx-ex*dy; proj=ex*dx+ey*dy; length2=ex*ex+ey*ey
+                if g<=0 and 0<=proj<=length2:
+                    label=(kind,i,j) if kind=="VE" else (kind,j,i)
+                    candidates.append((g*g/length2,label))
+    best=min(distance for distance,_ in candidates)
+    return {label for distance,label in candidates if distance==best}
+
+
 @pytest.mark.skipif(not (FIX / "bdda_debug_verts.csv").exists(), reason="bb52 fixture missing")
 def test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal():
-    """bb52 步 1（11 块、8 凹，53 条 legacy 顶点-边接触，初始位形全贴合）：对每条 legacy v-e 接触（mtype 0：p1 顶点、p3→p2 边），
-    让顶点所在块沿该边的**内**法向（−n）逼近另一块——引擎的首入（或已侵入时的最短出口）并列集必须含这条 (VE, 顶点, 边)。
-    这是首入对 legacy 的第一道对账：legacy 认定的接触，引擎沿逼近方向也认它是第一个碰上的。"""
+    """53 条 legacy 盖仍在 sin(3°)/FIT 窗口全量对账；所有输入另核精确初态，不跳过微贯入。
+    微贯入必须返回独立精确最浅盖集合；真正未侵入的首入才与 legacy 贴合窗比较。
+    oracle 为本文件内联 Fraction 边交/winding 与独立支撑列，不共用生产几何原语。"""
     sys.path.insert(0, str(ROOT / "tools"))
     import bb52_g0
     blocks, alias = bb52_g0.load_blocks(step=1)
@@ -202,12 +267,23 @@ def test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_
             continue
         nB = outward_normal(B, jb)
         d = tuple(-x for x in nB)
-        if polygons_overlap(A, B, FIT) == 1:
-            n_pen += 1                                  # 已微量贯入：legacy 的选择带历史，不与"最浅出口"硬对
-            continue
+        n_pen += polygons_overlap(A, B, FIT) == 1       # 原 legacy 带内计数约束保留，但不再跳过这些输入
+        initial = _independent_overlap(A, B)
         # (2) 引擎沿该边内法向逼近的首入：同一条盖、或同一顶点的集值邻支、或接触点就是这个顶点、或落在同一条接触线上
         #     （平行边贴合的退化族：legacy 记 A 顶点对 B 边，引擎可能记 B 顶点对 A 边，法向相同）
         e = first_entrance(A, B, (0.0, 0.0), d, tol=FIT, t_max=1.0)
+        if initial == 1:
+            assert e.kind == "exit", (ba, bb, p1, initial, e)
+            want = _independent_exit_labels(A, B)
+            assert e.label in want and set(e.tied_labels) == want, (ba, bb, p1, e.tied_labels, want)
+            continue
+        assert e.kind == "entrance", (ba, bb, p1, initial, e)
+        assert e.t_exact is not None
+        from fractions import Fraction as F
+        exact_x = (e.t_exact * F(d[0]), e.t_exact * F(d[1]))
+        assert _independent_overlap(A, B, exact_x) == 0, (ba, bb, p1, e.t_exact)
+        if initial == 0:
+            assert e.t == 0.0
         labels = e.tied_labels
         same_label = ("VE", ia, jb) in labels or any(lab[0] == "VE" and lab[1] == ia for lab in labels)
         same_point = any(p is not None and math.dist(p, A[ia]) <= FIT for p in (e.point_a, e.point_b))

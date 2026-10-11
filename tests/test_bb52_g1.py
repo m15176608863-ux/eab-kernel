@@ -122,8 +122,8 @@ def _drop_vv(monkeypatch):
 
 def _drop_cone_boundary(monkeypatch):
     import eab.kernel2d.covers as cv
-    orig = cv.in_cone
-    monkeypatch.setattr(cv, "in_cone", lambda cone, v, tol=0.0: 1 if orig(cone, v, tol) == 1 else -1)
+    orig = cv._ve_side
+    monkeypatch.setattr(cv, "_ve_side", lambda *a, **kw: 1 if orig(*a, **kw) == 1 else -1)
 
 
 @pytest.mark.parametrize("mutate", [_drop_vv, _drop_cone_boundary], ids=["no_VV_covers", "strict_cone_only"])
@@ -131,7 +131,7 @@ def test_g0_distance_completeness_has_teeth(monkeypatch, mutate):
     """门要有牙：两种现实的盖枚举退化（丢零维 VV 盖；只收法锥严格内部、丢边界盖）都必须让 G0 红。
 
     对照（同一批平移、同一退化下重放旧投票）：丢 VV 盖时旧门仍报 1186/1186，完全无感；
-    只收严格内部时旧门 106/110。旧门检验的命题与盖枚举是否完备基本无关。
+    E3 只收精确严格内部时旧门 630/640（旧噪声 strict 的 106/110 不再是同一筛选器）。旧门检验的命题与盖枚举是否完备基本无关。
     """
     mutate(monkeypatch)
     r = bb52_g0.analyze(samples_per_pair=60, seed=0, exit_probes=False)
@@ -139,7 +139,7 @@ def test_g0_distance_completeness_has_teeth(monkeypatch, mutate):
     assert r["g0_agree"] < r["g0_samples"]
     assert all(d[-1].startswith("盖漏枚举") for d in r["g0_disagree"]), r["g0_disagree"][:2]
     v = _retired_vote(r)
-    assert (v["total"], v["agree"]) == {_drop_vv: (1186, 1186), _drop_cone_boundary: (110, 106)}[mutate]
+    assert (v["total"], v["agree"]) == {_drop_vv: (1186, 1186), _drop_cone_boundary: (640, 630)}[mutate]
 
 
 def _drop_ev(monkeypatch):
@@ -156,15 +156,15 @@ def _drop_ve_subset(monkeypatch):
 
 
 @pytest.mark.parametrize("mutate,distance_gate_red,old_vote", [
-    (_drop_cone_boundary, True, (110, 106)),
+    (_drop_cone_boundary, True, (640, 630)),
     (_drop_ev, True, (897, 892)),
-    (_drop_ve_subset, False, (1186, 1186)),
+    (_drop_ve_subset, True, (1186, 1186)),
 ], ids=["strict_cone_only", "no_EV_covers", "drop_VE_subset"])
 def test_g0_exit_completeness_has_teeth(monkeypatch, mutate, distance_gate_red, old_vote):
     """出口完备性要有牙：三种盖枚举缺口都必须让相交样本上的门红，且归因为"盖漏枚举"。
 
-    drop_VE_subset 是这道门存在的理由之一：分离侧的距离完备性对它无感（603/603），旧投票也无感
-    （1186/1186），只有相交侧的出口检验抓得到——相交的 657 次平移不是"多余的样本"。
+    drop_VE_subset 在旧噪声枚举下分离侧无感（603/603）；E3 精确枚举已抓到19条（584/603）。
+    旧投票仍无感（1186/1186）。出口缺盖归因继续保留；分离侧新增固定计数和逐条缺盖归因。
     """
     mutate(monkeypatch)
     r = bb52_g0.analyze(samples_per_pair=60, seed=0)
@@ -172,6 +172,9 @@ def test_g0_exit_completeness_has_teeth(monkeypatch, mutate, distance_gate_red, 
     assert r["g0_exit_agree"] < r["g0_exit_samples"]
     assert all(d[-1].startswith("盖漏枚举") for d in r["g0_exit_disagree"]), r["g0_exit_disagree"][:2]
     assert (r["g0_agree"] < r["g0_samples"]) == distance_gate_red
+    if mutate is _drop_ve_subset:
+        assert (r["g0_agree"], r["g0_samples"]) == (584, 603)
+        assert all(d[-1].startswith("盖漏枚举") for d in r["g0_disagree"]), r["g0_disagree"][:2]
     v = _retired_vote(r)
     assert (v["total"], v["agree"]) == old_vote
 

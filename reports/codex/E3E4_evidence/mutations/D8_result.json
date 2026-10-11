@@ -1,0 +1,182 @@
+{
+  "id": "D8",
+  "path": "src/eab/limit.py",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=D:\\eab-wt\\cx-e2\\reports\\codex\\E3E4_evidence\\mutations\\D8.xml",
+    "tests/test_limit_exact_selfcheck.py::test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error"
+  ],
+  "original_sha256": "f178e9e89eae0bc06f78c9e5b8781c4a24b5c57b67550942fac91242bd20e74a",
+  "original_backup": "reports\\codex\\E3E4_evidence\\tmp\\mutation_backups",
+  "patch_old": "all(v == 0 for v in residual)",
+  "patch_new": "all(abs(float(v)) <= 1e-7*(sum(abs(float(x)) for x in dead)+sum(abs(float(l)) for l in lam)) for v in residual)",
+  "mutant_sha256": "a318ab0416a1dbae90e59b832222283d5e995858f54a85d053e6220879910ae3",
+  "elapsed_seconds": 0.9851884999952745,
+  "returncode": 1,
+  "failures": [
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_mu-3]",
+      "kind": "failure",
+      "message": "AssertionError: (3, 'small_mu', {'admissible': True, 'alpha': 9.99e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 3, case = 'small_mu'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (3, 'small_mu', {'admissible': True, 'alpha': 9.99e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_mu-5]",
+      "kind": "failure",
+      "message": "AssertionError: (5, 'small_mu', {'admissible': True, 'alpha': 9.9999e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 5, case = 'small_mu'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (5, 'small_mu', {'admissible': True, 'alpha': 9.9999e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_mu-9]",
+      "kind": "failure",
+      "message": "AssertionError: (9, 'small_mu', {'admissible': True, 'alpha': 9.999999990000001e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 9, case = 'small_mu'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (9, 'small_mu', {'admissible': True, 'alpha': 9.999999990000001e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_mu-15]",
+      "kind": "failure",
+      "message": "AssertionError: (15, 'small_mu', {'admissible': True, 'alpha': 9.999999999999991e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 15, case = 'small_mu'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (15, 'small_mu', {'admissible': True, 'alpha': 9.999999999999991e-05, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_mu-30]",
+      "kind": "failure",
+      "message": "AssertionError: (30, 'small_mu', {'admissible': True, 'alpha': 0.0001, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 30, case = 'small_mu'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (30, 'small_mu', {'admissible': True, 'alpha': 0.0001, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_mu-100]",
+      "kind": "failure",
+      "message": "AssertionError: (100, 'small_mu', {'admissible': True, 'alpha': 0.0001, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 100, case = 'small_mu'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (100, 'small_mu', {'admissible': True, 'alpha': 0.0001, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_cohesion-3]",
+      "kind": "failure",
+      "message": "AssertionError: (3, 'small_cohesion', {'admissible': True, 'alpha': 9.99, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nassert not True",
+      "text": "k = 3, case = 'small_cohesion'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (3, 'small_cohesion', {'admissible': True, 'alpha': 9.99, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_cohesion-5]",
+      "kind": "failure",
+      "message": "AssertionError: (5, 'small_cohesion', {'admissible': True, 'alpha': 9.9999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nassert not True",
+      "text": "k = 5, case = 'small_cohesion'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (5, 'small_cohesion', {'admissible': True, 'alpha': 9.9999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_cohesion-9]",
+      "kind": "failure",
+      "message": "AssertionError: (9, 'small_cohesion', {'admissible': True, 'alpha': 9.99999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nassert not True",
+      "text": "k = 9, case = 'small_cohesion'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (9, 'small_cohesion', {'admissible': True, 'alpha': 9.99999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_cohesion-15]",
+      "kind": "failure",
+      "message": "AssertionError: (15, 'small_cohesion', {'admissible': True, 'alpha': 9.99999999999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nassert not True",
+      "text": "k = 15, case = 'small_cohesion'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (15, 'small_cohesion', {'admissible': True, 'alpha': 9.99999999999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_cohesion-30]",
+      "kind": "failure",
+      "message": "AssertionError: (30, 'small_cohesion', {'admissible': True, 'alpha': 10.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nassert not True",
+      "text": "k = 30, case = 'small_cohesion'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (30, 'small_cohesion', {'admissible': True, 'alpha': 10.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[small_cohesion-100]",
+      "kind": "failure",
+      "message": "AssertionError: (100, 'small_cohesion', {'admissible': True, 'alpha': 10.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nassert not True",
+      "text": "k = 100, case = 'small_cohesion'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (100, 'small_cohesion', {'admissible': True, 'alpha': 10.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0', '0', ...), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[far-3]",
+      "kind": "failure",
+      "message": "AssertionError: (3, 'far', {'admissible': True, 'alpha': 5.994, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 3, case = 'far'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (3, 'far', {'admissible': True, 'alpha': 5.994, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[far-5]",
+      "kind": "failure",
+      "message": "AssertionError: (5, 'far', {'admissible': True, 'alpha': 5.99994, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 5, case = 'far'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (5, 'far', {'admissible': True, 'alpha': 5.99994, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[far-9]",
+      "kind": "failure",
+      "message": "AssertionError: (9, 'far', {'admissible': True, 'alpha': 5.9999999939999995, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 9, case = 'far'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (9, 'far', {'admissible': True, 'alpha': 5.9999999939999995, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[far-15]",
+      "kind": "failure",
+      "message": "AssertionError: (15, 'far', {'admissible': True, 'alpha': 5.999999999999994, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 15, case = 'far'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (15, 'far', {'admissible': True, 'alpha': 5.999999999999994, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[far-30]",
+      "kind": "failure",
+      "message": "AssertionError: (30, 'far', {'admissible': True, 'alpha': 6.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 30, case = 'far'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (30, 'far', {'admissible': True, 'alpha': 6.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[far-100]",
+      "kind": "failure",
+      "message": "AssertionError: (100, 'far', {'admissible': True, 'alpha': 6.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 100, case = 'far'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (100, 'far', {'admissible': True, 'alpha': 6.0, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[tall-9]",
+      "kind": "failure",
+      "message": "AssertionError: (9, 'tall', {'admissible': True, 'alpha': 0.00999999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 9, case = 'tall'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (9, 'tall', {'admissible': True, 'alpha': 0.00999999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[tall-15]",
+      "kind": "failure",
+      "message": "AssertionError: (15, 'tall', {'admissible': True, 'alpha': 0.00999999999999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 15, case = 'tall'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (15, 'tall', {'admissible': True, 'alpha': 0.00999999999999999, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[tall-30]",
+      "kind": "failure",
+      "message": "AssertionError: (30, 'tall', {'admissible': True, 'alpha': 0.01, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 30, case = 'tall'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (30, 'tall', {'admissible': True, 'alpha': 0.01, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    },
+    {
+      "classname": "tests.test_limit_exact_selfcheck",
+      "name": "test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error[tall-100]",
+      "kind": "failure",
+      "message": "AssertionError: (100, 'tall', {'admissible': True, 'alpha': 0.01, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nassert not True",
+      "text": "k = 100, case = 'tall'\n\n    @pytest.mark.parametrize(\"k\", [3, 5, 9, 15, 30, 100])\n    @pytest.mark.parametrize(\"case\", [\"small_mu\", \"small_cohesion\", \"far\", \"tall\"])\n    def test_exact_single_static_and_gap_reject_arbitrary_rational_alpha_error(k, case):\n        args = dict(mu=1e-5)\n        if case == \"small_cohesion\": args = dict(mu=0., W=1e6, cohesion=5.)\n        if case == \"far\": args = dict(mu=.6, D=1e4)\n        if case == \"tall\": args = dict(mu=.6, h=1e3)\n        cs, dead, live = slide(**args)\n        r = L.limit_load(cs, dead, live, dim=2)\n        assert L.check_duality(r, cs, dead, live, dim=2)[\"ok\"]\n        r.alpha = q(r.alpha) * (1 - F(1, 10**k))\n        d = L.check_duality(r, cs, dead, live, dim=2)\n>       assert not d[\"static_ok\"], (k, case, d)\nE       AssertionError: (100, 'tall', {'admissible': True, 'alpha': 0.01, 'complementarity': 0.0, 'complementarity_exact': ('0', '0', '0', '0', '0'), ...})\nE       assert not True\n\ntests\\test_limit_exact_selfcheck.py:36: AssertionError"
+    }
+  ],
+  "last_line": "22 failed, 2 passed in 0.35s",
+  "restored_sha256": "f178e9e89eae0bc06f78c9e5b8781c4a24b5c57b67550942fac91242bd20e74a",
+  "byte_restored": true
+}

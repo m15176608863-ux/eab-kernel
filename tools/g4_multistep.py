@@ -54,7 +54,7 @@ def cover_gaps(sg, cone_tol: float, window: float) -> dict[tuple[int, frozenset]
     for i, bi in enumerate(ids):
         for bj in ids[i + 1:]:
             A, B = sg.blocks[bi], sg.blocks[bj]
-            for c in enumerate_covers(A.poly, B.poly, window=window, tol=1e-9, cone_tol=cone_tol, seg_tol=1e-9,
+            for c in enumerate_covers(A.poly, B.poly, window=window, cone_tol=cone_tol,
                                       require_in_segment=False):
                 if c.kind == "VE":
                     key = (A.vidx[c.a_index], frozenset((B.vidx[c.b_index], B.vidx[(c.b_index + 1) % len(B.poly)])))

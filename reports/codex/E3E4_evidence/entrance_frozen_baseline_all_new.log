@@ -1,0 +1,2284 @@
+FFFFFFFFFFFF.F.FF.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 77%]
+FFFFFFFFFFFFFFFFFFFFF                                                    [100%]
+================================== FAILURES ===================================
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-0.0] _
+
+offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000.0] _
+
+offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.7755575615628914e-17, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(10...1875), point_b=(1000.0009765625, 1000.000732421875), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000000.0] _
+
+offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.7755575615628914e-17, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(10...), point_b=(1000000.0009765625, 1000000.0007324219), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-0.0] _
+
+offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000.0] _
+
+offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.842170943040401e-14, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1001.0, 1000.75), point_b=(1001.0, 1000.75), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000000.0] _
+
+offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.842170943040401e-14, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1000001.0, 1000000.75), point_b=(1000001.0, 1000000.75), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-0.0] _
+
+offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000.0] _
+
+offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000000.0] _
+
+offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.9103830456733704e-11, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1001024.0, 1000768.0), point_b=(1001024.0, 1000768.0), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+____ test_concave_initial_overlap_is_exact_even_below_coordinate_roundoff _____
+
+    def test_concave_initial_overlap_is_exact_even_below_coordinate_roundoff():
+        A, B = shifted(SQ, 1e6 + 1., 1e6 + .75), shifted(STEP, 1e6, 1e6)
+        got = first_entrance(A, B, (-2.**-45, 0.), (-1., 0.))
+>       assert got.kind == 'exit' and got.gap == -2.**-45, (got.kind, got.gap)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'exit'
+E         
+E         - exit
+E         + entrance)
+
+tests\test_kernel2d_entrance_e3.py:38: AssertionError
+______ test_concave_touching_start_has_closed_set_time_zero[direction0] _______
+
+direction = (1.0, 0.0)
+
+    @pytest.mark.parametrize('direction', [(1., 0.), (0., 1.), (-1., 0.)])
+    def test_concave_touching_start_has_closed_set_time_zero(direction):
+        A = shifted(SQ, 1., .75)
+        e = first_entrance(A, STEP, (0., 0.), direction)
+>       assert e.kind == 'entrance' and e.t == 0.
+E       AssertionError: assert ('none' == 'entrance'
+E         
+E         - entrance
+E         + none)
+
+tests\test_kernel2d_entrance_e3.py:45: AssertionError
+______ test_concave_touching_start_has_closed_set_time_zero[direction1] _______
+
+direction = (0.0, 1.0)
+
+    @pytest.mark.parametrize('direction', [(1., 0.), (0., 1.), (-1., 0.)])
+    def test_concave_touching_start_has_closed_set_time_zero(direction):
+        A = shifted(SQ, 1., .75)
+        e = first_entrance(A, STEP, (0., 0.), direction)
+>       assert e.kind == 'entrance' and e.t == 0.
+E       AssertionError: assert ('none' == 'entrance'
+E         
+E         - entrance
+E         + none)
+
+tests\test_kernel2d_entrance_e3.py:45: AssertionError
+____ test_concave_fraction_time_is_not_replaced_by_rounded_float_candidate ____
+
+    def test_concave_fraction_time_is_not_replaced_by_rounded_float_candidate():
+        A = shifted(SQ, 1.4, .9)
+        e = first_entrance(A, STEP, (0., 0.), (-.7, -.1), t_max=2.)
+        want = (F(1.4) - 1) / F(.7)
+        assert e.kind == 'entrance' and e.t == float(want), (e.kind, e.t, want)
+>       assert e.t_exact == want
+               ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:53: AttributeError
+______ test_shortest_exit_compares_exact_signed_distance_not_rounded_gap ______
+
+    def test_shortest_exit_compares_exact_signed_distance_not_rounded_gap():
+        A, B = shifted(SQ, 1e6 + 1., 1e6 + .75), shifted(STEP, 1e6, 1e6)
+        e = shortest_exit(A, B, (-2.**-45, 0.))
+>       assert e.normal == (1., 0.) and e.gap == -2.**-45, (e.normal, e.gap)
+E       AssertionError: ((1.0, -0.0), 0.0)
+E       assert ((1.0, -0.0) == (1.0, 0.0)
+E         
+E         Use -v to get more diff and 0.0 == -(2.0 ** -45))
+E        +  where 0.0 = Entrance2(kind='exit', t=0.0, x=(-2.842170943040401e-14, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1000001.0, 1000000.75), point_b=(1000001.0, 1000000.75), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=9).gap
+
+tests\test_kernel2d_entrance_e3.py:69: AssertionError
+______________ test_brute_uses_exact_translation_not_noise_band _______________
+
+    def test_brute_uses_exact_translation_not_noise_band():
+        A, B = shifted(SQ, 1e6 + 1., 1e6 + .75), shifted(STEP, 1e6, 1e6)
+        got = first_entrance_brute(A, B, (2.**-45, 0.), (-2.**-50, 0.), t_max=64., steps=8)
+>       assert got == 32.
+E       assert 0.0 == 32.0
+
+tests\test_kernel2d_entrance_e3.py:77: AssertionError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-0] _
+
+seed = 0, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-1] _
+
+seed = 1, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-2] _
+
+seed = 2, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-3] _
+
+seed = 3, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-4] _
+
+seed = 4, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-5] _
+
+seed = 5, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-6] _
+
+seed = 6, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-7] _
+
+seed = 7, offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-0] _
+
+seed = 0, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-1] _
+
+seed = 1, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-2] _
+
+seed = 2, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-3] _
+
+seed = 3, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-4] _
+
+seed = 4, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-5] _
+
+seed = 5, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-6] _
+
+seed = 6, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-7] _
+
+seed = 7, offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-0] _
+
+seed = 0, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-1] _
+
+seed = 1, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-2] _
+
+seed = 2, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-3] _
+
+seed = 3, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-4] _
+
+seed = 4, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-5] _
+
+seed = 5, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-6] _
+
+seed = 6, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-7] _
+
+seed = 7, offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-0] _
+
+seed = 0, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-1] _
+
+seed = 1, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-2] _
+
+seed = 2, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-3] _
+
+seed = 3, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-4] _
+
+seed = 4, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-5] _
+
+seed = 5, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-6] _
+
+seed = 6, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-7] _
+
+seed = 7, offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-0] _
+
+seed = 0, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-1] _
+
+seed = 1, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-2] _
+
+seed = 2, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-3] _
+
+seed = 3, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-4] _
+
+seed = 4, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-5] _
+
+seed = 5, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-6] _
+
+seed = 6, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-7] _
+
+seed = 7, offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-0] _
+
+seed = 0, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-1] _
+
+seed = 1, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-2] _
+
+seed = 2, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-3] _
+
+seed = 3, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-4] _
+
+seed = 4, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-5] _
+
+seed = 5, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-6] _
+
+seed = 6, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-7] _
+
+seed = 7, offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-0] _
+
+seed = 0, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-1] _
+
+seed = 1, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-2] _
+
+seed = 2, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-3] _
+
+seed = 3, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-4] _
+
+seed = 4, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-5] _
+
+seed = 5, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-6] _
+
+seed = 6, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-7] _
+
+seed = 7, offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-0] _
+
+seed = 0, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-1] _
+
+seed = 1, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-2] _
+
+seed = 2, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-3] _
+
+seed = 3, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-4] _
+
+seed = 4, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-5] _
+
+seed = 5, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-6] _
+
+seed = 6, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-7] _
+
+seed = 7, offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-0] _
+
+seed = 0, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-1] _
+
+seed = 1, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-2] _
+
+seed = 2, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-3] _
+
+seed = 3, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-4] _
+
+seed = 4, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-5] _
+
+seed = 5, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-6] _
+
+seed = 6, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-7] _
+
+seed = 7, offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('seed', range(8))
+    @pytest.mark.parametrize('offset', [0.,1e3,1e6])
+    @pytest.mark.parametrize('scale', [2.**-10,1.,2.**10])
+    def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat(seed, offset, scale):
+        """STEP 用已知四个三角凸片分解（仅输入顶点，不调用耳切）；每格答对实际舍入数据。"""
+        import random
+        theta = random.Random(914+seed).uniform(.1,6.)
+        c,s = math.cos(theta), math.sin(theta)
+        def transform(P):
+            return [(offset+scale*(c*x-s*y), -.7*offset+scale*(s*x+c*y)) for x,y in P]
+        A = transform(shifted(SQ,1.4,.9))
+        B = transform(STEP)
+        d = (scale*(-c+.5*s),scale*(-s-.5*c))
+        times = [_sat_ray(A,[B[i] for i in tri],(0.,0.),d)
+                 for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
+        want = min(t for t in times if t is not None)
+        e = first_entrance(A,B,(0.,0.),d,t_max=3.)
+>       assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+                                        ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:132: AttributeError
+_ test_exact_selfcheck_catches_an_earlier_narrow_contact_interval_not_just_the_last_step _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000049F0620>
+
+    def test_exact_selfcheck_catches_an_earlier_narrow_contact_interval_not_just_the_last_step(monkeypatch):
+        """U 的左壁先碰后离；删掉左壁候选后右壁前一步分离，但全前事件仍必须报漏首入。"""
+        from eab.kernel2d import entrance as E
+        B = [(0.,0.),(4.,0.),(4.,3.),(3.,3.),(3.,1.),(1.,1.),(1.,3.),(0.,3.)]
+        A = [(-2.,2.),(-1.875,2.),(-1.875,2.125),(-2.,2.125)]
+        real = E.enumerate_covers
+        def right_only(A,B,**kwargs):
+            return [c for c in real(A,B,**kwargs) if (
+                c.kind == 'VE' and B[c.b_index][0] >= 3. and B[(c.b_index+1)%len(B)][0] >= 3.) or (
+                c.kind == 'EV' and B[c.b_index][0] >= 3.)]
+        monkeypatch.setattr(E,'enumerate_covers',right_only)
+>       with pytest.raises(RuntimeError,match='missed an earlier entrance'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_kernel2d_entrance_e3.py:146: Failed
+_______ test_exact_ties_do_not_include_a_distinct_nearby_tread_contact ________
+
+    def test_exact_ties_do_not_include_a_distinct_nearby_tread_contact():
+        delta=2.**-40
+        B=[(0.,0.),(2.,0.),(2.,.5),(1.,.5),(1.,.5+delta),(0.,.5+delta)]
+        A=shifted(SQ,.5,1.)
+        e=first_entrance(A,B,(0.,0.),(0.,-1.),tol=.01,t_max=2.)
+        assert e.kind=='entrance' and e.t==.5-delta
+        assert ('VE',0,4) in e.tied_labels
+>       assert ('VE',1,2) not in e.tied_labels
+E       AssertionError: assert ('VE', 1, 2) not in (('VE', 0, 4), ('EV', 0, 4), ('VE', 1, 2))
+E        +  where (('VE', 0, 4), ('EV', 0, 4), ('VE', 1, 2)) = Entrance2(kind='entrance', t=0.4999999999990905, x=(0.0, -0.4999999999990905), label=('VE', 0, 4), normal=(0.0, 1.0), ...5), point_b=(0.5, 0.5000000000009095), gap=0.0, tied_labels=(('VE', 0, 4), ('EV', 0, 4), ('VE', 1, 2)), n_candidates=7).tied_labels
+
+tests\test_kernel2d_entrance_e3.py:156: AssertionError
+_______ test_convex_ties_are_exact_and_near_labels_remain_only_a_report _______
+
+    def test_convex_ties_are_exact_and_near_labels_remain_only_a_report():
+        delta=2.**-40
+        e=first_entrance(SQ,SQ,(2.,2.+delta),(-1.,-1.),tol=.01)
+        assert e.t==1.+delta
+>       assert set(e.tied_labels)=={('FF',0,2)}
+E       AssertionError: assert {('FF', 0, 2), ('FF', 3, 1)} == {('FF', 0, 2)}
+E         
+E         Extra items in the left set:
+E         ('FF', 3, 1)
+E         Use -v to get more diff
+
+tests\test_kernel2d_entrance_e3.py:164: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-0.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-0.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-0.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_initial_overlap_is_exact_even_below_coordinate_roundoff
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_touching_start_has_closed_set_time_zero[direction0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_touching_start_has_closed_set_time_zero[direction1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_fraction_time_is_not_replaced_by_rounded_float_candidate
+FAILED tests/test_kernel2d_entrance_e3.py::test_shortest_exit_compares_exact_signed_distance_not_rounded_gap
+FAILED tests/test_kernel2d_entrance_e3.py::test_brute_uses_exact_translation_not_noise_band
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-0.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[0.0009765625-1000000.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-0.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1.0-1000000.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-0.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-2]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-3]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-4]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-5]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-6]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise_sat[1024.0-1000000.0-7]
+FAILED tests/test_kernel2d_entrance_e3.py::test_exact_selfcheck_catches_an_earlier_narrow_contact_interval_not_just_the_last_step
+FAILED tests/test_kernel2d_entrance_e3.py::test_exact_ties_do_not_include_a_distinct_nearby_tread_contact
+FAILED tests/test_kernel2d_entrance_e3.py::test_convex_ties_are_exact_and_near_labels_remain_only_a_report
+90 failed, 3 passed in 0.95s

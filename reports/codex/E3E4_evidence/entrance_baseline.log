@@ -1,0 +1,288 @@
+FFFFFFFFFFFF.F.FF.                                                       [100%]
+================================== FAILURES ===================================
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-0.0] _
+
+offset = 0.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000.0] _
+
+offset = 1000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.7755575615628914e-17, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(10...1875), point_b=(1000.0009765625, 1000.000732421875), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000000.0] _
+
+offset = 1000000.0, scale = 0.0009765625
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.7755575615628914e-17, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(10...), point_b=(1000000.0009765625, 1000000.0007324219), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-0.0] _
+
+offset = 0.0, scale = 1.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000.0] _
+
+offset = 1000.0, scale = 1.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.842170943040401e-14, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1001.0, 1000.75), point_b=(1001.0, 1000.75), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000000.0] _
+
+offset = 1000000.0, scale = 1.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.842170943040401e-14, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1000001.0, 1000000.75), point_b=(1000001.0, 1000000.75), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-0.0] _
+
+offset = 0.0, scale = 1024.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000.0] _
+
+offset = 1000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+        assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+        for tol in (0., scale):
+            short = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=math.nextafter(32., 0.), tol=tol)
+>           assert short.kind == 'none', (short.kind, short.t)
+E           AssertionError: ('entrance', 32.0)
+E           assert 'entrance' == 'none'
+E             
+E             - none
+E             + entrance
+
+tests\test_kernel2d_entrance_e3.py:32: AssertionError
+_ test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000000.0] _
+
+offset = 1000000.0, scale = 1024.0
+
+    @pytest.mark.parametrize('offset', [0., 1e3, 1e6])
+    @pytest.mark.parametrize('scale', [2.**-10, 1., 2.**10])
+    def test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity(offset, scale):
+        """竖板闭式 t=δ/speed；平移必须先 Fraction，再谓词，不能吞掉 δ。"""
+        A = [(offset + scale * (x + 1), offset + scale * (y + .75)) for x,y in SQ]
+        B = [(offset + scale * x, offset + scale * y) for x,y in STEP]
+        delta, speed = scale * 2.**-45, scale * 2.**-50
+        e = first_entrance(A, B, (delta, 0.), (-speed, 0.), t_max=64.)
+>       assert e.kind == 'entrance' and e.t == 32., (e.kind, e.t)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'entrance'
+E         
+E           entrance and 0.0 == 32.0)
+E        +  where 0.0 = Entrance2(kind='entrance', t=0.0, x=(2.9103830456733704e-11, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1001024.0, 1000768.0), point_b=(1001024.0, 1000768.0), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=3).t
+
+tests\test_kernel2d_entrance_e3.py:29: AssertionError
+____ test_concave_initial_overlap_is_exact_even_below_coordinate_roundoff _____
+
+    def test_concave_initial_overlap_is_exact_even_below_coordinate_roundoff():
+        A, B = shifted(SQ, 1e6 + 1., 1e6 + .75), shifted(STEP, 1e6, 1e6)
+        got = first_entrance(A, B, (-2.**-45, 0.), (-1., 0.))
+>       assert got.kind == 'exit' and got.gap == -2.**-45, (got.kind, got.gap)
+E       AssertionError: ('entrance', 0.0)
+E       assert ('entrance' == 'exit'
+E         
+E         - exit
+E         + entrance)
+
+tests\test_kernel2d_entrance_e3.py:38: AssertionError
+______ test_concave_touching_start_has_closed_set_time_zero[direction0] _______
+
+direction = (1.0, 0.0)
+
+    @pytest.mark.parametrize('direction', [(1., 0.), (0., 1.), (-1., 0.)])
+    def test_concave_touching_start_has_closed_set_time_zero(direction):
+        A = shifted(SQ, 1., .75)
+        e = first_entrance(A, STEP, (0., 0.), direction)
+>       assert e.kind == 'entrance' and e.t == 0.
+E       AssertionError: assert ('none' == 'entrance'
+E         
+E         - entrance
+E         + none)
+
+tests\test_kernel2d_entrance_e3.py:45: AssertionError
+______ test_concave_touching_start_has_closed_set_time_zero[direction1] _______
+
+direction = (0.0, 1.0)
+
+    @pytest.mark.parametrize('direction', [(1., 0.), (0., 1.), (-1., 0.)])
+    def test_concave_touching_start_has_closed_set_time_zero(direction):
+        A = shifted(SQ, 1., .75)
+        e = first_entrance(A, STEP, (0., 0.), direction)
+>       assert e.kind == 'entrance' and e.t == 0.
+E       AssertionError: assert ('none' == 'entrance'
+E         
+E         - entrance
+E         + none)
+
+tests\test_kernel2d_entrance_e3.py:45: AssertionError
+____ test_concave_fraction_time_is_not_replaced_by_rounded_float_candidate ____
+
+    def test_concave_fraction_time_is_not_replaced_by_rounded_float_candidate():
+        A = shifted(SQ, 1.4, .9)
+        e = first_entrance(A, STEP, (0., 0.), (-.7, -.1), t_max=2.)
+        want = (F(1.4) - 1) / F(.7)
+        assert e.kind == 'entrance' and e.t == float(want), (e.kind, e.t, want)
+>       assert e.t_exact == want
+               ^^^^^^^^^
+E       AttributeError: 'Entrance2' object has no attribute 't_exact'
+
+tests\test_kernel2d_entrance_e3.py:53: AttributeError
+______ test_shortest_exit_compares_exact_signed_distance_not_rounded_gap ______
+
+    def test_shortest_exit_compares_exact_signed_distance_not_rounded_gap():
+        A, B = shifted(SQ, 1e6 + 1., 1e6 + .75), shifted(STEP, 1e6, 1e6)
+        e = shortest_exit(A, B, (-2.**-45, 0.))
+>       assert e.normal == (1., 0.) and e.gap == -2.**-45, (e.normal, e.gap)
+E       AssertionError: ((1.0, -0.0), 0.0)
+E       assert ((1.0, -0.0) == (1.0, 0.0)
+E         
+E         Use -v to get more diff and 0.0 == -(2.0 ** -45))
+E        +  where 0.0 = Entrance2(kind='exit', t=0.0, x=(-2.842170943040401e-14, 0.0), label=('VE', 0, 3), normal=(1.0, -0.0), point_a=(1000001.0, 1000000.75), point_b=(1000001.0, 1000000.75), gap=0.0, tied_labels=(('VE', 0, 3), ('EV', 3, 4)), n_candidates=9).gap
+
+tests\test_kernel2d_entrance_e3.py:69: AssertionError
+______________ test_brute_uses_exact_translation_not_noise_band _______________
+
+    def test_brute_uses_exact_translation_not_noise_band():
+        A, B = shifted(SQ, 1e6 + 1., 1e6 + .75), shifted(STEP, 1e6, 1e6)
+        got = first_entrance_brute(A, B, (2.**-45, 0.), (-2.**-50, 0.), t_max=64., steps=8)
+>       assert got == 32.
+E       assert 0.0 == 32.0
+
+tests\test_kernel2d_entrance_e3.py:77: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-0.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[0.0009765625-1000000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-0.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1.0-1000000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-0.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_first_entrance_keeps_sub_roundoff_translation_and_tiny_velocity[1024.0-1000000.0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_initial_overlap_is_exact_even_below_coordinate_roundoff
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_touching_start_has_closed_set_time_zero[direction0]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_touching_start_has_closed_set_time_zero[direction1]
+FAILED tests/test_kernel2d_entrance_e3.py::test_concave_fraction_time_is_not_replaced_by_rounded_float_candidate
+FAILED tests/test_kernel2d_entrance_e3.py::test_shortest_exit_compares_exact_signed_distance_not_rounded_gap
+FAILED tests/test_kernel2d_entrance_e3.py::test_brute_uses_exact_translation_not_noise_band
+15 failed, 3 passed in 0.18s

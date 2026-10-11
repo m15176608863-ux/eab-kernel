@@ -16,6 +16,7 @@ import pytest
 
 from eab.kernel2d.covers import enumerate_covers, membership_convex, vv_cover
 from eab.kernel2d.geom import polygons_overlap, translate
+from test_kernel2d_covers_e3 import strict_vv_oracle, independent_cover_oracle
 
 
 def _rot(P, th, T=(0.0, 0.0)):
@@ -79,40 +80,42 @@ def test_membership_far_from_a_t_vertex_short_edge_agrees_with_brute(h, C, th):
 @pytest.mark.parametrize("C", [1e3, 1e5])
 def test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary(g, C):
     """A = 单位方块（顶点 0 = 左下角，−N_A = [0°, 90°]），B = 三角（顶点 0 = 原点，N_B = [−45°, 45°]），交锥 [0°, 45°]；
-    A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。恒等变换下 strict 在容差内；31 个姿态 + 平移到 C 后 strict 必须与恒等一致
-    （旧版对半翻转：方向噪声 rfl/g 没进判据）。"""
+    A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。E3 保留全部 31 姿态，strict 与独立 Fraction 邻点支持 oracle 逐格精确一致；
+    舍入后数据在边界两侧确实可能不同，不再用噪声把两侧伪装成同一答案。"""
     A0 = SQUARE
     B0 = [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)]
     base = vv_cover(translate(A0, (g, 0.0)), 0, B0, 0, 0.0)
     assert base is not None
-    flips = []
+    assert base.strict is strict_vv_oracle(translate(A0,(g,0.0)),0,B0,0)
+    signatures = []
     for k in range(31):
         th = 0.2 * k
         A = _rot(translate(A0, (g, 0.0)), th, (C, C))
         B = _rot(B0, th, (C, C))
         c = vv_cover(A, 0, B, 0, 0.0)
         assert c is not None, (g, C, th)
-        flips.append(c.strict != base.strict)
-    assert not any(flips), (g, C, sum(flips))
+        assert c.strict is strict_vv_oracle(A,0,B,0), (g,C,th)
+        signatures.append(c.strict)
+    assert len(signatures) == 31
 
 
 @pytest.mark.parametrize("h", [1e-4, 1e-5])
 @pytest.mark.parametrize("C", [1e3, 1e5])
 def test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint(h, C):
     """B = 单位方块、顶边被 T 形顶点拆出长 h 的短边 (1, 1)→(1 − h, 1)；A = 三角、底顶点正好在短边起点 (1 − h, 1) 上方高度 0.2
-    （投影参数恰为 1）。31 个姿态 + 平移到 C：enumerate_covers 的标签集必须与恒等一致（旧版 ('VE', 0, 2) 出现/缺失各半：
-    参数噪声 ≈ g·rfl/h² 远超带宽 st/h）。"""
+    （投影参数恰为 1）。31 个姿态 + 平移到 C：每格完整标签/strict 集对独立精确 oracle 一致；
+    保留原网格，不再要求舍入数据必须仍精确投影在端点。"""
     B0 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (1.0 - h, 1.0), (0.0, 1.0)]
     # 顶点高度 0.2：到 B 真角点 (1, 1) 的方向离其法锥边界 h/0.2 rad——与长度容差张的角 tol/h 分得开（不许恰落在容差边界上）
     A0 = [(1.0 - h, 1.2), (1.0 - h + 0.3, 1.6), (1.0 - h - 0.3, 1.6)]
-    base = {c.label() for c in enumerate_covers(A0, B0, window=0.5, tol=1e-9)}
+    base = {c.label() for c in enumerate_covers(A0, B0, window=0.5)}
     assert ("VE", 0, 2) in base, base
     for k in range(31):
         th = 0.2 * k
         A = _rot(A0, th, (C, C))
         B = _rot(B0, th, (C, C))
-        labels = {c.label() for c in enumerate_covers(A, B, window=0.5, tol=1e-9)}
-        assert labels == base, (h, C, th, sorted(labels ^ base))
+        labels = {(c.kind,c.a_index,c.b_index,c.strict) for c in enumerate_covers(A,B,window=0.5)}
+        assert labels == independent_cover_oracle(A,B,0.5), (h,C,th)
 
 
 def test_a_polygon_that_folds_back_on_itself_is_rejected_loudly():

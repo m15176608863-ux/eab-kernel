@@ -1,0 +1,13 @@
+﻿3 admissible False ok False
+9 admissible True ok True
+python : Traceback (most recent call last):
+所在位置 行:29 字符: 139
++ ... =$env:TEMP; python -X utf8 reports/codex/E3E4_evidence/repro_limit_23 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "D:\eab-wt\cx-e2\reports\codex\E3E4_evidence\repro_limit_238_test.py", line 25, in <module>
+    assert not admissible and not ok,(k,admissible,ok)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (9, True, True)

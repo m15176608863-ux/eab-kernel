@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.112" timestamp="2026-10-12T00:48:10.363081+08:00" hostname="RICH"><testcase classname="tests.test_kernel2d_covers_e3" name="test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop" time="0.001"><failure message="AssertionError: true extreme point lost by tolerance-pop chain&#10;assert (1e-15, -0.001) in [(0.0, 0.0), (0.001, -0.001), (2.0, -0.001), (2.0, 1.0), (1e-15, 1.0)]">def test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop():
+        pts=[(0.,0.),(1e-15,-1e-3),(1e-15,1.),(1e-3,-1e-3),(2.,-1e-3),(2.,1.)]
+        H=convex_hull(pts)
+&gt;       assert (1e-15,-1e-3) in H, "true extreme point lost by tolerance-pop chain"
+E       AssertionError: true extreme point lost by tolerance-pop chain
+E       assert (1e-15, -0.001) in [(0.0, 0.0), (0.001, -0.001), (2.0, -0.001), (2.0, 1.0), (1e-15, 1.0)]
+
+tests\test_kernel2d_covers_e3.py:61: AssertionError</failure></testcase></testsuite></testsuites>

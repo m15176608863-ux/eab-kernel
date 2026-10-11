@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import pytest
+from fractions import Fraction
 
 import eab.limit_multi as LM
 from eab.limit import LimitContact, limit_load, wrench
@@ -149,7 +150,8 @@ def test_two_stacked_boxes_3d(mu, want):
 
 # ---------------------------------------------------------------- 自校验的牙
 
-def test_self_check_raises_on_an_injected_wrong_alpha(monkeypatch):
+@pytest.mark.parametrize("digits", [3,9,30,100])
+def test_self_check_raises_on_an_injected_wrong_alpha(monkeypatch, digits):
     real = LM.maximize
 
     def skew(A, b, c, **kw):
@@ -157,7 +159,7 @@ def test_self_check_raises_on_an_injected_wrong_alpha(monkeypatch):
         if res.status == "optimal":
             ia = [j for j, cj in enumerate(c) if cj != 0.0][0]
             res.x = list(res.x)
-            res.x[ia] *= 0.999
+            res.x[ia] = res.exact_x[ia] * (1-Fraction(1,10**digits))
         return res
     monkeypatch.setattr(LM, "maximize", skew)
     bodies, bcs, _ = _stack_2d(0.8, 30.0, 10.0, T=(5e5, 4.4e6))
@@ -223,33 +225,35 @@ def _stack_plus_far(D, mu=1.2):
 
 
 @pytest.mark.parametrize("D", [0.0, 1e2, 1e4, 1e6])
-def test_a_far_body_does_not_loosen_the_self_check(D, monkeypatch):
+@pytest.mark.parametrize("digits", [3, 9, 30, 100])
+def test_a_far_body_does_not_loosen_the_self_check(D, monkeypatch, digits):
     """自校验的尺度是各体自己的：装配体跨度 D（远处一块）不许把 α×0.999 的注入、顶块贯入自己接触的机构、远处块合力
-    挪 1e-3·L 的静力残差放行（旧版在共同形心判定，D = 1e4 起三者全部静默通过）。"""
+    挪 10**(-digits)·L 的静力残差放行（旧版在共同形心判定，D = 1e4 起三者全部静默通过）。"""
     import copy
     import math
     bodies, bcs = _stack_plus_far(D)
     r = limit_load_multi(bodies, bcs, dim=2)
     assert r.alpha == pytest.approx(10.0, rel=1e-9)
-    # (i) 机构：顶块额外向下平动，幅度为它自己接触点速度的 1e-3
+    delta = Fraction(1, 10**digits)
+    # (i) 机构：顶块额外向下平动，幅度为它自己接触点速度的 10**(-digits)
     y = r.mechanisms[1]
     sp = max(math.hypot(y[0] - y[2] * p[1], y[1] + y[2] * p[0]) for p in ((-1.0, 1.0), (1.0, 1.0)))
-    mech = [list(m) for m in r.mechanisms]
-    mech[1][1] -= 1e-3 * sp
+    mech = [[v.exact for v in m] for m in r.mechanisms]
+    mech[1][1] -= delta * Fraction(sp)
     assert not mechanism_is_admissible_multi(mech, bcs, dim=2), D
     rr = copy.copy(r)
     rr.mechanisms = mech
     assert not check_duality_multi(rr, bodies, bcs, dim=2)["ok"], D
     # (ii) 静力：远处块的法向力从左接触挪到右接触 1e-3（合力不变、该块力矩不平衡）
-    lam = list(r.lambdas)
+    lam = [v.exact for v in r.lambdas]
     for j in (8, 9):
-        lam[j] -= 1e-3 * 10.0 / 2.0 * 0.5
+        lam[j] -= delta * Fraction(5, 2)
     for j in (10, 11):
-        lam[j] += 1e-3 * 10.0 / 2.0 * 0.5
+        lam[j] += delta * Fraction(5, 2)
     rr = copy.copy(r)
     rr.lambdas = lam
     d = check_duality_multi(rr, bodies, bcs, dim=2)
-    assert not d["static_ok"] and d["static_residual_rel"] > 1e-5, (D, d["static_residual_rel"])
+    assert not d["static_ok"] and any(Fraction(v) != 0 for v in d["static_residual_exact"]), (D, d)
     # (iii) 真实调用路径上的 α×0.999 注入
     real = LM.maximize
 
@@ -258,7 +262,7 @@ def test_a_far_body_does_not_loosen_the_self_check(D, monkeypatch):
         if res.status == "optimal":
             ia = [j for j, cj in enumerate(c) if cj != 0.0][0]
             res.x = list(res.x)
-            res.x[ia] *= 0.999
+            res.x[ia] = res.exact_x[ia] * (1-delta)
         return res
     monkeypatch.setattr(LM, "maximize", skew)
     with pytest.raises(RuntimeError, match="self-check"):
@@ -267,19 +271,29 @@ def test_a_far_body_does_not_loosen_the_self_check(D, monkeypatch):
 
 @pytest.mark.parametrize("v,expect", [(1e-6, "optimal"), (1e-9, "optimal"), (1e-10, "raise"), (1e-13, "raise"),
                                       (3e-15, "infeasible"), (2e-16, "infeasible")])
-def test_multi_resolvability_has_the_same_three_regimes_as_the_single_body_version(v, expect):
-    """可分辨性筛查（单体版 test_limit_fuzz 的三区间门，多体同构）：删掉筛查、Rmag 置 0 都会让"抛错"区间返回 optimal 1e10…1e13。"""
+@pytest.mark.parametrize("loaded_body", [0, 1])
+def test_multi_resolvability_has_the_same_three_regimes_as_the_single_body_version(v, expect, loaded_body):
+    """可分辨性报告三区间（resolved / unresolved / nearby_infeasible），原精确status始终optimal；
+    删筛查会丢风险报告。body0/1都覆盖，并精确核alpha*v=1。"""
     from math import cos, sin
     cts = [BodyContact(LimitContact((1.0, 0.0), (sin(1.2), cos(1.2)), 1.0), 0, None)]
     body = LimitBody(wrench((0.0, -1.0), (0.0, 0.7), O2, 2), wrench((-1.0, v), (0.0, 0.0), O2, 2))
-    if expect == "raise":
-        with pytest.raises(RuntimeError, match="uncertainty"):
-            limit_load_multi([body], cts, dim=2, k=8)
-        return
-    r = limit_load_multi([body], cts, dim=2, k=8)
-    assert r.status == expect, (v, r.status, r.alpha)
-    if expect == "optimal":
-        assert r.uncertainty <= 1e-6 and abs(r.alpha * v - 1.0) <= 1e-12
+    bodies = [body]
+    if loaded_body:
+        bodies = [LimitBody([0., -10., -500.], [0.]*3), body]
+        cts = [BodyContact(c.contact, 1, None) for c in cts]
+        cts += [BodyContact(LimitContact((50.+x,0.),(0.,1.),.5),0,None) for x in (-.5,.5)]
+    r = limit_load_multi(bodies,cts,dim=2,k=8)
+    assert r.status == "optimal" and r.alpha.exact*Fraction(v) == 1
+    assert check_duality_multi(r,bodies,cts,dim=2,k=8)["ok"]
+    report={"optimal":"resolved","raise":"unresolved","infeasible":"nearby_infeasible"}[expect]
+    assert r.resolvability == report
+    if report == "resolved":
+        assert r.uncertainty <= 1e-6
+    elif report == "nearby_infeasible":
+        assert "infeasible" in r.resolvability_statuses
+    else:
+        assert r.uncertainty > 1e-6 and r.resolvability_statuses == ("optimal","optimal")
 
 
 def _stack_cohesive_2d(mu=0.3, W1=30.0, W2=10.0, cA=2.0):

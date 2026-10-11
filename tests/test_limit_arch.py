@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import itertools
 import math
+from fractions import Fraction
 
 import pytest
 
@@ -85,18 +86,18 @@ class Arch:
         n = self.n
         for js in itertools.combinations(range(n + 1), 4):
             for cs in itertools.product((0, 1), repeat=4):
-                p = [self.joint(j)[0][c] for j, c in zip(js, cs)]
+                p = [tuple(Fraction(v) for v in self.joint(j)[0][c]) for j, c in zip(js, cs)]
                 pA, pB, pC, pD = p
-                M = [[1.0, 0.0, -pB[1], 0.0], [0.0, 1.0, pB[0], 0.0],
-                     [1.0, 0.0, -pC[1], (pC[1] - pD[1])], [0.0, 1.0, pC[0], -(pC[0] - pD[0])]]
-                rhs = [-(pB[1] - pA[1]), (pB[0] - pA[0]), 0.0, 0.0]
+                M = [[1, 0, -pB[1], 0], [0, 1, pB[0], 0],
+                     [1, 0, -pC[1], (pC[1] - pD[1])], [0, 1, pC[0], -(pC[0] - pD[0])]]
+                rhs = [-(pB[1] - pA[1]), (pB[0] - pA[0]), 0, 0]
                 sol = _solve4(M, rhs)
                 if sol is None:
                     continue
-                for sgn in (1.0, -1.0):
+                for sgn in (1, -1):
                     vKx, vKy, wK, wR = (sgn * v for v in sol)
                     links = [(pA[1] * sgn, -pA[0] * sgn, sgn), (vKx, vKy, wK), (pD[1] * wR, -pD[0] * wR, wR)]
-                    tw = [(0.0, 0.0, 0.0)] * n
+                    tw = [(0, 0, 0)] * n
                     for i in range(js[0], js[1]):
                         tw[i] = links[0]
                     for i in range(js[1], js[2]):
@@ -110,31 +111,33 @@ class Arch:
                     for j in range(n + 1):
                         corners, nrm, a, b = self.joint(j)
                         for ci, q in enumerate(corners):
+                            q = tuple(Fraction(v) for v in q)
                             va = vel(tw[a], q)
-                            vb = vel(tw[b], q) if b is not None else (0.0, 0.0)
-                            rel = (va[0] - vb[0]) * nrm[0] + (va[1] - vb[1]) * nrm[1]
+                            vb = vel(tw[b], q) if b is not None else (0, 0)
+                            rel = (va[0] - vb[0]) * Fraction(nrm[0]) + (va[1] - vb[1]) * Fraction(nrm[1])
                             if j in js and ci == cs[js.index(j)]:
                                 continue                                    # 铰本身：相对速度为零（相容性保证）
-                            if rel < -1e-12:
+                            if rel < 0:
                                 ok = False
                     if not ok:
                         continue
-                    dead_power = sum(-w * vel(t, c)[1] for w, t, c in zip(self.weights, tw, self.cents))
-                    live_power = -vel(tw[self.crown_body], self.crown)[1]
-                    if live_power <= 1e-12:
+                    dead_power = sum(-Fraction(w) * vel(t, tuple(Fraction(v) for v in c))[1]
+                                     for w, t, c in zip(self.weights, tw, self.cents))
+                    live_power = -vel(tw[self.crown_body], tuple(Fraction(v) for v in self.crown))[1]
+                    if live_power <= 0:
                         continue
                     alpha = -dead_power / live_power
-                    if alpha > 0.0:
+                    if alpha > 0:
                         out.append((alpha, [list(t) for t in tw], (js, cs, sgn)))
         return sorted(out)
 
 
 def _solve4(M, rhs):
-    A = [list(row) + [r] for row, r in zip(M, rhs)]
+    A = [[Fraction(v) for v in row] + [Fraction(r)] for row, r in zip(M, rhs)]
     n = 4
     for c in range(n):
         piv = max(range(c, n), key=lambda r: abs(A[r][c]))
-        if abs(A[piv][c]) < 1e-12:
+        if A[piv][c] == 0:
             return None
         A[c], A[piv] = A[piv], A[c]
         for r in range(n):

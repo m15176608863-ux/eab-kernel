@@ -34,9 +34,9 @@ M0 的目标是"要么答对、要么报错、绝不静默给错"。几何核此
 | 步 | 范围 | 状态 |
 |---|---|---|
 | E1 | 二维精确层 `kernel2d/exact.py`：精确凸性、精确 E = B ⊕ (−A)（只合并精确平行）、精确成员、精确分离轴 oracle、精确法锥判据、一般简单多边形的精确相交 | 已写，门 `tests/test_kernel2d_exact.py` |
-| E2 | 二维凸路径接精确层：凸性/极角/平行/成员/法锥精确；facet gap 只作构造量；G0 三票零容差、不跳样本；删除方向可行窗/链法向；凸首入选路、初态与射线裁剪也用精确 facet | WO-E2 已完成（2026-10-12；本树全套 7500 passed，待所有者验收/G6）：`tests/test_kernel2d_exact.py`、`tests/test_kernel2d_report_band.py`、`tests/test_kernel2d_convex_ray_exact.py` 及改写后的二维回归/不变性门。全套、耗时与突变结果见 `reports/codex/E2_report.md`；不等于 G6 退出 |
-| E3 | 二维首入的剩余精确化：凹对谓词裁决、候选与最短出口路径 | 待做；凸对选路/初态/射线裁剪已并入 E2，凹首入和已侵入后的 `shortest_exit` 仍是既有容差路径 |
-| E4 | 极限分析自校验：LP 已对给定数据精确，自校验的静力 / 对偶残差也改在有理数上算，"尺度"问题随之消失 | 待做 |
+| E2 | 二维凸路径接精确层：凸性/极角/平行/成员/法锥精确；facet gap 只作构造量；G0 三票零容差、不跳样本；删除方向可行窗/链法向；凸首入选路、初态与射线裁剪也用精确 facet | WO-E2 已验收合入 `e1fbbd4`（2026-10-12 工单确认；全套 7500 passed）：`tests/test_kernel2d_exact.py`、`tests/test_kernel2d_report_band.py`、`tests/test_kernel2d_convex_ray_exact.py` 及改写后的二维回归/不变性门。全套、耗时与突变结果见 `reports/codex/E2_report.md`；不等于 G6 退出 |
+| E3 | 二维剩余首入、局部 VE/EV/VV、边内与凸包 | WO-E3E4 实现并配门（2026-10-12，待所有者验收/G6）：凹初态/仿射根/段内/相交/漏候选自检在 Fraction 上做，局部出口按精确平方距离选最浅盖；精确并列与 near_labels 分开；显式域窗不抬噪声地板。`test_kernel2d_entrance_e3.py`、`test_kernel2d_covers_e3.py`，全套与突变证据见 `reports/codex/E3E4_report.md` |
+| E4 | 极限分析有理数自校验 | WO-E3E4 实现并配门（2026-10-12，待所有者验收/G6）：LP 解保留有理数见证，静力/对偶/互补/容许性精确核同一模型；多体可分辨性按本体形心/臂长，风险只报 resolvability/statuses，不改变原问题精确 status/alpha；原筛查测试保留输入并加强为精确答案与风险报告双门。`test_limit_exact_selfcheck.py`、既有 selfcheck/multi 门及源码突变；10⁻¹⁰⁰ 注入用 Fraction 保持可表达性，浮点已舍入成原值时不能声称能识别未表达的差异 |
 | E5 | 三维：凸体按顶点集的精确凸包表示（面可以是三角网格、微二面角是真棱），棱弧 / 顶点锥 / 交点参数改精确符号；G0 三维三票变成定理检验 | 设计中（难点：刚体运动后的平面四边形面不再共面，要么三角化、要么从顶点集重建精确凸包） |
 
 每一步都配精确 oracle（与被测路径零共用）与突变体；对 legacy 的对账（bb52 的 3° / 1e-6）走显式的域窗口，不受影响。
@@ -46,7 +46,7 @@ M0 的目标是"要么答对、要么报错、绝不静默给错"。几何核此
 - 凸输入只接受精确凸，平直顶点允许，零长边/反射/折回/绕圈清晰拒收。刚体舍入造成微凹时不能继续当凸；成员回退到一般简单多边形精确相交，首入切到既有凹路径。门 `test_rounded_flat_vertex_is_refused_by_the_convex_path`、`test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path`。
 - G0 票二用独立全顶点投影支撑 oracle 分别核对严格与边界集合，平直链不能简化成“非 FF 就严格”；票三用独立 Fraction 凸包只数严格顶点。门 `test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions`、`test_g0_support_and_hull_oracles_use_no_tested_geometry_primitive`（均在 `test_kernel2d_exact.py`）。
 - `membership_convex` 的显式报告带：凸对用精确闭线段距离检验完整欧氏边界带；非凸对只在四轴 ±tol 的精确状态变化给出边界见证时报告 0，**保守但不完备**，未检出的带内点保留精确分类。带外不能吞成 0。门 `test_kernel2d_report_band.py`；完整非凸 E 边界距离留待后续全局构造。
-- `ve_cover` / `ev_cover` / `vv_cover` / `enumerate_covers` 的局部单盖、凹候选与 legacy 窗口路径不改；凹首入与已侵入后的最短出口也不在 E2 的精确化声明内。
+- E2 当时未修改局部单盖、凹候选和局部出口；E3 已补，见上表与 WO-E3E4 报告。没有实现凹块全局 E/盖裁剪，shortest_exit 不声称凹对全局最小分离。
 
 ## 不能主张的
 

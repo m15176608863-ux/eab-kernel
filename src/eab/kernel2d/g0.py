@@ -213,7 +213,7 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
 
     真值：`polygons_overlap`（暴力谓词）判分离；分离时的真距离由 `brute_polygon_distance` 给出。
     被检验的命题：A+x 与 B 分离时，
-        d(A+x, B) = min{ |point_a − point_b| : c ∈ enumerate_covers(A+x, B, window=∞, tol) }，
+        d(A+x, B) = min{ |point_a − point_b| : c ∈ enumerate_covers(A+x, B, window=∞) }，
     即法锥有效性筛选与边内筛选不会把实现最短距离的那一对特征滤掉。见证点都在各自多边形上
     （边内容差 tol 除外），所以见证距离恒 ≥ 真距离；相等 ⟺ 完备。
     tol 是长度（随单位缩放）；atol 是**相对**阈值：|见证 − 真值| > atol·max(L, 真值) + c·eps·C 判失败
@@ -244,7 +244,7 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
             rep.touching += 1
             continue
         truth, arg = brute_polygon_distance(At, B)
-        covs = enumerate_covers(At, B, window=inf, tol=tol)
+        covs = enumerate_covers(At, B, window=inf)
         got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
                    for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
         rep.samples += 1
@@ -337,7 +337,7 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
     a 为反射顶点则 A 在 a 附近必越过 e 所在直线、内部相交；a 凸但 −n_B(e) ∉ N_A(a) 同理——所以
     边界位形上的顶点-边接触都是法锥有效的盖；纯顶点-顶点接触的 z 是相邻有效线段的端点（投影参数 0/1）。
     检验：对每个暴力判相交的平移 x 与对应方向 u，z = x + t*·u（`brute_ray_exit`）处
-        min{ |point_a − point_b| : c ∈ enumerate_covers(A+z, B, window=∞, tol) } ≤ atol·L + c·eps·C，
+        min{ |point_a − point_b| : c ∈ enumerate_covers(A+z, B, window=∞) } ≤ atol·L + c·eps·C，
     即法锥有效性筛选与边内筛选没有把出口处那段 ∂E 滤掉。atol 是相对阈值（L 为特征长度），c·eps·C 是出口位形
     坐标的舍入下限（旧版 atol·max(1, 坐标量级) 把绝对量纲与坐标量级混在一起：原点附近 ×1e-3 的块松到 1e-6·L，
     1e5 处松到 1e-4）。
@@ -365,7 +365,7 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
             continue
         t = brute_ray_exit(At, B, u)
         Az = translate(At, (t * u[0], t * u[1]))
-        covs = enumerate_covers(Az, B, window=inf, tol=tol)
+        covs = enumerate_covers(Az, B, window=inf)
         got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
                    for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
         rep.samples += 1

@@ -70,10 +70,10 @@ def test_gate_has_teeth_wrong_orientation_is_caught():
 def test_first_entrance_picks_shallowest_penetration():
     # 三角形顶点 (0.5,1.5) 平移到正方形内 (0.5,0.3)：离底边 0.3、离左边 0.5，两条边都是有效 VE 盖
     A = translate(TRI, (0.0, -1.2))
-    covs = enumerate_covers(A, SQUARE, window=10.0, tol=1e-12)
+    covs = enumerate_covers(A, SQUARE, window=10.0)
     ve_for_apex = [c for c in covs if c.kind == "VE" and c.a_index == 2]
     assert ve_for_apex, "apex must have valid VE covers"
-    fe = first_entrance_for_vertex(A, 2, SQUARE, window=10.0, tol=1e-12)
+    fe = first_entrance_for_vertex(A, 2, SQUARE, window=10.0)
     assert fe is not None and fe.kind == "VE"
     assert fe.gap == max(c.gap for c in ve_for_apex)
     assert abs(fe.gap + 0.3) < 1e-12 and fe.b_index == 0     # 底边 y=0，侵入 0.3

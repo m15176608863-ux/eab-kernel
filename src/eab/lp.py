@@ -84,6 +84,9 @@ class LPResult:
     iterations: int
     basis: list[int]          # 各行的基变量下标；≥ n 的是留在基里的人工变量（冗余行）
     ray: list[float] | None = None   # UNBOUNDED 时：经原始 A 核验过的无界射线（原单位，cᵀd < 0）
+    exact_x: tuple[Fraction, ...] | None = None  # OPTIMAL 的原始数据精确见证；浮点字段只是显示视图
+    exact_y: tuple[Fraction, ...] | None = None
+
 
 
 _FEAS = 1e-9              # 原始可行性松弛（规整单位，max|b| ∈ [0.5, 1)）：Harris 比值检验、基解的小负值
@@ -639,7 +642,8 @@ class _Exact:
                 xe[j] = xB[i]
         obj = sum((cj * xj for cj, xj in zip(self.c, xe) if xj != 0), zero)
         yo = [_fl(-v if self.flip[i] else v) for i, v in enumerate(y)]
-        return LPResult(OPTIMAL, [_fl(v) for v in xe], _fl(obj), yo, iters, list(basis))
+        return LPResult(OPTIMAL, [_fl(v) for v in xe], _fl(obj), yo, iters, list(basis),
+                        exact_x=tuple(xe), exact_y=tuple(-v if self.flip[i] else v for i, v in enumerate(y)))
 
 
 def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], int, int]:
@@ -847,7 +851,8 @@ def maximize(A: list[list[float]], b: list[float], c: list[float], **kw) -> LPRe
     res = solve(A, b, [-v for v in c], exact=ex, **kw)
     if res.status == OPTIMAL:
         return LPResult(res.status, res.x, -res.obj, [-v for v in res.y],
-                        res.iterations, res.basis)
+                        res.iterations, res.basis, exact_x=res.exact_x,
+                        exact_y=tuple(-v for v in res.exact_y) if res.exact_y is not None else None)
     if res.status == UNBOUNDED:
         return LPResult(UNBOUNDED, res.x, float("inf"), res.y, res.iterations, res.basis, res.ray)
     return res

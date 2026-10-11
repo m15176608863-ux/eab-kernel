@@ -1,0 +1,1357 @@
+........................................................................ [  5%]
+........................................................................ [ 11%]
+......F................................................................. [ 17%]
+........................................................................ [ 23%]
+.......................FFFFFFFFFF....................................... [ 29%]
+...F..FFFFF..........F..FFFFF.F.FF..FFFF.FF..FFF........................ [ 35%]
+........................................................................ [ 41%]
+........................................................................ [ 47%]
+........................................................................ [ 53%]
+........................................................................ [ 59%]
+........................................................................ [ 65%]
+............F........................................................... [ 71%]
+........................................................................ [ 77%]
+........................................................................ [ 83%]
+........................................................................ [ 88%]
+........................................................................ [ 94%]
+..............................................................           [100%]
+================================== FAILURES ===================================
+__________ test_hull_of_a_rotated_collinear_strip_has_four_vertices ___________
+
+    def test_hull_of_a_rotated_collinear_strip_has_four_vertices():
+        """一条直线上的点（两端 ±1e5）加一条宽 1 的平行偏移上的两个端点，旋转、平移到 |坐标| ~ 1e5：
+        直线上的中间点经舍入偏离弦 ~eps·C，凸包的舍入地板必须把它们判为共线，恰好 4 个顶点。"""
+        rng = random.Random(7)
+        sizes = {}
+        for _ in range(3000):
+            th = rng.uniform(0.0, 2 * math.pi)
+            u, v = (math.cos(th), math.sin(th)), (-math.sin(th), math.cos(th))
+            o = (rng.uniform(-1e5, 1e5), rng.uniform(-1e5, 1e5))
+            ts = [rng.uniform(-1e5, 1e5) for _ in range(6)] + [-1e5, 1e5]
+            pts = [(o[0] + t * u[0], o[1] + t * u[1]) for t in ts]
+            pts += [(o[0] + e * 1e5 * u[0] + v[0], o[1] + e * 1e5 * u[1] + v[1]) for e in (1.0, -1.0)]
+            n = len(convex_hull(pts))
+            sizes[n] = sizes.get(n, 0) + 1
+>       assert sizes == {4: 3000}, sizes
+E       AssertionError: {4: 234, 5: 1321, 6: 1107, 7: 303, ...}
+E       assert {4: 234, 5: 1..., 7: 303, ...} == {4: 3000}
+E         
+E         Differing items:
+E         {4: 234} != {4: 3000}
+E         Left contains 5 more items:
+E         {5: 1321, 6: 1107, 7: 303, 8: 33, 9: 2}
+E         Use -v to get more diff
+
+tests\test_kernel2d_predicates.py:232: AssertionError
+_ test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-06] _
+
+g = 1e-06, C = 1000.0
+
+    @pytest.mark.parametrize("g", [1e-6, 1e-7, 1e-8])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary(g, C):
+        """A = 单位方块（顶点 0 = 左下角，−N_A = [0°, 90°]），B = 三角（顶点 0 = 原点，N_B = [−45°, 45°]），交锥 [0°, 45°]；
+        A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。恒等变换下 strict 在容差内；31 个姿态 + 平移到 C 后 strict 必须与恒等一致
+        （旧版对半翻转：方向噪声 rfl/g 没进判据）。"""
+        A0 = SQUARE
+        B0 = [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)]
+        base = vv_cover(translate(A0, (g, 0.0)), 0, B0, 0, 0.0)
+        assert base is not None
+        flips = []
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(translate(A0, (g, 0.0)), th, (C, C))
+            B = _rot(B0, th, (C, C))
+            c = vv_cover(A, 0, B, 0, 0.0)
+            assert c is not None, (g, C, th)
+            flips.append(c.strict != base.strict)
+>       assert not any(flips), (g, C, sum(flips))
+E       AssertionError: (1e-06, 1000.0, 15)
+E       assert not True
+E        +  where True = any([False, True, True, True, True, True, ...])
+
+tests\test_kernel2d_lever.py:96: AssertionError
+_ test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-07] _
+
+g = 1e-07, C = 1000.0
+
+    @pytest.mark.parametrize("g", [1e-6, 1e-7, 1e-8])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary(g, C):
+        """A = 单位方块（顶点 0 = 左下角，−N_A = [0°, 90°]），B = 三角（顶点 0 = 原点，N_B = [−45°, 45°]），交锥 [0°, 45°]；
+        A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。恒等变换下 strict 在容差内；31 个姿态 + 平移到 C 后 strict 必须与恒等一致
+        （旧版对半翻转：方向噪声 rfl/g 没进判据）。"""
+        A0 = SQUARE
+        B0 = [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)]
+        base = vv_cover(translate(A0, (g, 0.0)), 0, B0, 0, 0.0)
+        assert base is not None
+        flips = []
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(translate(A0, (g, 0.0)), th, (C, C))
+            B = _rot(B0, th, (C, C))
+            c = vv_cover(A, 0, B, 0, 0.0)
+            assert c is not None, (g, C, th)
+            flips.append(c.strict != base.strict)
+>       assert not any(flips), (g, C, sum(flips))
+E       AssertionError: (1e-07, 1000.0, 15)
+E       assert not True
+E        +  where True = any([False, False, False, True, False, True, ...])
+
+tests\test_kernel2d_lever.py:96: AssertionError
+_ test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-08] _
+
+g = 1e-08, C = 1000.0
+
+    @pytest.mark.parametrize("g", [1e-6, 1e-7, 1e-8])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary(g, C):
+        """A = 单位方块（顶点 0 = 左下角，−N_A = [0°, 90°]），B = 三角（顶点 0 = 原点，N_B = [−45°, 45°]），交锥 [0°, 45°]；
+        A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。恒等变换下 strict 在容差内；31 个姿态 + 平移到 C 后 strict 必须与恒等一致
+        （旧版对半翻转：方向噪声 rfl/g 没进判据）。"""
+        A0 = SQUARE
+        B0 = [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)]
+        base = vv_cover(translate(A0, (g, 0.0)), 0, B0, 0, 0.0)
+        assert base is not None
+        flips = []
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(translate(A0, (g, 0.0)), th, (C, C))
+            B = _rot(B0, th, (C, C))
+            c = vv_cover(A, 0, B, 0, 0.0)
+            assert c is not None, (g, C, th)
+            flips.append(c.strict != base.strict)
+>       assert not any(flips), (g, C, sum(flips))
+E       AssertionError: (1e-08, 1000.0, 17)
+E       assert not True
+E        +  where True = any([False, False, True, False, False, True, ...])
+
+tests\test_kernel2d_lever.py:96: AssertionError
+_ test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-06] _
+
+g = 1e-06, C = 100000.0
+
+    @pytest.mark.parametrize("g", [1e-6, 1e-7, 1e-8])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary(g, C):
+        """A = 单位方块（顶点 0 = 左下角，−N_A = [0°, 90°]），B = 三角（顶点 0 = 原点，N_B = [−45°, 45°]），交锥 [0°, 45°]；
+        A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。恒等变换下 strict 在容差内；31 个姿态 + 平移到 C 后 strict 必须与恒等一致
+        （旧版对半翻转：方向噪声 rfl/g 没进判据）。"""
+        A0 = SQUARE
+        B0 = [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)]
+        base = vv_cover(translate(A0, (g, 0.0)), 0, B0, 0, 0.0)
+        assert base is not None
+        flips = []
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(translate(A0, (g, 0.0)), th, (C, C))
+            B = _rot(B0, th, (C, C))
+            c = vv_cover(A, 0, B, 0, 0.0)
+            assert c is not None, (g, C, th)
+            flips.append(c.strict != base.strict)
+>       assert not any(flips), (g, C, sum(flips))
+E       AssertionError: (1e-06, 100000.0, 15)
+E       assert not True
+E        +  where True = any([False, False, True, False, False, True, ...])
+
+tests\test_kernel2d_lever.py:96: AssertionError
+_ test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-07] _
+
+g = 1e-07, C = 100000.0
+
+    @pytest.mark.parametrize("g", [1e-6, 1e-7, 1e-8])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary(g, C):
+        """A = 单位方块（顶点 0 = 左下角，−N_A = [0°, 90°]），B = 三角（顶点 0 = 原点，N_B = [−45°, 45°]），交锥 [0°, 45°]；
+        A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。恒等变换下 strict 在容差内；31 个姿态 + 平移到 C 后 strict 必须与恒等一致
+        （旧版对半翻转：方向噪声 rfl/g 没进判据）。"""
+        A0 = SQUARE
+        B0 = [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)]
+        base = vv_cover(translate(A0, (g, 0.0)), 0, B0, 0, 0.0)
+        assert base is not None
+        flips = []
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(translate(A0, (g, 0.0)), th, (C, C))
+            B = _rot(B0, th, (C, C))
+            c = vv_cover(A, 0, B, 0, 0.0)
+            assert c is not None, (g, C, th)
+            flips.append(c.strict != base.strict)
+>       assert not any(flips), (g, C, sum(flips))
+E       AssertionError: (1e-07, 100000.0, 16)
+E       assert not True
+E        +  where True = any([False, False, True, False, True, True, ...])
+
+tests\test_kernel2d_lever.py:96: AssertionError
+_ test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-08] _
+
+g = 1e-08, C = 100000.0
+
+    @pytest.mark.parametrize("g", [1e-6, 1e-7, 1e-8])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary(g, C):
+        """A = 单位方块（顶点 0 = 左下角，−N_A = [0°, 90°]），B = 三角（顶点 0 = 原点，N_B = [−45°, 45°]），交锥 [0°, 45°]；
+        A 平移 (g, 0)：分离方向恰为 0°（交锥边界）。恒等变换下 strict 在容差内；31 个姿态 + 平移到 C 后 strict 必须与恒等一致
+        （旧版对半翻转：方向噪声 rfl/g 没进判据）。"""
+        A0 = SQUARE
+        B0 = [(0.0, 0.0), (-1.0, 1.0), (-1.0, -1.0)]
+        base = vv_cover(translate(A0, (g, 0.0)), 0, B0, 0, 0.0)
+        assert base is not None
+        flips = []
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(translate(A0, (g, 0.0)), th, (C, C))
+            B = _rot(B0, th, (C, C))
+            c = vv_cover(A, 0, B, 0, 0.0)
+            assert c is not None, (g, C, th)
+            flips.append(c.strict != base.strict)
+>       assert not any(flips), (g, C, sum(flips))
+E       AssertionError: (1e-08, 100000.0, 16)
+E       assert not True
+E        +  where True = any([False, True, True, True, False, True, ...])
+
+tests\test_kernel2d_lever.py:96: AssertionError
+_ test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[1000.0-0.0001] _
+
+h = 0.0001, C = 1000.0
+
+    @pytest.mark.parametrize("h", [1e-4, 1e-5])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint(h, C):
+        """B = 单位方块、顶边被 T 形顶点拆出长 h 的短边 (1, 1)→(1 − h, 1)；A = 三角、底顶点正好在短边起点 (1 − h, 1) 上方高度 0.2
+        （投影参数恰为 1）。31 个姿态 + 平移到 C：enumerate_covers 的标签集必须与恒等一致（旧版 ('VE', 0, 2) 出现/缺失各半：
+        参数噪声 ≈ g·rfl/h² 远超带宽 st/h）。"""
+        B0 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (1.0 - h, 1.0), (0.0, 1.0)]
+        # 顶点高度 0.2：到 B 真角点 (1, 1) 的方向离其法锥边界 h/0.2 rad——与长度容差张的角 tol/h 分得开（不许恰落在容差边界上）
+        A0 = [(1.0 - h, 1.2), (1.0 - h + 0.3, 1.6), (1.0 - h - 0.3, 1.6)]
+        base = {c.label() for c in enumerate_covers(A0, B0, window=0.5, tol=1e-9)}
+        assert ("VE", 0, 2) in base, base
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(A0, th, (C, C))
+            B = _rot(B0, th, (C, C))
+            labels = {c.label() for c in enumerate_covers(A, B, window=0.5, tol=1e-9)}
+>           assert labels == base, (h, C, th, sorted(labels ^ base))
+E           AssertionError: (0.0001, 1000.0, 0.4, [('VV', 0, 3)])
+E           assert {('VE', 0, 2)... ('VV', 0, 3)} == {('VE', 0, 2), ('VE', 0, 3)}
+E             
+E             Extra items in the left set:
+E             ('VV', 0, 3)
+E             Use -v to get more diff
+
+tests\test_kernel2d_lever.py:115: AssertionError
+_ test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[1000.0-1e-05] _
+
+h = 1e-05, C = 1000.0
+
+    @pytest.mark.parametrize("h", [1e-4, 1e-5])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint(h, C):
+        """B = 单位方块、顶边被 T 形顶点拆出长 h 的短边 (1, 1)→(1 − h, 1)；A = 三角、底顶点正好在短边起点 (1 − h, 1) 上方高度 0.2
+        （投影参数恰为 1）。31 个姿态 + 平移到 C：enumerate_covers 的标签集必须与恒等一致（旧版 ('VE', 0, 2) 出现/缺失各半：
+        参数噪声 ≈ g·rfl/h² 远超带宽 st/h）。"""
+        B0 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (1.0 - h, 1.0), (0.0, 1.0)]
+        # 顶点高度 0.2：到 B 真角点 (1, 1) 的方向离其法锥边界 h/0.2 rad——与长度容差张的角 tol/h 分得开（不许恰落在容差边界上）
+        A0 = [(1.0 - h, 1.2), (1.0 - h + 0.3, 1.6), (1.0 - h - 0.3, 1.6)]
+        base = {c.label() for c in enumerate_covers(A0, B0, window=0.5, tol=1e-9)}
+        assert ("VE", 0, 2) in base, base
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(A0, th, (C, C))
+            B = _rot(B0, th, (C, C))
+            labels = {c.label() for c in enumerate_covers(A, B, window=0.5, tol=1e-9)}
+>           assert labels == base, (h, C, th, sorted(labels ^ base))
+E           AssertionError: (1e-05, 1000.0, 0.6000000000000001, [('VE', 0, 2)])
+E           assert {('VE', 0, 3)} == {('VE', 0, 2), ('VE', 0, 3)}
+E             
+E             Extra items in the right set:
+E             ('VE', 0, 2)
+E             Use -v to get more diff
+
+tests\test_kernel2d_lever.py:115: AssertionError
+_ test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[100000.0-0.0001] _
+
+h = 0.0001, C = 100000.0
+
+    @pytest.mark.parametrize("h", [1e-4, 1e-5])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint(h, C):
+        """B = 单位方块、顶边被 T 形顶点拆出长 h 的短边 (1, 1)→(1 − h, 1)；A = 三角、底顶点正好在短边起点 (1 − h, 1) 上方高度 0.2
+        （投影参数恰为 1）。31 个姿态 + 平移到 C：enumerate_covers 的标签集必须与恒等一致（旧版 ('VE', 0, 2) 出现/缺失各半：
+        参数噪声 ≈ g·rfl/h² 远超带宽 st/h）。"""
+        B0 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (1.0 - h, 1.0), (0.0, 1.0)]
+        # 顶点高度 0.2：到 B 真角点 (1, 1) 的方向离其法锥边界 h/0.2 rad——与长度容差张的角 tol/h 分得开（不许恰落在容差边界上）
+        A0 = [(1.0 - h, 1.2), (1.0 - h + 0.3, 1.6), (1.0 - h - 0.3, 1.6)]
+        base = {c.label() for c in enumerate_covers(A0, B0, window=0.5, tol=1e-9)}
+        assert ("VE", 0, 2) in base, base
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(A0, th, (C, C))
+            B = _rot(B0, th, (C, C))
+            labels = {c.label() for c in enumerate_covers(A, B, window=0.5, tol=1e-9)}
+>           assert labels == base, (h, C, th, sorted(labels ^ base))
+E           AssertionError: (0.0001, 100000.0, 1.0, [('VE', 0, 2)])
+E           assert {('VE', 0, 3)} == {('VE', 0, 2), ('VE', 0, 3)}
+E             
+E             Extra items in the right set:
+E             ('VE', 0, 2)
+E             Use -v to get more diff
+
+tests\test_kernel2d_lever.py:115: AssertionError
+_ test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[100000.0-1e-05] _
+
+h = 1e-05, C = 100000.0
+
+    @pytest.mark.parametrize("h", [1e-4, 1e-5])
+    @pytest.mark.parametrize("C", [1e3, 1e5])
+    def test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint(h, C):
+        """B = 单位方块、顶边被 T 形顶点拆出长 h 的短边 (1, 1)→(1 − h, 1)；A = 三角、底顶点正好在短边起点 (1 − h, 1) 上方高度 0.2
+        （投影参数恰为 1）。31 个姿态 + 平移到 C：enumerate_covers 的标签集必须与恒等一致（旧版 ('VE', 0, 2) 出现/缺失各半：
+        参数噪声 ≈ g·rfl/h² 远超带宽 st/h）。"""
+        B0 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (1.0 - h, 1.0), (0.0, 1.0)]
+        # 顶点高度 0.2：到 B 真角点 (1, 1) 的方向离其法锥边界 h/0.2 rad——与长度容差张的角 tol/h 分得开（不许恰落在容差边界上）
+        A0 = [(1.0 - h, 1.2), (1.0 - h + 0.3, 1.6), (1.0 - h - 0.3, 1.6)]
+        base = {c.label() for c in enumerate_covers(A0, B0, window=0.5, tol=1e-9)}
+        assert ("VE", 0, 2) in base, base
+        for k in range(31):
+            th = 0.2 * k
+            A = _rot(A0, th, (C, C))
+            B = _rot(B0, th, (C, C))
+            labels = {c.label() for c in enumerate_covers(A, B, window=0.5, tol=1e-9)}
+>           assert labels == base, (h, C, th, sorted(labels ^ base))
+E           AssertionError: (1e-05, 100000.0, 0.4, [('VE', 0, 2), ('VV', 0, 3)])
+E           assert {('VE', 0, 3), ('VV', 0, 3)} == {('VE', 0, 2), ('VE', 0, 3)}
+E             
+E             Extra items in the left set:
+E             ('VV', 0, 3)
+E             Extra items in the right set:
+E             ('VE', 0, 2)
+E             Use -v to get more diff
+
+tests\test_kernel2d_lever.py:115: AssertionError
+______ test_cover_enumeration_is_invariant[FF_edge_touch-rot_s0.001_t0] _______
+
+case = ('FF_edge_touch', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 0.3), 1e-09, None, ...)
+motion = ('rot_s0.001_t0', 0.21679675505581983, 0.001, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('FF_edge_touch', [('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 3, 2,..., 0, 1, True)] == [('EV', 3, 2,... 0, 1, False)]
+E         
+E         At index 1 diff: ('VE', 0, 1, True) != ('VE', 0, 1, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+________ test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t0] _________
+
+case = ('FF_edge_touch', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 0.3), 1e-09, None, ...)
+motion = ('rot_s1_t0', 0.21679675505581983, 1.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('FF_edge_touch', [('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 3, 2,..., 0, 1, True)] == [('EV', 3, 2,... 0, 1, False)]
+E         
+E         At index 1 diff: ('VE', 0, 1, True) != ('VE', 0, 1, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_______ test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t1000] _______
+
+case = ('FF_edge_touch', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 0.3), 1e-09, None, ...)
+motion = ('rot_s1_t1000', 0.21679675505581983, 1.0, 1000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('FF_edge_touch', [('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 3, 2,..., 0, 1, True)] == [('EV', 3, 2,... 0, 1, False)]
+E         
+E         At index 1 diff: ('VE', 0, 1, True) != ('VE', 0, 1, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+______ test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t100000] ______
+
+case = ('FF_edge_touch', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 0.3), 1e-09, None, ...)
+motion = ('rot_s1_t100000', 0.21679675505581983, 1.0, 100000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('FF_edge_touch', [('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 3, 2,..., 0, 1, True)] == [('EV', 3, 2,... 0, 1, False)]
+E         
+E         At index 1 diff: ('VE', 0, 1, True) != ('VE', 0, 1, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_______ test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1000_t0] _______
+
+case = ('FF_edge_touch', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 0.3), 1e-09, None, ...)
+motion = ('rot_s1000_t0', 0.21679675505581983, 1000.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('FF_edge_touch', [('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 3, 2,..., 0, 1, True)] == [('EV', 3, 2,... 0, 1, False)]
+E         
+E         At index 1 diff: ('VE', 0, 1, True) != ('VE', 0, 1, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_____ test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1000_t1000] ______
+
+case = ('FF_edge_touch', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 0.3), 1e-09, None, ...)
+motion = ('rot_s1000_t1000', 0.21679675505581983, 1000.0, 1000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('FF_edge_touch', [('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 3, 2,..., 0, 1, True)] == [('EV', 3, 2,... 0, 1, False)]
+E         
+E         At index 1 diff: ('VE', 0, 1, True) != ('VE', 0, 1, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+______ test_cover_enumeration_is_invariant[corner_corner-rot_s0.001_t0] _______
+
+case = ('corner_corner', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s0.001_t0', 0.21679675505581983, 0.001, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('corner_corner', [('EV', 0, 2, False), ('EV', 0, 2, True), ('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 0, 2,..., 0, 2, True)] == [('EV', 0, 2,..., 0, 2, True)]
+E         
+E         At index 0 diff: ('EV', 0, 2, True) != ('EV', 0, 2, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+________ test_cover_enumeration_is_invariant[corner_corner-rot_s1_t0] _________
+
+case = ('corner_corner', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1_t0', 0.21679675505581983, 1.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('corner_corner', [('EV', 0, 2, False), ('EV', 0, 2, True), ('EV', 3, 2, False), ('EV', 3, 2, True)])
+E       assert [('EV', 0, 2,..., 0, 2, True)] == [('EV', 0, 2,..., 0, 2, True)]
+E         
+E         At index 0 diff: ('EV', 0, 2, True) != ('EV', 0, 2, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_______ test_cover_enumeration_is_invariant[corner_corner-rot_s1_t1000] _______
+
+case = ('corner_corner', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1_t1000', 0.21679675505581983, 1.0, 1000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('corner_corner', [('VE', 0, 1, False), ('VE', 0, 1, True), ('VE', 0, 2, False), ('VE', 0, 2, True)])
+E       assert [('EV', 0, 2,..., 0, 2, True)] == [('EV', 0, 2,..., 0, 2, True)]
+E         
+E         At index 2 diff: ('VE', 0, 1, True) != ('VE', 0, 1, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+______ test_cover_enumeration_is_invariant[corner_corner-rot_s1_t100000] ______
+
+case = ('corner_corner', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1_t100000', 0.21679675505581983, 1.0, 100000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('corner_corner', [('EV', 0, 2, False), ('EV', 0, 2, True), ('VE', 0, 1, False), ('VE', 0, 1, True)])
+E       assert [('EV', 0, 2,..., 0, 2, True)] == [('EV', 0, 2,..., 0, 2, True)]
+E         
+E         At index 0 diff: ('EV', 0, 2, True) != ('EV', 0, 2, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_______ test_cover_enumeration_is_invariant[corner_corner-rot_s1000_t0] _______
+
+case = ('corner_corner', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1000_t0', 0.21679675505581983, 1000.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('corner_corner', [('EV', 3, 2, False), ('EV', 3, 2, True), ('VE', 0, 2, False), ('VE', 0, 2, True)])
+E       assert [('EV', 0, 2,..., 0, 2, True)] == [('EV', 0, 2,..., 0, 2, True)]
+E         
+E         At index 1 diff: ('EV', 3, 2, True) != ('EV', 3, 2, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_____ test_cover_enumeration_is_invariant[corner_corner-rot_s1000_t1000] ______
+
+case = ('corner_corner', [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1000_t1000', 0.21679675505581983, 1000.0, 1000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('corner_corner', [('EV', 3, 2, False), ('EV', 3, 2, True), ('VE', 0, 2, False), ('VE', 0, 2, True)])
+E       assert [('EV', 0, 2,..., 0, 2, True)] == [('EV', 0, 2,..., 0, 2, True)]
+E         
+E         At index 1 diff: ('EV', 3, 2, True) != ('EV', 3, 2, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s0.001_t0] _
+
+case = ('brick_on_row_flat_vertices', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s0.001_t0', 0.21679675505581983, 0.001, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_flat_vertices', [('VE', 1, 3, False), ('VE', 1, 3, True)])
+E       assert [('EV', 0, 4,..., 1, 3, True)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 2 diff: ('VE', 1, 3, True) != ('VE', 1, 3, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s0.001_t100000] _
+
+case = ('brick_on_row_flat_vertices', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s0.001_t100000', 0.21679675505581983, 0.001, 100000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_flat_vertices', [('EV', 0, 4, False), ('VE', 0, 4, False), ('VE', 0, 4, True)])
+E       assert [('VE', 0, 4,... 1, 3, False)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 0 diff: ('VE', 0, 4, True) != ('EV', 0, 4, False)
+E         Right contains one more item: ('VE', 1, 3, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+__ test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1_t0] __
+
+case = ('brick_on_row_flat_vertices', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1_t0', 0.21679675505581983, 1.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_flat_vertices', [('VE', 0, 4, False), ('VE', 0, 4, True)])
+E       assert [('EV', 0, 4,... 1, 3, False)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 1 diff: ('VE', 0, 4, True) != ('VE', 0, 4, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t0] _
+
+case = ('brick_on_row_flat_vertices', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1000_t0', 0.21679675505581983, 1000.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_flat_vertices', [('VE', 1, 3, False), ('VE', 1, 3, True)])
+E       assert [('EV', 0, 4,..., 1, 3, True)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 2 diff: ('VE', 1, 3, True) != ('VE', 1, 3, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t1000] _
+
+case = ('brick_on_row_flat_vertices', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1000_t1000', 0.21679675505581983, 1000.0, 1000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_flat_vertices', [('VE', 0, 4, False), ('VE', 0, 4, True)])
+E       assert [('EV', 0, 4,... 1, 3, False)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 1 diff: ('VE', 0, 4, True) != ('VE', 0, 4, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t100000] _
+
+case = ('brick_on_row_flat_vertices', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, None, ...)
+motion = ('rot_s1000_t100000', 0.21679675505581983, 1000.0, 100000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_flat_vertices', [('VE', 1, 3, False), ('VE', 1, 3, True)])
+E       assert [('EV', 0, 4,..., 1, 3, True)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 2 diff: ('VE', 1, 3, True) != ('VE', 1, 3, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s0.001_t0] _
+
+case = ('brick_on_row_legacy_cone', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, 0.052335956242943835, ...)
+motion = ('rot_s0.001_t0', 0.21679675505581983, 0.001, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_legacy_cone', [('VE', 1, 3, False), ('VE', 1, 3, True)])
+E       assert [('EV', 0, 4,..., 1, 3, True)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 2 diff: ('VE', 1, 3, True) != ('VE', 1, 3, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s0.001_t100000] _
+
+case = ('brick_on_row_legacy_cone', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, 0.052335956242943835, ...)
+motion = ('rot_s0.001_t100000', 0.21679675505581983, 0.001, 100000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_legacy_cone', [('VE', 0, 4, False), ('VE', 0, 4, True)])
+E       assert [('EV', 0, 4,... 1, 3, False)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 1 diff: ('VE', 0, 4, True) != ('VE', 0, 4, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+___ test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1_t0] ___
+
+case = ('brick_on_row_legacy_cone', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, 0.052335956242943835, ...)
+motion = ('rot_s1_t0', 0.21679675505581983, 1.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_legacy_cone', [('VE', 0, 4, False), ('VE', 0, 4, True)])
+E       assert [('EV', 0, 4,... 1, 3, False)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 1 diff: ('VE', 0, 4, True) != ('VE', 0, 4, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t0] __
+
+case = ('brick_on_row_legacy_cone', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, 0.052335956242943835, ...)
+motion = ('rot_s1000_t0', 0.21679675505581983, 1000.0, 0.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_legacy_cone', [('VE', 1, 3, False), ('VE', 1, 3, True)])
+E       assert [('EV', 0, 4,..., 1, 3, True)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 2 diff: ('VE', 1, 3, True) != ('VE', 1, 3, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t1000] _
+
+case = ('brick_on_row_legacy_cone', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, 0.052335956242943835, ...)
+motion = ('rot_s1000_t1000', 0.21679675505581983, 1000.0, 1000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_legacy_cone', [('VE', 0, 4, False), ('VE', 0, 4, True)])
+E       assert [('EV', 0, 4,... 1, 3, False)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 1 diff: ('VE', 0, 4, True) != ('VE', 0, 4, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t100000] _
+
+case = ('brick_on_row_legacy_cone', [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (4.0, 0.0), (4.0, 1.0), (2.0, 1.0), (0.0, 1.0)], (1.0, 1.0), 1e-09, 0.052335956242943835, ...)
+motion = ('rot_s1000_t100000', 0.21679675505581983, 1000.0, 100000.0)
+
+    @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+    @pytest.mark.parametrize("case", COVER_CASES, ids=[c[0] for c in COVER_CASES])
+    def test_cover_enumeration_is_invariant(case, motion):
+        """盖标签 (kind, a, b, strict) 不变、间隙 ×s。
+    
+        **可分辨性**：变换后的坐标带 ~eps·C_t 的表示误差，角度判据分辨不了比 c·eps·C_t/ℓ 更小的偏差。合成位形
+        （贴合、平行边、平直顶点、一般位置）的判据余量要么精确为 0（由容差吸收），要么 ≫ 舍入下限——全格必须逐项相等
+        （下面断言合成位形没有一个格子落在不可分辨带里）。bb52 真几何不同：相邻块沿同一节理的边**近乎**平行，
+        sin 夹角实测 1.7e-8（块 7–8）… 3e-6（Fraction 精确计算），低于 s=1e-3、|t|=1e3/1e5 时的角度舍入下限
+        （~2e-7 / ~2e-5）。判定方式（不依赖被测变换）：恒等变换下把长度容差抬到 4× 该格子的舍入下限（折回原单位）
+        再枚举一次——若盖集不变，余量都在带外，该格必须逐项相等；若变了，该格落在不可分辨带里，只断言**夹逼**：
+        每个标签的去留与严格性都取两份恒等参考之一（两份都有的必须有、两份都没有的不许有）——即库在带内的判定
+        只能是"精确判定"或"容差吸收"之一，不能是第三种（丢盖、凭空多盖、翻成外部）。
+        """
+        name, A, B, x, tau, cone_tol, window = case
+        _, theta, s, tm = motion
+        ref_labels, ref_gaps = _covers(A, B, x, tau, cone_tol, window)
+        assert ref_labels, name
+        pt, vec, poly = _T(theta, s, tm)
+        labels, gaps = _covers(poly(A), poly(B), vec(x), s * tau, cone_tol, s * window)
+        infl = max(tau, 4.0 * _floor_in_reference_units(A, B, motion))
+        wide_labels, _ = _covers(A, B, x, infl, cone_tol, window)
+        if wide_labels != ref_labels:
+            assert name.startswith("bb52_"), (name, "synthetic case fell into the unresolvable band")
+            both, either = set(ref_labels) & set(wide_labels), set(ref_labels) | set(wide_labels)
+            assert both <= set(labels) <= either, (name, sorted(set(labels) - either), sorted(both - set(labels)))
+            return
+>       assert labels == ref_labels, (name, sorted(set(labels) ^ set(ref_labels)))
+E       AssertionError: ('brick_on_row_legacy_cone', [('VE', 1, 3, False), ('VE', 1, 3, True)])
+E       assert [('EV', 0, 4,..., 1, 3, True)] == [('EV', 0, 4,... 1, 3, False)]
+E         
+E         At index 2 diff: ('VE', 1, 3, True) != ('VE', 1, 3, False)
+E         Use -v to get more diff
+
+tests\test_invariance_2d.py:165: AssertionError
+_ test_cover_invariance_unresolvable_cells_are_explained_by_measured_near_parallel_edges _
+
+    def test_cover_invariance_unresolvable_cells_are_explained_by_measured_near_parallel_edges():
+        """把"不可分辨带"钉成数：只允许出现在 bb52 真几何上，且每个这样的格子都由 Fraction 精确算出的近平行边对解释——
+        该块对相距 < 0.3 的边对里最小非零 sin 夹角，小于该格子抬高后的角度舍入下限 4·c·eps·C_t/(s·ℓ_min)。
+        2026-09-24 实测：19 个格子（全在 21 块对 × 2 模式 × 9 变换 = 378 格里），sin 夹角 1.7e-8（块 7–8）… 3e-6（块 6–11）。"""
+        bad = []
+        for case in COVER_CASES:
+            name, A, B, x, tau, cone_tol, window = case
+            ref, _ = _covers(A, B, x, tau, cone_tol, window)
+            for motion in MOTIONS:
+                fl = _floor_in_reference_units(A, B, motion)
+                wide, _ = _covers(A, B, x, max(tau, 4.0 * fl), cone_tol, window)
+                if wide != ref:
+                    bad.append((name, motion, fl))
+        assert all(n.startswith("bb52_") for n, _, _ in bad), [n for n, _, _ in bad]
+        for n, motion, fl in bad:
+            bi, bj = (int(v) for v in n.split("_")[1:3])
+            margin = _min_near_parallel_sin(_BB[bi], _BB[bj])
+            ang_floor = 4.0 * fl / min(_min_edge(_BB[bi]), _min_edge(_BB[bj]))
+            assert margin < ang_floor, (n, motion[0], margin, ang_floor)
+>       assert len(bad) == 19, len(bad)
+E       AssertionError: 13
+E       assert 13 == 19
+E        +  where 13 = len([('bb52_1_4_strict', ('rot_s0.001_t100000', 0.21679675505581983, 0.001, 100000.0), 1.3190669430440705e-06), ('bb52_1_9...3e-06), ('bb52_2_7_strict', ('rot_s0.001_t100000', 0.21679675505581983, 0.001, 100000.0), 1.3190669199067845e-06), ...])
+
+tests\test_invariance_2d.py:220: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_predicates.py::test_hull_of_a_rotated_collinear_strip_has_four_vertices
+FAILED tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-06]
+FAILED tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-07]
+FAILED tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[1000.0-1e-08]
+FAILED tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-06]
+FAILED tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-07]
+FAILED tests/test_kernel2d_lever.py::test_vv_cover_strictness_is_invariant_when_the_separation_direction_is_on_the_cone_boundary[100000.0-1e-08]
+FAILED tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[1000.0-0.0001]
+FAILED tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[1000.0-1e-05]
+FAILED tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[100000.0-0.0001]
+FAILED tests/test_kernel2d_lever.py::test_ve_cover_in_segment_band_is_invariant_for_a_vertex_over_a_short_edge_endpoint[100000.0-1e-05]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s0.001_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t1000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1_t100000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1000_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[FF_edge_touch-rot_s1000_t1000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s0.001_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1_t1000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1_t100000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1000_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[corner_corner-rot_s1000_t1000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s0.001_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s0.001_t100000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t1000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_flat_vertices-rot_s1000_t100000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s0.001_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s0.001_t100000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t0]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t1000]
+FAILED tests/test_invariance_2d.py::test_cover_enumeration_is_invariant[brick_on_row_legacy_cone-rot_s1000_t100000]
+FAILED tests/test_invariance_2d.py::test_cover_invariance_unresolvable_cells_are_explained_by_measured_near_parallel_edges
+36 failed, 1178 passed in 123.02s (0:02:03)
