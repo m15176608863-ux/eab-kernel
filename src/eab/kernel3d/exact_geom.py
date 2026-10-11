@@ -6,6 +6,7 @@ polygon is the deterministic projected-ear triangulation, not a fitted plane.
 from __future__ import annotations
 
 from fractions import Fraction as F
+from eab import rational3 as _rational3
 from functools import lru_cache
 from itertools import count
 import math
@@ -102,10 +103,14 @@ def mul(a, s):
 
 
 def dot(a, b):
+    if _rational3.fraction_vectors(a, b):
+        return _rational3.dot(a, b)
     return sum(x * y for x, y in zip(a, b))
 
 
 def cross(a, b):
+    if _rational3.fraction_vectors(a, b):
+        return _rational3.cross(a, b)
     return (a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0])
 
 
@@ -201,9 +206,9 @@ def polygon_locate_fraction(p,vertices,tol=0):
     return 1 if wn else -1
 
 
-def triangle_locate(p, a, b, c):
+def triangle_locate(p, a, b, c, known_normal=None):
     """-1 outside, 0 on an edge, 1 in the relative interior, including plane check."""
-    n = cross(sub(b, a), sub(c, a))
+    n = known_normal if known_normal is not None else cross(sub(b, a), sub(c, a))
     if not any(n) or dot(n, sub(p, a)) != 0:
         return -1
     vals = [dot(n, cross(sub(v, u), sub(p, u)))
@@ -279,7 +284,7 @@ def segment_triangle(p, q, tri):
     return x,t
 
 
-def point_in_surface(p,P):
+def point_in_surface(p,P,tol=0):
     """Exact parity for a closed triangle surface; never guesses a boundary result.
 
     Directions (1,k,k*k) eventually avoid the finite set of bad edge/vertex
@@ -287,26 +292,48 @@ def point_in_surface(p,P):
     """
     p = vector(p)
     tris = triangles(P)
-    for _,tri in tris:
-        if triangle_locate(p,*tri) >= 0:
+    tol=F(tol)
+    if tol < 0:
+        raise ValueError('surface tolerance must be nonnegative')
+    if tol and any(point_triangle_distance_squared(p,tri) <= tol*tol for _,tri in tris
+                   if all(min(v[i] for v in tri)-tol <= p[i] <= max(v[i] for v in tri)+tol
+                          for i in range(3))):
+        return 0
+    return _point_in_triangles(p,tris)
+
+
+def _triangle_bounds(tris):
+    return tuple((min(v[i] for _,tri in tris for v in tri),
+                  max(v[i] for _,tri in tris for v in tri)) for i in range(3))
+
+
+def _point_in_triangles(p,tris,planes=None,bounds=None):
+    # Per-call immutable values, not an object/global cache. Arrangement clients
+    # can reuse the planes and bounds they have already constructed.
+    bounds=_triangle_bounds(tris) if bounds is None else bounds
+    if any(p[i] < lo or p[i] > hi for i,(lo,hi) in enumerate(bounds)):
+        return -1
+    planes=_planes(tris) if planes is None else planes
+    offsets=[dot(n,sub(o,p)) for n,o in planes]
+    for (_,tri),(n,_),offset in zip(tris,planes,offsets):
+        if offset == 0 and triangle_locate(p,*tri,n) >= 0:
             return 0
     for k in count(1):
         d=(F(1),F(k),F(k*k))
         hits=0
         degenerate=False
-        for _,(a,b,c) in tris:
-            n=cross(sub(b,a),sub(c,a))
+        for (_,tri),(n,_),offset in zip(tris,planes,offsets):
             den=dot(n,d)
             if den == 0:
-                if dot(n,sub(a,p)) == 0:
+                if offset == 0:
                     degenerate=True
                     break
                 continue
-            t=dot(n,sub(a,p))/den
+            t=offset/den
             if t <= 0:
                 continue
             x=add(p,mul(d,t))
-            loc=triangle_locate(x,a,b,c)
+            loc=triangle_locate(x,*tri,n)
             if loc == 0:
                 degenerate=True
                 break
@@ -315,20 +342,45 @@ def point_in_surface(p,P):
             return 1 if hits%2 else -1
 
 
-def segment_crosses(p,q,P,fi):
+def _transverse_fold_crossing(p,q,t,tris):
+    """Resolve an internal triangle-edge hit by exact one-sided solid states."""
+    d=sub(q,p); cuts={F(0),F(1)}
+    for n,o in _planes(tris):
+        den=dot(n,d)
+        if den:
+            u=dot(n,sub(o,p))/den
+            if 0 < u < 1:
+                cuts.add(u)
+    before=max(u for u in cuts if u < t)
+    after=min(u for u in cuts if u > t)
+    left=add(p,mul(d,(before+t)/2));right=add(p,mul(d,(t+after)/2))
+    return _point_in_triangles(left,tris)*_point_in_triangles(right,tris) == -1
+
+
+def segment_crosses(p,q,P,fi,tol=0):
     p,q=vector(p),vector(q)
-    for face,tri in triangles(P):
+    tol=F(tol)
+    if tol < 0:
+        raise ValueError('segment tolerance must be nonnegative')
+    tris=triangles(P)
+    for face,tri in tris:
         if face != fi:
             continue
         hit=segment_triangle(p,q,tri)
         if hit is not None and 0 < hit[1] < 1:
+            n=cross(sub(tri[1],tri[0]),sub(tri[2],tri[0]))
+            if tol and (dot(n,sub(p,tri[0]))**2 <= tol*tol*dot(n,n)
+                        or dot(n,sub(q,tri[0]))**2 <= tol*tol*dot(n,n)):
+                continue
             # Internal triangulation edges belong to the face interior too.
             x=hit[0]
+            if triangle_locate(x,*tri) == 0 and not _transverse_fold_crossing(p,q,hit[1],tris):
+                continue
             verts=[vector(P.verts[i]) for i in P.faces[fi]]
             on_boundary=False
             for a,b in zip(verts,verts[1:]+verts[:1]):
                 u,w=sub(b,a),sub(x,a)
-                if not any(cross(u,w)) and 0 <= dot(u,w) <= dot(u,u):
+                if point_segment_distance_squared(x,a,b) <= tol*tol:
                     on_boundary=True
                     break
             if not on_boundary:
@@ -395,3 +447,188 @@ def triangle_intersection(first, second):
                         out.add(add(p,mul(u,s)))
                 # Parallel collinear intersection endpoints were included above.
     return tuple(sorted(out))
+
+
+def point_segment_distance_squared(p,a,b):
+    d,w=sub(b,a),sub(p,a)
+    dd=dot(d,d)
+    t=max(F(0),min(F(1),dot(w,d)/dd)) if dd else F(0)
+    r=sub(w,mul(d,t))
+    return dot(r,r)
+
+
+def point_triangle_distance_squared(p,tri):
+    """Exact Euclidean distance squared, including edge/vertex minimisers."""
+    p=vector(p)
+    a,b,c=tri
+    n=cross(sub(b,a),sub(c,a)); nn=dot(n,n)
+    if not nn:
+        raise ValueError('distance requires a nondegenerate triangle')
+    h=dot(n,sub(p,a)); q=sub(p,mul(n,h/nn))
+    if triangle_locate(q,a,b,c) >= 0:
+        return h*h/nn
+    return min(point_segment_distance_squared(p,u,v)
+               for u,v in ((a,b),(b,c),(c,a)))
+
+
+def _planes(tris):
+    return [(cross(sub(b,a),sub(c,a)),a) for _,(a,b,c) in tris]
+
+
+def _direction_key(n):
+    i=next((i for i,x in enumerate(n) if x),None)
+    return tuple(x/n[i] for x in n) if i is not None else None
+
+
+def _convex_surface_sat(av,bv,at,bt,ap,bp):
+    """SAT only if every given triangle has every vertex on its inner side.
+
+    The input must be a valid outward-oriented closed embedded surface. This
+    certificate proves that the original surface, not its hull replacement,
+    bounds a convex solid. None means the general surface path is required.
+    """
+    for verts,planes in ((av,ap),(bv,bp)):
+        if any(dot(n,sub(v,o)) > 0 for n,o in planes for v in verts):
+            return None
+    axes={_direction_key(n) for n,_ in ap+bp}
+    ae={_direction_key(sub(b,a)) for _,tri in at
+        for a,b in zip(tri,tri[1:]+tri[:1])}
+    be={_direction_key(sub(b,a)) for _,tri in bt
+        for a,b in zip(tri,tri[1:]+tri[:1])}
+    axes.update(_direction_key(cross(a,b)) for a in ae for b in be)
+    boundary=False
+    for axis in axes:
+        if axis is None:
+            continue
+        x=[dot(axis,p) for p in av]; y=[dot(axis,p) for p in bv]
+        gap=max(min(x)-max(y),min(y)-max(x))
+        if gap > 0:
+            return -1
+        boundary |= gap == 0
+    return 0 if boundary else 1
+
+
+def _split_polygon(poly,n,o):
+    """Split a convex polygon by an exact plane, preserving only 2D cells."""
+    ds=[dot(n,sub(p,o)) for p in poly]
+    if min(ds) >= 0 or max(ds) <= 0:
+        return [poly]
+    sides=[[],[]]
+    for i,p in enumerate(poly):
+        q=poly[(i+1)%len(poly)]; a=ds[i]; b=ds[(i+1)%len(poly)]
+        if a >= 0:
+            sides[0].append(p)
+        if a <= 0:
+            sides[1].append(p)
+        if a*b < 0:
+            x=add(p,mul(sub(q,p),a/(a-b)))
+            sides[0].append(x); sides[1].append(x)
+    return sides
+
+
+def _inward_sample(p,n,planes):
+    """An exact half-first-plane-intercept step; not a sampled epsilon ladder."""
+    d=mul(n,F(-1)); steps=[]
+    for m,o in planes:
+        den=dot(m,d); num=dot(m,sub(o,p))
+        if den and num/den > 0:
+            steps.append(num/den)
+    t=min(steps)/2 if steps else F(1)
+    return add(p,mul(d,t))
+
+
+def _coplanar_interior_witness(p,n,at,bt,planes,ap,bp,ab,bb):
+    """Certify same-side solid overlap at a 2D coplanar arrangement cell."""
+    w=_inward_sample(p,n,planes)
+    return w if _point_in_triangles(w,at,ap,ab) == _point_in_triangles(w,bt,bp,bb) == 1 else None
+
+
+def _surface_interior_witness(at,bt,ap,bp):
+    """Finite complete boundary-patch certificate for valid closed surfaces.
+
+    Each input triangle is split by every other triangle's plane, and by edge
+    lines of triangles coplanar with it. Membership is constant on every open
+    2D cell. A nonempty bounded 3D intersection has an open boundary patch on
+    one input surface: either that patch is inside the other solid, or the
+    two boundaries coincide there and their inward sides agree. Thus these
+    cells exhaust the possibilities, including common-edge and coplanar cases.
+    Rational points strictly inside both solids are the returned certificates.
+    """
+    planes=ap+bp
+    for pt,qt,pp,qp in ((at,bt,ap,bp),(bt,at,bp,ap)):
+        pb,qb=_triangle_bounds(pt),_triangle_bounds(qt)
+        for (_,tri),(n,o) in zip(pt,pp):
+            cuts=list(qp)
+            for (_,other),(m,a) in zip(qt,qp):
+                if not any(cross(n,m)) and dot(n,sub(a,o)) == 0:
+                    cuts.extend((cross(n,sub(v,u)),u)
+                                for u,v in zip(other,other[1:]+other[:1]))
+            # Repeated supporting planes cannot refine the arrangement again.
+            unique={}
+            for m,a in cuts:
+                key=_direction_key(m)
+                if key is not None:
+                    unique[(key,dot(key,a))]=(m,a)
+            cells=[list(tri)]
+            for m,a in unique.values():
+                cells=[part for cell in cells for part in _split_polygon(cell,m,a)]
+            for cell in cells:
+                p=tuple(sum(v[i] for v in cell)/len(cell) for i in range(3))
+                loc=_point_in_triangles(p,qt,qp,qb)
+                if loc == 1:
+                    w=_inward_sample(p,n,planes)
+                    if _point_in_triangles(w,pt,pp,pb) == _point_in_triangles(w,qt,qp,qb) == 1:
+                        return w
+                elif loc == 0:
+                    witness=_coplanar_interior_witness(p,n,pt,qt,planes,pp,qp,pb,qb)
+                    if witness is not None:
+                        return witness
+    return None
+
+
+def _triangles_near(at,bt,tol):
+    """Exact closed-surface distance <= tol, using all feature minimisers."""
+    tt=tol*tol
+    for _,a in at:
+        for _,b in bt:
+            if any(max(p[i] for p in a)+tol < min(p[i] for p in b)
+                   or max(p[i] for p in b)+tol < min(p[i] for p in a)
+                   for i in range(3)):
+                continue
+            if triangle_intersection(a,b):
+                return True
+            if tol:
+                if any(point_triangle_distance_squared(p,b) <= tt for p in a):
+                    return True
+                if any(point_triangle_distance_squared(p,a) <= tt for p in b):
+                    return True
+                if any(segment_distance_squared(p,q,u,v) <= tt
+                       for p,q in zip(a,a[1:]+a[:1]) for u,v in zip(b,b[1:]+b[:1])):
+                    return True
+    return False
+
+
+def surface_overlap(A,B,tol=0):
+    """Exact supplied-surface three-state relation; see geom3.polyhedra_overlap."""
+    tol=F(tol)
+    if tol < 0:
+        raise ValueError('surface tolerance must be nonnegative')
+    av=tuple(map(vector,A.verts)); bv=tuple(map(vector,B.verts))
+    if any(max(p[i] for p in av)+tol < min(p[i] for p in bv)
+           or max(p[i] for p in bv)+tol < min(p[i] for p in av) for i in range(3)):
+        return -1
+    at,bt=triangles(A),triangles(B); ap,bp=_planes(at),_planes(bt)
+    sat=_convex_surface_sat(av,bv,at,bt,ap,bp)
+    if sat is not None:
+        return 0 if sat == -1 and tol and _triangles_near(at,bt,tol) else sat
+    for verts,tris,ps in ((av,bt,bp),(bv,at,ap)):
+        bounds=_triangle_bounds(tris)
+        if any(_point_in_triangles(p,tris,ps,bounds) == 1 for p in verts):
+            return 1
+    # Disjoint boundaries imply constant membership on each connected surface
+    # component; the preceding vertex checks have excluded containment.
+    if not _triangles_near(at,bt,F(0)):
+        return 0 if tol and _triangles_near(at,bt,tol) else -1
+    if _surface_interior_witness(at,bt,ap,bp) is not None:
+        return 1
+    return 0 if _triangles_near(at,bt,tol) else -1

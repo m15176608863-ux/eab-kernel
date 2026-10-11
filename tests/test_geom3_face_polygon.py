@@ -192,9 +192,11 @@ def test_point_in_face_polygon_matches_star_polar_oracle(n, seed, scale):
 
 
 def test_all_five_call_sites_route_through_the_single_helper(monkeypatch):
-    """纪律 C："唯一实现、五处全部换用"要有门：把 geom3.face_polygon_locate 换成恒答"外部"，
-    五处（vf/fv 的 in_extent、_point_face_distance、边界判定、射线奇偶、segment_crosses_face）必须全部跟着变。
-    旧的私有实现不得残留。"""
+    """All original call-site assertions keep their live predicate mutation teeth.
+
+    Cover/distance construction still uses projected face_polygon_locate; exact
+    surface boundary/ray/segment decisions now use triangle_locate instead.
+    """
     import eab.kernel3d.covers3 as cv
     assert not hasattr(cv, "_point_inside_face")
     assert not hasattr(geom3, "_point_on_face") and not hasattr(geom3, "_tri_ray_hit")
@@ -218,6 +220,11 @@ def test_all_five_call_sites_route_through_the_single_helper(monkeypatch):
     assert not vf_cover(A, 0, B, top, 1e-9).in_extent
     assert fv_in_extent() == [False] * 4
     assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) is None
+    # Exact surface APIs intentionally do not route through a fitted face plane.
+    # Inject into their actual triangle predicate; the same boundary/ray/segment
+    # assertions must still expose corruption of the face-interior test.
+    from eab.kernel3d import exact_geom
+    monkeypatch.setattr(exact_geom,'triangle_locate',lambda *args:-1)
     assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-9) != 0                # 边界判定走它
     assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-9) == -1               # 射线奇偶走它（零交点）
     assert not segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)

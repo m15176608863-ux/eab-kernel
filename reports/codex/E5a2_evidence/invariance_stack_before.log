@@ -1,0 +1,672 @@
+...........FFFFFFFFFFFFFFFFFFFFFFFF...........FFFFFFFFFFFFFFFFFFFFFFFF.. [ 68%]
+.........FFFFFFFFFFFFFFFFFFFFFFFF                                        [100%]
+================================== FAILURES ===================================
+_________ test_overlap_verdict_is_invariant[stack_touch-R7-t0-s0.001] _________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(-0.000108717417610525, -0.0008544894106846921, 0.0012280180658833263), (-0.0016008764607349252, -0.... -0.00046907006440775016)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(4.8106154774128216e-05, -0.000745879624981816, 0.0029054000383612983), (-0.002936211931474672, 0.00...4, 6.784906265067647e-05)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+___________ test_overlap_verdict_is_invariant[stack_touch-R7-t0-s1] ___________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(-0.108717417610525, -0.8544894106846921, 1.2280180658833264), (-1.6008764607349253, -0.294628961253...958, -0.4690700644077502)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(0.04810615477412822, -0.745879624981816, 2.9054000383612983), (-2.9362119314746717, 0.3738412738814...565, 0.06784906265067647)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_________ test_overlap_verdict_is_invariant[stack_touch-R7-t0-s1000] __________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(-108.717417610525, -854.4894106846921, 1228.0180658833265), (-1600.8764607349253, -294.628961253072...4957, -469.0700644077502)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(48.10615477412822, -745.879624981816, 2905.4000383612984), (-2936.211931474672, 373.84127388142343,...24857, 67.84906265067647)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_______ test_overlap_verdict_is_invariant[stack_touch-R7-t1000-s0.001] ________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599.9998912825824, -480.0008544894107, 640.0012280180658), (599.9983991235392, -480.0002946289612, ...23515, 639.9995309299356)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(600.0000481061547, -480.00074587962496, 640.0029054000383), (599.9970637880685, -479.99962615872613...67687, 640.0000678490627)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_________ test_overlap_verdict_is_invariant[stack_touch-R7-t1000-s1] __________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599.8912825823895, -480.85448941068466, 641.2280180658834), (598.399123539265, -480.29462896125307,...51345, 639.5309299355922)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(600.0481061547741, -480.7458796249818, 642.9054000383613), (597.0637880685254, -479.6261587261186, ...86975, 640.0678490626507)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+________ test_overlap_verdict_is_invariant[stack_touch-R7-t1000-s1000] ________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(491.282582389475, -1334.489410684692, 1868.0180658833265), (-1000.8764607349253, -774.6289612530722...4959, 170.92993559224982)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(648.1061547741282, -1225.879624981816, 3545.4000383612984), (-2336.211931474672, -106.1587261185765...14326, 707.8490626506765)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+______ test_overlap_verdict_is_invariant[stack_touch-R7-t100000-s0.001] _______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(59999.99989128258, -48000.00085448941, 64000.00122801807), (59999.99839912354, -48000.00029462896, ...7024, 63999.999530929934)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(60000.00004810616, -48000.000745879624, 64000.00290540004), (59999.99706378807, -47999.99962615873,...06766, 64000.00006784906)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+________ test_overlap_verdict_is_invariant[stack_touch-R7-t100000-s1] _________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(59999.891282582386, -48000.85448941068, 64001.228018065885), (59998.39912353927, -48000.29462896125...5134, 63999.530929935594)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(60000.048106154776, -48000.745879624985, 64002.90540003836), (59997.063788068524, -47999.6261587261...67687, 64000.06784906265)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_______ test_overlap_verdict_is_invariant[stack_touch-R7-t100000-s1000] _______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(59891.282582389475, -48854.48941068469, 65228.01806588333), (58399.12353926508, -48294.628961253075...51345, 63530.92993559225)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(60048.10615477413, -48745.87962498182, 66905.4000383613), (57063.788068525326, -47626.15872611858, ...7515, 64067.849062650675)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_______ test_overlap_verdict_is_invariant[stack_touch-R7-t1e+06-s0.001] _______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599999.9998912825, -480000.0008544894, 640000.0012280181), (599999.9983991235, -480000.00029462896,...6684702, 639999.99953093)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(600000.0000481062, -480000.0007458796, 640000.0029054), (599999.9970637881, -479999.99962615874, 64...60674, 640000.0000678491)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_________ test_overlap_verdict_is_invariant[stack_touch-R7-t1e+06-s1] _________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599999.8912825824, -480000.8544894107, 640001.2280180659), (599998.3991235392, -480000.29462896124,...23513, 639999.5309299356)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(600000.0481061548, -480000.74587962497, 640002.9054000383), (599997.0637880685, -479999.6261587261,...67687, 640000.0678490626)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_______ test_overlap_verdict_is_invariant[stack_touch-R7-t1e+06-s1000] ________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599891.2825823894, -480854.4894106847, 641228.0180658833), (598399.1235392651, -480294.6289612531, ...51345, 639530.9299355922)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(600048.1061547741, -480745.87962498184, 642905.4000383613), (597063.7880685254, -479626.15872611856...86975, 640067.8490626507)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+________ test_overlap_verdict_is_invariant[stack_touch-R11-t0-s0.001] _________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(-0.0008311669760450035, 0.001109676287886434, 0.0005725207367727287), (-2.9648496051917385e-05, 0.0...7, 0.0006475162850174187)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(-0.0007576039484992066, 0.00231157920462719, 0.0017557442404728372), (0.0008454330114869655, 0.0021...3, 0.0022495934023011254)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+__________ test_overlap_verdict_is_invariant[stack_touch-R11-t0-s1] ___________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(-0.8311669760450036, 1.1096762878864341, 0.5725207367727287), (-0.029648496051917383, 1.03247556097...5857, 0.6475162850174188)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(-0.7576039484992066, 2.31157920462719, 1.7557442404728372), (0.8454330114869655, 2.1571777507988497...9262, 2.2495934023011253)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_________ test_overlap_verdict_is_invariant[stack_touch-R11-t0-s1000] _________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(-831.1669760450036, 1109.6762878864342, 572.5207367727287), (-29.648496051917384, 1032.475560972264...65857, 647.5162850174188)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(-757.6039484992067, 2311.57920462719, 1755.7442404728372), (845.4330114869655, 2157.1777507988495, ...9263, 2249.5934023011255)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_______ test_overlap_verdict_is_invariant[stack_touch-R11-t1000-s0.001] _______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599.999168833024, -479.9988903237121, 640.0005725207368), (599.999970351504, -479.998967524439, 639...021898, 640.000647516285)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(599.9992423960515, -479.9976884207954, 640.0017557442404), (600.0008454330115, -479.9978428222492, ...92077, 640.0022495934023)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_________ test_overlap_verdict_is_invariant[stack_touch-R11-t1000-s1] _________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599.168833023955, -478.89032371211357, 640.5725207367727), (599.9703515039481, -478.9675244390277, ...82656, 640.6475162850174)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(599.2423960515008, -477.6884207953728, 641.7557442404728), (600.845433011487, -477.84282224920116, ...77109, 642.2495934023011)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_______ test_overlap_verdict_is_invariant[stack_touch-R11-t1000-s1000] ________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(-231.1669760450036, 629.6762878864342, 1212.5207367727287), (570.3515039480826, 552.4755609722642, ...5857, 1287.5162850174188)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(-157.6039484992067, 1831.57920462719, 2395.744240472837), (1445.4330114869654, 1677.1777507988495, ...0926, 2889.5934023011255)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+______ test_overlap_verdict_is_invariant[stack_touch-R11-t100000-s0.001] ______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(59999.99916883303, -47999.99889032371, 64000.00057252074), (59999.999970351506, -47999.998967524436...70219, 64000.00064751629)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(59999.99924239605, -47999.99768842079, 64000.00175574424), (60000.00084543301, -47999.997842822246,...359205, 64000.0022495934)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+________ test_overlap_verdict_is_invariant[stack_touch-R11-t100000-s1] ________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(59999.168833023956, -47998.89032371211, 64000.57252073677), (59999.97035150395, -47998.96752443903,...18982, 64000.64751628502)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(59999.2423960515, -47997.68842079537, 64001.75574424047), (60000.845433011484, -47997.8428222492, 6...920771, 64002.2495934023)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+______ test_overlap_verdict_is_invariant[stack_touch-R11-t100000-s1000] _______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(59168.833023955, -46890.32371211357, 64572.52073677273), (59970.351503948084, -46967.52443902774, 6...82659, 64647.51628501742)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(59242.39605150079, -45688.42079537281, 65755.74424047284), (60845.433011486966, -45842.82224920115,...71093, 66249.59340230112)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+______ test_overlap_verdict_is_invariant[stack_touch-R11-t1e+06-s0.001] _______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599999.999168833, -479999.99889032374, 640000.0005725208), (599999.9999703515, -479999.99896752444,...70216, 640000.0006475163)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(599999.9992423961, -479999.9976884208, 640000.0017557442), (600000.000845433, -479999.9978428222, 6...43592, 640000.0022495934)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+________ test_overlap_verdict_is_invariant[stack_touch-R11-t1e+06-s1] _________
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599999.168833024, -479998.89032371214, 640000.5725207367), (599999.9703515039, -479998.96752443904,...21898, 640000.6475162851)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(599999.2423960515, -479997.68842079537, 640001.7557442405), (600000.8454330115, -479997.8428222492,...92077, 640002.2495934023)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+_______ test_overlap_verdict_is_invariant[stack_touch-R11-t1e+06-s1000] _______
+tests\test_invariance_geom.py:261: in test_overlap_verdict_is_invariant
+    assert polyhedra_overlap(A, B) == want, "default tol"
+E   AssertionError: default tol
+E   assert 1 == 0
+E    +  where 1 = polyhedra_overlap(Polyhedron(verts=[(599168.833023955, -478890.32371211355, 640572.5207367727), (599970.3515039481, -478967.5244390277, ...98266, 640647.5162850174)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(599242.3960515008, -477688.4207953728, 641755.7442404728), (600845.433011487, -477842.8222492011, 6...71095, 642249.5934023011)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]))
+___ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t0-s0.001] ___
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_____ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t0-s1] _____
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+___ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t0-s1000] ____
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1000-s0.001] __
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+___ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1000-s1] ____
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+__ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1000-s1000] __
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t100000-s0.001] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+__ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t100000-s1] ___
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t100000-s1000] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1e+06-s0.001] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+___ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1e+06-s1] ___
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1e+06-s1000] __
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+__ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t0-s0.001] ___
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+____ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t0-s1] _____
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+___ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t0-s1000] ___
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1000-s0.001] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+___ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1000-s1] ___
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1000-s1000] __
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t100000-s0.001] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+__ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t100000-s1] __
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t100000-s1000] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1e+06-s0.001] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+__ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1e+06-s1] ___
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+_ test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1e+06-s1000] _
+tests\test_invariance_geom.py:278: in test_body_distance_scales_and_keeps_its_label
+    assert lab in base["ties"], (lab, sorted(base["ties"]))
+E   AssertionError: (('PENETRATING',), [('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))])
+E   assert ('PENETRATING',) in frozenset({('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+__________ test_margin_layer_is_invariant[stack_touch-R7-t0-s0.001] ___________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+____________ test_margin_layer_is_invariant[stack_touch-R7-t0-s1] _____________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+___________ test_margin_layer_is_invariant[stack_touch-R7-t0-s1000] ___________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+_________ test_margin_layer_is_invariant[stack_touch-R7-t1000-s0.001] _________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+___________ test_margin_layer_is_invariant[stack_touch-R7-t1000-s1] ___________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+_________ test_margin_layer_is_invariant[stack_touch-R7-t1000-s1000] __________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+________ test_margin_layer_is_invariant[stack_touch-R7-t100000-s0.001] ________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+__________ test_margin_layer_is_invariant[stack_touch-R7-t100000-s1] __________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+________ test_margin_layer_is_invariant[stack_touch-R7-t100000-s1000] _________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+________ test_margin_layer_is_invariant[stack_touch-R7-t1e+06-s0.001] _________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+__________ test_margin_layer_is_invariant[stack_touch-R7-t1e+06-s1] ___________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+_________ test_margin_layer_is_invariant[stack_touch-R7-t1e+06-s1000] _________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+__________ test_margin_layer_is_invariant[stack_touch-R11-t0-s0.001] __________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+____________ test_margin_layer_is_invariant[stack_touch-R11-t0-s1] ____________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+__________ test_margin_layer_is_invariant[stack_touch-R11-t0-s1000] ___________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+________ test_margin_layer_is_invariant[stack_touch-R11-t1000-s0.001] _________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+__________ test_margin_layer_is_invariant[stack_touch-R11-t1000-s1] ___________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+_________ test_margin_layer_is_invariant[stack_touch-R11-t1000-s1000] _________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+_______ test_margin_layer_is_invariant[stack_touch-R11-t100000-s0.001] ________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     Use -v to get more diff
+_________ test_margin_layer_is_invariant[stack_touch-R11-t100000-s1] __________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+________ test_margin_layer_is_invariant[stack_touch-R11-t100000-s1000] ________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+________ test_margin_layer_is_invariant[stack_touch-R11-t1e+06-s0.001] ________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 2), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     Use -v to get more diff
+__________ test_margin_layer_is_invariant[stack_touch-R11-t1e+06-s1] __________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+________ test_margin_layer_is_invariant[stack_touch-R11-t1e+06-s1000] _________
+tests\test_invariance_geom.py:373: in test_margin_layer_is_invariant
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+E   AssertionError: ({('PENETRATING',)}, {('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 1))})
+E   assert {('PENETRATING',)} == {('VF', ('ver... ('face', 1))}
+E     
+E     Extra items in the left set:
+E     ('PENETRATING',)
+E     Extra items in the right set:
+E     ('VF', ('vertex', 2), ('face', 1))
+E     ('VF', ('vertex', 1), ('face', 1))
+E     ('VF', ('vertex', 0), ('face', 1))
+E     ('VF', ('vertex', 3), ('face', 1))
+E     Use -v to get more diff
+=========================== short test summary info ===========================
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t0-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t0-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t0-s1000]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t1000-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t1000-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t1000-s1000]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t100000-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t100000-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t100000-s1000]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t1e+06-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t1e+06-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R7-t1e+06-s1000]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t0-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t0-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t0-s1000]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t1000-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t1000-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t1000-s1000]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t100000-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t100000-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t100000-s1000]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t1e+06-s0.001]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t1e+06-s1]
+FAILED tests/test_invariance_geom.py::test_overlap_verdict_is_invariant[stack_touch-R11-t1e+06-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t0-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t0-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t0-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1000-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1000-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1000-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t100000-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t100000-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t100000-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1e+06-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1e+06-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R7-t1e+06-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t0-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t0-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t0-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1000-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1000-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1000-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t100000-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t100000-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t100000-s1000]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1e+06-s0.001]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1e+06-s1]
+FAILED tests/test_invariance_geom.py::test_body_distance_scales_and_keeps_its_label[stack_touch-R11-t1e+06-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t0-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t0-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t0-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t1000-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t1000-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t1000-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t100000-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t100000-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t100000-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t1e+06-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t1e+06-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R7-t1e+06-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t0-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t0-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t0-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t1000-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t1000-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t1000-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t100000-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t100000-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t100000-s1000]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t1e+06-s0.001]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t1e+06-s1]
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[stack_touch-R11-t1e+06-s1000]
+72 failed, 33 passed, 2301 deselected in 3.80s

@@ -6,16 +6,17 @@ exact_segment_crosses_face, exact_triangle_intersection, exact_convex_overlap.
 Input floats denote their exact rational values; derived Fraction coordinates
 are preserved. Hull tolerance parameters do not flatten real features.
 
-Legacy general-surface point_in_polyhedron/polyhedra_overlap and contact
-construction helpers still contain resolution bands. Their migration is not
-claimed complete by WO-E5a; the explicit exact APIs do not silently convexify
-concave input. See docs/exact_3d_design.md and the E5a report.
+General surface membership and overlap use exact triangulated input semantics.
+Positive tolerance is an explicit Euclidean reporting band, never a noise floor.
+Contact construction helpers retain their separately documented limitations;
+general APIs never silently convexify concave input. See docs/exact_3d_design.md and the E5a report.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from fractions import Fraction
+from eab import rational3 as _rational3
 from itertools import combinations
 import math
 from math import atan2, hypot, sqrt
@@ -58,10 +59,14 @@ def mul(a: Vec3, s: float) -> Vec3:
 
 
 def dot(a: Vec3, b: Vec3) -> float:
+    if _rational3.fraction_vectors(a, b):
+        return _rational3.dot(a, b)
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 
 
 def cross(a: Vec3, b: Vec3) -> Vec3:
+    if _rational3.fraction_vectors(a, b):
+        return _rational3.cross(a, b)
     return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
 
 
@@ -483,93 +488,26 @@ def _ray_directions(n: int = 64) -> list[Vec3]:
 
 
 def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
-    """1 严格内部 / 0 在边界（容差 tol）/ -1 外部。先测边界，再用射线奇偶。
+    """Exact supplied-surface membership, with an explicit Euclidean boundary band.
 
-    射线与每个面**平面**求交，交点用 `face_polygon_locate` 判是否落在面多边形内（非凸面正确）；
-    交点落在棱的边界带里（或 t≈0）即退化命中，换方向重试。**不做扇形三角化**——从 f[0] 扇出的
-    三角会溢出非凸多边形（2026-09-21 审查 C6：L 块凹口里落在底面平面上的点被判"边界"）。
-
-    容差（纪律 F）：边界带取 max(tol, c·eps·C)，C 为 P 与 p 的坐标量级——远坐标下面平面上的点
-    算出的 d0 是 ±eps·C 量级的噪声，tol=0 时不能拿它的符号当内外（G6 minor 7）。另有一条射线法自身的
-    分辨率：离某个面平面 ≤ max(1e-12·diag, c·eps·C) 且投影在面内的点答 0（起点贴着表面时射线处处 t≈0 命中，
-    奇偶无从谈起）——所以 1 的有效分辨率是 max(tol, 1e-12·diag, c·eps·C)。
+    Nonplanar rings mean deterministic ear-triangulated folded surfaces. Zero
+    tolerance adds no noise floor; positive tolerance reports 0 exactly when the
+    squared distance to a surface triangle is at most tol**2.
     """
-    C, diag, _ = P.metrics()
-    fl = noise_floor(max(C, abs(p[0]), abs(p[1]), abs(p[2])))
-    tol = max(tol, fl)
-    normals = [P.face_normal(fi) for fi in range(len(P.faces))]
-    # 边界：点到任一面**多边形**的欧氏距离 ≤ tol（投影在多边形内取 |d0|，在外取 √(d0² + 面内到边界的距离²)）。
-    # 旧版分两步各用一个 tol 带（到平面 ≤ tol、投影点到多边形 ≤ tol），真实距离到 √2·tol 的点也判"相触"，
-    # 与裕度层按 tol 一把尺的口径不一致（G6 第二轮 minor、第三轮 major 的一半）。
-    for fi, f in enumerate(P.faces):
-        n = normals[fi]
-        d0 = dot(n, sub(p, P.verts[f[0]]))
-        if abs(d0) <= tol and hypot(d0, _distance_to_face_polygon(add(p, mul(n, -d0)), P, fi)) <= tol:
-            return 0
-    diag = diag or 1.0
-    eps_edge = max(1e-9 * diag, fl)  # 射线交点离棱这么近即视为退化命中（相对尺度）
-    eps_t = max(1e-12 * diag, fl)    # 起点离面平面这么近即视为"就在表面上"
-    for fi, f in enumerate(P.faces):
-        n = normals[fi]
-        d0 = dot(n, sub(p, P.verts[f[0]]))
-        # 欧氏带（G6 第四轮 major）：旧版是"离平面 ≤ eps_t 且面内在 tol 带内"的盒带，欧氏距离可达 √(eps_t² + tol²)，两体尺寸比
-        # ≥ 1e3 时 eps_t ≈ gtol，真间距在 (ctol, √2·ctol) 的分离位形被答成相触、裕度层再升成哨兵
-        if abs(d0) <= eps_t and hypot(d0, _distance_to_face_polygon(add(p, mul(n, -d0)), P, fi)) <= max(tol, eps_t):
-            # 起点在射线法的分辨率之下就落在表面上：任何方向都会 t≈0 命中，奇偶无从谈起。
-            # 返回"边界"是正确答案（2026-09-18 实测：偏移 3.3e-10 > tol=1e-12 的点）。
-            # 面内判定的边界带是调用方的 tol：旧版用射线退化带 eps_edge = 1e-9·diag，顶点落在对方某面的平面上、
-            # 面内却在多边形外 ≤ 1e-9·diag 的（块共用地板：DDA 最普通的位形）被判"边界"，裕度层再升成贯入（G6 第三轮 major）。
-            return 0
-    for d in _ray_directions():
-        crossings = 0
-        degenerate = False
-        for fi, f in enumerate(P.faces):
-            n = normals[fi]
-            den = dot(n, d)
-            if den == 0.0:
-                continue                                  # 射线平行于面平面：不相交
-            t = dot(n, sub(P.verts[f[0]], p)) / den
-            if t < -eps_t:
-                continue
-            if t <= eps_t:
-                # 起点就在这个面的平面上：它在多边形内（含带）的情形上面的捷径已答 0；落在多边形外的（块共用地板、
-                # 角点在对方底面之外 g > tol）这里不是交叉也不是退化——用欧氏带判（同上面的捷径），不用 1e-9·diag 的射线退化带
-                # （G6 第三轮 major：旧版把这种点当退化、所有方向退化后答"边界"，裕度层再升成贯入）
-                d0 = dot(n, sub(p, P.verts[f[0]]))
-                if hypot(d0, _distance_to_face_polygon(add(p, mul(n, -d0)), P, fi)) > max(tol, eps_t):
-                    continue
-                degenerate = True
-                break
-            loc = face_polygon_locate(add(p, mul(d, t)), P, fi, eps_edge)
-            if loc < 0:
-                continue
-            if loc == 0:
-                degenerate = True
-                break
-            crossings += 1
-        if not degenerate:
-            return 1 if crossings % 2 == 1 else -1
-    # 所有方向都退化：起点贴着棱/顶点（距离 < eps_edge），同样只能答"边界"。
-    return 0
+    return _eg.point_in_surface(p, P, tol)
 
 
 def segment_crosses_face(p: Vec3, q: Vec3, P: Polyhedron, fi: int, tol: float = 0.0) -> bool:
-    """线段 pq 的**内部**与面 fi 的**内部**真相交（不含端点触碰、不含共面、不含穿过棱的 tol 带）。
+    """Exact transverse open-segment/source-face-interior crossing.
 
-    面侧容差取 max(tol, c·eps·C)：躺在面平面里的棱，dp、dq 是符号随机的舍入噪声（G6 minor 7：
-    tol=0 或远坐标下被当成严格穿面，面接触判成贯入）。"""
-    tol = max(tol, noise_floor(max(P.metrics()[0], coord_scale(p, q))))
-    n = P.face_normal(fi)
-    o = P.verts[P.faces[fi][0]]
-    dp, dq = dot(n, sub(p, o)), dot(n, sub(q, o))
-    L = norm(sub(q, p))
-    if L == 0.0:
-        return False
-    if not ((dp > tol and dq < -tol) or (dp < -tol and dq > tol)):
-        return False
-    t = dp / (dp - dq)
-    x = add(p, mul(sub(q, p), t))
-    return face_polygon_locate(x, P, fi, tol) == 1
+    P must be a valid outward-oriented closed embedded surface, not a single
+    open face: crossings on internal fold edges require the solid's two-sided
+    membership. An open face-only query is outside this API's contract.
+    Coplanar overlap is not a transverse crossing. With positive tol, both
+    endpoints must be farther than tol from the crossed triangle's plane and
+    the crossing point farther than tol from the source ring boundary.
+    """
+    return _eg.segment_crosses(p, q, P, fi, tol)
 
 
 def _inward_vertex_direction(P: Polyhedron, vi: int) -> Vec3 | None:
@@ -583,96 +521,20 @@ def _inward_vertex_direction(P: Polyhedron, vi: int) -> Vec3 | None:
 
 
 def polyhedra_overlap(A: Polyhedron, B: Polyhedron, tol: float = 0.0) -> int:
-    """暴力谓词：1 内部相交 / 0 仅边界接触 / -1 分离。任意（含非凸）闭合多面体。
+    """Exact closed-surface relation: interior overlap 1, contact 0, disjoint -1.
 
-    证人搜索按代价递增：AABB 早退 → 顶点在内 → 棱穿面 → 各自内点在对方内 →
-    **接触锥证人**（相触顶点与棱-棱交点处，沿两体切锥之交的内部方向微推）→
-    相触顶点沿内法向微推 → AABB 交集里的网格与随机采样。**全程不用体心**（凹体体心可在体外）。
+    Inputs must be valid outward-oriented closed embedded surfaces; invalid
+    topology is outside this API contract. No implicit convexification,
+    resolution floor, grid, or random witness is
+    used. The general certificate partitions triangle interiors by the other
+    surface's planes, including coplanar edge lines; rational inward witnesses
+    resolve both coplanar contact and common-edge penetration. Convex SAT is
+    used only after exact support certificates for the supplied surface.
 
-    · 网格一步是必需的：两个方块共享 y、z 范围时前四步全空，但交集体积为正（2026-09-18 实测）。
-    · 微推一步也是必需的（2026-09-21 审查 C9）：L 块凹槽里咬进一层 e 厚的薄片、z 范围重合时，
-      每个顶点都落在对方面平面上、没有棱严格穿面，网格撒在 ~2×2×1 的 AABB 交集里而真交集只有
-      e×2×1——e ≲ 0.01 就漏判成"相触"。相触顶点沿关联面外法向和的反方向推进 ε·diam，
-      若落在两体**严格**内部即是证人。它只可能修正假阴性：证人点经 point_in_polyhedron 复验。
-    · 接触锥证人是**精确**的一步（2026-09-24 G6 critical 5）：两块等高板 X 形交叉时没有顶点在体内或
-      体面上、棱交点全落在共面上，其余各步与网格都漏，旧实现判 −1（margin 层因此 fail-unsafe）。
-      见 `_contact_cone_witness`：对凸体完备。棱-棱相交（距离 ≤ tol）也记为"相触"——闭包相交而
-      内部不交、又没有顶点相触的交叉面接触，此前被判 −1。
-    · 容差：tol_eff = max(tol, c·eps·C)，C 为两体坐标量级（纪律 F，G6 minor 7）。
-    · **有效分辨率**是 max(tol_eff, 1e-12·diag)（diag 为 AABB 对角线）：每个证人都经 point_in_polyhedron 复验，
-      它把离某个面平面 ≤ 1e-12·diag 的点判"在表面上"（射线奇偶在那个深度分辨不了，见其文档），所以贯入深度
-      ≲ 1e-12·diag 的一对答 0（相触），从不答成假的 1 或 −1（G6 第二轮 minor；门：tests/test_geom3_overlap_witness.py
-      ::test_overlap_resolution_is_documented）。
-    · 完备性的诚实边界：**凸体**上"贯入深于上述分辨率的 **2 倍** ⟹ 判 1"是精确的（接触锥证人沿切锥内部方向走到交集
-      最深处，深 p/2 的点要比分辨率带还深才算"严格在内"）；非凸体只在交集的某个
-      角点落在两体的凸局部上时精确，否则仍依赖微推启发式与采样，薄交集可能漏判成 0 / −1。
-      任何情形都不会误报 1（每个证人都经 point_in_polyhedron 严格复验）。
+    Positive tol is a reporting band only on the disjoint side: true interior
+    overlap remains 1, while exact surface distance <= tol reports 0.
     """
-    tol = max(tol, noise_floor(max(A.metrics()[0], B.metrics()[0])))
-    (ax0, ay0, az0), (ax1, ay1, az1) = A.aabb()
-    (bx0, by0, bz0), (bx1, by1, bz1) = B.aabb()
-    lo = (max(ax0, bx0), max(ay0, by0), max(az0, bz0))
-    hi = (min(ax1, bx1), min(ay1, by1), min(az1, bz1))
-    if any(hi[i] < lo[i] - tol for i in range(3)):
-        return -1
-
-    touching = False
-    touch_verts: list[tuple[Polyhedron, Polyhedron, list[int]]] = []
-    for P, Q in ((A, B), (B, A)):
-        tv: list[int] = []
-        for vi, p in enumerate(P.verts):
-            s = point_in_polyhedron(p, Q, tol)
-            if s == 1:
-                return 1
-            if s == 0:
-                touching = True
-                tv.append(vi)
-        touch_verts.append((P, Q, tv))
-        for e in P.edges():
-            for fi in range(len(Q.faces)):
-                if segment_crosses_face(P.verts[e[0]], P.verts[e[1]], Q, fi, tol):
-                    return 1
-        if point_in_polyhedron(P.interior_point(), Q, tol) == 1:
-            return 1
-
-    # 精确证人：接触点处两切锥之交的内部方向（G6 critical 5：共面交叉）
-    witness, edge_contact = _contact_cone_witness(A, B, tol, touch_verts)
-    if witness is not None:
-        return 1
-    touching = touching or edge_contact
-
-    # 证人：相触顶点沿内法向微推（薄片交集）
-    for P, Q, tv in touch_verts:
-        plo, phi = P.aabb()
-        diam = norm(sub(phi, plo))
-        for vi in tv:
-            d = _inward_vertex_direction(P, vi)
-            if d is None:
-                continue
-            for eps in (1e-3, 1e-5, 1e-7):
-                q = add(P.verts[vi], mul(d, eps * diam))
-                if point_in_polyhedron(q, Q, tol) == 1 and point_in_polyhedron(q, P, tol) == 1:
-                    return 1
-
-    # 证人搜索：AABB 交集内的确定性网格 + 少量伪随机点
-    import random as _random
-    span = tuple(hi[i] - lo[i] for i in range(3))
-    if all(s >= 0.0 for s in span):
-        pts: list[Vec3] = []
-        g = 5
-        for i in range(g):
-            for j in range(g):
-                for k in range(g):
-                    pts.append((lo[0] + span[0] * (i + 0.5) / g,
-                                lo[1] + span[1] * (j + 0.5) / g,
-                                lo[2] + span[2] * (k + 0.5) / g))
-        rng = _random.Random(0xE4B)
-        pts.extend((rng.uniform(lo[0], hi[0]), rng.uniform(lo[1], hi[1]), rng.uniform(lo[2], hi[2]))
-                   for _ in range(60))
-        for p in pts:
-            if point_in_polyhedron(p, A, tol) == 1 and point_in_polyhedron(p, B, tol) == 1:
-                return 1
-    return 0 if touching else -1
+    return _eg.surface_overlap(A, B, tol)
 
 
 def _segment_closest_points(p1: Vec3, p2: Vec3, q1: Vec3, q2: Vec3) -> tuple[Vec3, Vec3]:

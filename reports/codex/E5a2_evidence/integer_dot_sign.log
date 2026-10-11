@@ -1,0 +1,31 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+_ test_common_denominator_operations_equal_pure_fraction_every_coordinate[eab.rational3] _
+tests\test_e5a2_integer_arithmetic.py:53: in test_common_denominator_operations_equal_pure_fraction_every_coordinate
+    assert module.dot(a, b) == _dot(a, b), (a, b, 'dot')
+E   AssertionError: ((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-26811217369626...33, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)), 'dot')
+E   assert Fraction(8150736276066040245997503738387, 5070602400912917605986812821504) == Fraction(5430012589382665962915842439667, 5070602400912917605986812821504)
+E    +  where Fraction(8150736276066040245997503738387, 5070602400912917605986812821504) = <function dot at 0x0000000001235EE0>((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), (Fraction(-1043482379993933, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)))
+E    +    where <function dot at 0x0000000001235EE0> = <module 'eab.rational3' from 'D:\\eab-wt\\cx-e2\\src\\eab\\rational3.py'>.dot
+E    +  and   Fraction(5430012589382665962915842439667, 5070602400912917605986812821504) = _dot((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), (Fraction(-1043482379993933, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)))
+_ test_common_denominator_operations_equal_pure_fraction_every_coordinate[eab.kernel3d.geom3] _
+tests\test_e5a2_integer_arithmetic.py:53: in test_common_denominator_operations_equal_pure_fraction_every_coordinate
+    assert module.dot(a, b) == _dot(a, b), (a, b, 'dot')
+E   AssertionError: ((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-26811217369626...33, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)), 'dot')
+E   assert Fraction(8150736276066040245997503738387, 5070602400912917605986812821504) == Fraction(5430012589382665962915842439667, 5070602400912917605986812821504)
+E    +  where Fraction(8150736276066040245997503738387, 5070602400912917605986812821504) = <function dot at 0x00000000046BC180>((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), (Fraction(-1043482379993933, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)))
+E    +    where <function dot at 0x00000000046BC180> = <module 'eab.kernel3d.geom3' from 'D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py'>.dot
+E    +  and   Fraction(5430012589382665962915842439667, 5070602400912917605986812821504) = _dot((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), (Fraction(-1043482379993933, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)))
+_ test_common_denominator_operations_equal_pure_fraction_every_coordinate[eab.kernel3d.exact_geom] _
+tests\test_e5a2_integer_arithmetic.py:53: in test_common_denominator_operations_equal_pure_fraction_every_coordinate
+    assert module.dot(a, b) == _dot(a, b), (a, b, 'dot')
+E   AssertionError: ((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-26811217369626...33, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)), 'dot')
+E   assert Fraction(8150736276066040245997503738387, 5070602400912917605986812821504) == Fraction(5430012589382665962915842439667, 5070602400912917605986812821504)
+E    +  where Fraction(8150736276066040245997503738387, 5070602400912917605986812821504) = <function dot at 0x00000000046856C0>((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), (Fraction(-1043482379993933, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)))
+E    +    where <function dot at 0x00000000046856C0> = <module 'eab.kernel3d.exact_geom' from 'D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\exact_geom.py'>.dot
+E    +  and   Fraction(5430012589382665962915842439667, 5070602400912917605986812821504) = _dot((Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), (Fraction(-1043482379993933, 562949953421312), Fraction(166478913613621, 2251799813685248), Fraction(317115832663289, 1125899906842624)))
+=========================== short test summary info ===========================
+FAILED tests/test_e5a2_integer_arithmetic.py::test_common_denominator_operations_equal_pure_fraction_every_coordinate[eab.rational3]
+FAILED tests/test_e5a2_integer_arithmetic.py::test_common_denominator_operations_equal_pure_fraction_every_coordinate[eab.kernel3d.geom3]
+FAILED tests/test_e5a2_integer_arithmetic.py::test_common_denominator_operations_equal_pure_fraction_every_coordinate[eab.kernel3d.exact_geom]
+3 failed, 22 deselected in 0.13s

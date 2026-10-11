@@ -3,11 +3,13 @@
 Hull faces are found by exhaustive rational support triples (not incremental
 hull construction). Local labels use e5a_cover_oracle's independent Newell,
 Gram and Gordan-ray formulas. Float normals/gaps are construction outputs;
-their documented arithmetic is reproduced only for the adapter's float window.
+their documented arithmetic is reproduced only for the adapter's float grouping.
+The enumeration window itself compares exact rational squared feature distance.
 """
 from functools import lru_cache
 from itertools import combinations
 import math
+from fractions import Fraction
 
 from e5a_cover_oracle import q, sub, add, scale, dot, cross, model, arc, cover_labels
 
@@ -44,11 +46,14 @@ def _unit(n):
     return tuple(x/length for x in v)
 
 
-def construction(A, B, label, tol):
+def construction(A, B, label, tol, *, distance_squared=False):
     kind, fa, fb = label
     a = model(tuple(A.verts), tuple(A.faces))
     b = model(tuple(B.verts), tuple(B.faces))
     if kind in ("FV", "EV3"):
+        if distance_squared:
+            return construction(B, A, ("VF" if kind == "FV" else "VE3", fb, fa), tol,
+                                distance_squared=True)
         gap, n = construction(B, A, ("VF" if kind == "FV" else "VE3", fb, fa), tol)
         return gap, tuple(-x for x in n)
     if kind == "VF":
@@ -71,7 +76,9 @@ def construction(A, B, label, tol):
         assert kind == "VV3"
         difference = n = sub(a[0][fa[1]], b[0][fb[1]])
         if not any(n):
-            return 0., None
+            return Fraction(0) if distance_squared else (0., None)
+    if distance_squared:
+        return dot(n, difference)**2 / dot(n, n)
     normal = _unit(n)
     v = tuple(map(float, difference))
     if kind in ("VE3", "VV3"):
@@ -95,7 +102,7 @@ def assert_comparison(result, loaded, *, window, band, tol):
         all_covers = []
         for label, strict in cover_labels(A, B, tol):
             gap, normal = construction(A, B, label, tol)
-            if abs(gap) <= max(window, band):
+            if construction(A, B, label, tol, distance_squared=True) <= Fraction(max(window, band))**2:
                 all_covers.append((label, strict, gap, normal))
         if not all_covers and pair not in legacy_pairs:
             continue

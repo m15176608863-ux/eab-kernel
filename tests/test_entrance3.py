@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import random
+from fractions import Fraction as F
 
 import pytest
 
@@ -120,6 +121,13 @@ def test_penetrating_start_takes_the_shallowest_exit():
 
 @pytest.mark.parametrize("seed", range(24))
 def test_first_entrance_agrees_with_the_predicate_only_oracle_on_random_convex_pairs(seed):
+    """Original 24 seeds / 800-step supporting oracle remain. E5a2 additionally
+    proves the continuous exact entry time by independent all-axis integer SAT.
+    The returned floating translation need not land exactly on that boundary;
+    its actual input-coordinate state is checked independently instead of
+    silently thickening a separated rounded endpoint into contact.
+    """
+    from e5a2_entrance_oracle import assert_supporting_surface, convex_overlap, convex_ray_interval
     rng = random.Random(900 + seed)
     A = convex_hull_3d([(rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(8)])
     B = convex_hull_3d([(rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(8)])
@@ -127,13 +135,26 @@ def test_first_entrance_agrees_with_the_predicate_only_oracle_on_random_convex_p
     d = tuple(-c / 4.0 + 0.1 * rng.gauss(0, 1) for c in start)        # 大致指向 B
     e = first_entrance3(A, B, start, d, t_max=8.0)
     bt = first_entrance_brute(A, B, start, d, t_max=8.0, steps=800)
+    assert_supporting_surface(A.verts, A.faces)
+    assert_supporting_surface(B.verts, B.faces)
+    interval = convex_ray_interval(A.verts, B.verts, start, d, 8.0)
     if bt is None:
+        assert interval is None, interval
         assert e.kind == "none", (e.kind, e.t, e.label)
         return
     assert e.kind == "entrance", (bt, e.kind, e.n_candidates)
     assert e.t == pytest.approx(bt, abs=2e-8), (e.t, bt, e.label)
     assert abs(e.gap) <= 1e-9
-    assert polyhedra_overlap(A.translated(e.x), B) >= 0
+    assert interval is not None and interval[0] > 0
+    exact_time = interval[0]
+    assert e.t == pytest.approx(float(exact_time), abs=2e-8)
+    rounded = A.translated(e.x)
+    assert_supporting_surface(rounded.verts, rounded.faces)
+    assert polyhedra_overlap(rounded, B) == convex_overlap(rounded.verts, B.verts)
+    exact_shift = tuple(F(start[k])+exact_time*F(d[k]) for k in range(3))
+    boundary = Polyhedron([tuple(F(p[k])+exact_shift[k] for k in range(3)) for p in A.verts], list(A.faces))
+    assert convex_overlap(boundary.verts, B.verts) == 0
+    assert polyhedra_overlap(boundary, B) == 0
     assert dot(e.normal, d) < 0.0                                       # 前进方向合上这个 facet
 
 

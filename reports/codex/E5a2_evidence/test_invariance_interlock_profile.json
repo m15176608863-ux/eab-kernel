@@ -1,0 +1,370 @@
+{
+  "test_file": "test_invariance_interlock",
+  "returncode": 0,
+  "wall_seconds": 1277.295107900005,
+  "profiler_total_seconds": 1277.0470948999996,
+  "production_top20_cumulative": [
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:518:enumerate_covers3",
+      "primitive_calls": 1885,
+      "calls": 1885,
+      "self_seconds": 2.0437723,
+      "cumulative_seconds": 640.9387921,
+      "self_pct": 0.1600078390153828,
+      "cumulative_pct": 50.17938205007021
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\interlock.py:211:escape_height_covers",
+      "primitive_calls": 231,
+      "calls": 231,
+      "self_seconds": 0.0688079,
+      "cumulative_seconds": 465.34151740000004,
+      "self_pct": 0.005387000981560695,
+      "cumulative_pct": 36.431793602111725
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:435:ee_cover",
+      "primitive_calls": 1637483,
+      "calls": 1637483,
+      "self_seconds": 8.1137493,
+      "cumulative_seconds": 459.48302920000003,
+      "self_pct": 0.6352290281092345,
+      "cumulative_pct": 35.97312996488603
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\interlock.py:156:_candidates",
+      "primitive_calls": 305,
+      "calls": 305,
+      "self_seconds": 0.4616449,
+      "cumulative_seconds": 441.2229254,
+      "self_pct": 0.03614238378779891,
+      "cumulative_pct": 34.543538346859606
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\margin.py:179:_resolve",
+      "primitive_calls": 1982,
+      "calls": 1982,
+      "self_seconds": 0.0761986,
+      "cumulative_seconds": 349.71728540000004,
+      "self_pct": 0.005965622159571078,
+      "cumulative_pct": 27.37952124274308
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:131:_qedge_contains",
+      "primitive_calls": 5730215,
+      "calls": 5730215,
+      "self_seconds": 26.427594000000003,
+      "cumulative_seconds": 293.58398470000003,
+      "self_pct": 2.069028045010639,
+      "cumulative_pct": 22.984820256822257
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:430:face_polygon_locate",
+      "primitive_calls": 3565301,
+      "calls": 3565301,
+      "self_seconds": 4.9997810000000005,
+      "cumulative_seconds": 280.06943900000005,
+      "self_pct": 0.3914350700223159,
+      "cumulative_pct": 21.926760485324408
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:135:polygon_locate",
+      "primitive_calls": 3565301,
+      "calls": 3565301,
+      "self_seconds": 49.9473471,
+      "cumulative_seconds": 273.5290871,
+      "self_pct": 3.910399937420743,
+      "cumulative_pct": 21.41471343687427
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:585:polyhedra_overlap",
+      "primitive_calls": 2781,
+      "calls": 2781,
+      "self_seconds": 0.7721696,
+      "cumulative_seconds": 268.7184164,
+      "self_pct": 0.06045350015232741,
+      "cumulative_pct": 21.038083896038618
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:485:point_in_polyhedron",
+      "primitive_calls": 329701,
+      "calls": 329701,
+      "self_seconds": 11.068125,
+      "cumulative_seconds": 235.20147740000002,
+      "self_pct": 0.8665284108225431,
+      "cumulative_pct": 18.414027889505793
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\margin.py:157:_witnesses",
+      "primitive_calls": 1574,
+      "calls": 1574,
+      "self_seconds": 0.0201343,
+      "cumulative_seconds": 222.9983391,
+      "self_pct": 0.0015763232690292465,
+      "cumulative_pct": 17.45863878447249
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\margin.py:210:body_distance",
+      "primitive_calls": 1226,
+      "calls": 1226,
+      "self_seconds": 0.0067943000000000005,
+      "cumulative_seconds": 212.70128530000002,
+      "self_pct": 0.0005319287577301129,
+      "cumulative_pct": 16.652477879579546
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:60:dot",
+      "primitive_calls": 62283793,
+      "calls": 62283793,
+      "self_seconds": 21.1326503,
+      "cumulative_seconds": 201.31981370000003,
+      "self_pct": 1.654484556411094,
+      "cumulative_pct": 15.761417424591016
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\margin.py:245:margin_contacts",
+      "primitive_calls": 756,
+      "calls": 756,
+      "self_seconds": 0.0089621,
+      "cumulative_seconds": 137.06857100000002,
+      "self_pct": 0.0007016467803383783,
+      "cumulative_pct": 10.731159162220063
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\interlock.py:188:escape_candidates",
+      "primitive_calls": 74,
+      "calls": 74,
+      "self_seconds": 0.009308400000000001,
+      "cumulative_seconds": 113.5624592,
+      "self_pct": 0.0007287587607928679,
+      "cumulative_pct": 8.890855253231772
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:407:_qclosest_params",
+      "primitive_calls": 1409774,
+      "calls": 1409774,
+      "self_seconds": 2.8976359,
+      "cumulative_seconds": 109.0935261,
+      "self_pct": 0.22685719862843523,
+      "cumulative_pct": 8.540980500532893
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\margin.py:275:inflated_membership",
+      "primitive_calls": 756,
+      "calls": 756,
+      "self_seconds": 0.011641100000000001,
+      "cumulative_seconds": 105.9985611,
+      "self_pct": 0.0009113868774725898,
+      "cumulative_pct": 8.29867431922383
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:64:cross",
+      "primitive_calls": 8733897,
+      "calls": 8733897,
+      "self_seconds": 8.4106055,
+      "cumulative_seconds": 92.28837320000001,
+      "self_pct": 0.6584700315518971,
+      "cumulative_pct": 7.225297633193859
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:92:_outside_dot_band",
+      "primitive_calls": 11227871,
+      "calls": 11227871,
+      "self_seconds": 12.6093826,
+      "cumulative_seconds": 78.78899150000001,
+      "self_pct": 0.9871941512976612,
+      "cumulative_pct": 6.168425057975571
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:33:_im",
+      "primitive_calls": 31013562,
+      "calls": 31013562,
+      "self_seconds": 23.8912321,
+      "cumulative_seconds": 77.56747100000001,
+      "self_pct": 1.87045514793206,
+      "cumulative_pct": 6.072791676743234
+    }
+  ],
+  "production_top20_self": [
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:135:polygon_locate",
+      "primitive_calls": 3565301,
+      "calls": 3565301,
+      "self_seconds": 49.9473471,
+      "cumulative_seconds": 273.5290871,
+      "self_pct": 3.910399937420743,
+      "cumulative_pct": 21.41471343687427
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:131:_qedge_contains",
+      "primitive_calls": 5730215,
+      "calls": 5730215,
+      "self_seconds": 26.427594000000003,
+      "cumulative_seconds": 293.58398470000003,
+      "self_pct": 2.069028045010639,
+      "cumulative_pct": 22.984820256822257
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:33:_im",
+      "primitive_calls": 31013562,
+      "calls": 31013562,
+      "self_seconds": 23.8912321,
+      "cumulative_seconds": 77.56747100000001,
+      "self_pct": 1.87045514793206,
+      "cumulative_pct": 6.072791676743234
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:60:dot",
+      "primitive_calls": 62283793,
+      "calls": 62283793,
+      "self_seconds": 21.1326503,
+      "cumulative_seconds": 201.31981370000003,
+      "self_pct": 1.654484556411094,
+      "cumulative_pct": 15.761417424591016
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:35:<genexpr>",
+      "primitive_calls": 155067810,
+      "calls": 155067810,
+      "self_seconds": 18.6300719,
+      "cumulative_seconds": 25.720078400000002,
+      "self_pct": 1.4585565845178579,
+      "cumulative_pct": 2.0136363351681714
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:29:_is",
+      "primitive_calls": 71494518,
+      "calls": 71494518,
+      "self_seconds": 17.745824900000002,
+      "cumulative_seconds": 27.8274882,
+      "self_pct": 1.389328495055135,
+      "cumulative_pct": 2.1786263822579772
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:55:_qnormal",
+      "primitive_calls": 12638238,
+      "calls": 12638238,
+      "self_seconds": 13.798934000000001,
+      "cumulative_seconds": 21.3216059,
+      "self_pct": 1.0803246575246628,
+      "cumulative_pct": 1.669277974066209
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:92:_outside_dot_band",
+      "primitive_calls": 11227871,
+      "calls": 11227871,
+      "self_seconds": 12.6093826,
+      "cumulative_seconds": 78.78899150000001,
+      "self_pct": 0.9871941512976612,
+      "cumulative_pct": 6.168425057975571
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:151:<genexpr>",
+      "primitive_calls": 31481405,
+      "calls": 31481405,
+      "self_seconds": 11.5852929,
+      "cumulative_seconds": 17.7707333,
+      "self_pct": 0.9070177148840199,
+      "cumulative_pct": 1.3912785847286913
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:485:point_in_polyhedron",
+      "primitive_calls": 329701,
+      "calls": 329701,
+      "self_seconds": 11.068125,
+      "cumulative_seconds": 235.20147740000002,
+      "self_pct": 0.8665284108225431,
+      "cumulative_pct": 18.414027889505793
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:64:cross",
+      "primitive_calls": 8733897,
+      "calls": 8733897,
+      "self_seconds": 8.4106055,
+      "cumulative_seconds": 92.28837320000001,
+      "self_pct": 0.6584700315518971,
+      "cumulative_pct": 7.225297633193859
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:435:ee_cover",
+      "primitive_calls": 1637483,
+      "calls": 1637483,
+      "self_seconds": 8.1137493,
+      "cumulative_seconds": 459.48302920000003,
+      "self_pct": 0.6352290281092345,
+      "cumulative_pct": 35.97312996488603
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:44:sub",
+      "primitive_calls": 39005316,
+      "calls": 39005316,
+      "self_seconds": 6.331392800000001,
+      "cumulative_seconds": 30.0366645,
+      "self_pct": 0.49568754791595615,
+      "cumulative_pct": 2.3515837737281515
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:43:_qedge",
+      "primitive_calls": 9391216,
+      "calls": 9391216,
+      "self_seconds": 5.9672605,
+      "cumulative_seconds": 12.2037986,
+      "self_pct": 0.4671794687925131,
+      "cumulative_pct": 0.9554408002128976
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\exact_geom.py:69:vector",
+      "primitive_calls": 3893861,
+      "calls": 3893861,
+      "self_seconds": 5.3190512000000005,
+      "cumulative_seconds": 17.763110700000002,
+      "self_pct": 0.41643087545720175,
+      "cumulative_pct": 1.3906818079969203
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:207:_build_topology",
+      "primitive_calls": 15935,
+      "calls": 15935,
+      "self_seconds": 5.2269419,
+      "cumulative_seconds": 6.7380817,
+      "self_pct": 0.4092195975441878,
+      "cumulative_pct": 0.5275274021113295
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:430:face_polygon_locate",
+      "primitive_calls": 3565301,
+      "calls": 3565301,
+      "self_seconds": 4.9997810000000005,
+      "cumulative_seconds": 280.06943900000005,
+      "self_pct": 0.3914350700223159,
+      "cumulative_pct": 21.926760485324408
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:112:_qvertex_contains",
+      "primitive_calls": 1301002,
+      "calls": 1301002,
+      "self_seconds": 4.9739639,
+      "cumulative_seconds": 39.046940400000004,
+      "self_pct": 0.38941383782309097,
+      "cumulative_pct": 3.057002266625518
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\covers3.py:57:<genexpr>",
+      "primitive_calls": 62745298,
+      "calls": 62745298,
+      "self_seconds": 4.6457250000000005,
+      "cumulative_seconds": 4.6457250000000005,
+      "self_pct": 0.3637158688909422,
+      "cumulative_pct": 0.3637158688909422
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a2_evidence\\tmp\\profile_baseline\\src\\eab\\kernel3d\\geom3.py:556:segment_crosses_face",
+      "primitive_calls": 1924323,
+      "calls": 1924323,
+      "self_seconds": 3.4229047,
+      "cumulative_seconds": 18.865691100000003,
+      "self_pct": 0.2679807257406303,
+      "cumulative_pct": 1.4770033160948217
+    }
+  ]
+}

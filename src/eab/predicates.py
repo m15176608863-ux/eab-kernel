@@ -38,7 +38,14 @@ def cross2_sign(a, b) -> int:
     the product permanent.  16u also covers rounding the computed bound;
     8*tiny*(1+sum|operand|) bounds operand/product/sum underflow propagation.
     The spare factor is numerical certification, not a geometric tolerance.
+    Already-rational operands use the exact common-denominator numerator
+    directly; this is integer algebra, not an additional floating filter.
     """
+    if (type(a[0]) is Fraction and type(a[1]) is Fraction
+            and type(b[0]) is Fraction and type(b[1]) is Fraction):
+        numerator = (a[0].numerator * b[1].numerator * a[1].denominator * b[0].denominator
+                     - a[1].numerator * b[0].numerator * a[0].denominator * b[1].denominator)
+        return _sign(numerator)
     ax, ay, bx, by = map(_float_value, (a[0], a[1], b[0], b[1]))
     p, q = ax * by, ay * bx
     d = p - q
@@ -50,6 +57,11 @@ def cross2_sign(a, b) -> int:
 
 def dot2_sign(a, b) -> int:
     """Exact two-dimensional dot-product sign, using cross2_sign's bound."""
+    if (type(a[0]) is Fraction and type(a[1]) is Fraction
+            and type(b[0]) is Fraction and type(b[1]) is Fraction):
+        numerator = (a[0].numerator * b[0].numerator * a[1].denominator * b[1].denominator
+                     + a[1].numerator * b[1].numerator * a[0].denominator * b[0].denominator)
+        return _sign(numerator)
     ax, ay, bx, by = map(_float_value, (a[0], a[1], b[0], b[1]))
     p, q = ax * bx, ay * by
     d = p + q

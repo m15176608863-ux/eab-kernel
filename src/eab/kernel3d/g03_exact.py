@@ -124,7 +124,12 @@ def difference_hull(av,bv):
 
 @lru_cache(maxsize=256)
 def sat_model(av,bv):
-    """Independent exact SAT using both face normals and all true hull edges."""
+    """Independent exact SAT, with integer translation-interval certificates.
+
+    A row stores n and the rational lower/upper bounds bmin-amax, bmax-amin.
+    This is only an exact algebraic rearrangement of the previous projections;
+    both face normals and every true hull-edge cross axis remain present.
+    """
     a,fa,pa=hull(av);b,fb,pb=hull(bv)
     def edges(faces):
         return {tuple(sorted((f[i],f[(i+1)%len(f)]))) for f in faces for i in range(len(f))}
@@ -136,18 +141,21 @@ def sat_model(av,bv):
     rows=[]
     for n in sorted(axes):
         aa=[scalar(n,p) for p in a];bb=[scalar(n,p) for p in b]
-        rows.append((n,min(aa),max(aa),min(bb),max(bb)))
+        low,high=min(bb)-max(aa),max(bb)-min(aa)
+        rows.append((n,low.numerator,low.denominator,high.numerator,high.denominator))
     return tuple(rows)
 
 
 def overlap(av,bv,x):
     """A+x versus B; translation is rational, with no rounded A.translated()."""
     x=qpoint(x);boundary=False
-    for n,amin,amax,bmin,bmax in sat_model(av,bv):
-        shift=scalar(n,x)
-        lo,hi=amin+shift,amax+shift
-        if lo>bmax or bmin>hi:return -1
-        if lo==bmax or bmin==hi:boundary=True
+    den=lcm(*(v.denominator for v in x))
+    xi=tuple(v.numerator*(den//v.denominator) for v in x)
+    for n,ln,ld,hn,hd in sat_model(av,bv):
+        shift=n[0]*xi[0]+n[1]*xi[1]+n[2]*xi[2]
+        low,high=shift*ld-ln*den,shift*hd-hn*den
+        if low<0 or high>0:return -1
+        if low==0 or high==0:boundary=True
     return 0 if boundary else 1
 
 

@@ -32,6 +32,7 @@ from fractions import Fraction
 
 import pytest
 from e5a_cover_oracle import cover_labels as independent_cover_labels
+from e5a2_surface_oracle import star_relation
 
 from eab.kernel3d.covers3 import (enumerate_covers3, local_facets3, membership_convex3,
                                   support_gaps3)
@@ -255,12 +256,19 @@ def _cell(name, rot, tmag, s):
 @pytest.mark.parametrize("rot,tmag,s", CELLS, ids=CELL_IDS)
 @pytest.mark.parametrize("name", PAIR_NAMES)
 def test_overlap_verdict_is_invariant(name, rot, tmag, s):
-    """默认 tol=0 与按单位缩放的 tol=1e-9·s 都必须给出同一判决（G6 critical 5、minor 7）。"""
+    """Stable cells keep closed-form invariance; rounded boundary cells are exact.
+
+    The independent oracle decomposes the original star-shaped ring surface
+    into radial tetrahedra and uses integer SAT/Gram distance. No production
+    geometry primitive, hull replacement, noise exemption, or input change.
+    """
     _, M, A, B = _cell(name, rot, tmag, s)
-    want = PAIRS[name][1]
+    want = star_relation(A, B) if name == "stack_touch" else PAIRS[name][1]
+    band = star_relation(A, B, 1e-9 * s) if name == "stack_touch" else want
     assert polyhedra_overlap(A, B) == want, "default tol"
-    assert polyhedra_overlap(A, B, 1e-9 * s) == want, "tol 1e-9*s"
-    assert polyhedra_overlap(B, A, 1e-9 * s) == want, "argument order"
+    assert polyhedra_overlap(B, A) == want, "zero-tol argument order"
+    assert polyhedra_overlap(A, B, 1e-9 * s) == band, "tol 1e-9*s"
+    assert polyhedra_overlap(B, A, 1e-9 * s) == band, "argument order"
 
 
 # ================================================================ 距离 ×s：body_distance
@@ -270,8 +278,11 @@ def test_overlap_verdict_is_invariant(name, rot, tmag, s):
 def test_body_distance_scales_and_keeps_its_label(name, rot, tmag, s):
     base, M, A, B = _cell(name, rot, tmag, s)
     d, lab = body_distance(A, B)
-    if PAIRS[name][1] == 1:
+    state = star_relation(A, B) if name == "stack_touch" else PAIRS[name][1]
+    if state == 1:
         assert (d, lab) == (0.0, (PENETRATING,))
+        if name == "stack_touch":
+            assert abs(d - s * base["d"]) <= M.dist_tol(PAIRS[name][5])
         return
     L = PAIRS[name][5]
     assert abs(d - s * base["d"]) <= M.dist_tol(L), (d, s * base["d"], lab)
@@ -351,13 +362,15 @@ def _support_gap_oracle(A,B,x):
 @pytest.mark.parametrize("name", PAIR_NAMES)
 def test_margin_layer_is_invariant(name, rot, tmag, s):
     base, M, A, B = _cell(name, rot, tmag, s)
-    _, ov, _, delta, _, L = PAIRS[name]
+    _, ideal_ov, _, delta, _, L = PAIRS[name]
+    ov = star_relation(A, B) if name == "stack_touch" else ideal_ov
     # 真值：贯入或真距离 < δ ⇒ 裕度违约（INSIDE）；否则 OUTSIDE（本文件的 δ 都离真距离很远）
     want_in = INSIDE if ov == 1 or base["d"] < delta else OUTSIDE
     assert inflated_membership(A, B, delta=s * delta) == want_in
     m1 = margin_contacts(A, B, delta=s * delta)
     if ov == 1:
         assert [m.label for m in m1] == [(PENETRATING,)]
+        assert m1[0].closed and m1[0].distance == 0 and m1[0].margin_gap == -s * delta
         return
     if want_in == INSIDE:
         assert m1, "间距 < δ 却返回 []（= 裕度安全）：fail-unsafe"
@@ -367,7 +380,7 @@ def test_margin_layer_is_invariant(name, rot, tmag, s):
     # construct its witnesses and apply the existing margin selection contract.
     from e5a_cover_oracle import margin_selection
     expected = margin_selection(A, B, s * delta, touching=(ov == 0))
-    expected_base = margin_selection(base["A"], base["B"], delta, touching=(ov == 0))
+    expected_base = margin_selection(base["A"], base["B"], delta, touching=(ideal_ov == 0))
     current, original = {m.label: m for m in m1}, {m.label: m for m in m0}
     assert len(current) == len(m1) and len(original) == len(m0), "duplicate margin labels"
     assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))

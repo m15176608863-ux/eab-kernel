@@ -1,0 +1,15 @@
+F
+================================== FAILURES ===================================
+_ test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0] _
+tests\test_interlock_escape.py:90: in test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks
+    _check_escape(A, L, off, truth)
+tests\test_interlock_escape.py:60: in _check_escape
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:244: in escape_height_covers
+    raise ValueError("escape height not found among cover candidates (candidate set incomplete?)")
+E   ValueError: escape height not found among cover candidates (candidate set incomplete?)
+=========================== short test summary info ===========================
+FAILED tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.39s

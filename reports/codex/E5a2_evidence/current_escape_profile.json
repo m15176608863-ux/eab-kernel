@@ -1,0 +1,227 @@
+{
+  "returncode": 1,
+  "wall_seconds": 1.1288552000041818,
+  "source_before": {
+    "src/eab/kernel3d/exact_geom.py": "09db042bfae62d423b7da340366d9c709c41a98490f8e646f73e526a6f91fc58",
+    "src/eab/kernel3d/interlock.py": "2539ef38c8adbb0643a3e3c403d72caa7f1b3fd3a015bb38fef4c4593da7a260",
+    "src/eab/kernel3d/geom3.py": "64a983426435b89221292f8d4865162eede4dbb42242fbae3d861dfb32c12e39"
+  },
+  "source_after": {
+    "src/eab/kernel3d/exact_geom.py": "09db042bfae62d423b7da340366d9c709c41a98490f8e646f73e526a6f91fc58",
+    "src/eab/kernel3d/interlock.py": "2539ef38c8adbb0643a3e3c403d72caa7f1b3fd3a015bb38fef4c4593da7a260",
+    "src/eab/kernel3d/geom3.py": "64a983426435b89221292f8d4865162eede4dbb42242fbae3d861dfb32c12e39"
+  },
+  "stable": true,
+  "top30": [
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py:211:escape_height_covers",
+      "calls": 1,
+      "self_seconds": 5.94e-05,
+      "cumulative_seconds": 0.5894257,
+      "pct": 52.214464707060436
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py:156:_candidates",
+      "calls": 1,
+      "self_seconds": 0.0007082000000000001,
+      "cumulative_seconds": 0.5515464,
+      "pct": 48.85891476585808
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:576:enumerate_covers3",
+      "calls": 1,
+      "self_seconds": 0.0024185,
+      "cumulative_seconds": 0.49531830000000004,
+      "pct": 43.877930490834004
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:451:ee_cover",
+      "calls": 3192,
+      "self_seconds": 0.0102389,
+      "cumulative_seconds": 0.306414,
+      "pct": 27.14378247970731
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:146:_qedge_contains",
+      "calls": 6463,
+      "self_seconds": 0.022341,
+      "cumulative_seconds": 0.1764639,
+      "pct": 15.632111186567267
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:399:vf_cover",
+      "calls": 884,
+      "self_seconds": 0.0014257,
+      "cumulative_seconds": 0.1227907,
+      "pct": 10.877453547589198
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:411:fv_cover",
+      "calls": 884,
+      "self_seconds": 0.0014194000000000001,
+      "cumulative_seconds": 0.11018850000000001,
+      "pct": 9.76108361812851
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:194:_face_witness",
+      "calls": 632,
+      "self_seconds": 0.0005533000000000001,
+      "cumulative_seconds": 0.099515,
+      "pct": 8.81556819684503
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py:435:face_polygon_locate",
+      "calls": 720,
+      "self_seconds": 0.0013116,
+      "cumulative_seconds": 0.09674500000000001,
+      "pct": 8.570186858300483
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\exact_geom.py:140:polygon_locate",
+      "calls": 720,
+      "self_seconds": 0.010616500000000001,
+      "cumulative_seconds": 0.09491820000000001,
+      "pct": 8.408359194310163
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py:61:dot",
+      "calls": 22925,
+      "self_seconds": 0.0081759,
+      "cumulative_seconds": 0.08717290000000001,
+      "pct": 7.722239309317713
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\rational3.py:19:dot",
+      "calls": 19027,
+      "self_seconds": 0.034939700000000004,
+      "cumulative_seconds": 0.06984510000000001,
+      "pct": 6.18725058800644
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:127:_qvertex_contains",
+      "calls": 1768,
+      "self_seconds": 0.0043742,
+      "cumulative_seconds": 0.0602441,
+      "pct": 5.336742923253295
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py:67:cross",
+      "calls": 8354,
+      "self_seconds": 0.0029588,
+      "cumulative_seconds": 0.050900100000000004,
+      "pct": 4.509001685939122
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\rational3.py:39:cross",
+      "calls": 6188,
+      "self_seconds": 0.0036520000000000003,
+      "cumulative_seconds": 0.050896500000000004,
+      "pct": 4.508682778784335
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py:144:_cover_at",
+      "calls": 144,
+      "self_seconds": 0.00011700000000000001,
+      "cumulative_seconds": 0.0477718,
+      "pct": 4.2318802269611755
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\rational3.py:30:_product_difference",
+      "calls": 18564,
+      "self_seconds": 0.023690700000000002,
+      "cumulative_seconds": 0.0472445,
+      "pct": 4.185169187316937
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:99:_outside_dot_band",
+      "calls": 12732,
+      "self_seconds": 0.0127104,
+      "cumulative_seconds": 0.0451791,
+      "pct": 4.0022050657898935
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:387:_project_on_face",
+      "calls": 632,
+      "self_seconds": 0.0020203,
+      "cumulative_seconds": 0.0382136,
+      "pct": 3.385164013937167
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py:523:polyhedra_overlap",
+      "calls": 2,
+      "self_seconds": 2.3500000000000002e-05,
+      "cumulative_seconds": 0.0375841,
+      "pct": 3.329399554509805
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\exact_geom.py:611:surface_overlap",
+      "calls": 2,
+      "self_seconds": 4.63e-05,
+      "cumulative_seconds": 0.0375606,
+      "pct": 3.327317799471611
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:91:_qunit",
+      "calls": 1714,
+      "self_seconds": 0.0027162,
+      "cumulative_seconds": 0.033506100000000004,
+      "pct": 2.9681486163925968
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:62:_qnormal",
+      "calls": 15326,
+      "self_seconds": 0.015018900000000002,
+      "cumulative_seconds": 0.030106700000000004,
+      "pct": 2.6670116769527636
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:132:_qvertex_state_cached",
+      "calls": 917,
+      "self_seconds": 0.0014265,
+      "cumulative_seconds": 0.0267679,
+      "pct": 2.371243007951847
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:423:_qclosest_params",
+      "calls": 450,
+      "self_seconds": 0.0010157,
+      "cumulative_seconds": 0.025042500000000002,
+      "pct": 2.218397895488034
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:76:_qincident",
+      "calls": 1768,
+      "self_seconds": 0.0030960000000000002,
+      "cumulative_seconds": 0.022394400000000002,
+      "pct": 1.9838151075458608
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py:45:sub",
+      "calls": 11823,
+      "self_seconds": 0.0031403000000000004,
+      "cumulative_seconds": 0.022220300000000002,
+      "pct": 1.9683924031990716
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\exact_geom.py:48:_edge_window_filter",
+      "calls": 212,
+      "self_seconds": 0.0008186000000000001,
+      "cumulative_seconds": 0.0208732,
+      "pct": 1.8490591175841398
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\rational3.py:12:fraction_vectors",
+      "calls": 33645,
+      "self_seconds": 0.016426100000000003,
+      "cumulative_seconds": 0.020629,
+      "pct": 1.8274265822510787
+    },
+    {
+      "function": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py:80:_qincident_cached",
+      "calls": 79,
+      "self_seconds": 0.000232,
+      "cumulative_seconds": 0.0192984,
+      "pct": 1.7095549544289215
+    }
+  ]
+}

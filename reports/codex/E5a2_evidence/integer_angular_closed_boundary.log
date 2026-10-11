@@ -1,0 +1,11 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_integer_angular_band_comparison_equals_fraction_at_and_near_thresholds _
+tests\test_e5a2_integer_arithmetic.py:90: in test_integer_angular_band_comparison_equals_fraction_at_and_near_thresholds
+    assert covers3._outside_dot_band(value, a, b, tol) == expected
+E   assert True == False
+E    +  where True = <function _outside_dot_band at 0x0000000001216F20>(Fraction(21639541120852875014388158128577, 5070602400912917605986812821504), (Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), (Fraction(-443871516919051, 562949953421312), Fraction(-3726473605509081, 2251799813685248), Fraction(-268112173696265, 281474976710656)), 1.0)
+E    +    where <function _outside_dot_band at 0x0000000001216F20> = covers3._outside_dot_band
+=========================== short test summary info ===========================
+FAILED tests/test_e5a2_integer_arithmetic.py::test_integer_angular_band_comparison_equals_fraction_at_and_near_thresholds
+1 failed, 24 deselected in 0.08s

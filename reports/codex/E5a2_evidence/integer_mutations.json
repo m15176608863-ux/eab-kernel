@@ -1,0 +1,47 @@
+[
+  {
+    "name": "integer_dot_sign",
+    "returncode": 1,
+    "target": "common_denominator_operations",
+    "killed": true,
+    "source_sha256": "4958869be37641b198efea8e9595519dfef636a18163b025e4472b1c644b39c9",
+    "mutation": "+ a[2].numerator -> - a[2].numerator",
+    "log": "integer_dot_sign.log"
+  },
+  {
+    "name": "integer_sat_open_boundary",
+    "returncode": 1,
+    "target": "integer_sat_rows",
+    "killed": true,
+    "source_sha256": "d46e969aaa43ce83ad5055e614a423ab88fab844da91b655a2d944a560fa4d6b",
+    "mutation": "if low<0 or high>0 -> if low<=0 or high>=0",
+    "log": "integer_sat_open_boundary.log"
+  },
+  {
+    "name": "integer_plane_offset_sign",
+    "returncode": 1,
+    "target": "integer_membership_rows",
+    "killed": true,
+    "source_sha256": "d0cea661c2898aba58e0330222820ab3b4634d17a874bcb6d80bf9f9d86dce47",
+    "mutation": "coeffs = (*n, dot(n, p)) -> coeffs = (*n, -dot(n, p))",
+    "log": "integer_plane_offset_sign.log"
+  },
+  {
+    "name": "integer_angular_closed_boundary",
+    "returncode": 1,
+    "target": "integer_angular_band",
+    "killed": true,
+    "source_sha256": "84abf333bc7b6e78c2f3605a70644544dfcac963da3b8b045eff99e6eb222cda",
+    "mutation": "> value.denominator**2 -> >= value.denominator**2",
+    "log": "integer_angular_closed_boundary.log"
+  },
+  {
+    "name": "integer_dispatch_disconnected",
+    "returncode": 1,
+    "target": "fraction_geometry_operations_really_dispatch",
+    "killed": true,
+    "source_sha256": "357cb77ae806aaf94bf3552a95e47e3a4a55d5440b42b601fe878c6ea666d9b7",
+    "mutation": "return (len(a) -> return False and (len(a)",
+    "log": "integer_dispatch_disconnected.log"
+  }
+]

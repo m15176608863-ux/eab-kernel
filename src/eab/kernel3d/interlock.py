@@ -1,43 +1,28 @@
-"""互锁的力学量：逃逸高度剖面与剪胀比——由入口块边界直接读出，且对界面几何**可微**。
+"""互锁逃逸高度与冻结活动盖的可微构造。
 
-动机（04/06 号文档的 TIA 首选方向）：拓扑互锁结构的核心性能量不是"碰没碰上"，而是
-**块体横向移动 δ 时必须抬升多少才能不互相贯入**。把它写成函数：
+给定横向偏移后，暴力路径对“真实内部相交”做二分；盖路径提供浮点
+候选高度，由一般闭表面的精确三态谓词验收。正 tol 在该谓词里只改变
+分离侧的 -1/0 报告，不吞掉任何真实内部相交；这里只消费 state==1，
+因此一律使用零 tol，省掉与贯入判定无关的表面距离计算。
 
-    h(δ; u) = min{ z ≥ 0 : A 平移 (δ·u + z·ẑ) 后与 B 不贯入 }        「逃逸高度剖面」
+候选根、法向和移动后的坐标仍是浮点构造，不是精确接触高度证书。
+同一旧舍入簇中的不同 float 高度必须逐一验收；若该簇均未通过，可在
+原有法向舍入报告带 r 内构造一个上探高度，再对实际返回高度对应的
+A.translated((off_x,off_y,off_z+height)) 做精确非贯入核验。不得把低处
+真实贯入重新标为相触，也不得返回只核验了更高探针的未核验高度。
 
-这正是入口块沿竖直线的上边界：a₀ + δ·u + z·ẑ 离开 E(A,B) 的最小 z。其斜率
+候选的 extent、法向分辨率及并列组保留既有报告政策：geom_tol_eff 与
+rounding_floor 影响报告和构造，不是内部相交判据。winner/tied_labels
+仍解释 nominal 候选簇，不保证返回高度是任意折面体的精确最小根；
+一般非平面源盖、精确候选完备性和冻结微叉积构造仍由 WO-E5b 处理。
 
-    tanψ(δ) = dh/dδ                                                   「剪胀比」
-
-在无摩擦极限下就是横向承载与法向压力之比（Rowe 剪胀关系，岩石力学标准结果）：
-横向阻力 F_t / 法向力 F_n = tanψ。**所以入口块边界的斜率直接给出互锁的荷载传递比。**
-
-两条路径都实现，互为门：
-  · `escape_height_brute`  ——  对暴力相交谓词做二分，精确但不可微（oracle）；
-  · `escape_height_covers` ——  由盖的 gap 沿竖直线求根，闭式、可微（生产路径）。
-
-可微性走"**冻结活动盖**"的路子（与 DDA 冻结活动集后解析可微同构）：先用 float 定出
-哪个盖当家（组合结构），再用对偶数重算该盖的几何量。这就是"片 + 划"里的那个"片"。
-
-## 容差政策（纪律 F，2026-09-24 M0.2）
-
-全部容差随尺度，与 `eab.margin` 同一套（`effective_geom_tol` / `rounding_floor`）：
-  · 谓词容差 geom_tol_eff = max(1e-9·L, 64·eps·C)（L 特征长度、C 坐标量级）；显式给出按绝对长度、不低于地板；
-  · 逃逸高度的分辨率是 geom_tol_eff / n_z：谓词按**法向**贯入深度判，某个盖在竖向差 Δz 处的法向间隙是 Δz·n_z；
-  · 并列（`tied_labels`）按**同一把尺**判：候选盖在接受高度处的法向间隙 |Δz|·n_z ≤ geom_tol_eff（加舍入）即并列。
-    旧实现按竖向高度 1e-9·max(1, |z|) 判并列（docstring 却称"相对"），与谓词不一致：陡坡上（n_z ≈ 0.117）
-    谓词接受了比真值低 4e-9 的另一支候选、真活动的盖落在并列窗口外，折点旁报"可微"且给错支
-    （tanψ −0.507 vs 真值 −8.528，lx = 0.2；G6 minor[11]）。现在谓词分辨带内的点一律报出两支；
-  · 胜出盖在舍入意义上的并列组里按**枚举序**裁决（不按舍入噪声），刚体运动下标签逐字不变；
-  · 暴力 oracle 的默认谓词容差 max(1e-12·L, 64·eps·C)、二分宽度 1e-10·L（旧：绝对 1e-12 / 1e-10——
-    1e5 坐标、绕 z 转过的就位位形上二分出 5.9e-11 而不是 0）。
-门：`tests/test_invariance_interlock.py`（平移 1e3/1e5 × 缩放 1e-3/1/1e3 × 绕 z 旋转）、
-`tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate`。
+桥接门：tests/test_e5a2_interlock_bridge.py；原逃逸、候选与灵敏度门保留。
 """
 
 from __future__ import annotations
 
 import sys
+import math
 from dataclasses import dataclass
 
 from ..dual import Dual, Number, val
@@ -57,20 +42,23 @@ REL_BRUTE_TOL = 1e-10              # oracle 的二分终止宽度：L 的相对�
 
 def escape_height_brute(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
                         hi: float, tol: float | None = None, geom_tol: float | None = None) -> float:
-    """对分离谓词二分：返回使 A 平移 (offset + z·ẑ) 后**不贯入** B 的最小 z ∈ [0, hi]。
+    """Bisect strict interior overlap over a caller-supplied separating bracket.
 
-    前提：z 足够大时必分离（对竖向抬升的互锁块成立）。不可微，只作 oracle。
-    默认容差随尺度：谓词 max(1e-12·L, 64·eps·C)、二分宽度 1e-10·L；显式给出按绝对长度、不低于舍入地板。
+    The returned upper bracket is nonpenetrating for the actual float-translated
+    coordinates. The stopping width is scale-relative (or explicit tol), not a
+    topology tolerance. geom_tol is retained/converted for API compatibility;
+    it cannot alter the exact intruding Boolean and no distance band is queried.
+    The caller must supply an appropriate vertically escaping/monotone bracket.
     """
     At = A.translated(offset)
     floor = rounding_floor(At, B)
     L = characteristic_length(At, B)
-    gtol = max(REL_BRUTE_GEOM_TOL * L if geom_tol is None else float(geom_tol), floor)
+    _ = max(REL_BRUTE_GEOM_TOL * L if geom_tol is None else float(geom_tol), floor)  # compatibility conversion only
     ztol = max(REL_BRUTE_TOL * L if tol is None else float(tol), 8.0 * _EPS * abs(hi))
 
     def intruding(z: float) -> bool:
         x = (offset[0], offset[1], offset[2] + z)
-        return polyhedra_overlap(A.translated(x), B, gtol) == 1
+        return polyhedra_overlap(A.translated(x), B, 0.0) == 1
 
     if not intruding(0.0):
         return 0.0
@@ -91,11 +79,10 @@ def escape_height_brute(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
 @dataclass(slots=True)
 class EscapeSolution:
     height: float
-    cover_label: tuple | None      # 决定逃逸高度的那个盖（冻结的活动集；舍入意义上的并列按枚举序裁决）
+    cover_label: tuple | None
     n_candidates: int
-    # 在该高度上**并列活跃**的全部接触盖（含 cover_label，且它排第一，其余按枚举序）：候选盖在接受高度处的
-    # 法向间隙 |Δz|·n_z ≤ geom_tol_eff（加舍入），即谓词分辨不开的那些。多于一种导数时该点不可微——
-    # cover_label 只是并列里被裁决选中的那一支（审查 C13），且谓词分辨带内的点必然报出两支（G6 minor[11]）。
+    # Legacy reporting ties are selected around nominal constructed roots.
+    # They are not a claim that exact membership cannot distinguish the roots.
     tied_labels: tuple = ()
 
 
@@ -210,45 +197,62 @@ def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float 
 
 def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
                          tol: float = 1e-9, geom_tol: float | None = None) -> EscapeSolution:
-    """逃逸高度：**盖提供完备候选集、精确谓词裁决**，胜出的候选仍是闭式可微的。
+    """Return a verified nonpenetrating constructed lift and nominal cover labels.
 
-    为什么不能只靠盖：对**凹**体，"全部有效盖间隙非负"既不充分也不必要
-    （分离时也有 gap≈−2.7 的有效盖；而抬升会改变 in_extent 与法锥有效性）。
-    2026-09-18 实测 δ=0.40 处纯盖规则给 0.300 而真值 0.200。
+    Every distinct nominal float height is checked against the exact supplied
+    surface. If a rounding cluster has no safe nominal candidate, one upward
+    construction at nextafter(z+r/nz,+inf) is tried; the returned lifted height
+    itself, not a different probe, must be nonpenetrating. This is construction
+    recovery within the existing reporting policy, not a tolerance in topology.
 
-    正确分工与 G4 的结论一致：盖系统的价值在**完备、带语义的候选集**，不在当谓词。
-    真解必是某个盖的零间隙高度（接触位形必有零间隙盖），故在候选集里升序找第一个
-    不再贯入者即得——O(候选数) 次谓词调用，远优于盲二分，且结果带着决定它的那个盖标签。
-    （曾有 `verify=False` 分支直接返回最大候选——正是上面判定无效的纯盖规则，已删除。）
-
-    精度与并列（见模块"容差政策"）：谓词容差 geom_tol_eff 随尺度；高度精确到 geom_tol_eff / n_z
-    （谓词分辨率——比真值低这么多的候选谓词也分不出贯入）；`tied_labels` 用同一把尺（法向间隙
-    ≤ geom_tol_eff）判，分辨带内的点报出两支、不会"可微却给错支"。胜出盖 = 接受高度上舍入意义的并列组里
-    枚举序第一个；`height` 取**谓词接受的那个候选高度**（不是胜出盖自己的零间隙高度——二者只差舍入，但胜出盖的 n_z 小时
-    它自己的高度病态；G6 第五轮 critical）。冻结闭式复现胜出盖的零间隙高度，与 height 相差在并列组的舍入带内。
+    Cover winners/ties use the nominal cluster and the existing gtol/r report
+    bands. The return is not a proof of a globally exact minimum for arbitrary
+    folded source rings; that candidate/normal-cone migration remains E5b.
     """
     At = A.translated(offset)
     gtol = effective_geom_tol(At, B, geom_tol)
     cands, r = _candidates(A, B, offset, tol, gtol)
-    if polyhedra_overlap(At, B, gtol) != 1:
+    if polyhedra_overlap(At, B, 0.0) != 1:
         return EscapeSolution(0.0, None, len(cands))
-    z_prev, penetrating = None, True
-    for z, _, nz, _ in cands:
-        if z <= 0.0:
-            continue
-        if z_prev is None or z - z_prev > r:          # 并列候选（同一高度的多个接触盖）只问一次谓词
-            x = (offset[0], offset[1], offset[2] + z)
-            z_prev, penetrating = z, polyhedra_overlap(A.translated(x), B, gtol) == 1
-        if not penetrating:
-            return _escape_solution(z, nz, cands, gtol, r)
+    # Only identical constructed heights can share an exact predicate answer.
+    # A lower member of a rounding cluster can penetrate while the very next
+    # representable candidate already separates the actual supplied surface.
+    groups=[]
+    for item in cands:
+        if not groups or item[0]-groups[-1][0][0] > r:
+            groups.append([item])
+        else:
+            groups[-1].append(item)
+    for group in groups:
+        z_prev=None
+        for z, _, nz, _ in group:
+            if z <= 0.0 or z == z_prev:
+                continue
+            z_prev=z
+            x=(offset[0],offset[1],offset[2]+z)
+            if polyhedra_overlap(A.translated(x),B,0.0) != 1:
+                return _escape_solution(z,nz,cands,gtol,r)
+        # Candidates are floating constructions, not exact contact roots.
+        # Try one upward construction within the existing normal-rounding
+        # report band. The returned height itself must pass exact no-overlap;
+        # we never relabel an interior state as boundary or return unsafe z.
+        z, _, nz, _=max(group,key=lambda item:item[0])
+        lifted=math.nextafter(z+r/nz,math.inf)
+        x=(offset[0],offset[1],offset[2]+lifted)
+        if polyhedra_overlap(A.translated(x),B,0.0) != 1:
+            if z > 0:
+                solution=_escape_solution(z,nz,cands,gtol,r)
+                return EscapeSolution(lifted,solution.cover_label,solution.n_candidates,solution.tied_labels)
+            tied=tuple(item[1] for item in sorted(group,key=lambda item:item[3]))
+            return EscapeSolution(lifted,tied[0],len(cands),tied)
     raise ValueError("escape height not found among cover candidates (candidate set incomplete?)")
 
 
 def _escape_solution(z: float, nz: float, cands: list[tuple], gtol: float, r: float) -> EscapeSolution:
-    """接受高度 z（谓词首次答"不贯入"的候选）上的裁决：胜出盖与并列集。
+    """Select nominal-cluster winner and legacy geometric reporting ties.
 
-    并列组（胜出者从中按枚举序取）：候选在 z 处的法向间隙在舍入以内——|Δz|·n_z' ≤ r·(1 + n_z'/n_z)；
-    并列集（tied_labels）：法向间隙在谓词分辨率以内——|Δz|·n_z' ≤ geom_tol_eff + r·(1 + n_z'/n_z)。
+    These gtol/r bands only label the candidate construction. The caller must
+    separately verify and return its actual nonpenetrating constructed height.
     """
     pos = [t for t in cands if t[0] > 0.0]
     exact = [t for t in pos if abs(t[0] - z) * t[2] <= r * (1.0 + t[2] / nz)]

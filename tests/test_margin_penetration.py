@@ -19,6 +19,7 @@ G6 minor[28]（亚容差贯入）：浅于 geom_tol 的贯入曾跳过哨兵，�
 """
 
 import math
+from fractions import Fraction
 import sys
 from pathlib import Path
 
@@ -162,14 +163,23 @@ def test_touching_is_not_penetration_and_still_closes_the_margin():
 
 
 def test_penetration_below_geom_tol_is_still_fail_safe():
-    """分界点的另一侧：贯入 1e-12 < geom_tol，按相触处理——距离钳为 0，裕度闭合。"""
+    """Given-data penetration below geom_tol remains exact penetration, never safety.
+
+    Oracle: raw rational coordinate inequalities against the axis-aligned box;
+    no tested predicate, normal, distance, or triangulation primitive is used.
+    """
     A, B, depth = _convex_case((0.0, 0.0, 0.4 - 1e-12))
     assert depth > 0.0
     d, lab = body_distance(A, B)
-    assert d == 0.0 and lab is not None and lab[0] != PENETRATING
+    assert all(min(Fraction(v[k]) for v in B.verts) < Fraction(A.verts[0][k])
+               < max(Fraction(v[k]) for v in B.verts) for k in range(3))
+    assert (d, lab) == (0.0, (PENETRATING,))
     ms = margin_contacts(A, B, delta=0.05)
     assert ms and all(m.closed for m in ms)
+    assert len(ms) == 1 and ms[0].label == (PENETRATING,) and ms[0].distance == 0
+    assert ms[0].margin_gap == -0.05 and ms[0].normal is None
     assert inflated_membership(A, B, delta=0.05) == INSIDE
+    assert inflated_membership(A, B, delta=0.0) == INSIDE
 
 
 # ---------------------------------------------------------------- G6 minor[18]：守卫必须不是"顶点在体内"检查
@@ -212,7 +222,7 @@ def test_contact_resolution_is_monotone_in_depth():
 
       · 间距（贯入哨兵记 0）随 p 单调不增；每个 δ 下成员判定随 p 单调不减（OUTSIDE < ON_BOUNDARY < INSIDE），
         "有闭合的广义接触"也单调不减——修前 p = 5e-10、δ = 0 时答 OUTSIDE / []，而恰好相触答 ON_BOUNDARY；
-      · 亚容差贯入与恰好相触的回答**逐字相同**（距离 0.0、δ = 0 时 ON_BOUNDARY、δ > 0 时 INSIDE）。
+      · E5a2：所有给定坐标下真贯入均为哨兵/INSIDE；恰好相触仍在 δ=0 的边界，分离侧报告带仍钳零。
     构造：深度由平移量给定（顶面 z = 0.4、tetra 底面 z = 0.4 − p），不经过任何谓词。
     牙：test_contact_resolution_gate_has_teeth。"""
     _check_monotone_contact_resolution()
@@ -236,31 +246,53 @@ def _check_monotone_contact_resolution():
         assert all(b >= a for a, b in zip(c0, c1)), (p0, c0, p1, c1)
     by_p = {p: (d, lab, mem, closed) for p, d, lab, mem, closed in rows}
     touch = by_p[0.0]
-    for p in (1e-12, 2e-10, 5e-10):                       # 亚容差贯入 ≡ 相触
+    assert touch[0] == 0 and touch[1][0] != PENETRATING
+    assert touch[2] == [1, 2, 2, 2] and touch[3] == [True] * 4
+    # Preserve the separated-side report-band contract, independently of the
+    # new exact penetration guard. This gives the old no-clamp mutation teeth.
+    assert by_p[-2e-10][0] == 0, ("separated-report-band", by_p[-2e-10])
+    for p in (1e-12, 2e-10, 5e-10, 2e-9, 1e-6):
+        assert Fraction(0.4) - Fraction(0.4 - p) > 0  # raw-coordinate certificate
         d, lab, mem, closed = by_p[p]
-        assert d == 0.0 and lab[0] != PENETRATING, (p, d, lab)
-        assert mem == touch[2] == [1, 2, 2, 2] and closed == touch[3] == [True] * 4, (p, mem, closed)
-    for p in (2e-9, 1e-6):                                # 超过 geom_tol：哨兵
-        assert by_p[p][1] == (PENETRATING,)
+        assert d == 0.0 and lab == (PENETRATING,), ("exact-penetration", p, d, lab)
+        assert mem == [2] * 4 and closed == [True] * 4, (p, mem, closed)
     assert by_p[-1e-6][2] == [0, 0, 0, 2]                 # 间隙 1e-6：δ ≤ 1e-9 仍在外
     assert by_p[-1e-6][0] == pytest.approx(1e-6, rel=1e-9)
 
 
 def test_contact_resolution_gate_has_teeth(monkeypatch):
-    """牙（注入到被测路径内部）：把裕度层的"相触分辨率"分支关掉（_resolve 永远报不在分辨率内——
-    即修前行为：亚容差贯入的见证距离 ≈ 贯入深度被当间距报出），单调门必须红，且红在间距单调那条断言上
-    （p = 1e-12 处 d = 1e-12 > 相触的 0）。"""
-    import eab.margin as M
-    true_resolve = M._resolve
+    """Disable the actual margin clamp: separated-side band assertion must fail.
 
-    def no_contact_branch(A, B, tol, geom_tol):
-        gtol, rnd, wits, _ = true_resolve(A, B, tol, geom_tol)
-        return gtol, rnd, wits, wits is None
-    monkeypatch.setattr(M, "_resolve", no_contact_branch)
+    Separately reintroduce swallowing true penetration into contact. The exact
+    sentinel assertion, not a solver/order-dependent assertion, must then fail.
+    """
+    import eab.margin as M
+    import inspect
+    true_resolve = M._resolve
+    original_source = inspect.getsource(true_resolve)
+
+    def compiled_mutant(source):
+        namespace = dict(M.__dict__)
+        exec(compile(source, "<E5a2 internal margin._resolve mutant>", "exec"), namespace)
+        return namespace["_resolve"]
+
+    no_clamp = original_source.replace("return ctol, rnd, wits, True",
+                                       "return ctol, rnd, wits, False").replace(
+        "return ctol, rnd, wits, dmin <= ctol", "return ctol, rnd, wits, False")
+    assert no_clamp != original_source
+    monkeypatch.setattr(M, "_resolve", compiled_mutant(no_clamp))
     with pytest.raises(AssertionError) as ei:
         _check_monotone_contact_resolution()
-    # 间距单调断言的消息是 (p0, d0, p1, d1)：红在 p 从 0 到 1e-12 这一步、d 从 0 跳到 ≈1e-12
-    assert str(ei.value).startswith("(0.0, 0.0, 1e-12, "), str(ei.value)
+    assert "separated-report-band" in str(ei.value), str(ei.value)
+    swallowed_source = original_source.replace(
+        "state = polyhedra_overlap(A, B, gtol)",
+        "state = min(0, polyhedra_overlap(A, B, gtol))")
+    assert swallowed_source != original_source
+    monkeypatch.setattr(M, "_resolve", compiled_mutant(swallowed_source))
+    with pytest.raises(AssertionError) as swallowed:
+        _check_monotone_contact_resolution()
+    assert "exact-penetration" in str(swallowed.value), str(swallowed.value)
+
 
 
 @pytest.mark.parametrize("s", [1e-9, 1e-6])

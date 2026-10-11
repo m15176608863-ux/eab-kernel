@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import math
+from fractions import Fraction as F
 
 import pytest
 
@@ -137,7 +138,21 @@ def test_degenerate_merge_keeps_two_trough_slopes_apart():
     这一点如实记在 merge_degenerate 的文档里。"""
     from eab.kernel3d.covers3 import enumerate_covers3
     A = box(center=(0.0, 0.0, 1.45), half=(0.3, 0.3, 0.3))              # 底角 (±0.3, ±0.3, 1.15) 恰在坡面上
-    assert polyhedra_overlap(A, TROUGH) == 0
+    # The original binary64 bottom 1.15 is strictly below 1+Fraction(.3)/2.
+    # Independent slope inequalities certify real interior overlap, not a
+    # zero-band contact. Preserve this original input and all cover/merge gates.
+    half = F(A.verts[1][0])
+    bottom = F(A.verts[0][2])
+    depth = F(1)+half/2-bottom
+    assert depth > 0
+    wx, wz = half-depth, bottom+depth/4
+    assert -half < wx < half and bottom < wz < F(A.verts[4][2])
+    assert 0 < wx < 1 and 0 < wz < 1+wx/2  # y=0 is interior to both prisms
+    assert polyhedra_overlap(A, TROUGH) == 1
+    # Keep the former analytic exact-contact proposition as an extra track.
+    contact = Polyhedron([(F(x), F(y), F(z)+depth) for x, y, z in A.verts], list(A.faces))
+    assert min(p[2] for p in contact.verts) == 1+half/2
+    assert polyhedra_overlap(contact, TROUGH) == 0
     covs = [c for c in enumerate_covers3(A, TROUGH, window=1e-9, tol=1e-9) if c.kind == "VF" and c.in_extent]
     assert len(covs) == 4, [(c.label(), round(c.gap, 6)) for c in covs]
     merged = merge_degenerate(A, TROUGH, covs)

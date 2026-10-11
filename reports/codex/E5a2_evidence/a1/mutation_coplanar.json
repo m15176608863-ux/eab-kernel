@@ -1,0 +1,10 @@
+{
+  "mutation": "remove actual arrangement coplanar branch",
+  "changed_source": "elif loc == 0: -> elif False and loc == 0:",
+  "function_sha256": "0fbaba0b4e900f880c0266713b509954b60bab147ab26f4486b31eb58b87af8b",
+  "pytest_exit": 1,
+  "seconds": 2.0560808000009274,
+  "target_assertion": "assert G.polyhedra_overlap(a,a)==1",
+  "target_assertion_in_log": true,
+  "source_changed_on_disk": false
+}

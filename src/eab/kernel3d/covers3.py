@@ -3,9 +3,15 @@
 For convex APIs the body is its exact vertex-set convex hull; labels index the
 canonical views returned by geom3.exact_convex_view. General single-cover and
 enumeration APIs retain the supplied surface topology. On exactly planar faces
-all local cone, strictness and extent branches are rational; nonplanar general
-surface facets are not silently convexified (the remaining surface migration is
-tracked in the WO-E5a report).
+all local cone, strictness and extent branches are rational. For a nonplanar
+source face-ring the single-cover APIs are ONLY source-ring descriptors: the
+Newell direction plus the plane anchored at its first vertex, projected winding
+extent, and source-topology incident edges. They are NOT the normal cone or
+contact witness of the triangulated folded solid. In particular, a cyclic ring
+rotation may change that descriptor plane. No source feature label is silently
+replaced by a canonical convex-view label. Gates: test_e5a2_covers.py tests
+source_ring_descriptor_is_not_a_folded_surface_cover and
+source_ring_descriptor_keeps_source_labels_separate_from_convex_views.
 
 Original floating coordinates denote exact rational data. Derived unnormalised
 normals, incident vectors, projections and parameters stay rational until the
@@ -24,6 +30,7 @@ from dataclasses import dataclass
 from fractions import Fraction
 from functools import lru_cache
 from itertools import combinations
+from math import gcd, lcm
 
 from . import geom3
 from .geom3 import (Polyhedron, Vec3, add, cross, dot, mul, neg, norm,
@@ -91,7 +98,15 @@ def _qunit(v):
 
 def _outside_dot_band(value, a, b, tol):
     """Exact comparison with an explicit dimensionless normalized-dot window."""
-    return value > 0 and (tol <= 0 or value * value > _squared_tol(tol) * _qnorm2(a, dot) * _qnorm2(b, dot))
+    if value <= 0:
+        return False
+    if tol <= 0:
+        return True
+    threshold, aa, bb = _squared_tol(tol), _qnorm2(a, dot), _qnorm2(b, dot)
+    # Cross-multiply positive denominators; do not construct four intermediate
+    # Fractions (or approximate the angular reporting band by a float).
+    return (value.numerator**2 * threshold.denominator * aa.denominator * bb.denominator
+            > value.denominator**2 * threshold.numerator * aa.numerator * bb.numerator)
 
 
 @lru_cache(maxsize=64)
@@ -139,13 +154,14 @@ def _qedge_contains(P, e, d, tol=0.0):
     convex, h1, h2 = _qedge_frame_cached(t, n1, n2, cross, dot)
     if not convex:
         return -1
-    if _outside_dot_band(abs(dot(d, t)), d, t, tol):
+    axial = dot(d, t)
+    if _outside_dot_band(abs(axial), d, t, tol):
         return -1
     # The inward normals to the two sides of the arc. Both are exact.
     s1, s2 = dot(h1, d), dot(h2, d)
     if _outside_dot_band(-s1, h1, d, tol) or _outside_dot_band(-s2, h2, d, tol):
         return -1
-    return 1 if s1 > 0 and s2 > 0 and dot(d, t) == 0 else 0
+    return 1 if s1 > 0 and s2 > 0 and axial == 0 else 0
 
 
 @lru_cache(maxsize=8192)
@@ -440,15 +456,19 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
     normal = cross(dB, dA)
     if not any(normal):
         return None
-    params = _qclosest_params(pa0, dA, pb0, dB)
-    if params is None:
-        return None
-    s, t = params
     for candidate in (normal, neg(normal)):
         sb = _qedge_contains(B, eb, candidate, tol)
-        sa = _qedge_contains(A, ea, neg(candidate), tol)
-        if sb < 0 or sa < 0:
+        if sb < 0:
             continue
+        sa = _qedge_contains(A, ea, neg(candidate), tol)
+        if sa < 0:
+            continue
+        # The exact nonzero normal above proves nonparallel lines. Parameters
+        # cannot change cone feasibility, so construct them only for survivors.
+        params = _qclosest_params(pa0, dA, pb0, dB)
+        if params is None:
+            return None
+        s, t = params
         # All classifications use the rational parameters. Output points are
         # consistently constructed from one exact witness pair, then rounded.
         qa, qb = add(pa0, mul(dA, s)), add(pb0, mul(dB, t))
@@ -515,6 +535,44 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) 
 # Enumeration
 
 
+def _cover_in_window(c: Cover3, A: Polyhedron, B: Polyhedron, window: float) -> bool:
+    """Exact feature distance window; never read the constructed c.gap.
+
+    VF/FV use the specified source descriptor plane, EE its two infinite lines,
+    VE3/EV3 the infinite line projection, and VV3 the vertex separation. Extent
+    is a separate predicate. Original coordinates, not rounded witnesses, are
+    the input to every squared-distance comparison.
+    """
+    if not window >= 0:
+        return False
+    if window == float("inf"):
+        return True
+    if c.kind in ("VF", "FV"):
+        V, vi, P, fi = ((A, c.a_feature[1], B, c.b_feature[1]) if c.kind == "VF"
+                       else (B, c.b_feature[1], A, c.a_feature[1]))
+        n = _qnormal(P, fi)
+        w = sub(_qvector(V.verts[vi]), _qvector(P.verts[P.faces[fi][0]]))
+        numerator, denominator = dot(n, w) ** 2, dot(n, n)
+    elif c.kind == "EE":
+        ea, eb = c.a_feature[1:], c.b_feature[1:]
+        n = cross(_qedge(A, ea), _qedge(B, eb))
+        w = sub(_qvector(A.verts[ea[0]]), _qvector(B.verts[eb[0]]))
+        numerator, denominator = dot(n, w) ** 2, dot(n, n)
+    elif c.kind in ("VE3", "EV3"):
+        V, vi, P, e = ((A, c.a_feature[1], B, c.b_feature[1:]) if c.kind == "VE3"
+                      else (B, c.b_feature[1], A, c.a_feature[1:]))
+        d = _qedge(P, e)
+        w = sub(_qvector(V.verts[vi]), _qvector(P.verts[e[0]]))
+        denominator = dot(d, d)
+        numerator = dot(w, w) * denominator - dot(w, d) ** 2
+    elif c.kind == "VV3":
+        w = sub(_qvector(A.verts[c.a_feature[1]]), _qvector(B.verts[c.b_feature[1]]))
+        numerator, denominator = dot(w, w), 1
+    else:
+        raise ValueError(f"unknown cover kind: {c.kind}")
+    return numerator <= _squared_tol(window) * denominator
+
+
 def enumerate_covers3(A: Polyhedron, B: Polyhedron, *, window: float, tol: float = 0.0,
                       require_in_extent: bool = True, include_low_dim: bool = True,
                       extent_tol: float = 0.0) -> list[Cover3]:
@@ -530,33 +588,33 @@ def enumerate_covers3(A: Polyhedron, B: Polyhedron, *, window: float, tol: float
     for ia in range(len(A.verts)):
         for fb in range(len(B.faces)):
             c = vf_cover(A, ia, B, fb, tol, extent_tol)
-            if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
+            if c is not None and (c.in_extent or not require_in_extent) and _cover_in_window(c, A, B, window):
                 out.append(c)
     for fa in range(len(A.faces)):
         for ib in range(len(B.verts)):
             c = fv_cover(A, fa, B, ib, tol, extent_tol)
-            if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
+            if c is not None and (c.in_extent or not require_in_extent) and _cover_in_window(c, A, B, window):
                 out.append(c)
     for ea in A.edges():
         for eb in B.edges():
             c = ee_cover(A, ea, B, eb, tol, extent_tol)
-            if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
+            if c is not None and (c.in_extent or not require_in_extent) and _cover_in_window(c, A, B, window):
                 out.append(c)
     if include_low_dim:
         for ia in range(len(A.verts)):
             for eb in B.edges():
                 c = ve3_cover(A, ia, B, eb, tol, extent_tol)
-                if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
+                if c is not None and (c.in_extent or not require_in_extent) and _cover_in_window(c, A, B, window):
                     out.append(c)
         for ea in A.edges():
             for ib in range(len(B.verts)):
                 c = ev3_cover(A, ea, B, ib, tol, extent_tol)
-                if c is not None and abs(c.gap) <= window and (c.in_extent or not require_in_extent):
+                if c is not None and (c.in_extent or not require_in_extent) and _cover_in_window(c, A, B, window):
                     out.append(c)
         for ia in range(len(A.verts)):
             for ib in range(len(B.verts)):
                 c = vv3_cover(A, ia, B, ib, tol)
-                if c is not None and c.in_extent and c.gap <= window:
+                if c is not None and c.in_extent and _cover_in_window(c, A, B, window):
                     out.append(c)
     return out
 
@@ -652,12 +710,26 @@ def _support_planes_cached(av, af, bv, bf, labels, implementations):
     # Caller-supplied labels are deliberately not sanitized: a false local
     # support plane must be exposed by the independent G0 membership vote.
     out.extend(_facet_plane_on_views(A, B, label) for label in labels)
-    return tuple(out)
+    return tuple((n, p, _integer_plane(n, p)) for n, p in out)
+
+
+def _integer_plane(n, p):
+    """Positive homogeneous rescaling of n.(x-p)=0; no geometry is rounded."""
+    coeffs = (*n, dot(n, p))
+    den = lcm(*(c.denominator for c in coeffs))
+    ints = tuple(c.numerator * (den // c.denominator) for c in coeffs)
+    common = gcd(*ints)
+    ints = tuple(v // common for v in ints)
+    return ints, sum(v*v for v in ints[:3])
+
+
+def _plane_data(A, B, facets):
+    return _support_planes_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces), tuple(sorted(facets)),
+                                  (_qnormal, _qedge, _qedge_contains, _integer_plane))
 
 
 def _planes(A, B, facets):
-    return _support_planes_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces), tuple(sorted(facets)),
-                                  (_qnormal, _qedge, _qedge_contains))
+    return tuple((n, p) for n, p, _ in _plane_data(A, B, facets))
 
 
 def support_gaps3(A: Polyhedron, B: Polyhedron, x: Vec3) -> list[float]:
@@ -675,20 +747,40 @@ def membership_convex3(A: Polyhedron, B: Polyhedron, x: Vec3, tol: float = 0.0,
                        facets: set[tuple] | None = None, *, ang_tol: float = 1e-12) -> int:
     """Exact convex E membership: 1 inside / 0 boundary / -1 outside.
 
-    Explicit positive tol requests the historical supporting-plane domain band
-    (not a Euclidean offset). Comparisons to that band are rational and no
-    rounding/noise floor is inserted. Zero tol gives the exact theorem predicate.
+    Positive tol only reports a nonzero state as 0 when its Euclidean distance
+    to the complete boundary of E is <= tol. Inside, the nearest supporting
+    plane realizes that distance. Outside, plane distances are only lower
+    bounds: an exact minimum-norm point of conv({b-a-x}) certifies the distance.
+    No rounded hull, constructed gap, or numerical thickness is used.
+    Gates: test_e5a2_covers.py::test_membership_report_band_is_euclidean.
     """
     A, B = geom3.exact_convex_view(A), geom3.exact_convex_view(B)
     if facets is None:
         facets = local_facets3(A, B, 0.0)
     point = _qvector(x)
-    boundary = False
-    for n, p in _planes(A, B, facets):
-        value = dot(n, sub(point, p))
-        threshold2 = Fraction(max(0.0, tol)) ** 2 * dot(n, n)
-        if value > 0 and value * value > threshold2:
-            return -1
-        if value >= 0 or value * value <= threshold2:
+    if tol == float("inf"):
+        return 0
+    tol2 = Fraction(tol) ** 2 if tol > 0 else 0
+    den = lcm(*(v.denominator for v in point))
+    point_i = tuple(v.numerator * (den // v.denominator) for v in point)
+    threshold = tol2.numerator * den * den if tol2 else 0
+    divisor = tol2.denominator if tol2 else 1
+    boundary = outside = near = False
+    for _, _, (plane, normal2) in _plane_data(A, B, facets):
+        value = (plane[0]*point_i[0] + plane[1]*point_i[1]
+                 + plane[2]*point_i[2] - plane[3]*den)
+        if value > 0:
+            outside = True
+            # A support-plane distance is a certified lower bound, not the
+            # Euclidean distance itself (strictly different at exterior edges).
+            if not tol2 or value * value * divisor > threshold * normal2:
+                return -1
+        elif value == 0:
             boundary = True
-    return 0 if boundary else 1
+        if tol2 and value * value * divisor <= threshold * normal2:
+            near = True
+    if outside:
+        aq, bq = tuple(map(_qvector, A.verts)), tuple(map(_qvector, B.verts))
+        nearest = _qclosest_hull(tuple(sub(sub(b, a), point) for a in aq for b in bq))
+        return 0 if dot(nearest, nearest) <= tol2 else -1
+    return 0 if boundary or near else 1

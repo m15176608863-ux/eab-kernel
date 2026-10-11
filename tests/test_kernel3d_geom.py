@@ -160,9 +160,11 @@ def test_overlap_coplanar_face_crossing_without_vertex_inside(name, alo, ahi, bl
 
 
 def test_overlap_coplanar_crossing_gate_has_teeth(monkeypatch):
-    """牙：把 G6 新加的精确证人（棱-棱交点 / 共面重叠处的内向锥微推）注入成"找不到"，
-    G6 复现的 X 形交叉必须重新漏判——证明看护它的正是这条路径，而不是碰巧被网格采到。
-    （轴对齐十字 plus_cross 恰好被网格中心点采到，旧实现也判得出，所以牙用非轴对齐的审查原例。）"""
+    """The same original X crossing detects an internal certified-SAT corruption.
+
+    The old contact-cone heuristic is no longer called. The mutation is injected
+    into the actual SAT state computation, never appended to its output.
+    """
     import math
     from eab.kernel3d import geom3
 
@@ -174,8 +176,13 @@ def test_overlap_coplanar_crossing_gate_has_teeth(monkeypatch):
     A = slab(0.7123231161619232, (-0.08666247398702509, -0.28261190955518073))
     B = slab(2.3208944052154075, (0.0, 0.0))
     assert polyhedra_overlap(A, B, 1e-9) == 1
-    monkeypatch.setattr(geom3, "_contact_cone_witness", lambda *a, **k: (None, False))
-    assert polyhedra_overlap(A, B, 1e-9) == -1
+    import inspect
+    from eab.kernel3d import exact_geom
+    source=inspect.getsource(exact_geom._convex_surface_sat)
+    namespace=dict(exact_geom.__dict__)
+    exec(source.replace('return 0 if boundary else 1','return 0 if boundary else -1'),namespace)
+    monkeypatch.setattr(exact_geom,'_convex_surface_sat',namespace['_convex_surface_sat'])
+    assert polyhedra_overlap(A,B,0.0)==-1
 
 
 # ================================================================ G6 major 27：convex_hull_3d 在旋转 ×1e3 的退化点集上
@@ -293,15 +300,36 @@ def test_convex_hull_is_similarity_invariant_on_degenerate_and_generic_sets(seed
 @pytest.mark.parametrize("seed", range(1, 9))
 @pytest.mark.parametrize("t", [0.0, 1e3, 1e5, 1e7])
 def test_face_touching_stack_is_touching_under_rigid_motion(seed, t):
-    """默认 tol=0：旧实现把躺在对方面平面里的棱（dp、dq 为舍入级、符号相反）当成严格穿面，报 1（贯入）。
-    oracle：构造即面面相触（上块底面 = 下块顶面，平面内部分重叠），闭式判 0。"""
+    """Original rounded cells use independent integer tetra-union SAT/distance.
+
+    All original seeds, translations and float construction remain. Additional
+    rational-affine cells retain the ideal zero-contact assertions. The oracle
+    uses no production geometric primitive and does not convexify the surface.
+    """
     from eab.kernel3d.interlock import escape_height_brute
     R = _g6_rot(200 + seed)
     tv = tuple(t * c for c in (0.6, -0.48, 0.64))
     A = _placed(box((0.1, -0.2, 0.5), (1.0, 1.0, 0.5)), R, 1.0, tv)
     B = _placed(box((0.0, 0.0, -0.5), (2.0, 2.0, 0.5)), R, 1.0, tv)
-    assert polyhedra_overlap(A, B) == 0
-    assert polyhedra_overlap(B, A) == 0
-    assert polyhedra_overlap(A, B, 1e-12) == 0
-    # 暴力逃逸高度（oracle 用的二分，默认 geom_tol=1e-12）：静置位形不需要抬升
-    assert escape_height_brute(A, B, (0.0, 0.0, 0.0), hi=1.0) == 0.0
+    from e5a2_surface_oracle import star_overlap, star_relation
+    want=star_overlap(A,B)
+    assert polyhedra_overlap(A,B)==want
+    assert polyhedra_overlap(B,A)==want
+    assert polyhedra_overlap(A,B,1e-12)==star_relation(A,B,1e-12)
+    # The original rounded solids need not touch: zero-band semantics uses their
+    # exact stored coordinates. Preserve the escape check under its real state.
+    if want <= 0:
+        assert escape_height_brute(A,B,(0.,0.,0.),hi=1.) == 0.
+    elif star_overlap(A.translated((0.,0.,1.)),B) == 1:
+        with pytest.raises(ValueError,match='still intruding'):
+            escape_height_brute(A,B,(0.,0.,0.),hi=1.)
+    else:
+        z=escape_height_brute(A,B,(0.,0.,0.),hi=1.)
+        assert z > 0 and star_overlap(A.translated((0.,0.,z)),B) <= 0
+    # Original ideal contact property remains tested separately with the same
+    # input matrix/offset applied rationally (no coordinate-rounding fiction).
+    Aq=_placed_exact(box((0.1,-0.2,0.5),(1.,1.,.5)),R,1.,tv)
+    Bq=_placed_exact(box((0.,0.,-.5),(2.,2.,.5)),R,1.,tv)
+    assert star_overlap(Aq,Bq)==0
+    assert polyhedra_overlap(Aq,Bq)==polyhedra_overlap(Bq,Aq)==0
+    assert polyhedra_overlap(Aq,Bq,1e-12)==0

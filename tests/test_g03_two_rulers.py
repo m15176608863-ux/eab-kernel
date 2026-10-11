@@ -167,17 +167,22 @@ def test_small_box_just_outside_the_corner_of_a_huge_box_is_separated_not_a_sent
 
 
 def test_a_plate_thinner_than_the_coordinate_resolution_fails_loudly_with_the_reason():
-    """1.4 mm × 1.2 mm × 1 nm 的薄板偏航 0.3 悬在 2 mm 方块上方 1 µm，一般旋转后搬到 |t| = 1e5（坐标地板 9e-10 > 厚度/2）：
-    谓词找不到严格内点——报错必须说明是分辨率问题，不是无关的 'failed to find an interior point'。"""
+    """The original thin engineering-coordinate plate is now exactly decidable.
+
+    Independent integer tetra SAT proves separation; the legacy expected noise-
+    resolution exception is replaced by the strictly stronger correct answer.
+    Origin and engineering-coordinate inputs remain unchanged.
+    """
     A0 = _yaw(box(center=(0.0, 0.0, 1e-3 + 1e-6 + 0.5e-9), half=(0.7e-3, 0.6e-3, 0.5e-9)), 0.3)
     B0 = box(half=(1e-3, 1e-3, 1e-3))
     R = _quat(3)
     t = (0.6e5, -0.48e5, 0.64e5)
     A, B = _move(A0, R, t), _move(B0, R, t)
-    with pytest.raises(ValueError, match="resolution"):
-        polyhedra_overlap(A, B)
-    with pytest.raises(ValueError, match="resolution"):
-        body_distance(A, B)
+    from e5a2_surface_oracle import star_overlap
+    assert star_overlap(A,B)==-1
+    assert polyhedra_overlap(A,B)==-1
+    d, lab=body_distance(A,B)
+    assert d > 0 and lab != (PENETRATING,)
     # 同一几何在原点处正常：分离 1e-6
     assert polyhedra_overlap(A0, B0) == -1
     d, _ = body_distance(A0, B0)

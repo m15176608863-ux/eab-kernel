@@ -101,8 +101,14 @@ def test_thin_notch_bite_is_detected(name, lo, hi, seed, scale):
     L = _l_block(seed, scale)
     B = _box(lo, hi, seed, scale)
     tol = 1e-12 * scale
+    if want == 0:
+        from e5a2_surface_oracle import star_relation
+        want=star_relation(L,B,tol)
     assert polyhedra_overlap(L, B, tol) == want, (name, vol)
     assert polyhedra_overlap(B, L, tol) == want, (name, vol)
+    if name == 'exact_fill':
+        assert polyhedra_overlap(_l_block(0,scale),_box(lo,hi,0,scale),tol)==0
+
 
 
 def test_audit_case_volume_is_0_012():
@@ -246,6 +252,10 @@ def test_x_crossing_lifted_boundaries(case, seed, t, s):
         sigma = _sat_sigma(P, Q)
         assert (sigma > 1e-4 * s) if want == -1 else abs(sigma) < 1e-9 * max(s, 1e-4 * max(abs(c) for c in t)), sigma
         A, B = P.poly(), Q.poly()
+        if want == 0:
+            from e5a2_surface_oracle import star_relation
+            want=star_relation(A,B,1e-9*s)
+
         assert polyhedra_overlap(A, B, 1e-9 * s) == want
         assert polyhedra_overlap(B, A, 1e-9 * s) == want
 
@@ -364,9 +374,16 @@ def test_rotated_thin_plates_crossing_are_overlapping_at_zero_tolerance(seed):
 
 @pytest.mark.parametrize("ov,want", [(1e-10, 1), (1e-11, 1), (1e-13, 0), (1e-14, 0)])
 def test_overlap_resolution_is_documented(ov, want):
-    """文档写明的有效分辨率 max(tol_eff, 1e-12·diag)：两个单位方块面对面贯入 ov。深于它答 1，浅于它答 0（相触），
-    从不答成 −1。"""
+    """Original four depths all have strictly positive exact interval overlap.
+
+    Every original parameter cell remains; an independent rational box-interval
+    oracle replaces the obsolete noise-band label, not the geometric inputs.
+    """
     from eab.kernel3d.geom3 import box
     A = box((0.0, 0.0, 0.0), (0.5, 0.5, 0.5))
     B = box((1.0 - ov, 0.0, 0.0), (0.5, 0.5, 0.5))
-    assert polyhedra_overlap(A, B) == want
+    from fractions import Fraction as F
+    exact_width=min(F(v[0]) for v in B.verts)-max(F(v[0]) for v in A.verts)
+    assert exact_width < 0
+    assert polyhedra_overlap(A,B)==1
+
