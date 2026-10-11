@@ -1,0 +1,59 @@
+{
+  "mutations": [
+    {
+      "name": "predecessor_float",
+      "source": "src\\eab\\kernel3d\\entrance3.py",
+      "before": "return (previous + t) / 2",
+      "after": "return float(t) - 2.0e-9",
+      "test": "tests/test_entrance3_exact.py::test_exact_predecessor_selfcheck_never_rounds_back_to_the_event",
+      "returncode": 1,
+      "seconds": 0.6743516999995336,
+      "killed": true,
+      "target_assertion": "Exact first entry must return at 1e20; float t minus sub-ulp step throws false missing-earlier exception."
+    },
+    {
+      "name": "coplane_tolerance",
+      "source": "src\\eab\\kernel3d\\entrance3.py",
+      "before": "return dot(n, sub(a, b)) == 0",
+      "after": "return abs(dot(n, sub(a, b))) <= Fraction(1, 10**9)",
+      "test": "tests/test_entrance3_exact.py::test_degenerate_merge_never_coalesces_distinct_exact_planes",
+      "returncode": 1,
+      "seconds": 0.7644517000007909,
+      "killed": true,
+      "target_assertion": "sorted((family kind, member count)) == [('FF',2),('FF',2)]"
+    },
+    {
+      "name": "predecessor_float_midpoint",
+      "mode": "isolated child process exec compiled source in module namespace; no production file edited",
+      "before": "return (previous + t) / 2",
+      "after": "return float((previous + t) / 2)",
+      "test": "test_preceding_event_probe_is_strictly_inside_the_exact_interval",
+      "target_assertion": "lower < probe < upper",
+      "log": "mutation_predecessor_float_midpoint.log",
+      "killed": true
+    },
+    {
+      "name": "omit_diagonal_topology",
+      "mode": "compile internal function into isolated namespace + monkeypatch; no production file mutation",
+      "before": "return exact_surface(P)",
+      "after": "return P",
+      "test": "tests/test_frozen_surface_diagonal.py::test_missing_diagonal_topology_internal_mutant_is_killed",
+      "target_assertion": "diagonal EE frozen signed distance",
+      "baseline": "+0.2",
+      "mutant": "-0.2",
+      "killed": true
+    },
+    {
+      "name": "omit_folded_surface_expansion",
+      "mode": "compile internal function into isolated namespace + monkeypatch; no production file mutation",
+      "source": "src/eab/margin.py::_witnesses",
+      "before": "if exact_surface: (both internal branches)",
+      "after": "if False:",
+      "test": "tests/test_frozen_ee_sign.py::test_exact_surface_cover_gate_kills_internal_source_ring_only_mutation",
+      "target_assertion": "complete exact-surface cover set",
+      "killed": true,
+      "log": "frozen_migration_full.log"
+    }
+  ],
+  "source_restored_sha256": "735079a231c7bcc28a5d2a9a9c5d1f392ca6523015054517621a625aeef4d778"
+}

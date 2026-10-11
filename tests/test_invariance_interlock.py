@@ -53,6 +53,24 @@ from eab.margin import (INSIDE, ON_BOUNDARY, OUTSIDE, PENETRATING, REL_GEOM_TOL,
                         body_distance, characteristic_length, effective_geom_tol, inflated_membership,
                         margin_contacts, margin_gap_from_frozen_cover, rounding_floor)
 
+# E5b: old invariance assertions below are retained verbatim in the caller's
+# explicitly requested legacy contact window. Default exact APIs are tested
+# independently on every former touch/subtol grid cell below.
+import eab.margin as exact_margin
+
+
+def body_distance(A, B, **kwargs):
+    return exact_margin.body_distance(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)
+
+
+def margin_contacts(A, B, **kwargs):
+    return exact_margin.margin_contacts(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)
+
+
+def inflated_membership(A, B, **kwargs):
+    return exact_margin.inflated_membership(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)
+
+
 EPS = sys.float_info.epsilon
 TS = (0.0, 1e3, 1e5)
 SS = (1e-3, 1.0, 1e3)
@@ -260,14 +278,24 @@ def test_independent_escape_candidate_gate_catches_a_dropped_exact_edge_cover(mo
 @pytest.mark.parametrize("rot,t,s", [("I", 0.0, 1.0), ("z0.7", 1e5, 1.0), ("I", 1e5, 1e3),
                                      ("z0.7", 1e5, 1e3), ("z0.7", 1e3, 1e-3)])
 def test_brute_oracle_is_exact_zero_at_rest_and_scales(rot, t, s):
-    """暴力二分 oracle 的默认容差也必须随尺度：就位（面面贴合）位形 h 恰为 0.0（不是二分出来的舍入级
-    正数——审查 G6 minor[7] 指出默认 geom_tol=1e-12 在工程坐标上把贴合判成贯入）；一般偏移 h ×s。
-    两个就位位形：原位（顶点重合）与沿 y（无起伏方向）滑 0.3（面共面、顶点不重合——修前
-    z0.7 / t=1e5 格上二分出 5.9e-11 而不是 0）。"""
+    """Given-data earliest roots match independent integer swept tetrahedron SAT.
+
+    The original five inputs and two rest/flat-direction offsets are retained.
+    Rounding may create real penetration; original exact-zero assertions remain
+    in the unjittered homology gate below rather than being silently weakened.
+    Float output is the least binary64 value not below the exact root.
+    """
     A, L = _ilock(rot, t, s)
     R = ROT_Z[rot]
-    assert escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0 * s) == 0.0
-    assert escape_height_brute(A, L, _vec(R, s, (0.0, 0.3, 0.0)), hi=2.0 * s) == 0.0
+    from e5b_wall_oracle import earliest_star_escape
+    from fractions import Fraction as F
+    for offset in ((0.0, 0.0, 0.0), _vec(R, s, (0.0, 0.3, 0.0))):
+        truth_exact = earliest_star_escape(A, L, offset)
+        solution = escape_height_covers(A, L, offset)
+        assert solution.exact_height == truth_exact, ("independent-exact-earliest", rot, t, s, offset)
+        display = escape_height_brute(A, L, offset, hi=2.0*s)
+        assert F(display) >= truth_exact
+        assert display == 0 if truth_exact == 0 else F(math.nextafter(display, -math.inf)) < truth_exact
     off = OFFSETS[0]
     truth = s * analytic_escape_height(off[0], off[1], nx=5, amp=0.3, phase=1.0)
     h = escape_height_brute(A, L, _vec(R, s, off), hi=2.0 * s)
@@ -532,3 +560,60 @@ def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request
     assert actual[0].label == first(delta)
     if (rot,t,s)==('I',0.,1.):
         assert first(0.) == first(delta) == lab0
+
+
+@pytest.mark.parametrize("s", SS)
+@pytest.mark.parametrize("t", TS)
+@pytest.mark.parametrize("rot", list(ROT_3))
+@pytest.mark.parametrize("name", ["touch", "subtol"])
+def test_margin_default_relation_matches_independent_exact_oracle(name, rot, t, s):
+    """Integer tetrahedral-union SAT, not production overlap/cone/distance primitives.
+
+    Each of the former 41 failures is represented; transformed coordinates,
+    not the unrounded ideal touching construction, are the contract.
+    """
+    import e5a2_surface_oracle as oracle
+    A0, B0 = MARGIN_CASES[name][1]()
+    A, B = _rigid(A0, ROT_3[rot], t, s), _rigid(B0, ROT_3[rot], t, s)
+    expected = oracle.star_relation(A, B, 0)
+    d, label = exact_margin.body_distance(A, B)
+    assert exact_margin.inflated_membership(A, B, delta=0) == expected, (name, rot, t, s, expected)
+    if expected == INSIDE:
+        assert (d, label) == (0., (PENETRATING,))
+        for delta in (0., 0.01*s):
+            contacts = exact_margin.margin_contacts(A, B, delta=delta)
+            assert len(contacts) == 1 and contacts[0].label == (PENETRATING,)
+            assert contacts[0].closed and contacts[0].margin_gap == -delta
+    else:
+        assert label is not None and label != (PENETRATING,)
+        assert (d == 0) == (expected == ON_BOUNDARY)
+        assert bool(exact_margin.margin_contacts(A, B, delta=0)) == (expected == ON_BOUNDARY)
+
+
+@pytest.mark.parametrize("rot,t,s", [("I", 0.0, 1.0), ("z0.7", 1e5, 1.0), ("I", 1e5, 1e3),
+                                     ("z0.7", 1e5, 1e3), ("z0.7", 1e3, 1e-3)])
+def test_brute_oracle_ideal_unjittered_homology_is_exact_zero_at_rest_and_scales(rot, t, s):
+    """Retain both original zero assertions on an exactly matching interface.
+
+    Raw top heights are exact input data; lower/upper are extruded from that
+    SAME interface with Fraction arithmetic. Signed-permutation rotations,
+    scale and translation are exact, so no ideal relation is lost to jitter.
+    Oracle uses independent integer tetrahedral-union swept SAT only.
+    """
+    from fractions import Fraction as F
+    from e5b_wall_oracle import earliest_star_escape
+    _, lower = interlocking_pair(**KW)
+    top = [tuple(map(F, lower.verts[i])) for i in range(0, len(lower.verts), 2)]
+    lo, up = [], []
+    for x, y, z in top:
+        lo.extend(((x, y, z), (x, y, z-1)))
+        up.extend(((x, y, z+1), (x, y, z)))
+    R = I3 if rot == "I" else ((0., -1., 0.), (1., 0., 0.), (0., 0., 1.))
+    def move(vertices):
+        return Polyhedron([tuple(F(t)*F(U[i])+F(s)*sum(F(R[i][j])*v[j] for j in range(3))
+                                 for i in range(3)) for v in vertices], lower.faces)
+    A, L = move(up), move(lo)
+    for offset in ((0., 0., 0.), _vec(R, s, (0., .3, 0.))):
+        assert earliest_star_escape(A, L, offset) == 0
+    assert escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0 * s) == 0.0
+    assert escape_height_brute(A, L, _vec(R, s, (0.0, 0.3, 0.0)), hi=2.0 * s) == 0.0

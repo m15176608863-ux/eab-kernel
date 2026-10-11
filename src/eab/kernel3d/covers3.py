@@ -650,7 +650,24 @@ def _local_facets_cached(av, af, bv, bf, implementations):
     return tuple(out)
 
 
-def _facet_plane_on_views(A, B, label):
+def _oriented_ee_normal(A, ea, B, eb, tol=0.0):
+    """One exact EE orientation rule for covers/facets/frozen evaluation.
+
+    tol is an explicit dimensionless cone-report window. General surface labels
+    and canonical-convex labels must still be supplied on their own view.
+    """
+    n = cross(_qedge(B, eb), _qedge(A, ea))
+    if not any(n):
+        raise ZeroDivisionError("parallel edges do not define an EE facet")
+    for direction in (n, neg(n)):
+        if (_qedge_contains(B, eb, direction, tol) >= 0
+                and _qedge_contains(A, ea, neg(direction), tol) >= 0):
+            return direction
+    # Compatibility for explicitly requesting the normal of a non-valid label.
+    return neg(n) if _qedge_contains(B, eb, n, tol) < 0 else n
+
+
+def _facet_plane_on_views(A, B, label, tol=0.0):
     kind, af, bf = label
     if kind == "VF":
         n = _qnormal(B, bf[1])
@@ -660,11 +677,7 @@ def _facet_plane_on_views(A, B, label):
         a, b = A.verts[A.faces[af[1]][0]], B.verts[bf[1]]
     elif kind == "EE":
         ea, eb = (af[1], af[2]), (bf[1], bf[2])
-        n = cross(_qedge(B, eb), _qedge(A, ea))
-        if not any(n):
-            raise ZeroDivisionError("parallel edges do not define an EE facet")
-        if _qedge_contains(B, eb, n) < 0:
-            n = neg(n)
+        n = _oriented_ee_normal(A, ea, B, eb, tol)
         a, b = A.verts[af[1]], B.verts[bf[1]]
     else:
         raise ValueError(f"not a facet label: {label}")

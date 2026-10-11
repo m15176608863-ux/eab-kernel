@@ -265,8 +265,8 @@ def test_a_tiny_block_near_a_huge_block_is_judged_the_same_in_every_orientation(
     B = rotx(box((0.0, 0.0, 0.0), (100.0, 100.0, 100.0)), rot)
     A = rotx(box((30.0, 20.0, 100.0 + 0.005 + gap), (0.005, 0.005, 0.005)), rot)
     ct = contact_resolution(A, B)
-    d, lab = body_distance(A, B)
-    m = inflated_membership(A, B, delta=0.0)
+    d, lab = body_distance(A, B, contact_window=ct)
+    m = inflated_membership(A, B, delta=0.0, contact_window=ct)
     assert lab != (PENETRATING,), (rot, gap, lab)
     if gap <= ct:
         assert d == 0.0 and m == ON_BOUNDARY, (rot, gap, d, m, ct)

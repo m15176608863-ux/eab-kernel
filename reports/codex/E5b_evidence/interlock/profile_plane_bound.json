@@ -1,0 +1,41 @@
+{
+  "rows": [
+    {
+      "mode": "old_full_feature",
+      "seconds": 1.3359974999912083,
+      "samples": 2,
+      "skipped_intersecting": 4,
+      "worst_abs_error": 4.163336342344337e-17,
+      "failures": []
+    },
+    {
+      "mode": "deployed_exact_plane_bound",
+      "seconds": 0.722441699996125,
+      "samples": 2,
+      "skipped_intersecting": 4,
+      "worst_abs_error": 4.163336342344337e-17,
+      "failures": []
+    },
+    {
+      "mode": "old_full_feature_repeat",
+      "seconds": 1.0613780999992741,
+      "samples": 2,
+      "skipped_intersecting": 4,
+      "worst_abs_error": 4.163336342344337e-17,
+      "failures": []
+    },
+    {
+      "mode": "deployed_exact_plane_bound_repeat",
+      "seconds": 0.7202643000055104,
+      "samples": 2,
+      "skipped_intersecting": 4,
+      "worst_abs_error": 4.163336342344337e-17,
+      "failures": []
+    }
+  ],
+  "frozen_sha256": {
+    "src/eab/kernel3d/exact_geom.py": "da63d677316906da1038de7ae9f3fc031800b19a4e3b00257af8968cd23c95e6",
+    "tests/test_e5b_triangle_near.py": "f1639e791c109a4ef562b2f6588e7bbcc5ca495f65ba4ed7ce9a2cf9e4eab9da"
+  },
+  "note": "Fixed six-sample microprobe only; concurrent diagnostic full-suite activity means this is not an isolated full-suite performance claim."
+}

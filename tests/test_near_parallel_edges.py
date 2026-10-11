@@ -9,6 +9,8 @@ import random
 from fractions import Fraction
 
 import pytest
+from e5b_margin_oracle import check_exact_margin
+import eab.margin as exact_margin
 
 from eab.kernel3d.geom3 import Polyhedron, _seg_seg_distance, brute_feature_distance, tetra
 from eab.margin import INSIDE, PENETRATING, body_distance, contact_resolution, inflated_membership, rounding_floor
@@ -38,7 +40,7 @@ def _fcross(u, v):
     return (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
 
 
-def exact_seg_seg(p1, p2, q1, q2) -> float:
+def exact_seg_seg(p1, p2, q1, q2, *, squared=False):
     """两线段最短距离的精确候选枚举（Fraction），最后开一次方。"""
     P1, P2, Q1, Q2 = map(_fv, (p1, p2, q1, q2))
     d1, d2, w = _fsub(P2, P1), _fsub(Q2, Q1), _fsub(Q1, P1)
@@ -57,7 +59,7 @@ def exact_seg_seg(p1, p2, q1, q2) -> float:
         s = _fdot(_fsub(_fadd(Q1, _fmul(d2, t)), P1), d1) / a
         cands.append((min(max(s, Fraction(0)), Fraction(1)), t))
     best = min(_fdot(v, v) for v in (_fsub(_fadd(P1, _fmul(d1, s)), _fadd(Q1, _fmul(d2, t))) for s, t in cands))
-    return math.sqrt(float(best))
+    return best if squared else math.sqrt(float(best))
 
 
 def _quat(seed: int):
@@ -104,11 +106,16 @@ def test_near_parallel_ridge_edges_match_the_exact_rational_distance(theta, gap,
     d_ba = _seg_seg_distance(*eb, *ea)
     assert abs(d_ab - exact) <= 4.0 * rnd + 1e-15 and abs(d_ba - exact) <= 4.0 * rnd + 1e-15, (theta, gap, d_ab, d_ba, exact)
     assert abs(brute_feature_distance(A, B) - exact) <= 4.0 * rnd + 1e-15
-    d, lab = body_distance(A, B)                         # 自校验不许误抛；距离在相触分辨率以内才钳 0
+    check_exact_margin(A, B, 1.5 * exact, state=-1,
+                       minimum_squared=exact_seg_seg(*ea, *eb, squared=True))
+    d, lab = body_distance(A, B, contact_window=contact_resolution(A, B))                         # 自校验不许误抛；距离在相触分辨率以内才钳 0
     ctol = contact_resolution(A, B)
     assert lab != (PENETRATING,)
     if exact > ctol:
         assert abs(d - exact) <= 8.0 * rnd + 1e-15, (theta, gap, d, exact, lab)
     else:
         assert d == 0.0
+    # Retain the original assertion text through an explicit-window adapter.
+    inflated_membership = lambda A, B, **kw: exact_margin.inflated_membership(
+        A, B, contact_window=contact_resolution(A, B), **kw)
     assert inflated_membership(A, B, delta=1.5 * exact) == INSIDE

@@ -195,7 +195,8 @@ def test_all_five_call_sites_route_through_the_single_helper(monkeypatch):
     """All original call-site assertions keep their live predicate mutation teeth.
 
     Cover/distance construction still uses projected face_polygon_locate; exact
-    surface boundary/ray/segment decisions now use triangle_locate instead.
+    surface segment decisions use triangle_locate; point boundary/ray decisions
+    use the equivalent integer halfspace path. Mutate both live internal paths.
     """
     import eab.kernel3d.covers3 as cv
     assert not hasattr(cv, "_point_inside_face")
@@ -225,6 +226,19 @@ def test_all_five_call_sites_route_through_the_single_helper(monkeypatch):
     # assertions must still expose corruption of the face-interior test.
     from eab.kernel3d import exact_geom
     monkeypatch.setattr(exact_geom,'triangle_locate',lambda *args:-1)
+    # E5b integer parity clears denominators instead of constructing a ray hit
+    # through triangle_locate. Preserve every old assertion while disabling the
+    # same face-interior acceptance in its actual internal boundary/ray path.
+    import inspect
+    import textwrap
+    source = textwrap.dedent(inspect.getsource(exact_geom._point_in_triangles))
+    boundary = 'if offset == 0 and all(value >= 0 for value,_ in edge_values):'
+    ray = 'if min(edge_signs) < 0:'
+    assert source.count(boundary) == source.count(ray) == 1
+    namespace = dict(vars(exact_geom))
+    exec(compile(source.replace(boundary, 'if False:').replace(ray, 'if True:'),
+                 '<integer-face-interior-disabled>', 'exec'), namespace)
+    monkeypatch.setattr(exact_geom, '_point_in_triangles', namespace['_point_in_triangles'])
     assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-9) != 0                # 边界判定走它
     assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-9) == -1               # 射线奇偶走它（零交点）
     assert not segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)

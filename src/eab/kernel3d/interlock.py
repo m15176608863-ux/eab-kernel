@@ -1,28 +1,27 @@
-"""互锁逃逸高度与冻结活动盖的可微构造。
+"""Exact affine escape with explicit local contact-window certificates.
 
-给定横向偏移后，暴力路径对“真实内部相交”做二分；盖路径提供浮点
-候选高度，由一般闭表面的精确三态谓词验收。正 tol 在该谓词里只改变
-分离侧的 -1/0 报告，不吞掉任何真实内部相交；这里只消费 state==1，
-因此一律使用零 tol，省掉与贯入判定无关的表面距离计算。
+Default decisions use the exact rational values supplied by callers. Complete
+triangulated VF/FV/EE events retain near-vertical features; exact_height and
+exact_offset carry the first nonpenetrating root, with an explicit certificate
+for every preceding open event interval. height is only a floating display:
+reapplying it with per-vertex floating arithmetic is a different geometry and
+requires a separate check. DDA/TIA adapters must consume the exact displacement
+or explicitly choose and verify a local contact_window.
 
-候选根、法向和移动后的坐标仍是浮点构造，不是精确接触高度证书。
-同一旧舍入簇中的不同 float 高度必须逐一验收；若该簇均未通过，可在
-原有法向舍入报告带 r 内构造一个上探高度，再对实际返回高度对应的
-A.translated((off_x,off_y,off_z+height)) 做精确非贯入核验。不得把低处
-真实贯入重新标为相触，也不得返回只核验了更高探针的未核验高度。
-
-候选的 extent、法向分辨率及并列组保留既有报告政策：geom_tol_eff 与
-rounding_floor 影响报告和构造，不是内部相交判据。winner/tied_labels
-仍解释 nominal 候选簇，不保证返回高度是任意折面体的精确最小根；
-一般非平面源盖、精确候选完备性和冻结微叉积构造仍由 WO-E5b 处理。
-
-桥接门：tests/test_e5a2_interlock_bridge.py；原逃逸、候选与灵敏度门保留。
+Reporting covers/ties retain their nominal extent/normal bands for derivative
+compatibility. They never accept an intruding root in the default exact mode.
+The explicit finite-certificate window proves local shell thickness or a
+rigid displacement <= window; it is not the shortest
+rigid-body translation. Gates: tests/test_interlock_exact.py,
+tests/test_interlock_walls.py, tests/test_e5a2_interlock_bridge.py.
 """
 
 from __future__ import annotations
 
 import sys
 import math
+from fractions import Fraction as F
+from functools import lru_cache
 from dataclasses import dataclass
 
 from ..dual import Dual, Number, val
@@ -32,6 +31,8 @@ from .frozen import FACET_KINDS, frozen_ee_sign, frozen_gap, frozen_normal  # no
 from .geom3 import Polyhedron, Vec3, cross, dot, norm, polyhedra_overlap, sub
 from .geom3 import exact_edge_vector
 from .exact_geom import sqrt_rational
+from . import exact_geom as _exact
+from .exact_sweep import surface_events, translate_exact, star_core, contact_models
 
 _EPS = sys.float_info.epsilon
 REL_BRUTE_GEOM_TOL = 1e-12         # oracle 的谓词容差：特征长度 L 的相对量
@@ -41,37 +42,19 @@ REL_BRUTE_TOL = 1e-10              # oracle 的二分终止宽度：L 的相对�
 # ------------------------------------------------------------------ 暴力 oracle
 
 def escape_height_brute(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
-                        hi: float, tol: float | None = None, geom_tol: float | None = None) -> float:
-    """Bisect strict interior overlap over a caller-supplied separating bracket.
+                        hi: float, tol: float | None = None, geom_tol: float | None = None,
+                        contact_window: float | None = None) -> float:
+    """Certified earliest-root reference retaining the legacy bracket API.
 
-    The returned upper bracket is nonpenetrating for the actual float-translated
-    coordinates. The stopping width is scale-relative (or explicit tol), not a
-    topology tolerance. geom_tol is retained/converted for API compatibility;
-    it cannot alter the exact intruding Boolean and no distance band is queried.
-    The caller must supply an appropriate vertically escaping/monotone bracket.
+    A monotone bisection can skip a lower separated interval in nonconvex data.
+    Therefore it now uses the complete exact event partition; tol/geom_tol are
+    accepted for compatibility but cannot change the root. This is a secondary
+    check, not an independent oracle (it shares the exact surface predicate).
     """
-    At = A.translated(offset)
-    floor = rounding_floor(At, B)
-    L = characteristic_length(At, B)
-    _ = max(REL_BRUTE_GEOM_TOL * L if geom_tol is None else float(geom_tol), floor)  # compatibility conversion only
-    ztol = max(REL_BRUTE_TOL * L if tol is None else float(tol), 8.0 * _EPS * abs(hi))
-
-    def intruding(z: float) -> bool:
-        x = (offset[0], offset[1], offset[2] + z)
-        return polyhedra_overlap(A.translated(x), B, 0.0) == 1
-
-    if not intruding(0.0):
-        return 0.0
-    if intruding(hi):
+    result=escape_height_covers(A,B,offset,geom_tol=geom_tol,contact_window=contact_window)
+    if result.exact_height>F(hi):
         raise ValueError(f"still intruding at z={hi}; raise hi")
-    lo, up = 0.0, hi
-    while up - lo > ztol:
-        mid = 0.5 * (lo + up)
-        if intruding(mid):
-            lo = mid
-        else:
-            up = mid
-    return up
+    return result.height
 
 
 # ------------------------------------------------------------------ 盖路径（可微）
@@ -84,6 +67,13 @@ class EscapeSolution:
     # Legacy reporting ties are selected around nominal constructed roots.
     # They are not a claim that exact membership cannot distinguish the roots.
     tied_labels: tuple = ()
+    exact_height: F = F(0)
+    exact_offset: tuple = ()
+    interval_certificate: tuple = ()
+    nonpenetrating_state: int = 0
+    window_core: str | None = None
+    exact_contact_label: tuple | None = None
+    exact_contact_normal: tuple = ()
 
 
 def _normal_noise(A: Polyhedron, B: Polyhedron, cover) -> float:
@@ -101,7 +91,7 @@ def _normal_noise(A: Polyhedron, B: Polyhedron, cover) -> float:
             # E5a exact cones can retain a nonparallel pair whose rounded unit
             # vectors coincide. Preserve this legacy *resolution report* using
             # raw exact edges, rather than divide by the rounded zero. The
-            # escape/noise-band semantics themselves remain an E5b task.
+            # exact escape topology is handled separately by surface_events.
             a, b = exact_edge_vector(A, ea), exact_edge_vector(B, eb)
             n = cross(a, b)
             sine = sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))
@@ -112,13 +102,10 @@ def _normal_noise(A: Polyhedron, B: Polyhedron, cover) -> float:
 
 
 def _cover_escape_z(cover, noise: float = 0.0) -> tuple[float, float] | None:
-    """单个盖在竖直线上的零间隙高度与它的 n_z：解 gap(z) = 0。
+    """Nominal reporting root; near-vertical suppression affects labels only.
 
-    盖的 gap 沿平移 x 是仿射的：gap(x) = n·(a + x − b)，故 gap(z) = gap(offset) + z·(n·ẑ)。
-    只有 n·ẑ **可分辨地** > 0 的盖（抬升能把它拉开）才给出有限的逃逸高度：n_z 是被测量，它的噪声是盖法向自身的方向噪声
-    `noise`（`_normal_noise`）——竖直墙面的 n_z 在工程坐标下是 ~1e-11 的纯舍入，旧的绝对阈值 1e-12 把它当成"朝上"，
-    z = −gap/n_z 是垃圾高度（G6 第五轮 critical：U 形槽里的键在 |t| = 1e5 处报 0.99 / 0.58 / 0.35，真值 0.2）。
-    """
+    The exact solver enumerates all supplied-surface events independently;
+    this compatibility helper does not decide escape or penetration."""
     n = cover.normal
     if n is None:
         return None
@@ -142,10 +129,10 @@ def _cover_at(Az: Polyhedron, B: Polyhedron, label: tuple, tol: float, extent_to
 
 def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_tol: float
                 ) -> tuple[list[tuple], float]:
-    """完备候选集 [(z, 标签, n_z, 枚举序号)]（z 升序）与法向间隙的舍入地板 r。见 `escape_candidates`。
-    extent_tol 是谓词分辨率 geom_tol_eff（长度）：z* 处接触点落在面内 / 段内的边界带与谓词同一把尺——谓词分不开
-    的折点两侧，另一支的接触点只越出它的面 ~|Δδ|，照样是候选（并列集因此报出两支，G6 minor[11]）。M0.2 靠把角度
-    tol = 1e-9 当绝对长度用碰巧给出了这条带（单位缩放下不对），M0.3 把两种角色拆开。"""
+    """Legacy nominal report candidates and their floating construction band.
+
+    These feed derivative labels/ties, not the complete exact event partition.
+    Extent is checked at each candidate construction as in the public report."""
     At = A.translated(offset)
     r = rounding_floor(At, B)
     raw: list[tuple] = []
@@ -174,78 +161,122 @@ def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_t
 
 def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float = 1e-9,
                       geom_tol: float | None = None) -> list[tuple[float, tuple]]:
-    """盖给出的**完备候选高度集**：每个法向朝上的盖解一个 gap(z)=0，升序返回 (z, 标签)。
+    """Nominal cover-report candidates, sorted by constructed height.
 
-    in_extent 在**各自的 z* 处**判，不在 z=0 处判：
-      · z=0 处过滤会漏真解——抬升会让投影移进/移出面，z=0 处的 in_extent 说明不了 z=z* 处的情况。
-        2026-09-21 审查实测：曾用 `enumerate_covers3` 的默认过滤，非对称块
-        interlocking_pair(5,2,0.3,1.0) 上 25 个随机偏移错 8–10 个（0.44749 vs 真值 0.40054，静默偏大）。
-      · 完全不过滤不漏，但会混入"对方面的延长平面上的巧合零间隙"（投影落在面外、不是接触）。
-        它的高度可以恰与真解并列（周期剖面上常见），被冻结后导数毫无意义
-        （实测 δ=0.3 处并列胜出 FV(A 面 14, L 顶点 9)，∂h/∂amp 给 4.6，真值 0.6）。
-      · 真解处两体相触，决定它的接触盖零间隙且接触点落在面内/段内，即在 z* 处 in_extent——
-        所以按 z* 处的 in_extent 过滤**既不漏真解、又只留真接触**。
-    低维盖（VE3/EV3/VV3）不参与：它们的 gap 是无符号距离（≥ 0），z = −gap/n_z ≤ 0，
-    从不给出 z > 0 的候选（旧实现里它们只以 z≈0 出现，随即被裁决循环跳过）。
-    法向间隙在舍入地板（64·eps·C）以内的负高度记为 0（旧：绝对 −1e-12，工程坐标上会把相触的盖丢掉）。
-    门："不漏真解"在 tests/test_interlock_escape.py；"只留真接触"与 z* 处的棱内带 = geom_tol_eff 在
-    tests/test_interlock_candidates_contract.py（G6 第五轮：此前这两半句只被 test_interlock_sensitivity 间接看护）。
-    """
+    Preserves the documented extent/normal report band for frozen derivatives.
+    It is not the complete exact kinetic event list: use exact_sweep.surface_events
+    for that list. escape_height_covers uses the latter for all decisions."""
     gtol = effective_geom_tol(A.translated(offset), B, geom_tol)
     return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
 
 
+def _nonpenetrating_at(A, B, offset, height):
+    """An exact certificate on the exact affine input, not a rounded probe."""
+    displacement=(F(offset[0]),F(offset[1]),F(offset[2])+height)
+    return polyhedra_overlap(translate_exact(A,displacement),B,0)
+
+
+def _prior_intervals(times, height):
+    """Every candidate interval below height, without resolution clustering."""
+    left=F(0)
+    for right in sorted({t for t in times if 0<t<=height}):
+        yield left,right,(left+right)/2
+        left=right
+
+
+def _exact_escape(A, B, offset, cap=None):
+    return _exact_escape_cached(tuple(A.verts),tuple(A.faces),tuple(B.verts),tuple(B.faces),
+                                tuple(map(F,offset)),cap,_nonpenetrating_at,_prior_intervals,surface_events)
+
+
+@lru_cache(maxsize=512)
+def _exact_escape_cached(av,af,bv,bf,offset,cap,predicate,intervals,event_source):
+    A,B=Polyhedron(av,af),Polyhedron(bv,bf)
+    initial=predicate(A,B,offset,F(0))
+    if initial != 1:
+        return F(0),None,(),initial,()
+    events=event_source(A,B,start=offset,t_max=cap)
+    groups={}
+    for event in events:
+        if event.time>0:
+            groups.setdefault(event.time,[]).append(event)
+    for height, group in sorted(groups.items()):
+        state=predicate(A,B,offset,height)
+        if state == 1:
+            continue
+        proof=[]
+        for left,right,mid in intervals(groups,height):
+            inside=predicate(A,B,offset,mid)
+            if inside != 1:
+                raise AssertionError('event completeness: an earlier interval is nonpenetrating')
+            proof.append((left,right,mid,inside))
+        witness=next((e for e in group if e.normal[2]),group[0])
+        return height,witness,tuple(proof),state,events
+    if cap is not None:
+        return None,None,(),1,events
+    raise ValueError('exact surface event set did not contain a separating height')
+
+
 def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
-                         tol: float = 1e-9, geom_tol: float | None = None) -> EscapeSolution:
-    """Return a verified nonpenetrating constructed lift and nominal cover labels.
+                         tol: float = 1e-9, geom_tol: float | None = None,
+                         contact_window: float | None = None) -> EscapeSolution:
+    """Exact first nonpenetrating affine lift, plus floating display and labels.
 
-    Every distinct nominal float height is checked against the exact supplied
-    surface. If a rounding cluster has no safe nominal candidate, one upward
-    construction at nextafter(z+r/nz,+inf) is tried; the returned lifted height
-    itself, not a different probe, must be nonpenetrating. This is construction
-    recovery within the existing reporting policy, not a tolerance in topology.
+    exact_height/exact_offset are the decision data. height is a binary64 display
+    rounded upward; it is not a substituted topology predicate. Every preceding
+    open event interval is certified penetrating, and the exact root itself is
+    independently tested nonpenetrating. No near-vertical event is suppressed.
 
-    Cover winners/ties use the nominal cluster and the existing gtol/r report
-    bands. The return is not a proof of a globally exact minimum for arbitrary
-    folded source rings; that candidate/normal-cone migration remains E5b.
+    Explicit contact_window uses exactly the same finite rational certificate
+    models as margin: original geometry, two available star cores, and six
+    coordinate-axis shifts by +/-window. The earliest root is the minimum over
+    those complete event partitions; the winner carries its exact proof. This
+    sufficient bound is not a global minimum rigid-body penetration distance.
+    interval_certificate is the winning model's interval proof. Other window
+    models are excluded by exact initial/root checks on their complete event
+    partitions up to the current best (cap); they can be rerun via contact_models.
+    exact_contact_label/normal index that winning model, not necessarily A/B
+    when a core or displacement certificate won. cover_label/tied_labels remain
+    original-geometry nominal derivative reports. geom_tol changes only these
+    reports, never the exact root.
     """
-    At = A.translated(offset)
-    gtol = effective_geom_tol(At, B, geom_tol)
-    cands, r = _candidates(A, B, offset, tol, gtol)
-    if polyhedra_overlap(At, B, 0.0) != 1:
-        return EscapeSolution(0.0, None, len(cands))
-    # Only identical constructed heights can share an exact predicate answer.
-    # A lower member of a rounding cluster can penetrate while the very next
-    # representable candidate already separates the actual supplied surface.
-    groups=[]
-    for item in cands:
-        if not groups or item[0]-groups[-1][0][0] > r:
-            groups.append([item])
-        else:
-            groups[-1].append(item)
-    for group in groups:
-        z_prev=None
-        for z, _, nz, _ in group:
-            if z <= 0.0 or z == z_prev:
-                continue
-            z_prev=z
-            x=(offset[0],offset[1],offset[2]+z)
-            if polyhedra_overlap(A.translated(x),B,0.0) != 1:
-                return _escape_solution(z,nz,cands,gtol,r)
-        # Candidates are floating constructions, not exact contact roots.
-        # Try one upward construction within the existing normal-rounding
-        # report band. The returned height itself must pass exact no-overlap;
-        # we never relabel an interior state as boundary or return unsafe z.
-        z, _, nz, _=max(group,key=lambda item:item[0])
-        lifted=math.nextafter(z+r/nz,math.inf)
-        x=(offset[0],offset[1],offset[2]+lifted)
-        if polyhedra_overlap(A.translated(x),B,0.0) != 1:
-            if z > 0:
-                solution=_escape_solution(z,nz,cands,gtol,r)
-                return EscapeSolution(lifted,solution.cover_label,solution.n_candidates,solution.tied_labels)
-            tied=tuple(item[1] for item in sorted(group,key=lambda item:item[3]))
-            return EscapeSolution(lifted,tied[0],len(cands),tied)
-    raise ValueError("escape height not found among cover candidates (candidate set incomplete?)")
+    if contact_window is not None and F(contact_window)<0:
+        raise ValueError('contact_window must be nonnegative')
+    report_A=A.translated(offset)
+    gtol=effective_geom_tol(report_A,B,geom_tol)
+    cands,r=_candidates(A,B,offset,tol,gtol)
+    choices=(('exact',A,B),) if contact_window is None else contact_models(A,B,contact_window)
+    solved=[]
+    best=None
+    for name,ca,cb in choices:
+        root,event,proof,state,events=_exact_escape(ca,cb,offset,cap=best)
+        if root is None:
+            continue
+        marker={'exact':None,'core_A':'A','core_B':'B'}.get(name,name)
+        solved.append((root,event,proof,state,events,marker))
+        best=root if best is None else min(best,root)
+        if root==0:
+            break
+    root,event,proof,state,events,name=min(solved,key=lambda row:row[0])
+    display=float(root)
+    if F(display)<root:
+        display=math.nextafter(display,math.inf)
+    lab=None; tied=()
+    if root>0:
+        usable=[c for c in cands if c[0]>0]
+        if usable:
+            nearest=min(usable,key=lambda c:abs(F(c[0])-root)*F(c[2]))
+            if abs(F(nearest[0])-root)*F(nearest[2]) <= F(gtol)+F(r)*4:
+                report=_escape_solution(nearest[0],nearest[2],cands,gtol,r)
+                lab,tied=report.cover_label,report.tied_labels
+        if lab is None and event is not None:
+            lab=event.label
+            tied=tuple(dict.fromkeys(e.label for e in events if e.time==root))
+    return EscapeSolution(display,lab,len(cands),tied,root,
+                          (F(offset[0]),F(offset[1]),F(offset[2])+root),proof,state,name,
+                          event.label if event is not None else None,
+                          tuple(-n for n in event.normal) if event is not None and event.normal[2]<0
+                          else (event.normal if event is not None else ()))
 
 
 def _escape_solution(z: float, nz: float, cands: list[tuple], gtol: float, r: float) -> EscapeSolution:
@@ -275,6 +306,22 @@ def escape_height_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple,
     """
     if not label or label[0] not in FACET_KINDS:
         raise ValueError(f"escape height is defined by facet covers (VF/FV/EE) only, got {label[:1]}")
+    if not any(isinstance(c,Dual) for P in (A,B) for p in P.verts for c in p) and not any(isinstance(c,Dual) for c in offset):
+        kind,af,bf=label
+        if kind=='VF':
+            face=bf[3:] if len(bf)>2 else B.faces[bf[1]]
+            n=_exact.normal([_exact.vector(B.verts[i]) for i in face])
+            a,b=_exact.vector(A.verts[af[1]]),_exact.vector(B.verts[face[0]])
+        elif kind=='FV':
+            face=af[3:] if len(af)>2 else A.faces[af[1]]
+            n=_exact.normal([_exact.vector(A.verts[i]) for i in face])
+            a,b=_exact.vector(A.verts[face[0]]),_exact.vector(B.verts[bf[1]])
+        else:
+            n=_exact.cross(exact_edge_vector(B,(bf[1],bf[2])),exact_edge_vector(A,(af[1],af[2])))
+            a,b=_exact.vector(A.verts[af[1]]),_exact.vector(B.verts[bf[1]])
+        # Orientation and normalization cancel in this ratio. Keeping the raw
+        # rational plane avoids magnifying rounded unit-normal error by 1/n_z.
+        return -_exact.dot(n,_exact.sub(_exact.add(a,_exact.vector(offset)),b))/n[2]
     n = frozen_normal(A, B, label, ee_sign)
     g = frozen_gap(A, B, label, offset, n)
     return -g / n[2]

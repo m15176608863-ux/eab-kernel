@@ -177,6 +177,39 @@ def test_steep_profile_kink_is_flagged_consistently_with_the_predicate(s, t):
     _steep_check(s, t)
 
 
+def _steep_two_branches_in_report_band(d, s, center, truth):
+    """Independent source-feature oracle, not production covers/windows.
+
+    The two analytic profile branches are upper bottom faces i=0 and i=1
+    against lower endpoint i=nx, j=0: FV(10,30) and FV(12,30).
+    The test oracle uses cyclic Fraction Newell, its own vertex-cone and
+    face-extent predicates, and explicit L/r/gtol formulas.  Normal proximity
+    alone is insufficient: each branch must also be in its own extent band.
+    """
+    import e5a_escape_oracle as O
+    A, B = interlocking_pair(nx=5, ny=2, amp=0.3*s, phase=1.0,
+                            lx=0.2*s, ly=s, lz=s, center=center)
+    av = O.move(tuple(A.verts), (s*d, 0.0, 0.0))
+    bv, af, bf = tuple(B.verts), tuple(A.faces), tuple(B.faces)
+    a, b = O.model(av, af), O.model(bv, bf)
+    band, _ = O.windows(av, bv)
+    for fi in (10, 12):
+        label = ("FV", ("face", fi), ("vertex", 30))
+        record = O.facet(a, b, label)
+        if record is None or record[0][2] <= 0:
+            return False
+        nz, gap = record[0][2], record[1]
+        z = -gap/nz
+        # Strict interior of the normal band; no assertion about its edge.
+        if z <= 0 or abs(z-truth)*nz >= 0.5*band:
+            return False
+        az = O.model(O.move(av, (0.0, 0.0, z)), af)
+        at_root = O.facet(az, b, label, extent=band)
+        if at_root is None or not at_root[2]:
+            return False
+    return True
+
+
 def _steep_check(s, t):
     sl, sr = _steep_branch_slopes()
     assert abs(sl + 8.528020973702644) < 1e-6 and abs(sr + 0.5068809109942674) < 1e-6   # 陡坡前提
@@ -192,6 +225,9 @@ def _steep_check(s, t):
             tol_h = 2e-8 * s + 256 * EPS * (t + 2 * s) / 0.1165
             assert abs(r["h_float"] - truth) <= tol_h, (side * e, r["h_float"], truth)
             own = sl if side < 0 else sr
+            if _steep_two_branches_in_report_band(d, s, c, truth):
+                assert not r["differentiable_by"]["tan_psi"], (
+                    side * e, r["derivative_range"]["tan_psi"], "带内漏支")
             if r["differentiable_by"]["tan_psi"]:
                 assert abs(r["tan_psi"] - own) < 1e-6, (side * e, r["tan_psi"], own, "可微但给了另一支的斜率")
             else:
@@ -203,9 +239,10 @@ def _steep_check(s, t):
 
 
 def test_steep_gate_has_teeth_vertical_tie_window(monkeypatch):
-    """牙（缺陷注入到被测路径内部）：把 interlock 的并列裁决换回旧规则——按**竖向高度** 1e-9·max(1, |z|)
-    判并列、胜出者 = 谓词接受的那个候选——s = 1 格必须红，而且红在"可微但给了另一支的斜率"这条断言上
-    （G6 minor[11] 的原样症状），不是别的断言。"""
+    """The original internal vertical tie-window mutation must fail on missing
+    a branch strictly inside the independently reconstructed report/extent band.
+    All old slope/height/interval assertions and all 72 inputs remain in place.
+    """
     import eab.kernel3d.interlock as I
 
     def vertical_window(z, nz, cands, gtol, r):
@@ -215,7 +252,7 @@ def test_steep_gate_has_teeth_vertical_tie_window(monkeypatch):
         return I.EscapeSolution(z, lab, len(cands), (lab,) + tied)
 
     monkeypatch.setattr(I, "_escape_solution", vertical_window)
-    with pytest.raises(AssertionError, match="另一支"):
+    with pytest.raises(AssertionError, match="\u5e26\u5185\u6f0f\u652f"):
         _steep_check(1.0, 0.0)
 
 

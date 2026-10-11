@@ -1,0 +1,256 @@
+{
+  "baseline_head": "35667084fd2b6d3c89bd3d284534feea2d5771a5",
+  "baseline_sha256": "09db042bfae62d423b7da340366d9c709c41a98490f8e646f73e526a6f91fc58",
+  "current_sha256": "da63d677316906da1038de7ae9f3fc031800b19a4e3b00257af8968cd23c95e6",
+  "warning": "Microbenchmark; concurrent development may affect wall times. Not full-suite performance acceptance.",
+  "rows": [
+    {
+      "kind": "triangle boolean",
+      "inputs": 1300,
+      "before": {
+        "wall_seconds": 0.2856636999931652,
+        "cpu_seconds": 0.28125
+      },
+      "after": {
+        "wall_seconds": 0.048100200001499616,
+        "cpu_seconds": 0.046875
+      },
+      "all_equal": true
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tol": "0",
+      "before": {
+        "wall_seconds": 0.005946599994786084,
+        "cpu_seconds": 0.0
+      },
+      "after": {
+        "wall_seconds": 0.0027651999989757314,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": true
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tol": "3022314549036573/302231454903657293676544",
+      "before": {
+        "wall_seconds": 0.006490999992820434,
+        "cpu_seconds": 0.0
+      },
+      "after": {
+        "wall_seconds": 0.0032842000073287636,
+        "cpu_seconds": 0.015625
+      },
+      "all_equal": true,
+      "state": true
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.025
+      ],
+      "tol": "0",
+      "before": {
+        "wall_seconds": 0.005799999998998828,
+        "cpu_seconds": 0.0
+      },
+      "after": {
+        "wall_seconds": 0.002881899999920279,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": true
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.025
+      ],
+      "tol": "3022314549036573/302231454903657293676544",
+      "before": {
+        "wall_seconds": 0.006237299996428192,
+        "cpu_seconds": 0.015625
+      },
+      "after": {
+        "wall_seconds": 0.003421299988985993,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": true
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.025000000001
+      ],
+      "tol": "0",
+      "before": {
+        "wall_seconds": 0.07125839999935124,
+        "cpu_seconds": 0.078125
+      },
+      "after": {
+        "wall_seconds": 0.011639799995464273,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": false
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.025000000001
+      ],
+      "tol": "3022314549036573/302231454903657293676544",
+      "before": {
+        "wall_seconds": 0.006131700007244945,
+        "cpu_seconds": 0.015625
+      },
+      "after": {
+        "wall_seconds": 0.0036690999986603856,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": true
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.03
+      ],
+      "tol": "0",
+      "before": {
+        "wall_seconds": 0.07038010000542272,
+        "cpu_seconds": 0.078125
+      },
+      "after": {
+        "wall_seconds": 0.011781100009102374,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": false
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.03
+      ],
+      "tol": "3022314549036573/302231454903657293676544",
+      "before": {
+        "wall_seconds": 0.3753442000015639,
+        "cpu_seconds": 0.375
+      },
+      "after": {
+        "wall_seconds": 0.08729909999237861,
+        "cpu_seconds": 0.09375
+      },
+      "all_equal": true,
+      "state": false
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.024
+      ],
+      "tol": "0",
+      "before": {
+        "wall_seconds": 0.005911500004003756,
+        "cpu_seconds": 0.0
+      },
+      "after": {
+        "wall_seconds": 0.0029599000117741525,
+        "cpu_seconds": 0.015625
+      },
+      "all_equal": true,
+      "state": true
+    },
+    {
+      "kind": "surface near",
+      "shift": [
+        0.05,
+        0.0,
+        0.024
+      ],
+      "tol": "3022314549036573/302231454903657293676544",
+      "before": {
+        "wall_seconds": 0.01196180000260938,
+        "cpu_seconds": 0.0
+      },
+      "after": {
+        "wall_seconds": 0.0037739999970654026,
+        "cpu_seconds": 0.015625
+      },
+      "all_equal": true,
+      "state": true
+    },
+    {
+      "kind": "surface transverse",
+      "scale": "1",
+      "translation": "0",
+      "before": {
+        "wall_seconds": 0.005774100005510263,
+        "cpu_seconds": 0.0
+      },
+      "after": {
+        "wall_seconds": 0.0031904000061331317,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": 1
+    },
+    {
+      "kind": "surface transverse",
+      "scale": "1/1000",
+      "translation": "1000000",
+      "before": {
+        "wall_seconds": 0.006804499993450008,
+        "cpu_seconds": 0.015625
+      },
+      "after": {
+        "wall_seconds": 0.0038009999989299104,
+        "cpu_seconds": 0.0
+      },
+      "all_equal": true,
+      "state": 1
+    },
+    {
+      "kind": "surface transverse",
+      "scale": "1000",
+      "translation": "100000",
+      "before": {
+        "wall_seconds": 0.005443600006401539,
+        "cpu_seconds": 0.0
+      },
+      "after": {
+        "wall_seconds": 0.0032980999967548996,
+        "cpu_seconds": 0.015625
+      },
+      "all_equal": true,
+      "state": 1
+    }
+  ]
+}

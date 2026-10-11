@@ -1,0 +1,37 @@
+[
+  {
+    "path": "tests/test_interlock_walls.py",
+    "baseline_sha256": "a1eb822e88d236593a2309019efcbcb031df5a5fed4f76f6d983bb1749b7601b",
+    "current_sha256": "1223f9fb7080fa68a999785528fe3fa052bfbebc57c25eff1dcad8c0c8548086",
+    "original_test": "test_vertical_walls_do_not_hijack_the_escape_height",
+    "original_cells": 80,
+    "retained_cells": 80,
+    "rewrite": "Each original jitter cell now requires exact Fraction equality against independent integer triangle-SAT swept intervals plus rational parity exclusion. Original height/frozen/label assertions remain in explicit window mode; brute corroboration now passes that same explicit window.",
+    "added_cells": {
+      "clearance_jitter_grid": 80,
+      "ideal_rational_rigid_transform_scale": 4
+    },
+    "weakened": false
+  },
+  {
+    "path": "tests/test_interlock_sensitivity.py",
+    "baseline_sha256": "282c4ed3edc84e4cc07528ef5af39561ba02ad4837e94dba8feff7170289a3bb",
+    "current_sha256": "2d3ddefdee30df9def3998d42cdbbbf93106c598f5cd915a706ebdd8420c0783",
+    "original_test": "test_steep_gate_has_teeth_vertical_tie_window and shared _steep_check",
+    "original_cells": 72,
+    "retained_cells": 72,
+    "rewrite": "All old height, differentiability, true-side derivative, interval, outside-band and nonvacuity assertions retained. Add independent source-feature/extent sufficient condition requiring both branches; same production _escape_solution vertical-window mutation must fail exactly on the new missing-branch assertion.",
+    "weakened": false
+  },
+  {
+    "path": "tests/test_e5a2_interlock_bridge.py",
+    "baseline_sha256": "772a943cd8591579c12d345b8c3497ac1203b386877cfb5638f653beee66f734",
+    "current_sha256": "daa6dd3781cf78343e2b69a240e3b9867eff50a2743ddcfcd78197c95b59514d",
+    "original_test": "test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile and upward-construction mutation",
+    "original_cells": 12,
+    "retained_cells": 12,
+    "rewrite": "Continuous exact motion replaces repeated rounded vertex translation. Retain independent profile no-intrusion and root-approximation assertions, add exact rational root equality on all 12 inputs. Three exactly representable roots separately preserve actual float-translated no-intrusion assertion. The obsolete float-repair source-string mutation is replaced by omission of live exact root acceptance, caught by exact profile equality.",
+    "added_cells": 3,
+    "weakened": false
+  }
+]

@@ -1,0 +1,537 @@
+{
+  "baseline": "3566708",
+  "rewrites": [
+    {
+      "file": "tests/test_e5a2_interlock_bridge.py",
+      "function": "test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile",
+      "reason": "Independent profile oracle compares exact roots. Actual nonpenetration checked on authoritative exact affine endpoint; additional representable roots preserve old floating-endpoint safety.",
+      "old_source": "def test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile(scale,translation,offset):\n    A,B=_pair(scale,translation);off=tuple(v*scale for v in offset)\n    nominal=_root(A.translated(off),B)\n    sol=I.escape_height_covers(A,B,off)\n    actual=A.translated((off[0],off[1],off[2]+sol.height))\n    assert not _intrudes(actual,B), 'returned height, not a higher probe, must be safe'\n    C=max(abs(v) for P in (A,B) for p in P.verts for v in p)\n    assert abs(sol.height-float(nominal)) <= 4e-12*scale+128*math.ulp(C), \"constructed height must approximate the independent profile root\"\n    if _intrudes(A.translated(off),B):\n        assert sol.height>0, 'a true tiny initial intrusion cannot be reported as zero'",
+      "new_source": "def test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile(scale,translation,offset):\n    A,B=_pair(scale,translation);off=tuple(v*scale for v in offset)\n    nominal=_root(translate_exact(A,off),B)\n    sol=I.escape_height_covers(A,B,off)\n    actual=translate_exact(A,sol.exact_offset)\n    assert sol.exact_height==nominal, \"exact affine root against independent profile\"\n    assert not _intrudes(actual,B), 'returned height, not a higher probe, must be safe'\n    C=max(abs(v) for P in (A,B) for p in P.verts for v in p)\n    assert abs(sol.height-float(nominal)) <= 4e-12*scale+128*math.ulp(C), \"constructed height must approximate the independent profile root\"\n    if _intrudes(translate_exact(A,off),B):\n        assert sol.height>0, 'a true tiny initial intrusion cannot be reported as zero'",
+      "old_assertions": [
+        "assert not _intrudes(actual, B), 'returned height, not a higher probe, must be safe'",
+        "assert abs(sol.height - float(nominal)) <= 4e-12 * scale + 128 * math.ulp(C), 'constructed height must approximate the independent profile root'",
+        "assert sol.height > 0, 'a true tiny initial intrusion cannot be reported as zero'"
+      ],
+      "new_assertions": [
+        "assert sol.exact_height == nominal, 'exact affine root against independent profile'",
+        "assert not _intrudes(actual, B), 'returned height, not a higher probe, must be safe'",
+        "assert abs(sol.height - float(nominal)) <= 4e-12 * scale + 128 * math.ulp(C), 'constructed height must approximate the independent profile root'",
+        "assert sol.height > 0, 'a true tiny initial intrusion cannot be reported as zero'"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "73150b756cd68e1719133d225ad3e58c3abd2408e28988343b78e3eff73d2d62",
+      "new_sha256": "b1ce8b5dce8336420a7d0f377f108c65b1709021d01950bf76984158963a6575"
+    },
+    {
+      "file": "tests/test_e5a2_interlock_bridge.py",
+      "function": "test_disabling_upward_construction_is_caught_by_the_original_profile_error",
+      "reason": "Independent profile oracle compares exact roots. Actual nonpenetration checked on authoritative exact affine endpoint; additional representable roots preserve old floating-endpoint safety.",
+      "old_source": "def test_disabling_upward_construction_is_caught_by_the_original_profile_error(monkeypatch):\n    source=inspect.getsource(I.escape_height_covers)\n    needle='lifted=math.nextafter(z+r/nz,math.inf)'\n    assert needle in source\n    namespace=dict(I.__dict__)\n    exec(source.replace(needle,'lifted=z'),namespace)\n    monkeypatch.setattr(I,'escape_height_covers',namespace['escape_height_covers'])\n    # This original offset has no safe nominal float root. Without the live\n    # construction correction it either rejects all candidates or returns a\n    # later incorrect root; the independent profile gate detects either case.\n    with pytest.raises((ValueError,AssertionError)) as failure:\n        test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile(\n            1.,0.,(.04305840516802706,-.08058664985244868,0.))\n\n    if isinstance(failure.value,ValueError):\n        assert str(failure.value)=='escape height not found among cover candidates (candidate set incomplete?)'\n    else:\n        assert ('returned height, not a higher probe, must be safe' in str(failure.value)\n                or 'constructed height must approximate the independent profile root' in str(failure.value))",
+      "new_source": "def test_disabling_upward_construction_is_caught_by_the_original_profile_error(monkeypatch):\n    \"\"\"E5a2 upward-float repair is superseded by exact root acceptance.\n\n    The same original profile error is now guarded by a stronger mutation:\n    bypassing the live exact nonpenetration certificate returns an earlier,\n    penetrating event and the independent exact-root assertion catches it.\n    \"\"\"\n    original=I._nonpenetrating_at\n    def unchecked(A,B,offset,height):\n        event_times={e.time for e in I.surface_events(A,B,start=offset)}\n        return 0 if height>0 and height in event_times else original(A,B,offset,height)\n    monkeypatch.setattr(I,'_nonpenetrating_at',unchecked)\n    with pytest.raises(AssertionError,match=\"exact affine root\"):\n        test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile(\n            1.,0.,(-.21140068220020514,-.20949049564529884,0.))",
+      "old_assertions": [
+        "assert needle in source",
+        "assert str(failure.value) == 'escape height not found among cover candidates (candidate set incomplete?)'",
+        "assert 'returned height, not a higher probe, must be safe' in str(failure.value) or 'constructed height must approximate the independent profile root' in str(failure.value)"
+      ],
+      "new_assertions": [],
+      "assertions_no_longer_literal": [
+        "assert needle in source",
+        "assert str(failure.value) == 'escape height not found among cover candidates (candidate set incomplete?)'",
+        "assert 'returned height, not a higher probe, must be safe' in str(failure.value) or 'constructed height must approximate the independent profile root' in str(failure.value)"
+      ],
+      "old_sha256": "cf2b5ca2d2f4f911336bb18a07fb8889e323b746053c88e6415b2086821d7324",
+      "new_sha256": "461221bcc715f079569586e0e96c75d10b995f8e4e49515844b8c47b2ef2855f"
+    },
+    {
+      "file": "tests/test_entrance3.py",
+      "function": "test_ray_that_misses_gives_none_and_t_max_is_honoured",
+      "reason": "t_max is now exact: raw root beyond 0.3 must be none; old entrance assertion retained on exactly representable boundary data.",
+      "old_source": "def test_ray_that_misses_gives_none_and_t_max_is_honoured():\n    A = box(center=(0.2, 0.1, 1.3), half=(0.5, 0.5, 0.5))\n    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)).kind == \"none\"\n    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.2).kind == \"none\"\n    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == \"entrance\"",
+      "new_source": "def test_ray_that_misses_gives_none_and_t_max_is_honoured():\n    A = box(center=(0.2, 0.1, 1.3), half=(0.5, 0.5, 0.5))\n    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)).kind == \"none\"\n    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.2).kind == \"none\"\n    # The supplied binary64 bottom is .8000000000000000444: its exact\n    # root is strictly greater than the binary64 bound .2999999999999999889.\n    assert F(min(p[2] for p in A.verts)) - F(.5) > F(.3)\n    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == \"none\"\n    root = F(min(p[2] for p in A.verts)) - F(.5)\n    assert first_entrance3(A, SLAB, (0., 0., 0.), (0., 0., -1.), t_max=root).exact_t == root\n    A = Polyhedron([(F(x), F(y), F(z) - root + F(.3)) for x, y, z in A.verts], A.faces)\n    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == \"entrance\"",
+      "old_assertions": [
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)).kind == 'none'",
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.2).kind == 'none'",
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == 'entrance'"
+      ],
+      "new_assertions": [
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)).kind == 'none'",
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.2).kind == 'none'",
+        "assert F(min((p[2] for p in A.verts))) - F(0.5) > F(0.3)",
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == 'none'",
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=root).exact_t == root",
+        "assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == 'entrance'"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "9d3f2a533767ae70fb0c4eec42b8e55c9e63dd009ba456673f5c0b32c9677ec9",
+      "new_sha256": "6425afa2b8a18719c657a54cc535c913b0f86b810faa3eb04ed7a8c76f973d98"
+    },
+    {
+      "file": "tests/test_entrance3_concave.py",
+      "function": "test_degenerate_merge_keeps_parallel_planes_at_different_heights_apart",
+      "reason": "Plane family requires exact coplanarity; micro-step regression and tolerance mutant replace an ineffective coarse-step tooth without dropping old input.",
+      "old_source": "def test_degenerate_merge_keeps_parallel_planes_at_different_heights_apart():\n    \"\"\"平面簇容差的牙：宽方块坐在上踏面上、同时悬在下踏面上方 0.5——四个底顶点对两张同法向（+z）的踏面各给两个 VF，\n    必须收成**两个** FF（各 2 个成员），不许把相距 0.5 的两张平面并成一张（旧突变体 ×1e6 就会并）。\"\"\"\n    from eab.kernel3d.covers3 import enumerate_covers3\n    A = box(center=(1.0, 0.0, 1.5), half=(1.0, 0.5, 0.5))          # 底面 z = 1：x ∈ [0, 1] 贴上踏面，x ∈ [1, 2] 悬在下踏面上方\n    covs = [c for c in enumerate_covers3(A, STEP, window=float(\"inf\"), tol=1e-9)\n            if c.kind == \"VF\" and c.normal[2] > 0.5 and c.in_extent]\n    assert len(covs) == 4, [(c.label(), round(c.gap, 6)) for c in covs]\n    merged = merge_degenerate(A, STEP, covs)\n    reps = sorted((rep, len(mem)) for rep, mem in merged)\n    assert [r[0][0] for r in reps] == [\"FF\", \"FF\"] and [r[1] for r in reps] == [2, 2], reps",
+      "new_source": "def test_degenerate_merge_keeps_parallel_planes_at_different_heights_apart():\n    \"\"\"平面簇容差的牙：宽方块坐在上踏面上、同时悬在下踏面上方 0.5——四个底顶点对两张同法向（+z）的踏面各给两个 VF，\n    必须收成**两个** FF（各 2 个成员），不许把相距 0.5 的两张平面并成一张。旧 ×1e6 突变在此例会逃逸；\n    E5b 的 test_degenerate_merge_never_coalesces_distinct_exact_planes 另钉住微台阶并杀死容差回退。\"\"\"\n    from eab.kernel3d.covers3 import enumerate_covers3\n    A = box(center=(1.0, 0.0, 1.5), half=(1.0, 0.5, 0.5))          # 底面 z = 1：x ∈ [0, 1] 贴上踏面，x ∈ [1, 2] 悬在下踏面上方\n    covs = [c for c in enumerate_covers3(A, STEP, window=float(\"inf\"), tol=1e-9)\n            if c.kind == \"VF\" and c.normal[2] > 0.5 and c.in_extent]\n    assert len(covs) == 4, [(c.label(), round(c.gap, 6)) for c in covs]\n    merged = merge_degenerate(A, STEP, covs)\n    reps = sorted((rep, len(mem)) for rep, mem in merged)\n    assert [r[0][0] for r in reps] == [\"FF\", \"FF\"] and [r[1] for r in reps] == [2, 2], reps",
+      "old_assertions": [
+        "assert len(covs) == 4, [(c.label(), round(c.gap, 6)) for c in covs]",
+        "assert [r[0][0] for r in reps] == ['FF', 'FF'] and [r[1] for r in reps] == [2, 2], reps"
+      ],
+      "new_assertions": [
+        "assert len(covs) == 4, [(c.label(), round(c.gap, 6)) for c in covs]",
+        "assert [r[0][0] for r in reps] == ['FF', 'FF'] and [r[1] for r in reps] == [2, 2], reps"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "a2b608d890002df87e69171d89dfcb030748f99100f3a2a3456c17750fc6086f",
+      "new_sha256": "4129cba9d12ade0cc062c9a2269abe1a42e986c0cbb3239dc9b1ed5ba91f4198"
+    },
+    {
+      "file": "tests/test_frozen_ee_sign.py",
+      "function": "test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates",
+      "reason": "All original 32 assertion strings and six engineering-coordinate cells retained in explicit legacy window; same raw cells additionally check default full triangulated cover labels/strictness, independent exact surface distance and frozen sign. Independent test-only ear clipping shares no production primitive.",
+      "old_source": "def test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates(seed, t, s):\n    \"\"\"全部原运动格逐对核精确 Gram 参数/在程；舍入后的数据不被噪声带伪装成理想八重并列。\"\"\"\n    A0, B0 = _stack(1e-5, 0.06, seed, 0.0)\n    A, B = _stack(1e-5, 0.06, seed, t, s)\n    near,expected_near,actual_near = [],set(),set()\n    for ea in A.edges():\n        for eb in B.edges():\n            c0,truth0 = _check_ee_exact(A0,ea,B0,eb)\n            c,truth = _check_ee_exact(A,ea,B,eb)\n            if truth is not None and truth[3]:\n                expected_near.add((ea,eb))\n            if c is not None and c.in_extent:\n                actual_near.add((ea,eb))\n            if c0 is not None and c0.in_extent and abs(c0.gap-0.06) <= 1e-9:\n                near.append((ea,eb))\n                if c is not None:\n                    assert abs(c.gap-0.06*s) <= 1e-9*s+4096*2.220446049250313e-16*t\n    assert actual_near == expected_near and near\n    # A rounded input can legitimately choose a different label. It must still\n    # choose an independently valid in-extent label, with the physical gap and\n    # frozen signed distance checked on both original and transformed inputs.\n    for P,Q,scale,offset in ((A0,B0,1.0,0.0),(A,B,s,t)):\n        distance,label=body_distance(P,Q)\n        assert label in {lab for lab,_ in independent.cover_labels(P,Q)}\n        assert abs(distance-.06*scale) <= 1e-9*scale+4096*2.220446049250313e-16*offset\n        sign=frozen_ee_sign(P,Q,label[1][1:],label[2][1:]) if label[0]=='EE' else 1.0\n        frozen=margin_gap_from_frozen_cover(P,Q,label,(0.,0.,0.),0.,ee_sign=sign)\n        assert abs(frozen-distance) <= 1e-9*scale+4096*2.220446049250313e-16*offset",
+      "new_source": "def test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates(seed, t, s):\n    \"\"\"全部原运动格逐对核精确 Gram 参数/在程；舍入后的数据不被噪声带伪装成理想八重并列。\"\"\"\n    A0, B0 = _stack(1e-5, 0.06, seed, 0.0)\n    A, B = _stack(1e-5, 0.06, seed, t, s)\n    near,expected_near,actual_near = [],set(),set()\n    for ea in A.edges():\n        for eb in B.edges():\n            c0,truth0 = _check_ee_exact(A0,ea,B0,eb)\n            c,truth = _check_ee_exact(A,ea,B,eb)\n            if truth is not None and truth[3]:\n                expected_near.add((ea,eb))\n            if c is not None and c.in_extent:\n                actual_near.add((ea,eb))\n            if c0 is not None and c0.in_extent and abs(c0.gap-0.06) <= 1e-9:\n                near.append((ea,eb))\n                if c is not None:\n                    assert abs(c.gap-0.06*s) <= 1e-9*s+4096*2.220446049250313e-16*t\n    assert actual_near == expected_near and near\n    # A rounded input can legitimately choose a different label. It must still\n    # choose an independently valid in-extent label, with the physical gap and\n    # frozen signed distance checked on both original and transformed inputs.\n    for P,Q,scale,offset in ((A0,B0,1.0,0.0),(A,B,s,t)):\n        distance,label=body_distance(P,Q,contact_window=contact_resolution(P,Q))\n        assert label in {lab for lab,_ in independent.cover_labels(P,Q)}\n        assert abs(distance-.06*scale) <= 1e-9*scale+4096*2.220446049250313e-16*offset\n        sign=frozen_ee_sign(P,Q,label[1][1:],label[2][1:]) if label[0]=='EE' else 1.0\n        frozen=margin_gap_from_frozen_cover(P,Q,label,(0.,0.,0.),0.,ee_sign=sign)\n        assert abs(frozen-distance) <= 1e-9*scale+4096*2.220446049250313e-16*offset\n\n        # Default exact surface mode has a different oracle domain: a rounded\n        # nonplanar ring is ear-cut, including its real diagonal edges.  The\n        # independent ear cut/Gram distance oracle imports no production\n        # predicate, normal, triangulation, hull, or distance routine.\n        from eab.margin import _witnesses\n        oracle_labels = surface_oracle.cover_labels(P,Q)\n        actual_labels = {(c.label(),c.strict) for c,_,_ in _witnesses(P,Q,1e-9,exact_surface=True)}\n        assert actual_labels == oracle_labels, 'complete exact-surface cover set'\n        exact_distance,exact_label=body_distance(P,Q)\n        distance_squared=surface_oracle.distance_squared(P,Q)\n        oracle_distance=math.sqrt(float(distance_squared))\n        assert exact_label in {lab for lab,_ in oracle_labels}, 'exact-surface chosen label'\n        assert abs(exact_distance-oracle_distance) <= 4*math.ulp(oracle_distance), 'independent exact surface distance'\n        exact_sign=frozen_ee_sign(P,Q,exact_label[1][1:],exact_label[2][1:]) if exact_label[0]=='EE' else 1.0\n        exact_frozen=margin_gap_from_frozen_cover(P,Q,exact_label,(0.,0.,0.),0.,ee_sign=exact_sign)\n        assert abs(exact_frozen-oracle_distance) <= 8*math.ulp(oracle_distance), 'exact-surface frozen signed distance'\n        if exact_label[0]=='EE':\n            surface_p,_=surface_oracle.surface(P)\n            surface_q,_=surface_oracle.surface(Q)\n            ea,eb=exact_label[1][1:],exact_label[2][1:]\n            truth=_ee_exact(surface_p,ea,surface_q,eb)\n            assert truth is not None and truth[3], 'independent diagonal EE extent'\n            frozen_normal=ee_normal_generic(P,ea,Q,eb,exact_sign)\n            assert sum(x*y for x,y in zip(frozen_normal,truth[0])) > 1-1e-12, 'independent exact-surface EE orientation'",
+      "old_assertions": [
+        "assert actual_near == expected_near and near",
+        "assert label in {lab for lab, _ in independent.cover_labels(P, Q)}",
+        "assert abs(distance - 0.06 * scale) <= 1e-09 * scale + 4096 * 2.220446049250313e-16 * offset",
+        "assert abs(frozen - distance) <= 1e-09 * scale + 4096 * 2.220446049250313e-16 * offset",
+        "assert abs(c.gap - 0.06 * s) <= 1e-09 * s + 4096 * 2.220446049250313e-16 * t"
+      ],
+      "new_assertions": [
+        "assert actual_near == expected_near and near",
+        "assert label in {lab for lab, _ in independent.cover_labels(P, Q)}",
+        "assert abs(distance - 0.06 * scale) <= 1e-09 * scale + 4096 * 2.220446049250313e-16 * offset",
+        "assert abs(frozen - distance) <= 1e-09 * scale + 4096 * 2.220446049250313e-16 * offset",
+        "assert actual_labels == oracle_labels, 'complete exact-surface cover set'",
+        "assert exact_label in {lab for lab, _ in oracle_labels}, 'exact-surface chosen label'",
+        "assert abs(exact_distance - oracle_distance) <= 4 * math.ulp(oracle_distance), 'independent exact surface distance'",
+        "assert abs(exact_frozen - oracle_distance) <= 8 * math.ulp(oracle_distance), 'exact-surface frozen signed distance'",
+        "assert truth is not None and truth[3], 'independent diagonal EE extent'",
+        "assert sum((x * y for x, y in zip(frozen_normal, truth[0]))) > 1 - 1e-12, 'independent exact-surface EE orientation'",
+        "assert abs(c.gap - 0.06 * s) <= 1e-09 * s + 4096 * 2.220446049250313e-16 * t"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "12b3d22697644aff27cd9399764d1843e5f6d4e447d5a309bd021da3a6332498",
+      "new_sha256": "4db0272c3ef4c68a82adf5843d890682de96afab8a94cf84f2089f5da9da1103"
+    },
+    {
+      "file": "tests/test_geom3_face_polygon.py",
+      "function": "test_all_five_call_sites_route_through_the_single_helper",
+      "reason": "All old call-site assertions retained. Face-interior rejection injected into the live integer boundary/ray halfspace path as well as the still-live triangle_locate segment path; no result records fabricated.",
+      "old_source": "def test_all_five_call_sites_route_through_the_single_helper(monkeypatch):\n    \"\"\"All original call-site assertions keep their live predicate mutation teeth.\n\n    Cover/distance construction still uses projected face_polygon_locate; exact\n    surface boundary/ray/segment decisions now use triangle_locate instead.\n    \"\"\"\n    import eab.kernel3d.covers3 as cv\n    assert not hasattr(cv, \"_point_inside_face\")\n    assert not hasattr(geom3, \"_point_on_face\") and not hasattr(geom3, \"_tri_ray_hit\")\n    B = geom3.box(half=(1.0, 1.0, 1.0))                                     # 顶面 z = 1\n    A = geom3.box(center=(0.2, 0.1, 1.5), half=(0.3, 0.3, 0.3))            # 底角投影落在 B 顶面内\n    top = 1\n    upper = geom3.box(center=(0.0, 0.0, 3.0), half=(1.0, 1.0, 1.0))        # 底面 z = 2，FV 的 A\n    bottom = 0\n\n    def fv_in_extent():\n        return [c.in_extent for c in (cv.fv_cover(upper, bottom, A, ib, 1e-9) for ib in range(4, 8))\n                if c is not None]\n\n    assert vf_cover(A, 0, B, top, 1e-9).in_extent                          # 基线\n    assert fv_in_extent() == [True] * 4\n    assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) == pytest.approx(0.5)\n    assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-9) == 0\n    assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-9) == 1\n    assert segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)\n    monkeypatch.setattr(geom3, \"face_polygon_locate\", lambda x, P, fi, tol=0.0: -1)\n    assert not vf_cover(A, 0, B, top, 1e-9).in_extent\n    assert fv_in_extent() == [False] * 4\n    assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) is None\n    # Exact surface APIs intentionally do not route through a fitted face plane.\n    # Inject into their actual triangle predicate; the same boundary/ray/segment\n    # assertions must still expose corruption of the face-interior test.\n    from eab.kernel3d import exact_geom\n    monkeypatch.setattr(exact_geom,'triangle_locate',lambda *args:-1)\n    assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-9) != 0                # 边界判定走它\n    assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-9) == -1               # 射线奇偶走它（零交点）\n    assert not segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)",
+      "new_source": "def test_all_five_call_sites_route_through_the_single_helper(monkeypatch):\n    \"\"\"All original call-site assertions keep their live predicate mutation teeth.\n\n    Cover/distance construction still uses projected face_polygon_locate; exact\n    surface segment decisions use triangle_locate; point boundary/ray decisions\n    use the equivalent integer halfspace path. Mutate both live internal paths.\n    \"\"\"\n    import eab.kernel3d.covers3 as cv\n    assert not hasattr(cv, \"_point_inside_face\")\n    assert not hasattr(geom3, \"_point_on_face\") and not hasattr(geom3, \"_tri_ray_hit\")\n    B = geom3.box(half=(1.0, 1.0, 1.0))                                     # 顶面 z = 1\n    A = geom3.box(center=(0.2, 0.1, 1.5), half=(0.3, 0.3, 0.3))            # 底角投影落在 B 顶面内\n    top = 1\n    upper = geom3.box(center=(0.0, 0.0, 3.0), half=(1.0, 1.0, 1.0))        # 底面 z = 2，FV 的 A\n    bottom = 0\n\n    def fv_in_extent():\n        return [c.in_extent for c in (cv.fv_cover(upper, bottom, A, ib, 1e-9) for ib in range(4, 8))\n                if c is not None]\n\n    assert vf_cover(A, 0, B, top, 1e-9).in_extent                          # 基线\n    assert fv_in_extent() == [True] * 4\n    assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) == pytest.approx(0.5)\n    assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-9) == 0\n    assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-9) == 1\n    assert segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)\n    monkeypatch.setattr(geom3, \"face_polygon_locate\", lambda x, P, fi, tol=0.0: -1)\n    assert not vf_cover(A, 0, B, top, 1e-9).in_extent\n    assert fv_in_extent() == [False] * 4\n    assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) is None\n    # Exact surface APIs intentionally do not route through a fitted face plane.\n    # Inject into their actual triangle predicate; the same boundary/ray/segment\n    # assertions must still expose corruption of the face-interior test.\n    from eab.kernel3d import exact_geom\n    monkeypatch.setattr(exact_geom,'triangle_locate',lambda *args:-1)\n    # E5b integer parity clears denominators instead of constructing a ray hit\n    # through triangle_locate. Preserve every old assertion while disabling the\n    # same face-interior acceptance in its actual internal boundary/ray path.\n    import inspect\n    import textwrap\n    source = textwrap.dedent(inspect.getsource(exact_geom._point_in_triangles))\n    boundary = 'if offset == 0 and all(value >= 0 for value,_ in edge_values):'\n    ray = 'if min(edge_signs) < 0:'\n    assert source.count(boundary) == source.count(ray) == 1\n    namespace = dict(vars(exact_geom))\n    exec(compile(source.replace(boundary, 'if False:').replace(ray, 'if True:'),\n                 '<integer-face-interior-disabled>', 'exec'), namespace)\n    monkeypatch.setattr(exact_geom, '_point_in_triangles', namespace['_point_in_triangles'])\n    assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-9) != 0                # 边界判定走它\n    assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-9) == -1               # 射线奇偶走它（零交点）\n    assert not segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)",
+      "old_assertions": [
+        "assert not hasattr(cv, '_point_inside_face')",
+        "assert not hasattr(geom3, '_point_on_face') and (not hasattr(geom3, '_tri_ray_hit'))",
+        "assert vf_cover(A, 0, B, top, 1e-09).in_extent",
+        "assert fv_in_extent() == [True] * 4",
+        "assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) == pytest.approx(0.5)",
+        "assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-09) == 0",
+        "assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-09) == 1",
+        "assert segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)",
+        "assert not vf_cover(A, 0, B, top, 1e-09).in_extent",
+        "assert fv_in_extent() == [False] * 4",
+        "assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) is None",
+        "assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-09) != 0",
+        "assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-09) == -1",
+        "assert not segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)"
+      ],
+      "new_assertions": [
+        "assert not hasattr(cv, '_point_inside_face')",
+        "assert not hasattr(geom3, '_point_on_face') and (not hasattr(geom3, '_tri_ray_hit'))",
+        "assert vf_cover(A, 0, B, top, 1e-09).in_extent",
+        "assert fv_in_extent() == [True] * 4",
+        "assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) == pytest.approx(0.5)",
+        "assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-09) == 0",
+        "assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-09) == 1",
+        "assert segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)",
+        "assert not vf_cover(A, 0, B, top, 1e-09).in_extent",
+        "assert fv_in_extent() == [False] * 4",
+        "assert geom3._point_face_distance((0.2, 0.1, 1.5), B, top) is None",
+        "assert source.count(boundary) == source.count(ray) == 1",
+        "assert point_in_polyhedron((0.2, 0.1, 1.0), B, 1e-09) != 0",
+        "assert point_in_polyhedron((0.2, 0.1, 0.3), B, 1e-09) == -1",
+        "assert not segment_crosses_face((0.2, 0.1, 0.5), (0.2, 0.1, 1.5), B, top, 0.0)"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "9b8657c03d32534e4c7f89cd9e5ff3b82d9f74ea2ecb7c6403e556be5b33bd6e",
+      "new_sha256": "90c3bbde387cfb87e0135c05a2a4ada495c9882f1f4d9bdc78902a4aa4a01791"
+    },
+    {
+      "file": "tests/test_interlock_sensitivity.py",
+      "function": "_steep_check",
+      "reason": "All 72 steep cells and legacy assertions retained; added independently certified in-band branch obligation. Same internal vertical-window mutant now hits missing-branch assertion.",
+      "old_source": "def _steep_check(s, t):\n    sl, sr = _steep_branch_slopes()\n    assert abs(sl + 8.528020973702644) < 1e-6 and abs(sr + 0.5068809109942674) < 1e-6   # 陡坡前提\n    c = (t * _U[0], t * _U[1], t * _U[2])\n    n_flagged = 0\n    for side in (-1.0, 1.0):\n        for e in STEEP_OFFSETS:\n            d = STEEP_KINK + side * e\n            r = sensitivity_at(s * d, nx=5, ny=2, amp=0.3 * s, phase=1.0, lx=0.2 * s, ly=1.0 * s, lz=1.0 * s,\n                               center=c)\n            truth = s * _steep_H(d)\n            # 谓词分辨率 geom_tol_eff / n_z ≈ 1.85e-9·s / 0.117 ≈ 1.6e-8·s，外加坐标舍入 C·eps / n_z\n            tol_h = 2e-8 * s + 256 * EPS * (t + 2 * s) / 0.1165\n            assert abs(r[\"h_float\"] - truth) <= tol_h, (side * e, r[\"h_float\"], truth)\n            own = sl if side < 0 else sr\n            if r[\"differentiable_by\"][\"tan_psi\"]:\n                assert abs(r[\"tan_psi\"] - own) < 1e-6, (side * e, r[\"tan_psi\"], own, \"可微但给了另一支的斜率\")\n            else:\n                n_flagged += 1\n                assert e < 5e-9, (side * e, r[\"derivative_range\"][\"tan_psi\"], \"分辨带外被标成不可微\")\n                lo, hi = r[\"derivative_range\"][\"tan_psi\"]\n                assert abs(lo - min(sl, sr)) < 1e-6 and abs(hi - max(sl, sr)) < 1e-6, (side * e, lo, hi)\n    assert n_flagged >= 1",
+      "new_source": "def _steep_check(s, t):\n    sl, sr = _steep_branch_slopes()\n    assert abs(sl + 8.528020973702644) < 1e-6 and abs(sr + 0.5068809109942674) < 1e-6   # 陡坡前提\n    c = (t * _U[0], t * _U[1], t * _U[2])\n    n_flagged = 0\n    for side in (-1.0, 1.0):\n        for e in STEEP_OFFSETS:\n            d = STEEP_KINK + side * e\n            r = sensitivity_at(s * d, nx=5, ny=2, amp=0.3 * s, phase=1.0, lx=0.2 * s, ly=1.0 * s, lz=1.0 * s,\n                               center=c)\n            truth = s * _steep_H(d)\n            # 谓词分辨率 geom_tol_eff / n_z ≈ 1.85e-9·s / 0.117 ≈ 1.6e-8·s，外加坐标舍入 C·eps / n_z\n            tol_h = 2e-8 * s + 256 * EPS * (t + 2 * s) / 0.1165\n            assert abs(r[\"h_float\"] - truth) <= tol_h, (side * e, r[\"h_float\"], truth)\n            own = sl if side < 0 else sr\n            if _steep_two_branches_in_report_band(d, s, c, truth):\n                assert not r[\"differentiable_by\"][\"tan_psi\"], (\n                    side * e, r[\"derivative_range\"][\"tan_psi\"], \"带内漏支\")\n            if r[\"differentiable_by\"][\"tan_psi\"]:\n                assert abs(r[\"tan_psi\"] - own) < 1e-6, (side * e, r[\"tan_psi\"], own, \"可微但给了另一支的斜率\")\n            else:\n                n_flagged += 1\n                assert e < 5e-9, (side * e, r[\"derivative_range\"][\"tan_psi\"], \"分辨带外被标成不可微\")\n                lo, hi = r[\"derivative_range\"][\"tan_psi\"]\n                assert abs(lo - min(sl, sr)) < 1e-6 and abs(hi - max(sl, sr)) < 1e-6, (side * e, lo, hi)\n    assert n_flagged >= 1",
+      "old_assertions": [
+        "assert abs(sl + 8.528020973702644) < 1e-06 and abs(sr + 0.5068809109942674) < 1e-06",
+        "assert n_flagged >= 1",
+        "assert abs(r['h_float'] - truth) <= tol_h, (side * e, r['h_float'], truth)",
+        "assert abs(r['tan_psi'] - own) < 1e-06, (side * e, r['tan_psi'], own, '可微但给了另一支的斜率')",
+        "assert e < 5e-09, (side * e, r['derivative_range']['tan_psi'], '分辨带外被标成不可微')",
+        "assert abs(lo - min(sl, sr)) < 1e-06 and abs(hi - max(sl, sr)) < 1e-06, (side * e, lo, hi)"
+      ],
+      "new_assertions": [
+        "assert abs(sl + 8.528020973702644) < 1e-06 and abs(sr + 0.5068809109942674) < 1e-06",
+        "assert n_flagged >= 1",
+        "assert abs(r['h_float'] - truth) <= tol_h, (side * e, r['h_float'], truth)",
+        "assert not r['differentiable_by']['tan_psi'], (side * e, r['derivative_range']['tan_psi'], '带内漏支')",
+        "assert abs(r['tan_psi'] - own) < 1e-06, (side * e, r['tan_psi'], own, '可微但给了另一支的斜率')",
+        "assert e < 5e-09, (side * e, r['derivative_range']['tan_psi'], '分辨带外被标成不可微')",
+        "assert abs(lo - min(sl, sr)) < 1e-06 and abs(hi - max(sl, sr)) < 1e-06, (side * e, lo, hi)"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "c37289a3da25bfdeb325159e5d4aecca05073f142b5ce565c8c9e5f434c15571",
+      "new_sha256": "ba59911f1c5e70165da9f75d52e4e2273e3c6e3ecdb10ddd751ca84451a297a7"
+    },
+    {
+      "file": "tests/test_interlock_sensitivity.py",
+      "function": "test_steep_gate_has_teeth_vertical_tie_window",
+      "reason": "All 72 steep cells and legacy assertions retained; added independently certified in-band branch obligation. Same internal vertical-window mutant now hits missing-branch assertion.",
+      "old_source": "def test_steep_gate_has_teeth_vertical_tie_window(monkeypatch):\n    \"\"\"牙（缺陷注入到被测路径内部）：把 interlock 的并列裁决换回旧规则——按**竖向高度** 1e-9·max(1, |z|)\n    判并列、胜出者 = 谓词接受的那个候选——s = 1 格必须红，而且红在\"可微但给了另一支的斜率\"这条断言上\n    （G6 minor[11] 的原样症状），不是别的断言。\"\"\"\n    import eab.kernel3d.interlock as I\n\n    def vertical_window(z, nz, cands, gtol, r):\n        pos = [c for c in cands if c[0] > 0.0]\n        lab = next(c[1] for c in pos if c[0] == z)\n        tied = tuple(c[1] for c in pos if abs(c[0] - z) <= 1e-9 * max(1.0, abs(z)) and c[1] != lab)\n        return I.EscapeSolution(z, lab, len(cands), (lab,) + tied)\n\n    monkeypatch.setattr(I, \"_escape_solution\", vertical_window)\n    with pytest.raises(AssertionError, match=\"另一支\"):\n        _steep_check(1.0, 0.0)",
+      "new_source": "def test_steep_gate_has_teeth_vertical_tie_window(monkeypatch):\n    \"\"\"The original internal vertical tie-window mutation must fail on missing\n    a branch strictly inside the independently reconstructed report/extent band.\n    All old slope/height/interval assertions and all 72 inputs remain in place.\n    \"\"\"\n    import eab.kernel3d.interlock as I\n\n    def vertical_window(z, nz, cands, gtol, r):\n        pos = [c for c in cands if c[0] > 0.0]\n        lab = next(c[1] for c in pos if c[0] == z)\n        tied = tuple(c[1] for c in pos if abs(c[0] - z) <= 1e-9 * max(1.0, abs(z)) and c[1] != lab)\n        return I.EscapeSolution(z, lab, len(cands), (lab,) + tied)\n\n    monkeypatch.setattr(I, \"_escape_solution\", vertical_window)\n    with pytest.raises(AssertionError, match=\"\\u5e26\\u5185\\u6f0f\\u652f\"):\n        _steep_check(1.0, 0.0)",
+      "old_assertions": [],
+      "new_assertions": [],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "c823be36db43fb6f87a69195bd2d55638e57c4a621a93662bafd6bce0ab9d72a",
+      "new_sha256": "b1cef3d688fda52f4138e7abcb29d8868bc46f2e2accec3df8e99590f6ae7abc"
+    },
+    {
+      "file": "tests/test_interlock_walls.py",
+      "function": "_key",
+      "reason": "All 4 x 20 raw cells kept and checked against independent earliest-root oracle; original nominal 0.2 and frozen assertions retained in explicit window. Added clearance and ideal grids.",
+      "old_source": "def _key():\n    A0 = box(center=(0.0, 0.0, 0.3), half=(1.0, 0.5, 0.5))                   # 贴两墙、压进槽底 0.2\n    return Polyhedron([(-p[0], p[1], p[2]) for p in A0.verts], [tuple(reversed(f)) for f in A0.faces])",
+      "new_source": "def _key(clearance=0.0):\n    A0 = box(center=(0.0, 0.0, 0.3), half=(1.0-clearance, 0.5, 0.5))                   # 贴两墙、压进槽底 0.2\n    return Polyhedron([(-p[0], p[1], p[2]) for p in A0.verts], [tuple(reversed(f)) for f in A0.faces])",
+      "old_assertions": [],
+      "new_assertions": [],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "54076a2ca42e2910da92d3b9c91719ffc5745e9da56cc7441b211937b1b434a6",
+      "new_sha256": "b8f0629f914bc74ea49ed60c9748040174895ba43ee7b522eaf41c258118e100"
+    },
+    {
+      "file": "tests/test_interlock_walls.py",
+      "function": "test_vertical_walls_do_not_hijack_the_escape_height",
+      "reason": "All 4 x 20 raw cells kept and checked against independent earliest-root oracle; original nominal 0.2 and frozen assertions retained in explicit window. Added clearance and ideal grids.",
+      "old_source": "def test_vertical_walls_do_not_hijack_the_escape_height(t, ulps):\n    L0, Am = _prism_xz(U_PROF, -1.0, 1.0), _key()\n    for seed in range(20):\n        rng = random.Random(seed)\n        A, L = _place(Am, 0.7, t, rng, ulps), _place(L0, 0.7, t, rng, ulps)\n        sol = escape_height_covers(A, L, (0.0, 0.0, 0.0))\n        assert abs(sol.height - 0.2) <= 1e-6, (seed, sol.height, sol.cover_label)\n        lab = sol.cover_label\n        assert lab[0] in (\"VF\", \"FV\", \"EE\")\n        # 胜出盖必须是真正决定高度的那个：它的冻结闭式也给 0.2（墙面盖胜出时冻结闭式是 −gap/n_z 的垃圾，导数无意义）\n        sg = frozen_ee_sign(A, L, (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2])) if lab[0] == \"EE\" else 1.0\n        zf = float(escape_height_from_frozen_cover(A, L, lab, (0.0, 0.0, 0.0), ee_sign=sg))\n        assert abs(zf - 0.2) <= 1e-6, (seed, lab, zf)\n        if seed < 3:\n            assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0)) <= 1e-6",
+      "new_source": "def test_vertical_walls_do_not_hijack_the_escape_height(t, ulps):\n    \"\"\"All original 80 raw inputs: exact answer against independent SAT/ray oracle.\n\n    Oracle primitives are test-only integer triangle SAT intervals and parity\n    rays. No production event, geometric predicate, normal or triangulator is used.\n    The original nominal 0.2 assertions remain verbatim in explicit window mode.\n    \"\"\"\n    L0, Am = _prism_xz(U_PROF, -1.0, 1.0), _key()\n    for seed in range(20):\n        rng = random.Random(seed)\n        A, L = _place(Am, 0.7, t, rng, ulps), _place(L0, 0.7, t, rng, ulps)\n        sol = escape_height_covers(A, L, (0.0, 0.0, 0.0))\n        truth=earliest_wall_escape(A,L)\n        assert sol.exact_height == truth, (seed, sol.exact_height, truth, \"exact earliest root\")\n        assert sol.nonpenetrating_state != 1\n        window=effective_geom_tol(A,L,None)\n        sol = escape_height_covers(A, L, (0.0, 0.0, 0.0), contact_window=window)\n        assert abs(sol.height - 0.2) <= 1e-6, (seed, sol.height, sol.cover_label)\n        lab = sol.cover_label\n        assert lab[0] in (\"VF\", \"FV\", \"EE\")\n        sg = frozen_ee_sign(A, L, (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2])) if lab[0] == \"EE\" else 1.0\n        zf = float(escape_height_from_frozen_cover(A, L, lab, (0.0, 0.0, 0.0), ee_sign=sg))\n        assert abs(zf - 0.2) <= 1e-6, (seed, lab, zf)\n        if seed < 3:\n            assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0, contact_window=window)) <= 1e-6",
+      "old_assertions": [
+        "assert abs(sol.height - 0.2) <= 1e-06, (seed, sol.height, sol.cover_label)",
+        "assert lab[0] in ('VF', 'FV', 'EE')",
+        "assert abs(zf - 0.2) <= 1e-06, (seed, lab, zf)",
+        "assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0)) <= 1e-06"
+      ],
+      "new_assertions": [
+        "assert sol.exact_height == truth, (seed, sol.exact_height, truth, 'exact earliest root')",
+        "assert sol.nonpenetrating_state != 1",
+        "assert abs(sol.height - 0.2) <= 1e-06, (seed, sol.height, sol.cover_label)",
+        "assert lab[0] in ('VF', 'FV', 'EE')",
+        "assert abs(zf - 0.2) <= 1e-06, (seed, lab, zf)",
+        "assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0, contact_window=window)) <= 1e-06"
+      ],
+      "assertions_no_longer_literal": [
+        "assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0)) <= 1e-06"
+      ],
+      "old_sha256": "48b194dfc591b48ab6b639203013ed83563c4137b21a08fb52490e046c471435",
+      "new_sha256": "d4d89097769e191c41ad4a5d3f073cf3c1e8945040007fc32edede5fcd04a1af"
+    },
+    {
+      "file": "tests/test_invariance_geom.py",
+      "function": "test_identity_cell_matches_closed_form",
+      "reason": "Original full grid and assertion strings retained in caller-explicit legacy contact window; same raw inputs additionally checked against independent exact triangulated surface labels/distance/state. See margin integration migration ledger.",
+      "old_source": "def test_identity_cell_matches_closed_form(name):\n    \"\"\"基准格自身对闭式真值：overlap 判决、解析距离（最近对唯一时连标签）、贯入哨兵。\"\"\"\n    make, ov, d0, delta, convex, L = PAIRS[name]\n    base = _base(name)\n    A, B = base[\"A\"], base[\"B\"]\n    assert polyhedra_overlap(A, B, 1e-12) == ov\n    d, lab = body_distance(A, B)\n    if ov == 1:\n        assert (d, lab) == (0.0, (PENETRATING,))\n        return\n    if d0 is not None:\n        assert abs(d - d0) <= 1e-12, (d, d0, lab)\n        assert abs(base[\"dmin\"] - d0) <= 1e-12\n    assert lab in base[\"ties\"], lab\n    if name == \"tetra_box_vv\":\n        assert lab == (\"VV3\", (\"vertex\", 3), (\"vertex\", 2))\n    if name == \"ve3_wedge\":\n        assert lab[0] == \"VE3\" and lab[1] == (\"vertex\", 0), lab",
+      "new_source": "def test_identity_cell_matches_closed_form(name):\n    \"\"\"基准格自身对闭式真值：overlap 判决、解析距离（最近对唯一时连标签）、贯入哨兵。\"\"\"\n    make, ov, d0, delta, convex, L = PAIRS[name]\n    base = _base(name)\n    A, B = base[\"A\"], base[\"B\"]\n    check_exact_margin(A, B, delta, state=star_relation(A, B))\n    assert polyhedra_overlap(A, B, 1e-12) == ov\n    d, lab = body_distance(A, B)\n    if ov == 1:\n        assert (d, lab) == (0.0, (PENETRATING,))\n        return\n    if d0 is not None:\n        assert abs(d - d0) <= 1e-12, (d, d0, lab)\n        assert abs(base[\"dmin\"] - d0) <= 1e-12\n    assert lab in base[\"ties\"], lab\n    if name == \"tetra_box_vv\":\n        assert lab == (\"VV3\", (\"vertex\", 3), (\"vertex\", 2))\n    if name == \"ve3_wedge\":\n        assert lab[0] == \"VE3\" and lab[1] == (\"vertex\", 0), lab",
+      "old_assertions": [
+        "assert polyhedra_overlap(A, B, 1e-12) == ov",
+        "assert lab in base['ties'], lab",
+        "assert (d, lab) == (0.0, (PENETRATING,))",
+        "assert abs(d - d0) <= 1e-12, (d, d0, lab)",
+        "assert abs(base['dmin'] - d0) <= 1e-12",
+        "assert lab == ('VV3', ('vertex', 3), ('vertex', 2))",
+        "assert lab[0] == 'VE3' and lab[1] == ('vertex', 0), lab"
+      ],
+      "new_assertions": [
+        "assert polyhedra_overlap(A, B, 1e-12) == ov",
+        "assert lab in base['ties'], lab",
+        "assert (d, lab) == (0.0, (PENETRATING,))",
+        "assert abs(d - d0) <= 1e-12, (d, d0, lab)",
+        "assert abs(base['dmin'] - d0) <= 1e-12",
+        "assert lab == ('VV3', ('vertex', 3), ('vertex', 2))",
+        "assert lab[0] == 'VE3' and lab[1] == ('vertex', 0), lab"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "f31e0190ee979dbee644214f5c0db66d6fe6c466ef491148abe890a61204778c",
+      "new_sha256": "8638bb3c91de5b4172824f09251576b876c840ae25b8533dec452faa2da56e0e"
+    },
+    {
+      "file": "tests/test_invariance_geom.py",
+      "function": "test_body_distance_scales_and_keeps_its_label",
+      "reason": "Original full grid and assertion strings retained in caller-explicit legacy contact window; same raw inputs additionally checked against independent exact triangulated surface labels/distance/state. See margin integration migration ledger.",
+      "old_source": "def test_body_distance_scales_and_keeps_its_label(name, rot, tmag, s):\n    base, M, A, B = _cell(name, rot, tmag, s)\n    d, lab = body_distance(A, B)\n    state = star_relation(A, B) if name == \"stack_touch\" else PAIRS[name][1]\n    if state == 1:\n        assert (d, lab) == (0.0, (PENETRATING,))\n        if name == \"stack_touch\":\n            assert abs(d - s * base[\"d\"]) <= M.dist_tol(PAIRS[name][5])\n        return\n    L = PAIRS[name][5]\n    assert abs(d - s * base[\"d\"]) <= M.dist_tol(L), (d, s * base[\"d\"], lab)\n    assert lab in base[\"ties\"], (lab, sorted(base[\"ties\"]))",
+      "new_source": "def test_body_distance_scales_and_keeps_its_label(name, rot, tmag, s):\n    base, M, A, B = _cell(name, rot, tmag, s)\n    d, lab = body_distance(A, B)\n    state = PAIRS[name][1]  # explicit old contact window restores nominal touching\n    if state == 1:\n        assert (d, lab) == (0.0, (PENETRATING,))\n        if name == \"stack_touch\":\n            assert abs(d - s * base[\"d\"]) <= M.dist_tol(PAIRS[name][5])\n        return\n    L = PAIRS[name][5]\n    assert abs(d - s * base[\"d\"]) <= M.dist_tol(L), (d, s * base[\"d\"], lab)\n    assert lab in base[\"ties\"], (lab, sorted(base[\"ties\"]))",
+      "old_assertions": [
+        "assert abs(d - s * base['d']) <= M.dist_tol(L), (d, s * base['d'], lab)",
+        "assert lab in base['ties'], (lab, sorted(base['ties']))",
+        "assert (d, lab) == (0.0, (PENETRATING,))",
+        "assert abs(d - s * base['d']) <= M.dist_tol(PAIRS[name][5])"
+      ],
+      "new_assertions": [
+        "assert abs(d - s * base['d']) <= M.dist_tol(L), (d, s * base['d'], lab)",
+        "assert lab in base['ties'], (lab, sorted(base['ties']))",
+        "assert (d, lab) == (0.0, (PENETRATING,))",
+        "assert abs(d - s * base['d']) <= M.dist_tol(PAIRS[name][5])"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "a806acf899e853b7bffc6b82ca67effd294efdc9e288d6722bd5602fd5106540",
+      "new_sha256": "19c0f6c7818b941dd841bf6692f301325d9440042e736b2e85ae18614d9356de"
+    },
+    {
+      "file": "tests/test_invariance_geom.py",
+      "function": "test_margin_layer_is_invariant",
+      "reason": "Original full grid and assertion strings retained in caller-explicit legacy contact window; same raw inputs additionally checked against independent exact triangulated surface labels/distance/state. See margin integration migration ledger.",
+      "old_source": "def test_margin_layer_is_invariant(name, rot, tmag, s):\n    base, M, A, B = _cell(name, rot, tmag, s)\n    _, ideal_ov, _, delta, _, L = PAIRS[name]\n    ov = star_relation(A, B) if name == \"stack_touch\" else ideal_ov\n    # 真值：贯入或真距离 < δ ⇒ 裕度违约（INSIDE）；否则 OUTSIDE（本文件的 δ 都离真距离很远）\n    want_in = INSIDE if ov == 1 or base[\"d\"] < delta else OUTSIDE\n    assert inflated_membership(A, B, delta=s * delta) == want_in\n    m1 = margin_contacts(A, B, delta=s * delta)\n    if ov == 1:\n        assert [m.label for m in m1] == [(PENETRATING,)]\n        assert m1[0].closed and m1[0].distance == 0 and m1[0].margin_gap == -s * delta\n        return\n    if want_in == INSIDE:\n        assert m1, \"间距 < δ 却返回 []（= 裕度安全）：fail-unsafe\"\n    m0 = margin_contacts(base[\"A\"], base[\"B\"], delta=delta)\n    # Rounded boundary features can become exactly strict/non-active. Instead\n    # of preserving ideal labels, independently enumerate every local cover,\n    # construct its witnesses and apply the existing margin selection contract.\n    from e5a_cover_oracle import margin_selection\n    expected = margin_selection(A, B, s * delta, touching=(ov == 0))\n    expected_base = margin_selection(base[\"A\"], base[\"B\"], delta, touching=(ideal_ov == 0))\n    current, original = {m.label: m for m in m1}, {m.label: m for m in m0}\n    assert len(current) == len(m1) and len(original) == len(m0), \"duplicate margin labels\"\n    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))\n    assert set(original) == set(expected_base)\n    for label, contact in current.items():\n        assert abs(contact.distance - expected[label]) <= M.dist_tol(L), (label, contact.distance, expected[label])\n        assert contact.margin_gap == contact.distance - s * delta\n    # Retain rigid-motion/scale distance checks, now matching physical feature\n    # identities instead of zipping unrelated entries after labels split.\n    for label in set(current) & set(original):\n        assert abs(current[label].distance - s * original[label].distance) <= M.dist_tol(L), label",
+      "new_source": "def test_margin_layer_is_invariant(name, rot, tmag, s):\n    base, M, A, B = _cell(name, rot, tmag, s)\n    _, ideal_ov, _, delta, _, L = PAIRS[name]\n    check_exact_margin(A, B, s * delta, state=star_relation(A, B))\n    ov = ideal_ov  # explicit old contact window restores nominal touching\n    # 真值：贯入或真距离 < δ ⇒ 裕度违约（INSIDE）；否则 OUTSIDE（本文件的 δ 都离真距离很远）\n    want_in = INSIDE if ov == 1 or base[\"d\"] < delta else OUTSIDE\n    assert inflated_membership(A, B, delta=s * delta) == want_in\n    m1 = margin_contacts(A, B, delta=s * delta)\n    if ov == 1:\n        assert [m.label for m in m1] == [(PENETRATING,)]\n        assert m1[0].closed and m1[0].distance == 0 and m1[0].margin_gap == -s * delta\n        return\n    if want_in == INSIDE:\n        assert m1, \"间距 < δ 却返回 []（= 裕度安全）：fail-unsafe\"\n    m0 = margin_contacts(base[\"A\"], base[\"B\"], delta=delta)\n    # Rounded boundary features can become exactly strict/non-active. Instead\n    # of preserving ideal labels, independently enumerate every local cover,\n    # construct its witnesses and apply the existing margin selection contract.\n    from e5a_cover_oracle import margin_selection\n    expected = margin_selection(A, B, s * delta, touching=(ov == 0))\n    expected_base = margin_selection(base[\"A\"], base[\"B\"], delta, touching=(ideal_ov == 0))\n    current, original = {m.label: m for m in m1}, {m.label: m for m in m0}\n    assert len(current) == len(m1) and len(original) == len(m0), \"duplicate margin labels\"\n    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))\n    assert set(original) == set(expected_base)\n    for label, contact in current.items():\n        assert abs(contact.distance - expected[label]) <= M.dist_tol(L), (label, contact.distance, expected[label])\n        assert contact.margin_gap == contact.distance - s * delta\n    # Retain rigid-motion/scale distance checks, now matching physical feature\n    # identities instead of zipping unrelated entries after labels split.\n    for label in set(current) & set(original):\n        assert abs(current[label].distance - s * original[label].distance) <= M.dist_tol(L), label",
+      "old_assertions": [
+        "assert inflated_membership(A, B, delta=s * delta) == want_in",
+        "assert len(current) == len(m1) and len(original) == len(m0), 'duplicate margin labels'",
+        "assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))",
+        "assert set(original) == set(expected_base)",
+        "assert [m.label for m in m1] == [(PENETRATING,)]",
+        "assert m1[0].closed and m1[0].distance == 0 and (m1[0].margin_gap == -s * delta)",
+        "assert m1, '间距 < δ 却返回 []（= 裕度安全）：fail-unsafe'",
+        "assert abs(contact.distance - expected[label]) <= M.dist_tol(L), (label, contact.distance, expected[label])",
+        "assert contact.margin_gap == contact.distance - s * delta",
+        "assert abs(current[label].distance - s * original[label].distance) <= M.dist_tol(L), label"
+      ],
+      "new_assertions": [
+        "assert inflated_membership(A, B, delta=s * delta) == want_in",
+        "assert len(current) == len(m1) and len(original) == len(m0), 'duplicate margin labels'",
+        "assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))",
+        "assert set(original) == set(expected_base)",
+        "assert [m.label for m in m1] == [(PENETRATING,)]",
+        "assert m1[0].closed and m1[0].distance == 0 and (m1[0].margin_gap == -s * delta)",
+        "assert m1, '间距 < δ 却返回 []（= 裕度安全）：fail-unsafe'",
+        "assert abs(contact.distance - expected[label]) <= M.dist_tol(L), (label, contact.distance, expected[label])",
+        "assert contact.margin_gap == contact.distance - s * delta",
+        "assert abs(current[label].distance - s * original[label].distance) <= M.dist_tol(L), label"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "bbe05805f9eef34156b30695d7a9fbf49769cc8f7ffa174eb4bfb9c301199dc2",
+      "new_sha256": "605cf537a1af1c3f16c183705536425e4d9ec5a4a31e12ae178f305c1e675409"
+    },
+    {
+      "file": "tests/test_invariance_interlock.py",
+      "function": "test_brute_oracle_is_exact_zero_at_rest_and_scales",
+      "reason": "Same original grids; legacy assertions retained in explicit contact/boundary windows; independent exact oracle added for raw input. Brute zero cells use independent swept SAT, ideal rational cells retain exact zero.",
+      "old_source": "def test_brute_oracle_is_exact_zero_at_rest_and_scales(rot, t, s):\n    \"\"\"暴力二分 oracle 的默认容差也必须随尺度：就位（面面贴合）位形 h 恰为 0.0（不是二分出来的舍入级\n    正数——审查 G6 minor[7] 指出默认 geom_tol=1e-12 在工程坐标上把贴合判成贯入）；一般偏移 h ×s。\n    两个就位位形：原位（顶点重合）与沿 y（无起伏方向）滑 0.3（面共面、顶点不重合——修前\n    z0.7 / t=1e5 格上二分出 5.9e-11 而不是 0）。\"\"\"\n    A, L = _ilock(rot, t, s)\n    R = ROT_Z[rot]\n    assert escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0 * s) == 0.0\n    assert escape_height_brute(A, L, _vec(R, s, (0.0, 0.3, 0.0)), hi=2.0 * s) == 0.0\n    off = OFFSETS[0]\n    truth = s * analytic_escape_height(off[0], off[1], nx=5, amp=0.3, phase=1.0)\n    h = escape_height_brute(A, L, _vec(R, s, off), hi=2.0 * s)\n    assert abs(h - truth) <= 1e-9 * s + _tol_h(_mag(A, L), s), (h, truth)",
+      "new_source": "def test_brute_oracle_is_exact_zero_at_rest_and_scales(rot, t, s):\n    \"\"\"Given-data earliest roots match independent integer swept tetrahedron SAT.\n\n    The original five inputs and two rest/flat-direction offsets are retained.\n    Rounding may create real penetration; original exact-zero assertions remain\n    in the unjittered homology gate below rather than being silently weakened.\n    Float output is the least binary64 value not below the exact root.\n    \"\"\"\n    A, L = _ilock(rot, t, s)\n    R = ROT_Z[rot]\n    from e5b_wall_oracle import earliest_star_escape\n    from fractions import Fraction as F\n    for offset in ((0.0, 0.0, 0.0), _vec(R, s, (0.0, 0.3, 0.0))):\n        truth_exact = earliest_star_escape(A, L, offset)\n        solution = escape_height_covers(A, L, offset)\n        assert solution.exact_height == truth_exact, (\"independent-exact-earliest\", rot, t, s, offset)\n        display = escape_height_brute(A, L, offset, hi=2.0*s)\n        assert F(display) >= truth_exact\n        assert display == 0 if truth_exact == 0 else F(math.nextafter(display, -math.inf)) < truth_exact\n    off = OFFSETS[0]\n    truth = s * analytic_escape_height(off[0], off[1], nx=5, amp=0.3, phase=1.0)\n    h = escape_height_brute(A, L, _vec(R, s, off), hi=2.0 * s)\n    assert abs(h - truth) <= 1e-9 * s + _tol_h(_mag(A, L), s), (h, truth)",
+      "old_assertions": [
+        "assert escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0 * s) == 0.0",
+        "assert escape_height_brute(A, L, _vec(R, s, (0.0, 0.3, 0.0)), hi=2.0 * s) == 0.0",
+        "assert abs(h - truth) <= 1e-09 * s + _tol_h(_mag(A, L), s), (h, truth)"
+      ],
+      "new_assertions": [
+        "assert abs(h - truth) <= 1e-09 * s + _tol_h(_mag(A, L), s), (h, truth)",
+        "assert solution.exact_height == truth_exact, ('independent-exact-earliest', rot, t, s, offset)",
+        "assert F(display) >= truth_exact",
+        "assert display == 0 if truth_exact == 0 else F(math.nextafter(display, -math.inf)) < truth_exact"
+      ],
+      "assertions_no_longer_literal": [
+        "assert escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0 * s) == 0.0",
+        "assert escape_height_brute(A, L, _vec(R, s, (0.0, 0.3, 0.0)), hi=2.0 * s) == 0.0"
+      ],
+      "old_sha256": "179dc842ad8dd1402ba5d84febe1e3c6d154f0ad335c5df77b0d767f2ae678cd",
+      "new_sha256": "b36f3c3d455421c9b977674813e9a2354e1210a751f3b9ae3d8c0b9d1f4951af"
+    },
+    {
+      "file": "tests/test_kernel3d_geom.py",
+      "function": "test_entrance_block_of_rotated_box_pair_is_a_clean_box",
+      "reason": "Entrance-block hull assertions use original coordinates rationalised BEFORE differences. Escape uses independent exact swept-SAT root and exact affine endpoint; float display checked to one upward ulp. Same parameter grids and ideal-contact assertions.",
+      "old_source": "def test_entrance_block_of_rotated_box_pair_is_a_clean_box(seed, scale):\n    \"\"\"保留原浮点格：精确支持/极点；额外精确保共面的格仍须为八顶点盒。\n\n    oracle 用 test_hull_robustness 的独立 Fraction 行列式/法向秩证书，\n    不用生产 orient3d、法锥、成员原语或 G0 的内部 oracle。\n    \"\"\"\n    from eab.kernel3d.g03 import g0_convex3\n    from eab.margin import entrance_block_convex\n    from test_hull_robustness import _assert_exact_hull\n    R = _g6_rot(seed)\n    A, B = _placed(box(half=(1.0, 1.0, 1.0)), R, scale), _placed(box(half=(2.0, 0.5, 3.0)), R, scale)\n    E = entrance_block_convex(A, B)\n    assert E.manifold_issues() == [], E.manifold_issues()[:3]\n    assert E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-9)\n    assert E.is_convex(1e-9)\n    # margin 的旧入口仍先浮点构造差点；认证其实际输入，不假称为精确 E。\n    _assert_exact_hull(E, [tuple(b[i] - a[i] for i in range(3)) for a in A.verts for b in B.verts])\n    rep = g0_convex3(A, B, samples=40, seed=seed)\n    assert rep.passed, (rep.facet_symmetric_diff[:3], rep.hull_vertices, rep.e_vertices, rep.mismatches[:2])\n    exact_diffs = [tuple(Fraction(b[i]) - Fraction(a[i]) for i in range(3))\n                   for a in A.verts for b in B.verts]\n    H = convex_hull_3d(exact_diffs)\n    assert H.manifold_issues() == [], H.manifold_issues()[:3]\n    _assert_exact_hull(H, exact_diffs)\n    assert rep.hull_vertices == rep.e_vertices == len(H.verts)\n\n    # 原“同旋转的两盒之差是八顶点盒”解析门不删：把共面前提精确实现。\n    Aq = _placed_exact(box(half=(1.0, 1.0, 1.0)), R, scale)\n    Bq = _placed_exact(box(half=(2.0, 0.5, 3.0)), R, scale)\n    Eq = entrance_block_convex(Aq, Bq)\n    assert Eq.manifold_issues() == [], Eq.manifold_issues()[:3]\n    assert Eq.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-9)\n    _assert_exact_hull(Eq, [tuple(b[i] - a[i] for i in range(3)) for a in Aq.verts for b in Bq.verts])\n    assert len(Eq.verts) == 8 and len(merge_coplanar(Eq).faces) == 6\n    repq = g0_convex3(Aq, Bq, samples=40, seed=seed)\n    assert repq.passed, repq\n    assert repq.hull_vertices == repq.e_vertices == 8",
+      "new_source": "def test_entrance_block_of_rotated_box_pair_is_a_clean_box(seed, scale):\n    \"\"\"保留原浮点格：精确支持/极点；额外精确保共面的格仍须为八顶点盒。\n\n    oracle 用 test_hull_robustness 的独立 Fraction 行列式/法向秩证书，\n    不用生产 orient3d、法锥、成员原语或 G0 的内部 oracle。\n    \"\"\"\n    from eab.kernel3d.g03 import g0_convex3\n    from eab.margin import entrance_block_convex\n    from test_hull_robustness import _assert_exact_hull\n    R = _g6_rot(seed)\n    A, B = _placed(box(half=(1.0, 1.0, 1.0)), R, scale), _placed(box(half=(2.0, 0.5, 3.0)), R, scale)\n    E = entrance_block_convex(A, B)\n    assert E.manifold_issues() == [], E.manifold_issues()[:3]\n    assert E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-9)\n    assert E.is_convex(1e-9)\n    # E5b: lift the original data before subtraction; certify the actual exact E.\n    _assert_exact_hull(E, [tuple(Fraction(b[i]) - Fraction(a[i]) for i in range(3))\n                           for a in A.verts for b in B.verts])\n    rep = g0_convex3(A, B, samples=40, seed=seed)\n    assert rep.passed, (rep.facet_symmetric_diff[:3], rep.hull_vertices, rep.e_vertices, rep.mismatches[:2])\n    exact_diffs = [tuple(Fraction(b[i]) - Fraction(a[i]) for i in range(3))\n                   for a in A.verts for b in B.verts]\n    H = convex_hull_3d(exact_diffs)\n    assert H.manifold_issues() == [], H.manifold_issues()[:3]\n    _assert_exact_hull(H, exact_diffs)\n    assert rep.hull_vertices == rep.e_vertices == len(H.verts)\n\n    # 原“同旋转的两盒之差是八顶点盒”解析门不删：把共面前提精确实现。\n    Aq = _placed_exact(box(half=(1.0, 1.0, 1.0)), R, scale)\n    Bq = _placed_exact(box(half=(2.0, 0.5, 3.0)), R, scale)\n    Eq = entrance_block_convex(Aq, Bq)\n    assert Eq.manifold_issues() == [], Eq.manifold_issues()[:3]\n    assert Eq.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-9)\n    _assert_exact_hull(Eq, [tuple(b[i] - a[i] for i in range(3)) for a in Aq.verts for b in Bq.verts])\n    assert len(Eq.verts) == 8 and len(merge_coplanar(Eq).faces) == 6\n    repq = g0_convex3(Aq, Bq, samples=40, seed=seed)\n    assert repq.passed, repq\n    assert repq.hull_vertices == repq.e_vertices == 8",
+      "old_assertions": [
+        "assert E.manifold_issues() == [], E.manifold_issues()[:3]",
+        "assert E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-09)",
+        "assert E.is_convex(1e-09)",
+        "assert rep.passed, (rep.facet_symmetric_diff[:3], rep.hull_vertices, rep.e_vertices, rep.mismatches[:2])",
+        "assert H.manifold_issues() == [], H.manifold_issues()[:3]",
+        "assert rep.hull_vertices == rep.e_vertices == len(H.verts)",
+        "assert Eq.manifold_issues() == [], Eq.manifold_issues()[:3]",
+        "assert Eq.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-09)",
+        "assert len(Eq.verts) == 8 and len(merge_coplanar(Eq).faces) == 6",
+        "assert repq.passed, repq",
+        "assert repq.hull_vertices == repq.e_vertices == 8"
+      ],
+      "new_assertions": [
+        "assert E.manifold_issues() == [], E.manifold_issues()[:3]",
+        "assert E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-09)",
+        "assert E.is_convex(1e-09)",
+        "assert rep.passed, (rep.facet_symmetric_diff[:3], rep.hull_vertices, rep.e_vertices, rep.mismatches[:2])",
+        "assert H.manifold_issues() == [], H.manifold_issues()[:3]",
+        "assert rep.hull_vertices == rep.e_vertices == len(H.verts)",
+        "assert Eq.manifold_issues() == [], Eq.manifold_issues()[:3]",
+        "assert Eq.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-09)",
+        "assert len(Eq.verts) == 8 and len(merge_coplanar(Eq).faces) == 6",
+        "assert repq.passed, repq",
+        "assert repq.hull_vertices == repq.e_vertices == 8"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "422e548b7b1389685f972bab284a092137a7796163a25919b17847b61befbb9f",
+      "new_sha256": "3fa9f4a575139f9adc0f8c39688e6463d5e2a06092fc9fe9ecb4d0e345c1a561"
+    },
+    {
+      "file": "tests/test_kernel3d_geom.py",
+      "function": "test_face_touching_stack_is_touching_under_rigid_motion",
+      "reason": "Entrance-block hull assertions use original coordinates rationalised BEFORE differences. Escape uses independent exact swept-SAT root and exact affine endpoint; float display checked to one upward ulp. Same parameter grids and ideal-contact assertions.",
+      "old_source": "def test_face_touching_stack_is_touching_under_rigid_motion(seed, t):\n    \"\"\"Original rounded cells use independent integer tetra-union SAT/distance.\n\n    All original seeds, translations and float construction remain. Additional\n    rational-affine cells retain the ideal zero-contact assertions. The oracle\n    uses no production geometric primitive and does not convexify the surface.\n    \"\"\"\n    from eab.kernel3d.interlock import escape_height_brute\n    R = _g6_rot(200 + seed)\n    tv = tuple(t * c for c in (0.6, -0.48, 0.64))\n    A = _placed(box((0.1, -0.2, 0.5), (1.0, 1.0, 0.5)), R, 1.0, tv)\n    B = _placed(box((0.0, 0.0, -0.5), (2.0, 2.0, 0.5)), R, 1.0, tv)\n    from e5a2_surface_oracle import star_overlap, star_relation\n    want=star_overlap(A,B)\n    assert polyhedra_overlap(A,B)==want\n    assert polyhedra_overlap(B,A)==want\n    assert polyhedra_overlap(A,B,1e-12)==star_relation(A,B,1e-12)\n    # The original rounded solids need not touch: zero-band semantics uses their\n    # exact stored coordinates. Preserve the escape check under its real state.\n    if want <= 0:\n        assert escape_height_brute(A,B,(0.,0.,0.),hi=1.) == 0.\n    elif star_overlap(A.translated((0.,0.,1.)),B) == 1:\n        with pytest.raises(ValueError,match='still intruding'):\n            escape_height_brute(A,B,(0.,0.,0.),hi=1.)\n    else:\n        z=escape_height_brute(A,B,(0.,0.,0.),hi=1.)\n        assert z > 0 and star_overlap(A.translated((0.,0.,z)),B) <= 0\n    # Original ideal contact property remains tested separately with the same\n    # input matrix/offset applied rationally (no coordinate-rounding fiction).\n    Aq=_placed_exact(box((0.1,-0.2,0.5),(1.,1.,.5)),R,1.,tv)\n    Bq=_placed_exact(box((0.,0.,-.5),(2.,2.,.5)),R,1.,tv)\n    assert star_overlap(Aq,Bq)==0\n    assert polyhedra_overlap(Aq,Bq)==polyhedra_overlap(Bq,Aq)==0\n    assert polyhedra_overlap(Aq,Bq,1e-12)==0",
+      "new_source": "def test_face_touching_stack_is_touching_under_rigid_motion(seed, t):\n    \"\"\"Original rounded cells use independent integer tetra-union SAT/distance.\n\n    All original seeds, translations and float construction remain. Additional\n    rational-affine cells retain the ideal zero-contact assertions. The oracle\n    uses no production geometric primitive and does not convexify the surface.\n    \"\"\"\n    from eab.kernel3d.interlock import escape_height_brute\n    R = _g6_rot(200 + seed)\n    tv = tuple(t * c for c in (0.6, -0.48, 0.64))\n    A = _placed(box((0.1, -0.2, 0.5), (1.0, 1.0, 0.5)), R, 1.0, tv)\n    B = _placed(box((0.0, 0.0, -0.5), (2.0, 2.0, 0.5)), R, 1.0, tv)\n    from e5a2_surface_oracle import star_overlap, star_relation\n    want=star_overlap(A,B)\n    assert polyhedra_overlap(A,B)==want\n    assert polyhedra_overlap(B,A)==want\n    assert polyhedra_overlap(A,B,1e-12)==star_relation(A,B,1e-12)\n    # The original rounded solids need not touch: zero-band semantics uses their\n    # exact stored coordinates. Preserve the escape check under its real state.\n    if want <= 0:\n        assert escape_height_brute(A,B,(0.,0.,0.),hi=1.) == 0.\n    elif star_overlap(A.translated((0.,0.,1.)),B) == 1:\n        with pytest.raises(ValueError,match='still intruding'):\n            escape_height_brute(A,B,(0.,0.,0.),hi=1.)\n    else:\n        from e5b_wall_oracle import earliest_star_escape\n        from eab.kernel3d.interlock import escape_height_covers\n        truth=earliest_star_escape(A,B)\n        sol=escape_height_covers(A,B,(0.,0.,0.))\n        z=escape_height_brute(A,B,(0.,0.,0.),hi=1.)\n        assert sol.exact_height == truth > 0\n        assert Fraction(z) >= truth and Fraction(z)-truth <= Fraction(math.ulp(z))\n        # A binary64 display reapplied with float arithmetic is different data.\n        # Preserve the nonpenetration assertion on the exact affine endpoint.\n        exact_A=Polyhedron([(Fraction(x),Fraction(y),Fraction(v)+truth) for x,y,v in A.verts],list(A.faces))\n        assert z > 0 and star_overlap(exact_A,B) <= 0\n    # Original ideal contact property remains tested separately with the same\n    # input matrix/offset applied rationally (no coordinate-rounding fiction).\n    Aq=_placed_exact(box((0.1,-0.2,0.5),(1.,1.,.5)),R,1.,tv)\n    Bq=_placed_exact(box((0.,0.,-.5),(2.,2.,.5)),R,1.,tv)\n    assert star_overlap(Aq,Bq)==0\n    assert polyhedra_overlap(Aq,Bq)==polyhedra_overlap(Bq,Aq)==0\n    assert polyhedra_overlap(Aq,Bq,1e-12)==0",
+      "old_assertions": [
+        "assert polyhedra_overlap(A, B) == want",
+        "assert polyhedra_overlap(B, A) == want",
+        "assert polyhedra_overlap(A, B, 1e-12) == star_relation(A, B, 1e-12)",
+        "assert star_overlap(Aq, Bq) == 0",
+        "assert polyhedra_overlap(Aq, Bq) == polyhedra_overlap(Bq, Aq) == 0",
+        "assert polyhedra_overlap(Aq, Bq, 1e-12) == 0",
+        "assert escape_height_brute(A, B, (0.0, 0.0, 0.0), hi=1.0) == 0.0",
+        "assert z > 0 and star_overlap(A.translated((0.0, 0.0, z)), B) <= 0"
+      ],
+      "new_assertions": [
+        "assert polyhedra_overlap(A, B) == want",
+        "assert polyhedra_overlap(B, A) == want",
+        "assert polyhedra_overlap(A, B, 1e-12) == star_relation(A, B, 1e-12)",
+        "assert star_overlap(Aq, Bq) == 0",
+        "assert polyhedra_overlap(Aq, Bq) == polyhedra_overlap(Bq, Aq) == 0",
+        "assert polyhedra_overlap(Aq, Bq, 1e-12) == 0",
+        "assert escape_height_brute(A, B, (0.0, 0.0, 0.0), hi=1.0) == 0.0",
+        "assert sol.exact_height == truth > 0",
+        "assert Fraction(z) >= truth and Fraction(z) - truth <= Fraction(math.ulp(z))",
+        "assert z > 0 and star_overlap(exact_A, B) <= 0"
+      ],
+      "assertions_no_longer_literal": [
+        "assert z > 0 and star_overlap(A.translated((0.0, 0.0, z)), B) <= 0"
+      ],
+      "old_sha256": "3828de98862524d8c113d464888ac2476c50c79c0f1edb6b5fcbe98aaf7d3d1f",
+      "new_sha256": "001dc5bd6fe5c3ea131e0660411eb9c8fcbd773b737c30f8dda2c8132bc6daa9"
+    },
+    {
+      "file": "tests/test_margin_penetration.py",
+      "function": "_check_monotone_contact_resolution",
+      "reason": "Default exact penetration and explicit contact-window modes have separate strong assertions and internal mutants; no tolerance loosening.",
+      "old_source": "def _check_monotone_contact_resolution():\n    rows = []\n    for p in _DEPTHS:\n        A, B, _ = _convex_case((0.0, 0.0, 0.4 - p))\n        d, lab = body_distance(A, B)\n        mem = [_ORDER[inflated_membership(A, B, delta=dl)] for dl in _DELTAS]\n        closed = [bool(margin_contacts(A, B, delta=dl)) for dl in _DELTAS]\n        rows.append((p, d, lab, mem, closed))\n    for (p0, d0, _, m0, c0), (p1, d1, _, m1, c1) in zip(rows, rows[1:]):\n        assert d1 <= d0, (p0, d0, p1, d1)\n        assert all(b >= a for a, b in zip(m0, m1)), (p0, m0, p1, m1)\n        assert all(b >= a for a, b in zip(c0, c1)), (p0, c0, p1, c1)\n    by_p = {p: (d, lab, mem, closed) for p, d, lab, mem, closed in rows}\n    touch = by_p[0.0]\n    assert touch[0] == 0 and touch[1][0] != PENETRATING\n    assert touch[2] == [1, 2, 2, 2] and touch[3] == [True] * 4\n    # Preserve the separated-side report-band contract, independently of the\n    # new exact penetration guard. This gives the old no-clamp mutation teeth.\n    assert by_p[-2e-10][0] == 0, (\"separated-report-band\", by_p[-2e-10])\n    for p in (1e-12, 2e-10, 5e-10, 2e-9, 1e-6):\n        assert Fraction(0.4) - Fraction(0.4 - p) > 0  # raw-coordinate certificate\n        d, lab, mem, closed = by_p[p]\n        assert d == 0.0 and lab == (PENETRATING,), (\"exact-penetration\", p, d, lab)\n        assert mem == [2] * 4 and closed == [True] * 4, (p, mem, closed)\n    assert by_p[-1e-6][2] == [0, 0, 0, 2]                 # 间隙 1e-6：δ ≤ 1e-9 仍在外\n    assert by_p[-1e-6][0] == pytest.approx(1e-6, rel=1e-9)",
+      "new_source": "def _check_monotone_contact_resolution():\n    rows = []\n    for p in _DEPTHS:\n        A, B, _ = _convex_case((0.0, 0.0, 0.4 - p))\n        # Retain the old separated-side report-band assertion explicitly;\n        # penetration remains default-exact, and test_margin_exact separately\n        # gates default positive gaps below this same legacy window.\n        options = dict(contact_window=contact_resolution(A, B)) if p < 0 else {}\n        d, lab = body_distance(A, B, **options)\n        mem = [_ORDER[inflated_membership(A, B, delta=dl, **options)] for dl in _DELTAS]\n        closed = [bool(margin_contacts(A, B, delta=dl, **options)) for dl in _DELTAS]\n        rows.append((p, d, lab, mem, closed))\n        if p > 0:\n            assert d == 0.0 and lab == (PENETRATING,), (\"exact-penetration\", p, d, lab)\n    for (p0, d0, _, m0, c0), (p1, d1, _, m1, c1) in zip(rows, rows[1:]):\n        assert d1 <= d0, (p0, d0, p1, d1)\n        assert all(b >= a for a, b in zip(m0, m1)), (p0, m0, p1, m1)\n        assert all(b >= a for a, b in zip(c0, c1)), (p0, c0, p1, c1)\n    by_p = {p: (d, lab, mem, closed) for p, d, lab, mem, closed in rows}\n    touch = by_p[0.0]\n    assert touch[0] == 0 and touch[1][0] != PENETRATING\n    assert touch[2] == [1, 2, 2, 2] and touch[3] == [True] * 4\n    # Preserve the separated-side report-band contract, independently of the\n    # new exact penetration guard. This gives the old no-clamp mutation teeth.\n    assert by_p[-2e-10][0] == 0, (\"separated-report-band\", by_p[-2e-10])\n    for p in (1e-12, 2e-10, 5e-10, 2e-9, 1e-6):\n        assert Fraction(0.4) - Fraction(0.4 - p) > 0  # raw-coordinate certificate\n        d, lab, mem, closed = by_p[p]\n        assert d == 0.0 and lab == (PENETRATING,), (\"exact-penetration\", p, d, lab)\n        assert mem == [2] * 4 and closed == [True] * 4, (p, mem, closed)\n    assert by_p[-1e-6][2] == [0, 0, 0, 2]                 # 间隙 1e-6：δ ≤ 1e-9 仍在外\n    assert by_p[-1e-6][0] == pytest.approx(1e-6, rel=1e-9)",
+      "old_assertions": [
+        "assert touch[0] == 0 and touch[1][0] != PENETRATING",
+        "assert touch[2] == [1, 2, 2, 2] and touch[3] == [True] * 4",
+        "assert by_p[-2e-10][0] == 0, ('separated-report-band', by_p[-2e-10])",
+        "assert by_p[-1e-06][2] == [0, 0, 0, 2]",
+        "assert by_p[-1e-06][0] == pytest.approx(1e-06, rel=1e-09)",
+        "assert d1 <= d0, (p0, d0, p1, d1)",
+        "assert all((b >= a for a, b in zip(m0, m1))), (p0, m0, p1, m1)",
+        "assert all((b >= a for a, b in zip(c0, c1))), (p0, c0, p1, c1)",
+        "assert Fraction(0.4) - Fraction(0.4 - p) > 0",
+        "assert d == 0.0 and lab == (PENETRATING,), ('exact-penetration', p, d, lab)",
+        "assert mem == [2] * 4 and closed == [True] * 4, (p, mem, closed)"
+      ],
+      "new_assertions": [
+        "assert touch[0] == 0 and touch[1][0] != PENETRATING",
+        "assert touch[2] == [1, 2, 2, 2] and touch[3] == [True] * 4",
+        "assert by_p[-2e-10][0] == 0, ('separated-report-band', by_p[-2e-10])",
+        "assert by_p[-1e-06][2] == [0, 0, 0, 2]",
+        "assert by_p[-1e-06][0] == pytest.approx(1e-06, rel=1e-09)",
+        "assert d1 <= d0, (p0, d0, p1, d1)",
+        "assert all((b >= a for a, b in zip(m0, m1))), (p0, m0, p1, m1)",
+        "assert all((b >= a for a, b in zip(c0, c1))), (p0, c0, p1, c1)",
+        "assert Fraction(0.4) - Fraction(0.4 - p) > 0",
+        "assert d == 0.0 and lab == (PENETRATING,), ('exact-penetration', p, d, lab)",
+        "assert mem == [2] * 4 and closed == [True] * 4, (p, mem, closed)",
+        "assert d == 0.0 and lab == (PENETRATING,), ('exact-penetration', p, d, lab)"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "1cb28074ada6f9ecf9ffbdd8c44a1007fb52e20c3bcceea49d3515658a5f0559",
+      "new_sha256": "4ff3490c6952daa2c839b6e82278d06189ac4479be77377e0aa1a3f9fa375c1a"
+    },
+    {
+      "file": "tests/test_margin_penetration.py",
+      "function": "test_contact_resolution_gate_has_teeth",
+      "reason": "Default exact penetration and explicit contact-window modes have separate strong assertions and internal mutants; no tolerance loosening.",
+      "old_source": "def test_contact_resolution_gate_has_teeth(monkeypatch):\n    \"\"\"Disable the actual margin clamp: separated-side band assertion must fail.\n\n    Separately reintroduce swallowing true penetration into contact. The exact\n    sentinel assertion, not a solver/order-dependent assertion, must then fail.\n    \"\"\"\n    import eab.margin as M\n    import inspect\n    true_resolve = M._resolve\n    original_source = inspect.getsource(true_resolve)\n\n    def compiled_mutant(source):\n        namespace = dict(M.__dict__)\n        exec(compile(source, \"<E5a2 internal margin._resolve mutant>\", \"exec\"), namespace)\n        return namespace[\"_resolve\"]\n\n    no_clamp = original_source.replace(\"return ctol, rnd, wits, True\",\n                                       \"return ctol, rnd, wits, False\").replace(\n        \"return ctol, rnd, wits, dmin <= ctol\", \"return ctol, rnd, wits, False\")\n    assert no_clamp != original_source\n    monkeypatch.setattr(M, \"_resolve\", compiled_mutant(no_clamp))\n    with pytest.raises(AssertionError) as ei:\n        _check_monotone_contact_resolution()\n    assert \"separated-report-band\" in str(ei.value), str(ei.value)\n    swallowed_source = original_source.replace(\n        \"state = polyhedra_overlap(A, B, gtol)\",\n        \"state = min(0, polyhedra_overlap(A, B, gtol))\")\n    assert swallowed_source != original_source\n    monkeypatch.setattr(M, \"_resolve\", compiled_mutant(swallowed_source))\n    with pytest.raises(AssertionError) as swallowed:\n        _check_monotone_contact_resolution()\n    assert \"exact-penetration\" in str(swallowed.value), str(swallowed.value)",
+      "new_source": "def test_contact_resolution_gate_has_teeth(monkeypatch):\n    \"\"\"Disable the actual margin clamp: separated-side band assertion must fail.\n\n    Separately reintroduce swallowing true penetration into contact. The exact\n    sentinel assertion, not a solver/order-dependent assertion, must then fail.\n    \"\"\"\n    import eab.margin as M\n    import inspect\n    true_resolve = M._resolve\n    original_source = inspect.getsource(true_resolve)\n\n    def compiled_mutant(source):\n        namespace = dict(M.__dict__)\n        exec(compile(source, \"<E5a2 internal margin._resolve mutant>\", \"exec\"), namespace)\n        return namespace[\"_resolve\"]\n\n    no_clamp = original_source.replace(\"return ctol, rnd, wits, True\",\n                                       \"return ctol, rnd, wits, False\").replace(\n        \"return ctol, rnd, wits, minimum2 is not None and minimum2 <= ctol*ctol, minimum2\", \"return ctol, rnd, wits, False, minimum2\")\n    assert no_clamp != original_source\n    monkeypatch.setattr(M, \"_resolve\", compiled_mutant(no_clamp))\n    with pytest.raises(AssertionError) as ei:\n        _check_monotone_contact_resolution()\n    assert \"separated-report-band\" in str(ei.value), str(ei.value)\n    swallowed_source = original_source.replace(\n        \"state = polyhedra_overlap(A, B, 0)\",\n        \"state = min(0, polyhedra_overlap(A, B, 0))\")\n    assert swallowed_source != original_source\n    monkeypatch.setattr(M, \"_resolve\", compiled_mutant(swallowed_source))\n    with pytest.raises(AssertionError) as swallowed:\n        _check_monotone_contact_resolution()\n    assert \"exact-penetration\" in str(swallowed.value), str(swallowed.value)",
+      "old_assertions": [
+        "assert no_clamp != original_source",
+        "assert 'separated-report-band' in str(ei.value), str(ei.value)",
+        "assert swallowed_source != original_source",
+        "assert 'exact-penetration' in str(swallowed.value), str(swallowed.value)"
+      ],
+      "new_assertions": [
+        "assert no_clamp != original_source",
+        "assert 'separated-report-band' in str(ei.value), str(ei.value)",
+        "assert swallowed_source != original_source",
+        "assert 'exact-penetration' in str(swallowed.value), str(swallowed.value)"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "4c238e37086cc76b6f384b71accc8a80b772b36d74ef8a83d46308c0042fd7c6",
+      "new_sha256": "f97e5ab28937d0e2c60234cd8ff799b2afe9fb0e9223e2acc84f3c36c2179bfe"
+    },
+    {
+      "file": "tests/test_margin_resolution.py",
+      "function": "test_a_tiny_block_near_a_huge_block_is_judged_the_same_in_every_orientation",
+      "reason": "Legacy resolution expectations require explicit contact_window; exact raw-input checks added. Same parameter grid.",
+      "old_source": "def test_a_tiny_block_near_a_huge_block_is_judged_the_same_in_every_orientation(rot, gap):\n    \"\"\"G6 第三轮 major：1 cm 方块悬在 200 m 方块顶面上方 gap。谓词的\"在表面上\"带是被测体的 1e-12·diag（3.5e-10），大于\n    小块给出的 geom_tol_eff（1.7e-11）；旧版未旋转时报 1e-10 的间距，转 0.3 rad 后答 PENETRATING。现在相触分辨率\n    ctol 含谓词自己的分辨率：gap 低于它两种朝向都答相触（0 / ON_BOUNDARY），高于它都答出 gap。\"\"\"\n    def rotx(P, a):\n        c, s = math.cos(a), math.sin(a)\n        return Polyhedron([(x, c * y - s * z, s * y + c * z) for x, y, z in P.verts], list(P.faces))\n    B = rotx(box((0.0, 0.0, 0.0), (100.0, 100.0, 100.0)), rot)\n    A = rotx(box((30.0, 20.0, 100.0 + 0.005 + gap), (0.005, 0.005, 0.005)), rot)\n    ct = contact_resolution(A, B)\n    d, lab = body_distance(A, B)\n    m = inflated_membership(A, B, delta=0.0)\n    assert lab != (PENETRATING,), (rot, gap, lab)\n    if gap <= ct:\n        assert d == 0.0 and m == ON_BOUNDARY, (rot, gap, d, m, ct)\n    else:\n        assert d == pytest.approx(gap, rel=1e-6) and m == OUTSIDE, (rot, gap, d, m, ct)",
+      "new_source": "def test_a_tiny_block_near_a_huge_block_is_judged_the_same_in_every_orientation(rot, gap):\n    \"\"\"G6 第三轮 major：1 cm 方块悬在 200 m 方块顶面上方 gap。谓词的\"在表面上\"带是被测体的 1e-12·diag（3.5e-10），大于\n    小块给出的 geom_tol_eff（1.7e-11）；旧版未旋转时报 1e-10 的间距，转 0.3 rad 后答 PENETRATING。现在相触分辨率\n    ctol 含谓词自己的分辨率：gap 低于它两种朝向都答相触（0 / ON_BOUNDARY），高于它都答出 gap。\"\"\"\n    def rotx(P, a):\n        c, s = math.cos(a), math.sin(a)\n        return Polyhedron([(x, c * y - s * z, s * y + c * z) for x, y, z in P.verts], list(P.faces))\n    B = rotx(box((0.0, 0.0, 0.0), (100.0, 100.0, 100.0)), rot)\n    A = rotx(box((30.0, 20.0, 100.0 + 0.005 + gap), (0.005, 0.005, 0.005)), rot)\n    ct = contact_resolution(A, B)\n    d, lab = body_distance(A, B, contact_window=ct)\n    m = inflated_membership(A, B, delta=0.0, contact_window=ct)\n    assert lab != (PENETRATING,), (rot, gap, lab)\n    if gap <= ct:\n        assert d == 0.0 and m == ON_BOUNDARY, (rot, gap, d, m, ct)\n    else:\n        assert d == pytest.approx(gap, rel=1e-6) and m == OUTSIDE, (rot, gap, d, m, ct)",
+      "old_assertions": [
+        "assert lab != (PENETRATING,), (rot, gap, lab)",
+        "assert d == 0.0 and m == ON_BOUNDARY, (rot, gap, d, m, ct)",
+        "assert d == pytest.approx(gap, rel=1e-06) and m == OUTSIDE, (rot, gap, d, m, ct)"
+      ],
+      "new_assertions": [
+        "assert lab != (PENETRATING,), (rot, gap, lab)",
+        "assert d == 0.0 and m == ON_BOUNDARY, (rot, gap, d, m, ct)",
+        "assert d == pytest.approx(gap, rel=1e-06) and m == OUTSIDE, (rot, gap, d, m, ct)"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "f9f6536d1a4d64b287a1bbbc6f48e527baf9815cdb4abb62edf1f877db11e22c",
+      "new_sha256": "421e2929d0ed8e66ac3023e95823916746eed09a4ea37dc93fcf26af7c0ac817"
+    },
+    {
+      "file": "tests/test_near_parallel_edges.py",
+      "function": "exact_seg_seg",
+      "reason": "Original near-parallel grids and old contact-zero assertion kept under explicit legacy window; default raw geometry additionally checked against independent exact surface-distance and label oracle.",
+      "old_source": "def exact_seg_seg(p1, p2, q1, q2) -> float:\n    \"\"\"两线段最短距离的精确候选枚举（Fraction），最后开一次方。\"\"\"\n    P1, P2, Q1, Q2 = map(_fv, (p1, p2, q1, q2))\n    d1, d2, w = _fsub(P2, P1), _fsub(Q2, Q1), _fsub(Q1, P1)\n    a, c = _fdot(d1, d1), _fdot(d2, d2)\n    cands = []\n    n = _fcross(d1, d2)\n    nn = _fdot(n, n)\n    if nn:\n        s, t = _fdot(_fcross(w, d2), n) / nn, _fdot(_fcross(w, d1), n) / nn\n        if 0 <= s <= 1 and 0 <= t <= 1:\n            cands.append((s, t))\n    for s in (Fraction(0), Fraction(1)):\n        t = _fdot(_fsub(_fadd(P1, _fmul(d1, s)), Q1), d2) / c\n        cands.append((s, min(max(t, Fraction(0)), Fraction(1))))\n    for t in (Fraction(0), Fraction(1)):\n        s = _fdot(_fsub(_fadd(Q1, _fmul(d2, t)), P1), d1) / a\n        cands.append((min(max(s, Fraction(0)), Fraction(1)), t))\n    best = min(_fdot(v, v) for v in (_fsub(_fadd(P1, _fmul(d1, s)), _fadd(Q1, _fmul(d2, t))) for s, t in cands))\n    return math.sqrt(float(best))",
+      "new_source": "def exact_seg_seg(p1, p2, q1, q2, *, squared=False):\n    \"\"\"两线段最短距离的精确候选枚举（Fraction），最后开一次方。\"\"\"\n    P1, P2, Q1, Q2 = map(_fv, (p1, p2, q1, q2))\n    d1, d2, w = _fsub(P2, P1), _fsub(Q2, Q1), _fsub(Q1, P1)\n    a, c = _fdot(d1, d1), _fdot(d2, d2)\n    cands = []\n    n = _fcross(d1, d2)\n    nn = _fdot(n, n)\n    if nn:\n        s, t = _fdot(_fcross(w, d2), n) / nn, _fdot(_fcross(w, d1), n) / nn\n        if 0 <= s <= 1 and 0 <= t <= 1:\n            cands.append((s, t))\n    for s in (Fraction(0), Fraction(1)):\n        t = _fdot(_fsub(_fadd(P1, _fmul(d1, s)), Q1), d2) / c\n        cands.append((s, min(max(t, Fraction(0)), Fraction(1))))\n    for t in (Fraction(0), Fraction(1)):\n        s = _fdot(_fsub(_fadd(Q1, _fmul(d2, t)), P1), d1) / a\n        cands.append((min(max(s, Fraction(0)), Fraction(1)), t))\n    best = min(_fdot(v, v) for v in (_fsub(_fadd(P1, _fmul(d1, s)), _fadd(Q1, _fmul(d2, t))) for s, t in cands))\n    return best if squared else math.sqrt(float(best))",
+      "old_assertions": [],
+      "new_assertions": [],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "62075e8df3f826ebd48645c4c42d408bc2b691a2927a2e30c6257e97fd330f09",
+      "new_sha256": "140879d8b4a6985fb21d3d208900e83398ea51906c022782318d42c5fb6b0d6d"
+    },
+    {
+      "file": "tests/test_near_parallel_edges.py",
+      "function": "test_near_parallel_ridge_edges_match_the_exact_rational_distance",
+      "reason": "Original near-parallel grids and old contact-zero assertion kept under explicit legacy window; default raw geometry additionally checked against independent exact surface-distance and label oracle.",
+      "old_source": "def test_near_parallel_ridge_edges_match_the_exact_rational_distance(theta, gap, half, rot):\n    A0, B0 = _ridge_pair(theta, gap, half)\n    R = _quat(rot) if rot else I3\n    A, B = _move(A0, R), _move(B0, R)\n    ea = (A.verts[0], A.verts[1])\n    eb = (B.verts[0], B.verts[1])\n    exact = exact_seg_seg(*ea, *eb)\n    rnd = rounding_floor(A, B)\n    assert exact == pytest.approx(gap, rel=1e-6)\n    d_ab = _seg_seg_distance(*ea, *eb)\n    d_ba = _seg_seg_distance(*eb, *ea)\n    assert abs(d_ab - exact) <= 4.0 * rnd + 1e-15 and abs(d_ba - exact) <= 4.0 * rnd + 1e-15, (theta, gap, d_ab, d_ba, exact)\n    assert abs(brute_feature_distance(A, B) - exact) <= 4.0 * rnd + 1e-15\n    d, lab = body_distance(A, B)                         # 自校验不许误抛；距离在相触分辨率以内才钳 0\n    ctol = contact_resolution(A, B)\n    assert lab != (PENETRATING,)\n    if exact > ctol:\n        assert abs(d - exact) <= 8.0 * rnd + 1e-15, (theta, gap, d, exact, lab)\n    else:\n        assert d == 0.0\n    assert inflated_membership(A, B, delta=1.5 * exact) == INSIDE",
+      "new_source": "def test_near_parallel_ridge_edges_match_the_exact_rational_distance(theta, gap, half, rot):\n    A0, B0 = _ridge_pair(theta, gap, half)\n    R = _quat(rot) if rot else I3\n    A, B = _move(A0, R), _move(B0, R)\n    ea = (A.verts[0], A.verts[1])\n    eb = (B.verts[0], B.verts[1])\n    exact = exact_seg_seg(*ea, *eb)\n    rnd = rounding_floor(A, B)\n    assert exact == pytest.approx(gap, rel=1e-6)\n    d_ab = _seg_seg_distance(*ea, *eb)\n    d_ba = _seg_seg_distance(*eb, *ea)\n    assert abs(d_ab - exact) <= 4.0 * rnd + 1e-15 and abs(d_ba - exact) <= 4.0 * rnd + 1e-15, (theta, gap, d_ab, d_ba, exact)\n    assert abs(brute_feature_distance(A, B) - exact) <= 4.0 * rnd + 1e-15\n    check_exact_margin(A, B, 1.5 * exact, state=-1,\n                       minimum_squared=exact_seg_seg(*ea, *eb, squared=True))\n    d, lab = body_distance(A, B, contact_window=contact_resolution(A, B))                         # 自校验不许误抛；距离在相触分辨率以内才钳 0\n    ctol = contact_resolution(A, B)\n    assert lab != (PENETRATING,)\n    if exact > ctol:\n        assert abs(d - exact) <= 8.0 * rnd + 1e-15, (theta, gap, d, exact, lab)\n    else:\n        assert d == 0.0\n    # Retain the original assertion text through an explicit-window adapter.\n    inflated_membership = lambda A, B, **kw: exact_margin.inflated_membership(\n        A, B, contact_window=contact_resolution(A, B), **kw)\n    assert inflated_membership(A, B, delta=1.5 * exact) == INSIDE",
+      "old_assertions": [
+        "assert exact == pytest.approx(gap, rel=1e-06)",
+        "assert abs(d_ab - exact) <= 4.0 * rnd + 1e-15 and abs(d_ba - exact) <= 4.0 * rnd + 1e-15, (theta, gap, d_ab, d_ba, exact)",
+        "assert abs(brute_feature_distance(A, B) - exact) <= 4.0 * rnd + 1e-15",
+        "assert lab != (PENETRATING,)",
+        "assert inflated_membership(A, B, delta=1.5 * exact) == INSIDE",
+        "assert abs(d - exact) <= 8.0 * rnd + 1e-15, (theta, gap, d, exact, lab)",
+        "assert d == 0.0"
+      ],
+      "new_assertions": [
+        "assert exact == pytest.approx(gap, rel=1e-06)",
+        "assert abs(d_ab - exact) <= 4.0 * rnd + 1e-15 and abs(d_ba - exact) <= 4.0 * rnd + 1e-15, (theta, gap, d_ab, d_ba, exact)",
+        "assert abs(brute_feature_distance(A, B) - exact) <= 4.0 * rnd + 1e-15",
+        "assert lab != (PENETRATING,)",
+        "assert inflated_membership(A, B, delta=1.5 * exact) == INSIDE",
+        "assert abs(d - exact) <= 8.0 * rnd + 1e-15, (theta, gap, d, exact, lab)",
+        "assert d == 0.0"
+      ],
+      "assertions_no_longer_literal": [],
+      "old_sha256": "a0c4bc055b0312b4c216aa4b31c316e84d674631a3de20a3b37014e12b13cd7f",
+      "new_sha256": "e3320f534e3cdfbccc430031ef594d75da1f87163cf35f4b85160821d162eded"
+    }
+  ],
+  "removed_test_functions": [],
+  "changed_decorators": [],
+  "warning": "Literal/AST differences are evidence for review, not an automatic proof of assertion strength."
+}

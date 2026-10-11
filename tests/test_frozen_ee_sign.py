@@ -22,8 +22,9 @@ sys.path.insert(0, str(ROOT / "src"))
 from eab.kernel3d.covers3 import ee_cover, facet_normal3, local_facets3  # noqa: E402
 from eab.kernel3d.frozen import ee_normal_generic, frozen_ee_sign  # noqa: E402
 from eab.kernel3d.geom3 import Polyhedron, box, dot, exact_convex_view  # noqa: E402
-from eab.margin import body_distance, inflated_membership, margin_gap_from_frozen_cover, OUTSIDE  # noqa: E402
+from eab.margin import body_distance, contact_resolution, inflated_membership, margin_gap_from_frozen_cover, OUTSIDE  # noqa: E402
 import e5a_cover_oracle as independent  # noqa: E402
+import e5b_frozen_oracle as surface_oracle  # noqa: E402
 
 
 def _ee_exact(A, ea, B, eb, tol=1e-9):
@@ -187,12 +188,52 @@ def test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates(
     # choose an independently valid in-extent label, with the physical gap and
     # frozen signed distance checked on both original and transformed inputs.
     for P,Q,scale,offset in ((A0,B0,1.0,0.0),(A,B,s,t)):
-        distance,label=body_distance(P,Q)
+        distance,label=body_distance(P,Q,contact_window=contact_resolution(P,Q))
         assert label in {lab for lab,_ in independent.cover_labels(P,Q)}
         assert abs(distance-.06*scale) <= 1e-9*scale+4096*2.220446049250313e-16*offset
         sign=frozen_ee_sign(P,Q,label[1][1:],label[2][1:]) if label[0]=='EE' else 1.0
         frozen=margin_gap_from_frozen_cover(P,Q,label,(0.,0.,0.),0.,ee_sign=sign)
         assert abs(frozen-distance) <= 1e-9*scale+4096*2.220446049250313e-16*offset
+
+        # Default exact surface mode has a different oracle domain: a rounded
+        # nonplanar ring is ear-cut, including its real diagonal edges.  The
+        # independent ear cut/Gram distance oracle imports no production
+        # predicate, normal, triangulation, hull, or distance routine.
+        from eab.margin import _witnesses
+        oracle_labels = surface_oracle.cover_labels(P,Q)
+        actual_labels = {(c.label(),c.strict) for c,_,_ in _witnesses(P,Q,1e-9,exact_surface=True)}
+        assert actual_labels == oracle_labels, 'complete exact-surface cover set'
+        exact_distance,exact_label=body_distance(P,Q)
+        distance_squared=surface_oracle.distance_squared(P,Q)
+        oracle_distance=math.sqrt(float(distance_squared))
+        assert exact_label in {lab for lab,_ in oracle_labels}, 'exact-surface chosen label'
+        assert abs(exact_distance-oracle_distance) <= 4*math.ulp(oracle_distance), 'independent exact surface distance'
+        exact_sign=frozen_ee_sign(P,Q,exact_label[1][1:],exact_label[2][1:]) if exact_label[0]=='EE' else 1.0
+        exact_frozen=margin_gap_from_frozen_cover(P,Q,exact_label,(0.,0.,0.),0.,ee_sign=exact_sign)
+        assert abs(exact_frozen-oracle_distance) <= 8*math.ulp(oracle_distance), 'exact-surface frozen signed distance'
+        if exact_label[0]=='EE':
+            surface_p,_=surface_oracle.surface(P)
+            surface_q,_=surface_oracle.surface(Q)
+            ea,eb=exact_label[1][1:],exact_label[2][1:]
+            truth=_ee_exact(surface_p,ea,surface_q,eb)
+            assert truth is not None and truth[3], 'independent diagonal EE extent'
+            frozen_normal=ee_normal_generic(P,ea,Q,eb,exact_sign)
+            assert sum(x*y for x,y in zip(frozen_normal,truth[0])) > 1-1e-12, 'independent exact-surface EE orientation'
+
+
+
+def test_exact_surface_cover_gate_kills_internal_source_ring_only_mutation(monkeypatch):
+    """The full label-set gate sees a real internal triangulation-branch loss."""
+    import inspect
+    import eab.margin as margin
+    source=inspect.getsource(margin._witnesses)
+    assert source.count('if exact_surface:') == 2
+    namespace=dict(vars(margin))
+    exec(compile(source.replace('if exact_surface:', 'if False:'),
+                 '<mutant: folded surface expansion removed>', 'exec'),namespace)
+    monkeypatch.setattr(margin,'_witnesses',namespace['_witnesses'])
+    with pytest.raises(AssertionError,match='complete exact-surface cover set'):
+        test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates(4,1e5,1e-3)
 
 
 def test_unrounded_yaw_stack_retains_the_analytic_eight_crossing_edge_pairs():

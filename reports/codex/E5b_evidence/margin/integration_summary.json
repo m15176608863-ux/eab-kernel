@@ -1,0 +1,52 @@
+{
+  "last_line": "2454 passed in 185.27s (0:03:05)",
+  "original_nodes": 2454,
+  "current_nodes": 2454,
+  "assertions_retained_verbatim": 55,
+  "integration1_failures_closed": 151,
+  "original_grids_unchanged": true,
+  "production_edits": 0,
+  "mutations": [
+    {
+      "id": "default_implicit_ctol",
+      "status": "KILLED",
+      "expected_assertion": "default-exact distance construction",
+      "message": "default-exact distance construction",
+      "actual_assertion": "assert abs(distance - want_distance) <= 4 * math.ulp(want_distance), \"default-exact distance construction\"",
+      "file": "D:\\eab-wt\\cx-e2\\tests\\e5b_margin_oracle.py",
+      "line": 84,
+      "injection_before": "ctol = _contact_window(contact_window)",
+      "injection_after": "ctol = _contact_window(contact_resolution(A, B) if contact_window is None else contact_window)",
+      "injection_method": "compile inside production _resolve; run existing test function"
+    },
+    {
+      "id": "explicit_window_ignored",
+      "status": "KILLED",
+      "expected_assertion": "assert d == 0.0",
+      "message": "",
+      "actual_assertion": "assert d == 0.0",
+      "file": "D:\\eab-wt\\cx-e2\\tests\\test_near_parallel_edges.py",
+      "line": 117,
+      "injection_before": "ctol = _contact_window(contact_window)",
+      "injection_after": "ctol = Fraction(0)",
+      "injection_method": "compile inside production _resolve; run existing test function"
+    },
+    {
+      "id": "default_source_ring_instead_of_actual_surface",
+      "status": "KILLED",
+      "expected_assertion": "default-exact surface nearest label",
+      "message": "default-exact surface nearest label",
+      "actual_assertion": "assert label in {lab for lab, d2 in expected.items() if d2 == nearest}, \"default-exact surface nearest label\"",
+      "file": "D:\\eab-wt\\cx-e2\\tests\\e5b_margin_oracle.py",
+      "line": 82,
+      "injection_before": "exact_surface=contact_window is None or not ctol",
+      "injection_after": "exact_surface=False",
+      "injection_method": "compile inside production _resolve; run existing test function"
+    }
+  ],
+  "source_sha256": {
+    "tests/test_invariance_geom.py": "a100ec2bd436c1ffec4ad7d6112b15495c8b40de13f99fd0f46a66b7f4932e17",
+    "tests/test_near_parallel_edges.py": "0742e8e0900828f7324f4ad98c697f68898e7c80ade30f7b10146586792e3b62",
+    "tests/e5b_margin_oracle.py": "dc547f3196004b39f996749a9ed0fc5cb90f1cc14af5f65906c0cb46c45f01ae"
+  }
+}

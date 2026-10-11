@@ -1,5 +1,11 @@
 # WO-E5a 三维精确几何设计（实现前冻结，2026-10-12）
 
+> **E5b 未完成项（契约口径）**：当前显式 `contact_window` 为六轴刚性脱离证书 OR 局部径向薄壳政策，不是完整贯入深度 ≤ 窗口的必要充分判定；未经所有者确认替代定义，不把该项计为完成。默认精确路径不采用此政策，详情与全套结果见 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md)。
+
+
+> **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的接触报告政策。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
+
+
 > 阅读边界：下文保留 E5a 实现前设计，描述目标语义，不是已完成证明。WO-E5a2 中所有者已澄清系统临时目录允许使用，将 E5a 按部分完成提交为 `5b09ea3`；旧报告的“整单作废”不再适用。续作的已验证范围、实测和遗留项以 [E5a2 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5a2_report.md) 为准，未过 G6。
 
 ## 目标、范围、验证和回滚
@@ -78,3 +84,46 @@ orient3d 用浮点 determinant 和严格误差上界；只有 |det|>bound 才采
 ## WO-E5a2 退出状态：PARTIAL（2026-10-12）
 
 本单指定底层门与整数化对拍通过，但完整测试未全绿，不构成里程碑退出。严格表面语义揭示旧 interlock 近竖直事件被噪声政策丢弃：原80个竖墙输入中7格存在独立认证的更低分离高度，当前返回约1.2不是最小逃逸。不能把原最小逃逸门改成只检查安全上界。另有旧并列窗口突变牙失效；加强草案只在证据中，未应用。完整失败清单、实测耗时、独立反证及 WO-E5b 交接以 `reports/codex/E5a2_report.md` 为准；竖墙证书见 `reports/codex/E5a2_evidence/a1/walls_handoff.md`。没有宣称全套≤900秒、正式G6、新worktree或全链精确化通过。
+
+
+## E5b：默认精确、显式接触窗口与运动证书（2026-10-12）
+
+### 1. 默认数据与表示
+
+输入 float 是其给定二进制数的精确有理值，不是未舍入的设计几何。有效、朝外、闭合、嵌入的三角表面是一般实体判定域；非共面面环按确定性三角化解释。默认 `contact_window=None`（以及 0）不吞微贯入：`body_distance` 返回 `PENETRATING` 哨兵，`inflated_membership(..., delta=0)` 为 INSIDE；正距离不因旧 ctol 而变零。距离、δ、关注带的判定比较有理平方量，不用浮点 sqrt 决定状态。
+
+门：`test_margin_exact.py` 的默认微贯入、精确边界、非共面三角距离与 underflow closed 状态；`test_margin_resolution.py` 保留原网格，精确模式另对独立四面体并集整数 SAT。`entrance_block_convex` 先将每个原坐标转为有理数再作差，不能先舍入差点；见 `test_kernel3d_geom.py` 与 `test_margin_exact.py`。
+
+### 2. 显式窗口的数学定义与限度
+
+`contact_resolution(A,B)` 只提供旧口径数值 `max(effective_geom_tol, 1e-12*max(diag)) + rounding_floor`，调用方必须显式传入 `contact_window=w`。w 有限且非负。分离侧精确表面距离平方 ≤ w² 时按相触报告（距离 0、ON_BOUNDARY、闭合）。贯入侧采用**六轴刚性脱离充分证书 OR 局部径向薄壳政策**，不是全局欧氏穿透深度的完整子水平集：
+
+1. 原实体对；
+2. A 沿每个坐标轴精确平移 +w 或 −w 后的六个实体对：任一不贯入证明存在长度 w 的刚性脱离位移；
+3. A 或 B 各自可认证的星核收缩模型。中心 c 取原顶点精确平均；必须对每个朝外三角面有 `n·(c−p)<0`。令 `R=max_v ||v−c||_1`，`α=min(w/R,1/2)`，内核顶点为 `c+(1−α)(v−c)`。每条被移除的径向壳段长度 ≤ αR ≤ w。内核与另一实体不贯入即证明重叠只在厚度至多 w 的该表面壳内。无星核证书时不启用该项。
+
+`exact_sweep.contact_models` 唯一生成此集合；margin 对集合作精确 OR，interlock 对同一集合的最早根取最小。证书失败只表示未被该窗口接受，**不能声称真欧氏穿透深度 > w**。六方向证书是坐标系相关的有限政策，不宣称它等于旋转不变的完整欧氏偏置；星核壳证书也不等于最短刚体脱离。双侧微量夹持可能需要很大的整块脱离，却仍属于薄局部接触壳；这正是原抖动墙窗口可以回到名义高度的区别。严格物理默认路径不采用任何此政策。
+
+独立门：原 margin touch/subtol 逐格整数 SAT；墙的独立扫掠 SAT、严格分离轴和自有射线包含排除；`test_interlock_exact.py` 的三尺度/大平移盒对窗口根闭式值与 margin 相触、根前 INSIDE 的一致检查。所有旧不变性断言留在调用方显式窗口下，另保留默认精确 oracle。并未宣称对任意凹体提供完整欧氏穿透深度算法。
+
+### 3. 最早逃逸根与首入
+
+`surface_events` 枚举真实三角表面的 VF/FV/EE（含三角对角边）事件，平行共面持续情形补端点过边/重合事件。仅精确零才平行，近竖直特征不得按噪声删除。所有根是有理数；相邻根之间拓扑不变。在正根处逐个精确判非贯入，首个通过者的每个此前开区间取有理中点，全部须严格贯入；否则响亮失败。`EscapeSolution.exact_height / exact_offset` 是权威运动数据，`interval_certificate` 为胜出模型的逐区间证明，`nonpenetrating_state` 是该模型根处检查。窗口中其他模型在当前上界前逐事件检查以排除更早根；返回的单份区间证书不冒充全部模型的证明清单，可按 `contact_models` 重算。
+
+`height` 为向上舍入的 binary64 **显示值**，不是将每个顶点重新做浮点加法后的安全保证。后者是另一组数据，须重新精确判定。`cover_label/tied_labels` 保留名义浮点报告簇以兼容旧微分实验；真正事件读 `exact_contact_label/normal`。窗口 winner 为 core/shift 时，事件特征属于对应证书模型，不能直接解释成原实体的物理活动接触。非 Dual 冻结高度用原始有理未归一化平面比值，避免近竖直分母放大单位法向舍入。Dual 片内计算仍保留所有导数通道。
+
+`escape_height_brute` 现在保留 bracket 签名但也走完整事件分区，**不再是独立 oracle**：非凸非单调路径不能用二分跳过更早分离区间。独立性由测试专用扫掠 SAT/oracle 提供。
+
+首入的根、时刻比较、并列、t_max、深度平方均精确；t* 前自检使用完整事件前一区间的有理中点。非共面面的 `surface_label/surface_members` 保存三角限定，冻结应消费该视图；FF/FE 合并标签本身不由 frozen_normal 接受，须从 surface_members 选择原始 VF/FV/EE 成员；兼容 `label/members` 不是折面上的精确平面。`merge_degenerate` 只合并精确共面簇，微台阶门及恢复容差突变固定此边界。局部 `shortest_exit3` 不冒充任意凹体全局最短出口。
+
+### 4. 缓存与等价优化
+
+Polyhedron 保留可变外层 API；全部缓存按顶点与面内容签名失效，原地替换后不得复用旧凸视图。元门 `test_e5b_polyhedron_cache.py` 包含内部门缺失顶点签名突变。缓存不依赖对象 id。
+
+精确布尔三角相交以平面切段/二维 SAT 取代构造交点集合；横截严格内部正证书仅提前返回经两原表面精确点包含复核的贯入，其余走完整 arrangement；已认证星核表面的四面体并集使用整数 SAT；点包含射线以清分母整数线性式替代 Fraction 交点构造。正窗口三角距离另加精确支撑平面距离下界：仅 `gap² > w²*n²` 才拒绝，等号仍进入闭窗口；`test_e5b_triangle_near.py` 同时逐值对拍旧全特征路径、独立闭式阈值，并用 `>` 改 `>=` 的内部突变钉住等号。没有浮点否决过滤。逐值旧路径对拍与不共用原语 oracle 见 `test_e5b_triangle_boolean.py`、`test_e5b_transverse_certificate.py`、`test_e5b_surface_integer.py`。margin/事件内容缓存有 cache-versus-uncached 输出对拍。
+
+### 5. DDA / TIA 适配边界
+
+适配器必须显式选择：(a) 默认精确按传入数据回报微贯入，或 (b) 将其物理/离散化接触厚度作为 `contact_window` 传入。库不能暗猜 ctol；不得把窗口相触当作原实体严格不贯入证明。保留源坐标、运动有理根与证书，显示/导出若必须舍入则对舍入后的实际数据重新判定；冻结使用精确 surface 特征而非非共面源环的拟合平面。姊妹三线本单只读，**未改适配器、未部署开关、未进行求解器标定/工程验证**。
+
+本单完整测试、耗时、逐条处置与突变目标断言见 `reports/codex/E5b_report.md`。本树开发验证和同组交叉审查不替代独立六路 G6；按工单禁令未创建新 worktree。

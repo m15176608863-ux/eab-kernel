@@ -73,7 +73,8 @@ def test_an_earlier_entrance_missed_by_the_covers_is_detected_on_the_concave_ste
 
 def test_degenerate_merge_keeps_parallel_planes_at_different_heights_apart():
     """平面簇容差的牙：宽方块坐在上踏面上、同时悬在下踏面上方 0.5——四个底顶点对两张同法向（+z）的踏面各给两个 VF，
-    必须收成**两个** FF（各 2 个成员），不许把相距 0.5 的两张平面并成一张（旧突变体 ×1e6 就会并）。"""
+    必须收成**两个** FF（各 2 个成员），不许把相距 0.5 的两张平面并成一张。旧 ×1e6 突变在此例会逃逸；
+    E5b 的 test_degenerate_merge_never_coalesces_distinct_exact_planes 另钉住微台阶并杀死容差回退。"""
     from eab.kernel3d.covers3 import enumerate_covers3
     A = box(center=(1.0, 0.0, 1.5), half=(1.0, 0.5, 0.5))          # 底面 z = 1：x ∈ [0, 1] 贴上踏面，x ∈ [1, 2] 悬在下踏面上方
     covs = [c for c in enumerate_covers3(A, STEP, window=float("inf"), tol=1e-9)

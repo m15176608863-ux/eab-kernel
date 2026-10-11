@@ -1,0 +1,336 @@
+"""二维凸入口块的精确层（kernel2d/exact.py）：自身对独立精确 oracle 零错，并量出浮点路径 membership_convex 的静默错判。
+
+纪律 A：`membership_exact`（经 Minkowski 和）与 `convex_overlap_exact`（分离轴、不经 Minkowski 和）零共用，全部 Fraction。
+"""
+
+from __future__ import annotations
+
+import math
+import random
+import sys
+from fractions import Fraction
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from eab.kernel2d.exact import (convex_overlap_exact, entrance_block_exact, is_convex_exact,  # noqa: E402
+                                membership_exact)
+from eab.kernel2d.geom import translate  # noqa: E402
+
+
+def _rand_convex(rng, n, r=1.0, c=(0.0, 0.0)):
+    angs = sorted(rng.uniform(0, 2 * math.pi) for _ in range(n))
+    P = [(c[0] + r * math.cos(t), c[1] + r * math.sin(t)) for t in angs]
+    return P if is_convex_exact(P) else None
+
+
+def _rigid(P, th, t):
+    cs, sn = math.cos(th), math.sin(th)
+    return [(cs * x - sn * y + t[0], sn * x + cs * y + t[1]) for x, y in P]
+
+
+def _probe_points(eb, rng, k):
+    """E 的顶点（恰相触）、facet 中点（恰相触）、以及随机平移。"""
+    pts = []
+    for v in eb.vertices:
+        pts.append((float(v[0]), float(v[1])))
+    for f in eb.facets:
+        m = (f.start[0] + f.direction[0] / 2, f.start[1] + f.direction[1] / 2)
+        pts.append((float(m[0]), float(m[1])))
+    xs = [float(v[0]) for v in eb.vertices]
+    ys = [float(v[1]) for v in eb.vertices]
+    for _ in range(k):
+        pts.append((rng.uniform(min(xs) - 0.2, max(xs) + 0.2), rng.uniform(min(ys) - 0.2, max(ys) + 0.2)))
+    return pts
+
+
+@pytest.mark.parametrize("seed", range(12))
+@pytest.mark.parametrize("t", (0.0, 1e3, 1e6))
+def test_exact_membership_equals_exact_separating_axis_oracle(seed, t):
+    """独立内联 Fraction SAT 对照：旧门可 skip 舍入样本；新门每个固定样本必测，边界探针不豁免。"""
+    rng = random.Random(seed)
+    A = B = None
+    while A is None:
+        A = _rand_convex(rng, rng.randint(3, 7), 0.5)
+    while B is None:
+        B = _rand_convex(rng, rng.randint(3, 7), 0.8)
+    th = rng.uniform(0, 2 * math.pi)
+    A, B = _rigid(A, th, (t, -0.7 * t)), _rigid(B, th, (t, -0.7 * t))
+    # 原门遇舍入微凹就跳过；新门覆盖每个固定样本，生成器的严格凸余量必须保持可分辨。
+    assert is_convex_exact(A) and is_convex_exact(B), "fixed strict-convex sample lost its margin"
+    eb = entrance_block_exact(A, B)
+    for x in _probe_points(eb, rng, 60):
+        assert membership_exact(A, B, x, eb) == convex_overlap_exact(A, B, x), x
+
+
+def test_exact_parallel_edges_merge_into_ff_and_nothing_else_does():
+    """精确平行同向才合并：方块对方块 4 条 FF；把一条边偏 1 ulp 的方向就不再并（各成一条 facet）。"""
+    S = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    eb = entrance_block_exact(S, S)
+    assert sorted(f.label[0] for f in eb.facets) == ["FF"] * 4
+    T = [(0.0, 0.0), (1.0, math.ulp(1.0)), (1.0, 1.0), (0.0, 1.0)]
+    eb2 = entrance_block_exact(T, S)
+    assert sum(f.label[0] == "FF" for f in eb2.facets) == 3 and len(eb2.facets) == 5
+
+
+def test_reviewer_round5_chamfer_example_is_answered_exactly():
+    """G6 第五轮 critical 例一：单位方块削出 1e-14 的倒角边，对边长 0.5 的正三角形（−A 有 60° 边）。
+    x = (1.1, 0.5) 处 A+x 实际压入 B（Fraction 凸包判内部），浮点路径 membership_convex 答 −1。精确层答 1。"""
+    h = 1e-14
+    B = [(0.0, 0.0), (1.0 - h, 0.0), (1.0, h), (1.0, 1.0), (0.0, 1.0)]
+    Q = [(0.0, 0.0), (0.25, 0.25 * math.sqrt(3)), (-0.25, 0.25 * math.sqrt(3))]
+    A = [(-p[0], -p[1]) for p in Q]
+    assert membership_exact(A, B, (1.1, 0.5)) == 1 == convex_overlap_exact(A, B, (1.1, 0.5))
+
+
+def test_rounded_flat_vertex_is_refused_by_the_convex_path():
+    """T 形顶点（三点共线）经刚体运动后常被舍入成微凹：精确凸性如实说"不凸"，不许走凸路径。"""
+    B = [(0.0, 0.0), (0.4, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    assert is_convex_exact(B)
+    refused = 0
+    for k in range(40):
+        Bk = _rigid(B, 0.1 + 0.07 * k, (1e3, 2e3))
+        if not is_convex_exact(Bk):
+            refused += 1
+            with pytest.raises(ValueError, match="exactly convex"):
+                entrance_block_exact(Bk, Bk)
+    assert refused > 0
+
+
+@pytest.mark.parametrize("seed", range(10))
+def test_exact_cone_validity_reproduces_the_exact_minkowski_facets(seed):
+    """命题 5 的精确形：凸对的 E 的每条 VE / EV facet，其法锥判据精确地 ≥ 0；而且严格有效（= 1）的 VE / EV 恰好是 E 的非 FF facet。"""
+    from eab.kernel2d.exact import ev_side_exact, ve_side_exact
+    rng = random.Random(100 + seed)
+    A = B = None
+    while A is None:
+        A = _rand_convex(rng, rng.randint(3, 7), 0.5)
+    while B is None:
+        B = _rand_convex(rng, rng.randint(3, 7), 0.8)
+    eb = entrance_block_exact(A, B)
+    facets = {f.label for f in eb.facets if f.label[0] != "FF"}
+    strict = {("VE", i, j) for i in range(len(A)) for j in range(len(B)) if ve_side_exact(A, i, B, j) == 1}
+    strict |= {("EV", k, i) for k in range(len(A)) for i in range(len(B)) if ev_side_exact(A, k, B, i) == 1}
+    assert strict == facets, (sorted(strict ^ facets))
+
+
+L_SHAPE = [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)]
+
+
+@pytest.mark.parametrize("x,want", [((1.0, 1.0), 0),        # 方块角恰好卡进 L 的内角：只相触
+                                     ((0.9, 0.9), 1),        # 压进去
+                                     ((1.0 + 2 ** -40, 1.0 + 2 ** -40), -1),   # 离开 2^-40：精确分离（容差谓词会说"相触"）
+                                     ((1.0, 1.0 - 2 ** -40), 1),                # 竖直压进 2^-40：精确相交
+                                     ((2.0, 0.0), 0), ((2.5, 0.0), -1)])
+def test_exact_overlap_on_a_concave_l_shape(x, want):
+    sq = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    from eab.kernel2d.exact import polygons_overlap_exact
+    assert polygons_overlap_exact(sq, L_SHAPE, x) == want
+
+
+@pytest.mark.parametrize("seed", range(8))
+def test_exact_overlap_agrees_with_the_convex_oracle_on_convex_pairs(seed):
+    from eab.kernel2d.exact import polygons_overlap_exact
+    rng = random.Random(500 + seed)
+    A = B = None
+    while A is None:
+        A = _rand_convex(rng, rng.randint(3, 7), 0.5)
+    while B is None:
+        B = _rand_convex(rng, rng.randint(3, 7), 0.8)
+    eb = entrance_block_exact(A, B)
+    for x in _probe_points(eb, rng, 40):
+        assert polygons_overlap_exact(A, B, x) == convex_overlap_exact(A, B, x), x
+
+
+def test_star_pentagon_and_fold_back_are_not_convex():
+    from eab.kernel2d.exact import convexity_violation
+    star = [(math.cos(math.pi / 2 + 4 * math.pi * k / 5), math.sin(math.pi / 2 + 4 * math.pi * k / 5)) for k in range(5)]
+    assert "winds 2 times" in convexity_violation(star)
+    spike = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (1.0, 1.0)]          # 沿底边折回
+    assert convexity_violation(spike) is not None
+
+
+@pytest.mark.parametrize("seed", range(10))
+def test_exact_hull_of_differences_equals_the_strict_vertices_of_e(seed):
+    """票三的精确形：conv{b − a} 的顶点集 = E 的严格凸顶点集（两边都在 Fraction 上，零容差）。"""
+    from eab.kernel2d.exact import _fr, hull_exact, strict_vertices
+    rng = random.Random(900 + seed)
+    A = B = None
+    while A is None:
+        A = _rand_convex(rng, rng.randint(3, 7), 0.5)
+    while B is None:
+        B = _rand_convex(rng, rng.randint(3, 7), 0.8)
+    eb = entrance_block_exact(A, B)
+    diffs = []
+    from fractions import Fraction as Fr
+    H = set()
+    # 差点 b − a 必须精确：直接在 Fraction 上构造凸包（hull_exact 收浮点，这里另写一份 Fraction 输入的单调链作 oracle）
+    pts = sorted({(Fr(b[0]) - Fr(a[0]), Fr(b[1]) - Fr(a[1])) for a in A for b in B})
+
+    def half(seq):
+        out = []
+        for p in seq:
+            while len(out) >= 2 and ((out[-1][0] - out[-2][0]) * (p[1] - out[-2][1]) - (out[-1][1] - out[-2][1]) * (p[0] - out[-2][0])) <= 0:
+                out.pop()
+            out.append(p)
+        return out
+    H = set(half(pts)[:-1] + half(list(reversed(pts)))[:-1])
+    E = {eb.vertices[k] for k in strict_vertices(eb)}
+    assert E == H
+
+# ---------------------------------------------------------------- E2 定向精确契约与突变门
+
+SQUARE_EXACT = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+FLAT_EXACT = [(0.0, 0.0), (0.5, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+
+
+def test_angle_order_is_the_exact_cyclic_order_in_both_halfplanes():
+    """闭式八方向次序，不调任何几何 oracle 原语；直接看护同半平面叉积比较反号，避免随机生成器先受突变污染。"""
+    from eab.kernel2d.exact import _angle_less
+    directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
+    for i, u in enumerate(directions):
+        for j, v in enumerate(directions):
+            assert _angle_less(u, v) is (i < j), (i, j)
+        assert not _angle_less(u, (7 * u[0], 7 * u[1]))
+        assert not _angle_less((7 * u[0], 7 * u[1]), u)
+
+
+@pytest.mark.parametrize("scale", [2.0 ** -20, 1.0, 2.0 ** 20])
+@pytest.mark.parametrize("x,want", [((1.0, 0.0), 0), ((1.0, 1.0), 0),
+                                      ((1.0 - 2 ** -40, 0.0), 1),
+                                      ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])
+def test_exact_membership_boundary_is_not_the_interior(scale, x, want):
+    """E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。"""
+    square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]
+    moved = (scale * x[0], scale * x[1])
+    assert membership_exact(square, square, moved) == want
+    from eab.kernel2d.covers import membership_convex
+    assert membership_convex(square, square, moved, tol=0.0) == want
+
+
+@pytest.mark.parametrize("direction,want", [((1, 0), -1), ((-1, 0), 0), ((0, 1), -1)])
+def test_flat_vertex_cone_is_one_ray_not_a_line(direction, want):
+    """平直底边中点的外法锥只有向下射线：闭式方向真值，零向量/法锥原语共享；看护反向同线被错误接收。"""
+    from eab.kernel2d.exact import vertex_side_exact
+    assert vertex_side_exact(FLAT_EXACT, 1, direction) == want
+
+
+@pytest.mark.parametrize("direction,want", [((-1, 0), 0), ((0, 1), 0), ((-1, 1), 1), ((1, -1), -1)])
+def test_corner_cone_boundary_is_not_strict(direction, want):
+    """方块左下角锥边界不是严格内部；闭式坐标方向 oracle 不用法锥叉积实现，分别覆盖边界/内部/外部。"""
+    from eab.kernel2d.exact import vertex_side_exact
+    assert vertex_side_exact(SQUARE_EXACT, 0, direction) == want
+
+
+def test_convexity_rejection_names_the_first_foldback_and_winding_defect():
+    """旧门只断言拒收折回，移除专门检查会被后续反射检查掩盖；新门还锁定首个非法转角的诊断，拒收要求未减。"""
+    from eab.kernel2d.exact import convexity_violation
+    fold = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]
+    assert convexity_violation(fold) == "folds back on itself at vertex 1"
+    twice = SQUARE_EXACT + SQUARE_EXACT
+    assert convexity_violation(twice) == "winds 2 times (total turning is not 2π)"
+    for malformed in (fold, twice):
+        with pytest.raises(ValueError):
+            entrance_block_exact(malformed, SQUARE_EXACT)
+
+
+@pytest.mark.parametrize("swap", [False, True])
+def test_strict_vertices_discard_flat_chain_subdivision_vertices(swap):
+    """闭式 E=[-1,1]^2 只有四角；旧随机门无共线输入，现保留样本并补平直链，零凸包/法锥原语共享。"""
+    from eab.kernel2d.exact import strict_vertices
+    A, B = (SQUARE_EXACT, FLAT_EXACT) if swap else (FLAT_EXACT, SQUARE_EXACT)
+    eb = entrance_block_exact(A, B)
+    assert len(eb.vertices) == 5, "fixture must exercise an actual flat subdivision"
+    vertices = [eb.vertices[k] for k in strict_vertices(eb)]
+    assert len(vertices) == 4
+    assert set(vertices) == {(-1, -1), (1, -1), (1, 1), (-1, 1)}
+
+
+@pytest.mark.parametrize("scale", [Fraction(1, 1024), Fraction(1), Fraction(1024)])
+def test_exact_hull_discards_collinear_boundary_points(scale):
+    """矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。"""
+    from eab.kernel2d.exact import hull_exact_fr
+    points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]
+    shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]
+    got = hull_exact_fr(shifted)
+    assert len(got) == 4
+    assert set(got) == {(scale * x, scale * y) for x, y in [(3, -7), (5, -7), (5, -5), (3, -5)]}
+    assert hull_exact_fr([(scale * k, Fraction(0)) for k in range(5)]) == [(0, 0), (4 * scale, 0)]
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("x,want", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),
+                                      ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])
+def test_triangle_exact_touch_is_not_separation(reverse, x, want):
+    """两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。"""
+    from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact
+    triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]
+    if reverse:
+        triangle.reverse()
+    assert polygons_overlap_exact(triangle, triangle, x) == want
+    assert _tri_overlap_exact(triangle, triangle, (Fraction(x[0]), Fraction(x[1]))) == want
+
+
+@pytest.mark.parametrize("x,want", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),
+                                      ((0.0, 1.0 - 2 ** -40), 1)])
+def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):
+    """微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。"""
+    from eab.kernel2d.covers import membership_convex
+    from eab.kernel2d.geom import is_convex
+    dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    assert is_convex(dent, 1e-12) and not is_convex_exact(dent)
+    assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want
+
+
+def test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path():
+    """微凹底边从 y=2 下降，最早在 t=1 碰到方块顶边（闭式 oracle）；只看护 E2 分派，不声称 E3 首入已精确化。"""
+    from eab.kernel2d.entrance import first_entrance
+    dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    got = first_entrance(dent, SQUARE_EXACT, (0.0, 2.0), (0.0, -1.0))
+    assert got.kind == "entrance"
+    assert got.t == 1.0 and got.x == (0.0, 1.0)
+
+
+@pytest.mark.parametrize("swap", [False, True])
+@pytest.mark.parametrize("scale", [2.0 ** -10, 1.0, 2.0 ** 10])
+def test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions(swap, scale):
+    """平直链不等长导致非 FF 余段，但它不严格；新门全部标签对独立投影 oracle、全部样本对独立 SAT，绝不 ambiguous 豁免。"""
+    from eab.kernel2d.g0 import g0_convex
+    A = [(scale * (x + 5), scale * (y - 3)) for x, y in FLAT_EXACT]
+    B = [(scale * (x - 7), scale * (y + 11)) for x, y in SQUARE_EXACT]
+    if swap:
+        A, B = B, A
+    report = g0_convex(A, B, samples=12, seed=913)
+    assert report.facet_local == report.facet_global == 0
+    assert report.facet_symmetric_diff == []
+    assert report.hull_vertex_mismatch == 0
+    assert report.mismatches == [] and report.band_skipped == report.hull_vertex_ambiguous == 0
+    assert report.boundary_probes == 20 and report.samples == 32
+    assert report.passed
+
+
+def test_sat_oracle_uses_no_kernel_geometry_primitive(monkeypatch):
+    """纪律 A 的可执行门：毒化所有与 Minkowski/法锥共用的几何原语，独立 SAT 仍须给出闭式三态答案。"""
+    import eab.kernel2d.exact as ex
+    def forbidden(*args, **kwargs):
+        raise AssertionError("independent oracle called a tested geometry primitive")
+    for name in ("_fr", "_sub", "_cross", "_dot", "signed_area2", "entrance_block_exact"):
+        monkeypatch.setattr(ex, name, forbidden)
+    for x, want in [((0.0, 0.0), 1), ((1.0, 0.0), 0), ((2.0, 0.0), -1)]:
+        assert ex.convex_overlap_exact(SQUARE_EXACT, SQUARE_EXACT, x) == want
+
+
+def test_g0_support_and_hull_oracles_use_no_tested_geometry_primitive(monkeypatch):
+    """票二全投影与票三 gift-wrap 均只用内联 Fraction；毒化被测原语后仍须返回闭式方块支持集/四角。"""
+    import eab.kernel2d.exact as ex
+    from eab.kernel2d.g0 import _difference_hull_independent, _support_labels_independent
+    def forbidden(*args, **kwargs):
+        raise AssertionError("independent oracle called a tested geometry primitive")
+    for name in ("_fr", "_sub", "_cross", "_dot", "hull_exact_fr", "strict_vertices", "vertex_side_exact"):
+        monkeypatch.setattr(ex, name, forbidden)
+    strict, boundary = _support_labels_independent(SQUARE_EXACT, SQUARE_EXACT)
+    assert strict == set() and len(boundary) == 16
+    assert _difference_hull_independent(FLAT_EXACT, SQUARE_EXACT) == {(-1, -1), (1, -1), (1, 1), (-1, 1)}

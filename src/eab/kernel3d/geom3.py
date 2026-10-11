@@ -97,19 +97,35 @@ class Polyhedron:
     # 每条无向棱在各相邻面里的**遍历方向**：key -> [(face, a, b), ...]，a→b 为该面环里的走向。
     # 二面角的符号完全由它定（闭合且一致朝向的多面体，同一棱在两个面里走向相反）。
     _edir: dict[tuple[int, int], list[tuple[int, int, int]]] | None = field(default=None, repr=False)
-    # 纯函数缓存（Polyhedron 视为不可变：translated / reflected 都新建对象）
+    # Derived caches: all source vertex/face content participates in invalidation.
     _normals: list | None = field(default=None, repr=False, compare=False)
     _face_noise: list | None = field(default=None, repr=False, compare=False)
     _vedges: dict | None = field(default=None, repr=False, compare=False)
     _metrics: tuple[float, float, float] | None = field(default=None, repr=False, compare=False)
     _interior: Vec3 | None = field(default=None, repr=False, compare=False)
     _convex_view: object | None = field(default=None, repr=False, compare=False)
+    _geometry_signature: tuple | None = field(default=None, repr=False, compare=False)
     source_vertices: tuple[int, ...] = field(default=(), repr=False, compare=False)
     source_faces: tuple[tuple[int, ...], ...] = field(default=(), repr=False, compare=False)
+
+    def _sync_geometry_cache(self) -> None:
+        """Invalidate derived data after vertex/face content edits.
+
+        Content, not container identity, defines the cached geometry. Regression
+        and internal vertex-key mutation: tests/test_e5b_polyhedron_cache.py.
+        """
+        signature = (tuple(tuple(p) for p in self.verts),
+                     tuple(tuple(f) for f in self.faces))
+        if signature != self._geometry_signature:
+            for name in ("_edges", "_vf", "_ef", "_edir", "_normals",
+                         "_face_noise", "_vedges", "_metrics", "_interior", "_convex_view"):
+                setattr(self, name, None)
+            self._geometry_signature = signature
 
     # ---------------- 尺度 ----------------
     def metrics(self) -> tuple[float, float, float]:
         """(C, L, ℓ)：坐标量级 max|x_i|、AABB 对角线（特征长度）、最短棱长。缓存。容差政策见模块文档。"""
+        self._sync_geometry_cache()
         if self._metrics is None:
             C = coord_scale(*self.verts)
             lo, hi = self.aabb()
@@ -128,6 +144,7 @@ class Polyhedron:
         """面 fi 的单位外法向的舍入噪声（弧度）：顶点挪动 δ = c·eps·C 时 Newell 向量（= 2·面积·n）至多变
         δ·周长，方向至多转 δ·周长/(2·面积)。三角形上 2·面积/周长 是内切圆半径——细条三角的法向本来就不准。
         退化面（面积 0）为 +inf。缓存。"""
+        self._sync_geometry_cache()
         cache = self._face_noise
         if cache is None:
             cache = self._face_noise = [None] * len(self.faces)
@@ -146,6 +163,7 @@ class Polyhedron:
     # ---------------- 拓扑 ----------------
     def face_normal(self, fi: int) -> Vec3:
         """面的单位外法向（Newell 法，对非三角面与近退化面都稳）。缓存。"""
+        self._sync_geometry_cache()
         cache = self._normals
         if cache is None:
             cache = self._normals = [None] * len(self.faces)
@@ -192,18 +210,21 @@ class Polyhedron:
         return 0.5 * area2
 
     def edges(self) -> list[tuple[int, int]]:
+        self._sync_geometry_cache()
         if self._edges is None:
             self._build_topology()
         assert self._edges is not None
         return self._edges
 
     def vertex_faces(self, vi: int) -> list[int]:
+        self._sync_geometry_cache()
         if self._vf is None:
             self._build_topology()
         assert self._vf is not None
         return self._vf.get(vi, [])
 
     def edge_faces(self, e: tuple[int, int]) -> list[int]:
+        self._sync_geometry_cache()
         if self._ef is None:
             self._build_topology()
         assert self._ef is not None
@@ -227,6 +248,7 @@ class Polyhedron:
         self._edges = sorted(ef)
 
     def edge_traversals(self, e: tuple[int, int]) -> list[tuple[int, int, int]]:
+        self._sync_geometry_cache()
         if self._edir is None:
             self._build_topology()
         assert self._edir is not None
@@ -249,6 +271,7 @@ class Polyhedron:
 
     def vertex_edges(self, vi: int) -> list[tuple[Vec3, float]]:
         """顶点 vi 的入射棱：(由 vi 指向邻点的单位方向, 该棱的方向噪声 `edge_noise`)。零长棱跳过。缓存。"""
+        self._sync_geometry_cache()
         cache = self._vedges
         if cache is None:
             cache = self._vedges = {}
@@ -325,6 +348,7 @@ class Polyhedron:
     def interior_point(self) -> Vec3:
         """保证在多面体内部的一点：取各面三角形质心沿内法向微退，取第一个通过内点测试者；
         兜底退回体心（凸体总成立）。微退步长相对体的尺度（此前取 max(1, 尺度)：小于 1 的体会退出体外）。缓存。"""
+        self._sync_geometry_cache()
         if self._interior is None:
             self._interior = self._find_interior_point()
         return self._interior
@@ -1091,6 +1115,7 @@ def exact_convex_view(P: Polyhedron) -> Polyhedron:
     and source_faces lists the input face hints containing that facet's vertices.
     General surface APIs never call this implicitly.
     """
+    P._sync_geometry_cache()
     if P._convex_view is not None:
         return P._convex_view
     H = merge_coplanar(convex_hull_3d(P.verts), 0.0)
@@ -1110,6 +1135,7 @@ def exact_convex_view(P: Polyhedron) -> Polyhedron:
                      source_vertices=tuple(source[i] for i in order),
                      source_faces=tuple(tuple(fi for fi,hint in enumerate(P.faces)
                                               if set(ring).issubset(hint)) for _,ring in faced))
+    out._sync_geometry_cache()
     out._convex_view = out
     P._convex_view = out
     return out

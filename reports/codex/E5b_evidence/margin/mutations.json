@@ -1,0 +1,63 @@
+[
+  {
+    "id": "margin_ignores_window",
+    "injection": "compiled internal _resolve: ctol=Fraction(0)",
+    "killed_by": "test_margin_window_and_default_guards_have_internal_mutation_teeth -> explicit-window state assertion",
+    "status": "KILLED",
+    "production_file": "src/eab/margin.py",
+    "production_function": "_resolve",
+    "injection_method": "inspect.getsource -> replace internal production statement -> compile -> monkeypatch original function; no fabricated output records",
+    "pytest_evidence": "reports/codex/E5b_evidence/margin/final.xml",
+    "unrelated_failure_accepted": false,
+    "verified_by_final_suite": true
+  },
+  {
+    "id": "margin_default_uses_ctol",
+    "injection": "compiled internal _resolve: None -> contact_resolution(A,B)",
+    "killed_by": "test_margin_window_and_default_guards_have_internal_mutation_teeth -> default-exact state assertion",
+    "status": "KILLED",
+    "production_file": "src/eab/margin.py",
+    "production_function": "_resolve",
+    "injection_method": "inspect.getsource -> replace internal production statement -> compile -> monkeypatch original function; no fabricated output records",
+    "pytest_evidence": "reports/codex/E5b_evidence/margin/final.xml",
+    "unrelated_failure_accepted": false,
+    "verified_by_final_suite": true
+  },
+  {
+    "id": "margin_no_clamp",
+    "injection": "compiled internal _resolve: contact flags false",
+    "killed_by": "test_contact_resolution_gate_has_teeth -> separated-report-band assertion",
+    "status": "KILLED",
+    "production_file": "src/eab/margin.py",
+    "production_function": "_resolve",
+    "injection_method": "inspect.getsource -> replace internal production statement -> compile -> monkeypatch original function; no fabricated output records",
+    "pytest_evidence": "reports/codex/E5b_evidence/margin/final.xml",
+    "unrelated_failure_accepted": false,
+    "verified_by_final_suite": true
+  },
+  {
+    "id": "margin_swallow_exact_penetration",
+    "injection": "compiled internal _resolve: state=min(0,polyhedra_overlap(...))",
+    "killed_by": "test_contact_resolution_gate_has_teeth -> exact-penetration sentinel assertion",
+    "status": "KILLED",
+    "production_file": "src/eab/margin.py",
+    "production_function": "_resolve",
+    "injection_method": "inspect.getsource -> replace internal production statement -> compile -> monkeypatch original function; no fabricated output records",
+    "pytest_evidence": "reports/codex/E5b_evidence/margin/final.xml",
+    "unrelated_failure_accepted": false,
+    "verified_by_final_suite": true
+  },
+  {
+    "id": "margin_default_surface_ignored",
+    "injection": "compiled internal _resolve: exact_surface=False",
+    "killed_by": "test_margin_layer_is_invariant[box_box_face-R7-t0-s0.001] -> default-exact surface nearest label",
+    "status": "KILLED",
+    "production_file": "src/eab/margin.py",
+    "production_function": "_resolve",
+    "injection_method": "compile inside production _resolve; run existing test function",
+    "pytest_evidence": "reports/codex/E5b_evidence/margin/integration_mutations.json",
+    "unrelated_failure_accepted": false,
+    "verified_by_final_suite": false,
+    "verified_by_fresh_frozen_source_probe": true
+  }
+]

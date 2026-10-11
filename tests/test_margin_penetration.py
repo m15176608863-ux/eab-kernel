@@ -30,7 +30,7 @@ from osteomorphic import interlocking_pair  # noqa: E402
 
 from eab.kernel3d.geom3 import box, tetra  # noqa: E402
 from eab.margin import (INSIDE, ON_BOUNDARY, OUTSIDE, PENETRATING, body_distance,  # noqa: E402
-                        inflated_membership, margin_contacts)
+                        inflated_membership, margin_contacts, contact_resolution)
 
 
 def _tetra(s=1.0):
@@ -236,10 +236,16 @@ def _check_monotone_contact_resolution():
     rows = []
     for p in _DEPTHS:
         A, B, _ = _convex_case((0.0, 0.0, 0.4 - p))
-        d, lab = body_distance(A, B)
-        mem = [_ORDER[inflated_membership(A, B, delta=dl)] for dl in _DELTAS]
-        closed = [bool(margin_contacts(A, B, delta=dl)) for dl in _DELTAS]
+        # Retain the old separated-side report-band assertion explicitly;
+        # penetration remains default-exact, and test_margin_exact separately
+        # gates default positive gaps below this same legacy window.
+        options = dict(contact_window=contact_resolution(A, B)) if p < 0 else {}
+        d, lab = body_distance(A, B, **options)
+        mem = [_ORDER[inflated_membership(A, B, delta=dl, **options)] for dl in _DELTAS]
+        closed = [bool(margin_contacts(A, B, delta=dl, **options)) for dl in _DELTAS]
         rows.append((p, d, lab, mem, closed))
+        if p > 0:
+            assert d == 0.0 and lab == (PENETRATING,), ("exact-penetration", p, d, lab)
     for (p0, d0, _, m0, c0), (p1, d1, _, m1, c1) in zip(rows, rows[1:]):
         assert d1 <= d0, (p0, d0, p1, d1)
         assert all(b >= a for a, b in zip(m0, m1)), (p0, m0, p1, m1)
@@ -278,15 +284,15 @@ def test_contact_resolution_gate_has_teeth(monkeypatch):
 
     no_clamp = original_source.replace("return ctol, rnd, wits, True",
                                        "return ctol, rnd, wits, False").replace(
-        "return ctol, rnd, wits, dmin <= ctol", "return ctol, rnd, wits, False")
+        "return ctol, rnd, wits, minimum2 is not None and minimum2 <= ctol*ctol, minimum2", "return ctol, rnd, wits, False, minimum2")
     assert no_clamp != original_source
     monkeypatch.setattr(M, "_resolve", compiled_mutant(no_clamp))
     with pytest.raises(AssertionError) as ei:
         _check_monotone_contact_resolution()
     assert "separated-report-band" in str(ei.value), str(ei.value)
     swallowed_source = original_source.replace(
-        "state = polyhedra_overlap(A, B, gtol)",
-        "state = min(0, polyhedra_overlap(A, B, gtol))")
+        "state = polyhedra_overlap(A, B, 0)",
+        "state = min(0, polyhedra_overlap(A, B, 0))")
     assert swallowed_source != original_source
     monkeypatch.setattr(M, "_resolve", compiled_mutant(swallowed_source))
     with pytest.raises(AssertionError) as swallowed:

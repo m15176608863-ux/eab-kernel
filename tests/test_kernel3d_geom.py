@@ -1,6 +1,7 @@
 """三维几何原语与暴力 oracle 的门（二维版审查的三条教训在此复检）。"""
 
 import random
+import math
 from fractions import Fraction
 
 import pytest
@@ -231,8 +232,9 @@ def test_entrance_block_of_rotated_box_pair_is_a_clean_box(seed, scale):
     assert E.manifold_issues() == [], E.manifold_issues()[:3]
     assert E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-9)
     assert E.is_convex(1e-9)
-    # margin 的旧入口仍先浮点构造差点；认证其实际输入，不假称为精确 E。
-    _assert_exact_hull(E, [tuple(b[i] - a[i] for i in range(3)) for a in A.verts for b in B.verts])
+    # E5b: lift the original data before subtraction; certify the actual exact E.
+    _assert_exact_hull(E, [tuple(Fraction(b[i]) - Fraction(a[i]) for i in range(3))
+                           for a in A.verts for b in B.verts])
     rep = g0_convex3(A, B, samples=40, seed=seed)
     assert rep.passed, (rep.facet_symmetric_diff[:3], rep.hull_vertices, rep.e_vertices, rep.mismatches[:2])
     exact_diffs = [tuple(Fraction(b[i]) - Fraction(a[i]) for i in range(3))
@@ -324,8 +326,17 @@ def test_face_touching_stack_is_touching_under_rigid_motion(seed, t):
         with pytest.raises(ValueError,match='still intruding'):
             escape_height_brute(A,B,(0.,0.,0.),hi=1.)
     else:
+        from e5b_wall_oracle import earliest_star_escape
+        from eab.kernel3d.interlock import escape_height_covers
+        truth=earliest_star_escape(A,B)
+        sol=escape_height_covers(A,B,(0.,0.,0.))
         z=escape_height_brute(A,B,(0.,0.,0.),hi=1.)
-        assert z > 0 and star_overlap(A.translated((0.,0.,z)),B) <= 0
+        assert sol.exact_height == truth > 0
+        assert Fraction(z) >= truth and Fraction(z)-truth <= Fraction(math.ulp(z))
+        # A binary64 display reapplied with float arithmetic is different data.
+        # Preserve the nonpenetration assertion on the exact affine endpoint.
+        exact_A=Polyhedron([(Fraction(x),Fraction(y),Fraction(v)+truth) for x,y,v in A.verts],list(A.faces))
+        assert z > 0 and star_overlap(exact_A,B) <= 0
     # Original ideal contact property remains tested separately with the same
     # input matrix/offset applied rationally (no coordinate-rounding fiction).
     Aq=_placed_exact(box((0.1,-0.2,0.5),(1.,1.,.5)),R,1.,tv)

@@ -307,39 +307,69 @@ def _triangle_bounds(tris):
                   max(v[i] for _,tri in tris for v in tri)) for i in range(3))
 
 
+def _int_dot(a,b):
+    return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]
+
+
+@lru_cache(maxsize=256)
+def _integer_surface(tris):
+    """Same exact planes/edge halfspaces, positive common-denominator integers."""
+    points={p for _,tri in tris for p in tri}
+    den=math.lcm(*(F(x).denominator for p in points for x in p))
+    lift={p:tuple(F(x).numerator*(den//F(x).denominator) for x in p) for p in points}
+    payload=[]
+    for _,tri in tris:
+        a,b,c=(lift[p] for p in tri)
+        n=cross(sub(b,a),sub(c,a))
+        edges=[]
+        for u,v in ((a,b),(b,c),(c,a)):
+            inward=cross(n,sub(v,u))
+            edges.append((inward,_int_dot(inward,u)))
+        payload.append((n,_int_dot(n,a),tuple(edges)))
+    return den,tuple(payload)
+
+
 def _point_in_triangles(p,tris,planes=None,bounds=None):
-    # Per-call immutable values, not an object/global cache. Arrangement clients
-    # can reuse the planes and bounds they have already constructed.
+    # Exactly the Fraction parity algorithm, clearing only positive denominators.
+    # planes remains a compatible precomputation argument; no approximate value
+    # is consumed. Tests compare every state to the previous rational path.
     bounds=_triangle_bounds(tris) if bounds is None else bounds
     if any(p[i] < lo or p[i] > hi for i,(lo,hi) in enumerate(bounds)):
         return -1
-    planes=_planes(tris) if planes is None else planes
-    offsets=[dot(n,sub(o,p)) for n,o in planes]
-    for (_,tri),(n,_),offset in zip(tris,planes,offsets):
-        if offset == 0 and triangle_locate(p,*tri,n) >= 0:
+    den,payload=_integer_surface(tuple(tris))
+    scaled=tuple(F(x)*den for x in p)
+    multiplier=math.lcm(*(x.denominator for x in scaled))
+    point=tuple(x.numerator*(multiplier//x.denominator) for x in scaled)
+    rows=[]
+    for n,h,edges in payload:
+        offset=h*multiplier-_int_dot(n,point)
+        edge_values=tuple((_int_dot(v,point)-h*multiplier,v) for v,h in edges)
+        if offset == 0 and all(value >= 0 for value,_ in edge_values):
             return 0
+        rows.append((n,offset,edge_values))
     for k in count(1):
-        d=(F(1),F(k),F(k*k))
-        hits=0
-        degenerate=False
-        for (_,tri),(n,_),offset in zip(tris,planes,offsets):
-            den=dot(n,d)
-            if den == 0:
+        direction=(1,k,k*k); hits=0; degenerate=False
+        for n,offset,edges in rows:
+            divisor=_int_dot(n,direction)
+            if divisor == 0:
                 if offset == 0:
                     degenerate=True
                     break
                 continue
-            t=offset/den
-            if t <= 0:
+            if offset*divisor <= 0:
                 continue
-            x=add(p,mul(d,t))
-            loc=triangle_locate(x,*tri,n)
-            if loc == 0:
+            edge_signs=[value*divisor+_int_dot(v,direction)*offset for value,v in edges]
+            if divisor < 0:
+                edge_signs=[-value for value in edge_signs]
+            if min(edge_signs) < 0:
+                continue
+            if min(edge_signs) == 0:
                 degenerate=True
                 break
-            hits += loc == 1
+            hits+=1
         if not degenerate:
             return 1 if hits%2 else -1
+
 
 
 def _transverse_fold_crossing(p,q,t,tris):
@@ -586,16 +616,126 @@ def _surface_interior_witness(at,bt,ap,bp):
     return None
 
 
+def _triangle_data(tri):
+    """Exact plane and bounds, reused within one boolean distance query."""
+    n=cross(sub(tri[1],tri[0]),sub(tri[2],tri[0]))
+    if not any(n):
+        raise ValueError('triangle intersection requires nondegenerate triangles')
+    return tri,n,tuple((min(p[i] for p in tri),max(p[i] for p in tri)) for i in range(3))
+
+
+def _cut_interval(tri,values,axis):
+    points=[p[axis] for p,d in zip(tri,values) if d == 0]
+    for k,p in enumerate(tri):
+        j=(k+1)%3; q=tri[j]; a,b=values[k],values[j]
+        if a < 0 < b or b < 0 < a:
+            points.append((p[axis]*b-q[axis]*a)/(b-a))
+    return min(points),max(points)
+
+
+def _triangles_intersect_prepared(first,second):
+    """Closed boolean intersection; exact cuts / projected coplanar SAT.
+
+    This avoids constructing intersection vertices only for a bool consumer.
+    Public triangle_intersection's point-set contract remains unchanged.
+    """
+    a,n,ab=first; b,m,bb=second
+    if any(hi < low or upper < lo for (lo,hi),(low,upper) in zip(ab,bb)):
+        return False
+    da=[dot(m,sub(p,b[0])) for p in a]
+    if min(da) > 0 or max(da) < 0:
+        return False
+    db=[dot(n,sub(p,a[0])) for p in b]
+    if min(db) > 0 or max(db) < 0:
+        return False
+    line=cross(n,m)
+    if any(line):
+        axis=next(i for i,c in enumerate(line) if c)
+        lo,hi=_cut_interval(a,da,axis); left,right=_cut_interval(b,db,axis)
+        return max(lo,left) <= min(hi,right)
+    # Parallel planes remaining after same-side rejection coincide exactly.
+    drop=next(i for i,c in enumerate(n) if c)
+    i,j=(k for k in range(3) if k != drop)
+    for tri in (a,b):
+        for k,p in enumerate(tri):
+            q=tri[(k+1)%3]; dx,dy=q[i]-p[i],q[j]-p[j]
+            x=[dx*v[j]-dy*v[i] for v in a]; y=[dx*v[j]-dy*v[i] for v in b]
+            if max(x) < min(y) or max(y) < min(x):
+                return False
+    return True
+
+
+def _transverse_interior_witness(at,bt,ap,bp):
+    """Sufficient strict-interior certificate; failure retains full arrangement.
+
+    For nonparallel n,m the constructed d has n.d = m.d =
+    (n.m)^2-(n.n)(m.m) < 0. The finite exact plane intercept step is still
+    verified against both original surfaces; no epsilon or convexity assumed.
+    """
+    aa=[_triangle_data(a) for _,a in at]; bb=[_triangle_data(b) for _,b in bt]
+    abounds,bbounds=_triangle_bounds(at),_triangle_bounds(bt)
+    for a,n,ab in aa:
+        for b,m,bounds in bb:
+            if any(hi < low or upper < lo for (lo,hi),(low,upper) in zip(ab,bounds)):
+                continue
+            ds=[dot(m,sub(p,b[0])) for p in a]
+            es=[dot(n,sub(p,a[0])) for p in b]
+            if not min(ds) < 0 < max(ds) or not min(es) < 0 < max(es):
+                continue
+            line=cross(n,m)
+            if not any(line):
+                continue
+            k=next(i for i,c in enumerate(line) if c)
+            lo,hi=_cut_interval(a,ds,k); left,right=_cut_interval(b,es,k)
+            low,high=max(lo,left),min(hi,right)
+            if not low < high:
+                continue
+            points=[p for p,d in zip(a,ds) if d == 0]
+            for j,p in enumerate(a):
+                q=a[(j+1)%3]; s,t=ds[j],ds[(j+1)%3]
+                if s < 0 < t or t < 0 < s:
+                    points.append(add(p,mul(sub(q,p),s/(s-t))))
+            u,v=min(points,key=lambda p:p[k]),max(points,key=lambda p:p[k])
+            p=add(u,mul(sub(v,u),((low+high)/2-u[k])/(v[k]-u[k])))
+            if triangle_locate(p,*a,n) != 1 or triangle_locate(p,*b,m) != 1:
+                continue
+            nn,nm,mm=dot(n,n),dot(n,m),dot(m,m)
+            d=add(mul(n,nm-mm),mul(m,nm-nn))
+            w=_inward_sample(p,mul(d,F(-1)),ap+bp)
+            if _point_in_triangles(w,at,ap,abounds) == _point_in_triangles(w,bt,bp,bbounds) == 1:
+                return w
+    return None
+
+
+def _triangle_plane_outside_window(normal,origin,other,window_squared):
+    """Certified distance lower bound; equality belongs to the closed window.
+
+    Distance to the supporting plane cannot exceed distance to its triangle.
+    When every vertex of the other triangle lies strictly on one side, its
+    minimum plane distance is attained at a vertex. Squaring preserves the
+    exact comparison without constructing a unit normal or a square root.
+    Gate: test_triangle_near_window_preserves_closed_exact_threshold_rigid_motion_and_units.
+    """
+    distances=[dot(normal,sub(p,origin)) for p in other]
+    lo,hi=min(distances),max(distances)
+    gap=lo if lo>0 else (-hi if hi<0 else F(0))
+    return bool(gap and gap*gap > window_squared*dot(normal,normal))
+
+
 def _triangles_near(at,bt,tol):
     """Exact closed-surface distance <= tol, using all feature minimisers."""
     tt=tol*tol
-    for _,a in at:
-        for _,b in bt:
-            if any(max(p[i] for p in a)+tol < min(p[i] for p in b)
-                   or max(p[i] for p in b)+tol < min(p[i] for p in a)
-                   for i in range(3)):
+    aa=[_triangle_data(a) for _,a in at]; bb=[_triangle_data(b) for _,b in bt]
+    for first in aa:
+        a,n,ab=first
+        for second in bb:
+            b,m,bounds=second
+            if any(hi+tol < low or upper+tol < lo for (lo,hi),(low,upper) in zip(ab,bounds)):
                 continue
-            if triangle_intersection(a,b):
+            if tol and (_triangle_plane_outside_window(n,a[0],b,tt)
+                        or _triangle_plane_outside_window(m,b[0],a,tt)):
+                continue
+            if _triangles_intersect_prepared(first,second):
                 return True
             if tol:
                 if any(point_triangle_distance_squared(p,b) <= tt for p in a):
@@ -606,6 +746,74 @@ def _triangles_near(at,bt,tol):
                        for p,q in zip(a,a[1:]+a[:1]) for u,v in zip(b,b[1:]+b[:1])):
                     return True
     return False
+
+
+@lru_cache(maxsize=256)
+def _star_tetrahedra(vertices,faces):
+    """Certified radial tetrahedralisation, or None (never an assumed hull).
+
+    An outward embedded closed surface with a point strictly behind every
+    triangle is star-shaped about that point. Coning its triangles partitions
+    the solid. This sufficient certificate is checked on the supplied surface.
+    """
+    verts=tuple(map(vector,vertices))
+    centre=tuple(sum(p[k] for p in verts)/len(verts) for k in range(3))
+    out=[]
+    for _,indices in triangulate(vertices,faces):
+        a,b,c=(verts[i] for i in indices)
+        n=cross(sub(b,a),sub(c,a))
+        if dot(n,sub(centre,a)) >= 0:
+            return None
+        out.append((centre,a,b,c))
+    return tuple(out)
+
+
+def _integer_tetrahedron(points):
+    """Integer-only SAT payload; no rounded projection or angular threshold."""
+    edges=[sub(points[j],points[i]) for i in range(4) for j in range(i+1,4)]
+    normals=[cross(sub(points[j],points[i]),sub(points[k],points[i]))
+             for i,j,k in ((0,1,2),(0,1,3),(0,2,3),(1,2,3))]
+    bounds=tuple((min(p[k] for p in points),max(p[k] for p in points)) for k in range(3))
+    return points,edges,normals,bounds
+
+
+def _integer_tetrahedron_overlap(a,b):
+    av,ae,an,ab=a; bv,be,bn,bb=b
+    if any(hi < low or upper < lo for (lo,hi),(low,upper) in zip(ab,bb)):
+        return -1
+    boundary=False
+    # Face axes first usually separate without constructing all edge products.
+    for axes in (an+bn,(cross(u,v) for u in ae for v in be)):
+        for n in axes:
+            if not any(n):
+                continue
+            x=[n[0]*p[0]+n[1]*p[1]+n[2]*p[2] for p in av]
+            y=[n[0]*p[0]+n[1]*p[1]+n[2]*p[2] for p in bv]
+            gap=max(min(x)-max(y),min(y)-max(x))
+            if gap > 0:
+                return -1
+            boundary |= gap == 0
+    return 0 if boundary else 1
+
+
+def _star_union_overlap(A,B):
+    """Complete three-state overlap only after both radial certificates pass."""
+    aa=_star_tetrahedra(tuple(A.verts),tuple(A.faces))
+    bb=_star_tetrahedra(tuple(B.verts),tuple(B.faces))
+    if aa is None or bb is None:
+        return None
+    points={p for tet in aa+bb for p in tet}
+    denominator=math.lcm(*(x.denominator for p in points for x in p))
+    lift={p:tuple(x.numerator*(denominator//x.denominator) for x in p) for p in points}
+    aa,bb=([_integer_tetrahedron(tuple(lift[p] for p in tet)) for tet in seq] for seq in (aa,bb))
+    boundary=False
+    for a in aa:
+        for b in bb:
+            state=_integer_tetrahedron_overlap(a,b)
+            if state == 1:
+                return 1
+            boundary |= state == 0
+    return 0 if boundary else -1
 
 
 def surface_overlap(A,B,tol=0):
@@ -619,6 +827,8 @@ def surface_overlap(A,B,tol=0):
         return -1
     at,bt=triangles(A),triangles(B); ap,bp=_planes(at),_planes(bt)
     sat=_convex_surface_sat(av,bv,at,bt,ap,bp)
+    if sat is None:
+        sat=_star_union_overlap(A,B)
     if sat is not None:
         return 0 if sat == -1 and tol and _triangles_near(at,bt,tol) else sat
     for verts,tris,ps in ((av,bt,bp),(bv,at,ap)):
@@ -629,6 +839,8 @@ def surface_overlap(A,B,tol=0):
     # component; the preceding vertex checks have excluded containment.
     if not _triangles_near(at,bt,F(0)):
         return 0 if tol and _triangles_near(at,bt,tol) else -1
+    if _transverse_interior_witness(at,bt,ap,bp) is not None:
+        return 1
     if _surface_interior_witness(at,bt,ap,bp) is not None:
         return 1
     return 0 if _triangles_near(at,bt,tol) else -1

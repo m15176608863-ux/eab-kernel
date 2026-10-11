@@ -15,6 +15,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from osteomorphic import interlocking_pair
 from eab.kernel3d import interlock as I
 from eab.kernel3d.geom3 import Polyhedron,box,polyhedra_overlap
+from eab.kernel3d.exact_sweep import translate_exact
 
 
 def _profile(P):
@@ -75,13 +76,14 @@ def _pair(scale,translation):
                                     (.04305840516802706,-.08058664985244868,0.)])
 def test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile(scale,translation,offset):
     A,B=_pair(scale,translation);off=tuple(v*scale for v in offset)
-    nominal=_root(A.translated(off),B)
+    nominal=_root(translate_exact(A,off),B)
     sol=I.escape_height_covers(A,B,off)
-    actual=A.translated((off[0],off[1],off[2]+sol.height))
+    actual=translate_exact(A,sol.exact_offset)
+    assert sol.exact_height==nominal, "exact affine root against independent profile"
     assert not _intrudes(actual,B), 'returned height, not a higher probe, must be safe'
     C=max(abs(v) for P in (A,B) for p in P.verts for v in p)
     assert abs(sol.height-float(nominal)) <= 4e-12*scale+128*math.ulp(C), "constructed height must approximate the independent profile root"
-    if _intrudes(A.translated(off),B):
+    if _intrudes(translate_exact(A,off),B):
         assert sol.height>0, 'a true tiny initial intrusion cannot be reported as zero'
 
 
@@ -95,21 +97,27 @@ def test_positive_surface_report_band_never_changes_intruding_boolean():
 
 
 def test_disabling_upward_construction_is_caught_by_the_original_profile_error(monkeypatch):
-    source=inspect.getsource(I.escape_height_covers)
-    needle='lifted=math.nextafter(z+r/nz,math.inf)'
-    assert needle in source
-    namespace=dict(I.__dict__)
-    exec(source.replace(needle,'lifted=z'),namespace)
-    monkeypatch.setattr(I,'escape_height_covers',namespace['escape_height_covers'])
-    # This original offset has no safe nominal float root. Without the live
-    # construction correction it either rejects all candidates or returns a
-    # later incorrect root; the independent profile gate detects either case.
-    with pytest.raises((ValueError,AssertionError)) as failure:
-        test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile(
-            1.,0.,(.04305840516802706,-.08058664985244868,0.))
+    """E5a2 upward-float repair is superseded by exact root acceptance.
 
-    if isinstance(failure.value,ValueError):
-        assert str(failure.value)=='escape height not found among cover candidates (candidate set incomplete?)'
-    else:
-        assert ('returned height, not a higher probe, must be safe' in str(failure.value)
-                or 'constructed height must approximate the independent profile root' in str(failure.value))
+    The same original profile error is now guarded by a stronger mutation:
+    bypassing the live exact nonpenetration certificate returns an earlier,
+    penetrating event and the independent exact-root assertion catches it.
+    """
+    original=I._nonpenetrating_at
+    def unchecked(A,B,offset,height):
+        event_times={e.time for e in I.surface_events(A,B,start=offset)}
+        return 0 if height>0 and height in event_times else original(A,B,offset,height)
+    monkeypatch.setattr(I,'_nonpenetrating_at',unchecked)
+    with pytest.raises(AssertionError,match="exact affine root"):
+        test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile(
+            1.,0.,(-.21140068220020514,-.20949049564529884,0.))
+
+
+@pytest.mark.parametrize('scale,shift',[(1.,0.),(2.,1024.),(.5,-2048.)])
+def test_representable_root_preserves_actual_float_translation_safety(scale,shift):
+    A=box(center=(shift,0.,1.75*scale),half=(.5*scale,)*3)
+    B=box(center=(shift,0.,1.*scale),half=(.5*scale,)*3)
+    sol=I.escape_height_covers(A,B,(0.,0.,0.))
+    assert F(sol.height)==sol.exact_height==F(.25*scale)
+    actual=A.translated((0.,0.,sol.height))
+    assert not _intrudes(actual,B), 'returned height, not a higher probe, must be safe'

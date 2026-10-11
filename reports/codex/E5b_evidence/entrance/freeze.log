@@ -1,0 +1,45 @@
+........................................................F............... [ 97%]
+..                                                                       [100%]
+================================== FAILURES ===================================
+______________ test_penetrating_start_takes_the_shallowest_exit _______________
+
+    def test_penetrating_start_takes_the_shallowest_exit():
+        """A 从上方压进 B 0.1：最浅出口是 +z（FF，4 个 VF），深度 0.1；侧向的 facet 间隙 −0.5 / −1.9 不是最短出口。"""
+        A = box(center=(0.0, 0.0, 0.9), half=(0.5, 0.5, 0.5))
+        e = first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+        assert e.kind == "exit" and e.t == 0.0
+        assert e.normal == pytest.approx(Z, abs=1e-12) and e.gap == pytest.approx(-0.1, abs=1e-12)
+        assert e.label[0] == "FF" and len(e.members) == 4
+        # 沿出口法向退 |gap| 恰好分离；退一半仍相交
+        assert polyhedra_overlap(A.translated((0.0, 0.0, -e.gap)), SLAB) <= 0
+        assert polyhedra_overlap(A.translated((0.0, 0.0, -0.5 * e.gap)), SLAB) == 1
+>       assert shortest_exit3(A, SLAB, (0.0, 0.0, 0.0)).label == e.label
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_entrance3.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel3d\entrance3.py:309: in shortest_exit3
+    return _restore_sources(Entrance3("exit", 0.0, x0, rep_label, best.normal, best.point_a, best.point_b, best.gap,
+src\eab\kernel3d\entrance3.py:220: in _restore_sources
+    result.surface_label = _source_label(result.label, A, B, qualify=True)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\entrance3.py:216: in _source_label
+    return kind, feature(af, A), feature(bf, B)
+                 ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+f = ('face', 0)
+P = Polyhedron(verts=[(-0.5, -0.5, 0.4), (0.5, -0.5, 0.4), (0.5, 0.5, 0.4), (-0.5, 0.5, 0.4), (-0.5, -0.5, 1.4), (0.5, -0....5, 1.4), (-0.5, 0.5, 1.4)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+
+    def feature(f, P):
+        if f[0] != "face":
+            return f
+        fi = f[1]
+>       source = P.source_faces[fi][0]
+                 ^^^^^^^^^^^^^^^^^^
+E       IndexError: tuple index out of range
+
+src\eab\kernel3d\entrance3.py:210: IndexError
+=========================== short test summary info ===========================
+FAILED tests/test_entrance3.py::test_penetrating_start_takes_the_shallowest_exit
+1 failed, 73 passed, 24 deselected in 7.94s

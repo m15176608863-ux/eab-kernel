@@ -1,0 +1,52 @@
+...............................F.F..............                         [100%]
+================================== FAILURES ===================================
+_________ test_first_entrance_is_invariant_under_rigid_motion[3-0.0] __________
+
+rot = 3, tmag = 0.0
+
+    @pytest.mark.parametrize("rot,tmag", [(3, 0.0), (3, 1e3), (5, 1e5), (0, 1e6)])
+    def test_first_entrance_is_invariant_under_rigid_motion(rot, tmag):
+        A0 = _rot(box(half=(0.5, 0.5, 0.5)), _mat(_ry(0.2), _rx(0.3))).translated((0.1, -0.2, 2.0))
+        d0 = (0.05, 0.02, -1.0)
+        e0 = first_entrance3(A0, SLAB, (0.0, 0.0, 0.0), d0)
+        R = _quat(rot) if rot else ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+        T = tuple(tmag * c for c in (0.6, -0.48, 0.64))
+        mv = lambda P: Polyhedron([tuple(T[i] + _apply(R, p)[i] for i in range(3)) for p in P.verts], list(P.faces))
+        e = first_entrance3(mv(A0), mv(SLAB), (0.0, 0.0, 0.0), _apply(R, d0))
+        assert e.kind == e0.kind == "entrance"
+        assert abs(e.t - e0.t) <= 1e-9 * (1.0 + tmag * 1e-3), (e.t, e0.t)
+>       assert e.label == e0.label and e.members == e0.members, (e.label, e0.label)
+E       AssertionError: (('VF', ('vertex', 1), ('face', 1, 'triangle', 7, 4, 5)), ('VF', ('vertex', 1), ('face', 1)))
+E       assert (('VF', ('vert...le', 7, 4, 5)) == ('VF', ('vert..., ('face', 1))
+E         
+E         At index 2 diff: ('face', 1, 'triangle', 7, 4, 5) != ('face', 1)
+E         Use -v to get more diff)
+
+tests\test_entrance3.py:181: AssertionError
+_______ test_first_entrance_is_invariant_under_rigid_motion[5-100000.0] _______
+
+rot = 5, tmag = 100000.0
+
+    @pytest.mark.parametrize("rot,tmag", [(3, 0.0), (3, 1e3), (5, 1e5), (0, 1e6)])
+    def test_first_entrance_is_invariant_under_rigid_motion(rot, tmag):
+        A0 = _rot(box(half=(0.5, 0.5, 0.5)), _mat(_ry(0.2), _rx(0.3))).translated((0.1, -0.2, 2.0))
+        d0 = (0.05, 0.02, -1.0)
+        e0 = first_entrance3(A0, SLAB, (0.0, 0.0, 0.0), d0)
+        R = _quat(rot) if rot else ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))
+        T = tuple(tmag * c for c in (0.6, -0.48, 0.64))
+        mv = lambda P: Polyhedron([tuple(T[i] + _apply(R, p)[i] for i in range(3)) for p in P.verts], list(P.faces))
+        e = first_entrance3(mv(A0), mv(SLAB), (0.0, 0.0, 0.0), _apply(R, d0))
+        assert e.kind == e0.kind == "entrance"
+        assert abs(e.t - e0.t) <= 1e-9 * (1.0 + tmag * 1e-3), (e.t, e0.t)
+>       assert e.label == e0.label and e.members == e0.members, (e.label, e0.label)
+E       AssertionError: (('VF', ('vertex', 1), ('face', 1, 'triangle', 7, 4, 5)), ('VF', ('vertex', 1), ('face', 1)))
+E       assert (('VF', ('vert...le', 7, 4, 5)) == ('VF', ('vert..., ('face', 1))
+E         
+E         At index 2 diff: ('face', 1, 'triangle', 7, 4, 5) != ('face', 1)
+E         Use -v to get more diff)
+
+tests\test_entrance3.py:181: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_entrance3.py::test_first_entrance_is_invariant_under_rigid_motion[3-0.0]
+FAILED tests/test_entrance3.py::test_first_entrance_is_invariant_under_rigid_motion[5-100000.0]
+2 failed, 46 passed in 91.81s (0:01:31)

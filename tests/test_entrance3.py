@@ -99,6 +99,13 @@ def test_ray_that_misses_gives_none_and_t_max_is_honoured():
     A = box(center=(0.2, 0.1, 1.3), half=(0.5, 0.5, 0.5))
     assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)).kind == "none"
     assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.2).kind == "none"
+    # The supplied binary64 bottom is .8000000000000000444: its exact
+    # root is strictly greater than the binary64 bound .2999999999999999889.
+    assert F(min(p[2] for p in A.verts)) - F(.5) > F(.3)
+    assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == "none"
+    root = F(min(p[2] for p in A.verts)) - F(.5)
+    assert first_entrance3(A, SLAB, (0., 0., 0.), (0., 0., -1.), t_max=root).exact_t == root
+    A = Polyhedron([(F(x), F(y), F(z) - root + F(.3)) for x, y, z in A.verts], A.faces)
     assert first_entrance3(A, SLAB, (0.0, 0.0, 0.0), (0.0, 0.0, -1.0), t_max=0.3).kind == "entrance"
 
 

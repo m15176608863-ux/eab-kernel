@@ -1,8 +1,10 @@
-"""近竖直墙面的盖不许给逃逸高度（G6 第五轮 critical，2026-10-10）。
+"""Exact supplied-data wall roots and explicit local contact-window migration.
 
-U 形槽里的键贴着两侧竖墙、底面压进槽底 0.2。墙面盖的 n_z 在工程坐标下是 ~1e-11 的纯舍入；旧判据按绝对阈值 1e-12
-把它当"朝上"，z = −gap/n_z 是垃圾高度，又在接受高度的并列组里按枚举序胜出，报 0.99 / 0.58 / 0.35（真值 0.2）。
-修：n_z 必须超过盖法向自身的方向噪声（面法向噪声 / EE 候选的 (n_A + n_B)/sinθ）；height 取谓词接受的候选高度。
+The original four groups by twenty seeds remain unchanged. Exact default roots
+are checked by independent integer swept triangle SAT and rational ray parity.
+The original nominal 0.2 / frozen-height assertions remain under an explicit
+legacy-sized window. Additional ideal rational and 1e-6-clearance cases preserve
+the original physical intent without silently discarding near-vertical events.
 """
 
 from __future__ import annotations
@@ -33,8 +35,8 @@ def _prism_xz(prof, y0, y1):
     return P if P.volume() > 0 else Polyhedron(v, [tuple(reversed(f)) for f in faces])
 
 
-def _key():
-    A0 = box(center=(0.0, 0.0, 0.3), half=(1.0, 0.5, 0.5))                   # 贴两墙、压进槽底 0.2
+def _key(clearance=0.0):
+    A0 = box(center=(0.0, 0.0, 0.3), half=(1.0-clearance, 0.5, 0.5))                   # 贴两墙、压进槽底 0.2
     return Polyhedron([(-p[0], p[1], p[2]) for p in A0.verts], [tuple(reversed(f)) for f in A0.faces])   # 顶点 0 在 x = +1 侧
 
 
@@ -46,19 +48,68 @@ def _place(P, th, t, rng, ulps):
                        for p in P.verts], list(P.faces))
 
 
+from e5b_wall_oracle import earliest_wall_escape
+from eab.margin import effective_geom_tol
+
+
 @pytest.mark.parametrize("t,ulps", [(1e5, 4), (1e4, 1), (1e3, 4), (0.0, 0)])
 def test_vertical_walls_do_not_hijack_the_escape_height(t, ulps):
+    """All original 80 raw inputs: exact answer against independent SAT/ray oracle.
+
+    Oracle primitives are test-only integer triangle SAT intervals and parity
+    rays. No production event, geometric predicate, normal or triangulator is used.
+    The original nominal 0.2 assertions remain verbatim in explicit window mode.
+    """
     L0, Am = _prism_xz(U_PROF, -1.0, 1.0), _key()
     for seed in range(20):
         rng = random.Random(seed)
         A, L = _place(Am, 0.7, t, rng, ulps), _place(L0, 0.7, t, rng, ulps)
         sol = escape_height_covers(A, L, (0.0, 0.0, 0.0))
+        truth=earliest_wall_escape(A,L)
+        assert sol.exact_height == truth, (seed, sol.exact_height, truth, "exact earliest root")
+        assert sol.nonpenetrating_state != 1
+        window=effective_geom_tol(A,L,None)
+        sol = escape_height_covers(A, L, (0.0, 0.0, 0.0), contact_window=window)
         assert abs(sol.height - 0.2) <= 1e-6, (seed, sol.height, sol.cover_label)
         lab = sol.cover_label
         assert lab[0] in ("VF", "FV", "EE")
-        # 胜出盖必须是真正决定高度的那个：它的冻结闭式也给 0.2（墙面盖胜出时冻结闭式是 −gap/n_z 的垃圾，导数无意义）
         sg = frozen_ee_sign(A, L, (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2])) if lab[0] == "EE" else 1.0
         zf = float(escape_height_from_frozen_cover(A, L, lab, (0.0, 0.0, 0.0), ee_sign=sg))
         assert abs(zf - 0.2) <= 1e-6, (seed, lab, zf)
         if seed < 3:
-            assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0)) <= 1e-6
+            assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0, contact_window=window)) <= 1e-6
+
+
+@pytest.mark.parametrize("t,ulps", [(1e5, 4), (1e4, 1), (1e3, 4), (0.0, 0)])
+def test_clearance_keeps_jittered_walls_from_controlling_height(t,ulps):
+    """The original 80-cell construction, now with 1e-6 true lateral clearance."""
+    L0,Am=_prism_xz(U_PROF,-1.,1.),_key(clearance=1e-6)
+    for seed in range(20):
+        rng=random.Random(seed)
+        A,L=_place(Am,.7,t,rng,ulps),_place(L0,.7,t,rng,ulps)
+        sol=escape_height_covers(A,L,(0.,0.,0.))
+        assert sol.exact_height==earliest_wall_escape(A,L), 'clearance exact root'
+        assert abs(sol.height-.2)<=1e-6
+        lab=sol.cover_label
+        sg=frozen_ee_sign(A,L,(lab[1][1],lab[1][2]),(lab[2][1],lab[2][2])) if lab[0]=='EE' else 1.
+        frozen=float(escape_height_from_frozen_cover(A,L,lab,(0.,0.,0.),ee_sign=sg))
+        assert abs(frozen-.2)<=1e-6, (seed,lab,frozen)
+
+
+@pytest.mark.parametrize('scale,translation',[(1.,0.),(1e-3,0.),(1e3,1e5),(1.,1e5)])
+def test_exactly_vertical_ideal_walls_give_point_two(scale,translation):
+    """No float rotation/jitter: exact rational affine data preserve vertical walls."""
+    from fractions import Fraction as F
+    A,L=_key(),_prism_xz(U_PROF,-1.,1.)
+    s,t=F(scale),F(translation)
+    def affine(P):
+        # Rational z-rotation (3/5,-4/5;4/5,3/5), no intermediate float rounding.
+        return Polyhedron([(s*(F(3,5)*F(x)-F(4,5)*F(y))+t,
+                            s*(F(4,5)*F(x)+F(3,5)*F(y))-t,s*F(z)+t) for x,y,z in P.verts],P.faces)
+    A,L=affine(A),affine(L)
+    sol=escape_height_covers(A,L,(0,0,0))
+    assert sol.exact_height==F(.2)*s
+    assert abs(sol.height/scale-.2)<1e-12
+    lab=sol.cover_label
+    sg=frozen_ee_sign(A,L,(lab[1][1],lab[1][2]),(lab[2][1],lab[2][2])) if lab[0]=='EE' else 1.
+    assert abs(float(escape_height_from_frozen_cover(A,L,lab,(0,0,0),ee_sign=sg))/scale-.2)<1e-10

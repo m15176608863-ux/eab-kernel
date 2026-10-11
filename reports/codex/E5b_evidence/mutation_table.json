@@ -1,0 +1,114 @@
+[
+  {
+    "component": "interlock",
+    "mutation": "omit near-vertical exact surface events",
+    "target_assertion": "exact surface event set did not contain a separating height",
+    "status": "KILLED",
+    "evidence": "interlock/mutations.json"
+  },
+  {
+    "component": "interlock",
+    "mutation": "omit returned-root exact nonpenetration certificate",
+    "target_assertion": "exact earliest root including near-vertical events",
+    "status": "KILLED",
+    "evidence": "interlock/mutations.json"
+  },
+  {
+    "component": "interlock",
+    "mutation": "omit first previous candidate interval proof",
+    "target_assertion": "missing earlier candidate interval proof",
+    "status": "KILLED",
+    "evidence": "interlock/mutations.json"
+  },
+  {
+    "component": "interlock",
+    "mutation": "steep nominal vertical tie-window internal mutation",
+    "target_assertion": "(2e-10, (-0.5068809109773141, -0.5068809109773141), '带内漏支')",
+    "status": "KILLED",
+    "evidence": "interlock/mutations.json"
+  },
+  {
+    "component": "margin",
+    "mutation": "margin_ignores_window",
+    "target_assertion": "test_margin_window_and_default_guards_have_internal_mutation_teeth -> explicit-window state assertion",
+    "status": "KILLED",
+    "evidence": "margin/mutations.json"
+  },
+  {
+    "component": "margin",
+    "mutation": "margin_default_uses_ctol",
+    "target_assertion": "test_margin_window_and_default_guards_have_internal_mutation_teeth -> default-exact state assertion",
+    "status": "KILLED",
+    "evidence": "margin/mutations.json"
+  },
+  {
+    "component": "margin",
+    "mutation": "margin_no_clamp",
+    "target_assertion": "test_contact_resolution_gate_has_teeth -> separated-report-band assertion",
+    "status": "KILLED",
+    "evidence": "margin/mutations.json"
+  },
+  {
+    "component": "margin",
+    "mutation": "margin_swallow_exact_penetration",
+    "target_assertion": "test_contact_resolution_gate_has_teeth -> exact-penetration sentinel assertion",
+    "status": "KILLED",
+    "evidence": "margin/mutations.json"
+  },
+  {
+    "component": "margin",
+    "mutation": "margin_default_surface_ignored",
+    "target_assertion": "test_margin_layer_is_invariant[box_box_face-R7-t0-s0.001] -> default-exact surface nearest label",
+    "status": "KILLED",
+    "evidence": "margin/mutations.json"
+  },
+  {
+    "component": "entrance/frozen",
+    "mutation": "predecessor_float",
+    "target_assertion": "Exact first entry must return at 1e20; float t minus sub-ulp step throws false missing-earlier exception.",
+    "status": "KILLED",
+    "evidence": "entrance/mutations.json"
+  },
+  {
+    "component": "entrance/frozen",
+    "mutation": "coplane_tolerance",
+    "target_assertion": "sorted((family kind, member count)) == [('FF',2),('FF',2)]",
+    "status": "KILLED",
+    "evidence": "entrance/mutations.json"
+  },
+  {
+    "component": "entrance/frozen",
+    "mutation": "predecessor_float_midpoint",
+    "target_assertion": "lower < probe < upper",
+    "status": "KILLED",
+    "evidence": "entrance/mutations.json"
+  },
+  {
+    "component": "entrance/frozen",
+    "mutation": "omit_diagonal_topology",
+    "target_assertion": "diagonal EE frozen signed distance",
+    "status": "KILLED",
+    "evidence": "entrance/mutations.json"
+  },
+  {
+    "component": "entrance/frozen",
+    "mutation": "omit_folded_surface_expansion",
+    "target_assertion": "complete exact-surface cover set",
+    "status": "KILLED",
+    "evidence": "entrance/mutations.json"
+  },
+  {
+    "component": "exact_geom",
+    "mutation": "plane distance bound > changed to >=",
+    "target_assertion": "closed boundary equality must not be rejected",
+    "status": "KILLED",
+    "evidence": "tests/test_e5b_triangle_near.py"
+  },
+  {
+    "component": "geom3",
+    "mutation": "cache signature drops vertex content",
+    "target_assertion": "vertex-content invalidation",
+    "status": "KILLED",
+    "evidence": "tests/test_e5b_polyhedron_cache.py::test_cache_vertex_signature_mutation_is_caught"
+  }
+]

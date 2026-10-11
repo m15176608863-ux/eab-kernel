@@ -1,6 +1,6 @@
 """冻结盖的解析表达式（泛型标量：float 或对偶数）。
 
-"片 + 划"里的**片**：组合结构（哪一对特征当家、EE 法向朝哪）已由 float 路径定好，
+"片 + 划"里的**片**：组合结构（哪一对特征当家、EE 法向朝哪）已由精确谓词定好，
 这里只做算术、不做择支。片内是解析的，所以对几何参数逐点可微——与 DDA 冻结活动集后
 解析可微同构。
 
@@ -9,44 +9,66 @@
 
 from __future__ import annotations
 
+from fractions import Fraction
+from math import hypot
+
 from ..dual import Dual, Number, val
-from .covers3 import _qedge_contains, _qunit
-from .geom3 import Polyhedron, cross, exact_edge_vector
+from .covers3 import _oriented_ee_normal
+from .geom3 import Polyhedron, cross, dot, sub, add, exact_edge_vector, exact_surface
 
 
-def face_normal_generic(P: Polyhedron, fi: int):
-    """Newell 面法向，泛型标量（顶点坐标可为对偶数）。"""
-    f = P.faces[fi]
-    o = P.verts[f[0]]
-    nx = ny = nz = 0.0
-    k = len(f)
-    for i in range(k):
-        p = tuple(P.verts[f[i]][t] - o[t] for t in range(3))
-        q = tuple(P.verts[f[(i + 1) % k]][t] - o[t] for t in range(3))
-        nx = nx + (p[1] * q[2] - p[2] * q[1])
-        ny = ny + (p[2] * q[0] - p[0] * q[2])
-        nz = nz + (p[0] * q[1] - p[1] * q[0])
-    ln = (nx * nx + ny * ny + nz * nz) ** 0.5
-    return (nx / ln, ny / ln, nz / ln)
+def _exact_jet_points(points):
+    duals = [c for p in points for c in p if isinstance(c, Dual)]
+    width = duals[0].width if duals else 0
+    if any(c.width != width for c in duals):
+        raise ValueError("dual width mismatch in frozen geometry")
+    primal = [tuple(Fraction(c.v) if isinstance(c, Dual) else Fraction(c) for c in p) for p in points]
+    derivative = [[tuple(Fraction(c.e[k]) if isinstance(c, Dual) else Fraction(0) for c in p)
+                   for p in points] for k in range(width)]
+    return primal, derivative
+
+
+def _unit_jet(n, derivatives, sign=1.0):
+    """Exact polynomial value/derivative; sqrt and output conversion only float."""
+    scale = max(map(abs, n))
+    if not scale:
+        raise ZeroDivisionError("zero normal in frozen geometry")
+    length = hypot(*(float(c / scale) for c in n))
+    value = [sign * float(c / scale) / length for c in n]
+    if not derivatives:
+        return tuple(value)
+    nn = dot(n, n)
+    result = []
+    for i in range(3):
+        channels = tuple(sign * float((dn[i] - n[i] * dot(n, dn) / nn) / scale) / length
+                         for dn in derivatives)
+        result.append(Dual(value[i], channels))
+    return tuple(result)
+
+
+def face_normal_generic(P: Polyhedron, fi: int, triangle=None):
+    """Exact polynomial Newell jet, with floating square-root construction."""
+    face = P.faces[fi] if triangle is None else triangle
+    points, channels = _exact_jet_points([P.verts[i] for i in face])
+    zero = (Fraction(0),) * 3
+    n = zero
+    derivatives = [zero for _ in channels]
+    for j in range(len(points)):
+        k = (j + 1) % len(points)
+        p, q = sub(points[j], points[0]), sub(points[k], points[0])
+        n = add(n, cross(p, q))
+        for w, deriv in enumerate(channels):
+            dp, dq = sub(deriv[j], deriv[0]), sub(deriv[k], deriv[0])
+            derivatives[w] = add(derivatives[w], add(cross(dp, q), cross(p, dq)))
+    return _unit_jet(n, derivatives)
 
 
 def ee_normal_generic(A: Polyhedron, ea, B: Polyhedron, eb, sign: float = 1.0):
-    """交叉棱-棱的单位法向。`sign` 是**冻结组合结构的一部分**（由 float 路径定），
-    不在这里择支——对偶路径里做分支会把导数带进 if，破坏片内解析性。"""
-    endpoints = (A.verts[ea[0]], A.verts[ea[1]], B.verts[eb[0]], B.verts[eb[1]])
-    if not any(isinstance(c, Dual) for p in endpoints for c in p):
-        # E5a compatibility: the exact geometry layer now exposes micro-crossing
-        # edges whose binary64 cross product can be zero or point the wrong way.
-        # The Dual-through formula below is intentionally unchanged (WO-E5b).
-        n = _qunit(cross(exact_edge_vector(B, eb), exact_edge_vector(A, ea)))
-        return tuple(sign * c for c in n)
-    tA = tuple(A.verts[ea[1]][i] - A.verts[ea[0]][i] for i in range(3))
-    tB = tuple(B.verts[eb[1]][i] - B.verts[eb[0]][i] for i in range(3))
-    nx = tB[1] * tA[2] - tB[2] * tA[1]
-    ny = tB[2] * tA[0] - tB[0] * tA[2]
-    nz = tB[0] * tA[1] - tB[1] * tA[0]
-    ln = (nx * nx + ny * ny + nz * nz) ** 0.5
-    return (sign * nx / ln, sign * ny / ln, sign * nz / ln)
+    """Frozen EE jet, including nonzero micro-crosses lost by float subtraction."""
+    points, channels = _exact_jet_points([A.verts[ea[0]], A.verts[ea[1]], B.verts[eb[0]], B.verts[eb[1]]])
+    u, v = sub(points[1], points[0]), sub(points[3], points[2])
+    derivatives = [add(cross(sub(e[3], e[2]), u), cross(v, sub(e[1], e[0]))) for e in channels]
+    return _unit_jet(cross(v, u), derivatives, sign)
 
 
 def _as_float(P: Polyhedron) -> Polyhedron:
@@ -56,25 +78,34 @@ def _as_float(P: Polyhedron) -> Polyhedron:
     return Polyhedron([tuple(val(c) if isinstance(c, Dual) else c for c in v) for v in P.verts], list(P.faces))
 
 
+def _ee_topology_view(P: Polyhedron, edge):
+    """Recover a folded-face diagonal's actual adjacent triangle normals.
+
+    Existing source edges retain the selected general-ring contract. A diagonal
+    absent from that topology can only be interpreted on the exact surface;
+    feeding an absent edge to the cone predicate would choose a fallback sign.
+    """
+    if tuple(sorted(edge)) in P.edges():
+        return P
+    return exact_surface(P)
+
+
 def frozen_ee_sign(A: Polyhedron, B: Polyhedron, ea, eb, tol: float = 1e-9) -> float:
     """Freeze the exact general-cover EE orientation on primal coordinates.
 
-    E5a minimal adapter: use the same supplied face-ring interface as ee_cover,
-    not the separately numbered canonical-convex facet API. tol is the caller's
-    angular domain window; no normal-noise floor can reverse an exact sign.
-    The dual-through normal construction remains separate, pending WO-E5b.
+    Use the same exact two-sided cone rule as facet_normal3, on the supplied
+    view and with the caller's explicit angular domain window. Canonical hull
+    labels require that canonical view; general labels require the input rings.
+    facet_normal3 uses the exact zero window; pass tol=0 for direct agreement.
+    Folded-face diagonals absent from the original topology recover their
+    actual adjacent triangles before the same exact orientation rule is used.
+    The separate dual-through jet retains every exact polynomial derivative.
     """
-    Af, Bf = _as_float(A), _as_float(B)
-    c = cross(exact_edge_vector(Bf, eb), exact_edge_vector(Af, ea))
-    if not any(c):
-        raise ZeroDivisionError('parallel edges do not define a frozen EE normal')
-    for sign, direction in ((1.0, c), (-1.0, tuple(-v for v in c))):
-        if (_qedge_contains(Bf, eb, direction, tol) >= 0
-                and _qedge_contains(Af, ea, tuple(-v for v in direction), tol) >= 0):
-            return sign
-    # Retain a B-side orientation for callers freezing a non-valid candidate;
-    # valid ee_cover labels always take one of the exact two-sided branches.
-    return -1.0 if _qedge_contains(Bf, eb, c, tol) < 0 else 1.0
+    Af, Bf = _ee_topology_view(_as_float(A), ea), _ee_topology_view(_as_float(B), eb)
+    raw = cross(exact_edge_vector(Bf, eb), exact_edge_vector(Af, ea))
+    oriented = _oriented_ee_normal(Af, ea, Bf, eb, tol)
+    return 1.0 if dot(raw, oriented) > 0 else -1.0
+
 
 
 # 冻结路径支持的盖种类 = `body_distance` / `escape_candidates` 可能给出的全部种类。
@@ -132,9 +163,9 @@ def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1
     kind = _check_kind(label)
     _, af, bf = label
     if kind == "VF":
-        return face_normal_generic(B, bf[1])
+        return face_normal_generic(B, bf[1], bf[3:] if len(bf) > 2 else None)
     if kind == "FV":
-        nA = face_normal_generic(A, af[1])
+        nA = face_normal_generic(A, af[1], af[3:] if len(af) > 2 else None)
         return (-nA[0], -nA[1], -nA[2])
     if kind == "EE":
         return ee_normal_generic(A, (af[1], af[2]), B, (bf[1], bf[2]), ee_sign)
@@ -163,10 +194,10 @@ def frozen_gap(A: Polyhedron, B: Polyhedron, label: tuple, x, n) -> Number:
     _, af, bf = label
     if kind == "VF":
         a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
-        b0 = B.verts[B.faces[bf[1]][0]]
+        b0 = B.verts[bf[3] if len(bf) > 2 else B.faces[bf[1]][0]]
         return sum(n[i] * (a[i] - b0[i]) for i in range(3))
     if kind == "FV":
-        a0 = tuple(A.verts[A.faces[af[1]][0]][i] + x[i] for i in range(3))
+        a0 = tuple(A.verts[af[3] if len(af) > 2 else A.faces[af[1]][0]][i] + x[i] for i in range(3))
         b = B.verts[bf[1]]
         return sum(n[i] * (a0[i] - b[i]) for i in range(3))
     # EE / VV3 / VE3 / EV3：af[1] 是 A 的顶点或 A 棱的起点，bf[1] 是 B 的顶点或 B 棱的起点

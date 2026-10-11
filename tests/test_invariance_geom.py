@@ -33,6 +33,8 @@ from fractions import Fraction
 import pytest
 from e5a_cover_oracle import cover_labels as independent_cover_labels
 from e5a2_surface_oracle import star_relation
+from e5b_margin_oracle import check_exact_margin
+import eab.margin as exact_margin
 
 from eab.kernel3d.covers3 import (enumerate_covers3, local_facets3, membership_convex3,
                                   support_gaps3)
@@ -42,6 +44,20 @@ from eab.kernel3d.geom3 import (Polyhedron, box, brute_feature_distance, convex_
                                 polyhedra_overlap, tetra, exact_convex_view)
 from eab.margin import (INSIDE, OUTSIDE, PENETRATING, body_distance, distance_to_convex_entrance,
                         entrance_block_convex, inflated_membership, margin_contacts)
+
+# E5b: keep every historical assertion in its explicitly requested window.
+# Default calls below independently audit the same actual rounded input.
+def body_distance(A, B):
+    return exact_margin.body_distance(A, B, contact_window=exact_margin.contact_resolution(A, B))
+
+
+def margin_contacts(A, B, **kwargs):
+    return exact_margin.margin_contacts(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)
+
+
+def inflated_membership(A, B, **kwargs):
+    return exact_margin.inflated_membership(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)
+
 
 EPS = 2.220446049250313e-16
 T_DIR = (0.6, -0.48, 0.64)                   # 单位向量，非轴对齐
@@ -230,6 +246,7 @@ def test_identity_cell_matches_closed_form(name):
     make, ov, d0, delta, convex, L = PAIRS[name]
     base = _base(name)
     A, B = base["A"], base["B"]
+    check_exact_margin(A, B, delta, state=star_relation(A, B))
     assert polyhedra_overlap(A, B, 1e-12) == ov
     d, lab = body_distance(A, B)
     if ov == 1:
@@ -278,7 +295,7 @@ def test_overlap_verdict_is_invariant(name, rot, tmag, s):
 def test_body_distance_scales_and_keeps_its_label(name, rot, tmag, s):
     base, M, A, B = _cell(name, rot, tmag, s)
     d, lab = body_distance(A, B)
-    state = star_relation(A, B) if name == "stack_touch" else PAIRS[name][1]
+    state = PAIRS[name][1]  # explicit old contact window restores nominal touching
     if state == 1:
         assert (d, lab) == (0.0, (PENETRATING,))
         if name == "stack_touch":
@@ -363,7 +380,8 @@ def _support_gap_oracle(A,B,x):
 def test_margin_layer_is_invariant(name, rot, tmag, s):
     base, M, A, B = _cell(name, rot, tmag, s)
     _, ideal_ov, _, delta, _, L = PAIRS[name]
-    ov = star_relation(A, B) if name == "stack_touch" else ideal_ov
+    check_exact_margin(A, B, s * delta, state=star_relation(A, B))
+    ov = ideal_ov  # explicit old contact window restores nominal touching
     # 真值：贯入或真距离 < δ ⇒ 裕度违约（INSIDE）；否则 OUTSIDE（本文件的 δ 都离真距离很远）
     want_in = INSIDE if ov == 1 or base["d"] < delta else OUTSIDE
     assert inflated_membership(A, B, delta=s * delta) == want_in

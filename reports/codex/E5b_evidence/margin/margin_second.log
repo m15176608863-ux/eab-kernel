@@ -1,0 +1,50 @@
+..................................F..................................... [ 63%]
+.........................................                                [100%]
+================================== FAILURES ===================================
+___________________ test_contact_resolution_gate_has_teeth ____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000053C6B70>
+
+    def test_contact_resolution_gate_has_teeth(monkeypatch):
+        """Disable the actual margin clamp: separated-side band assertion must fail.
+    
+        Separately reintroduce swallowing true penetration into contact. The exact
+        sentinel assertion, not a solver/order-dependent assertion, must then fail.
+        """
+        import eab.margin as M
+        import inspect
+        true_resolve = M._resolve
+        original_source = inspect.getsource(true_resolve)
+    
+        def compiled_mutant(source):
+            namespace = dict(M.__dict__)
+            exec(compile(source, "<E5a2 internal margin._resolve mutant>", "exec"), namespace)
+            return namespace["_resolve"]
+    
+        no_clamp = original_source.replace("return ctol, rnd, wits, True",
+                                           "return ctol, rnd, wits, False").replace(
+            "return ctol, rnd, wits, any(d2 <= ctol*ctol for _, _, _, d2 in wits)", "return ctol, rnd, wits, False")
+        assert no_clamp != original_source
+        monkeypatch.setattr(M, "_resolve", compiled_mutant(no_clamp))
+        with pytest.raises(AssertionError) as ei:
+            _check_monotone_contact_resolution()
+        assert "separated-report-band" in str(ei.value), str(ei.value)
+        swallowed_source = original_source.replace(
+            "state = polyhedra_overlap(A, B, 0)",
+            "state = min(0, polyhedra_overlap(A, B, 0))")
+        assert swallowed_source != original_source
+        monkeypatch.setattr(M, "_resolve", compiled_mutant(swallowed_source))
+        with pytest.raises(AssertionError) as swallowed:
+            _check_monotone_contact_resolution()
+>       assert "exact-penetration" in str(swallowed.value), str(swallowed.value)
+E       AssertionError: (0.0, [True, True, True, True], 1e-12, [False, True, True, True])
+E         assert False
+E          +  where False = all(<generator object _check_monotone_contact_resolution.<locals>.<genexpr> at 0x0000000004A24C70>)
+E       assert 'exact-penetration' in '(0.0, [True, True, True, True], 1e-12, [False, True, True, True])\nassert False\n +  where False = all(<generator object _check_monotone_contact_resolution.<locals>.<genexpr> at 0x0000000004A24C70>)'
+E        +  where '(0.0, [True, True, True, True], 1e-12, [False, True, True, True])\nassert False\n +  where False = all(<generator object _check_monotone_contact_resolution.<locals>.<genexpr> at 0x0000000004A24C70>)' = str(AssertionError('(0.0, [True, True, True, True], 1e-12, [False, True, True, True])\nassert False\n +  where False = all(<generator object _check_monotone_contact_resolution.<locals>.<genexpr> at 0x0000000004A24C70>)'))
+E        +    where AssertionError('(0.0, [True, True, True, True], 1e-12, [False, True, True, True])\nassert False\n +  where False = all(<generator object _check_monotone_contact_resolution.<locals>.<genexpr> at 0x0000000004A24C70>)') = <ExceptionInfo AssertionError('(0.0, [True, True, True, True], 1e-12, [False, True, True, True])\nassert False\n +  where False = all(<generator object _check_monotone_contact_resolution.<locals>.<genexpr> at 0x0000000004A24C70>)') tblen=2>.value
+
+tests\test_margin_penetration.py:298: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_margin_penetration.py::test_contact_resolution_gate_has_teeth
+1 failed, 112 passed in 11.90s

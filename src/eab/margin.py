@@ -39,51 +39,40 @@
 处处**单值**，且因为凸集投影是非扩张映射，n 在 {dist ≥ δ} 上 Lipschitz，常数 ≤ 2/δ。
 尖角变圆角，梯度不再跳——这对可微接触直接有用（见 `tests/test_margin.py` 的实测）。
 
-## 口径与边界（诚实条款）
+## E5b 契约：默认精确，显式接触窗口
 
-- **见证距离 ≠ 盖的 gap。** VF/FV 的 `gap` 是顶点到面**所在平面**的有符号距离；分离的凹体之间
-  也常有顶点落在对方某面平面内侧（实测 −2.7）。两体间距必须用 `|point_a − point_b|`。
-- **本层只在两体分离（或相触）时有数值意义；贯入由 `polyhedra_overlap` 先判。**
-  贯入位形上盖枚举的 |point_a − point_b| **不是**间距，而是贯入深度一类的正数（2026-09-21
-  审查实测 0.1 / 0.4 / 0.3 / 1.3，曾让 `margin_contacts` 返回 []、即回答"安全"——fail-unsafe）。
-  所以三个入口在贯入时一致地回答"已违约"：`body_distance` 返回哨兵 `(0.0, ("PENETRATING",))`，
-  `margin_contacts` 返回单个已闭合的哨兵接触（distance 0、margin_gap = −δ、normal None），
-  `inflated_membership` 答 INSIDE；`margin_gap_from_frozen_cover` 对哨兵抛 ValueError（没有冻结盖）。
-  违约多深要靠贯入深度（未实现）。门：`tests/test_margin_penetration.py`。安全裕度问题本来就活在
-  分离侧，这不是缺陷但必须写明。
-  贯入守卫的可靠性等于 `polyhedra_overlap` 的可靠性：谓词漏判的贯入在这里同样漏判，本层不另设第二道谓词
-  （G6 critical 的等高 X 交叉已由 m2-geom 的接触锥证人修复并合并，门：tests/test_geom3_overlap_witness.py）。
-  E5a2 起，一般相交守卫对给定坐标精确：所有真实内部重叠均给哨兵，不再以 geom_tol 或舍入量吞成相触。
-  正 geom_tol 只将分离侧的精确表面距离带报告为相触；其余本层的距离钳零、近同距排序与浮点见证自校验仍是旧政策，待 E5b。
-- **相触分辨率（纪律 F，2026-09-24 M0.2；2026-10-10 统一成一把尺 `contact_resolution`）。** 间距或贯入深度在
-  在非贯入侧，ctol = max(geom_tol_eff, 1e-12·diag) + 舍入地板 以内按"相触"报告：`body_distance` 返回 **0.0**（标签是实现最小见证的那个盖），
-  `margin_contacts` 里见证距离 ≤ ctol 的盖 distance 钳为 0、margin_gap = −δ、normal None（零距离处见证方向无定义；
-  真贯入已由精确守卫提前返回）。谓词答"相触"而没有见证落在 ctol 内、或谓词答"贯入"，给哨兵。于是回答随贯入深度**单调**：
-  分离 d → 相触报告 0 → 精确贯入哨兵，
-  成员判定 OUTSIDE → ON_BOUNDARY/INSIDE → INSIDE（修前浅于 geom_tol 的贯入把见证距离 ≈ 贯入深度当间距报出，
-  δ < p 时答"安全"，比恰好相触还"安全"——G6 minor[28]）。代价：真实间距 ≤ geom_tol_eff 时报 0（在分辨率以下，
-  且偏向安全侧）。门：`tests/test_margin_penetration.py::test_contact_resolution_is_monotone_in_depth`。
-- **容差随尺度（纪律 F）。** `geom_tol=None`（默认）时 geom_tol_eff = max(1e-9·L, 64·eps·C)：L 是特征长度
-  （`characteristic_length`：各体"首顶点到最远顶点"距离取小，刚体运动下不变、缩放下 ×s），C 是坐标量级
-  （地板 64·eps·C 盖住工程坐标上顶点坐标自身的舍入）。显式给 `geom_tol` 时按**绝对长度**解释，但同样不低于
-  舍入地板。`inflated_membership` 的边界带 `atol` 同理（默认 max(1e-12·L, 64·eps·C)）。修前两者都是绝对
-  1e-9 / 1e-12：边长 1e-9 的整体嵌套答 OUTSIDE（C14 的尺度变体），1e5 坐标上相触的两体在 δ = 0 时答 OUTSIDE。
-  盖枚举的 `tol`（法锥判据，作用在单位向量上，无量纲）不随尺度；M0.3 起它**只是**角度——covers3 不再把它当
-  长度用（M0.2 曾把 1e-9 同时当绝对长度地板，块体 < 1 m 时间隙 ≤ 1e-9 的真最近 VE3 被丢，G6 第二轮 critical），
-  面内/段内的长度带是另一个参数 `extent_tol`（本层用缺省：只有舍入地板）。
-- **自校验（M0.3）。** 分离时盖路径的最小见证距离与 `brute_feature_distance`（全部特征对、不经法锥）在舍入内相等，
-  否则抛 RuntimeError；相触分辨率内没有见证落在带内的（比 2·geom_tol_eff 还薄的体）按贯入处理。
-  门：`tests/test_margin_resolution.py`。
-- **并列裁决按枚举序。** 多个盖在舍入意义上同距（平行面、平行棱）时，`body_distance` 取枚举序第一个，
-  `margin_contacts` 在同距组内也按枚举序排——变换保留顶点/面编号，所以刚体运动下标签逐字不变。
-- 距离由盖枚举给出，其**完备性**（法锥筛选不丢最近特征对）由 `g0_distance_completeness3` 看着。
+给定二进制坐标按其精确有理值解释。默认 `contact_window=None` 不使用库内 ctol：
+严格贯入给 `(0, ("PENETRATING",))` / INSIDE；真实正间隙即使小于旧分辨率也不钳零。
+盖距离/δ/关注带/接触窗的分支以原始坐标构造的有理平方距比较；浮点只报告距离和见证。
+门：`tests/test_margin_exact.py::test_default_has_no_hidden_contact_resolution` 与
+`test_inflated_boundary_comparison_does_not_use_a_float_sqrt_or_implicit_band`。
+
+调用方可以显式给 `contact_window=w`。分离侧精确距离 ≤ w 报距离零与相触；贯入侧必须有
+精确证书证明窗口可接受：`exact_sweep.contact_models` 的六个 ±w 坐标轴平移，或经验证
+星核的内核收缩证明贯入仅落在厚度 ≤ w 的表面壳层；原几何模型也保留。前者是全局平移
+深度的有限充分证书，后者是局部接触厚度上界。有限证书不是完整欧氏距离偏置，不把证书
+失败说成真深度超窗；无证书时保持 PENETRATING。互锁在完全相同的有限模型集上求最早根。
+窗口是调用方选择的报告模型，不是恢复被舍入丢失的理想几何。`geom_tol` 仅留兼容签名。
+旧公式 `contact_resolution(A,B)` 只是调用方可选择的数值；库不隐式调用它。
+门：`test_explicit_window_matches_exact_interval_oracle`；不变性文件的旧断言全部留在显式
+窗口模式，并添加同一 touch/subtol 网格逐格的独立整数四面体并集 SAT 默认精确 oracle。
+
+默认最小距离及并列用精确平方距；显式窗口模式保留旧的浮点见证输出与舍入并列报告顺序，
+该排序不改变精确的贯入/接触/关注带判定。`atol=None` 不引入隐式 δ 边界带。
+分离侧保留盖见证与不经法锥的全特征距离对拍；其舍入界仅审核浮点构造，不决定几何状态。
+输入必须是有效闭合曲面。源面非共面的盖仍遵守 covers3 的源面描述符契约；冻结盖解析式
+不自动钳零。贯入哨兵没有可冻结的盖。
 """
 
 from __future__ import annotations
 
 import sys
+import math
+from fractions import Fraction
+from functools import lru_cache
 from dataclasses import dataclass
 
+from .kernel3d import exact_geom as _exact
 from .dual import Number
 from .kernel3d.covers3 import closest_point_of_convex_hull_to_origin, enumerate_covers3
 from .kernel3d.frozen import frozen_gap, frozen_normal
@@ -152,75 +141,234 @@ def cover_witness(c) -> tuple[float, Vec3 | None] | None:
     return (d, unit(v) if d > 0.0 else None)
 
 
-def _witnesses(A: Polyhedron, B: Polyhedron, tol: float) -> list[tuple]:
-    """全部有效且 in_extent 的盖及其见证 (盖, 见证距离, 单位见证方向)，按枚举序。"""
+@lru_cache(maxsize=1024)
+def _surface_view(vertices, faces):
+    """Only folded rings are expanded; exact planar source labels are retained."""
+    points = tuple(map(_exact.vector, vertices))
+    folded = set()
+    for fi, face in enumerate(faces):
+        p = tuple(points[i] for i in face)
+        n = _exact.normal(p)
+        if any(_exact.dot(n, _exact.sub(q, p[0])) for q in p[1:]):
+            folded.add(fi)
+    if not folded:
+        return Polyhedron(vertices, faces), tuple(("face", fi) for fi in range(len(faces)))
+    triangles = _exact.triangulate(vertices, faces)
+    out, labels = [], []
+    for fi, face in enumerate(faces):
+        if fi not in folded:
+            out.append(face)
+            labels.append(("face", fi))
+        else:
+            for source, tri in triangles:
+                if source == fi:
+                    out.append(tri)
+                    labels.append(("face", fi, "triangle", *tri))
+    return Polyhedron(vertices, out), tuple(labels)
+
+
+def _witnesses(A: Polyhedron, B: Polyhedron, tol: float, *, exact_surface=False) -> list[tuple]:
+    """Cover witnesses; default exact path uses actual triangles of folded rings."""
+    if exact_surface:
+        A, af = _surface_view(tuple(A.verts), tuple(A.faces))
+        B, bf = _surface_view(tuple(B.verts), tuple(B.faces))
     out = []
     for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
         if not c.in_extent:
             continue
         w = cover_witness(c)
         if w is not None:
+            if exact_surface:
+                if c.a_feature[0] == "face":
+                    c.a_feature = af[c.a_feature[1]]
+                if c.b_feature[0] == "face":
+                    c.b_feature = bf[c.b_feature[1]]
             out.append((c, w[0], w[1]))
     return out
 
 
 def contact_resolution(A: Polyhedron, B: Polyhedron, geom_tol: float | None = None) -> float:
-    """相触分辨率 ctol = max(geom_tol_eff, 谓词自己的分辨率 1e-12·diag) + 舍入地板——裕度层**唯一**的那把尺：
-    见证距离 ≤ ctol 钳为 0；谓词答"相触"而没有见证落在 ctol 内才算贯入。
-    G6 第三轮（Find 阶段报 critical、经验证定 major）：旧版钳零用 geom_tol_eff、收下见证表用 geom_tol_eff + 舍入，工程坐标下（|t| = 1e6 时舍入 ≈ geom_tol_eff）
-    贯入深度落在两者之间的一对被当**正间距**报出、答"安全"；major：谓词把离面平面 ≤ 1e-12·diag（被测的那个体的对角线）的点
-    判"在表面上"，两体尺寸比 ≥ 1e3 时这个带大于 geom_tol_eff，一个明明分离的小块经一次旋转被答成贯入。"""
+    """Legacy caller-selectable window, never an implicit default in E5b.
+
+    max(geom_tol_eff, 1e-12 * max AABB diagonal) + rounding_floor.
+    Pass this value explicitly as contact_window to request old contact reports.
+    """
     diag = max(A.metrics()[1], B.metrics()[1])
     return max(effective_geom_tol(A, B, geom_tol), 1e-12 * diag) + rounding_floor(A, B)
 
 
-def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None):
-    """裕度层的共同前处理：(相触分辨率 ctol, 舍入地板, 见证表 | None=贯入, 是否在相触分辨率内)。
+def _contact_window(contact_window):
+    """No implicit tolerance: None and zero both mean exact contact."""
+    if contact_window is None:
+        return Fraction(0)
+    if not math.isfinite(contact_window) or contact_window < 0:
+        raise ValueError("contact_window must be finite and nonnegative")
+    return Fraction(contact_window)
 
-    自校验（M0.3，G6 第二轮两条 critical 之后）：分离时（谓词答 −1）盖路径的最小见证距离必须与
-    `brute_feature_distance`（全部特征对、不经法锥）在舍入内相等，否则抛 RuntimeError——
-    盖枚举漏掉最近特征对（报远处的盖、答"安全"）或见证点不在两体上（距离少报）都不许静默返回。
-    相触时（谓词答 0）必须有见证落在相触分辨率 ctol 内；没有（比 2·ctol 还薄的体被分辨带"蚀穿"，或谓词在它自己的
-    报告带下看到了见证表看不到的接触）按贯入处理——三个入口一致答"已违约"，偏安全侧。
-    E5a2 的相交守卫已不调用浮点 interior_point；真实可表达的薄体不会仅因旧内点分辨率而拒收。
+
+@lru_cache(maxsize=16384)
+def _witness_squared(vertices_a, faces_a, vertices_b, faces_b, label):
+    """Squared local-cover distance on exact input coordinates, before construction."""
+    kind, fa, fb = label
+    av, bv = tuple(map(_exact.vector, vertices_a)), tuple(map(_exact.vector, vertices_b))
+    if kind == "FV":
+        return _witness_squared(vertices_b, faces_b, vertices_a, faces_a, ("VF", fb, fa))
+    if kind == "EV3":
+        return _witness_squared(vertices_b, faces_b, vertices_a, faces_a, ("VE3", fb, fa))
+    if kind == "VF":
+        face = tuple(bv[i] for i in (fb[3:] if len(fb) == 6 else faces_b[fb[1]]))
+        n = _exact.normal(face)
+        h = _exact.dot(n, _exact.sub(av[fa[1]], face[0]))
+        return h*h/_exact.dot(n, n)
+    if kind == "EE":
+        n = _exact.cross(_exact.sub(av[fa[2]], av[fa[1]]), _exact.sub(bv[fb[2]], bv[fb[1]]))
+        h = _exact.dot(n, _exact.sub(av[fa[1]], bv[fb[1]]))
+        return h*h/_exact.dot(n, n)
+    if kind == "VE3":
+        u, w = _exact.sub(bv[fb[2]], bv[fb[1]]), _exact.sub(av[fa[1]], bv[fb[1]])
+        n = _exact.cross(u, w)
+        return _exact.dot(n, n)/_exact.dot(u, u)
+    if kind == "VV3":
+        d = _exact.sub(av[fa[1]], bv[fb[1]])
+        return _exact.dot(d, d)
+    raise ValueError(f"unsupported margin cover {label!r}")
+
+
+
+def _surface_feature_squared(A, B, label):
+    """Actual source feature distance, including every triangle of a folded face."""
+    kind, fa, fb = label
+    if kind == "FV":
+        return _surface_feature_squared(B, A, ("VF", fb, fa))
+    if kind == "VF" and len(fb) == 2:
+        _, labels = _surface_view(tuple(B.verts), tuple(B.faces))
+        pieces = [f[3:] for f in labels if len(f) == 6 and f[1] == fb[1]]
+        if pieces:
+            point = _exact.vector(A.verts[fa[1]])
+            return min(_exact.point_triangle_distance_squared(point, tuple(_exact.vector(B.verts[i]) for i in tri))
+                       for tri in pieces)
+    return _witness_squared(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces), label)
+
+
+def _repair_folded_construction(A, B, c, w, n, squared, rounding):
+    """Replace an invalid folded-ring plane witness, not a rounding-level report."""
+    target = _exact.sqrt_rational(squared)
+    if abs(w-target) <= 4*rounding or c.kind not in ("VF", "FV"):
+        return w, n
+    from .kernel3d.covers3 import _qclosest_triangle
+    X, Y, fa, fb = (A, B, c.a_feature, c.b_feature) if c.kind == "VF" else (B, A, c.b_feature, c.a_feature)
+    if len(fb) != 2:
+        return w, n
+    _, faces = _surface_view(tuple(Y.verts), tuple(Y.faces))
+    pieces = [f[3:] for f in faces if len(f) == 6 and f[1] == fb[1]]
+    if not pieces:
+        return w, n
+    point = _exact.vector(X.verts[fa[1]])
+    vectors = [_qclosest_triangle(*(_exact.sub(_exact.vector(Y.verts[i]), point) for i in tri))
+               for tri in pieces]
+    delta = min(vectors, key=lambda v: _exact.dot(v, v))
+    projected = _exact.add(point, delta)
+    a, b = tuple(map(float, point)), tuple(map(float, projected))
+    if c.kind == "FV":
+        a, b = b, a
+    c.point_a, c.point_b = a, b
+    direction = _exact.mul(delta, -1 if c.kind == "VF" else 1)
+    scale = max(map(abs, direction))
+    n = unit(tuple(float(x/scale) for x in direction)) if scale else None
+    return target, n
+
+def _penetration_within_window(A, B, window):
+    """Shared finite certificate window, not the complete Euclidean depth set.
+
+    See exact_sweep.contact_models: original solids, six exact axis shifts of
+    length window, and either body's certified inner star core. Any model's
+    nonpenetration is sufficient. Failure does not prove depth > window.
+    interlock solves the first accepted height over this very same model set.
     """
-    gtol = effective_geom_tol(A, B, geom_tol)
-    ctol = contact_resolution(A, B, geom_tol)
-    state = polyhedra_overlap(A, B, gtol)
-    if state == 1:
-        return ctol, 0.0, None, True
-    wits = _witnesses(A, B, tol)
-    dmin = min((w for _, w, _ in wits), default=float("inf"))
+    if not window:
+        return False
+    from .kernel3d.exact_sweep import contact_models
+    return any(polyhedra_overlap(ca, cb, 0) <= 0
+               for _, ca, cb in contact_models(A, B, window))
+
+
+def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None,
+             contact_window: float | None = None):
+    """Exact relation/threshold decisions; floats are only witness constructions.
+
+    geom_tol remains a compatibility argument. The legacy resolution is never
+    inferred: the caller must pass contact_window=contact_resolution(A, B).
+    The final self-check bounds construction error, not a geometric branch.
+    """
+    ctol = _contact_window(contact_window)
+    state = polyhedra_overlap(A, B, 0)
+    if state == 1 and not _penetration_within_window(A, B, ctol):
+        return ctol, 0.0, None, True, Fraction(0)
+    wits = []
     rnd = rounding_floor(A, B)
-    if state == 0:
-        if dmin > ctol:
-            return ctol, 0.0, None, True
-        return ctol, rnd, wits, True
-    truth = brute_feature_distance(A, B)
+    for c, w, n in _witnesses(A, B, tol, exact_surface=contact_window is None or not ctol):
+        d2 = _surface_feature_squared(A, B, c.label())
+        w, n = _repair_folded_construction(A, B, c, w, n, d2, rnd)
+        wits.append((c, w, n, d2))
+    rnd = rounding_floor(A, B)
+    if state >= 0:
+        return ctol, rnd, wits, True, Fraction(0)
+    dmin = min((w for _, w, _, _ in wits), default=float("inf"))
+    view_a, _ = _surface_view(tuple(A.verts), tuple(A.faces))
+    view_b, _ = _surface_view(tuple(B.verts), tuple(B.faces))
+    truth = brute_feature_distance(view_a, view_b)
     if abs(dmin - truth) > 4.0 * rnd:
         raise RuntimeError(f"margin self-check failed: the covers give distance {dmin!r} but the nearest feature pair "
                            f"is {truth!r} apart (rounding {rnd:.3g}); the cover enumeration "
                            + ("missed the nearest pair" if dmin > truth else "returned witnesses off the bodies"))
-    return ctol, rnd, wits, dmin <= ctol
+    minimum2 = min((row[3] for row in wits), default=None)
+    if contact_window is not None:
+        # Window mode may retain source-ring labels for legacy reporting, but
+        # its contact/inside decisions must use the actual folded surface.
+        _, af = _surface_view(tuple(A.verts), tuple(A.faces))
+        _, bf = _surface_view(tuple(B.verts), tuple(B.faces))
+        if any(len(f) == 6 for f in (*af, *bf)):
+            actual = _witnesses(A, B, tol, exact_surface=True)
+            minimum2 = min((_surface_feature_squared(A, B, c.label()) for c, _, _ in actual), default=None)
+    return ctol, rnd, wits, minimum2 is not None and minimum2 <= ctol*ctol, minimum2
 
 
-def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float | None = None
-                  ) -> tuple[float, tuple | None]:
-    """两体间距及实现它的那个盖标签（盖路径）。
+def _resolved(A, B, tol, geom_tol, contact_window):
+    """Content-keyed equivalent reuse; no mutable object identity is cached."""
+    return _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+                            tol, geom_tol, contact_window, _resolve, enumerate_covers3,
+                            polyhedra_overlap, brute_feature_distance, _witnesses,
+                            _penetration_within_window, cover_witness)
 
-    给定坐标下真实贯入（`polyhedra_overlap(A, B, geom_tol_eff) == 1`）时返回哨兵 `(0.0, ("PENETRATING",))`：
-    此时盖的见证距离不是间距（见模块诚实条款），不许把它当距离报出去。
-    非贯入侧间距在相触分辨率 ctol（`contact_resolution`）以内时返回 **0.0** 与实现最小见证的盖标签。
-    geom_tol=None 时 geom_tol_eff 随尺度（见 `effective_geom_tol`）。舍入意义上同距的盖按枚举序取第一个。
-    完备性（不丢最近特征对）由 Phase 2 的距离完备性门保证。
+
+@lru_cache(maxsize=1024)
+def _resolved_cached(av, af, bv, bf, tol, geom_tol, contact_window,
+                     implementation, covers, predicate, distance, witnesses, window_test, construction):
+    # The implementation pointers are key material for deliberate fault-injection
+    # tests. Values returned here are internal; public contact records are fresh.
+    return implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+
+
+def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float | None = None,
+                  contact_window: float | None = None) -> tuple[float, tuple | None]:
+    """Exact default relation and nearest-cover comparison; floating distance output.
+
+    Penetration returns (0, (PENETRATING,)). An explicit contact_window accepts
+    certified shallow penetration and exact separated distance <= the window.
+    Window mode retains the historical floating witness/tie reporting order.
     """
-    ctol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
+    ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:
         return 0.0, (PENETRATING,)
     if not wits:
         return (0.0 if contact else float("inf")), None
-    c, w, _ = _tie_groups(wits, lambda t: t[1], rnd)[0]
-    return (0.0 if contact and w <= ctol else w), c.label()
+    if contact_window is None or not ctol:
+        c, w, _, d2 = min(wits, key=lambda row: row[3])
+        return (0.0 if contact else _exact.sqrt_rational(d2)), c.label()
+    c, w, _, d2 = _tie_groups(wits, lambda t: t[1], rnd)[0]
+    if minimum2 is not None and abs(w-_exact.sqrt_rational(minimum2)) > 4*rnd:
+        w = _exact.sqrt_rational(minimum2)
+    return (0.0 if contact else w), c.label()
 
 
 # ------------------------------------------------------------------ 裕度接触
@@ -233,56 +381,83 @@ class MarginContact:
     normal: Vec3 | None      # 单位见证方向 B→A，**单值**（C^{1,1}）；贯入哨兵与相触（distance 0）为 None
     point_a: Vec3 | None     # 贯入哨兵为 None
     point_b: Vec3 | None
+    _exact_closed: bool | None = None
 
     @property
     def closed(self) -> bool:
-        return self.margin_gap <= 0.0
+        return self.margin_gap <= 0.0 if self._exact_closed is None else self._exact_closed
 
 
 def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float = 0.0,
-                    tol: float = 1e-9, geom_tol: float | None = None) -> list[MarginContact]:
-    """裕度 δ 下的广义接触：间距 ≤ δ + band 的有效盖，按 margin_gap 升序（舍入意义上的并列按枚举序）。
+                    tol: float = 1e-9, geom_tol: float | None = None,
+                    contact_window: float | None = None) -> list[MarginContact]:
+    """Generalized contacts with exact squared-distance inclusion <= delta+band.
 
-    band 是"关注带"宽度（δ 之外还想看多远），band=0 只返回已闭合的广义接触。
-    给定坐标下真实贯入时返回**单个已闭合的哨兵**
-    `MarginContact(("PENETRATING",), distance=0, margin_gap=−δ, normal=None)`——
-    裕度谓词只回答"已违约"，与 `inflated_membership` 的 INSIDE 一致（fail-safe）。
-    两体在相触分辨率 ctol（`contact_resolution`）内时，见证距离 ≤ ctol 的盖 distance 钳为 0、
-    margin_gap = −δ、normal None——与 `body_distance` 的 0.0 一致，结果随贯入深度单调。
+    Default penetration returns one closed sentinel; explicit contact_window
+    accepts certified shallow penetration and exact separated distances <= w.
+    Accepted contact distances are zero, normal is None, margin_gap=-delta.
+    Default ordering uses exact squared distances. Window-mode construction
+    distances and tie reporting retain the historical floating convention.
     """
-    ctol, rnd, wits, contact = _resolve(A, B, tol, geom_tol)
+    ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:
         return [MarginContact((PENETRATING,), 0.0, 0.0 - delta, None, None, None)]
     out: list[MarginContact] = []
-    for c, w, n in wits:
-        if contact and w <= ctol:
-            w, n = 0.0, None
-        if w > delta + band:
+    ranked = []
+    nearest2 = min((row[3] for row in wits), default=None)
+    threshold = Fraction(delta) + Fraction(band)
+    for c, w, n, d2 in wits:
+        if contact and (d2 <= ctol*ctol or d2 == nearest2):
+            w, n, d2 = 0.0, None, Fraction(0)
+        elif contact_window is None or not ctol:
+            w = _exact.sqrt_rational(d2)
+        if threshold < 0 or d2 > threshold*threshold:
             continue
-        out.append(MarginContact(c.label(), w, w - delta, n, c.point_a, c.point_b))
+        gap = w - delta
+        if gap == 0 and d2 != Fraction(delta)**2 and delta >= 0:
+            denominator = Fraction(w)+Fraction(delta)
+            if denominator:
+                gap = float((d2-Fraction(delta)**2)/denominator)
+        out.append(MarginContact(c.label(), w, gap, n, c.point_a, c.point_b,
+                                 delta >= 0 and d2 <= Fraction(delta)**2))
+        ranked.append((d2, out[-1]))
+    if contact_window is None or not ctol:
+        return [m for _, m in sorted(ranked, key=lambda item: item[0])]
     return _tie_groups(out, lambda m: m.margin_gap, rnd)
 
 
 def boundary_band(A: Polyhedron, B: Polyhedron, atol: float | None = None) -> float:
-    """`inflated_membership` 的边界带：atol=None 时 max(1e-12·L, 64·eps·C)；显式给出时不低于舍入地板。"""
+    """Legacy caller-selectable boundary band; not used by the exact default.
+
+    Callers wanting the old delta band may explicitly pass atol=boundary_band(A,B).
+    """
     base = REL_BOUNDARY_TOL * characteristic_length(A, B) if atol is None else float(atol)
     return max(base, rounding_floor(A, B))
 
 
 def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: float = 1e-9,
-                        geom_tol: float | None = None, atol: float | None = None) -> int:
-    """参考点相对膨胀入口块 E_δ 的位置：−1 外 / 0 边界 / 1 内（= 裕度已违约）。
+                        geom_tol: float | None = None, atol: float | None = None,
+                        contact_window: float | None = None) -> int:
+    """Exact squared-distance comparison against δ; optional explicit boundary band.
 
-    贯入时直接判"内"（见证距离失效，见模块诚实条款；由 `body_distance` 的贯入哨兵给出）。
-    |d − δ| ≤ 边界带（`boundary_band`，随尺度）即"边界"；相触分辨率内 d = 0，故 δ = 0 时答边界。
+    atol=None means zero (no implicit rounding floor). contact_window changes
+    only contact reporting; every accepted shallow penetration is certified.
     """
-    d, lab = body_distance(A, B, tol=tol, geom_tol=geom_tol)
-    if lab == (PENETRATING,):
+    ctol, _, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
+    if wits is None:
         return INSIDE
-    band = boundary_band(A, B, atol)
-    if d < delta - band:
+    if not wits:
+        return ON_BOUNDARY if contact and delta == 0 else (INSIDE if contact else OUTSIDE)
+    d2 = minimum2
+    if contact:
+        d2 = Fraction(0)
+    band = Fraction(0 if atol is None else atol)
+    if band < 0:
+        raise ValueError("atol must be nonnegative")
+    lower, upper = Fraction(delta)-band, Fraction(delta)+band
+    if lower > 0 and d2 < lower*lower:
         return INSIDE
-    if d > delta + band:
+    if upper < 0 or d2 > upper*upper:
         return OUTSIDE
     return ON_BOUNDARY
 
@@ -290,14 +465,14 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
 # ------------------------------------------------------------------ 凸情形的独立 oracle
 
 def entrance_block_convex(A: Polyhedron, B: Polyhedron) -> Polyhedron:
-    """显式造出 E(A,B) = conv{b − a}（**仅凸体**）。用作定理二的独立 oracle。
+    """Exact E(A,B) = conv{b-a} for convex bodies.
 
-    凸包的容差带上**原坐标**的舍入地板：差点本身只有 L 量级，噪声却是 eps·|原坐标|（工程坐标下 1e5 ~ 1e6），
-    凸包自己只看得见差点坐标，算出的地板小 5 个量级，只能靠 ×100 逐级放大自救（M0.3 之前）。"""
-    pts = [sub(b, a) for a in A.verts for b in B.verts]
-    lo, hi = A.aabb()[0], A.aabb()[1]
-    L = max(norm(sub(hi, lo)), norm(sub(*reversed(B.aabb()))), rounding_floor(A, B))
-    return convex_hull_3d(pts, tol=max(1e-12, 4.0 * rounding_floor(A, B) / L))
+    Fractions are formed before subtraction, so no floating derived point is
+    ever treated as original data by the exact hull.
+    Gate: test_margin_exact::test_entrance_block_forms_differences_before_any_float_rounding.
+    """
+    pts = [_exact.sub(_exact.vector(b), _exact.vector(a)) for a in A.verts for b in B.verts]
+    return convex_hull_3d(pts)
 
 
 def nearest_point_on_convex_entrance(E: Polyhedron, x: Vec3) -> Vec3:
@@ -328,7 +503,7 @@ def margin_gap_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple, x, 
     这由 float 路径的 `body_distance` 选出，是冻结组合结构的一部分。
     冻结路径接得住 `body_distance` 可能给出的全部盖种类：VF / FV / EE / VV3 / VE3 / EV3
     （低维盖的法向随平移 x 转动，按 x 计算；门：tests/test_frozen_lowdim.py）。
-    相触分辨率内（`body_distance` 报 0.0）这里给的是该盖的**有符号**间隙（|gap| ≤ geom_tol_eff，亚容差贯入时为负），
+    显式接触窗口内（`body_distance` 报 0.0）这里给的是该盖的**有符号**间隙（浅贯入时为负），
     不是钳过的 0——冻结路径是解析式，不做择支。
     贯入哨兵 ("PENETRATING",) 没有冻结盖，抛 ValueError。
     """

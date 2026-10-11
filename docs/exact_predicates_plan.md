@@ -1,5 +1,11 @@
 # 换路：精确谓词、浮点只做构造（2026-10-10，G6 第五轮之后）
 
+> **E5b 未完成项（契约口径）**：当前显式 `contact_window` 为六轴刚性脱离证书 OR 局部径向薄壳政策，不是完整贯入深度 ≤ 窗口的必要充分判定；未经所有者确认替代定义，不把该项计为完成。默认精确路径不采用此政策，详情与全套结果见 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md)。
+
+
+> **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的接触报告政策。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
+
+
 ## 为什么换
 
 M0 的目标是"要么答对、要么报错、绝不静默给错"。几何核此前的做法是**浮点判定 + 噪声带**：每个分支判据都比较一个浮点量与
@@ -39,7 +45,7 @@ M0 的目标是"要么答对、要么报错、绝不静默给错"。几何核此
 | E2 | 二维凸路径接精确层：凸性/极角/平行/成员/法锥精确；facet gap 只作构造量；G0 三票零容差、不跳样本；删除方向可行窗/链法向；凸首入选路、初态与射线裁剪也用精确 facet | WO-E2 已验收合入 `e1fbbd4`（2026-10-12 工单确认；全套 7500 passed）：`tests/test_kernel2d_exact.py`、`tests/test_kernel2d_report_band.py`、`tests/test_kernel2d_convex_ray_exact.py` 及改写后的二维回归/不变性门。全套、耗时与突变结果见 `reports/codex/E2_report.md`；不等于 G6 退出 |
 | E3 | 二维剩余首入、局部 VE/EV/VV、边内与凸包 | WO-E3E4 实现并配门（2026-10-12，待所有者验收/G6）：凹初态/仿射根/段内/相交/漏候选自检在 Fraction 上做，局部出口按精确平方距离选最浅盖；精确并列与 near_labels 分开；显式域窗不抬噪声地板。`test_kernel2d_entrance_e3.py`、`test_kernel2d_covers_e3.py`，全套与突变证据见 `reports/codex/E3E4_report.md` |
 | E4 | 极限分析有理数自校验 | WO-E3E4 实现并配门（2026-10-12，待所有者验收/G6）：LP 解保留有理数见证，静力/对偶/互补/容许性精确核同一模型；多体可分辨性按本体形心/臂长，风险只报 resolvability/statuses，不改变原问题精确 status/alpha；原筛查测试保留输入并加强为精确答案与风险报告双门。`test_limit_exact_selfcheck.py`、既有 selfcheck/multi 门及源码突变；10⁻¹⁰⁰ 注入用 Fraction 保持可表达性，浮点已舍入成原值时不能声称能识别未表达的差异 |
-| E5 | 三维：凸体按顶点集的精确凸包表示（微二面角是真棱），棱弧 / 顶点锥 / 交点参数精确；G0 三维三票为定理检验 | **WO-E5a 按部分完成验收为 `5b09ea3`，E5a2 续作留树、未过 G6**：精确凸包/共面归并、显式精确三角表面原语、局部盖符号与凸成员、G0 三票零跳样零豁免、保守过滤已有门。E5a2 已将三个旧一般入口接入有效朝外闭合嵌入表面的精确三角化语义，正 tol 凸成员为完整欧氏边界带，枚举窗口不再读构造 gap。一般源环单盖只保证 Newell 锚平面描述符边界，不声称完整折面法锥。门 `test_e5a2_surface.py`、`test_e5a2_covers.py`；这仍不是三维所有调用层全部精确。设计 `docs/exact_3d_design.md`，实测、突变与遗漏 `reports/codex/E5a2_report.md`。E5b 的 margin/entrance3/interlock/frozen 完整精确化仍未做 |
+| E5 | 三维：凸体按顶点集的精确凸包表示（微二面角是真棱），棱弧 / 顶点锥 / 交点参数精确；G0 三维三票为定理检验 | **WO-E5a 按部分完成验收为 `5b09ea3`，E5a2 续作留树、未过 G6**：精确凸包/共面归并、显式精确三角表面原语、局部盖符号与凸成员、G0 三票零跳样零豁免、保守过滤已有门。E5a2 已将三个旧一般入口接入有效朝外闭合嵌入表面的精确三角化语义，正 tol 凸成员为完整欧氏边界带，枚举窗口不再读构造 gap。一般源环单盖只保证 Newell 锚平面描述符边界，不声称完整折面法锥。门 `test_e5a2_surface.py`、`test_e5a2_covers.py`；这仍不是三维所有调用层全部精确。设计 `docs/exact_3d_design.md`，实测、突变与遗漏 `reports/codex/E5a2_report.md`。E5b 已实现默认精确分支、精确运动事件、冻结三角标签及显式窗口；以 E5b 报告验收范围为准，不宣称任意凹体全局 E 完备 |
 
 每一步都配精确 oracle（与被测路径零共用）与突变体；对 legacy 的对账（bb52 的 3° / 1e-6）走显式的域窗口，不受影响。
 
@@ -60,7 +66,7 @@ M0 的目标是"要么答对、要么报错、绝不静默给错"。几何核此
 
 - 显式凸 API 定义对象为输入顶点的精确凸包。非共面源四边形可能分裂，标签属于 canonical convex view，`source_vertices` / `source_faces` 记录来源；一般单盖仍按源面编号，二者不得混用。
 - `g03_exact.py` 用独立整数/有理算术凸包、SAT 和支撑集作 oracle，先保存原输入再调用被测凸化路径。边界探针覆盖 E 的全部顶点、棱中点、面重心，不以 ambiguous / low_e 豁免。门 `test_g03_e5a.py`、`test_covers3_g0_vote2.py`。
-- 一般非平面源环单盖只解释为精确 Newell 向量及首顶点锚平面/源拓扑描述符，**不称为折面实体法锥**。E5a2 已接旧一般表面入口，限有效朝外闭合嵌入表面；凹块全局 E、完整折面法锥及 E5b 的迁移仍未完成。
+- 一般非平面源环单盖只解释为精确 Newell 向量及首顶点锚平面/源拓扑描述符，**不称为折面实体法锥**。E5a2 已接旧一般表面入口，限有效朝外闭合嵌入表面；凹块全局 E 与完整折面法锥仍未完成；E5b 的后继路径迁移见本文件开头更新。
 - `membership_convex3(tol=0)` 为精确三分；E5a2 正 tol 是完整欧氏边界带，外部用精确最近凸组合证书，平面距只作下界。`enumerate_covers3` 六类窗口改用原数据精确距离平方；后继 margin/entrance/interlock/frozen 的构造量分支不因此自动精确。
 
 
