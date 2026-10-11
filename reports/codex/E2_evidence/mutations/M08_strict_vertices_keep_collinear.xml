@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.122" timestamp="2026-10-12T00:06:51.350892+08:00" hostname="RICH"><testcase classname="tests.test_kernel2d_exact" name="test_strict_vertices_discard_flat_chain_subdivision_vertices[False]" time="0.001"><failure message="assert 5 == 4&#10; +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 2), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])">swap = False
+
+    @pytest.mark.parametrize("swap", [False, True])
+    def test_strict_vertices_discard_flat_chain_subdivision_vertices(swap):
+        """闭式 E=[-1,1]^2 只有四角；旧随机门无共线输入，现保留样本并补平直链，零凸包/法锥原语共享。"""
+        from eab.kernel2d.exact import strict_vertices
+        A, B = (SQUARE_EXACT, FLAT_EXACT) if swap else (FLAT_EXACT, SQUARE_EXACT)
+        eb = entrance_block_exact(A, B)
+        assert len(eb.vertices) == 5, "fixture must exercise an actual flat subdivision"
+        vertices = [eb.vertices[k] for k in strict_vertices(eb)]
+&gt;       assert len(vertices) == 4
+E       assert 5 == 4
+E        +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 2), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])
+
+tests\test_kernel2d_exact.py:248: AssertionError</failure></testcase><testcase classname="tests.test_kernel2d_exact" name="test_strict_vertices_discard_flat_chain_subdivision_vertices[True]" time="0.001"><failure message="assert 5 == 4&#10; +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 2), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])">swap = True
+
+    @pytest.mark.parametrize("swap", [False, True])
+    def test_strict_vertices_discard_flat_chain_subdivision_vertices(swap):
+        """闭式 E=[-1,1]^2 只有四角；旧随机门无共线输入，现保留样本并补平直链，零凸包/法锥原语共享。"""
+        from eab.kernel2d.exact import strict_vertices
+        A, B = (SQUARE_EXACT, FLAT_EXACT) if swap else (FLAT_EXACT, SQUARE_EXACT)
+        eb = entrance_block_exact(A, B)
+        assert len(eb.vertices) == 5, "fixture must exercise an actual flat subdivision"
+        vertices = [eb.vertices[k] for k in strict_vertices(eb)]
+&gt;       assert len(vertices) == 4
+E       assert 5 == 4
+E        +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 2), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])
+
+tests\test_kernel2d_exact.py:248: AssertionError</failure></testcase></testsuite></testsuites>

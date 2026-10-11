@@ -1,0 +1,32 @@
+FF..                                                                     [100%]
+================================== FAILURES ===================================
+____________ test_corner_cone_boundary_is_not_strict[direction0-0] ____________
+
+direction = (-1, 0), want = 0
+
+    @pytest.mark.parametrize("direction,want", [((-1, 0), 0), ((0, 1), 0), ((-1, 1), 1), ((1, -1), -1)])
+    def test_corner_cone_boundary_is_not_strict(direction, want):
+        """方块左下角锥边界不是严格内部；闭式坐标方向 oracle 不用法锥叉积实现，分别覆盖边界/内部/外部。"""
+        from eab.kernel2d.exact import vertex_side_exact
+>       assert vertex_side_exact(SQUARE_EXACT, 0, direction) == want
+E       assert 1 == 0
+E        +  where 1 = <function vertex_side_exact at 0x00000000046A3920>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 0, (-1, 0))
+
+tests\test_kernel2d_exact.py:225: AssertionError
+____________ test_corner_cone_boundary_is_not_strict[direction1-0] ____________
+
+direction = (0, 1), want = 0
+
+    @pytest.mark.parametrize("direction,want", [((-1, 0), 0), ((0, 1), 0), ((-1, 1), 1), ((1, -1), -1)])
+    def test_corner_cone_boundary_is_not_strict(direction, want):
+        """方块左下角锥边界不是严格内部；闭式坐标方向 oracle 不用法锥叉积实现，分别覆盖边界/内部/外部。"""
+        from eab.kernel2d.exact import vertex_side_exact
+>       assert vertex_side_exact(SQUARE_EXACT, 0, direction) == want
+E       assert 1 == 0
+E        +  where 1 = <function vertex_side_exact at 0x00000000046A3920>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 0, (0, 1))
+
+tests\test_kernel2d_exact.py:225: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_exact.py::test_corner_cone_boundary_is_not_strict[direction0-0]
+FAILED tests/test_kernel2d_exact.py::test_corner_cone_boundary_is_not_strict[direction1-0]
+2 failed, 2 passed in 0.19s

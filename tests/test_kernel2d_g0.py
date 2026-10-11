@@ -34,15 +34,23 @@ def test_entrance_block_area_is_minkowski_area():
 
 
 def test_degenerate_parallel_edges_membership_still_exact():
+    """旧门在成员或暴力票为 0 时跳过；新门对同样 500 个样本加 8 个边界点逐一精确核对。
+    oracle 用 Fraction 分离轴（convex_overlap_exact），不经 Minkowski 构造/角排序/成员 facet 路径；
+    tol=0 消除报告带，要求三态都出现，因此强于原来的仅带外符号相符。
+    """
+    from eab.kernel2d.exact import convex_overlap_exact
     rng = random.Random(7)
     eb = convex_entrance_block(SQUARE, SQUARE, tol=1e-12)
-    for _ in range(500):
-        x = (rng.uniform(-1.5, 1.5), rng.uniform(-1.5, 1.5))
-        m = membership_convex(SQUARE, SQUARE, x, 1e-9, eb)
-        b = polygons_overlap(translate(SQUARE, x), SQUARE, 1e-12)
-        if m == 0 or b == 0:
-            continue
+    probes = [(rng.uniform(-1.5, 1.5), rng.uniform(-1.5, 1.5)) for _ in range(500)]
+    probes += [(-1.0, -1.0), (-1.0, 1.0), (1.0, -1.0), (1.0, 1.0),
+               (-1.0, 0.0), (1.0, 0.0), (0.0, -1.0), (0.0, 1.0)]
+    states = set()
+    for x in probes:
+        m = membership_convex(SQUARE, SQUARE, x, 0.0, eb)
+        b = convex_overlap_exact(SQUARE, SQUARE, x)
         assert m == b, (x, m, b)
+        states.add(m)
+    assert states == {-1, 0, 1}
 
 
 def test_gate_has_teeth_wrong_orientation_is_caught():
@@ -281,12 +289,28 @@ def test_exit_completeness_needs_one_direction_per_translation():
 @pytest.mark.parametrize("C", [1e5, 1e6])
 @pytest.mark.parametrize("Ls", [1e-3, 1e-2, 1e-1])
 @pytest.mark.parametrize("d", [1e-8, 1e-7, 1e-6, 1e-5])
-def test_vote_three_treats_kinks_below_the_hull_chord_tolerance_as_ambiguous(C, Ls, d):
-    """A = 单位方块在 (C, C)，B = 原点处边长 Ls 的方块、底边一端抬 Ls·d（倾 d rad，远大于两边的方向噪声，所以合法地不并成 FF）：
-    折点离弦 Ls·d 落在（合并窗, round_floor(C)] 之间时 convex_hull 按弦距丢掉它、E 保留它——旧版第三票报 hull_vertex_mismatch = 1
-    假红（24 格里 13 格），票一 2000 样本 0 失配、票二对称差空。现在这种顶点两边都不计、记 hull_vertex_ambiguous。"""
+def test_vote_three_keeps_exact_kinks_without_ambiguous_exemptions(C, Ls, d):
+    """旧门允许短边微折点落在凸包弦距容差内时从票三两侧删掉（hull_vertex_ambiguous≤2）。
+    E2 新口径：同一 24 格必须保留全部 5 个严格顶点，零说不清、零跳样；参数仍覆盖工程坐标/短边/小倾角。
+    oracle：测试独立内联 Fraction 单调链，差点先精确相减，不调用 Minkowski、法锥或库凸包函数。
+    新断言不更弱：原来的整门通过保留，另要求以前允许豁免的微折点也确实参与，并钉住全部边界探针计数。
+    """
+    from fractions import Fraction as F
     A = [(C, C), (C + 1.0, C), (C + 1.0, C + 1.0), (C, C + 1.0)]
     B = [(0.0, 0.0), (Ls, Ls * d), (Ls, Ls), (0.0, Ls)]
+    pts = sorted({(F(b[0]) - F(a[0]), F(b[1]) - F(a[1])) for a in A for b in B})
+    def half(seq):
+        out = []
+        for p in seq:
+            while len(out) >= 2 and ((out[-1][0] - out[-2][0]) * (p[1] - out[-2][1])
+                                     - (out[-1][1] - out[-2][1]) * (p[0] - out[-2][0])) <= 0:
+                out.pop()
+            out.append(p)
+        return out
+    hull = set(half(pts)[:-1] + half(list(reversed(pts)))[:-1])
+    assert len(hull) == 5
     r = g0_convex(A, B, samples=400, seed=1)
-    assert r.passed, (C, Ls, d, r.hull_vertex_mismatch, r.hull_vertex_ambiguous, r.facet_symmetric_diff, r.mismatches[:2])
-    assert r.hull_vertex_ambiguous <= 2
+    assert r.passed, (C, Ls, d, r.hull_vertex_mismatch, r.facet_symmetric_diff, r.mismatches[:2])
+    assert r.hull_vertex_mismatch == r.hull_vertex_ambiguous == r.band_skipped == 0
+    assert r.boundary_probes == 20 and r.samples == 420
+    assert r.facet_local == r.facet_global == 2

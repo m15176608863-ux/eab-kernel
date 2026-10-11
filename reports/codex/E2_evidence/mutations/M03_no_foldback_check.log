@@ -1,0 +1,68 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+____ test_convexity_rejection_names_the_first_foldback_and_winding_defect _____
+
+    def test_convexity_rejection_names_the_first_foldback_and_winding_defect():
+        """旧门只断言拒收折回，移除专门检查会被后续反射检查掩盖；新门还锁定首个非法转角的诊断，拒收要求未减。"""
+        from eab.kernel2d.exact import convexity_violation
+        fold = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]
+>       assert convexity_violation(fold) == "folds back on itself at vertex 1"
+E       AssertionError: assert 'reflex vertex 2' == 'folds back o...f at vertex 1'
+E         
+E         - folds back on itself at vertex 1
+E         + reflex vertex 2
+
+tests\test_kernel2d_exact.py:232: AssertionError
+_________ test_a_polygon_that_folds_back_on_itself_is_rejected_loudly _________
+
+    def test_a_polygon_that_folds_back_on_itself_is_rejected_loudly():
+        """G6 第四轮 minor：边界沿自己的边折回的"尖刺"多边形（顶点 (1,0) 落在边 (0,0)→(2,0) 上、边 (2,0)→(1,0) 折回，再凹拐
+        回起点）：面积 > 0、凸包深度 0、总转角恰 2π——三道凸性检查都放过，却造出深陷凸包的非凸 E、成员判定静默答反。
+        折回（转角 ≈ ±π）要清晰报错。"""
+        P = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]
+        from eab.kernel2d.covers import convex_entrance_block
+        with pytest.raises(ValueError, match="folds back"):
+>           convex_entrance_block(P, SQUARE)
+
+tests\test_kernel2d_lever.py:125: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]
+B = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], a0 = (0.0, 0.0), tol = 0.0
+
+    def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float = 0.0) -> EntranceBlock:
+        """A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角归并，每条边带盖标签 (kind, A 的下标, B 的下标)。
+    
+        **精确**（`kernel2d.exact.entrance_block_exact`）：凸性、极角序、平行全部在 Fraction 上判，只有**精确**平行同向的
+        两条边才并成 FF；顶点 b_j − a_i 先精确算、再加 a0 后舍入成浮点输出。输入须**精确**凸（平直顶点允许；零长边、反射顶点、
+        折回、绕圈不止一次都清晰报 ValueError）——刚体运动把平直顶点舍入成微凹时，这里如实拒收，调用方改走凹块路径
+        （`enumerate_covers` + 精确谓词），不再像旧版那样在容差内"吞下"微凹（那正是五轮复核里静默错判的来源之一）。
+        `tol` 不再参与任何判定（保留参数只为兼容调用方）；需要"容差内平行"的口径（如 legacy 的平行贴边）由 L5 适配器显式给窗。
+        """
+        for name, poly in (("A", A), ("B", B)):
+            why = convexity_violation(poly)
+            if why is not None:
+>               raise ValueError(f"input polygon {name} not convex: {why}")
+E               ValueError: input polygon A not convex: reflex vertex 2
+
+src\eab\kernel2d\covers.py:323: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_a_polygon_that_folds_back_on_itself_is_rejected_loudly():
+        """G6 第四轮 minor：边界沿自己的边折回的"尖刺"多边形（顶点 (1,0) 落在边 (0,0)→(2,0) 上、边 (2,0)→(1,0) 折回，再凹拐
+        回起点）：面积 > 0、凸包深度 0、总转角恰 2π——三道凸性检查都放过，却造出深陷凸包的非凸 E、成员判定静默答反。
+        折回（转角 ≈ ±π）要清晰报错。"""
+        P = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]
+        from eab.kernel2d.covers import convex_entrance_block
+>       with pytest.raises(ValueError, match="folds back"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'folds back'
+E         Actual message: 'input polygon A not convex: reflex vertex 2'
+
+tests\test_kernel2d_lever.py:124: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_exact.py::test_convexity_rejection_names_the_first_foldback_and_winding_defect
+FAILED tests/test_kernel2d_lever.py::test_a_polygon_that_folds_back_on_itself_is_rejected_loudly
+2 failed in 0.19s

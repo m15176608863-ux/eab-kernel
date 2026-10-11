@@ -4,10 +4,11 @@ E(A,B) 的成员谓词可以暴力验证——随机采样参考点平移 x，�
 判定比对；同时检验"局部法锥规则 = 全局 Minkowski facet 结构"（命题 4/5）。这条门不依赖任何 legacy。
 
 **凸情形是精确的定理检验**（2026-10-10，E2）：三票都在有理数上做、零容差、不跳过任何样本——
-  票一  成员（精确 E 的 facet 符号）== 暴力谓词（两份精确耳切逐对三角形的精确分离轴，`exact.polygons_overlap_exact`），
-        样本含随机平移与 E 的全部顶点、facet 中点（07 §五要的"边界点"）；
-  票二  局部法锥规则的严格集（精确符号）== 全局 Minkowski 的非 FF facet 集；
-  票三  E 的严格凸顶点集 == conv{b − a} 的精确凸包顶点集（差点 b − a 在 Fraction 上算，不舍入）。
+  票一  成员（精确 E 的 facet 符号）== 独立内联 Fraction 分离轴（`exact.convex_overlap_exact`），
+        样本含随机平移、E 的全部 Fraction 顶点/facet 中点及其浮点舍入像（真边界与边界附近分别检验）；
+  票二  局部法锥严格/边界集 == 独立全顶点投影支持集；walk 的严格 VE/EV == 唯一支持标签集；
+        平直链的非 FF 余段须属于精确边界集，不再错误地算作严格 facet，也不豁免任何标签；
+  票三  E 的严格凸顶点集 == 独立内联 Fraction gift-wrap 的 conv{b − a} 顶点集（差点不舍入）。
 此前三票都带"分辨带"与"说不清"豁免（票一跳过带内样本、票二票三的 ambiguous 两边不计），第五轮复核指出这些豁免本身
 就是第二把尺，且边界类（恰相触）从未被探测。输入须精确凸（否则 `convex_entrance_block` 清晰报错）。
 
@@ -16,7 +17,7 @@ E(A,B) 的成员谓词可以暴力验证——随机采样参考点平移 x，�
 `g0_distance_completeness3` 同构），相交样本上的**出口完备性**（`g0_exit_completeness`：沿射线首次离开
 E 的那个 ∂E 点必有有效盖作见证）。两者都不是凹块的成员谓词——成员判定要等入口块全局构造（M3）。
 
-容差（纪律 F，M0.2）：本模块内部不再有绝对阈值。暴力谓词的接触带取 1e-12·L，判据阈值取 atol·L（或 atol·真值）
+以下容差口径只适用于凹块距离/出口完备性，凸 G0 不使用容差：暴力谓词的接触带取 1e-12·L，判据阈值取 atol·L（或 atol·真值）
 加舍入下限 c·eps·C——L 为两块的特征长度（包围盒对角线的较大者），C 为坐标量级。所以同一位形经刚体运动、
 搬到工程坐标、换单位后，样本分类（分离/接触/相交）与判定不变。门：tests/test_invariance_2d.py。
 """
@@ -30,7 +31,7 @@ from dataclasses import dataclass, field
 from fractions import Fraction
 
 from .covers import ambiguous_facets, enumerate_covers, local_facets, membership_convex
-from .exact import entrance_block_exact, hull_exact_fr, polygons_overlap_exact, strict_vertices
+from .exact import convex_overlap_exact, entrance_block_exact, strict_vertices
 from .geom import (EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, cross, norm, polygons_overlap, round_floor, sub,
                    translate)
 
@@ -46,7 +47,7 @@ class G0Report:
     facet_ambiguous: int = 0           # 局部规则判"恰在法锥边界上"的 VE / EV 数（精确 = 0，对应精确平行；只报数，不豁免）
     hull_vertex_mismatch: int = 0      # 第三票：E 严格凸顶点集 vs conv{b−a} 精确凸包顶点集（不经法向/法锥/合并）
     hull_vertex_ambiguous: int = 0     # 恒为 0（精确之后没有"说不清"；字段保留只为兼容）
-    boundary_probes: int = 0           # 票一里恰在 ∂E 附近的探针数（E 的顶点与 facet 中点）
+    boundary_probes: int = 0           # 真边界及其浮点舍入像的探针总数（各含 E 顶点与 facet 中点）
 
     @property
     def passed(self) -> bool:
@@ -79,28 +80,74 @@ def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: fl
              rng.uniform(lo_y - margin * wy, hi_y + margin * wy)) for _ in range(n)]
 
 
+def _support_labels_independent(A: Poly, B: Poly) -> tuple[set[tuple], set[tuple]]:
+    """独立票二 oracle：全顶点投影的最小支持集；只用内联 Fraction 算术，零法锥/极角/Minkowski 原语。
+
+    唯一支持顶点给严格标签；多点并列给边界标签（包括平直顶点），不使用几何容差。
+    """
+    FA = [(Fraction(p[0]), Fraction(p[1])) for p in A]
+    FB = [(Fraction(p[0]), Fraction(p[1])) for p in B]
+    strict, boundary = set(), set()
+    for target, edges, kind in ((FA, FB, "VE"), (FB, FA, "EV")):
+        for k in range(len(edges)):
+            p, q = edges[k], edges[(k + 1) % len(edges)]
+            nx, ny = q[1] - p[1], p[0] - q[0]
+            projections = [nx * v[0] + ny * v[1] for v in target]
+            bottom = min(projections)
+            support = [i for i, z in enumerate(projections) if z == bottom]
+            labels = {(kind, i, k) if kind == "VE" else (kind, k, i) for i in support}
+            (strict if len(support) == 1 else boundary).update(labels)
+    return strict, boundary
+
+
+def _difference_hull_independent(A: Poly, B: Poly) -> set[tuple[Fraction, Fraction]]:
+    """独立票三 oracle：Jarvis gift-wrap，内联 Fraction 差/行列式/距离；不共用 exact 的单调链或任何几何原语。"""
+    points = sorted({(Fraction(b[0]) - Fraction(a[0]), Fraction(b[1]) - Fraction(a[1]))
+                     for a in A for b in B})
+    if len(points) < 3:
+        return set(points)
+    start = current = points[0]
+    hull = set()
+    while True:
+        hull.add(current)
+        candidate = next(p for p in points if p != current)
+        for p in points:
+            ux, uy = candidate[0] - current[0], candidate[1] - current[1]
+            vx, vy = p[0] - current[0], p[1] - current[1]
+            determinant = ux * vy - uy * vx
+            if determinant < 0 or (determinant == 0 and vx * vx + vy * vy > ux * ux + uy * uy):
+                candidate = p
+        current = candidate
+        if current == start:
+            return hull
+
+
 def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: float | None = None,
               band: float | None = None) -> G0Report:
     """A、B 精确凸、CCW。三票精确（见模块文档）。`tol` / `band` 不再参与任何判定（保留只为兼容调用方）。"""
     rng = random.Random(seed)
     rep = G0Report()
     ex = entrance_block_exact(A, B)
-    glob = {f.label for f in ex.facets if f.label[0] != "FF"}
-    loc = local_facets(A, B)
-    rep.facet_local, rep.facet_global, rep.facet_ambiguous = len(loc), len(glob), len(ambiguous_facets(A, B))
-    rep.facet_symmetric_diff = sorted(loc ^ glob)
-    # 第三票：差点 b − a 精确（Fraction 相减不舍入），凸包精确（共线点不作顶点）
-    H = set(hull_exact_fr([(Fraction(b[0]) - Fraction(a[0]), Fraction(b[1]) - Fraction(a[1])) for a in A for b in B]))
+    walk = {f.label for f in ex.facets if f.label[0] != "FF"}
+    truth_strict, truth_boundary = _support_labels_independent(A, B)
+    glob = walk - truth_boundary
+    loc, amb = local_facets(A, B), ambiguous_facets(A, B)
+    rep.facet_local, rep.facet_global, rep.facet_ambiguous = len(loc), len(glob), len(amb)
+    # 全集等式而非 ambiguous 豁免：平直链余段也必须通过独立闭包支持检查。
+    rep.facet_symmetric_diff = sorted((loc ^ truth_strict) | (amb ^ truth_boundary)
+                                      | (glob ^ truth_strict) | (walk - truth_strict - truth_boundary))
+    H = _difference_hull_independent(A, B)
     E = {ex.vertices[k] for k in strict_vertices(ex)}
     rep.hull_vertex_mismatch = len(E ^ H)
-    # 第一票：随机平移 + E 的顶点与 facet 中点（07 §五的"边界点"探针；舍入成浮点后落在 ∂E 两侧或恰在其上）
+    # 真边界保留 Fraction，不能先把边界舍入到两侧；同时保留原来的浮点舍入探针。
     probes = sample_translations(A, B, samples, rng)
-    bnd = [(float(v[0]), float(v[1])) for v in ex.vertices]
-    bnd += [(float(f.start[0] + f.direction[0] / 2), float(f.start[1] + f.direction[1] / 2)) for f in ex.facets]
+    exact_bnd = list(ex.vertices)
+    exact_bnd += [(f.start[0] + f.direction[0] / 2, f.start[1] + f.direction[1] / 2) for f in ex.facets]
+    bnd = exact_bnd + [(float(x), float(y)) for x, y in exact_bnd]
     rep.boundary_probes = len(bnd)
     for x in probes + bnd:
         cov = membership_convex(A, B, x)
-        brute = polygons_overlap_exact(A, B, x)
+        brute = convex_overlap_exact(A, B, x)
         rep.samples += 1
         if brute != cov:
             rep.mismatches.append((x, brute, cov))

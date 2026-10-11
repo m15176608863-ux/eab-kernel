@@ -1,0 +1,38 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__ test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path __
+
+    def test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path():
+        """微凹底边从 y=2 下降，最早在 t=1 碰到方块顶边（闭式 oracle）；只看护 E2 分派，不声称 E3 首入已精确化。"""
+        from eab.kernel2d.entrance import first_entrance
+        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+>       got = first_entrance(dent, SQUARE_EXACT, (0.0, 2.0), (0.0, -1.0))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_kernel2d_exact.py:292: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel2d\entrance.py:83: in first_entrance
+    if membership_exact(A, B, x0) == 1:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel2d\exact.py:196: in membership_exact
+    eb = eb or entrance_block_exact(A, B)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+B = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+
+    def entrance_block_exact(A: Poly, B: Poly) -> ExactEntranceBlock:
+        """凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——
+        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。"""
+        for name, P in (("A", A), ("B", B)):
+            why = convexity_violation(P)
+            if why is not None:
+>               raise ValueError(f"input polygon {name} is not exactly convex: {why} "
+                                 f"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)")
+E               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)
+
+src\eab\kernel2d\exact.py:119: ValueError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_exact.py::test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path
+1 failed in 0.19s

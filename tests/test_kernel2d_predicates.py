@@ -21,6 +21,7 @@ import pytest
 
 from eab.kernel2d.covers import convex_entrance_block, membership_convex
 from eab.kernel2d.g0 import g0_convex, random_convex_polygon
+from eab.kernel2d.exact import convex_overlap_exact, polygons_overlap_exact
 from eab.kernel2d.geom import convex_hull, orient2d, polygons_overlap, translate, triangulate
 
 
@@ -252,21 +253,21 @@ def test_membership_without_eb_square_over_octagon_canary(s):
 
 @pytest.mark.parametrize("s", [1e-3, 1.0, 1e3])
 def test_membership_without_eb_agrees_with_brute_force_in_any_unit(s):
-    """随机凸对，tol 随单位缩放（1 mm 于米制 = 1 于毫米制）：带外样本的判定必须等于暴力谓词。旧版毫米制 4–8% 答错。"""
+    """旧门只核两侧非零的带外随机点；E2 用独立内联 Fraction SAT 核全部点（不舍入 A+x）。
+    零容差逐点全等，另核调用方报告带只能把精确答案改成0，绝不能翻号；原有60×20点与尺度全部保留。"""
     rng = random.Random(21)
-    wrong, n = [], 0
+    nonzero = 0
     for _ in range(60):
         A0, B0 = random_convex_polygon(rng, rng.randint(3, 7)), random_convex_polygon(rng, rng.randint(3, 8))
         A, B, tol = _scaled(A0, s), _scaled(B0, s), 1e-3 * s
         for _ in range(20):
             x = (rng.uniform(-3.0, 3.0) * s, rng.uniform(-3.0, 3.0) * s)
-            m = membership_convex(A, B, x, tol)
-            b = polygons_overlap(translate(A, x), B, tol)
-            if m != 0 and b != 0:
-                n += 1
-                if m != b:
-                    wrong.append((A0, B0, x, m, b))
-    assert n >= 600 and wrong == [], (n, len(wrong), wrong[:1])
+            truth = convex_overlap_exact(A, B, x)
+            assert membership_convex(A, B, x) == truth, (A0, B0, x)
+            report = membership_convex(A, B, x, tol)
+            assert report in (0, truth), (x, report, truth)
+            nonzero += report != 0
+    assert nonzero >= 600
 
 
 # ---------------------------------------------------------------- (f) 凸 E 的平行边合并：逐对、按长度
@@ -283,31 +284,30 @@ TILTED_TRIANGLE = [(math.cos(0.1) * x - math.sin(0.1) * y, math.sin(0.1) * x + m
 @pytest.mark.parametrize("tiny", [1e-4, 1e-8, 1e-10])
 def test_a_short_edge_elsewhere_does_not_merge_long_edges(C, tiny):
     """方块一角削去一条 tiny 的短边，三角的底边与方块顶边夹 0.1 rad。旧版的合并下限取整个多边形的最短边：
-    tiny = 1e-8 放在 1e5 处下限 0.14 rad，这对长边被并成 FF，成员判定 16/2000 答反、g0 报红。"""
+    tiny = 1e-8 放在 1e5 处下限 0.14 rad，这对长边被并成 FF，成员判定 16/2000 答反、g0 报红。
+    E2 不再豁免短边合并或跳过0：全部1500点与独立 Fraction SAT 精确一致，比旧带外门更强。"""
     B = _chamfered_square(C, tiny)
     eb = convex_entrance_block(TILTED_TRIANGLE, B)
-    # 两条长边夹 0.1 rad，绝不许并；削角那条 tiny 边在 1e6 处方向本身是噪声（c·eps·C/tiny ≫ 1 rad），它与长边并成 FF
-    # 在契约误差（≤ t + 2·c·eps·C）之内，允许——所以只禁止 B 的非削角边（0、1、3、4）出现在 FF 里
-    assert not any(f[0] == "FF" and f[2] != 2 for f in eb.facets), eb.facets
+    # 旧门豁免短倒角的错误合并；现在连短边也不豁免：本例没有任何精确反向平行边。
+    assert not any(f[0] == "FF" for f in eb.facets), eb.facets
     rng = random.Random(1)
     wrong, n = [], 0
     for _ in range(1500):
         x = (C + rng.uniform(-1.5, 1.5), C + rng.uniform(0.2, 2.0))
         m = membership_convex(TILTED_TRIANGLE, B, x, 0.0, eb=eb)
-        b = polygons_overlap(translate(TILTED_TRIANGLE, x), B, 0.0)
-        if m != 0 and b != 0:
-            n += 1
-            if m != b:
-                wrong.append((x, m, b))
+        b = convex_overlap_exact(TILTED_TRIANGLE, B, x)
+        n += 1
+        if m != b:
+            wrong.append((x, m, b))
     assert n > 1000 and wrong == [], (n, wrong[:2])
     rep = g0_convex(TILTED_TRIANGLE, B, samples=400)
     assert rep.passed, (rep.mismatches[:2], rep.facet_symmetric_diff, rep.hull_vertex_mismatch)
 
 
 @pytest.mark.parametrize("C", [0.0, 1e5])
-def test_parallel_edges_of_very_different_lengths_merge_within_the_length_tolerance(C):
-    """合并判据是长度：两条同向边 |e_P × e_Q| ≤ t·min(|e_P|, |e_Q|) 才并——并后的 FF 面偏离真实边界不超过 t。
-    轴对齐方块对（严格平行）必须合并；夹角 δ 使长边端点偏出 10·t 时不许合并。"""
+def test_exact_parallel_edges_merge_independently_of_the_length_ratio(C):
+    """旧说明以长度容差解释合并；E2只合并精确平行同向的B/−A边，长短边比不参与判定。
+    原轴对齐4FF及真实倾斜3FF两组断言保留；tol内也不合并由test_length_tolerance_never_changes_exact_parallel_merging守护。"""
     big = [(C, C), (C + 1.0, C), (C + 1.0, C + 1.0), (C, C + 1.0)]
     small = [(0.0, 0.0), (1e-6, 0.0), (1e-6, 1e-6), (0.0, 1e-6)]
     assert sum(f[0] == "FF" for f in convex_entrance_block(small, big, tol=1e-9).facets) == 4
@@ -323,29 +323,41 @@ FLAT = [(0.0, 0.0), (1.0, 0.0), (2.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.5, 1.0), 
 
 
 @pytest.mark.parametrize("quarter", [0, 1, 2, 3])
-def test_a_t_vertex_one_ulp_above_the_lowest_edge_is_still_convex(quarter):
-    """G6 第三轮 major：单位方块底边中点的 T 形顶点高出弦一个 ulp（工程坐标 1e5 处的舍入级微凹），凸包深度 1.5e-11 ≪ t，
-    is_convex 判凸——但 M0.3 第一版按 [0, 2π) 里的极角判"下降 > π/2 即绕圈"，微凹落在最底边上时相邻边极角成 δ 与 2π − δ，
-    后面的下降 ≈ 3π/2 被误拒。四个朝向（每转 90°）都必须正常返回同一组 facet，成员判定与暴力一致。"""
+def test_a_t_vertex_one_ulp_above_the_lowest_edge_uses_the_concave_path(quarter):
+    """旧口径把一个ulp微凹吞成平直顶点并强制4FF；E2精确拒收，再走一般简单多边形路径。
+    保留四朝向与300点，额外保留精确平直对照；全部答案对闭式矩形减三角缺口 oracle，零带内豁免。
+    oracle只用内联 Fraction 区间/线性插值，与凸构造及凹相交的耳切/SAT零共用。"""
     C = 1e5
-    P = [(C, C), (C + 1.0, math.nextafter(C, math.inf)), (C + 2.0, C), (C + 2.0, C + 1.0), (C, C + 1.0)]
+    bump = math.nextafter(C, math.inf)
+    P = [(C, C), (C + 1.0, bump), (C + 2.0, C), (C + 2.0, C + 1.0), (C, C + 1.0)]
+    flat = [(C, C), (C + 1.0, C), (C + 2.0, C), (C + 2.0, C + 1.0), (C, C + 1.0)]
     for _ in range(quarter):
         P = [(-y, x) for x, y in P]
-    eb = convex_entrance_block(SQUARE, P)
-    # A 的四条边与 B 的边平行：4 条 FF，B 的底边被 T 形顶点拆成两段、只能并一段，另一段成 VE → 5 条 facet，无零长 facet
-    assert sorted(f[0] for f in eb.facets) == ["FF", "FF", "FF", "FF", "VE"], eb.facets
+        flat = [(-y, x) for x, y in flat]
+    for tol in (0.0, 1e-9, 1.0):
+        with pytest.raises(ValueError, match="reflex"):
+            convex_entrance_block(SQUARE, P, tol=tol)
+    eb = convex_entrance_block(SQUARE, flat)
+    assert sorted(f[0] for f in eb.facets) == ["FF", "FF", "FF", "FF", "VE"]
     assert all(math.dist(eb.vertices[i], eb.vertices[(i + 1) % len(eb.vertices)]) > 0.5 for i in range(len(eb.vertices)))
     rng = random.Random(quarter)
     cx, cy = (sum(p[0] for p in P) / 5, sum(p[1] for p in P) / 5)
-    n = 0
-    for _ in range(300):
-        x = (cx + rng.uniform(-2.0, 2.0), cy + rng.uniform(-2.0, 2.0))
-        m = membership_convex(SQUARE, P, x, 1e-9)
-        b = polygons_overlap(translate(SQUARE, x), P, 1e-9)
-        if m != 0 and b != 0:
-            n += 1
-            assert m == b, (x, m, b)
-    assert n > 200
+    xs = [(cx + rng.uniform(-2, 2), cy + rng.uniform(-2, 2)) for _ in range(300)]
+    # 先在原坐标精确加x，再逆90度旋转，得到轴对齐方块的区间。
+    for x in xs:
+        points = [(Fraction(a) + Fraction(x[0]), Fraction(b) + Fraction(x[1])) for a, b in SQUARE]
+        for _ in range(quarter):
+            points = [(b, -a) for a, b in points]
+        lo, hi = max(Fraction(C), min(p[0] for p in points)), min(Fraction(C + 2), max(p[0] for p in points))
+        low_y, high_y = min(p[1] for p in points), max(p[1] for p in points)
+        if lo > hi or low_y > C + 1:
+            want = -1
+        else:
+            h = Fraction(bump) - Fraction(C)
+            bottom = lambda z: Fraction(C) + h * min(z - C, C + 2 - z)
+            floor = min(bottom(lo), bottom(hi))
+            want = -1 if high_y < floor else (0 if lo == hi or high_y == floor or low_y == C + 1 else 1)
+        assert membership_convex(SQUARE, P, x) == want, (quarter, x, want)
 
 
 @pytest.mark.parametrize("P", [ROW, FLAT], ids=["row", "flat"])
@@ -389,9 +401,9 @@ def test_non_convex_or_clockwise_input_is_refused(name):
 
 
 @pytest.mark.parametrize("seed", range(10))
-def test_true_parallel_edges_with_length_ratio_1000_merge_after_rotation(seed):
-    """G6 第三轮 minor：单位方块对 1000 × 1 的薄矩形（真平行边，长短边比 1000），随机旋转后 s = 1e-3、|t| = 1e3：叉积噪声
-    ~eps·C·|e_long| 超过 t·min|e|，旧版不并，E 多出一个微折点，第三票（凸包顶点集）假红 15/20。现在 4 条 FF，g0 三票通过。"""
+def test_parallel_edges_with_length_ratio_1000_merge_only_if_exact_after_rotation(seed):
+    """旧门无视输入舍入强制4FF；E2以独立内联 Fraction 反平行边对为oracle，逐标签相等而非放松计数。
+    原种子/尺度/平移全保留，精确G0三票不跳样本，tiny折点不再豁免。"""
     RECT = [(0.0, 0.0), (1000.0, 0.0), (1000.0, 1.0), (0.0, 1.0)]
     rng = random.Random(seed)
     s, tm = 1e-3, 1e3
@@ -400,28 +412,46 @@ def test_true_parallel_edges_with_length_ratio_1000_merge_after_rotation(seed):
     f = lambda P: [(s * (c * p[0] - sn * p[1]) + tm * math.cos(phi), s * (sn * p[0] + c * p[1]) + tm * math.sin(phi)) for p in P]
     A, B = f(SQUARE), f(RECT)
     eb = convex_entrance_block(A, B)
-    assert sum(l[0] == "FF" for l in eb.facets) == 4, eb.facets
+    expected = set()
+    for i in range(4):
+        ax, ay = (Fraction(A[(i + 1) % 4][k]) - Fraction(A[i][k]) for k in (0, 1))
+        for j in range(4):
+            bx, by = (Fraction(B[(j + 1) % 4][k]) - Fraction(B[j][k]) for k in (0, 1))
+            if ax * by == ay * bx and ax * bx + ay * by < 0:
+                expected.add(("FF", i, j))
+    assert {l for l in eb.facets if l[0] == "FF"} == expected
+    assert len(eb.facets) == 8 - len(expected)
     rep = g0_convex(A, B, samples=100, seed=1)
     assert rep.passed, (rep.mismatches[:2], rep.facet_symmetric_diff, rep.hull_vertex_mismatch)
+    assert rep.band_skipped == rep.hull_vertex_ambiguous == 0
+    assert rep.samples == 100 + rep.boundary_probes
 
 
 def test_a_vertex_fifty_tolerances_inside_the_hull_is_rejected():
-    """G6 第三轮 minor：凸性前提"顶点在凸包以内深度 ≤ t"的牙——深 50·t 的微凹必须拒收（阈值放宽 100 倍就会被当平直顶点吞掉）。"""
+    """G6 第三轮 minor：凸性前提"顶点在凸包以内深度 ≤ t"的牙——旧门深50t拒收、半t接收；E2二者均精确拒收，t不再作为凸性豁免。
+    保留两个原样本并收紧旧接受分支；精确平直可接受另由96格门守护。"""
     from eab.kernel2d.geom import coord_scale, round_floor
     t = round_floor(coord_scale(SQUARE))
     P = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 50.0 * t), (0.0, 1.0)]
     with pytest.raises(ValueError, match="not convex"):
         convex_entrance_block(SQUARE, P)
-    P2 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 0.5 * t), (0.0, 1.0)]       # 半个容差：夹平即可
-    assert len(convex_entrance_block(SQUARE, P2).facets) >= 4
+    P2 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 0.5 * t), (0.0, 1.0)]       # 半个旧容差：仍必须拒收
+    with pytest.raises(ValueError, match="reflex"):
+        convex_entrance_block(SQUARE, P2)
 
 
 @pytest.mark.parametrize("C", [1.0, 1e5])
-def test_the_length_tolerance_is_the_slack_for_the_long_edge_rotation(C):
-    """两条长边（1）夹 δ：长边转到并后法向的位移 δ·1 ≤ tol 才并——δ = tol/2 并、δ = 2·tol 不并。两边自己的方向噪声
-    c·eps·C ≤ 1.4e-9 rad 远小于 tol = 1e-7，所以这里并或不并全由 tol 决定（突变体"忽略 t"必须在这里变红）。"""
+def test_length_tolerance_never_changes_exact_parallel_merging(C):
+    """旧门 δ=tol/2合并、2tol不并；E2非零精确叉积一律不并，tol只兼容参数。
+    保留原两倾角，新增δ=0边界与tol=0/1e-7/1，要求标签与顶点都不依tol变化，三组几何产物必须互异。"""
     tol = 1e-7
-    for d, n_ff in ((0.5 * tol, 4), (2.0 * tol, 3)):
+    products = []
+    for d, n_ff in ((0.0, 4), (0.5 * tol, 3), (2.0 * tol, 3)):
         big = [(C, C), (C + 1.0, C + d), (C + 1.0, C + 1.0), (C, C + 1.0)]
-        labels = convex_entrance_block(SQUARE, big, tol=tol).facets
-        assert sum(f[0] == "FF" for f in labels) == n_ff, (C, d, labels)
+        ref = convex_entrance_block(SQUARE, big)
+        for window in (0.0, tol, 1.0):
+            got = convex_entrance_block(SQUARE, big, tol=window)
+            assert got == ref
+            assert sum(f[0] == "FF" for f in got.facets) == n_ff, (C, d, got.facets)
+        products.append(tuple(ref.vertices))
+    assert len(set(products)) == 3

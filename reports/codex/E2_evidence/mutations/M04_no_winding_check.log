@@ -1,0 +1,29 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_______________ test_star_pentagon_and_fold_back_are_not_convex _______________
+
+    def test_star_pentagon_and_fold_back_are_not_convex():
+        from eab.kernel2d.exact import convexity_violation
+        star = [(math.cos(math.pi / 2 + 4 * math.pi * k / 5), math.sin(math.pi / 2 + 4 * math.pi * k / 5)) for k in range(5)]
+>       assert "winds 2 times" in convexity_violation(star)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: argument of type 'NoneType' is not iterable
+
+tests\test_kernel2d_exact.py:151: TypeError
+____ test_convexity_rejection_names_the_first_foldback_and_winding_defect _____
+
+    def test_convexity_rejection_names_the_first_foldback_and_winding_defect():
+        """旧门只断言拒收折回，移除专门检查会被后续反射检查掩盖；新门还锁定首个非法转角的诊断，拒收要求未减。"""
+        from eab.kernel2d.exact import convexity_violation
+        fold = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]
+        assert convexity_violation(fold) == "folds back on itself at vertex 1"
+        twice = SQUARE_EXACT + SQUARE_EXACT
+>       assert convexity_violation(twice) == "winds 2 times (total turning is not 2π)"
+E       AssertionError: assert None == 'winds 2 times (total turning is not 2π)'
+E        +  where None = <function convexity_violation at 0x00000000046CA7A0>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (0.0, 0.0), (1.0, 0.0), ...])
+
+tests\test_kernel2d_exact.py:234: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_exact.py::test_star_pentagon_and_fold_back_are_not_convex
+FAILED tests/test_kernel2d_exact.py::test_convexity_rejection_names_the_first_foldback_and_winding_defect
+2 failed in 0.17s

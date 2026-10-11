@@ -10,7 +10,7 @@ G6（2026-09-24）的 6 条 critical 里 5 条同根：绝对容差遍布内核�
   · polygons_overlap：判定（1 / 0 / −1）不变——**含恰好接触的位形**（工程上块体就是贴着的）；
   · interior_point：严格在内（独立 oracle：Fraction 精确射线奇偶，另写一份，不调 geom）；
   · 距离完备性 / 出口完备性：通过，且分离/接触/相交样本计数不变；brute_ray_exit 的出口 ×s；
-  · 凸块 G0：通过，facet 标签集合不变；
+  · 凸块 G0（E2）：每格成员/标签对独立精确 oracle 零错；只在判定余量超过舍入界时要求刚体不变，边界数据变化不豁免 oracle；
   · 凸性 / 反射顶点（带平直 T 形顶点的合成块、bb52 真几何）不变；
   · 读取器边界的重复点剥除（readers.bdda_geom）：近重复点照样被剥，工程坐标上只差一个 ulp 的重复点也认得出。
 调用方给的长度容差随单位一起缩放（tol → s·tol）——这是换单位的本义；角度容差是无量纲的，不缩放。
@@ -356,22 +356,96 @@ CONVEX_CASES = [("squares", SQ, SQ), ("square_diamond", SQ, DIAMOND), ("brick_sq
 
 
 def _facet_set(A, B):
-    return sorted(convex_entrance_block(A, B, (0.0, 0.0), 0.0).facets)     # tol 是长度：只用舍入下限
+    return set(convex_entrance_block(A, B, (0.0, 0.0), 0.0).facets)
+
+
+def _support_labels_exact(A, B):
+    """独立 Fraction 支撑投影 oracle（本组输入无平直顶点）：不调库法锥/角序/凸包原语。
+    B 边的外法向上，A 唯一最小顶点给 VE，两端同为最小的一条 A 边给 FF；交换得到 EV。
+    同时返回所有严格支撑点的最小投影距离余量，以及是否存在精确平行边界。
+    """
+    FA = [(Fraction(x), Fraction(y)) for x, y in A]
+    FB = [(Fraction(x), Fraction(y)) for x, y in B]
+    labels, strict_margins, boundary = set(), [], False
+    for P, Q, kind in ((FA, FB, "VE"), (FB, FA, "EV")):
+        for j, q in enumerate(Q):
+            q1 = Q[(j + 1) % len(Q)]
+            nx, ny = q1[1] - q[1], q[0] - q1[0]
+            projs = [nx * p[0] + ny * p[1] for p in P]
+            lo = min(projs)
+            mins = [i for i, v in enumerate(projs) if v == lo]
+            if len(mins) == 1:
+                i = mins[0]
+                labels.add((kind, i, j) if kind == "VE" else (kind, j, i))
+                gap = min(v - lo for v in projs if v > lo)
+                strict_margins.append(float(gap) / math.hypot(float(nx), float(ny)))
+            else:
+                boundary = True
+                assert len(mins) == 2
+                i = next(i for i in mins if (i + 1) % len(P) in mins)
+                labels.add(("FF", i, j) if kind == "VE" else ("FF", j, i))
+    return labels, min(strict_margins, default=math.inf), boundary
+
+
+def _sat_gap_exact(A, B, x):
+    """独立内联 Fraction 分离轴最大有符号间隙（外正内负），仅作为带外不变性的舍入余量筛选。
+    平移先 Fraction 相加；不调用被测 Minkowski/法锥/归并函数。
+    """
+    X = (Fraction(x[0]), Fraction(x[1]))
+    FA = [(Fraction(a) + X[0], Fraction(b) + X[1]) for a, b in A]
+    FB = [(Fraction(a), Fraction(b)) for a, b in B]
+    gaps = []
+    for P, Q in ((FA, FB), (FB, FA)):
+        for j, p in enumerate(P):
+            q = P[(j + 1) % len(P)]
+            nx, ny = q[1] - p[1], p[0] - q[0]
+            gap = min(nx * v[0] + ny * v[1] for v in Q) - nx * p[0] - ny * p[1]
+            gaps.append(float(gap) / math.hypot(float(nx), float(ny)))
+    return max(gaps)
 
 
 @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
 @pytest.mark.parametrize("case", CONVEX_CASES, ids=[c[0] for c in CONVEX_CASES])
 def test_convex_g0_is_invariant(case, motion):
+    """旧门强迫理想平行对刚体运动后仍有原来的 FF 标签（由噪声窗吞微倾）。
+    E2 新门先逐格对独立 Fraction 支撑投影 oracle 核对全部标签、对精确 SAT 核对每个成员答案，
+    再在支撑投影/成员间隙余量超过坐标舍入界时守不变；精确平行/相触属于数据边界，允许随舍入改变但绝不跳过 oracle。
+    强度：旧带内标签同一性换成每格零错，原来带外不变仍保留；G0 三票还钉住零跳样、零顶点豁免、全部边界探针。
+    oracle 与被测零共用：投影和 SAT 不经 Minkowski 极角归并/法锥，投影辅助函数全在测试内独立实现。
+    """
+    from eab.kernel2d.covers import membership_convex
+    from eab.kernel2d.exact import convex_overlap_exact
     name, A, B = case
     _, theta, s, tm = motion
     ref = g0_convex(A, B, samples=300, seed=3)
     assert ref.passed, name
     pt, vec, poly = _T(theta, s, tm)
     At, Bt = poly(A), poly(B)
-    assert _facet_set(At, Bt) == _facet_set(A, B), name
+    ref_labels, margin, has_boundary = _support_labels_exact(A, B)
+    want, _, _ = _support_labels_exact(At, Bt)
+    assert _facet_set(A, B) == ref_labels
+    assert _facet_set(At, Bt) == want, (name, motion[0], _facet_set(At, Bt) ^ want)
+    # 16 个舍入预算覆盖两端坐标、旋转、点积、参考平移传播；纯相对，无绝对地板。
+    noise = 16.0 * _floor_in_reference_units(A, B, motion)
+    if not has_boundary and margin > noise:
+        assert want == ref_labels, (name, motion[0])
     rep = g0_convex(At, Bt, samples=300, seed=3)
     assert rep.passed, (name, rep.mismatches[:2], rep.facet_symmetric_diff, rep.hull_vertex_mismatch)
-    assert (rep.facet_local, rep.facet_global) == (ref.facet_local, ref.facet_global), name
+    assert rep.band_skipped == rep.hull_vertex_ambiguous == 0
+    assert rep.boundary_probes == 4 * len(want)
+    assert rep.samples == 300 + rep.boundary_probes
+    assert rep.facet_local == rep.facet_global == sum(lab[0] != "FF" for lab in want)
+    probes = [(0.0, 0.0), (0.4, 0.25), (1.0, 0.0), (1.0, 1.0), (3.0, 2.0), (-3.0, -2.0)]
+    stable = 0
+    for x in probes:
+        truth = convex_overlap_exact(A, B, x)
+        moved = convex_overlap_exact(At, Bt, vec(x))
+        assert membership_convex(A, B, x, 0.0) == truth
+        assert membership_convex(At, Bt, vec(x), 0.0) == moved
+        if abs(_sat_gap_exact(A, B, x)) > noise:
+            assert moved == truth, (name, motion[0], x, truth, moved)
+            stable += 1
+    assert stable >= 2       # 不变性分支必须真正执行，不因全落边界而空过。
 
 
 # ---------------------------------------------------------------- 凸性 / 反射顶点（bb52 真几何）

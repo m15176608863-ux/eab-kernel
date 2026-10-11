@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.163" timestamp="2026-10-12T00:06:54.759550+08:00" hostname="RICH"><testcase classname="tests.test_kernel2d_exact" name="test_membership_nonexact_convex_input_uses_the_simple_polygon_path[x0-0]" time="0.015"><failure message="ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)">x = (0.0, 1.0), want = 0
+
+    @pytest.mark.parametrize("x,want", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),
+                                          ((0.0, 1.0 - 2 ** -40), 1)])
+    def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):
+        """微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。"""
+        from eab.kernel2d.covers import membership_convex
+        from eab.kernel2d.geom import is_convex
+        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+        assert is_convex(dent, 1e-12) and not is_convex_exact(dent)
+&gt;       assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_kernel2d_exact.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel2d\covers.py:389: in membership_convex
+    s = membership_exact(A, B, x)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel2d\exact.py:196: in membership_exact
+    eb = eb or entrance_block_exact(A, B)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+B = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+
+    def entrance_block_exact(A: Poly, B: Poly) -&gt; ExactEntranceBlock:
+        """凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——
+        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。"""
+        for name, P in (("A", A), ("B", B)):
+            why = convexity_violation(P)
+            if why is not None:
+&gt;               raise ValueError(f"input polygon {name} is not exactly convex: {why} "
+                                 f"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)")
+E               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)
+
+src\eab\kernel2d\exact.py:119: ValueError</failure></testcase><testcase classname="tests.test_kernel2d_exact" name="test_membership_nonexact_convex_input_uses_the_simple_polygon_path[x1--1]" time="0.001"><failure message="ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)">x = (0.0, 1.0000000000009095), want = -1
+
+    @pytest.mark.parametrize("x,want", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),
+                                          ((0.0, 1.0 - 2 ** -40), 1)])
+    def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):
+        """微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。"""
+        from eab.kernel2d.covers import membership_convex
+        from eab.kernel2d.geom import is_convex
+        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+        assert is_convex(dent, 1e-12) and not is_convex_exact(dent)
+&gt;       assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_kernel2d_exact.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel2d\covers.py:389: in membership_convex
+    s = membership_exact(A, B, x)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel2d\exact.py:196: in membership_exact
+    eb = eb or entrance_block_exact(A, B)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+B = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+
+    def entrance_block_exact(A: Poly, B: Poly) -&gt; ExactEntranceBlock:
+        """凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——
+        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。"""
+        for name, P in (("A", A), ("B", B)):
+            why = convexity_violation(P)
+            if why is not None:
+&gt;               raise ValueError(f"input polygon {name} is not exactly convex: {why} "
+                                 f"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)")
+E               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)
+
+src\eab\kernel2d\exact.py:119: ValueError</failure></testcase><testcase classname="tests.test_kernel2d_exact" name="test_membership_nonexact_convex_input_uses_the_simple_polygon_path[x2-1]" time="0.001"><failure message="ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)">x = (0.0, 0.9999999999990905), want = 1
+
+    @pytest.mark.parametrize("x,want", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),
+                                          ((0.0, 1.0 - 2 ** -40), 1)])
+    def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):
+        """微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。"""
+        from eab.kernel2d.covers import membership_convex
+        from eab.kernel2d.geom import is_convex
+        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+        assert is_convex(dent, 1e-12) and not is_convex_exact(dent)
+&gt;       assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_kernel2d_exact.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel2d\covers.py:389: in membership_convex
+    s = membership_exact(A, B, x)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel2d\exact.py:196: in membership_exact
+    eb = eb or entrance_block_exact(A, B)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+B = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+
+    def entrance_block_exact(A: Poly, B: Poly) -&gt; ExactEntranceBlock:
+        """凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——
+        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。"""
+        for name, P in (("A", A), ("B", B)):
+            why = convexity_violation(P)
+            if why is not None:
+&gt;               raise ValueError(f"input polygon {name} is not exactly convex: {why} "
+                                 f"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)")
+E               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)
+
+src\eab\kernel2d\exact.py:119: ValueError</failure></testcase></testsuite></testsuites>

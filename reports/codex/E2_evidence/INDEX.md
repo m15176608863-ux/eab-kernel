@@ -1,0 +1,80 @@
+# WO-E2 交付索引
+
+所有成果位于本工作树；以下链接为文件/目录，可直接打开。
+
+- [中文执行报告](file:///D:/eab-wt/cx-e2/reports/codex/E2_report.md)
+- [未提交差异（已跟踪文件）](working_tree.diff)
+- [范围与哈希审计](scope_audit.json)
+- [全部原始失败与处置](failure_inventory.md)
+- [最终全套机读结果](final_full_result.json)
+- [突变结果](mutations/results.json)
+
+## 改动文件
+
+- [README.md](file:///D:/eab-wt/cx-e2/README.md)
+- [docs/canon_map.md](file:///D:/eab-wt/cx-e2/docs/canon_map.md)
+- [docs/exact_predicates_plan.md](file:///D:/eab-wt/cx-e2/docs/exact_predicates_plan.md)
+- [src/eab/kernel2d/covers.py](file:///D:/eab-wt/cx-e2/src/eab/kernel2d/covers.py)
+- [src/eab/kernel2d/entrance.py](file:///D:/eab-wt/cx-e2/src/eab/kernel2d/entrance.py)
+- [src/eab/kernel2d/exact.py](file:///D:/eab-wt/cx-e2/src/eab/kernel2d/exact.py)
+- [src/eab/kernel2d/g0.py](file:///D:/eab-wt/cx-e2/src/eab/kernel2d/g0.py)
+- [tests/test_invariance_2d.py](file:///D:/eab-wt/cx-e2/tests/test_invariance_2d.py)
+- [tests/test_kernel2d_exact.py](file:///D:/eab-wt/cx-e2/tests/test_kernel2d_exact.py)
+- [tests/test_kernel2d_g0.py](file:///D:/eab-wt/cx-e2/tests/test_kernel2d_g0.py)
+- [tests/test_kernel2d_lever.py](file:///D:/eab-wt/cx-e2/tests/test_kernel2d_lever.py)
+- [tests/test_kernel2d_predicates.py](file:///D:/eab-wt/cx-e2/tests/test_kernel2d_predicates.py)
+- [tests/test_kernel2d_review.py](file:///D:/eab-wt/cx-e2/tests/test_kernel2d_review.py)
+- [tests/test_kernel2d_convex_ray_exact.py](file:///D:/eab-wt/cx-e2/tests/test_kernel2d_convex_ray_exact.py)
+- [tests/test_kernel2d_report_band.py](file:///D:/eab-wt/cx-e2/tests/test_kernel2d_report_band.py)
+
+## 证据文件
+
+原始 PowerShell 重定向日志使用 UTF-16 BOM；最终全套日志及 JSON 为 UTF-8。
+draft / prepare / apply 文件是基线期间的临时草稿，不是最终源码，不应重新应用。
+
+- [apply_legacy_rewrites.py](apply_legacy_rewrites.py)
+- [audit_delivery.py](audit_delivery.py)
+- [baseline_2d.log](baseline_2d.log)
+- [baseline_2d_time.txt](baseline_2d_time.txt)
+- [baseline_full.log](baseline_full.log)
+- [baseline_full_time.txt](baseline_full_time.txt)
+- [build_failure_inventory.py](build_failure_inventory.py)
+- [covers_report_band_draft.py](covers_report_band_draft.py)
+- [exact.py.draft](exact.py.draft)
+- [exact_test_additions.txt](exact_test_additions.txt)
+- [failure_inventory.json](failure_inventory.json)
+- [failure_inventory.md](failure_inventory.md)
+- [final_2d.log](final_2d.log)
+- [final_2d_time.txt](final_2d_time.txt)
+- [final_full.log](final_full.log)
+- [final_full_result.json](final_full_result.json)
+- [final_gate_review.md](final_gate_review.md)
+- [final_status.txt](final_status.txt)
+- [finalize_report.py](finalize_report.py)
+- [fix_canon_ptrs.log](fix_canon_ptrs.log)
+- [full_before_docstring_cleanup.log](full_before_docstring_cleanup.log)
+- [full_before_docstring_cleanup_result.json](full_before_docstring_cleanup_result.json)
+- [g0.py.draft](g0.py.draft)
+- [INDEX.md](INDEX.md)
+- [initial_head.txt](initial_head.txt)
+- [initial_status.txt](initial_status.txt)
+- [legacy_rewrites_notes.md](legacy_rewrites_notes.md)
+- [legacy_rewrites_plan.json](legacy_rewrites_plan.json)
+- [legacy_rewrites_test.log](legacy_rewrites_test.log)
+- [legacy_rewrites_test_final.log](legacy_rewrites_test_final.log)
+- [prepare_entrance.py](prepare_entrance.py)
+- [prepare_exact_drafts.py](prepare_exact_drafts.py)
+- [prepare_predicates.py](prepare_predicates.py)
+- [report_band_final.log](report_band_final.log)
+- [report_band_notes.md](report_band_notes.md)
+- [report_band_pre_fix.log](report_band_pre_fix.log)
+- [root_targeted.log](root_targeted.log)
+- [run_final_suite.py](run_final_suite.py)
+- [run_mutations.py](run_mutations.py)
+- [scope_audit.json](scope_audit.json)
+- [test_convex_ray_exact.draft](test_convex_ray_exact.draft)
+- [test_kernel2d_exact.py.draft](test_kernel2d_exact.py.draft)
+- [test_kernel2d_report_band_draft.py](test_kernel2d_report_band_draft.py)
+- [working_tree.diff](working_tree.diff)
+
+突变子目录包含每项原字节、日志、JUnit和修改片段；tmp仅是本树内pytest临时输出。

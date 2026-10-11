@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="6" time="0.135" timestamp="2026-10-12T00:06:53.018267+08:00" hostname="RICH"><testcase classname="tests.test_kernel2d_exact" name="test_exact_overlap_on_a_concave_l_shape[x0-0]" time="0.001"><failure message="assert -1 == 0&#10; +  where -1 = &lt;function polygons_overlap_exact at 0x00000000046B3B00&gt;([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (1.0, 1.0))">x = (1.0, 1.0), want = 0
+
+    @pytest.mark.parametrize("x,want", [((1.0, 1.0), 0),        # 方块角恰好卡进 L 的内角：只相触
+                                         ((0.9, 0.9), 1),        # 压进去
+                                         ((1.0 + 2 ** -40, 1.0 + 2 ** -40), -1),   # 离开 2^-40：精确分离（容差谓词会说"相触"）
+                                         ((1.0, 1.0 - 2 ** -40), 1),                # 竖直压进 2^-40：精确相交
+                                         ((2.0, 0.0), 0), ((2.5, 0.0), -1)])
+    def test_exact_overlap_on_a_concave_l_shape(x, want):
+        sq = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+        from eab.kernel2d.exact import polygons_overlap_exact
+&gt;       assert polygons_overlap_exact(sq, L_SHAPE, x) == want
+E       assert -1 == 0
+E        +  where -1 = &lt;function polygons_overlap_exact at 0x00000000046B3B00&gt;([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (1.0, 1.0))
+
+tests\test_kernel2d_exact.py:131: AssertionError</failure></testcase><testcase classname="tests.test_kernel2d_exact" name="test_exact_overlap_on_a_concave_l_shape[x1-1]" time="0.001" /><testcase classname="tests.test_kernel2d_exact" name="test_exact_overlap_on_a_concave_l_shape[x2--1]" time="0.001" /><testcase classname="tests.test_kernel2d_exact" name="test_exact_overlap_on_a_concave_l_shape[x3-1]" time="0.000" /><testcase classname="tests.test_kernel2d_exact" name="test_exact_overlap_on_a_concave_l_shape[x4-0]" time="0.001"><failure message="assert -1 == 0&#10; +  where -1 = &lt;function polygons_overlap_exact at 0x00000000046B3B00&gt;([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (2.0, 0.0))">x = (2.0, 0.0), want = 0
+
+    @pytest.mark.parametrize("x,want", [((1.0, 1.0), 0),        # 方块角恰好卡进 L 的内角：只相触
+                                         ((0.9, 0.9), 1),        # 压进去
+                                         ((1.0 + 2 ** -40, 1.0 + 2 ** -40), -1),   # 离开 2^-40：精确分离（容差谓词会说"相触"）
+                                         ((1.0, 1.0 - 2 ** -40), 1),                # 竖直压进 2^-40：精确相交
+                                         ((2.0, 0.0), 0), ((2.5, 0.0), -1)])
+    def test_exact_overlap_on_a_concave_l_shape(x, want):
+        sq = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+        from eab.kernel2d.exact import polygons_overlap_exact
+&gt;       assert polygons_overlap_exact(sq, L_SHAPE, x) == want
+E       assert -1 == 0
+E        +  where -1 = &lt;function polygons_overlap_exact at 0x00000000046B3B00&gt;([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (2.0, 0.0))
+
+tests\test_kernel2d_exact.py:131: AssertionError</failure></testcase><testcase classname="tests.test_kernel2d_exact" name="test_exact_overlap_on_a_concave_l_shape[x5--1]" time="0.001" /></testsuite></testsuites>

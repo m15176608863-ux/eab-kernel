@@ -1,0 +1,1343 @@
+diff --git a/README.md b/README.md
+index cdccf0d..991567e 100644
+--- a/README.md
++++ b/README.md
+@@ -81,12 +81,13 @@
+ **只有执行 / 变异子集的记录、无人逐行读**：`tests/test_dual.py`（L4）、`tests/test_interlock_escape.py`（L5 TIA）、
+ `tests/test_covers3_membership.py`（L1 三维票一/票三）、`tests/test_geom3_merge.py`、`tests/test_geom3_face_polygon.py`（L0）。
+ 第三轮盲区 gaps[1] 只闭合了一部分；余下五个文件第四轮也没读到，**第五轮的 unread-files 镜头逐行读完**并各做了变异（`reports/g6e_20261010.md` 的覆盖说明）——由此新增的门：冻结 EE 朝向（`test_frozen_ee_sign.py`）、互锁候选集两半句契约（`test_interlock_candidates_contract.py`）。这些行的"未经复核"字样随第五轮处置更新，"✔"只在 M0 退出后升级。
++**E2 变更范围（2026-10-11，WO-E2）**：二维凸构造、成员、法锥与 G0 三票改用精确判据；凸首入的选路、初态与射线裁剪也不再以浮点 gap 作分支。定向门为 `test_kernel2d_exact.py`、`test_kernel2d_report_band.py`、`test_kernel2d_convex_ray_exact.py` 及改写后的二维回归/不变性门；旧噪声带豁免改为逐点精确 oracle 对照，稳定区另验刚体运动不变性。变更后的全套结果、突变体及残余边界以 `reports/codex/E2_report.md` 为准。这里不是新一轮 G6 通过声明；上文历史复核不自动覆盖 E2 的新代码和新门。
+ 表里每个 ✔ 后面的括号给出看护它的测试（纪律 C：写不出测试的不打 ✔）。文件名省略 `tests/` 前缀。
+ 
+ | 层 | 状态 |
+ |---|---|
+ | L0 | 二维/三维多边形与多面体 ✔（三维：`test_kernel3d_geom.py`；二维：`test_kernel2d_review.py::test_r5c_far_offset_small_polygon_area_and_centroid` 对闭式查远偏移小三角形的面积与形心、`::test_r6_concave_centroid_outside_does_not_fake_overlap` 查形心落在自身外的凹多边形上 `polygons_overlap` 不误判；二维原语没有一个成套的专门门，这两条是 09-18 对抗审查（1696ae7）修复时加的点状门，早于 09-21 的六路审查）；**只做平移**。暴力谓词（G0 的 oracle）✔：非凸面上"点在面内"统一为一个 `point_in_face_polygon`（`test_geom3_face_polygon.py`，对闭式矩形并与星形极角 oracle），相交谓词补了薄片证人（`test_geom3_overlap_witness.py::test_audit_case_volume_is_0_012`）。**纪律 A 的代价要说清**：盖层的 in_extent 与暴力谓词现在共用这一个原语（`test_geom3_face_polygon.py::test_all_five_call_sites_route_through_the_single_helper` 看着"五处共用"），它若错会两边一起错、G0 看不见，所以它自己的门只能用闭式 oracle |
+-| L1 二维 | G1 复现 legacy bb52 顶点-边 53/53 ✔（`test_bb52_g1.py::test_g1_tier1_all_legacy_ve_reproduced`）；凸块 G0 ✔（`test_kernel2d_g0.py::test_g0_random_convex_pairs`）。**凹块 G0 已重做**：真值一律用暴力 `polygons_overlap`，检验"∂E 落在有效盖上"的两面——分离侧距离完备性 603/603、相交侧出口完备性 657/657 ✔（`test_bb52_g1.py::test_g0_distance_completeness_real_concave_geometry` / `::test_g0_exit_completeness_real_concave_geometry`，同一批 1260 次平移）。**凹块成员谓词本身仍无门**（要等全局 E 构造，M3）。**首入按运动方向定义的二维版（M2，2026-10-10，`kernel2d/entrance.py`，有门·未经复核）**：凸对用 E 的 H 表示闭式求进入时刻、凹对用局部盖 + 谓词裁决（候选集漏首入时抛错不静默）、已侵入取最短出口；门 `test_kernel2d_entrance.py`（闭式、凹台阶对不经盖的 oracle、30 对随机凸对、刚体运动到 1e6、bb52 真几何 53 条 legacy 顶点-边接触逐条对账：legacy 认定的接触，引擎沿逼近方向也认它是第一个碰上的，角对角的集值点与平行边贴合按同一接触点 / 同一接触线判，已微量贯入的块对只要求它在候选里）；7 个突变体 5 抓、2 处互为冗余（同时撤回才红）。旧的静态简化版 `first_entrance_for_vertex` 保留作参考，它对凹块分离情形的错不再是现行口径 |
++| L1 二维 | G1 复现 legacy bb52 顶点-边 53/53 ✔（`test_bb52_g1.py::test_g1_tier1_all_legacy_ve_reproduced`）。**E2 凸路径（2026-10-11，已实现并配定向门，待 G6）**：只接受精确凸输入，允许平直顶点，微凹/折回/绕圈/零长边清晰拒收；仅精确平行同向边合并 FF。成员对给定坐标和精确平移判定；显式 `tol` 无舍入地板，凸报告带用精确欧氏边界距离，非凸回退用精确相交加保守四轴边界见证、报告带不保证完备（`test_kernel2d_exact.py`、`test_kernel2d_report_band.py`）。凸 G0 三票零容差、不跳样本，边界探针参与计分；票二对独立全顶点支撑集核对严格/边界标签，票三只数严格凸顶点（`test_kernel2d_g0.py::test_g0_random_convex_pairs`、`test_kernel2d_exact.py::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions`）。**凹块 G0** 仍以暴力 `polygons_overlap` 检验距离/出口完备性，历史 bb52 1260 次平移为 603/603、657/657（`test_bb52_g1.py::test_g0_distance_completeness_real_concave_geometry` / `::test_g0_exit_completeness_real_concave_geometry`）；精确一般多边形相交回退已有闭式门，但**基于盖裁剪的凹块全局 E 仍未实现**（M3）。**按运动方向的首入**：凸选路、初态、半空间裁剪精确，`facet_gap`/法向/接触点仅作浮点构造输出，并列标签仍有报告窗口（`test_kernel2d_convex_ray_exact.py`）；凹首入和已侵入后的 `shortest_exit` 保持既有容差路径，**尚未精确化，留 E3**。局部 `ve_cover`/`ev_cover`/`vv_cover`/`enumerate_covers` 的 legacy 窗口口径不变；bb52 首入对账门仍为 `test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal`。旧静态 `first_entrance_for_vertex` 只作参考。E2 全套与突变结果见 `reports/codex/E2_report.md`，不等于 G6 退出 |
+ | L1 三维 | 凸块 G0 三票 ✔，含平行面退化对：票一成员谓词（`test_covers3_membership.py`；修前方块/方块崩溃、四面体/方块在 +x 侧误判）、票二局部 facet == 凸包 facet（`test_covers3_g0_vote2.py`，删任一严格 facet 190/190 报红）、票三只数极点（`test_covers3_membership.py::test_g0_vote3_counts_only_extreme_points_on_degenerate_input`）。凹块 G0 只有分离侧距离完备性（`test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair`）。共面归并 ✔（`test_geom3_merge.py`：pinch 顶点不死循环、U 形两端面不误并）。**G2 对 3-b-dda 手写期望清单** ✔（不是对检测器：3-b-dda 的入口是 `cases.py` 手写的 4 个，G6 盲区 1；三维 legacy 检测器至今未对过），范围窄：三个夹具（cb2_locked / cb2_sliding / cb_bond）各 4 个 np 入口 ↔ 4 个 VF 盖（`test_g2_bdda3d.py::test_g2_isomorphism_against_bdda3d`）；只对账 np↔VF/FV，窗口 `G2_WINDOW=1e-6`（原来硬写 1.0）；legacy 的 ee 入口、窗口内的 EE/VE3/EV3/VV3 盖现在会让门变红，**但还没有对账通道**（带内牙 6f157ac 未经独立复核，见状态声明）；只有一种几何（轴对齐方块叠放）；不是凸包角点的输入顶点，重复点登记别名、T 形点直接报错（`::test_g2_duplicate_vertices_are_aliased_and_reconcile` / `::test_g2_non_corner_vertex_is_a_clear_error`）；legacy 侧自 2026-09-24 起受哈希看护（`test_fixture_provenance.py::test_bdda3d_gate_has_teeth`），但姊妹仓库的版本没有记录；入口是算例预置的手写列表，**不是** detect.py 的产出（G6 盲区 1 已核实）。**M2 第一版（2026-10-10，`kernel3d/entrance3.py`，有门·未经复核）**：沿运动方向的三维首入（命题 7：候选集来自 facet 型盖、精确谓词裁决、集值点如实报并列集、已侵入取最短出口）与退化族合并（FF / FE，`members` 保留展开视图）；门 `test_entrance3.py`（闭式、24 对随机凸对对不经盖的 oracle、刚体运动 1e3–1e6、漏候选必抛错）、`test_entrance3_concave.py`（台阶 / 微台阶 / V 槽 / 倒方台）、`test_entrance3_g2.py`（三份 bdda3d 夹具上首入 FF 的成员逐条还原 legacy 的 4 个 np 入口）；13 个突变体里 10 个被抓，3 个如实记（"平面已在身后"筛选与"t* 处谓词须相触"核验互为冗余、同时撤回才红；平面簇容差 ×1e6 在现有几何上不改变输出）。EEP 没有自己的合并规则（由 VF/FV 边界态表达）。**未做**：凹块全局 E 构造（M3） |
+ | L2 | 裕度层四条自拟"定理"：二、四有门 ✔（`test_margin.py`：构型-工作空间距离恒等 `test_config_space_distance_equals_body_distance`、C^{1,1} 正则化的 Lipschitz 双边门 `test_inflated_normal_is_lipschitz` + `test_lipschitz_gate_has_teeth`）；定理一（膨胀恒等式）的门 `test_inflated_membership_tracks_the_margin` 与实现共用同一个 `body_distance`，**不是独立门**；定理三只有前半（margin_gap ≤ 0 即广义接触闭合）有门（`test_margin_contacts_are_generalized_contacts`），后半（KKT 乘子 = 虚拟接触力）无实现无门。审查指出的"贯入时答安全"（fail-unsafe）已修：贯入返回哨兵、裕度判违约（`test_margin_penetration.py`）；这道守卫依赖暴力谓词 `polyhedra_overlap`。**与正本的对照**（审查盲区 4）：`docs/canon_map.md` 已写、与本文同批提交，**未经 G6**。"定理一到四"是本仓库自拟的编号，正本里没有（审查与 canon_map 在这一点上一致）；canon_map（未经 G6）对审查 GAP3 的"自创的定理"一说提出异议，认为内容在正本有出处——这是比审查更强的说法，按规矩**以 G6 结论为准**，此处不采信（已列入路线 M0"G6 通过后待写"）。本行只采纳往弱里改的部分：定理一的门不独立、定理三后半无实现无门 |
+ | L3 | 极限分析（下限 LP + 对偶机构，自带上下限自校验）✔（`test_limit.py::test_lower_and_upper_bounds_coincide`）；Patton 剪胀律 ✔（`test_limit.py::test_interlock_with_friction_reproduces_pattons_law`，含曾被判假不可行的 (0.2, 0.1)、(0.3, 0.1)；全格扫描见 `test_limit_scale.py`）。审查指出的"部分格子静默报 infeasible"已在 M0 修复，M0.2 起 LP 改为**对给定数据精确**（浮点只给候选、有理数核验三种证书；力矩列、荷载平移、黏聚上限精确给出；`test_lp_certificates.py`、`test_limit_scale.py::test_interlock_is_never_falsely_infeasible_on_the_audited_cells`、`test_lp_scale.py`），可分辨性筛查与刀刃输入的诚实边界见 `limit.py` 模块文档，**待 G6 重审**。三维摩擦锥用 k 边内接棱锥，误差**不随 k 单调**：本几何在 k 为 4 的倍数时恰有一条锥棱落在滑动方向上所以精确（依赖切向基架），其余 k 上下振荡，承载比的相对短缺 ≤ 1−cos(π/k)（`test_limit.py::test_three_d_cone_linearisation_is_conservative_within_the_inradius_bound` / `::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k`）。接触点取动体一侧 `point_a`，倾覆承载与间隙无关（`test_limit_contacts.py::test_toppling_capacity_is_independent_of_the_gap`）。本构 = 库仑 + 黏聚，可插；关联流动。**多体（M1，2026-10-10）：有门·未经独立复核·待 G6**——`limit_multi.py` 把各体平衡并进同一 LP、接触在两体间成对出现，单体是特例（`test_limit_multi.py`：单体退化与 `limit_load` 相同、两块叠放 min(μW₂, W₂, (W₁+W₂)/h) 逐点相等、成排块传力、三维叠放、注入错解与"忘记反作用"的变异都抛错；`test_limit_arch.py`：五/七块半圆薄拱的 α 与**独立枚举的四铰机构上限**在 1e-9 内相等（五块 480 种铰位里 10 个容许、七块 2240 种里 28 个），低摩擦取滑动机构、更低自重不平衡，厚拱在关联流动下无界——如实报出，不硬凑；`test_limit_flat_arch.py`：刚性竖直台肩之间的三块平拱自锁（μ > 0 报 unbounded、μ = 0 报 infeasible），附不经 LP 的运动学论证——此前 README 把它记在 test_limit_arch.py 名下，那里并没有这道门，G6 第五轮补）。多体下接触力分布不唯一、α 唯一。 |
+diff --git a/docs/canon_map.md b/docs/canon_map.md
+index 9a203ae..eb7f567 100644
+--- a/docs/canon_map.md
++++ b/docs/canon_map.md
+@@ -13,6 +13,8 @@
+ 
+ **本表自身的状态**：本文件与本批 M0 收尾文档**一起提交**（HEAD `094861c` 上尚不存在）；它此后经过 G6 第二至第五轮的独立重审（第四轮 provenance-canon 镜头打开过 01、03 全文与 00 多节，第五轮核过第八节"07 对代码"），GAP3（正本对代码）已按各轮报告逐条处置（`reports/g6d_20261010.md`、`reports/g6e_20261010.md`）。按 README 的规矩，本表里任何比现有 README/报告更强的说法，都要等 G6 之后才能升级到那些文件里。
+ 
++**E2 口径更新（2026-10-11，WO-E2）**：下文二维凸路径按本工作树的精确实现订正；只记录实现与定向门，不把历史 G6 覆盖移植到新代码上。全套结果、突变体和遗留问题见 `reports/codex/E2_report.md`。凹首入、已侵入后的最短出口与局部单盖窗口路径未在 E2 精确化。
++
+ ## 先说结论
+ 
+ 1. **凸情形的核心命题 1、3(i)、4、5、6(i)、6(iii) 已实现且有门**，而且门的 oracle 大多不经被测代码（暴力相交谓词、显式 conv{b−a}、纸笔闭式）；
+@@ -21,8 +23,8 @@
+    （2026-09-27 订正：原文把 2 也算进"都已实现且有门"，与本文件自己的表矛盾；G6 minor 21 当时用变异确认"让 `local_facets3`
+    在 A 沿 x 平移超过 3 时丢一个标签，全套照绿"——那是 68c311b 之前的状态，在现 HEAD 上同一变异让 2(i) 门与不变性门共 106 条红。
+    2026-10-10 再订正：上一次订正把状态说低了。）
+-2. **命题 4 的"一般位置"前提，代码的处理方式是"不另起退化类型"**：平行贴面、棱平行于面、平行棱-棱都用**非严格**的普通盖来表达，凸成员谓词改用 E 的全部支撑半空间（不再依赖一般位置）。成员、距离、票二、票三在退化输入上都有门。**把一个退化族收成一个盖只做了一半**：三维首入的 `entrance3.merge_degenerate`（M2 第一版）把同一法向、同一平面上的并列盖收成 `("FF", …)` / `("FE", …)` **标签元组**并保留展开成员；但 `Cover3.kind` 注释里的 `FF` / `FE` / `EEP` 与 `contact_record.CoverType` 里的 `FF` / `FE` / `EE_PAR` 仍没有任何构造点（`enumerate_covers3` 不产出、`CoverType.FF/FE/EE_PAR` 全仓零引用），`EEP` 连标签也没有；二维 `FF` 只在凸全局构造 `convex_entrance_block` 里出现（`covers.py:399 convex_entrance_block`（段内）），局部枚举不产出。
+-3. **首入（命题 7）**：二维只有一个静态函数，只对"B 凸或已侵入"成立，凹块分离时选错边（本表复核时实测复现）；三维自 2026-10-10 起有第一版（`entrance3.py:204 first_entrance3`，**按运动方向定义**、有门、未经独立重审，M2）；二维按运动定义的版本同日落地（`kernel2d/entrance.py:80 first_entrance`：凸对用 E 的 H 表示闭式求进入时刻、凹对用局部盖 + 谓词裁决、已侵入取最短出口；bb52 真几何上 53 条 legacy 顶点-边接触逐条对账）。旧的静态简化版 `first_entrance_for_vertex` 保留作参考。
++2. **命题 4 的"一般位置"前提，代码的处理方式是"不另起退化类型"**：平行贴面、棱平行于面、平行棱-棱都用**非严格**的普通盖来表达，凸成员谓词改用 E 的全部支撑半空间（不再依赖一般位置）。成员、距离、票二、票三在退化输入上都有门。**把一个退化族收成一个盖只做了一半**：三维首入的 `entrance3.merge_degenerate`（M2 第一版）把同一法向、同一平面上的并列盖收成 `("FF", …)` / `("FE", …)` **标签元组**并保留展开成员；但 `Cover3.kind` 注释里的 `FF` / `FE` / `EEP` 与 `contact_record.CoverType` 里的 `FF` / `FE` / `EE_PAR` 仍没有任何构造点（`enumerate_covers3` 不产出、`CoverType.FF/FE/EE_PAR` 全仓零引用），`EEP` 连标签也没有；二维 `FF` 只在凸全局构造 `convex_entrance_block` 里出现（`covers.py:311 convex_entrance_block`（段内）），局部枚举不产出。
++3. **首入（命题 7）**：二维旧静态 `first_entrance_for_vertex` 对凹块分离时选错边，只保留作参考；二维、三维自 2026-10-10 起均有按运动方向定义的第一版（`kernel2d/entrance.py:74 first_entrance`、`entrance3.py:204 first_entrance3`，有门、未经独立重审，M2）。E2 的二维凸路径进一步精确化选路、初态与 E 的半空间射线裁剪（`test_kernel2d_convex_ray_exact.py`）；凹对仍用局部盖 + 容差谓词裁决，已侵入后的最短出口也仍是容差路径，留 E3。bb52 真几何的 53 条 legacy 顶点-边接触逐条对账门仍在。
+ 4. **穿透深度（命题 3(ii)）、碰撞锥（命题 8）没有实现。**
+ 5. **`margin.py` 的"定理一到四"是本仓库自己编的号**，正本里没有这四个编号。但内容上一、二、四在正本都有出处（03 §1.1、01 命题 3(i)、03 §1.3 与 01 命题 6）；定理三的后半句（KKT 乘子 = 虚拟接触力）是 03 §1.2 的主张，代码没实现。真正属于本仓库的只有 Lipschitz 常数 2/δ 这个定量推论，而代码里给的一句理由不够，推导补在第三节。这一条与审查盲区 4（GAP3）"在 03 里没有对应""自创的定理"的说法相反，第三节开头是对审查的订正。
+ 6. **"局部盖不构成凹块的全局判据"这条实测结论，和正本对石根华机器"一般凹 + 可证完备"的定位有张力**：局部盖对凹块只做到"∂E 被盖住"（有门），做不到"盖就是 ∂E"——本表复核时构造了一个严格有效、间隙为 0 的盖恰好落在 int E 里的例子。缺的是 00 §3.3 提到、正本自己标着"未核实"的那一步：**盖之间的裁剪**。01 开头说"凹块情形单独说明"，全文其实没有这段说明。
+@@ -44,21 +46,21 @@
+ 
+ | 命题 | 一句话 | 前提 | 实现 | 看护的测试 | 状态 |
+ |---|---|---|---|---|---|
+-| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:399 convex_entrance_block`（按极角合并）；三维凸：显式 conv{b−a}，`margin.py:295 entrance_block_convex`、`g03.py:397 g0_convex3`（段内）（票三：锥相交裕度） | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**。凹：**未实现**（没有全局 E，M3） |
+-| **1·注3** 三分判据 | a₀ 在 E 外=分离，在内部=重叠，在边界=恰好接触 | 同上 | `covers.py:507 membership_convex`、`covers3.py:652 membership_convex3`，都返回 −1/1/0 | `test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x`（含 t=1.0、t=−2.0 两个恰相触的分界点，判 0）、`::test_membership_box_vs_box_matches_closed_form`、`::test_membership_tetra_vs_offcenter_box_matches_closed_form`（×1e-3/×1e3）、`test_kernel2d_g0.py::test_degenerate_parallel_edges_membership_still_exact` | 凸：**已实现+有门**。注意 G0 票一会跳过边界带，"=0"这一支只在闭式分界点上有门。凹：**未实现**——`polygons_overlap`（`geom.py:376 polygons_overlap`）/`polyhedra_overlap`（`geom3.py:621 polyhedra_overlap`）只是暴力 oracle，不是 E 的判据 |
++| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:311 convex_entrance_block` 接精确 `kernel2d/exact.py::entrance_block_exact`（Fraction 极角归并，精确平行同向才并 FF，顶点最后转为浮点输出）；三维凸：显式 conv{b−a}，`margin.py:295 entrance_block_convex`、`g03.py:397 g0_convex3`（段内）（票三：锥相交裕度） | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**；E2 新路径待 G6。凹：**未实现**（没有全局 E，M3） |
++| **1·注3** 三分判据 | a₀ 在 E 外=分离，在内部=重叠，在边界=恰好接触 | 同上 | `covers.py:371 membership_convex`（E2：tol=0 的分类与平移加法精确，非精确凸输入走 `polygons_overlap_exact`）、`covers3.py:652 membership_convex3`，都返回 −1/1/0 | 二维 `test_kernel2d_exact.py::test_exact_membership_equals_exact_separating_axis_oracle`、`::test_exact_membership_boundary_is_not_the_interior`、`::test_membership_nonexact_convex_input_uses_the_simple_polygon_path`；显式报告带 `test_kernel2d_report_band.py`。三维 `test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x`、`::test_membership_box_vs_box_matches_closed_form`、`::test_membership_tetra_vs_offcenter_box_matches_closed_form` | 凸：**已实现+有门**。二维 G0 不再跳边界带；二维 tol>0 仅为无舍入地板的报告带，凸带为完整欧氏边界距离、非凸带为有精确四轴见证的保守子集。非凸一般相交回退已有门，但**盖裁剪/全局 E 成员判据仍未实现**（M3）。三维 G0 的边界带跳过仍存在 |
+ | **2(i)** 位置无关 | E 只依赖形状与朝向，可以预计算 | 只平移、不转动 | 结构上成立：法锥判据只读方向；`facet_gap`/`facet_gap3` 对平移是仿射的；`g0_convex3` 只算一次 `local_facets3` 给全部样本用（`g03.py:113 _hull_facets`（段内）） | `test_kernel3d_covers.py::test_proposition_2i_position_independence`（+ `::test_position_independence_gate_has_teeth_*` 两条牙）、`test_invariance_geom.py::test_cover_labels_and_strictness_are_invariant` | **已实现+有门**（附录 A.3 的一次性复核已升格为门） |
+-| **2(ii)** 凸性传递 | A、B 凸 ⟹ E 凸 | A、B 凸 | 作为前提被使用：凸成员谓词 = 若干半空间间隙取最大值 | 间接：票一（成员谓词 vs 暴力谓词逐样本一致） | **已实现，间接有门** |
++| **2(ii)** 凸性传递 | A、B 凸 ⟹ E 凸 | A、B 凸 | 作为前提被使用：二维凸成员由精确 facet 半空间符号判定，不再对浮点 gap 取符号；三维仍是支撑半空间路径 | 间接：票一（成员谓词 vs 独立相交 oracle 逐样本一致） | **已实现，间接有门** |
+ | **2(iii)** 紧性 | 紧+紧 ⟹ E 紧 | 块体有界 | 不需要实现（输入都是有界多面体） | — | 不适用 |
+ | **3(i)** 距离恒等式 | a₀ 到 E 的距离 = 两块的距离 | 无条件 | 凸：`margin.py:311 distance_to_convex_entrance`（显式 E）对 `margin.py:210 body_distance`（盖路径）；这正是 `margin.py` 的"定理二" | `test_margin.py::test_config_space_distance_equals_body_distance`（3 个种子，每种子分离样本 > 40）、牙 `::test_theorem_two_gate_has_teeth_shrinking_the_nearest_point_is_caught` | 凸：**已实现+有门**。凹：没有显式 E，恒等式本身量不了；能量的是"盖给的距离 = 暴力距离"（距离完备性，见第六节） |
+ | **3(ii)** 穿透深度 | 重叠时，最小分离平移 = a₀ 到 ∂E 的距离 | a₀ ∈ int E | 无。裕度层贯入时只回答"已违约"、不给深度（`margin.py` 模块文档「口径与边界」第二条）；二维出口完备性量的是**沿给定方向**的出口，不是最短出口 | — | **未实现** |
+-| **4** ∂E 的面结构 | 一般位置下，facet 只来自 顶点×面、面×顶点、交叉棱×棱；棱来自 顶点×棱；顶点来自 顶点×顶点 | **一般位置**（无平行面、无棱平行于面）；必须用法锥**相对内部** | 三维：`covers3.py:326 vf_cover`、`:338 fv_cover`、`:368 ee_cover`、`:437 ve3_cover`、`:480 ev3_cover`、`:506 vv3_cover`、`:531 enumerate_covers3`、`:577 local_facets3`；二维：`covers.py:97 _edge_len`（段内）、`:525 local_facets` | 二维 `test_kernel2d_g0.py::test_g0_random_convex_pairs`（局部严格 facet 集 = 全局 Minkowski facet 集 = \|A\|+\|B\|）；三维 `test_covers3_g0_vote2.py` 全部 5 条（含"删任一严格 facet 必红""假标签必红"）、`test_kernel3d_covers.py::test_facet_count_matches_minkowski_theory_for_boxes`、`::test_crossing_edge_edge_cover`、`::test_wedge_on_wedge_gives_strict_crossing_edge_cover`；票三 `test_covers3_membership.py::test_g0_vote3_counts_only_extreme_points_on_degenerate_input` | 一般位置：**已实现+有门**。退化：**部分**，见第四节 (a)。二维表述**与正本不一致但无害**：正本说二维"顶-顶拆成两个 v-e 判定"，代码另有一个 `VV` 盖（E 的顶点），距离完备性的角对角情形靠它（`test_distance_completeness_has_teeth` 丢 VV 必红） |
++| **4** ∂E 的面结构 | 一般位置下，facet 只来自 顶点×面、面×顶点、交叉棱×棱；棱来自 顶点×棱；顶点来自 顶点×顶点 | **一般位置**（无平行面、无棱平行于面）；必须用法锥**相对内部** | 三维：`covers3.py:326 vf_cover`、`:338 fv_cover`、`:368 ee_cover`、`:437 ve3_cover`、`:480 ev3_cover`、`:506 vv3_cover`、`:531 enumerate_covers3`、`:577 local_facets3`；二维：`covers.py:400 local_facets`（E2 精确法锥）与精确 Minkowski 边归并 | 二维 `test_kernel2d_g0.py::test_g0_random_convex_pairs`（一般位置下局部严格 facet 集 = 全局 facet 集 = \|A\|+\|B\|）；退化输入由 `test_kernel2d_exact.py::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions` 核对严格/边界支撑集。三维 `test_covers3_g0_vote2.py`、`test_kernel3d_covers.py::test_facet_count_matches_minkowski_theory_for_boxes`、`::test_crossing_edge_edge_cover`、`::test_wedge_on_wedge_gives_strict_crossing_edge_cover`；票三 `test_covers3_membership.py::test_g0_vote3_counts_only_extreme_points_on_degenerate_input` | 一般位置：**已实现+有门**。退化：**部分**，见第四节 (a)。二维表述**与正本不一致但无害**：正本说二维"顶-顶拆成两个 v-e 判定"，代码另有一个 `VV` 盖（E 的顶点），距离完备性的角对角情形靠它（`test_distance_completeness_has_teeth` 丢 VV 必红） |
+ | **4·退化** | 平行贴面、棱平行于面各给一个 facet，平行棱-棱给一条棱，要"另行处理" | 一般位置之外 | 见第四节 (a) | 见第四节 (a) | **部分**：正确性有门；退化族未合并成一个盖（M2） |
+-| **5** 有效入口 = 法锥条件 | 严格分离 ⟺ 法锥相对内部相交 ⟺ 该盖是 ∂E 的极大 facet；非严格 ⟺ 闭法锥相交 ⟺ 盖在 ∂E 上但可能是退化盖的一部分 | A、B 凸 | 二维 `covers.py:52 normal_cone`、`:79 in_cone`；三维 `covers3.py:111 vertex_cone_contains`、`:132 edge_arc_contains`、`:276 cone_relint_direction`（Gordan 判据）、`:306 cones_intersect_relint`；严格与否记在盖的 `strict` 字段 | `test_kernel3d_covers.py::test_vertex_cone_of_box_corner`、`::test_edge_arc_of_box_edge`、`::test_tilted_vertex_face_cover_is_strict`、`test_covers3_strict_lowdim.py::test_stacked_boxes_corner_over_edge_is_not_strict`、`::test_generic_vertex_over_edge_is_strict`、`test_kernel2d_review.py::test_r1_narrow_crevice_is_reflex_even_with_legacy_tolerance`、`test_bb52_g1.py::test_gate_has_teeth_strict_cone_loses_legacy_contacts`，以及票二 | 凸：**已实现+有门**。凹：代码把局部法锥规则原样用在凹块上；正本只对凸陈述，"非严格 ⟺ 在 ∂E 上"对凹块**不成立**（第四节 (d)） |
++| **5** 有效入口 = 法锥条件 | 严格分离 ⟺ 法锥相对内部相交 ⟺ 该盖是 ∂E 的极大 facet；非严格 ⟺ 闭法锥相交 ⟺ 盖在 ∂E 上但可能是退化盖的一部分 | A、B 凸 | 二维凸：`kernel2d/exact.py::vertex_side_exact`；局部单盖/legacy 窗口仍用 `covers.py:62 normal_cone`、`:89 in_cone`。三维 `covers3.py:111 vertex_cone_contains`、`:132 edge_arc_contains`、`:276 cone_relint_direction`（Gordan 判据）、`:306 cones_intersect_relint` | 二维 `test_kernel2d_exact.py::test_flat_vertex_cone_is_one_ray_not_a_line`、`::test_corner_cone_boundary_is_not_strict` 及票二；legacy 窗口 `test_kernel2d_review.py::test_r1_narrow_crevice_is_reflex_even_with_legacy_tolerance`、`test_bb52_g1.py::test_gate_has_teeth_strict_cone_loses_legacy_contacts`。三维 `test_kernel3d_covers.py::test_vertex_cone_of_box_corner`、`::test_edge_arc_of_box_edge`、`::test_tilted_vertex_face_cover_is_strict`、`test_covers3_strict_lowdim.py::test_stacked_boxes_corner_over_edge_is_not_strict`、`::test_generic_vertex_over_edge_is_strict` | 凸：**已实现+有门**。凹：局部单盖仍采用原窗口规则；正本只对凸陈述，"非严格 ⟺ 在 ∂E 上"对凹块**不成立**（第四节 (d)） |
+ | **6(i)** 外侧光滑 | E 外距离函数可微，梯度 = (x − P_E(x))/d，局部 C^{1,1} | E 闭凸 | `margin.py:315 inflated_normal`（凸，显式 E）；冻结路径对平移 x 的导数（`frozen.py:113 frozen_normal`、`:141 frozen_gap`） | `test_margin.py::test_inflated_normal_is_lipschitz`、牙 `::test_lipschitz_gate_has_teeth`（随机/常向量/径向/局部反号四种错误实现全抓）、`::test_lipschitz_gate_global_pairs_have_their_own_teeth`、`test_frozen_lowdim.py::test_low_dim_frozen_gradient_is_the_inflated_normal_of_the_explicit_entrance_block` | 凸：**已实现+有门** |
+ | **6(ii)** 内侧分片线性 | 侵入深度是有限个仿射函数的 min，在脊集上梯度跳 | a₀ ∈ int E，E 凸 | 无（依赖 3(ii)）。**类比**：L5 逃逸高度 h(δ) 也是"有限个盖的零间隙高度里取一个"的分片线性函数，拐点在并列切换处；`tools/tia_sensitivity.py:93 sensitivity_at` 在那里标 `differentiable=False`。方向固定为竖直，不是侵入深度，只是同类结构 | 类比部分：`test_interlock_sensitivity.py::test_phase_derivative_at_phase_zero_is_flagged_on_every_default_row`、`::test_differentiability_flag_agrees_with_one_sided_quotients` | **未实现**（正本意义下）；同类拐点在 L5 已被检测 |
+-| **6(iii)** 边界集值 | ∂E 上法向在 facet 内唯一，在棱、顶点处集值 | E 凸 | 盖带维数标签（`VV`/`VV3` 零维、`VE3`/`EV3` 一维）；重合时法向给 `None`（`covers.py:197 vv_cover` vv_cover、`covers3.py:506 vv3_cover`（段内）） | `test_margin.py::test_inflation_turns_a_set_valued_normal_into_a_single_valued_one`（同一 E 顶点、两个法向；膨胀后单值且 \|n₁−n₂\| = \|x₁−x₂\|/δ 精确） | 凸：**已实现+有门** |
+-| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `covers.py:290 first_entrance_for_vertex`：单个顶点对块 B，边内有效 VE 盖里取最大间隙，没有就退到活跃 VV。静态函数，不接收运动方向；库内无调用者（只有测试调用）。三维：`entrance3.py:204 first_entrance3`（沿 x0 + t·d 的首入：facet 型盖给候选、精确谓词裁决、集值点报并列集）+ `shortest_exit3`（已侵入取最短出口）+ `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版 2026-10-10） | 二维：`entrance.py:80 first_entrance`（按运动方向；凸对闭式、凹对局部盖 + 谓词裁决）+ `shortest_exit`，门 `test_kernel2d_entrance.py`（闭式、凹台阶对不经盖的 oracle、30 对随机凸对、刚体运动到 1e6、bb52 53 条 legacy v-e 对账）；旧静态版只有 `test_kernel2d_g0.py::test_first_entrance_picks_shallowest_penetration`；三维 `test_entrance3.py`（闭式、随机凸对对不经盖的 oracle、刚体运动、漏候选必抛错）、`test_entrance3_concave.py`（台阶 / 微台阶 / V 槽 / 倒方台）、`test_entrance3_g2.py`（三份 bdda3d 夹具上首入 FF 的成员逐条还原 legacy 的 4 个 np 入口） | **二维、三维第一版都有门·未经 G6**（凹块首入靠谓词裁决、无完备性保证，局部规则到不了的位形抛错不静默）。二维对"凹 B + 分离"**错**（docstring 自认；本表复现见第四节 (b)） |
+-| **8** 碰撞锥 / 速度障碍 | CC = 从 a₀ 看 E 的正锥；VO 是它平移到 v_B；推论：盖分解经中心投影给碰撞锥一个"首撞模态"分划 | 匀速相对运动 | 无。沿射线找首个 ∂E 点的计算只以两种特例存在：二维 `g0.py:233 brute_ray_exit`（oracle，不带盖标签）；三维 `interlock.py:175 escape_candidates` / `:198 escape_height_covers`（方向固定 +z，带盖标签） | — | **未实现** |
++| **6(iii)** 边界集值 | ∂E 上法向在 facet 内唯一，在棱、顶点处集值 | E 凸 | 盖带维数标签（`VV`/`VV3` 零维、`VE3`/`EV3` 一维）；重合时法向给 `None`（`covers.py:178 vv_cover` vv_cover、`covers3.py:506 vv3_cover`（段内）） | `test_margin.py::test_inflation_turns_a_set_valued_normal_into_a_single_valued_one`（同一 E 顶点、两个法向；膨胀后单值且 \|n₁−n₂\| = \|x₁−x₂\|/δ 精确） | 凸：**已实现+有门** |
++| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `entrance.py:74 first_entrance`：E2 凸选路、初态与射线裁剪精确，浮点 gap 只作输出；凹首入和已侵入后的 `shortest_exit` 仍用既有容差路径。旧静态 `covers.py:271 first_entrance_for_vertex` 仅作参考。三维 `entrance3.py:204 first_entrance3` + `shortest_exit3` + `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版） | 二维 `test_kernel2d_convex_ray_exact.py::test_convex_ray_time_matches_independent_fraction_sat`、`::test_convex_ray_decisions_do_not_use_constructed_facet_gaps`、`::test_corner_start_reports_both_exact_active_facets`；既有 `test_kernel2d_entrance.py` 含凹台阶、刚体运动、bb52 53 条 legacy v-e 对账。三维 `test_entrance3.py`、`test_entrance3_concave.py`、`test_entrance3_g2.py` | **二维、三维均有门·未经新一轮 G6**。二维 E2 不主张已精确化凹首入或最短出口；已知"凹 B + 分离选远边"指旧静态函数，不指新版运动首入（第四节 (b)） |
++| **8** 碰撞锥 / 速度障碍 | CC = 从 a₀ 看 E 的正锥；VO 是它平移到 v_B；推论：盖分解经中心投影给碰撞锥一个"首撞模态"分划 | 匀速相对运动 | 无。沿射线找首个 ∂E 点的计算只以两种特例存在：二维 `g0.py:260 brute_ray_exit`（oracle，不带盖标签）；三维 `interlock.py:175 escape_candidates` / `:198 escape_height_covers`（方向固定 +z，带盖标签） | — | **未实现** |
+ 
+ ---
+ 
+@@ -109,11 +111,12 @@
+ 
+ **二维**
+ 
+-- **平行边（FF）**：全局凸构造把两条平行边合并成一条 `FF` 边（`covers.py:374 _angle_windows`（段内）：长度容差 t 的**方向可行窗**——各边方向噪声 rfl/|e| 按各自多边形的坐标量级、被相邻边按凸性夹住，两窗相交到 t/max|e| 以内才并；10-10 第三轮之后的口径，此前写"角容差"已过期）。局部枚举**不产出** `FF`，而是给两条非严格的 VE/EV：本表复核，单位正方形贴着另一正方形右边（平移 (1.0, 0.3)）时，窗口 1e-9 内恰好是非严格 VE 1 个 + 非严格 EV 1 个（附录 A.4）。`local_facets` 只收严格盖，所以票二比较时要从全局集合里去掉 FF（`g0.py:71 g0_convex`（段内））。
+-  门：`test_entrance_block_area_is_minkowski_area`（两正方形 → 4 条 FF）、`test_degenerate_parallel_edges_membership_still_exact`、`test_distance_completeness_boundary_cases[parallel_edges_FF / parallel_edges_offset]`、`test_exit_completeness_boundary_cases[FF_parallel_edges]`。
+-- **平直顶点**（转角为 0）：法锥退化成单射线，保留（`covers.py:52 normal_cone`（段内））；VV 盖对锥宽 ≤ 0 的顶点返回 None，因为相对内部交为空（`covers.py:197 vv_cover`（段内））。门：`test_r3_numerically_collinear_vertex_yields_no_vv`。
+-- **非一般位置的"凸"输入**（微凹）：全局构造按**凸包深度**处理：顶点落在自身凸包以内 ≤ t 夹平、> t 清晰报错（`covers.py:391 _hull_defect` `_hull_defect`、`:399 convex_entrance_block`（段内）；"直接拒收"是 M0.3 之前的口径）。门：`test_r4c_micro_concave_input_is_rejected_not_silently_mangled`、`test_kernel2d_review.py::test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start`（不挨起点的边上 2·t 拒、0.5·t 收）。
+-- **零长边**（连续重复顶点）：清晰报错（`covers.py:52 normal_cone`（段内））。门：`test_c19_zero_length_edge_is_a_clear_error_not_zerodivision`。
++- **平行边（FF）**：E2 全局凸构造只把**精确平行同向**的两条边合并为 `FF`（`covers.py:311 convex_entrance_block` 接 `kernel2d/exact.py::entrance_block_exact`）。旧“方向可行窗”及链法向已删除；`facet_gap`/首入输出法向取 facet 自己那条边，间隙不参与凸成员或凸首入命中/时刻分支。局部单盖枚举仍不产出 FF，其 legacy 窗口口径未改（附录 A.4）。票二不能仅从全局集合删 FF：一边有平直分段、另一边没有时，剩余非 FF 也可能是边界支持分段，须按独立精确支撑集分类（`g0.py:125 g0_convex`）。
++  门：`test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does`、`::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions`、`test_kernel2d_report_band.py::test_tiny_report_tol_never_uses_rounded_facet_gap`、`test_kernel2d_convex_ray_exact.py::test_convex_ray_decisions_do_not_use_constructed_facet_gaps`。
++- **平直顶点**（转角精确为 0）：凸输入允许，精确法锥是单射线且须核同向，不是整条直线；E 的共线分段不作为严格凸顶点（`test_kernel2d_exact.py::test_flat_vertex_cone_is_one_ray_not_a_line`、`::test_strict_vertices_discard_flat_chain_subdivision_vertices`）。局部 VV 仍保持原窗口规则，门 `test_r3_numerically_collinear_vertex_yields_no_vv`，未纳入 E2 精确化。
++- **非精确凸输入**（含微凹）：全局凸构造不再按“凸包深度 ≤ tol”夹平，任何精确反射均拒收；平直顶点经刚体舍入变成微凹也如实拒收，成员与首入选路改走非凸回退。折回、绕圈与零长边同样清晰报错。门：`test_kernel2d_exact.py::test_rounded_flat_vertex_is_refused_by_the_convex_path`、`::test_convexity_rejection_names_the_first_foldback_and_winding_defect`、`::test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path`。旧名 `test_kernel2d_review.py::test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start` 已改写为 2·tol、0.5·tol 两侧微凹都拒收，不再看护已删除的凸包深度函数。
++- **二维 G0 三票**：票一精确成员对独立精确 SAT，随机及边界探针全计分；票二用独立全顶点投影核对严格/边界法锥集与全局构造，不设 ambiguous 豁免；票三用内联 Fraction 凸包对 E 的严格凸顶点，不计共线点、不设“说不清”带。独立性门 `test_kernel2d_exact.py::test_sat_oracle_uses_no_kernel_geometry_primitive`、`::test_g0_support_and_hull_oracles_use_no_tested_geometry_primitive`；旧 `test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip` 名称保留，缺陷注入已移入精确成员判定内部。
++- **零长边**（连续重复顶点）：清晰报错（`covers.py:62 normal_cone`（段内））。门：`test_c19_zero_length_edge_is_a_clear_error_not_zerodivision`。
+ - **分界点**（分离方向恰在两锥公共边界上）：`test_distance_completeness_boundary_cases[vertex_vertex_on_cone_edge]`、`test_exit_completeness_boundary_cases[E_corner_VV]`。
+ 
+ **三维**
+@@ -126,16 +129,17 @@
+ - **票二、票三的退化记账**：票二按支撑集的仿射维数把 (1,2)、(2,1)、(2,2) 记作退化 facet（`g03.py:113 _hull_facets`（段内）、`:255 facet_vote3`（段内））；票三只数 conv{b−a} 的**极点**，不数三角网格里落在面内/棱上的点（`g03.py:397 g0_convex3`（段内，票三））。门：`test_vote2_accounts_for_degenerate_facets_tetra_box`、`_box_box`（6 个 facet 全退化，严格集为空，照样通过）、`test_g0_vote3_counts_only_extreme_points_on_degenerate_input`（四面体/方块 E 恰 13 个顶点）。
+ - **平行棱-棱（EEP）**：`ee_cover` 对平行棱返回 None（`covers3.py:368 ee_cover`（段内））；它们的最近对只由**边界态（非严格）的 VE3/EV3** 承载。门：`test_parallel_edge_edge_nearest_pair_ve3_is_boundary_state`、`..._ev3_is_boundary_state`。
+ - **低维盖的 strict**：审查前 `ve3_cover`/`ev3_cover` 把 strict 写死为 True（C10）；现在按两个锥判据如实算（`covers3.py:437 ve3_cover`（段内）、`:480 ev3_cover`（段内））。同时**枚举不按 strict 过滤任何盖**（`covers3.py:531 enumerate_covers3`（段内））：若过滤，平行棱-棱的最近对就丢了，裕度层距离完备性会红。门：`test_distance_completeness_does_not_depend_on_strict`、`test_generic_vertex_over_edge_is_strict`、`test_stacked_boxes_corner_over_edge_is_not_strict`。
+-  顺带一处命名不一致（不影响结果）：三维 `VV3` 的 `strict` 恒为 True（只有两锥相对内部相交时才产出），"是否活跃"放在 `in_extent`（`covers3.py:506 vv3_cover`（段内））；二维 `VV` 却把"是否活跃"放在 `strict` 字段（`covers.py:197 vv_cover`（段内）、`:197 vv_cover`（段内））。
++  顺带一处命名不一致（不影响结果）：三维 `VV3` 的 `strict` 恒为 True（只有两锥相对内部相交时才产出），"是否活跃"放在 `in_extent`（`covers3.py:506 vv3_cover`（段内））；二维 `VV` 却把"是否活跃"放在 `strict` 字段（`covers.py:178 vv_cover`（段内）、`:178 vv_cover`（段内））。
+ - **三角化输入的平面棱**：`edge_arc_contains` 对二面角转角 ≤ tol 的棱返回 −1（`covers3.py:132 edge_arc_contains` `edge_arc_contains`），所以三角化的共面面要先 `merge_coplanar`（`geom3.py:1304 merge_coplanar`）。归并只并**共棱连通**的共面面；带洞或 pinch 的区域抛 ValueError，不死循环。门：`test_geom3_merge.py` 全部。
+ 
+ **还没做的**：把一个退化族（例如一整块面贴面）收成**一个**带面片几何的盖，同时保留"展开成 4 个 VF"的视图给 DDA——这是 M2。与此相关，G2 对 bdda3d 只对账 np ↔ VF/FV（窗口 1e-6）；ee 入口或窗内的非 VF/FV 盖会让门**红**，而不是被对账（`test_g2_gate_red_on_fabricated_ee_legacy_entrance`、`test_g2_gate_red_on_extra_kernel_ee_cover`）；带内的牙从 `6f157ac` 起穿过枚举器（`test_g2_band_catches_a_real_kernel_defect_through_enumeration`，在内核里注入"顶点法锥恒返回边界"的缺陷，要求门红）。注意这颗牙的来历：g4 组合并（`b1bbd27`）时 C17 第二轮复核的结论是 NO_TEETH，`6f157ac` 才补上；而 `6f157ac` 是合并后直接进 main 的，**没有经过独立验证者复核**，要等 G6。
+ 
+ ### (b) 首入（命题 7）
+ 
+-- **二维实现**：`covers.py:290 first_entrance_for_vertex`。它是一个**静态规则**：对 A 的一个顶点，在 B 的"投影落在边内的有效 VE 盖"里取间隙最大的一个；没有就退到活跃 VV。它**不接收运动方向**，而正本的首入是按运动定义的（"a₀ 首次触及 ∂E 的点"）。库内没有调用者，只有测试用它。
++- **二维现行运动首入**：`entrance.py:74 first_entrance`。E2 凸路径在 Fraction 上裁剪半空间射线：微小非零斜率不夹平，错过 E 或超过 t_max 不由 tol 放行；初始恰相触时 t=0，角点全部精确活动 facet 报入并列集。门 `test_kernel2d_convex_ray_exact.py`。并列报告仍可用窗口，输出法向/间隙/接触点仍是浮点构造；凹首入与已侵入后的最短出口未精确化，留 E3。
++- **二维旧静态实现**：`covers.py:271 first_entrance_for_vertex`。对 A 的一个顶点，在 B 的“投影落在边内的有效 VE 盖”里取间隙最大的一个；没有就退到活跃 VV。它不接收运动方向，库内没有调用者，只有测试用它。以下错误说明针对这个参考函数。
+ - **什么情况下对**：B 凸时，单个顶点已侵入，"最大间隙"就是这个顶点到 B 边界的最短出口——与正本"已侵入取最短出口"在**单个顶点**的意义下一致（不是整个块对的穿透深度）。门只有一条：`test_first_entrance_picks_shallowest_penetration`（凸 B、已侵入、一个例子）。
+-- **凹块分离情形：错**。docstring 自己写着（审查 r8，`covers.py:290 first_entrance_for_vertex` 的 docstring）。本表复核复现（附录 A.1）：细臂 L 块凹槽里放一个三角形顶点 (0.5, 0.3)，两块分离；边内有效 VE 盖有两个——到水平内边间隙 0.2、到竖直内边间隙 0.4。函数选了 **0.4 那条远边**，而最近的正间隙是 0.2。没有门看着这个错误（它是已知错误，不是回归）。
++- **凹块分离情形：错**。docstring 自己写着（审查 r8，`covers.py:271 first_entrance_for_vertex` 的 docstring）。本表复核复现（附录 A.1）：细臂 L 块凹槽里放一个三角形顶点 (0.5, 0.3)，两块分离；边内有效 VE 盖有两个——到水平内边间隙 0.2、到竖直内边间隙 0.4。函数选了 **0.4 那条远边**，而最近的正间隙是 0.2。没有门看着这个错误（它是已知错误，不是回归）。
+ - **三维：2026-10-10 起有第一版**（`src/eab/kernel3d/entrance3.py`，M2：沿运动方向的首入、最短出口、FF/FE 退化族合并；凹体上靠谓词裁决、局部规则到不了的位形抛错不静默）。此前零实现：三维里唯一"沿一个方向找第一个 ∂E 点"的计算是 L5 的逃逸高度（`interlock.py:175 escape_candidates`、`:198 escape_height_covers`），方向固定为 +z，而且是"离开"不是"进入"。
+ - 三维首入 M2 第一版已落地（有门、未经 G6）；在独立重审之前 README 只记"有门·未经复核"，不打 ✔。
+ 
+@@ -166,7 +170,7 @@
+ 2. **命题 7 首入**：二维与三维的 M2 第一版（按运动方向定义，2026-10-10）待独立重审；二维旧静态版对凹块分离情形的错已被新版绕开（新版凹对靠谓词裁决）；EEP 退化族没有自己的合并规则（由 VF/FV 边界态表达）。
+ 3. **命题 8 碰撞锥 / 速度障碍 / 截断 VO**，以及"盖分解经中心投影成为碰撞锥分划"的推论。
+ 4. **命题 4 退化族作为一个盖**：三维 `FF`/`FE` 只在首入的退化合并里以标签元组产出（`entrance3.merge_degenerate`），枚举不产出；`EEP`（及 `CoverType` 的 `EE_PAR`）有类型名、无产出者；二维 `FF` 只由凸全局构造产出，局部枚举不产出（M2）。
+-5. **凹块的全局 E、成员判据、盖裁剪**（01 引言承诺的"凹块情形单独说明"、00 §3.3 的裁剪；M3）。
++5. **凹块的全局 E、基于盖裁剪的成员判据、盖裁剪**（01 引言承诺的"凹块情形单独说明"、00 §3.3 的裁剪；M3）。二维已有一般多边形精确相交回退与闭式门，不等于这些全局结构已实现。
+ 6. **03 §1.2 KKT 乘子 = 虚拟接触力**：裕度接触没有接进任何互补/LP 求解。
+ 7. **"DDA 开闭迭代 = 活动集方法"的形式化**：只有 G4 的统计实验。
+ 8. **K5 的"角的代数"**（01 归属表自己也标"正文未读，细节未核实"）。
+@@ -174,7 +178,7 @@
+ 
+ ## 六、"代码有、正本无"
+ 
+-1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是本仓库在凹块上**唯一有门的 ∂E 命题**，正本没有。证明草稿在 `g0.py:233 brute_ray_exit`（段内）（出口完备性 docstring）与 `g0.py:183 g0_distance_completeness`（段内）（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:480 g0_distance_completeness3`。门见第四节 (d)。
++1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是本仓库在凹块上**唯一有门的 ∂E 命题**，正本没有。证明草稿在 `g0.py:260 brute_ray_exit`（段内）（出口完备性 docstring）与 `g0.py:210 g0_distance_completeness`（段内）（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:480 g0_distance_completeness3`。门见第四节 (d)。
+ 2. **G0 三票的自证结构**（票一逐样本、票二局部 facet 集 vs 凸包 facet 集、票三 E 顶点 vs conv{b−a} 极点）：是检验方法，不是正本命题。
+ 3. **定理四的常数 2/δ**（第三节）。
+ 4. **贯入哨兵口径**：03 §1.1 说"三分判据、距离恒等式、首入准则全部原样继承"；代码在贯入时不继承距离（贯入时盖的见证距离是一个像深度的正数，不是 0），而是统一回答"已违约"（`margin.py` 模块文档「口径与边界」第二条，门 `test_margin_penetration.py`）。这是对正本的**必要限定**，不是矛盾。
+@@ -359,7 +363,7 @@ for k in (5, 16):
+ | §四 ContactRecord（按生命周期四组：身份 / 步内冻结 / 状态 / 转移；另列"溯源"一段） | `src/eab/contact_record.py`：四组生命周期字段齐；溯源只有 `source` 字段（对应 `source_engine`）与按 (块对, 盖类型, 特征) 排序的 `canonical_key()` 方法 | **溯源段没落地**：07 要的 `canonical_order_key`——"内核自己维护稳定序、与 legacy 序（tf06 跨步继承、df06 后写者胜）只做映射"——没有实现，`canonical_key()` 只是集合比较用的排序键；`cover_type` 枚举里的 FF / FE / EE_PAR 零构造（三维 FF / FE 只以标签元组出现在 `entrance3.merge_degenerate`） |
+ | §六 Phase 0 "写六种现有表示的读取器" | 三种：`readers/bdda_df.py`、`readers/bdda3d.py`、`readers/tf_probe.py` | **bdda2 SoA 导出、DDA4.x 审计输出**两种未写。**订正（G6 第五轮 major）**：此前写的理由"DDA4.x 只有逐步汇总、无逐接触导出"是错的——07 §一指定的同一份 `DDAKernel.cpp` 自带逐接触导出 `contact_diagnostics_v3.tsv`（开关 `contact_diagnostics_output`、科学档位下对每个闭合接触写一行：顶点/边 id、状态前后值、法向贯入与刚度、法向力、摩擦），只有 `contact_topology_audit_output` 才是逐步汇总。DDA4.x 读取器没写是**缺口**，不是做不了；它可以当 G1 的第二个 oracle（M4 前补） |
+ | §六 Phase 0 "15 例 2D 家族与 3DDA 8 个 benchmark 的接触快照入库" | `fixtures/`：bdda_df 48 份生成型 + 原件；bdda3d 3 份；tf 探针 3 份 | 3DDA 侧是 3 份探针抽样，不是"8 个 benchmark 的接触快照"；G2 对 tf05 探针只做了普查（test_tf_reader），没做逐接触同构 |
+-| §五 G0 自证门 | 二维 `kernel2d/g0.py`、三维 `kernel3d/g03.py`（三票） | 凹块只有距离 / 出口完备性（二维）与距离完备性（三维），成员谓词无门（待 M3）。**对凸块也有偏差**：07 的判据是"边界点用 ±ε 双侧探测；内/外/边界三分类零错"，代码票一对 \|gap\| ≤ 带宽的样本一律跳过（`band_skipped`，二维三维同），"边界"这一类既不探测也不计分——膜厚内的成员判定只有闭式分界点门看得到（本文件第一节 2(i) 行已写） |
++| §五 G0 自证门 | 二维 `kernel2d/g0.py`、三维 `kernel3d/g03.py`（三票） | E2 二维凸三票已改为零容差定理检验：票一随机及 E 顶点/facet 中点探针全计分，`band_skipped=0`；票二严格/边界集合精确核对，不设豁免；票三只比严格凸顶点。门见第四节 (a)，全套结果见 `reports/codex/E2_report.md`。这不等于已普遍实现 07 所说的每个边界点 ±ε 双侧构造。三维票一仍跳过边界带。凹块盖系统只有距离/出口完备性，盖裁剪与全局 E 待 M3；二维一般多边形精确相交回退另有闭式门 |
+ | §五 G1 二维同构门 | `tests/test_bb52_g1.py`（bb52 53/53）、G4 多步（`tools/g4_multistep.py`）、`tests/test_kernel2d_entrance.py`（首入对 legacy 53 条逐条） | 只对 bb52 一例做了一级门；"15 例家族"未逐例对账；**判据也弱于 07**：07 要"锁态拓扑同构、滑动符号一致、位移 ≤ 1e-12"，实际只核顶点-边集合相同与 gap < 1e-6，不比锁态与滑动符号 |
+ | §五 G2 三维同构门（vs tf05 / bdda3d） | `tools/g2_bdda3d.py`、`tests/test_g2_bdda3d.py`、`tests/test_entrance3_g2.py` | 只对 bdda3d 的**手写**入口清单（cases.py）；tf05 探针侧无同构门；"逐接触 gap/法向 1e-12"未做 |
+ | §五 G3 对偶门 | `tests/test_dual.py`、`test_interlock_sensitivity.py`（G3 收敛阶 1.9995） | "批量 vs 单通道逐位、零跳过审计"未做（那是 bdda2 的 Scalar 纪律，eab2 未开工） |
+@@ -375,5 +379,5 @@ for k in (5, 16):
+ | §五 G4 的判据（15 例 m9 轨迹、事先定死的命中率阈值、对比迭代次数） | `tools/g4_multistep.py`、`reports/g4_multistep_first_datum.md` | **判据弱于 07**：只跑了 bb52 / bbF038 / bbW025 三份 dump（bbF038 翻转为 0），没有事先登记阈值，也没量迭代次数；"砖一关闭"是在这个缩水的实验上下的结论 |
+ | 07 第 33 行"它既是 2015 理论的第一份实现" | — | **措辞风险**：在 07 的上下文里指"自家代码里第一份"，单独引出去容易读成全局首次实现，越 00 §4.6 第三层红线（CGAL 早有非凸多面体 Minkowski 和的精确构造）；对外须限定为"DDA 圈内 / 本课题组代码里第一份" |
+ 
+-一句话：07 的 Phase 0–2 大体落地但**规模与判据都缩水**（读取器 6→3、G2 只对手写清单、G5 未开；G0 不探边界类、G1 不比锁态、Phase 0 不逐字节），Phase 1 的 G4 go/no-go 在三份 dump 的缩水实验上执行并关闭了砖一，
++一句话：07 的 Phase 0–2 大体落地但**规模与判据仍有缺口**（读取器 6→3、G2 只对手写清单、G5 未开；三维 G0 仍跳边界带，二维 E2 已零跳样本但未普遍构造逐边界点 ±ε 双侧探针；G1 不比锁态、Phase 0 不逐字节），Phase 1 的 G4 go/no-go 在三份 dump 的缩水实验上执行并关闭了砖一，
+ Phase 3/5 未动，Phase 4 走了 07 没规划的极限分析路线。07 的 Phase 1 执行记录与 03 砖一回写一样停在 09-18 的口径。
+diff --git a/docs/exact_predicates_plan.md b/docs/exact_predicates_plan.md
+index 6dafd20..95de6a1 100644
+--- a/docs/exact_predicates_plan.md
++++ b/docs/exact_predicates_plan.md
+@@ -22,10 +22,10 @@ M0 的目标是"要么答对、要么报错、绝不静默给错"。几何核此
+ （CGAL 的 Epick 内核；Shewchuk 1997 的自适应精度谓词）：
+ 
+ 1. **所有分支判定**（凸性、法锥有效性、极角序、平行、在不在段内、相交与否）都是输入坐标的低次多项式的**符号**，
+-   对给定的浮点数据精确求值（浮点快路 + 误差界过滤，界内退到 `Fraction`）。答案对这组数据唯一正确，不随任何容差改变。
++   对给定的浮点数据精确求值。E1/E2 当前实现直接用 `Fraction`；“浮点快路 + 误差界过滤，界内退到 Fraction”是后续性能目标，不是当前实现。精确分类对这组数据唯一正确，不随任何容差改变。
+ 2. **构造量**（间隙、法向、距离、接触点）照常用浮点算，只当输出，不再拿来做分支。
+ 3. **容差只出现在两个地方**：调用方明说的**域窗口**（如 DDA 的 3° 法锥、1e-6 贴合精度、搜索距离 d0——这是 legacy 的物理约定，
+-   归 L5 适配器），以及**可分辨性报告**（离判定边界多近、刚体运动后答案会不会变——作为附加信息报出，不改答案）。
++   归 L5 适配器），以及**可分辨性报告**（离判定边界多近、刚体运动后答案会不会变）。E2 兼容接口 `membership_convex` 的 tol=0 返回精确分类；显式 tol>0 可把有距离见证的带内答案报告为 0，不改变带外答案、不抬舍入地板，具体范围见下文。
+ 4. 刚体运动后舍入改变了"恰好相触 / 恰好平行 / 恰好共线"这类**边界态**的答案，那是**数据变了**，不是判定错了。
+    不变性门因此改写成两条：(a) 每个答案对精确 oracle 零错（强于原来的"带内跳过"）；(b) 离边界的距离超过舍入噪声时，答案随刚体运动不变。
+ 
+@@ -34,15 +34,22 @@ M0 的目标是"要么答对、要么报错、绝不静默给错"。几何核此
+ | 步 | 范围 | 状态 |
+ |---|---|---|
+ | E1 | 二维精确层 `kernel2d/exact.py`：精确凸性、精确 E = B ⊕ (−A)（只合并精确平行）、精确成员、精确分离轴 oracle、精确法锥判据、一般简单多边形的精确相交 | 已写，门 `tests/test_kernel2d_exact.py` |
+-| E2 | 二维凸路径改接精确层：`convex_entrance_block` / `membership_convex` / `facet_gap` / `local_facets`；二维 G0 三票变成定理检验（零容差）；删掉 `_angle_windows` / `_chain_normal` 这套噪声窗 | 进行中 |
+-| E3 | 二维首入：凸对用精确 facet；凹对的谓词裁决改用精确谓词 | 待做 |
++| E2 | 二维凸路径接精确层：凸性/极角/平行/成员/法锥精确；facet gap 只作构造量；G0 三票零容差、不跳样本；删除方向可行窗/链法向；凸首入选路、初态与射线裁剪也用精确 facet | WO-E2 已完成（2026-10-12；本树全套 7500 passed，待所有者验收/G6）：`tests/test_kernel2d_exact.py`、`tests/test_kernel2d_report_band.py`、`tests/test_kernel2d_convex_ray_exact.py` 及改写后的二维回归/不变性门。全套、耗时与突变结果见 `reports/codex/E2_report.md`；不等于 G6 退出 |
++| E3 | 二维首入的剩余精确化：凹对谓词裁决、候选与最短出口路径 | 待做；凸对选路/初态/射线裁剪已并入 E2，凹首入和已侵入后的 `shortest_exit` 仍是既有容差路径 |
+ | E4 | 极限分析自校验：LP 已对给定数据精确，自校验的静力 / 对偶残差也改在有理数上算，"尺度"问题随之消失 | 待做 |
+ | E5 | 三维：凸体按顶点集的精确凸包表示（面可以是三角网格、微二面角是真棱），棱弧 / 顶点锥 / 交点参数改精确符号；G0 三维三票变成定理检验 | 设计中（难点：刚体运动后的平面四边形面不再共面，要么三角化、要么从顶点集重建精确凸包） |
+ 
+ 每一步都配精确 oracle（与被测路径零共用）与突变体；对 legacy 的对账（bb52 的 3° / 1e-6）走显式的域窗口，不受影响。
+ 
++### E2 的已实现范围与未实现边界
++
++- 凸输入只接受精确凸，平直顶点允许，零长边/反射/折回/绕圈清晰拒收。刚体舍入造成微凹时不能继续当凸；成员回退到一般简单多边形精确相交，首入切到既有凹路径。门 `test_rounded_flat_vertex_is_refused_by_the_convex_path`、`test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path`。
++- G0 票二用独立全顶点投影支撑 oracle 分别核对严格与边界集合，平直链不能简化成“非 FF 就严格”；票三用独立 Fraction 凸包只数严格顶点。门 `test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions`、`test_g0_support_and_hull_oracles_use_no_tested_geometry_primitive`（均在 `test_kernel2d_exact.py`）。
++- `membership_convex` 的显式报告带：凸对用精确闭线段距离检验完整欧氏边界带；非凸对只在四轴 ±tol 的精确状态变化给出边界见证时报告 0，**保守但不完备**，未检出的带内点保留精确分类。带外不能吞成 0。门 `test_kernel2d_report_band.py`；完整非凸 E 边界距离留待后续全局构造。
++- `ve_cover` / `ev_cover` / `vv_cover` / `enumerate_covers` 的局部单盖、凹候选与 legacy 窗口路径不改；凹首入与已侵入后的最短出口也不在 E2 的精确化声明内。
++
+ ## 不能主张的
+ 
+ - 精确谓词保证的是"对这组浮点数据答对"，不是"对数据背后那个理想几何答对"——舍入已经发生在输入里；
+ - 构造量（间隙、法向）仍是浮点，误差界另算；
+-- 速度：退到 `Fraction` 的只有落在误差界内的判定（退化 / 近退化），一般位置走浮点快路。
++- 速度：E1/E2 当前直接使用 `Fraction`，不能声称一般位置已有浮点快路；过滤器与自适应精度是后续优化目标，现阶段耗时以本次全套实测报告为准。
+diff --git a/src/eab/kernel2d/covers.py b/src/eab/kernel2d/covers.py
+index e64f506..619f770 100644
+--- a/src/eab/kernel2d/covers.py
++++ b/src/eab/kernel2d/covers.py
+@@ -348,31 +348,60 @@ def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
+     return dot(n, sub(x, p))
+ 
+ 
++def _in_exact_boundary_band(ex, x: Point, tol: float) -> bool:
++    """到精确 E 边界闭线段的距离不大于 tol；全部比较距离平方，不用浮点构造量或舍入地板。"""
++    X = (Fraction(x[0]), Fraction(x[1]))
++    t2 = Fraction(tol) ** 2
++    for f in ex.facets:
++        dx, dy = f.direction
++        ux, uy = X[0] - f.start[0], X[1] - f.start[1]
++        l2 = dx * dx + dy * dy
++        along = ux * dx + uy * dy
++        if along <= 0:
++            distance2 = ux * ux + uy * uy
++        elif along >= l2:
++            distance2 = (ux - dx) ** 2 + (uy - dy) ** 2
++        else:
++            distance2 = (dx * uy - dy * ux) ** 2 / l2
++        if distance2 <= t2:
++            return True
++    return False
++
++
+ def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
+                       eb: EntranceBlock | None = None) -> int:
+-    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界（恰好接触）/ -1 外部（分离）。
+-
+-    **对给定浮点坐标精确**：A、B 精确凸时用精确 E 的 facet 符号（`exact.membership_exact`），否则（刚体运动把平直顶点舍入成
+-    微凹）用一般简单多边形的精确相交（`exact.polygons_overlap_exact`）——两条路答案相同，凸路径只是快。`x` 的加法也在
+-    Fraction 上做。`tol`（长度，缺省 0）只是**报告带**：精确答案非 0 但离 E 的边界 ≤ tol 时报 0；它不改变带外的答案，
+-    也不抬到任何舍入下限。`eb` 保留只为兼容旧调用（精确路径自己构造）。"""
++    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界或显式报告带 / -1 外部（分离）。
++
++    tol=0 时**对给定浮点坐标精确**：A、B 精确凸时用精确 E 的 facet 符号，否则（包括刚体运动把平直顶点舍入成微凹）
++    用一般简单多边形的精确相交；x 的加法也在 Fraction 上做。tol（长度）只把有边界距离见证的非零答案报告为 0，
++    不吞带外答案、不抬到舍入下限。凸对完整检验到 E 边界的欧氏距离 ≤ tol（精确线段距离平方；外角不等同于最大 facet gap）。
++    非凸对没有全局 E：只沿四条坐标轴探到距离 tol，精确状态改变即由连续性证明其间有边界；这是**保守、不完备**的报告带，
++    无见证时保留精确答案，不承诺检出全部带内样本。完整非凸 E 距离留待全局构造。eb 保留只为兼容旧调用。
++    门：tests/test_kernel2d_report_band.py（闭式欧氏带、巨大坐标微小 tol、非凸见证与不完备性、Fraction 平移）。"""
+     if convexity_violation(A) is None and convexity_violation(B) is None:
+         ex = entrance_block_exact(A, B)
+         s = membership_exact(A, B, x, ex)
+-        if s == 0 or tol <= 0.0:
++        if s == 0 or not tol > 0.0:
+             return s
+-        gaps = [facet_gap(A, B, f.label, x) for f in ex.facets]
+-        return 0 if abs(max(gaps)) <= tol else s
++        if tol == float("inf"):
++            return 0
++        return 0 if _in_exact_boundary_band(ex, x, tol) else s
+     s = polygons_overlap_exact(A, B, x)
+-    if s == 0 or tol <= 0.0:
++    if s == 0 or not tol > 0.0:
+         return s
+-    from .geom import polygons_overlap, translate
+-    return 0 if polygons_overlap(translate(A, x), B, tol) == 0 else s
+-
++    if tol == float("inf"):
++        return 0
++    X, t = (Fraction(x[0]), Fraction(x[1])), Fraction(tol)
++    for dx, dy in ((t, 0), (-t, 0), (0, t), (0, -t)):
++        if polygons_overlap_exact(A, B, (X[0] + dx, X[1] + dy)) != s:
++            return 0
++    return s
+ 
+ def local_facets(A: Poly, B: Poly, tol: float = 0.0) -> set[tuple[str, int, int]]:
+     """凸情形下局部法锥规则（命题 5）给出的全部**严格**有效 VE / EV 标签，精确判（`exact.ve_side_exact` /
+-    `ev_side_exact`）。定理检验：与 `convex_entrance_block` 的非 FF facet 标签集合**精确相等**（零容差）。`tol` 不参与。"""
++    `ev_side_exact`）。定理检验：与 `convex_entrance_block` 排除 FF 及精确边界支持分段后的严格 facet 集**精确相等**。
++    平直边链的剩余非 FF 分段也可能只有非严格支持，不能仅按标签不是 FF 就算严格。`tol` 不参与。
++    门：tests/test_kernel2d_exact.py 的独立全顶点投影支撑 oracle 与平直链门。"""
+     return _local_facets(A, B, 1)
+ 
+ 
+diff --git a/src/eab/kernel2d/entrance.py b/src/eab/kernel2d/entrance.py
+index d951162..d3176c2 100644
+--- a/src/eab/kernel2d/entrance.py
++++ b/src/eab/kernel2d/entrance.py
+@@ -12,16 +12,18 @@
+     裁决（t* 处相触或相交；t* 前一个分辨步处分离，否则抛 RuntimeError——候选集漏了更早的首入，不静默）；与三维同一结构。
+   · 集值点（首入点落在 E 的顶点上，两条 facet 在分辨率内同时被触及）：按枚举序取第一个作裁决，并列集如实报出（tied_labels）。
+   · x0 已在 E 内（已侵入）：取**最短出口**——在程的 facet 型盖里取间隙最大者（侵入最浅）作接触法向与出口方向。
+-容差（纪律 F）：谓词与并列按长度地板 c·eps·C 加调用方 tol；facet 法向沿用 `facet_gap` 的口径（噪声内共线链里最长边的法向）。
++E2：凸选路、凸初态、半空间射线裁剪均用精确有理数；facet_gap/法向/接触点只作浮点输出，法向取 facet 自己的边。
++并列标签报告仍按调用方 tol 与舍入量级；凹首入、已侵入后的最短出口保持既有容差路径，不属于凸谓词精确化声明。
+ """
+ 
+ from __future__ import annotations
+ 
+ from dataclasses import dataclass
++from fractions import Fraction
+ 
+-from .covers import (Cover, _facet_normal_own, convex_entrance_block, enumerate_covers, ev_cover, facet_gap, ve_cover)
+-from .exact import convexity_violation
+-from .geom import (Point, Poly, add, coord_scale, dot, edge, is_convex, neg, norm, outward_normal, polygons_overlap,
++from .covers import (Cover, _facet_normal_own, enumerate_covers, ev_cover, facet_gap, ve_cover)
++from .exact import convexity_violation, entrance_block_exact, membership_exact
++from .geom import (Point, Poly, add, coord_scale, dot, edge, neg, norm, outward_normal, polygons_overlap,
+                    round_floor, sub, translate)
+ 
+ 
+@@ -70,48 +72,81 @@ def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> float:
+ 
+ 
+ def first_entrance(A: Poly, B: Poly, x0: Point, d: Point, *, tol: float = 0.0, t_max: float = float("inf")) -> Entrance2:
+-    """沿 x(t) = x0 + t·d 的首入（见模块文档）。A、B 均 CCW；tol 为长度容差（并列与谓词的带，抬到舍入地板）。"""
++    """沿 x(t) = x0 + t·d 的首入。凸路径选路、初态与射线裁剪精确；tol只影响并列报告。
++    凹路径及已侵入后的 shortest_exit 保持既有长度带/舍入地板口径（E3待做）。"""
+     dn = norm(d)
+     if dn == 0.0:
+         raise ValueError("direction must be nonzero")
+     r = _floor(A, B, x0, d)
+     ctol = max(tol, r)
+-    if polygons_overlap(translate(A, x0), B, ctol) == 1:
+-        return shortest_exit(A, B, x0, tol=tol)
+     if convexity_violation(A) is None and convexity_violation(B) is None:      # 精确凸才走凸路径（E2）
++        if membership_exact(A, B, x0) == 1:
++            return shortest_exit(A, B, x0, tol=tol)
+         return _first_entrance_convex(A, B, x0, d, ctol, r, t_max)
++    if polygons_overlap(translate(A, x0), B, ctol) == 1:
++        return shortest_exit(A, B, x0, tol=tol)
+     return _first_entrance_concave(A, B, x0, d, ctol, r, t_max)
+ 
+ 
+ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r: float, t_max: float) -> Entrance2:
+-    eb = convex_entrance_block(A, B, (0.0, 0.0), ctol)
+-    enter: list[tuple[float, float, tuple]] = []        # (t_i, −n·d, label)
+-    t_out = float("inf")
+-    for lab in eb.facets:
+-        g0 = facet_gap(A, B, lab, x0)
+-        g1 = facet_gap(A, B, lab, add(x0, d))
+-        slope = g1 - g0                                   # = n·d
+-        if slope < -1e-12 * norm(d):
+-            enter.append((g0 / (-slope), -slope, lab))
+-        elif slope > 1e-12 * norm(d):
+-            t_out = min(t_out, -g0 / slope)
+-        elif g0 > ctol:                                   # 与射线平行、且参考点在它外侧的 facet：射线永远进不了 E
+-            return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), 0)
+-    if not enter:
+-        return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), len(enter))
+-    t_in = max(t for t, _, _ in enter)
+-    if t_in < 0.0:                                        # 全部进入型 facet 都在身后而谓词说没相交：参考点已在 E 内？不该到这里
+-        t_in = 0.0
+-    if t_in > t_out + ctol / max(norm(d), 1e-300) or t_in > t_max + r / norm(d):
++    """精确有理数半空间射线裁剪；facet_gap 只在最后输出构造量，不参与去留/时刻分支。
++    tol/r 仅为并列标签报告窗，不能把错过 E 或超过 t_max 的射线变成命中。
++    门：test_convex_ray_decisions_do_not_use_constructed_facet_gaps / test_convex_ray_resolves_tiny_slopes_and_misses。
++    """
++    eb = entrance_block_exact(A, B)
++    X, D = tuple(map(Fraction, x0)), tuple(map(Fraction, d))
++    enter = []
++    active = []
++    t_out = None
++
++    def none():
+         return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), len(enter))
+-    # 并列：法向间隙在 ctol 以内的进入型 facet（枚举序，取到最大值的排第一）
+-    tied = [lab for t, nd, lab in enter if abs(t - t_in) * nd <= ctol + r]
+-    best = max(enter, key=lambda q: (q[0], 0))
+-    lab = best[2]
+-    tied.sort(key=lambda q: 0 if q == lab else 1)
+-    x = add(x0, (d[0] * t_in, d[1] * t_in))
++
++    for f in eb.facets:
++        ex, ey = f.direction
++        # h >= 0 是 E 的内半空间；不用单位法向或浮点差分求斜率。
++        h = ex * (X[1] - f.start[1]) - ey * (X[0] - f.start[0])
++        slope = ex * D[1] - ey * D[0]
++        if h == 0:
++            active.append(f)
++        if slope > 0:
++            enter.append((-h / slope, slope, f))
++        elif slope < 0:
++            bound = -h / slope
++            t_out = bound if t_out is None else min(t_out, bound)
++        elif h < 0:
++            return none()
++    t_in = max([Fraction(0)] + [t for t, _, _ in enter])
++    if (t_out is not None and t_in > t_out) or (t_max != float("inf") and t_in > Fraction(t_max)):
++        return none()
++    best = max(enter, key=lambda q: q[0]) if enter else None
++    if t_in == 0 and active:
++        # 已恰好接触：定义 min{t>=0:x(t)∈E}=0，包括沿边或背离运动。
++        fbest = next((f for t, _, f in enter if t == 0), active[0])
++    elif best is not None and best[0] == t_in:
++        fbest = best[2]
++    else:
++        return none()
++    band2 = Fraction(ctol + r) ** 2
++    tied = []
++    for t, slope, f in enter:
++        ex, ey = f.direction
++        if ((t - t_in) * slope) ** 2 <= band2 * (ex * ex + ey * ey):
++            tied.append(f.label)
++    # 恰在角点/沿边的闭集首触也有活动侧：不只报告进入型 facet。
++    for f in eb.facets:
++        ex, ey = f.direction
++        h = ex * (X[1] + t_in * D[1] - f.start[1]) - ey * (X[0] + t_in * D[0] - f.start[0])
++        if h == 0 and f.label not in tied:
++            tied.append(f.label)
++    if fbest.label not in tied:
++        tied.insert(0, fbest.label)
++    tied.sort(key=lambda lab: 0 if lab == fbest.label else 1)
++    lab = fbest.label
++    x = (float(X[0] + D[0] * t_in), float(X[1] + D[1] * t_in))
+     pa, pb = _facet_points(A, B, lab, x)
+-    return Entrance2("entrance", t_in, x, lab, _facet_normal(A, B, lab), pa, pb, facet_gap(A, B, lab, x), tuple(tied), len(enter))
++    return Entrance2("entrance", float(t_in), x, lab, _facet_normal(A, B, lab), pa, pb,
++                     facet_gap(A, B, lab, x), tuple(tied), len(enter))
+ 
+ 
+ def _cover_at(A: Poly, B: Poly, label: tuple, x: Point, tol: float) -> Cover | None:
+diff --git a/src/eab/kernel2d/exact.py b/src/eab/kernel2d/exact.py
+index 3343261..48962e3 100644
+--- a/src/eab/kernel2d/exact.py
++++ b/src/eab/kernel2d/exact.py
+@@ -205,21 +205,24 @@ def membership_exact(A: Poly, B: Poly, x: Point, eb: ExactEntranceBlock | None =
+ 
+ 
+ def convex_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+-    """A 平移 x 后与 B（都凸、CCW）的精确相交状态（分离轴定理，全部用 Fraction，平移也精确做）：1 内部相交 / 0 恰好相触 /
+-    −1 分离。与 `membership_exact` 零共用（不经 Minkowski 和），当它的独立 oracle。"""
+-    X = _fr(x)
+-    FA, FB = [(a[0] + X[0], a[1] + X[1]) for a in (_fr(p) for p in A)], [_fr(p) for p in B]
++    """凸 CCW 对的独立精确 SAT oracle：1 内部相交 / 0 恰相触 / -1 分离。
++
++    纪律 A：只用 Fraction 构造、内联坐标差与投影；不调用本模块的 _fr / _sub / _cross / _dot、
++    Minkowski、法锥或 geom 的任何几何原语。平移同样在 Fraction 上做，不先形成舍入后的 A+x。
++    门：tests/test_kernel2d_exact.py::test_sat_oracle_uses_no_kernel_geometry_primitive。
++    """
++    xx, xy = Fraction(x[0]), Fraction(x[1])
++    FA = [(Fraction(a[0]) + xx, Fraction(a[1]) + xy) for a in A]
++    FB = [(Fraction(b[0]), Fraction(b[1])) for b in B]
+     touch = False
+     for P, Q in ((FA, FB), (FB, FA)):
+-        n = len(P)
+-        for k in range(n):
+-            e = _sub(P[(k + 1) % n], P[k])
+-            if e == (0, 0):
++        for k in range(len(P)):
++            p, q = P[k], P[(k + 1) % len(P)]
++            nx, ny = q[1] - p[1], p[0] - q[0]
++            if nx == 0 and ny == 0:
+                 continue
+-            # 外法向（CCW 的右法向）方向上：P 的最大投影 = 这条边的投影；Q 的最小投影
+-            nrm = (e[1], -e[0])
+-            pmax = _dot(nrm, P[k])
+-            qmin = min(_dot(nrm, q) for q in Q)
++            pmax = nx * p[0] + ny * p[1]
++            qmin = min(nx * v[0] + ny * v[1] for v in Q)
+             if qmin > pmax:
+                 return -1
+             if qmin == pmax:
+diff --git a/src/eab/kernel2d/g0.py b/src/eab/kernel2d/g0.py
+index 3a77060..e31e412 100644
+--- a/src/eab/kernel2d/g0.py
++++ b/src/eab/kernel2d/g0.py
+@@ -4,10 +4,11 @@ E(A,B) 的成员谓词可以暴力验证——随机采样参考点平移 x，
+ 判定比对；同时检验"局部法锥规则 = 全局 Minkowski facet 结构"（命题 4/5）。这条门不依赖任何 legacy。
+ 
+ **凸情形是精确的定理检验**（2026-10-10，E2）：三票都在有理数上做、零容差、不跳过任何样本——
+-  票一  成员（精确 E 的 facet 符号）== 暴力谓词（两份精确耳切逐对三角形的精确分离轴，`exact.polygons_overlap_exact`），
+-        样本含随机平移与 E 的全部顶点、facet 中点（07 §五要的"边界点"）；
+-  票二  局部法锥规则的严格集（精确符号）== 全局 Minkowski 的非 FF facet 集；
+-  票三  E 的严格凸顶点集 == conv{b − a} 的精确凸包顶点集（差点 b − a 在 Fraction 上算，不舍入）。
++  票一  成员（精确 E 的 facet 符号）== 独立内联 Fraction 分离轴（`exact.convex_overlap_exact`），
++        样本含随机平移、E 的全部 Fraction 顶点/facet 中点及其浮点舍入像（真边界与边界附近分别检验）；
++  票二  局部法锥严格/边界集 == 独立全顶点投影支持集；walk 的严格 VE/EV == 唯一支持标签集；
++        平直链的非 FF 余段须属于精确边界集，不再错误地算作严格 facet，也不豁免任何标签；
++  票三  E 的严格凸顶点集 == 独立内联 Fraction gift-wrap 的 conv{b − a} 顶点集（差点不舍入）。
+ 此前三票都带"分辨带"与"说不清"豁免（票一跳过带内样本、票二票三的 ambiguous 两边不计），第五轮复核指出这些豁免本身
+ 就是第二把尺，且边界类（恰相触）从未被探测。输入须精确凸（否则 `convex_entrance_block` 清晰报错）。
+ 
+@@ -16,7 +17,7 @@ E(A,B) 的成员谓词可以暴力验证——随机采样参考点平移 x，
+ `g0_distance_completeness3` 同构），相交样本上的**出口完备性**（`g0_exit_completeness`：沿射线首次离开
+ E 的那个 ∂E 点必有有效盖作见证）。两者都不是凹块的成员谓词——成员判定要等入口块全局构造（M3）。
+ 
+-容差（纪律 F，M0.2）：本模块内部不再有绝对阈值。暴力谓词的接触带取 1e-12·L，判据阈值取 atol·L（或 atol·真值）
++以下容差口径只适用于凹块距离/出口完备性，凸 G0 不使用容差：暴力谓词的接触带取 1e-12·L，判据阈值取 atol·L（或 atol·真值）
+ 加舍入下限 c·eps·C——L 为两块的特征长度（包围盒对角线的较大者），C 为坐标量级。所以同一位形经刚体运动、
+ 搬到工程坐标、换单位后，样本分类（分离/接触/相交）与判定不变。门：tests/test_invariance_2d.py。
+ """
+@@ -30,7 +31,7 @@ from dataclasses import dataclass, field
+ from fractions import Fraction
+ 
+ from .covers import ambiguous_facets, enumerate_covers, local_facets, membership_convex
+-from .exact import entrance_block_exact, hull_exact_fr, polygons_overlap_exact, strict_vertices
++from .exact import convex_overlap_exact, entrance_block_exact, strict_vertices
+ from .geom import (EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, cross, norm, polygons_overlap, round_floor, sub,
+                    translate)
+ 
+@@ -46,7 +47,7 @@ class G0Report:
+     facet_ambiguous: int = 0           # 局部规则判"恰在法锥边界上"的 VE / EV 数（精确 = 0，对应精确平行；只报数，不豁免）
+     hull_vertex_mismatch: int = 0      # 第三票：E 严格凸顶点集 vs conv{b−a} 精确凸包顶点集（不经法向/法锥/合并）
+     hull_vertex_ambiguous: int = 0     # 恒为 0（精确之后没有"说不清"；字段保留只为兼容）
+-    boundary_probes: int = 0           # 票一里恰在 ∂E 附近的探针数（E 的顶点与 facet 中点）
++    boundary_probes: int = 0           # 真边界及其浮点舍入像的探针总数（各含 E 顶点与 facet 中点）
+ 
+     @property
+     def passed(self) -> bool:
+@@ -79,28 +80,74 @@ def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: fl
+              rng.uniform(lo_y - margin * wy, hi_y + margin * wy)) for _ in range(n)]
+ 
+ 
++def _support_labels_independent(A: Poly, B: Poly) -> tuple[set[tuple], set[tuple]]:
++    """独立票二 oracle：全顶点投影的最小支持集；只用内联 Fraction 算术，零法锥/极角/Minkowski 原语。
++
++    唯一支持顶点给严格标签；多点并列给边界标签（包括平直顶点），不使用几何容差。
++    """
++    FA = [(Fraction(p[0]), Fraction(p[1])) for p in A]
++    FB = [(Fraction(p[0]), Fraction(p[1])) for p in B]
++    strict, boundary = set(), set()
++    for target, edges, kind in ((FA, FB, "VE"), (FB, FA, "EV")):
++        for k in range(len(edges)):
++            p, q = edges[k], edges[(k + 1) % len(edges)]
++            nx, ny = q[1] - p[1], p[0] - q[0]
++            projections = [nx * v[0] + ny * v[1] for v in target]
++            bottom = min(projections)
++            support = [i for i, z in enumerate(projections) if z == bottom]
++            labels = {(kind, i, k) if kind == "VE" else (kind, k, i) for i in support}
++            (strict if len(support) == 1 else boundary).update(labels)
++    return strict, boundary
++
++
++def _difference_hull_independent(A: Poly, B: Poly) -> set[tuple[Fraction, Fraction]]:
++    """独立票三 oracle：Jarvis gift-wrap，内联 Fraction 差/行列式/距离；不共用 exact 的单调链或任何几何原语。"""
++    points = sorted({(Fraction(b[0]) - Fraction(a[0]), Fraction(b[1]) - Fraction(a[1]))
++                     for a in A for b in B})
++    if len(points) < 3:
++        return set(points)
++    start = current = points[0]
++    hull = set()
++    while True:
++        hull.add(current)
++        candidate = next(p for p in points if p != current)
++        for p in points:
++            ux, uy = candidate[0] - current[0], candidate[1] - current[1]
++            vx, vy = p[0] - current[0], p[1] - current[1]
++            determinant = ux * vy - uy * vx
++            if determinant < 0 or (determinant == 0 and vx * vx + vy * vy > ux * ux + uy * uy):
++                candidate = p
++        current = candidate
++        if current == start:
++            return hull
++
++
+ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: float | None = None,
+               band: float | None = None) -> G0Report:
+     """A、B 精确凸、CCW。三票精确（见模块文档）。`tol` / `band` 不再参与任何判定（保留只为兼容调用方）。"""
+     rng = random.Random(seed)
+     rep = G0Report()
+     ex = entrance_block_exact(A, B)
+-    glob = {f.label for f in ex.facets if f.label[0] != "FF"}
+-    loc = local_facets(A, B)
+-    rep.facet_local, rep.facet_global, rep.facet_ambiguous = len(loc), len(glob), len(ambiguous_facets(A, B))
+-    rep.facet_symmetric_diff = sorted(loc ^ glob)
+-    # 第三票：差点 b − a 精确（Fraction 相减不舍入），凸包精确（共线点不作顶点）
+-    H = set(hull_exact_fr([(Fraction(b[0]) - Fraction(a[0]), Fraction(b[1]) - Fraction(a[1])) for a in A for b in B]))
++    walk = {f.label for f in ex.facets if f.label[0] != "FF"}
++    truth_strict, truth_boundary = _support_labels_independent(A, B)
++    glob = walk - truth_boundary
++    loc, amb = local_facets(A, B), ambiguous_facets(A, B)
++    rep.facet_local, rep.facet_global, rep.facet_ambiguous = len(loc), len(glob), len(amb)
++    # 全集等式而非 ambiguous 豁免：平直链余段也必须通过独立闭包支持检查。
++    rep.facet_symmetric_diff = sorted((loc ^ truth_strict) | (amb ^ truth_boundary)
++                                      | (glob ^ truth_strict) | (walk - truth_strict - truth_boundary))
++    H = _difference_hull_independent(A, B)
+     E = {ex.vertices[k] for k in strict_vertices(ex)}
+     rep.hull_vertex_mismatch = len(E ^ H)
+-    # 第一票：随机平移 + E 的顶点与 facet 中点（07 §五的"边界点"探针；舍入成浮点后落在 ∂E 两侧或恰在其上）
++    # 真边界保留 Fraction，不能先把边界舍入到两侧；同时保留原来的浮点舍入探针。
+     probes = sample_translations(A, B, samples, rng)
+-    bnd = [(float(v[0]), float(v[1])) for v in ex.vertices]
+-    bnd += [(float(f.start[0] + f.direction[0] / 2), float(f.start[1] + f.direction[1] / 2)) for f in ex.facets]
++    exact_bnd = list(ex.vertices)
++    exact_bnd += [(f.start[0] + f.direction[0] / 2, f.start[1] + f.direction[1] / 2) for f in ex.facets]
++    bnd = exact_bnd + [(float(x), float(y)) for x, y in exact_bnd]
+     rep.boundary_probes = len(bnd)
+     for x in probes + bnd:
+         cov = membership_convex(A, B, x)
+-        brute = polygons_overlap_exact(A, B, x)
++        brute = convex_overlap_exact(A, B, x)
+         rep.samples += 1
+         if brute != cov:
+             rep.mismatches.append((x, brute, cov))
+diff --git a/tests/test_invariance_2d.py b/tests/test_invariance_2d.py
+index e76413f..e8a7004 100644
+--- a/tests/test_invariance_2d.py
++++ b/tests/test_invariance_2d.py
+@@ -10,7 +10,7 @@ G6（2026-09-24）的 6 条 critical 里 5 条同根：绝对容差遍布内核
+   · polygons_overlap：判定（1 / 0 / −1）不变——**含恰好接触的位形**（工程上块体就是贴着的）；
+   · interior_point：严格在内（独立 oracle：Fraction 精确射线奇偶，另写一份，不调 geom）；
+   · 距离完备性 / 出口完备性：通过，且分离/接触/相交样本计数不变；brute_ray_exit 的出口 ×s；
+-  · 凸块 G0：通过，facet 标签集合不变；
++  · 凸块 G0（E2）：每格成员/标签对独立精确 oracle 零错；只在判定余量超过舍入界时要求刚体不变，边界数据变化不豁免 oracle；
+   · 凸性 / 反射顶点（带平直 T 形顶点的合成块、bb52 真几何）不变；
+   · 读取器边界的重复点剥除（readers.bdda_geom）：近重复点照样被剥，工程坐标上只差一个 ulp 的重复点也认得出。
+ 调用方给的长度容差随单位一起缩放（tol → s·tol）——这是换单位的本义；角度容差是无量纲的，不缩放。
+@@ -356,22 +356,96 @@ CONVEX_CASES = [("squares", SQ, SQ), ("square_diamond", SQ, DIAMOND), ("brick_sq
+ 
+ 
+ def _facet_set(A, B):
+-    return sorted(convex_entrance_block(A, B, (0.0, 0.0), 0.0).facets)     # tol 是长度：只用舍入下限
++    return set(convex_entrance_block(A, B, (0.0, 0.0), 0.0).facets)
++
++
++def _support_labels_exact(A, B):
++    """独立 Fraction 支撑投影 oracle（本组输入无平直顶点）：不调库法锥/角序/凸包原语。
++    B 边的外法向上，A 唯一最小顶点给 VE，两端同为最小的一条 A 边给 FF；交换得到 EV。
++    同时返回所有严格支撑点的最小投影距离余量，以及是否存在精确平行边界。
++    """
++    FA = [(Fraction(x), Fraction(y)) for x, y in A]
++    FB = [(Fraction(x), Fraction(y)) for x, y in B]
++    labels, strict_margins, boundary = set(), [], False
++    for P, Q, kind in ((FA, FB, "VE"), (FB, FA, "EV")):
++        for j, q in enumerate(Q):
++            q1 = Q[(j + 1) % len(Q)]
++            nx, ny = q1[1] - q[1], q[0] - q1[0]
++            projs = [nx * p[0] + ny * p[1] for p in P]
++            lo = min(projs)
++            mins = [i for i, v in enumerate(projs) if v == lo]
++            if len(mins) == 1:
++                i = mins[0]
++                labels.add((kind, i, j) if kind == "VE" else (kind, j, i))
++                gap = min(v - lo for v in projs if v > lo)
++                strict_margins.append(float(gap) / math.hypot(float(nx), float(ny)))
++            else:
++                boundary = True
++                assert len(mins) == 2
++                i = next(i for i in mins if (i + 1) % len(P) in mins)
++                labels.add(("FF", i, j) if kind == "VE" else ("FF", j, i))
++    return labels, min(strict_margins, default=math.inf), boundary
++
++
++def _sat_gap_exact(A, B, x):
++    """独立内联 Fraction 分离轴最大有符号间隙（外正内负），仅作为带外不变性的舍入余量筛选。
++    平移先 Fraction 相加；不调用被测 Minkowski/法锥/归并函数。
++    """
++    X = (Fraction(x[0]), Fraction(x[1]))
++    FA = [(Fraction(a) + X[0], Fraction(b) + X[1]) for a, b in A]
++    FB = [(Fraction(a), Fraction(b)) for a, b in B]
++    gaps = []
++    for P, Q in ((FA, FB), (FB, FA)):
++        for j, p in enumerate(P):
++            q = P[(j + 1) % len(P)]
++            nx, ny = q[1] - p[1], p[0] - q[0]
++            gap = min(nx * v[0] + ny * v[1] for v in Q) - nx * p[0] - ny * p[1]
++            gaps.append(float(gap) / math.hypot(float(nx), float(ny)))
++    return max(gaps)
+ 
+ 
+ @pytest.mark.parametrize("motion", MOTIONS, ids=MOTION_IDS)
+ @pytest.mark.parametrize("case", CONVEX_CASES, ids=[c[0] for c in CONVEX_CASES])
+ def test_convex_g0_is_invariant(case, motion):
++    """旧门强迫理想平行对刚体运动后仍有原来的 FF 标签（由噪声窗吞微倾）。
++    E2 新门先逐格对独立 Fraction 支撑投影 oracle 核对全部标签、对精确 SAT 核对每个成员答案，
++    再在支撑投影/成员间隙余量超过坐标舍入界时守不变；精确平行/相触属于数据边界，允许随舍入改变但绝不跳过 oracle。
++    强度：旧带内标签同一性换成每格零错，原来带外不变仍保留；G0 三票还钉住零跳样、零顶点豁免、全部边界探针。
++    oracle 与被测零共用：投影和 SAT 不经 Minkowski 极角归并/法锥，投影辅助函数全在测试内独立实现。
++    """
++    from eab.kernel2d.covers import membership_convex
++    from eab.kernel2d.exact import convex_overlap_exact
+     name, A, B = case
+     _, theta, s, tm = motion
+     ref = g0_convex(A, B, samples=300, seed=3)
+     assert ref.passed, name
+     pt, vec, poly = _T(theta, s, tm)
+     At, Bt = poly(A), poly(B)
+-    assert _facet_set(At, Bt) == _facet_set(A, B), name
++    ref_labels, margin, has_boundary = _support_labels_exact(A, B)
++    want, _, _ = _support_labels_exact(At, Bt)
++    assert _facet_set(A, B) == ref_labels
++    assert _facet_set(At, Bt) == want, (name, motion[0], _facet_set(At, Bt) ^ want)
++    # 16 个舍入预算覆盖两端坐标、旋转、点积、参考平移传播；纯相对，无绝对地板。
++    noise = 16.0 * _floor_in_reference_units(A, B, motion)
++    if not has_boundary and margin > noise:
++        assert want == ref_labels, (name, motion[0])
+     rep = g0_convex(At, Bt, samples=300, seed=3)
+     assert rep.passed, (name, rep.mismatches[:2], rep.facet_symmetric_diff, rep.hull_vertex_mismatch)
+-    assert (rep.facet_local, rep.facet_global) == (ref.facet_local, ref.facet_global), name
++    assert rep.band_skipped == rep.hull_vertex_ambiguous == 0
++    assert rep.boundary_probes == 4 * len(want)
++    assert rep.samples == 300 + rep.boundary_probes
++    assert rep.facet_local == rep.facet_global == sum(lab[0] != "FF" for lab in want)
++    probes = [(0.0, 0.0), (0.4, 0.25), (1.0, 0.0), (1.0, 1.0), (3.0, 2.0), (-3.0, -2.0)]
++    stable = 0
++    for x in probes:
++        truth = convex_overlap_exact(A, B, x)
++        moved = convex_overlap_exact(At, Bt, vec(x))
++        assert membership_convex(A, B, x, 0.0) == truth
++        assert membership_convex(At, Bt, vec(x), 0.0) == moved
++        if abs(_sat_gap_exact(A, B, x)) > noise:
++            assert moved == truth, (name, motion[0], x, truth, moved)
++            stable += 1
++    assert stable >= 2       # 不变性分支必须真正执行，不因全落边界而空过。
+ 
+ 
+ # ---------------------------------------------------------------- 凸性 / 反射顶点（bb52 真几何）
+diff --git a/tests/test_kernel2d_exact.py b/tests/test_kernel2d_exact.py
+index 44cb1af..d9abc79 100644
+--- a/tests/test_kernel2d_exact.py
++++ b/tests/test_kernel2d_exact.py
+@@ -50,6 +50,7 @@ def _probe_points(eb, rng, k):
+ @pytest.mark.parametrize("seed", range(12))
+ @pytest.mark.parametrize("t", (0.0, 1e3, 1e6))
+ def test_exact_membership_equals_exact_separating_axis_oracle(seed, t):
++    """独立内联 Fraction SAT 对照：旧门可 skip 舍入样本；新门每个固定样本必测，边界探针不豁免。"""
+     rng = random.Random(seed)
+     A = B = None
+     while A is None:
+@@ -58,8 +59,8 @@ def test_exact_membership_equals_exact_separating_axis_oracle(seed, t):
+         B = _rand_convex(rng, rng.randint(3, 7), 0.8)
+     th = rng.uniform(0, 2 * math.pi)
+     A, B = _rigid(A, th, (t, -0.7 * t)), _rigid(B, th, (t, -0.7 * t))
+-    if not (is_convex_exact(A) and is_convex_exact(B)):
+-        pytest.skip("rounding made a vertex reflex")
++    # 原门遇舍入微凹就跳过；新门覆盖每个固定样本，生成器的严格凸余量必须保持可分辨。
++    assert is_convex_exact(A) and is_convex_exact(B), "fixed strict-convex sample lost its margin"
+     eb = entrance_block_exact(A, B)
+     for x in _probe_points(eb, rng, 60):
+         assert membership_exact(A, B, x, eb) == convex_overlap_exact(A, B, x), x
+@@ -179,3 +180,157 @@ def test_exact_hull_of_differences_equals_the_strict_vertices_of_e(seed):
+     H = set(half(pts)[:-1] + half(list(reversed(pts)))[:-1])
+     E = {eb.vertices[k] for k in strict_vertices(eb)}
+     assert E == H
++
++# ---------------------------------------------------------------- E2 定向精确契约与突变门
++
++SQUARE_EXACT = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
++FLAT_EXACT = [(0.0, 0.0), (0.5, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
++
++
++def test_angle_order_is_the_exact_cyclic_order_in_both_halfplanes():
++    """闭式八方向次序，不调任何几何 oracle 原语；直接看护同半平面叉积比较反号，避免随机生成器先受突变污染。"""
++    from eab.kernel2d.exact import _angle_less
++    directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
++    for i, u in enumerate(directions):
++        for j, v in enumerate(directions):
++            assert _angle_less(u, v) is (i < j), (i, j)
++        assert not _angle_less(u, (7 * u[0], 7 * u[1]))
++        assert not _angle_less((7 * u[0], 7 * u[1]), u)
++
++
++@pytest.mark.parametrize("scale", [2.0 ** -20, 1.0, 2.0 ** 20])
++@pytest.mark.parametrize("x,want", [((1.0, 0.0), 0), ((1.0, 1.0), 0),
++                                      ((1.0 - 2 ** -40, 0.0), 1),
++                                      ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])
++def test_exact_membership_boundary_is_not_the_interior(scale, x, want):
++    """E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。"""
++    square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]
++    moved = (scale * x[0], scale * x[1])
++    assert membership_exact(square, square, moved) == want
++    from eab.kernel2d.covers import membership_convex
++    assert membership_convex(square, square, moved, tol=0.0) == want
++
++
++@pytest.mark.parametrize("direction,want", [((1, 0), -1), ((-1, 0), 0), ((0, 1), -1)])
++def test_flat_vertex_cone_is_one_ray_not_a_line(direction, want):
++    """平直底边中点的外法锥只有向下射线：闭式方向真值，零向量/法锥原语共享；看护反向同线被错误接收。"""
++    from eab.kernel2d.exact import vertex_side_exact
++    assert vertex_side_exact(FLAT_EXACT, 1, direction) == want
++
++
++@pytest.mark.parametrize("direction,want", [((-1, 0), 0), ((0, 1), 0), ((-1, 1), 1), ((1, -1), -1)])
++def test_corner_cone_boundary_is_not_strict(direction, want):
++    """方块左下角锥边界不是严格内部；闭式坐标方向 oracle 不用法锥叉积实现，分别覆盖边界/内部/外部。"""
++    from eab.kernel2d.exact import vertex_side_exact
++    assert vertex_side_exact(SQUARE_EXACT, 0, direction) == want
++
++
++def test_convexity_rejection_names_the_first_foldback_and_winding_defect():
++    """旧门只断言拒收折回，移除专门检查会被后续反射检查掩盖；新门还锁定首个非法转角的诊断，拒收要求未减。"""
++    from eab.kernel2d.exact import convexity_violation
++    fold = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]
++    assert convexity_violation(fold) == "folds back on itself at vertex 1"
++    twice = SQUARE_EXACT + SQUARE_EXACT
++    assert convexity_violation(twice) == "winds 2 times (total turning is not 2π)"
++    for malformed in (fold, twice):
++        with pytest.raises(ValueError):
++            entrance_block_exact(malformed, SQUARE_EXACT)
++
++
++@pytest.mark.parametrize("swap", [False, True])
++def test_strict_vertices_discard_flat_chain_subdivision_vertices(swap):
++    """闭式 E=[-1,1]^2 只有四角；旧随机门无共线输入，现保留样本并补平直链，零凸包/法锥原语共享。"""
++    from eab.kernel2d.exact import strict_vertices
++    A, B = (SQUARE_EXACT, FLAT_EXACT) if swap else (FLAT_EXACT, SQUARE_EXACT)
++    eb = entrance_block_exact(A, B)
++    assert len(eb.vertices) == 5, "fixture must exercise an actual flat subdivision"
++    vertices = [eb.vertices[k] for k in strict_vertices(eb)]
++    assert len(vertices) == 4
++    assert set(vertices) == {(-1, -1), (1, -1), (1, 1), (-1, 1)}
++
++
++@pytest.mark.parametrize("scale", [Fraction(1, 1024), Fraction(1), Fraction(1024)])
++def test_exact_hull_discards_collinear_boundary_points(scale):
++    """矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。"""
++    from eab.kernel2d.exact import hull_exact_fr
++    points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]
++    shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]
++    got = hull_exact_fr(shifted)
++    assert len(got) == 4
++    assert set(got) == {(scale * x, scale * y) for x, y in [(3, -7), (5, -7), (5, -5), (3, -5)]}
++    assert hull_exact_fr([(scale * k, Fraction(0)) for k in range(5)]) == [(0, 0), (4 * scale, 0)]
++
++
++@pytest.mark.parametrize("reverse", [False, True])
++@pytest.mark.parametrize("x,want", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),
++                                      ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])
++def test_triangle_exact_touch_is_not_separation(reverse, x, want):
++    """两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。"""
++    from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact
++    triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]
++    if reverse:
++        triangle.reverse()
++    assert polygons_overlap_exact(triangle, triangle, x) == want
++    assert _tri_overlap_exact(triangle, triangle, (Fraction(x[0]), Fraction(x[1]))) == want
++
++
++@pytest.mark.parametrize("x,want", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),
++                                      ((0.0, 1.0 - 2 ** -40), 1)])
++def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):
++    """微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。"""
++    from eab.kernel2d.covers import membership_convex
++    from eab.kernel2d.geom import is_convex
++    dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
++    assert is_convex(dent, 1e-12) and not is_convex_exact(dent)
++    assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want
++
++
++def test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path():
++    """微凹底边从 y=2 下降，最早在 t=1 碰到方块顶边（闭式 oracle）；只看护 E2 分派，不声称 E3 首入已精确化。"""
++    from eab.kernel2d.entrance import first_entrance
++    dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
++    got = first_entrance(dent, SQUARE_EXACT, (0.0, 2.0), (0.0, -1.0))
++    assert got.kind == "entrance"
++    assert got.t == 1.0 and got.x == (0.0, 1.0)
++
++
++@pytest.mark.parametrize("swap", [False, True])
++@pytest.mark.parametrize("scale", [2.0 ** -10, 1.0, 2.0 ** 10])
++def test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions(swap, scale):
++    """平直链不等长导致非 FF 余段，但它不严格；新门全部标签对独立投影 oracle、全部样本对独立 SAT，绝不 ambiguous 豁免。"""
++    from eab.kernel2d.g0 import g0_convex
++    A = [(scale * (x + 5), scale * (y - 3)) for x, y in FLAT_EXACT]
++    B = [(scale * (x - 7), scale * (y + 11)) for x, y in SQUARE_EXACT]
++    if swap:
++        A, B = B, A
++    report = g0_convex(A, B, samples=12, seed=913)
++    assert report.facet_local == report.facet_global == 0
++    assert report.facet_symmetric_diff == []
++    assert report.hull_vertex_mismatch == 0
++    assert report.mismatches == [] and report.band_skipped == report.hull_vertex_ambiguous == 0
++    assert report.boundary_probes == 20 and report.samples == 32
++    assert report.passed
++
++
++def test_sat_oracle_uses_no_kernel_geometry_primitive(monkeypatch):
++    """纪律 A 的可执行门：毒化所有与 Minkowski/法锥共用的几何原语，独立 SAT 仍须给出闭式三态答案。"""
++    import eab.kernel2d.exact as ex
++    def forbidden(*args, **kwargs):
++        raise AssertionError("independent oracle called a tested geometry primitive")
++    for name in ("_fr", "_sub", "_cross", "_dot", "signed_area2", "entrance_block_exact"):
++        monkeypatch.setattr(ex, name, forbidden)
++    for x, want in [((0.0, 0.0), 1), ((1.0, 0.0), 0), ((2.0, 0.0), -1)]:
++        assert ex.convex_overlap_exact(SQUARE_EXACT, SQUARE_EXACT, x) == want
++
++
++def test_g0_support_and_hull_oracles_use_no_tested_geometry_primitive(monkeypatch):
++    """票二全投影与票三 gift-wrap 均只用内联 Fraction；毒化被测原语后仍须返回闭式方块支持集/四角。"""
++    import eab.kernel2d.exact as ex
++    from eab.kernel2d.g0 import _difference_hull_independent, _support_labels_independent
++    def forbidden(*args, **kwargs):
++        raise AssertionError("independent oracle called a tested geometry primitive")
++    for name in ("_fr", "_sub", "_cross", "_dot", "hull_exact_fr", "strict_vertices", "vertex_side_exact"):
++        monkeypatch.setattr(ex, name, forbidden)
++    strict, boundary = _support_labels_independent(SQUARE_EXACT, SQUARE_EXACT)
++    assert strict == set() and len(boundary) == 16
++    assert _difference_hull_independent(FLAT_EXACT, SQUARE_EXACT) == {(-1, -1), (1, -1), (1, 1), (-1, 1)}
+diff --git a/tests/test_kernel2d_g0.py b/tests/test_kernel2d_g0.py
+index 22407bc..64b0ba1 100644
+--- a/tests/test_kernel2d_g0.py
++++ b/tests/test_kernel2d_g0.py
+@@ -34,15 +34,23 @@ def test_entrance_block_area_is_minkowski_area():
+ 
+ 
+ def test_degenerate_parallel_edges_membership_still_exact():
++    """旧门在成员或暴力票为 0 时跳过；新门对同样 500 个样本加 8 个边界点逐一精确核对。
++    oracle 用 Fraction 分离轴（convex_overlap_exact），不经 Minkowski 构造/角排序/成员 facet 路径；
++    tol=0 消除报告带，要求三态都出现，因此强于原来的仅带外符号相符。
++    """
++    from eab.kernel2d.exact import convex_overlap_exact
+     rng = random.Random(7)
+     eb = convex_entrance_block(SQUARE, SQUARE, tol=1e-12)
+-    for _ in range(500):
+-        x = (rng.uniform(-1.5, 1.5), rng.uniform(-1.5, 1.5))
+-        m = membership_convex(SQUARE, SQUARE, x, 1e-9, eb)
+-        b = polygons_overlap(translate(SQUARE, x), SQUARE, 1e-12)
+-        if m == 0 or b == 0:
+-            continue
++    probes = [(rng.uniform(-1.5, 1.5), rng.uniform(-1.5, 1.5)) for _ in range(500)]
++    probes += [(-1.0, -1.0), (-1.0, 1.0), (1.0, -1.0), (1.0, 1.0),
++               (-1.0, 0.0), (1.0, 0.0), (0.0, -1.0), (0.0, 1.0)]
++    states = set()
++    for x in probes:
++        m = membership_convex(SQUARE, SQUARE, x, 0.0, eb)
++        b = convex_overlap_exact(SQUARE, SQUARE, x)
+         assert m == b, (x, m, b)
++        states.add(m)
++    assert states == {-1, 0, 1}
+ 
+ 
+ def test_gate_has_teeth_wrong_orientation_is_caught():
+@@ -281,12 +289,28 @@ def test_exit_completeness_needs_one_direction_per_translation():
+ @pytest.mark.parametrize("C", [1e5, 1e6])
+ @pytest.mark.parametrize("Ls", [1e-3, 1e-2, 1e-1])
+ @pytest.mark.parametrize("d", [1e-8, 1e-7, 1e-6, 1e-5])
+-def test_vote_three_treats_kinks_below_the_hull_chord_tolerance_as_ambiguous(C, Ls, d):
+-    """A = 单位方块在 (C, C)，B = 原点处边长 Ls 的方块、底边一端抬 Ls·d（倾 d rad，远大于两边的方向噪声，所以合法地不并成 FF）：
+-    折点离弦 Ls·d 落在（合并窗, round_floor(C)] 之间时 convex_hull 按弦距丢掉它、E 保留它——旧版第三票报 hull_vertex_mismatch = 1
+-    假红（24 格里 13 格），票一 2000 样本 0 失配、票二对称差空。现在这种顶点两边都不计、记 hull_vertex_ambiguous。"""
++def test_vote_three_keeps_exact_kinks_without_ambiguous_exemptions(C, Ls, d):
++    """旧门允许短边微折点落在凸包弦距容差内时从票三两侧删掉（hull_vertex_ambiguous≤2）。
++    E2 新口径：同一 24 格必须保留全部 5 个严格顶点，零说不清、零跳样；参数仍覆盖工程坐标/短边/小倾角。
++    oracle：测试独立内联 Fraction 单调链，差点先精确相减，不调用 Minkowski、法锥或库凸包函数。
++    新断言不更弱：原来的整门通过保留，另要求以前允许豁免的微折点也确实参与，并钉住全部边界探针计数。
++    """
++    from fractions import Fraction as F
+     A = [(C, C), (C + 1.0, C), (C + 1.0, C + 1.0), (C, C + 1.0)]
+     B = [(0.0, 0.0), (Ls, Ls * d), (Ls, Ls), (0.0, Ls)]
++    pts = sorted({(F(b[0]) - F(a[0]), F(b[1]) - F(a[1])) for a in A for b in B})
++    def half(seq):
++        out = []
++        for p in seq:
++            while len(out) >= 2 and ((out[-1][0] - out[-2][0]) * (p[1] - out[-2][1])
++                                     - (out[-1][1] - out[-2][1]) * (p[0] - out[-2][0])) <= 0:
++                out.pop()
++            out.append(p)
++        return out
++    hull = set(half(pts)[:-1] + half(list(reversed(pts)))[:-1])
++    assert len(hull) == 5
+     r = g0_convex(A, B, samples=400, seed=1)
+-    assert r.passed, (C, Ls, d, r.hull_vertex_mismatch, r.hull_vertex_ambiguous, r.facet_symmetric_diff, r.mismatches[:2])
+-    assert r.hull_vertex_ambiguous <= 2
++    assert r.passed, (C, Ls, d, r.hull_vertex_mismatch, r.facet_symmetric_diff, r.mismatches[:2])
++    assert r.hull_vertex_mismatch == r.hull_vertex_ambiguous == r.band_skipped == 0
++    assert r.boundary_probes == 20 and r.samples == 420
++    assert r.facet_local == r.facet_global == 2
+diff --git a/tests/test_kernel2d_lever.py b/tests/test_kernel2d_lever.py
+index ce15a08..00590bb 100644
+--- a/tests/test_kernel2d_lever.py
++++ b/tests/test_kernel2d_lever.py
+@@ -10,6 +10,7 @@ from __future__ import annotations
+ 
+ import math
+ import random
++from fractions import Fraction as F
+ 
+ import pytest
+ 
+@@ -25,13 +26,39 @@ def _rot(P, th, T=(0.0, 0.0)):
+ SQUARE = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+ 
+ 
++def _fan_overlap_independent(A, B, x):
++    """本门A凸四边形、B从右下角可见全边界；显式扇片+内联Fraction全投影SAT。
++    不调用被测路径的耳切、exact/geom几何原语，平移不在浮点上做。
++    """
++    A = [(F(u) + F(x[0]), F(v) + F(x[1])) for u, v in A]
++    B = [(F(u), F(v)) for u, v in B]
++    left = [(A[0], A[1], A[2]), (A[0], A[2], A[3])]
++    right = [(B[1], B[2], B[3]), (B[1], B[3], B[4]), (B[1], B[4], B[0])]
++    states = []
++    for a in left:
++        for b in right:
++            status = 1
++            for P in (a, b):
++                for i in range(3):
++                    p, q = P[i], P[(i + 1) % 3]
++                    nx, ny = q[1] - p[1], p[0] - q[0]
++                    ap = [nx*u + ny*v for u, v in a]
++                    bp = [nx*u + ny*v for u, v in b]
++                    overlap = min(max(ap), max(bp)) - max(min(ap), min(bp))
++                    status = min(status, (overlap > 0) - (overlap < 0))
++            states.append(status)
++    return max(states)
++
++
+ @pytest.mark.parametrize("h", [1e-3, 1e-5, 1e-7])
+ @pytest.mark.parametrize("C", [1e3, 1e5])
+ @pytest.mark.parametrize("th", [0.3, 1.1, 2.9, 4.4])
+ def test_membership_far_from_a_t_vertex_short_edge_agrees_with_brute(h, C, th):
+     """B = 单位方块、左边被 T 形顶点拆成长边 + 长 h 的短边；A = 0.1 方块，右侧压进 B 左侧 1e-6（≫ 舍入），位置离短边 0.3 远。
+     刚体旋转 th、平移到 C 后：暴力谓词答 1（Fraction 可证），membership_convex 必须也答 1——旧版短边法向偏 ~eps·C/h rad，
+-    乘杠杆 0.3 后把参考点判到 facet 外侧（critical）。"""
++    乘杠杆 0.3 后把参考点判到 facet 外侧（critical）。
++    E2旧门的浮点translate/容差oracle改成独立显式扇片Fraction SAT；每个答案精确一致，且1e-6余量
++    大于坐标舍入界时仍守刚体不变（不再依靠链法向抹平边界）。原24格及分离/贯入两侧全部保留。"""
+     B0 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (0.0, h)]
+     A0 = [(0.0, 0.0), (0.1, 0.0), (0.1, 0.1), (0.0, 0.1)]
+     x0 = (-0.1 + 1e-6, 0.45)
+@@ -39,12 +66,13 @@ def test_membership_far_from_a_t_vertex_short_edge_agrees_with_brute(h, C, th):
+     A = _rot(A0, th)
+     B = _rot(B0, th, (C, C))
+     x = (C + c * x0[0] - s * x0[1], C + s * x0[0] + c * x0[1])
+-    brute = polygons_overlap(translate(A, x), B, 0.0)
++    assert 1e-6 > 64 * math.ulp(max(C, 1.0))
++    brute = _fan_overlap_independent(A, B, x)
+     assert brute == 1
+     assert membership_convex(A, B, x, 0.0) == 1, (h, C, th)
+     # 同一位形把 A 拉开 2e-6（分离 1e-6）：两边都答 −1
+     x2 = (x[0] - 2e-6 * c, x[1] - 2e-6 * s)
+-    assert polygons_overlap(translate(A, x2), B, 0.0) == -1 == membership_convex(A, B, x2, 0.0)
++    assert _fan_overlap_independent(A, B, x2) == -1 == membership_convex(A, B, x2, 0.0)
+ 
+ 
+ @pytest.mark.parametrize("g", [1e-6, 1e-7, 1e-8])
+diff --git a/tests/test_kernel2d_predicates.py b/tests/test_kernel2d_predicates.py
+index 3aa6644..b83b9a7 100644
+--- a/tests/test_kernel2d_predicates.py
++++ b/tests/test_kernel2d_predicates.py
+@@ -21,6 +21,7 @@ import pytest
+ 
+ from eab.kernel2d.covers import convex_entrance_block, membership_convex
+ from eab.kernel2d.g0 import g0_convex, random_convex_polygon
++from eab.kernel2d.exact import convex_overlap_exact, polygons_overlap_exact
+ from eab.kernel2d.geom import convex_hull, orient2d, polygons_overlap, translate, triangulate
+ 
+ 
+@@ -252,21 +253,21 @@ def test_membership_without_eb_square_over_octagon_canary(s):
+ 
+ @pytest.mark.parametrize("s", [1e-3, 1.0, 1e3])
+ def test_membership_without_eb_agrees_with_brute_force_in_any_unit(s):
+-    """随机凸对，tol 随单位缩放（1 mm 于米制 = 1 于毫米制）：带外样本的判定必须等于暴力谓词。旧版毫米制 4–8% 答错。"""
++    """旧门只核两侧非零的带外随机点；E2 用独立内联 Fraction SAT 核全部点（不舍入 A+x）。
++    零容差逐点全等，另核调用方报告带只能把精确答案改成0，绝不能翻号；原有60×20点与尺度全部保留。"""
+     rng = random.Random(21)
+-    wrong, n = [], 0
++    nonzero = 0
+     for _ in range(60):
+         A0, B0 = random_convex_polygon(rng, rng.randint(3, 7)), random_convex_polygon(rng, rng.randint(3, 8))
+         A, B, tol = _scaled(A0, s), _scaled(B0, s), 1e-3 * s
+         for _ in range(20):
+             x = (rng.uniform(-3.0, 3.0) * s, rng.uniform(-3.0, 3.0) * s)
+-            m = membership_convex(A, B, x, tol)
+-            b = polygons_overlap(translate(A, x), B, tol)
+-            if m != 0 and b != 0:
+-                n += 1
+-                if m != b:
+-                    wrong.append((A0, B0, x, m, b))
+-    assert n >= 600 and wrong == [], (n, len(wrong), wrong[:1])
++            truth = convex_overlap_exact(A, B, x)
++            assert membership_convex(A, B, x) == truth, (A0, B0, x)
++            report = membership_convex(A, B, x, tol)
++            assert report in (0, truth), (x, report, truth)
++            nonzero += report != 0
++    assert nonzero >= 600
+ 
+ 
+ # ---------------------------------------------------------------- (f) 凸 E 的平行边合并：逐对、按长度
+@@ -283,31 +284,30 @@ TILTED_TRIANGLE = [(math.cos(0.1) * x - math.sin(0.1) * y, math.sin(0.1) * x + m
+ @pytest.mark.parametrize("tiny", [1e-4, 1e-8, 1e-10])
+ def test_a_short_edge_elsewhere_does_not_merge_long_edges(C, tiny):
+     """方块一角削去一条 tiny 的短边，三角的底边与方块顶边夹 0.1 rad。旧版的合并下限取整个多边形的最短边：
+-    tiny = 1e-8 放在 1e5 处下限 0.14 rad，这对长边被并成 FF，成员判定 16/2000 答反、g0 报红。"""
++    tiny = 1e-8 放在 1e5 处下限 0.14 rad，这对长边被并成 FF，成员判定 16/2000 答反、g0 报红。
++    E2 不再豁免短边合并或跳过0：全部1500点与独立 Fraction SAT 精确一致，比旧带外门更强。"""
+     B = _chamfered_square(C, tiny)
+     eb = convex_entrance_block(TILTED_TRIANGLE, B)
+-    # 两条长边夹 0.1 rad，绝不许并；削角那条 tiny 边在 1e6 处方向本身是噪声（c·eps·C/tiny ≫ 1 rad），它与长边并成 FF
+-    # 在契约误差（≤ t + 2·c·eps·C）之内，允许——所以只禁止 B 的非削角边（0、1、3、4）出现在 FF 里
+-    assert not any(f[0] == "FF" and f[2] != 2 for f in eb.facets), eb.facets
++    # 旧门豁免短倒角的错误合并；现在连短边也不豁免：本例没有任何精确反向平行边。
++    assert not any(f[0] == "FF" for f in eb.facets), eb.facets
+     rng = random.Random(1)
+     wrong, n = [], 0
+     for _ in range(1500):
+         x = (C + rng.uniform(-1.5, 1.5), C + rng.uniform(0.2, 2.0))
+         m = membership_convex(TILTED_TRIANGLE, B, x, 0.0, eb=eb)
+-        b = polygons_overlap(translate(TILTED_TRIANGLE, x), B, 0.0)
+-        if m != 0 and b != 0:
+-            n += 1
+-            if m != b:
+-                wrong.append((x, m, b))
++        b = convex_overlap_exact(TILTED_TRIANGLE, B, x)
++        n += 1
++        if m != b:
++            wrong.append((x, m, b))
+     assert n > 1000 and wrong == [], (n, wrong[:2])
+     rep = g0_convex(TILTED_TRIANGLE, B, samples=400)
+     assert rep.passed, (rep.mismatches[:2], rep.facet_symmetric_diff, rep.hull_vertex_mismatch)
+ 
+ 
+ @pytest.mark.parametrize("C", [0.0, 1e5])
+-def test_parallel_edges_of_very_different_lengths_merge_within_the_length_tolerance(C):
+-    """合并判据是长度：两条同向边 |e_P × e_Q| ≤ t·min(|e_P|, |e_Q|) 才并——并后的 FF 面偏离真实边界不超过 t。
+-    轴对齐方块对（严格平行）必须合并；夹角 δ 使长边端点偏出 10·t 时不许合并。"""
++def test_exact_parallel_edges_merge_independently_of_the_length_ratio(C):
++    """旧说明以长度容差解释合并；E2只合并精确平行同向的B/−A边，长短边比不参与判定。
++    原轴对齐4FF及真实倾斜3FF两组断言保留；tol内也不合并由test_length_tolerance_never_changes_exact_parallel_merging守护。"""
+     big = [(C, C), (C + 1.0, C), (C + 1.0, C + 1.0), (C, C + 1.0)]
+     small = [(0.0, 0.0), (1e-6, 0.0), (1e-6, 1e-6), (0.0, 1e-6)]
+     assert sum(f[0] == "FF" for f in convex_entrance_block(small, big, tol=1e-9).facets) == 4
+@@ -323,29 +323,41 @@ FLAT = [(0.0, 0.0), (1.0, 0.0), (2.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.5, 1.0),
+ 
+ 
+ @pytest.mark.parametrize("quarter", [0, 1, 2, 3])
+-def test_a_t_vertex_one_ulp_above_the_lowest_edge_is_still_convex(quarter):
+-    """G6 第三轮 major：单位方块底边中点的 T 形顶点高出弦一个 ulp（工程坐标 1e5 处的舍入级微凹），凸包深度 1.5e-11 ≪ t，
+-    is_convex 判凸——但 M0.3 第一版按 [0, 2π) 里的极角判"下降 > π/2 即绕圈"，微凹落在最底边上时相邻边极角成 δ 与 2π − δ，
+-    后面的下降 ≈ 3π/2 被误拒。四个朝向（每转 90°）都必须正常返回同一组 facet，成员判定与暴力一致。"""
++def test_a_t_vertex_one_ulp_above_the_lowest_edge_uses_the_concave_path(quarter):
++    """旧口径把一个ulp微凹吞成平直顶点并强制4FF；E2精确拒收，再走一般简单多边形路径。
++    保留四朝向与300点，额外保留精确平直对照；全部答案对闭式矩形减三角缺口 oracle，零带内豁免。
++    oracle只用内联 Fraction 区间/线性插值，与凸构造及凹相交的耳切/SAT零共用。"""
+     C = 1e5
+-    P = [(C, C), (C + 1.0, math.nextafter(C, math.inf)), (C + 2.0, C), (C + 2.0, C + 1.0), (C, C + 1.0)]
++    bump = math.nextafter(C, math.inf)
++    P = [(C, C), (C + 1.0, bump), (C + 2.0, C), (C + 2.0, C + 1.0), (C, C + 1.0)]
++    flat = [(C, C), (C + 1.0, C), (C + 2.0, C), (C + 2.0, C + 1.0), (C, C + 1.0)]
+     for _ in range(quarter):
+         P = [(-y, x) for x, y in P]
+-    eb = convex_entrance_block(SQUARE, P)
+-    # A 的四条边与 B 的边平行：4 条 FF，B 的底边被 T 形顶点拆成两段、只能并一段，另一段成 VE → 5 条 facet，无零长 facet
+-    assert sorted(f[0] for f in eb.facets) == ["FF", "FF", "FF", "FF", "VE"], eb.facets
++        flat = [(-y, x) for x, y in flat]
++    for tol in (0.0, 1e-9, 1.0):
++        with pytest.raises(ValueError, match="reflex"):
++            convex_entrance_block(SQUARE, P, tol=tol)
++    eb = convex_entrance_block(SQUARE, flat)
++    assert sorted(f[0] for f in eb.facets) == ["FF", "FF", "FF", "FF", "VE"]
+     assert all(math.dist(eb.vertices[i], eb.vertices[(i + 1) % len(eb.vertices)]) > 0.5 for i in range(len(eb.vertices)))
+     rng = random.Random(quarter)
+     cx, cy = (sum(p[0] for p in P) / 5, sum(p[1] for p in P) / 5)
+-    n = 0
+-    for _ in range(300):
+-        x = (cx + rng.uniform(-2.0, 2.0), cy + rng.uniform(-2.0, 2.0))
+-        m = membership_convex(SQUARE, P, x, 1e-9)
+-        b = polygons_overlap(translate(SQUARE, x), P, 1e-9)
+-        if m != 0 and b != 0:
+-            n += 1
+-            assert m == b, (x, m, b)
+-    assert n > 200
++    xs = [(cx + rng.uniform(-2, 2), cy + rng.uniform(-2, 2)) for _ in range(300)]
++    # 先在原坐标精确加x，再逆90度旋转，得到轴对齐方块的区间。
++    for x in xs:
++        points = [(Fraction(a) + Fraction(x[0]), Fraction(b) + Fraction(x[1])) for a, b in SQUARE]
++        for _ in range(quarter):
++            points = [(b, -a) for a, b in points]
++        lo, hi = max(Fraction(C), min(p[0] for p in points)), min(Fraction(C + 2), max(p[0] for p in points))
++        low_y, high_y = min(p[1] for p in points), max(p[1] for p in points)
++        if lo > hi or low_y > C + 1:
++            want = -1
++        else:
++            h = Fraction(bump) - Fraction(C)
++            bottom = lambda z: Fraction(C) + h * min(z - C, C + 2 - z)
++            floor = min(bottom(lo), bottom(hi))
++            want = -1 if high_y < floor else (0 if lo == hi or high_y == floor or low_y == C + 1 else 1)
++        assert membership_convex(SQUARE, P, x) == want, (quarter, x, want)
+ 
+ 
+ @pytest.mark.parametrize("P", [ROW, FLAT], ids=["row", "flat"])
+@@ -389,9 +401,9 @@ def test_non_convex_or_clockwise_input_is_refused(name):
+ 
+ 
+ @pytest.mark.parametrize("seed", range(10))
+-def test_true_parallel_edges_with_length_ratio_1000_merge_after_rotation(seed):
+-    """G6 第三轮 minor：单位方块对 1000 × 1 的薄矩形（真平行边，长短边比 1000），随机旋转后 s = 1e-3、|t| = 1e3：叉积噪声
+-    ~eps·C·|e_long| 超过 t·min|e|，旧版不并，E 多出一个微折点，第三票（凸包顶点集）假红 15/20。现在 4 条 FF，g0 三票通过。"""
++def test_parallel_edges_with_length_ratio_1000_merge_only_if_exact_after_rotation(seed):
++    """旧门无视输入舍入强制4FF；E2以独立内联 Fraction 反平行边对为oracle，逐标签相等而非放松计数。
++    原种子/尺度/平移全保留，精确G0三票不跳样本，tiny折点不再豁免。"""
+     RECT = [(0.0, 0.0), (1000.0, 0.0), (1000.0, 1.0), (0.0, 1.0)]
+     rng = random.Random(seed)
+     s, tm = 1e-3, 1e3
+@@ -400,28 +412,46 @@ def test_true_parallel_edges_with_length_ratio_1000_merge_after_rotation(seed):
+     f = lambda P: [(s * (c * p[0] - sn * p[1]) + tm * math.cos(phi), s * (sn * p[0] + c * p[1]) + tm * math.sin(phi)) for p in P]
+     A, B = f(SQUARE), f(RECT)
+     eb = convex_entrance_block(A, B)
+-    assert sum(l[0] == "FF" for l in eb.facets) == 4, eb.facets
++    expected = set()
++    for i in range(4):
++        ax, ay = (Fraction(A[(i + 1) % 4][k]) - Fraction(A[i][k]) for k in (0, 1))
++        for j in range(4):
++            bx, by = (Fraction(B[(j + 1) % 4][k]) - Fraction(B[j][k]) for k in (0, 1))
++            if ax * by == ay * bx and ax * bx + ay * by < 0:
++                expected.add(("FF", i, j))
++    assert {l for l in eb.facets if l[0] == "FF"} == expected
++    assert len(eb.facets) == 8 - len(expected)
+     rep = g0_convex(A, B, samples=100, seed=1)
+     assert rep.passed, (rep.mismatches[:2], rep.facet_symmetric_diff, rep.hull_vertex_mismatch)
++    assert rep.band_skipped == rep.hull_vertex_ambiguous == 0
++    assert rep.samples == 100 + rep.boundary_probes
+ 
+ 
+ def test_a_vertex_fifty_tolerances_inside_the_hull_is_rejected():
+-    """G6 第三轮 minor：凸性前提"顶点在凸包以内深度 ≤ t"的牙——深 50·t 的微凹必须拒收（阈值放宽 100 倍就会被当平直顶点吞掉）。"""
++    """G6 第三轮 minor：凸性前提"顶点在凸包以内深度 ≤ t"的牙——旧门深50t拒收、半t接收；E2二者均精确拒收，t不再作为凸性豁免。
++    保留两个原样本并收紧旧接受分支；精确平直可接受另由96格门守护。"""
+     from eab.kernel2d.geom import coord_scale, round_floor
+     t = round_floor(coord_scale(SQUARE))
+     P = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 50.0 * t), (0.0, 1.0)]
+     with pytest.raises(ValueError, match="not convex"):
+         convex_entrance_block(SQUARE, P)
+-    P2 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 0.5 * t), (0.0, 1.0)]       # 半个容差：夹平即可
+-    assert len(convex_entrance_block(SQUARE, P2).facets) >= 4
++    P2 = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - 0.5 * t), (0.0, 1.0)]       # 半个旧容差：仍必须拒收
++    with pytest.raises(ValueError, match="reflex"):
++        convex_entrance_block(SQUARE, P2)
+ 
+ 
+ @pytest.mark.parametrize("C", [1.0, 1e5])
+-def test_the_length_tolerance_is_the_slack_for_the_long_edge_rotation(C):
+-    """两条长边（1）夹 δ：长边转到并后法向的位移 δ·1 ≤ tol 才并——δ = tol/2 并、δ = 2·tol 不并。两边自己的方向噪声
+-    c·eps·C ≤ 1.4e-9 rad 远小于 tol = 1e-7，所以这里并或不并全由 tol 决定（突变体"忽略 t"必须在这里变红）。"""
++def test_length_tolerance_never_changes_exact_parallel_merging(C):
++    """旧门 δ=tol/2合并、2tol不并；E2非零精确叉积一律不并，tol只兼容参数。
++    保留原两倾角，新增δ=0边界与tol=0/1e-7/1，要求标签与顶点都不依tol变化，三组几何产物必须互异。"""
+     tol = 1e-7
+-    for d, n_ff in ((0.5 * tol, 4), (2.0 * tol, 3)):
++    products = []
++    for d, n_ff in ((0.0, 4), (0.5 * tol, 3), (2.0 * tol, 3)):
+         big = [(C, C), (C + 1.0, C + d), (C + 1.0, C + 1.0), (C, C + 1.0)]
+-        labels = convex_entrance_block(SQUARE, big, tol=tol).facets
+-        assert sum(f[0] == "FF" for f in labels) == n_ff, (C, d, labels)
++        ref = convex_entrance_block(SQUARE, big)
++        for window in (0.0, tol, 1.0):
++            got = convex_entrance_block(SQUARE, big, tol=window)
++            assert got == ref
++            assert sum(f[0] == "FF" for f in got.facets) == n_ff, (C, d, got.facets)
++        products.append(tuple(ref.vertices))
++    assert len(set(products)) == 3
+diff --git a/tests/test_kernel2d_review.py b/tests/test_kernel2d_review.py
+index 5683a01..73d9851 100644
+--- a/tests/test_kernel2d_review.py
++++ b/tests/test_kernel2d_review.py
+@@ -71,17 +71,53 @@ def test_r4c_micro_concave_input_is_rejected_not_silently_mangled():
+ 
+ 
+ def test_r7_third_vote_hull_vertices_match_and_catch_sign_flip(monkeypatch):
++    """旧门把 outward_normal 反号，期望 G0 成员/凸包票红；E2 中法向只构造、不再决定成员。
++    新门保留随机对三票和法向反号的构造量看护，并在实际 membership_exact 函数内部把边界吞成内部。
++    强度：原来的法向错误仍被独立边法向公式识别；新成员门零容差、边界样本不跳过，明确要求 0→1 的目标断言红。
++    oracle：法向用测试内联 hypot / 点乘；成员用 G0 的独立全投影 SAT，不调用 Minkowski 的几何原语。
++    """
++    import inspect
++    import math
++    import eab.kernel2d.covers as cv
++    import eab.kernel2d.exact as ex
++
+     rng = random.Random(11)
+     A = random_convex_polygon(rng, 7)
+     B = random_convex_polygon(rng, 6)
+     rep = g0_convex(A, B, samples=300, seed=2)
+     assert rep.passed and rep.hull_vertex_mismatch == 0
+-    # 整体反号 outward_normal：标签集检验盲，但 G0 采样与第三票至少一个要红
+-    import eab.kernel2d.covers as cv
++
++    # 原来的反法向缺陷现在只影响构造；以独立公式看护，不能要求精确谓词受它污染。
++    x = (2.0, -3.0)
++    expected = []
++    for label in cv.convex_entrance_block(A, B).facets:
++        kind, ai, bj = label
++        assert kind in ("VE", "EV")       # 随机一般位置，无 FF
++        P, k, sign = (B, bj, 1.0) if kind == "VE" else (A, ai, -1.0)
++        u, v = P[k], P[(k + 1) % len(P)]
++        dx, dy = v[0] - u[0], v[1] - u[1]
++        h = math.hypot(dx, dy)
++        nx, ny = sign * dy / h, -sign * dx / h
++        px, py = B[bj][0] - A[ai][0], B[bj][1] - A[ai][1]
++        want = nx * (x[0] - px) + ny * (x[1] - py)
++        assert cv.facet_gap(A, B, label, x) == pytest.approx(want, abs=1e-14)
++        expected.append((label, want))
+     orig = cv.outward_normal
+-    monkeypatch.setattr(cv, "outward_normal", lambda poly, i: tuple(-x for x in orig(poly, i)))
+-    bad = g0_convex(A, B, samples=300, seed=2)
++    with monkeypatch.context() as m:
++        m.setattr(cv, "outward_normal", lambda poly, i: tuple(-v for v in orig(poly, i)))
++        assert all(cv.facet_gap(A, B, lab, x) == pytest.approx(-want, abs=1e-14) for lab, want in expected)
++        assert any(abs(cv.facet_gap(A, B, lab, x) - want) > 1.0 for lab, want in expected)
++
++    # 牙穿过实际被测函数内部，不能在结果后追加伪造的失配。
++    src = inspect.getsource(ex.membership_exact)
++    assert "worst = min(worst, s)" in src
++    namespace = dict(ex.__dict__)
++    exec(src.replace("worst = min(worst, s)", "worst = 1"), namespace)
++    monkeypatch.setattr(cv, "membership_exact", namespace["membership_exact"])
++    bad = g0_convex(SQ, SQ, samples=20, seed=2)
+     assert not bad.passed
++    assert bad.mismatches and all(brute == 0 and cover == 1 for _, brute, cover in bad.mismatches)
++    assert len(bad.mismatches) == bad.boundary_probes == 16
+ 
+ 
+ def test_gap0_sign_of_min_gap_is_not_a_concave_membership_rule():
+@@ -430,29 +466,30 @@ def test_g6_12_polygons_overlap_against_exact_ear_clip_area_oracle():
+ 
+ # ---------------------------------------------------------------- G6 第三轮 major（门无牙）：凸性前提的阈值 t 没有门钉住
+ 
+-@pytest.mark.parametrize("depth_over_t,accepted", [(2.0, False), (0.5, True)])
+-def test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start(depth_over_t, accepted):
+-    """"顶点在凸包以内深度 ≤ t 才吞、> t 清晰报错"此前没有门钉住阈值——放宽到 1e5·t 全套照绿；r4c 门的凹顶点紧挨最低起点，
+-    走的是别的分支。这里凹顶点放在顶边中点（不挨起点）：深度 2·t 必须以"inside its convex hull"报错（不接受 winds 口径）；
+-    深度 0.5·t 必须接受，且在凹坑附近 ±50·t 的平移带上成员判定与暴力谓词只在离某条 facet ≤ 2·t 处允许不同。"""
+-    import random
+-    from eab.kernel2d.covers import convex_entrance_block, membership_convex, facet_gap
+-    from eab.kernel2d.geom import polygons_overlap, translate
+-    SQ = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+-    tol = 1e-9                                            # 单位坐标下 t = max(tol, 64·eps·C) = tol
++@pytest.mark.parametrize("depth_over_t", [2.0, 0.5])
++def test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start(depth_over_t):
++    """旧门接受深度 0.5·tol 的微凹、拒绝 2·tol，并允许 2000 个样本在带内失配（最多 200 个）。
++    E2 凸性对给定数据精确，两种非零凹深都必须拒收；同一批 2000 个平移和三个精确边界邻点交由通用成员路径。
++    新断言更强：不再吞微凹、不跳过边界、每个答案对独立闭式 oracle 零错，且三种状态都必须实际出现。
++    oracle 零共用：此顶边 V 口的两端高度为 1；|x_x|<1、x_y≈−1 时至少一个端点落在方块底边内部，
++    因而相交状态恰为 sign(1+x_y)，只用 Fraction 加法/比较，不调用被测路径的耳切、SAT、法锥或凸包。
++    """
++    from fractions import Fraction
++    import math
++    from eab.kernel2d.covers import convex_entrance_block, membership_convex
++    tol = 1e-9
+     A = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - depth_over_t * tol), (0.0, 1.0)]
+-    if not accepted:
+-        with pytest.raises(ValueError, match="inside its convex hull"):
+-            convex_entrance_block(A, SQ, tol=tol)
+-        return
+-    eb = convex_entrance_block(A, SQ, tol=tol)
++    for report_tol in (0.0, tol, 100.0 * tol):
++        with pytest.raises(ValueError, match="reflex vertex"):
++            convex_entrance_block(A, SQ, tol=report_tol)
+     rng = random.Random(3)
+-    n_near = 0
+-    for _ in range(2000):
+-        x = (rng.uniform(-0.9, 0.9), -1.0 + rng.uniform(-50.0, 50.0) * tol)     # A 的顶边贴着 SQ 的底边
+-        mem = membership_convex(A, SQ, x, tol, eb=eb)
+-        brute = polygons_overlap(translate(A, x), SQ, 0.0)
+-        if mem != brute:
+-            assert min(abs(facet_gap(A, SQ, lab, x)) for lab in eb.facets) <= 2.0 * tol, (x, mem, brute)
+-            n_near += 1
+-    assert n_near <= 200
++    probes = [(rng.uniform(-0.9, 0.9), -1.0 + rng.uniform(-50.0, 50.0) * tol) for _ in range(2000)]
++    probes += [(0.25, y) for y in (-1.0, math.nextafter(-1.0, -math.inf), math.nextafter(-1.0, math.inf))]
++    states = set()
++    for x in probes:
++        height = Fraction(x[1]) + 1
++        want = (height > 0) - (height < 0)
++        got = membership_convex(A, SQ, x, 0.0)
++        assert got == want, (depth_over_t, x, got, want)
++        states.add(got)
++    assert states == {-1, 0, 1}

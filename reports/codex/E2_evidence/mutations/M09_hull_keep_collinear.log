@@ -1,0 +1,55 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+_________ test_exact_hull_discards_collinear_boundary_points[scale0] __________
+
+scale = Fraction(1, 1024)
+
+    @pytest.mark.parametrize("scale", [Fraction(1, 1024), Fraction(1), Fraction(1024)])
+    def test_exact_hull_discards_collinear_boundary_points(scale):
+        """矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。"""
+        from eab.kernel2d.exact import hull_exact_fr
+        points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]
+        shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]
+        got = hull_exact_fr(shifted)
+>       assert len(got) == 4
+E       assert 8 == 4
+E        +  where 8 = len([(Fraction(3, 1024), Fraction(-7, 1024)), (Fraction(1, 256), Fraction(-7, 1024)), (Fraction(5, 1024), Fraction(-7, 102...ion(5, 1024), Fraction(-3, 512)), (Fraction(5, 1024), Fraction(-5, 1024)), (Fraction(1, 256), Fraction(-5, 1024)), ...])
+
+tests\test_kernel2d_exact.py:259: AssertionError
+_________ test_exact_hull_discards_collinear_boundary_points[scale1] __________
+
+scale = Fraction(1, 1)
+
+    @pytest.mark.parametrize("scale", [Fraction(1, 1024), Fraction(1), Fraction(1024)])
+    def test_exact_hull_discards_collinear_boundary_points(scale):
+        """矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。"""
+        from eab.kernel2d.exact import hull_exact_fr
+        points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]
+        shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]
+        got = hull_exact_fr(shifted)
+>       assert len(got) == 4
+E       assert 8 == 4
+E        +  where 8 = len([(Fraction(3, 1), Fraction(-7, 1)), (Fraction(4, 1), Fraction(-7, 1)), (Fraction(5, 1), Fraction(-7, 1)), (Fraction(5, 1), Fraction(-6, 1)), (Fraction(5, 1), Fraction(-5, 1)), (Fraction(4, 1), Fraction(-5, 1)), ...])
+
+tests\test_kernel2d_exact.py:259: AssertionError
+_________ test_exact_hull_discards_collinear_boundary_points[scale2] __________
+
+scale = Fraction(1024, 1)
+
+    @pytest.mark.parametrize("scale", [Fraction(1, 1024), Fraction(1), Fraction(1024)])
+    def test_exact_hull_discards_collinear_boundary_points(scale):
+        """矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。"""
+        from eab.kernel2d.exact import hull_exact_fr
+        points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]
+        shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]
+        got = hull_exact_fr(shifted)
+>       assert len(got) == 4
+E       assert 8 == 4
+E        +  where 8 = len([(Fraction(3072, 1), Fraction(-7168, 1)), (Fraction(4096, 1), Fraction(-7168, 1)), (Fraction(5120, 1), Fraction(-7168,...n(5120, 1), Fraction(-6144, 1)), (Fraction(5120, 1), Fraction(-5120, 1)), (Fraction(4096, 1), Fraction(-5120, 1)), ...])
+
+tests\test_kernel2d_exact.py:259: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_kernel2d_exact.py::test_exact_hull_discards_collinear_boundary_points[scale0]
+FAILED tests/test_kernel2d_exact.py::test_exact_hull_discards_collinear_boundary_points[scale1]
+FAILED tests/test_kernel2d_exact.py::test_exact_hull_discards_collinear_boundary_points[scale2]
+3 failed in 0.18s

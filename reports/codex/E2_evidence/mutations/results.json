@@ -1,0 +1,372 @@
+[
+  {
+    "id": "M01_angle_cross_reverse",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "_angle_less",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_angle_order_is_the_exact_cyclic_order_in_both_halfplanes"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8403943000012077,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "aff93bde96dac147eb3f8f397e7850e328aa1045ef3eae0c292a19389f51ff92",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_angle_order_is_the_exact_cyclic_order_in_both_halfplanes",
+        "message": "AssertionError: (0, 1)\nassert False is (0 < 1)\n +  where False = <function _angle_less at 0x00000000046BAA20>((1, 0), (1, 1))",
+        "traceback": "def test_angle_order_is_the_exact_cyclic_order_in_both_halfplanes():\n        \"\"\"闭式八方向次序，不调任何几何 oracle 原语；直接看护同半平面叉积比较反号，避免随机生成器先受突变污染。\"\"\"\n        from eab.kernel2d.exact import _angle_less\n        directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]\n        for i, u in enumerate(directions):\n            for j, v in enumerate(directions):\n>               assert _angle_less(u, v) is (i < j), (i, j)\nE               AssertionError: (0, 1)\nE               assert False is (0 < 1)\nE                +  where False = <function _angle_less at 0x00000000046BAA20>((1, 0), (1, 1))\n\ntests\\test_kernel2d_exact.py:196: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M02_parallel_take_b",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "entrance_block_exact",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8034952000016347,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "40a83615f9056f341b819f1cbfa670311eea56f00fdeafb8a82951d66bfb235f",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_exact_parallel_edges_merge_into_ff_and_nothing_else_does",
+        "message": "AssertionError: assert ['EV', 'EV', ...E', 'VE', ...] == ['FF', 'FF', 'FF', 'FF']\n  \n  At index 0 diff: 'EV' != 'FF'\n  Left contains 4 more items, first extra item: 'VE'\n  Use -v to get more diff",
+        "traceback": "def test_exact_parallel_edges_merge_into_ff_and_nothing_else_does():\n        \"\"\"精确平行同向才合并：方块对方块 4 条 FF；把一条边偏 1 ulp 的方向就不再并（各成一条 facet）。\"\"\"\n        S = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n        eb = entrance_block_exact(S, S)\n>       assert sorted(f.label[0] for f in eb.facets) == [\"FF\"] * 4\nE       AssertionError: assert ['EV', 'EV', ...E', 'VE', ...] == ['FF', 'FF', 'FF', 'FF']\nE         \nE         At index 0 diff: 'EV' != 'FF'\nE         Left contains 4 more items, first extra item: 'VE'\nE         Use -v to get more diff\n\ntests\\test_kernel2d_exact.py:73: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M03_no_foldback_check",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "convexity_violation",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_convexity_rejection_names_the_first_foldback_and_winding_defect",
+      "tests/test_kernel2d_lever.py::test_a_polygon_that_folds_back_on_itself_is_rejected_loudly"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8809367999929236,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "70511d92fde16b520417e457fff5b5f802d76f101d675c2f5d7538ae9fea97a8",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_convexity_rejection_names_the_first_foldback_and_winding_defect",
+        "message": "AssertionError: assert 'reflex vertex 2' == 'folds back o...f at vertex 1'\n  \n  - folds back on itself at vertex 1\n  + reflex vertex 2",
+        "traceback": "def test_convexity_rejection_names_the_first_foldback_and_winding_defect():\n        \"\"\"旧门只断言拒收折回，移除专门检查会被后续反射检查掩盖；新门还锁定首个非法转角的诊断，拒收要求未减。\"\"\"\n        from eab.kernel2d.exact import convexity_violation\n        fold = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]\n>       assert convexity_violation(fold) == \"folds back on itself at vertex 1\"\nE       AssertionError: assert 'reflex vertex 2' == 'folds back o...f at vertex 1'\nE         \nE         - folds back on itself at vertex 1\nE         + reflex vertex 2\n\ntests\\test_kernel2d_exact.py:232: AssertionError"
+      },
+      {
+        "test": "test_a_polygon_that_folds_back_on_itself_is_rejected_loudly",
+        "message": "AssertionError: Regex pattern did not match.\n  Expected regex: 'folds back'\n  Actual message: 'input polygon A not convex: reflex vertex 2'",
+        "traceback": "def test_a_polygon_that_folds_back_on_itself_is_rejected_loudly():\n        \"\"\"G6 第四轮 minor：边界沿自己的边折回的\"尖刺\"多边形（顶点 (1,0) 落在边 (0,0)→(2,0) 上、边 (2,0)→(1,0) 折回，再凹拐\n        回起点）：面积 > 0、凸包深度 0、总转角恰 2π——三道凸性检查都放过，却造出深陷凸包的非凸 E、成员判定静默答反。\n        折回（转角 ≈ ±π）要清晰报错。\"\"\"\n        P = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]\n        from eab.kernel2d.covers import convex_entrance_block\n        with pytest.raises(ValueError, match=\"folds back\"):\n>           convex_entrance_block(P, SQUARE)\n\ntests\\test_kernel2d_lever.py:125: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nA = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]\nB = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], a0 = (0.0, 0.0), tol = 0.0\n\n    def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float = 0.0) -> EntranceBlock:\n        \"\"\"A、B 凸且 CCW。E = a0 + (B ⊕ (−A))，边按极角归并，每条边带盖标签 (kind, A 的下标, B 的下标)。\n    \n        **精确**（`kernel2d.exact.entrance_block_exact`）：凸性、极角序、平行全部在 Fraction 上判，只有**精确**平行同向的\n        两条边才并成 FF；顶点 b_j − a_i 先精确算、再加 a0 后舍入成浮点输出。输入须**精确**凸（平直顶点允许；零长边、反射顶点、\n        折回、绕圈不止一次都清晰报 ValueError）——刚体运动把平直顶点舍入成微凹时，这里如实拒收，调用方改走凹块路径\n        （`enumerate_covers` + 精确谓词），不再像旧版那样在容差内\"吞下\"微凹（那正是五轮复核里静默错判的来源之一）。\n        `tol` 不再参与任何判定（保留参数只为兼容调用方）；需要\"容差内平行\"的口径（如 legacy 的平行贴边）由 L5 适配器显式给窗。\n        \"\"\"\n        for name, poly in ((\"A\", A), (\"B\", B)):\n            why = convexity_violation(poly)\n            if why is not None:\n>               raise ValueError(f\"input polygon {name} not convex: {why}\")\nE               ValueError: input polygon A not convex: reflex vertex 2\n\nsrc\\eab\\kernel2d\\covers.py:323: ValueError\n\nDuring handling of the above exception, another exception occurred:\n\n    def test_a_polygon_that_folds_back_on_itself_is_rejected_loudly():\n        \"\"\"G6 第四轮 minor：边界沿自己的边折回的\"尖刺\"多边形（顶点 (1,0) 落在边 (0,0)→(2,0) 上、边 (2,0)→(1,0) 折回，再凹拐\n        回起点）：面积 > 0、凸包深度 0、总转角恰 2π——三道凸性检查都放过，却造出深陷凸包的非凸 E、成员判定静默答反。\n        折回（转角 ≈ ±π）要清晰报错。\"\"\"\n        P = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]\n        from eab.kernel2d.covers import convex_entrance_block\n>       with pytest.raises(ValueError, match=\"folds back\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError: Regex pattern did not match.\nE         Expected regex: 'folds back'\nE         Actual message: 'input polygon A not convex: reflex vertex 2'\n\ntests\\test_kernel2d_lever.py:124: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M04_no_winding_check",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "convexity_violation",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_star_pentagon_and_fold_back_are_not_convex",
+      "tests/test_kernel2d_exact.py::test_convexity_rejection_names_the_first_foldback_and_winding_defect"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.836156099991058,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "6c2948d388198b257afc014c023a6691f13eb22046808068d91950b40ee329a6",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_star_pentagon_and_fold_back_are_not_convex",
+        "message": "TypeError: argument of type 'NoneType' is not iterable",
+        "traceback": "def test_star_pentagon_and_fold_back_are_not_convex():\n        from eab.kernel2d.exact import convexity_violation\n        star = [(math.cos(math.pi / 2 + 4 * math.pi * k / 5), math.sin(math.pi / 2 + 4 * math.pi * k / 5)) for k in range(5)]\n>       assert \"winds 2 times\" in convexity_violation(star)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: argument of type 'NoneType' is not iterable\n\ntests\\test_kernel2d_exact.py:151: TypeError"
+      },
+      {
+        "test": "test_convexity_rejection_names_the_first_foldback_and_winding_defect",
+        "message": "AssertionError: assert None == 'winds 2 times (total turning is not 2π)'\n +  where None = <function convexity_violation at 0x00000000046CA7A0>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (0.0, 0.0), (1.0, 0.0), ...])",
+        "traceback": "def test_convexity_rejection_names_the_first_foldback_and_winding_defect():\n        \"\"\"旧门只断言拒收折回，移除专门检查会被后续反射检查掩盖；新门还锁定首个非法转角的诊断，拒收要求未减。\"\"\"\n        from eab.kernel2d.exact import convexity_violation\n        fold = [(0.0, 0.0), (2.0, 0.0), (1.0, 0.0), (0.5, 1.0)]\n        assert convexity_violation(fold) == \"folds back on itself at vertex 1\"\n        twice = SQUARE_EXACT + SQUARE_EXACT\n>       assert convexity_violation(twice) == \"winds 2 times (total turning is not 2π)\"\nE       AssertionError: assert None == 'winds 2 times (total turning is not 2π)'\nE        +  where None = <function convexity_violation at 0x00000000046CA7A0>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0), (0.0, 0.0), (1.0, 0.0), ...])\n\ntests\\test_kernel2d_exact.py:234: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M05_flat_cone_wrong_direction",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "vertex_side_exact",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_flat_vertex_cone_is_one_ray_not_a_line"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8392794000101276,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "6d90a97570cc7ccc3621ae26a38775af485c792c5a1126dde5117354fdf6a2f1",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_flat_vertex_cone_is_one_ray_not_a_line[direction0--1]",
+        "message": "assert 0 == -1\n +  where 0 = <function vertex_side_exact at 0x00000000046BF920>([(0.0, 0.0), (0.5, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 1, (1, 0))",
+        "traceback": "direction = (1, 0), want = -1\n\n    @pytest.mark.parametrize(\"direction,want\", [((1, 0), -1), ((-1, 0), 0), ((0, 1), -1)])\n    def test_flat_vertex_cone_is_one_ray_not_a_line(direction, want):\n        \"\"\"平直底边中点的外法锥只有向下射线：闭式方向真值，零向量/法锥原语共享；看护反向同线被错误接收。\"\"\"\n        from eab.kernel2d.exact import vertex_side_exact\n>       assert vertex_side_exact(FLAT_EXACT, 1, direction) == want\nE       assert 0 == -1\nE        +  where 0 = <function vertex_side_exact at 0x00000000046BF920>([(0.0, 0.0), (0.5, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 1, (1, 0))\n\ntests\\test_kernel2d_exact.py:218: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M06_cone_boundary_strict",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "vertex_side_exact",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_corner_cone_boundary_is_not_strict"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8179200000013225,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "e9adfc5adb164a9ca515ff2a011fc8c7b60603a31808a7b8319ec94f594df6e4",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_corner_cone_boundary_is_not_strict[direction0-0]",
+        "message": "assert 1 == 0\n +  where 1 = <function vertex_side_exact at 0x00000000046A3920>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 0, (-1, 0))",
+        "traceback": "direction = (-1, 0), want = 0\n\n    @pytest.mark.parametrize(\"direction,want\", [((-1, 0), 0), ((0, 1), 0), ((-1, 1), 1), ((1, -1), -1)])\n    def test_corner_cone_boundary_is_not_strict(direction, want):\n        \"\"\"方块左下角锥边界不是严格内部；闭式坐标方向 oracle 不用法锥叉积实现，分别覆盖边界/内部/外部。\"\"\"\n        from eab.kernel2d.exact import vertex_side_exact\n>       assert vertex_side_exact(SQUARE_EXACT, 0, direction) == want\nE       assert 1 == 0\nE        +  where 1 = <function vertex_side_exact at 0x00000000046A3920>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 0, (-1, 0))\n\ntests\\test_kernel2d_exact.py:225: AssertionError"
+      },
+      {
+        "test": "test_corner_cone_boundary_is_not_strict[direction1-0]",
+        "message": "assert 1 == 0\n +  where 1 = <function vertex_side_exact at 0x00000000046A3920>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 0, (0, 1))",
+        "traceback": "direction = (0, 1), want = 0\n\n    @pytest.mark.parametrize(\"direction,want\", [((-1, 0), 0), ((0, 1), 0), ((-1, 1), 1), ((1, -1), -1)])\n    def test_corner_cone_boundary_is_not_strict(direction, want):\n        \"\"\"方块左下角锥边界不是严格内部；闭式坐标方向 oracle 不用法锥叉积实现，分别覆盖边界/内部/外部。\"\"\"\n        from eab.kernel2d.exact import vertex_side_exact\n>       assert vertex_side_exact(SQUARE_EXACT, 0, direction) == want\nE       assert 1 == 0\nE        +  where 1 = <function vertex_side_exact at 0x00000000046A3920>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 0, (0, 1))\n\ntests\\test_kernel2d_exact.py:225: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M07_membership_boundary_inside",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "membership_exact",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_exact_membership_boundary_is_not_the_interior"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8881561000016518,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "868fdba58f46f5419dea690bd75baf29280218d030a8d72a7610b452b739a66f",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_exact_membership_boundary_is_not_the_interior[x0-0-9.5367431640625e-07]",
+        "message": "assert 1 == 0\n +  where 1 = membership_exact([(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], [(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], (9.5367431640625e-07, 0.0))",
+        "traceback": "scale = 9.5367431640625e-07, x = (1.0, 0.0), want = 0\n\n    @pytest.mark.parametrize(\"scale\", [2.0 ** -20, 1.0, 2.0 ** 20])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((1.0, 1.0), 0),\n                                          ((1.0 - 2 ** -40, 0.0), 1),\n                                          ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])\n    def test_exact_membership_boundary_is_not_the_interior(scale, x, want):\n        \"\"\"E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。\"\"\"\n        square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]\n        moved = (scale * x[0], scale * x[1])\n>       assert membership_exact(square, square, moved) == want\nE       assert 1 == 0\nE        +  where 1 = membership_exact([(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], [(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], (9.5367431640625e-07, 0.0))\n\ntests\\test_kernel2d_exact.py:209: AssertionError"
+      },
+      {
+        "test": "test_exact_membership_boundary_is_not_the_interior[x0-0-1.0]",
+        "message": "assert 1 == 0\n +  where 1 = membership_exact([(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], [(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], (1.0, 0.0))",
+        "traceback": "scale = 1.0, x = (1.0, 0.0), want = 0\n\n    @pytest.mark.parametrize(\"scale\", [2.0 ** -20, 1.0, 2.0 ** 20])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((1.0, 1.0), 0),\n                                          ((1.0 - 2 ** -40, 0.0), 1),\n                                          ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])\n    def test_exact_membership_boundary_is_not_the_interior(scale, x, want):\n        \"\"\"E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。\"\"\"\n        square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]\n        moved = (scale * x[0], scale * x[1])\n>       assert membership_exact(square, square, moved) == want\nE       assert 1 == 0\nE        +  where 1 = membership_exact([(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], [(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], (1.0, 0.0))\n\ntests\\test_kernel2d_exact.py:209: AssertionError"
+      },
+      {
+        "test": "test_exact_membership_boundary_is_not_the_interior[x0-0-1048576.0]",
+        "message": "assert 1 == 0\n +  where 1 = membership_exact([(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], [(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], (1048576.0, 0.0))",
+        "traceback": "scale = 1048576.0, x = (1.0, 0.0), want = 0\n\n    @pytest.mark.parametrize(\"scale\", [2.0 ** -20, 1.0, 2.0 ** 20])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((1.0, 1.0), 0),\n                                          ((1.0 - 2 ** -40, 0.0), 1),\n                                          ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])\n    def test_exact_membership_boundary_is_not_the_interior(scale, x, want):\n        \"\"\"E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。\"\"\"\n        square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]\n        moved = (scale * x[0], scale * x[1])\n>       assert membership_exact(square, square, moved) == want\nE       assert 1 == 0\nE        +  where 1 = membership_exact([(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], [(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], (1048576.0, 0.0))\n\ntests\\test_kernel2d_exact.py:209: AssertionError"
+      },
+      {
+        "test": "test_exact_membership_boundary_is_not_the_interior[x1-0-9.5367431640625e-07]",
+        "message": "assert 1 == 0\n +  where 1 = membership_exact([(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], [(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], (9.5367431640625e-07, 9.5367431640625e-07))",
+        "traceback": "scale = 9.5367431640625e-07, x = (1.0, 1.0), want = 0\n\n    @pytest.mark.parametrize(\"scale\", [2.0 ** -20, 1.0, 2.0 ** 20])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((1.0, 1.0), 0),\n                                          ((1.0 - 2 ** -40, 0.0), 1),\n                                          ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])\n    def test_exact_membership_boundary_is_not_the_interior(scale, x, want):\n        \"\"\"E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。\"\"\"\n        square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]\n        moved = (scale * x[0], scale * x[1])\n>       assert membership_exact(square, square, moved) == want\nE       assert 1 == 0\nE        +  where 1 = membership_exact([(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], [(2.86102294921875e-06, -4.76837158203125e-06), (3.814697265625e-06, -4.76837158203125e-06), (3.814697265625e-06, -3.814697265625e-06), (2.86102294921875e-06, -3.814697265625e-06)], (9.5367431640625e-07, 9.5367431640625e-07))\n\ntests\\test_kernel2d_exact.py:209: AssertionError"
+      },
+      {
+        "test": "test_exact_membership_boundary_is_not_the_interior[x1-0-1.0]",
+        "message": "assert 1 == 0\n +  where 1 = membership_exact([(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], [(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], (1.0, 1.0))",
+        "traceback": "scale = 1.0, x = (1.0, 1.0), want = 0\n\n    @pytest.mark.parametrize(\"scale\", [2.0 ** -20, 1.0, 2.0 ** 20])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((1.0, 1.0), 0),\n                                          ((1.0 - 2 ** -40, 0.0), 1),\n                                          ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])\n    def test_exact_membership_boundary_is_not_the_interior(scale, x, want):\n        \"\"\"E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。\"\"\"\n        square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]\n        moved = (scale * x[0], scale * x[1])\n>       assert membership_exact(square, square, moved) == want\nE       assert 1 == 0\nE        +  where 1 = membership_exact([(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], [(3.0, -5.0), (4.0, -5.0), (4.0, -4.0), (3.0, -4.0)], (1.0, 1.0))\n\ntests\\test_kernel2d_exact.py:209: AssertionError"
+      },
+      {
+        "test": "test_exact_membership_boundary_is_not_the_interior[x1-0-1048576.0]",
+        "message": "assert 1 == 0\n +  where 1 = membership_exact([(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], [(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], (1048576.0, 1048576.0))",
+        "traceback": "scale = 1048576.0, x = (1.0, 1.0), want = 0\n\n    @pytest.mark.parametrize(\"scale\", [2.0 ** -20, 1.0, 2.0 ** 20])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((1.0, 1.0), 0),\n                                          ((1.0 - 2 ** -40, 0.0), 1),\n                                          ((1.0 + 2 ** -40, 0.0), -1), ((0.0, 0.0), 1)])\n    def test_exact_membership_boundary_is_not_the_interior(scale, x, want):\n        \"\"\"E=[-s,s]^2 的闭式 oracle：包含边、角、内外 2^-40 偏移与单位缩放；零容差，不调任何几何原语。\"\"\"\n        square = [(scale * a + 3 * scale, scale * b - 5 * scale) for a, b in SQUARE_EXACT]\n        moved = (scale * x[0], scale * x[1])\n>       assert membership_exact(square, square, moved) == want\nE       assert 1 == 0\nE        +  where 1 = membership_exact([(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], [(3145728.0, -5242880.0), (4194304.0, -5242880.0), (4194304.0, -4194304.0), (3145728.0, -4194304.0)], (1048576.0, 1048576.0))\n\ntests\\test_kernel2d_exact.py:209: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M08_strict_vertices_keep_collinear",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "strict_vertices",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_strict_vertices_discard_flat_chain_subdivision_vertices"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8529478999989806,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "66af5380fb0c84b2ed409fbd9adfc89493971c905417248df196f9a3af422664",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_strict_vertices_discard_flat_chain_subdivision_vertices[False]",
+        "message": "assert 5 == 4\n +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 2), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])",
+        "traceback": "swap = False\n\n    @pytest.mark.parametrize(\"swap\", [False, True])\n    def test_strict_vertices_discard_flat_chain_subdivision_vertices(swap):\n        \"\"\"闭式 E=[-1,1]^2 只有四角；旧随机门无共线输入，现保留样本并补平直链，零凸包/法锥原语共享。\"\"\"\n        from eab.kernel2d.exact import strict_vertices\n        A, B = (SQUARE_EXACT, FLAT_EXACT) if swap else (FLAT_EXACT, SQUARE_EXACT)\n        eb = entrance_block_exact(A, B)\n        assert len(eb.vertices) == 5, \"fixture must exercise an actual flat subdivision\"\n        vertices = [eb.vertices[k] for k in strict_vertices(eb)]\n>       assert len(vertices) == 4\nE       assert 5 == 4\nE        +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 2), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])\n\ntests\\test_kernel2d_exact.py:248: AssertionError"
+      },
+      {
+        "test": "test_strict_vertices_discard_flat_chain_subdivision_vertices[True]",
+        "message": "assert 5 == 4\n +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 2), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])",
+        "traceback": "swap = True\n\n    @pytest.mark.parametrize(\"swap\", [False, True])\n    def test_strict_vertices_discard_flat_chain_subdivision_vertices(swap):\n        \"\"\"闭式 E=[-1,1]^2 只有四角；旧随机门无共线输入，现保留样本并补平直链，零凸包/法锥原语共享。\"\"\"\n        from eab.kernel2d.exact import strict_vertices\n        A, B = (SQUARE_EXACT, FLAT_EXACT) if swap else (FLAT_EXACT, SQUARE_EXACT)\n        eb = entrance_block_exact(A, B)\n        assert len(eb.vertices) == 5, \"fixture must exercise an actual flat subdivision\"\n        vertices = [eb.vertices[k] for k in strict_vertices(eb)]\n>       assert len(vertices) == 4\nE       assert 5 == 4\nE        +  where 5 = len([(Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 2), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1))])\n\ntests\\test_kernel2d_exact.py:248: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M09_hull_keep_collinear",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "hull_exact_fr",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_exact_hull_discards_collinear_boundary_points"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.825173100005486,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "9ed4ae93f28f52ce071ef66c8125c7bff222402ff23ea98395150c439a56fe01",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_exact_hull_discards_collinear_boundary_points[scale0]",
+        "message": "assert 8 == 4\n +  where 8 = len([(Fraction(3, 1024), Fraction(-7, 1024)), (Fraction(1, 256), Fraction(-7, 1024)), (Fraction(5, 1024), Fraction(-7, 102...ion(5, 1024), Fraction(-3, 512)), (Fraction(5, 1024), Fraction(-5, 1024)), (Fraction(1, 256), Fraction(-5, 1024)), ...])",
+        "traceback": "scale = Fraction(1, 1024)\n\n    @pytest.mark.parametrize(\"scale\", [Fraction(1, 1024), Fraction(1), Fraction(1024)])\n    def test_exact_hull_discards_collinear_boundary_points(scale):\n        \"\"\"矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。\"\"\"\n        from eab.kernel2d.exact import hull_exact_fr\n        points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]\n        shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]\n        got = hull_exact_fr(shifted)\n>       assert len(got) == 4\nE       assert 8 == 4\nE        +  where 8 = len([(Fraction(3, 1024), Fraction(-7, 1024)), (Fraction(1, 256), Fraction(-7, 1024)), (Fraction(5, 1024), Fraction(-7, 102...ion(5, 1024), Fraction(-3, 512)), (Fraction(5, 1024), Fraction(-5, 1024)), (Fraction(1, 256), Fraction(-5, 1024)), ...])\n\ntests\\test_kernel2d_exact.py:259: AssertionError"
+      },
+      {
+        "test": "test_exact_hull_discards_collinear_boundary_points[scale1]",
+        "message": "assert 8 == 4\n +  where 8 = len([(Fraction(3, 1), Fraction(-7, 1)), (Fraction(4, 1), Fraction(-7, 1)), (Fraction(5, 1), Fraction(-7, 1)), (Fraction(5, 1), Fraction(-6, 1)), (Fraction(5, 1), Fraction(-5, 1)), (Fraction(4, 1), Fraction(-5, 1)), ...])",
+        "traceback": "scale = Fraction(1, 1)\n\n    @pytest.mark.parametrize(\"scale\", [Fraction(1, 1024), Fraction(1), Fraction(1024)])\n    def test_exact_hull_discards_collinear_boundary_points(scale):\n        \"\"\"矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。\"\"\"\n        from eab.kernel2d.exact import hull_exact_fr\n        points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]\n        shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]\n        got = hull_exact_fr(shifted)\n>       assert len(got) == 4\nE       assert 8 == 4\nE        +  where 8 = len([(Fraction(3, 1), Fraction(-7, 1)), (Fraction(4, 1), Fraction(-7, 1)), (Fraction(5, 1), Fraction(-7, 1)), (Fraction(5, 1), Fraction(-6, 1)), (Fraction(5, 1), Fraction(-5, 1)), (Fraction(4, 1), Fraction(-5, 1)), ...])\n\ntests\\test_kernel2d_exact.py:259: AssertionError"
+      },
+      {
+        "test": "test_exact_hull_discards_collinear_boundary_points[scale2]",
+        "message": "assert 8 == 4\n +  where 8 = len([(Fraction(3072, 1), Fraction(-7168, 1)), (Fraction(4096, 1), Fraction(-7168, 1)), (Fraction(5120, 1), Fraction(-7168,...n(5120, 1), Fraction(-6144, 1)), (Fraction(5120, 1), Fraction(-5120, 1)), (Fraction(4096, 1), Fraction(-5120, 1)), ...])",
+        "traceback": "scale = Fraction(1024, 1)\n\n    @pytest.mark.parametrize(\"scale\", [Fraction(1, 1024), Fraction(1), Fraction(1024)])\n    def test_exact_hull_discards_collinear_boundary_points(scale):\n        \"\"\"矩形四角的闭式 oracle，边中点与内点均不是极点；直接补上旧随机输入漏掉的 <= 与 < 分界。\"\"\"\n        from eab.kernel2d.exact import hull_exact_fr\n        points = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (1, 2), (0, 2), (0, 1), (1, 1), (0, 0)]\n        shifted = [(scale * (x + 3), scale * (y - 7)) for x, y in points]\n        got = hull_exact_fr(shifted)\n>       assert len(got) == 4\nE       assert 8 == 4\nE        +  where 8 = len([(Fraction(3072, 1), Fraction(-7168, 1)), (Fraction(4096, 1), Fraction(-7168, 1)), (Fraction(5120, 1), Fraction(-7168,...n(5120, 1), Fraction(-6144, 1)), (Fraction(5120, 1), Fraction(-5120, 1)), (Fraction(4096, 1), Fraction(-5120, 1)), ...])\n\ntests\\test_kernel2d_exact.py:259: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M10_polygon_touch_separate",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "polygons_overlap_exact",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_exact_overlap_on_a_concave_l_shape"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8442690999945626,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "03f3d4ccdb8444669141e4f1e80658b33d77b560e9402d2b1bbadff9c52af889",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_exact_overlap_on_a_concave_l_shape[x0-0]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x00000000046B3B00>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (1.0, 1.0))",
+        "traceback": "x = (1.0, 1.0), want = 0\n\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 1.0), 0),        # 方块角恰好卡进 L 的内角：只相触\n                                         ((0.9, 0.9), 1),        # 压进去\n                                         ((1.0 + 2 ** -40, 1.0 + 2 ** -40), -1),   # 离开 2^-40：精确分离（容差谓词会说\"相触\"）\n                                         ((1.0, 1.0 - 2 ** -40), 1),                # 竖直压进 2^-40：精确相交\n                                         ((2.0, 0.0), 0), ((2.5, 0.0), -1)])\n    def test_exact_overlap_on_a_concave_l_shape(x, want):\n        sq = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n        from eab.kernel2d.exact import polygons_overlap_exact\n>       assert polygons_overlap_exact(sq, L_SHAPE, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x00000000046B3B00>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (1.0, 1.0))\n\ntests\\test_kernel2d_exact.py:131: AssertionError"
+      },
+      {
+        "test": "test_exact_overlap_on_a_concave_l_shape[x4-0]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x00000000046B3B00>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (2.0, 0.0))",
+        "traceback": "x = (2.0, 0.0), want = 0\n\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 1.0), 0),        # 方块角恰好卡进 L 的内角：只相触\n                                         ((0.9, 0.9), 1),        # 压进去\n                                         ((1.0 + 2 ** -40, 1.0 + 2 ** -40), -1),   # 离开 2^-40：精确分离（容差谓词会说\"相触\"）\n                                         ((1.0, 1.0 - 2 ** -40), 1),                # 竖直压进 2^-40：精确相交\n                                         ((2.0, 0.0), 0), ((2.5, 0.0), -1)])\n    def test_exact_overlap_on_a_concave_l_shape(x, want):\n        sq = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n        from eab.kernel2d.exact import polygons_overlap_exact\n>       assert polygons_overlap_exact(sq, L_SHAPE, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x00000000046B3B00>([(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.0, 0.0), (2.0, 0.0), (2.0, 1.0), (1.0, 1.0), (1.0, 2.0), (0.0, 2.0)], (2.0, 0.0))\n\ntests\\test_kernel2d_exact.py:131: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M11_triangle_touch_separate",
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "_tri_overlap_exact",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_triangle_exact_touch_is_not_separation"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8841605999914464,
+    "original_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "mutated_sha256": "d31a2fc940b7755368060ab4bbd22d5bf248a5308b4091a09664de0958e22719",
+    "restored_sha256": "3e030ec9e146c72bc7bf87954dbbc3e78c2292aba1b6fbf3014a7f5eded69630",
+    "failures": [
+      {
+        "test": "test_triangle_exact_touch_is_not_separation[x0-0-False]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], (1.0, 0.0))",
+        "traceback": "reverse = False, x = (1.0, 0.0), want = 0\n\n    @pytest.mark.parametrize(\"reverse\", [False, True])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),\n                                          ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])\n    def test_triangle_exact_touch_is_not_separation(reverse, x, want):\n        \"\"\"两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。\"\"\"\n        from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact\n        triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]\n        if reverse:\n            triangle.reverse()\n>       assert polygons_overlap_exact(triangle, triangle, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], (1.0, 0.0))\n\ntests\\test_kernel2d_exact.py:273: AssertionError"
+      },
+      {
+        "test": "test_triangle_exact_touch_is_not_separation[x0-0-True]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], [(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], (1.0, 0.0))",
+        "traceback": "reverse = True, x = (1.0, 0.0), want = 0\n\n    @pytest.mark.parametrize(\"reverse\", [False, True])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),\n                                          ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])\n    def test_triangle_exact_touch_is_not_separation(reverse, x, want):\n        \"\"\"两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。\"\"\"\n        from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact\n        triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]\n        if reverse:\n            triangle.reverse()\n>       assert polygons_overlap_exact(triangle, triangle, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], [(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], (1.0, 0.0))\n\ntests\\test_kernel2d_exact.py:273: AssertionError"
+      },
+      {
+        "test": "test_triangle_exact_touch_is_not_separation[x1-0-False]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], (0.0, 1.0))",
+        "traceback": "reverse = False, x = (0.0, 1.0), want = 0\n\n    @pytest.mark.parametrize(\"reverse\", [False, True])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),\n                                          ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])\n    def test_triangle_exact_touch_is_not_separation(reverse, x, want):\n        \"\"\"两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。\"\"\"\n        from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact\n        triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]\n        if reverse:\n            triangle.reverse()\n>       assert polygons_overlap_exact(triangle, triangle, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], (0.0, 1.0))\n\ntests\\test_kernel2d_exact.py:273: AssertionError"
+      },
+      {
+        "test": "test_triangle_exact_touch_is_not_separation[x1-0-True]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], [(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], (0.0, 1.0))",
+        "traceback": "reverse = True, x = (0.0, 1.0), want = 0\n\n    @pytest.mark.parametrize(\"reverse\", [False, True])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),\n                                          ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])\n    def test_triangle_exact_touch_is_not_separation(reverse, x, want):\n        \"\"\"两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。\"\"\"\n        from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact\n        triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]\n        if reverse:\n            triangle.reverse()\n>       assert polygons_overlap_exact(triangle, triangle, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], [(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], (0.0, 1.0))\n\ntests\\test_kernel2d_exact.py:273: AssertionError"
+      },
+      {
+        "test": "test_triangle_exact_touch_is_not_separation[x2-0-False]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], (0.5, 0.5))",
+        "traceback": "reverse = False, x = (0.5, 0.5), want = 0\n\n    @pytest.mark.parametrize(\"reverse\", [False, True])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),\n                                          ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])\n    def test_triangle_exact_touch_is_not_separation(reverse, x, want):\n        \"\"\"两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。\"\"\"\n        from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact\n        triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]\n        if reverse:\n            triangle.reverse()\n>       assert polygons_overlap_exact(triangle, triangle, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)], (0.5, 0.5))\n\ntests\\test_kernel2d_exact.py:273: AssertionError"
+      },
+      {
+        "test": "test_triangle_exact_touch_is_not_separation[x2-0-True]",
+        "message": "assert -1 == 0\n +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], [(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], (0.5, 0.5))",
+        "traceback": "reverse = True, x = (0.5, 0.5), want = 0\n\n    @pytest.mark.parametrize(\"reverse\", [False, True])\n    @pytest.mark.parametrize(\"x,want\", [((1.0, 0.0), 0), ((0.0, 1.0), 0), ((0.5, 0.5), 0),\n                                          ((0.5, 0.5 - 2 ** -40), 1), ((0.5, 0.5 + 2 ** -40), -1)])\n    def test_triangle_exact_touch_is_not_separation(reverse, x, want):\n        \"\"\"两个直角三角形沿 x+y=1 支撑线相触，闭式不等式 oracle；同时覆盖耳切包装与 _tri_overlap_exact 内核。\"\"\"\n        from eab.kernel2d.exact import _tri_overlap_exact, polygons_overlap_exact\n        triangle = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]\n        if reverse:\n            triangle.reverse()\n>       assert polygons_overlap_exact(triangle, triangle, x) == want\nE       assert -1 == 0\nE        +  where -1 = <function polygons_overlap_exact at 0x000000000471FB00>([(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], [(0.0, 1.0), (1.0, 0.0), (0.0, 0.0)], (0.5, 0.5))\n\ntests\\test_kernel2d_exact.py:273: AssertionError"
+      }
+    ]
+  },
+  {
+    "id": "M12_nonconvex_forced_convex",
+    "path": "src/eab/kernel2d/covers.py",
+    "function": "membership_convex",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_membership_nonexact_convex_input_uses_the_simple_polygon_path"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8952793000062229,
+    "original_sha256": "6e78f12381bc86161dd348420e5f799135ac94d34929736fe42c2e1cfbacdd8a",
+    "mutated_sha256": "6ba07815c12c84e0457dcdc644b0150c10800b795a26943082c0cef5c959ed5a",
+    "restored_sha256": "6e78f12381bc86161dd348420e5f799135ac94d34929736fe42c2e1cfbacdd8a",
+    "failures": [
+      {
+        "test": "test_membership_nonexact_convex_input_uses_the_simple_polygon_path[x0-0]",
+        "message": "ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)",
+        "traceback": "x = (0.0, 1.0), want = 0\n\n    @pytest.mark.parametrize(\"x,want\", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),\n                                          ((0.0, 1.0 - 2 ** -40), 1)])\n    def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):\n        \"\"\"微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。\"\"\"\n        from eab.kernel2d.covers import membership_convex\n        from eab.kernel2d.geom import is_convex\n        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n        assert is_convex(dent, 1e-12) and not is_convex_exact(dent)\n>       assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests\\test_kernel2d_exact.py:285: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\nsrc\\eab\\kernel2d\\covers.py:389: in membership_convex\n    s = membership_exact(A, B, x)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc\\eab\\kernel2d\\exact.py:196: in membership_exact\n    eb = eb or entrance_block_exact(A, B)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nA = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\nB = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n\n    def entrance_block_exact(A: Poly, B: Poly) -> ExactEntranceBlock:\n        \"\"\"凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——\n        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。\"\"\"\n        for name, P in ((\"A\", A), (\"B\", B)):\n            why = convexity_violation(P)\n            if why is not None:\n>               raise ValueError(f\"input polygon {name} is not exactly convex: {why} \"\n                                 f\"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)\")\nE               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)\n\nsrc\\eab\\kernel2d\\exact.py:119: ValueError"
+      },
+      {
+        "test": "test_membership_nonexact_convex_input_uses_the_simple_polygon_path[x1--1]",
+        "message": "ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)",
+        "traceback": "x = (0.0, 1.0000000000009095), want = -1\n\n    @pytest.mark.parametrize(\"x,want\", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),\n                                          ((0.0, 1.0 - 2 ** -40), 1)])\n    def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):\n        \"\"\"微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。\"\"\"\n        from eab.kernel2d.covers import membership_convex\n        from eab.kernel2d.geom import is_convex\n        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n        assert is_convex(dent, 1e-12) and not is_convex_exact(dent)\n>       assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests\\test_kernel2d_exact.py:285: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\nsrc\\eab\\kernel2d\\covers.py:389: in membership_convex\n    s = membership_exact(A, B, x)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc\\eab\\kernel2d\\exact.py:196: in membership_exact\n    eb = eb or entrance_block_exact(A, B)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nA = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\nB = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n\n    def entrance_block_exact(A: Poly, B: Poly) -> ExactEntranceBlock:\n        \"\"\"凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——\n        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。\"\"\"\n        for name, P in ((\"A\", A), (\"B\", B)):\n            why = convexity_violation(P)\n            if why is not None:\n>               raise ValueError(f\"input polygon {name} is not exactly convex: {why} \"\n                                 f\"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)\")\nE               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)\n\nsrc\\eab\\kernel2d\\exact.py:119: ValueError"
+      },
+      {
+        "test": "test_membership_nonexact_convex_input_uses_the_simple_polygon_path[x2-1]",
+        "message": "ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)",
+        "traceback": "x = (0.0, 0.9999999999990905), want = 1\n\n    @pytest.mark.parametrize(\"x,want\", [((0.0, 1.0), 0), ((0.0, 1.0 + 2 ** -40), -1),\n                                          ((0.0, 1.0 - 2 ** -40), 1)])\n    def test_membership_nonexact_convex_input_uses_the_simple_polygon_path(x, want):\n        \"\"\"微凹底边的闭式竖向接触：旧容差凸性吞下 2^-50 凹陷；新语义不能调用要求精确凸的构造器。\"\"\"\n        from eab.kernel2d.covers import membership_convex\n        from eab.kernel2d.geom import is_convex\n        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n        assert is_convex(dent, 1e-12) and not is_convex_exact(dent)\n>       assert membership_convex(dent, SQUARE_EXACT, x, tol=0.0) == want\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests\\test_kernel2d_exact.py:285: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\nsrc\\eab\\kernel2d\\covers.py:389: in membership_convex\n    s = membership_exact(A, B, x)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc\\eab\\kernel2d\\exact.py:196: in membership_exact\n    eb = eb or entrance_block_exact(A, B)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nA = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\nB = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n\n    def entrance_block_exact(A: Poly, B: Poly) -> ExactEntranceBlock:\n        \"\"\"凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——\n        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。\"\"\"\n        for name, P in ((\"A\", A), (\"B\", B)):\n            why = convexity_violation(P)\n            if why is not None:\n>               raise ValueError(f\"input polygon {name} is not exactly convex: {why} \"\n                                 f\"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)\")\nE               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)\n\nsrc\\eab\\kernel2d\\exact.py:119: ValueError"
+      }
+    ]
+  },
+  {
+    "id": "M13_first_entrance_tolerant_selector",
+    "path": "src/eab/kernel2d/entrance.py",
+    "function": "first_entrance",
+    "tests": [
+      "tests/test_kernel2d_exact.py::test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path"
+    ],
+    "returncode": 1,
+    "outcome": "CAUGHT",
+    "seconds": 0.8743576999986544,
+    "original_sha256": "b455730459b2946117d4945347504d78d87724b41a89618c82d3f2f8f85fd0e4",
+    "mutated_sha256": "e937672e88d5202307e9b84c7bd0a0d37aa0b5e71c4efc7aa2904744c3631c1c",
+    "restored_sha256": "b455730459b2946117d4945347504d78d87724b41a89618c82d3f2f8f85fd0e4",
+    "failures": [
+      {
+        "test": "test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path",
+        "message": "ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)",
+        "traceback": "def test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path():\n        \"\"\"微凹底边从 y=2 下降，最早在 t=1 碰到方块顶边（闭式 oracle）；只看护 E2 分派，不声称 E3 首入已精确化。\"\"\"\n        from eab.kernel2d.entrance import first_entrance\n        dent = [(0.0, 0.0), (0.5, 2 ** -50), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n>       got = first_entrance(dent, SQUARE_EXACT, (0.0, 2.0), (0.0, -1.0))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests\\test_kernel2d_exact.py:292: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\nsrc\\eab\\kernel2d\\entrance.py:83: in first_entrance\n    if membership_exact(A, B, x0) == 1:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc\\eab\\kernel2d\\exact.py:196: in membership_exact\n    eb = eb or entrance_block_exact(A, B)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nA = [(0.0, 0.0), (0.5, 8.881784197001252e-16), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\nB = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]\n\n    def entrance_block_exact(A: Poly, B: Poly) -> ExactEntranceBlock:\n        \"\"\"凸 A、B（CCW）的 E = B ⊕ (−A)，精确。A、B 须**精确**凸（`is_convex_exact`），否则 ValueError——\n        凹块（含刚体运动后舍入成微凹的平直顶点）不能走凸路径。\"\"\"\n        for name, P in ((\"A\", A), (\"B\", B)):\n            why = convexity_violation(P)\n            if why is not None:\n>               raise ValueError(f\"input polygon {name} is not exactly convex: {why} \"\n                                 f\"(a flat vertex rounded by a rigid motion may be reflex; use the concave path)\")\nE               ValueError: input polygon A is not exactly convex: reflex vertex 1 (a flat vertex rounded by a rigid motion may be reflex; use the concave path)\n\nsrc\\eab\\kernel2d\\exact.py:119: ValueError"
+      }
+    ]
+  }
+]

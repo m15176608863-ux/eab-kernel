@@ -71,17 +71,53 @@ def test_r4c_micro_concave_input_is_rejected_not_silently_mangled():
 
 
 def test_r7_third_vote_hull_vertices_match_and_catch_sign_flip(monkeypatch):
+    """旧门把 outward_normal 反号，期望 G0 成员/凸包票红；E2 中法向只构造、不再决定成员。
+    新门保留随机对三票和法向反号的构造量看护，并在实际 membership_exact 函数内部把边界吞成内部。
+    强度：原来的法向错误仍被独立边法向公式识别；新成员门零容差、边界样本不跳过，明确要求 0→1 的目标断言红。
+    oracle：法向用测试内联 hypot / 点乘；成员用 G0 的独立全投影 SAT，不调用 Minkowski 的几何原语。
+    """
+    import inspect
+    import math
+    import eab.kernel2d.covers as cv
+    import eab.kernel2d.exact as ex
+
     rng = random.Random(11)
     A = random_convex_polygon(rng, 7)
     B = random_convex_polygon(rng, 6)
     rep = g0_convex(A, B, samples=300, seed=2)
     assert rep.passed and rep.hull_vertex_mismatch == 0
-    # 整体反号 outward_normal：标签集检验盲，但 G0 采样与第三票至少一个要红
-    import eab.kernel2d.covers as cv
+
+    # 原来的反法向缺陷现在只影响构造；以独立公式看护，不能要求精确谓词受它污染。
+    x = (2.0, -3.0)
+    expected = []
+    for label in cv.convex_entrance_block(A, B).facets:
+        kind, ai, bj = label
+        assert kind in ("VE", "EV")       # 随机一般位置，无 FF
+        P, k, sign = (B, bj, 1.0) if kind == "VE" else (A, ai, -1.0)
+        u, v = P[k], P[(k + 1) % len(P)]
+        dx, dy = v[0] - u[0], v[1] - u[1]
+        h = math.hypot(dx, dy)
+        nx, ny = sign * dy / h, -sign * dx / h
+        px, py = B[bj][0] - A[ai][0], B[bj][1] - A[ai][1]
+        want = nx * (x[0] - px) + ny * (x[1] - py)
+        assert cv.facet_gap(A, B, label, x) == pytest.approx(want, abs=1e-14)
+        expected.append((label, want))
     orig = cv.outward_normal
-    monkeypatch.setattr(cv, "outward_normal", lambda poly, i: tuple(-x for x in orig(poly, i)))
-    bad = g0_convex(A, B, samples=300, seed=2)
+    with monkeypatch.context() as m:
+        m.setattr(cv, "outward_normal", lambda poly, i: tuple(-v for v in orig(poly, i)))
+        assert all(cv.facet_gap(A, B, lab, x) == pytest.approx(-want, abs=1e-14) for lab, want in expected)
+        assert any(abs(cv.facet_gap(A, B, lab, x) - want) > 1.0 for lab, want in expected)
+
+    # 牙穿过实际被测函数内部，不能在结果后追加伪造的失配。
+    src = inspect.getsource(ex.membership_exact)
+    assert "worst = min(worst, s)" in src
+    namespace = dict(ex.__dict__)
+    exec(src.replace("worst = min(worst, s)", "worst = 1"), namespace)
+    monkeypatch.setattr(cv, "membership_exact", namespace["membership_exact"])
+    bad = g0_convex(SQ, SQ, samples=20, seed=2)
     assert not bad.passed
+    assert bad.mismatches and all(brute == 0 and cover == 1 for _, brute, cover in bad.mismatches)
+    assert len(bad.mismatches) == bad.boundary_probes == 16
 
 
 def test_gap0_sign_of_min_gap_is_not_a_concave_membership_rule():
@@ -430,29 +466,30 @@ def test_g6_12_polygons_overlap_against_exact_ear_clip_area_oracle():
 
 # ---------------------------------------------------------------- G6 第三轮 major（门无牙）：凸性前提的阈值 t 没有门钉住
 
-@pytest.mark.parametrize("depth_over_t,accepted", [(2.0, False), (0.5, True)])
-def test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start(depth_over_t, accepted):
-    """"顶点在凸包以内深度 ≤ t 才吞、> t 清晰报错"此前没有门钉住阈值——放宽到 1e5·t 全套照绿；r4c 门的凹顶点紧挨最低起点，
-    走的是别的分支。这里凹顶点放在顶边中点（不挨起点）：深度 2·t 必须以"inside its convex hull"报错（不接受 winds 口径）；
-    深度 0.5·t 必须接受，且在凹坑附近 ±50·t 的平移带上成员判定与暴力谓词只在离某条 facet ≤ 2·t 处允许不同。"""
-    import random
-    from eab.kernel2d.covers import convex_entrance_block, membership_convex, facet_gap
-    from eab.kernel2d.geom import polygons_overlap, translate
-    SQ = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
-    tol = 1e-9                                            # 单位坐标下 t = max(tol, 64·eps·C) = tol
+@pytest.mark.parametrize("depth_over_t", [2.0, 0.5])
+def test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start(depth_over_t):
+    """旧门接受深度 0.5·tol 的微凹、拒绝 2·tol，并允许 2000 个样本在带内失配（最多 200 个）。
+    E2 凸性对给定数据精确，两种非零凹深都必须拒收；同一批 2000 个平移和三个精确边界邻点交由通用成员路径。
+    新断言更强：不再吞微凹、不跳过边界、每个答案对独立闭式 oracle 零错，且三种状态都必须实际出现。
+    oracle 零共用：此顶边 V 口的两端高度为 1；|x_x|<1、x_y≈−1 时至少一个端点落在方块底边内部，
+    因而相交状态恰为 sign(1+x_y)，只用 Fraction 加法/比较，不调用被测路径的耳切、SAT、法锥或凸包。
+    """
+    from fractions import Fraction
+    import math
+    from eab.kernel2d.covers import convex_entrance_block, membership_convex
+    tol = 1e-9
     A = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.5, 1.0 - depth_over_t * tol), (0.0, 1.0)]
-    if not accepted:
-        with pytest.raises(ValueError, match="inside its convex hull"):
-            convex_entrance_block(A, SQ, tol=tol)
-        return
-    eb = convex_entrance_block(A, SQ, tol=tol)
+    for report_tol in (0.0, tol, 100.0 * tol):
+        with pytest.raises(ValueError, match="reflex vertex"):
+            convex_entrance_block(A, SQ, tol=report_tol)
     rng = random.Random(3)
-    n_near = 0
-    for _ in range(2000):
-        x = (rng.uniform(-0.9, 0.9), -1.0 + rng.uniform(-50.0, 50.0) * tol)     # A 的顶边贴着 SQ 的底边
-        mem = membership_convex(A, SQ, x, tol, eb=eb)
-        brute = polygons_overlap(translate(A, x), SQ, 0.0)
-        if mem != brute:
-            assert min(abs(facet_gap(A, SQ, lab, x)) for lab in eb.facets) <= 2.0 * tol, (x, mem, brute)
-            n_near += 1
-    assert n_near <= 200
+    probes = [(rng.uniform(-0.9, 0.9), -1.0 + rng.uniform(-50.0, 50.0) * tol) for _ in range(2000)]
+    probes += [(0.25, y) for y in (-1.0, math.nextafter(-1.0, -math.inf), math.nextafter(-1.0, math.inf))]
+    states = set()
+    for x in probes:
+        height = Fraction(x[1]) + 1
+        want = (height > 0) - (height < 0)
+        got = membership_convex(A, SQ, x, 0.0)
+        assert got == want, (depth_over_t, x, got, want)
+        states.add(got)
+    assert states == {-1, 0, 1}

@@ -205,21 +205,24 @@ def membership_exact(A: Poly, B: Poly, x: Point, eb: ExactEntranceBlock | None =
 
 
 def convex_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
-    """A 平移 x 后与 B（都凸、CCW）的精确相交状态（分离轴定理，全部用 Fraction，平移也精确做）：1 内部相交 / 0 恰好相触 /
-    −1 分离。与 `membership_exact` 零共用（不经 Minkowski 和），当它的独立 oracle。"""
-    X = _fr(x)
-    FA, FB = [(a[0] + X[0], a[1] + X[1]) for a in (_fr(p) for p in A)], [_fr(p) for p in B]
+    """凸 CCW 对的独立精确 SAT oracle：1 内部相交 / 0 恰相触 / -1 分离。
+
+    纪律 A：只用 Fraction 构造、内联坐标差与投影；不调用本模块的 _fr / _sub / _cross / _dot、
+    Minkowski、法锥或 geom 的任何几何原语。平移同样在 Fraction 上做，不先形成舍入后的 A+x。
+    门：tests/test_kernel2d_exact.py::test_sat_oracle_uses_no_kernel_geometry_primitive。
+    """
+    xx, xy = Fraction(x[0]), Fraction(x[1])
+    FA = [(Fraction(a[0]) + xx, Fraction(a[1]) + xy) for a in A]
+    FB = [(Fraction(b[0]), Fraction(b[1])) for b in B]
     touch = False
     for P, Q in ((FA, FB), (FB, FA)):
-        n = len(P)
-        for k in range(n):
-            e = _sub(P[(k + 1) % n], P[k])
-            if e == (0, 0):
+        for k in range(len(P)):
+            p, q = P[k], P[(k + 1) % len(P)]
+            nx, ny = q[1] - p[1], p[0] - q[0]
+            if nx == 0 and ny == 0:
                 continue
-            # 外法向（CCW 的右法向）方向上：P 的最大投影 = 这条边的投影；Q 的最小投影
-            nrm = (e[1], -e[0])
-            pmax = _dot(nrm, P[k])
-            qmin = min(_dot(nrm, q) for q in Q)
+            pmax = nx * p[0] + ny * p[1]
+            qmin = min(nx * v[0] + ny * v[1] for v in Q)
             if qmin > pmax:
                 return -1
             if qmin == pmax:

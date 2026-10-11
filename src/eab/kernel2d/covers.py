@@ -348,31 +348,60 @@ def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
     return dot(n, sub(x, p))
 
 
+def _in_exact_boundary_band(ex, x: Point, tol: float) -> bool:
+    """到精确 E 边界闭线段的距离不大于 tol；全部比较距离平方，不用浮点构造量或舍入地板。"""
+    X = (Fraction(x[0]), Fraction(x[1]))
+    t2 = Fraction(tol) ** 2
+    for f in ex.facets:
+        dx, dy = f.direction
+        ux, uy = X[0] - f.start[0], X[1] - f.start[1]
+        l2 = dx * dx + dy * dy
+        along = ux * dx + uy * dy
+        if along <= 0:
+            distance2 = ux * ux + uy * uy
+        elif along >= l2:
+            distance2 = (ux - dx) ** 2 + (uy - dy) ** 2
+        else:
+            distance2 = (dx * uy - dy * ux) ** 2 / l2
+        if distance2 <= t2:
+            return True
+    return False
+
+
 def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
                       eb: EntranceBlock | None = None) -> int:
-    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界（恰好接触）/ -1 外部（分离）。
+    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界或显式报告带 / -1 外部（分离）。
 
-    **对给定浮点坐标精确**：A、B 精确凸时用精确 E 的 facet 符号（`exact.membership_exact`），否则（刚体运动把平直顶点舍入成
-    微凹）用一般简单多边形的精确相交（`exact.polygons_overlap_exact`）——两条路答案相同，凸路径只是快。`x` 的加法也在
-    Fraction 上做。`tol`（长度，缺省 0）只是**报告带**：精确答案非 0 但离 E 的边界 ≤ tol 时报 0；它不改变带外的答案，
-    也不抬到任何舍入下限。`eb` 保留只为兼容旧调用（精确路径自己构造）。"""
+    tol=0 时**对给定浮点坐标精确**：A、B 精确凸时用精确 E 的 facet 符号，否则（包括刚体运动把平直顶点舍入成微凹）
+    用一般简单多边形的精确相交；x 的加法也在 Fraction 上做。tol（长度）只把有边界距离见证的非零答案报告为 0，
+    不吞带外答案、不抬到舍入下限。凸对完整检验到 E 边界的欧氏距离 ≤ tol（精确线段距离平方；外角不等同于最大 facet gap）。
+    非凸对没有全局 E：只沿四条坐标轴探到距离 tol，精确状态改变即由连续性证明其间有边界；这是**保守、不完备**的报告带，
+    无见证时保留精确答案，不承诺检出全部带内样本。完整非凸 E 距离留待全局构造。eb 保留只为兼容旧调用。
+    门：tests/test_kernel2d_report_band.py（闭式欧氏带、巨大坐标微小 tol、非凸见证与不完备性、Fraction 平移）。"""
     if convexity_violation(A) is None and convexity_violation(B) is None:
         ex = entrance_block_exact(A, B)
         s = membership_exact(A, B, x, ex)
-        if s == 0 or tol <= 0.0:
+        if s == 0 or not tol > 0.0:
             return s
-        gaps = [facet_gap(A, B, f.label, x) for f in ex.facets]
-        return 0 if abs(max(gaps)) <= tol else s
+        if tol == float("inf"):
+            return 0
+        return 0 if _in_exact_boundary_band(ex, x, tol) else s
     s = polygons_overlap_exact(A, B, x)
-    if s == 0 or tol <= 0.0:
+    if s == 0 or not tol > 0.0:
         return s
-    from .geom import polygons_overlap, translate
-    return 0 if polygons_overlap(translate(A, x), B, tol) == 0 else s
-
+    if tol == float("inf"):
+        return 0
+    X, t = (Fraction(x[0]), Fraction(x[1])), Fraction(tol)
+    for dx, dy in ((t, 0), (-t, 0), (0, t), (0, -t)):
+        if polygons_overlap_exact(A, B, (X[0] + dx, X[1] + dy)) != s:
+            return 0
+    return s
 
 def local_facets(A: Poly, B: Poly, tol: float = 0.0) -> set[tuple[str, int, int]]:
     """凸情形下局部法锥规则（命题 5）给出的全部**严格**有效 VE / EV 标签，精确判（`exact.ve_side_exact` /
-    `ev_side_exact`）。定理检验：与 `convex_entrance_block` 的非 FF facet 标签集合**精确相等**（零容差）。`tol` 不参与。"""
+    `ev_side_exact`）。定理检验：与 `convex_entrance_block` 排除 FF 及精确边界支持分段后的严格 facet 集**精确相等**。
+    平直边链的剩余非 FF 分段也可能只有非严格支持，不能仅按标签不是 FF 就算严格。`tol` 不参与。
+    门：tests/test_kernel2d_exact.py 的独立全顶点投影支撑 oracle 与平直链门。"""
     return _local_facets(A, B, 1)
 
 

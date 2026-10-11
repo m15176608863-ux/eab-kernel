@@ -12,16 +12,18 @@
     裁决（t* 处相触或相交；t* 前一个分辨步处分离，否则抛 RuntimeError——候选集漏了更早的首入，不静默）；与三维同一结构。
   · 集值点（首入点落在 E 的顶点上，两条 facet 在分辨率内同时被触及）：按枚举序取第一个作裁决，并列集如实报出（tied_labels）。
   · x0 已在 E 内（已侵入）：取**最短出口**——在程的 facet 型盖里取间隙最大者（侵入最浅）作接触法向与出口方向。
-容差（纪律 F）：谓词与并列按长度地板 c·eps·C 加调用方 tol；facet 法向沿用 `facet_gap` 的口径（噪声内共线链里最长边的法向）。
+E2：凸选路、凸初态、半空间射线裁剪均用精确有理数；facet_gap/法向/接触点只作浮点输出，法向取 facet 自己的边。
+并列标签报告仍按调用方 tol 与舍入量级；凹首入、已侵入后的最短出口保持既有容差路径，不属于凸谓词精确化声明。
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 
-from .covers import (Cover, _facet_normal_own, convex_entrance_block, enumerate_covers, ev_cover, facet_gap, ve_cover)
-from .exact import convexity_violation
-from .geom import (Point, Poly, add, coord_scale, dot, edge, is_convex, neg, norm, outward_normal, polygons_overlap,
+from .covers import (Cover, _facet_normal_own, enumerate_covers, ev_cover, facet_gap, ve_cover)
+from .exact import convexity_violation, entrance_block_exact, membership_exact
+from .geom import (Point, Poly, add, coord_scale, dot, edge, neg, norm, outward_normal, polygons_overlap,
                    round_floor, sub, translate)
 
 
@@ -70,48 +72,81 @@ def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> float:
 
 
 def first_entrance(A: Poly, B: Poly, x0: Point, d: Point, *, tol: float = 0.0, t_max: float = float("inf")) -> Entrance2:
-    """沿 x(t) = x0 + t·d 的首入（见模块文档）。A、B 均 CCW；tol 为长度容差（并列与谓词的带，抬到舍入地板）。"""
+    """沿 x(t) = x0 + t·d 的首入。凸路径选路、初态与射线裁剪精确；tol只影响并列报告。
+    凹路径及已侵入后的 shortest_exit 保持既有长度带/舍入地板口径（E3待做）。"""
     dn = norm(d)
     if dn == 0.0:
         raise ValueError("direction must be nonzero")
     r = _floor(A, B, x0, d)
     ctol = max(tol, r)
+    if convexity_violation(A) is None and convexity_violation(B) is None:      # 精确凸才走凸路径（E2）
+        if membership_exact(A, B, x0) == 1:
+            return shortest_exit(A, B, x0, tol=tol)
+        return _first_entrance_convex(A, B, x0, d, ctol, r, t_max)
     if polygons_overlap(translate(A, x0), B, ctol) == 1:
         return shortest_exit(A, B, x0, tol=tol)
-    if convexity_violation(A) is None and convexity_violation(B) is None:      # 精确凸才走凸路径（E2）
-        return _first_entrance_convex(A, B, x0, d, ctol, r, t_max)
     return _first_entrance_concave(A, B, x0, d, ctol, r, t_max)
 
 
 def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r: float, t_max: float) -> Entrance2:
-    eb = convex_entrance_block(A, B, (0.0, 0.0), ctol)
-    enter: list[tuple[float, float, tuple]] = []        # (t_i, −n·d, label)
-    t_out = float("inf")
-    for lab in eb.facets:
-        g0 = facet_gap(A, B, lab, x0)
-        g1 = facet_gap(A, B, lab, add(x0, d))
-        slope = g1 - g0                                   # = n·d
-        if slope < -1e-12 * norm(d):
-            enter.append((g0 / (-slope), -slope, lab))
-        elif slope > 1e-12 * norm(d):
-            t_out = min(t_out, -g0 / slope)
-        elif g0 > ctol:                                   # 与射线平行、且参考点在它外侧的 facet：射线永远进不了 E
-            return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), 0)
-    if not enter:
+    """精确有理数半空间射线裁剪；facet_gap 只在最后输出构造量，不参与去留/时刻分支。
+    tol/r 仅为并列标签报告窗，不能把错过 E 或超过 t_max 的射线变成命中。
+    门：test_convex_ray_decisions_do_not_use_constructed_facet_gaps / test_convex_ray_resolves_tiny_slopes_and_misses。
+    """
+    eb = entrance_block_exact(A, B)
+    X, D = tuple(map(Fraction, x0)), tuple(map(Fraction, d))
+    enter = []
+    active = []
+    t_out = None
+
+    def none():
         return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), len(enter))
-    t_in = max(t for t, _, _ in enter)
-    if t_in < 0.0:                                        # 全部进入型 facet 都在身后而谓词说没相交：参考点已在 E 内？不该到这里
-        t_in = 0.0
-    if t_in > t_out + ctol / max(norm(d), 1e-300) or t_in > t_max + r / norm(d):
-        return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), len(enter))
-    # 并列：法向间隙在 ctol 以内的进入型 facet（枚举序，取到最大值的排第一）
-    tied = [lab for t, nd, lab in enter if abs(t - t_in) * nd <= ctol + r]
-    best = max(enter, key=lambda q: (q[0], 0))
-    lab = best[2]
-    tied.sort(key=lambda q: 0 if q == lab else 1)
-    x = add(x0, (d[0] * t_in, d[1] * t_in))
+
+    for f in eb.facets:
+        ex, ey = f.direction
+        # h >= 0 是 E 的内半空间；不用单位法向或浮点差分求斜率。
+        h = ex * (X[1] - f.start[1]) - ey * (X[0] - f.start[0])
+        slope = ex * D[1] - ey * D[0]
+        if h == 0:
+            active.append(f)
+        if slope > 0:
+            enter.append((-h / slope, slope, f))
+        elif slope < 0:
+            bound = -h / slope
+            t_out = bound if t_out is None else min(t_out, bound)
+        elif h < 0:
+            return none()
+    t_in = max([Fraction(0)] + [t for t, _, _ in enter])
+    if (t_out is not None and t_in > t_out) or (t_max != float("inf") and t_in > Fraction(t_max)):
+        return none()
+    best = max(enter, key=lambda q: q[0]) if enter else None
+    if t_in == 0 and active:
+        # 已恰好接触：定义 min{t>=0:x(t)∈E}=0，包括沿边或背离运动。
+        fbest = next((f for t, _, f in enter if t == 0), active[0])
+    elif best is not None and best[0] == t_in:
+        fbest = best[2]
+    else:
+        return none()
+    band2 = Fraction(ctol + r) ** 2
+    tied = []
+    for t, slope, f in enter:
+        ex, ey = f.direction
+        if ((t - t_in) * slope) ** 2 <= band2 * (ex * ex + ey * ey):
+            tied.append(f.label)
+    # 恰在角点/沿边的闭集首触也有活动侧：不只报告进入型 facet。
+    for f in eb.facets:
+        ex, ey = f.direction
+        h = ex * (X[1] + t_in * D[1] - f.start[1]) - ey * (X[0] + t_in * D[0] - f.start[0])
+        if h == 0 and f.label not in tied:
+            tied.append(f.label)
+    if fbest.label not in tied:
+        tied.insert(0, fbest.label)
+    tied.sort(key=lambda lab: 0 if lab == fbest.label else 1)
+    lab = fbest.label
+    x = (float(X[0] + D[0] * t_in), float(X[1] + D[1] * t_in))
     pa, pb = _facet_points(A, B, lab, x)
-    return Entrance2("entrance", t_in, x, lab, _facet_normal(A, B, lab), pa, pb, facet_gap(A, B, lab, x), tuple(tied), len(enter))
+    return Entrance2("entrance", float(t_in), x, lab, _facet_normal(A, B, lab), pa, pb,
+                     facet_gap(A, B, lab, x), tuple(tied), len(enter))
 
 
 def _cover_at(A: Poly, B: Poly, label: tuple, x: Point, tol: float) -> Cover | None:
