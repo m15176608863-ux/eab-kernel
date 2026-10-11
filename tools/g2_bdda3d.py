@@ -25,9 +25,9 @@
   对账窗口 `G2_WINDOW` 见其注释；ee↔EE 的键尚未实现，所以带 ee 的夹具目前**必红**，不是静默绿。
   `enumerated_window` 记的是枚举器**实际收到**的窗口（`_enumerate_recorded`），不是 compare 局部变量的回声（G6 minor 25）。
 
-坐标（纪律 F）：凸包与共面归并在**块的局部坐标系**里做（减去块的第一个顶点；只取拓扑，顶点坐标原样保留），
-长度容差抬到舍入下限 c·eps·C——工程坐标（1e5）上的小块，共面面的平面偏移 n·v 在原点系里差 eps·C²/L，
-归并判据永远不成立（geom3.merge_coplanar 的平面偏移按原点量，见 G6 minor）。
+E5a 坐标口径：凸包/共面归并直接读取原坐标，不先浮点平移再逆变换；只合并精确共面面。
+面按输入顶点集合排序，编号是确定性标签，不声称随舍入旋转保持不变。legacy 三角若不是
+精确凸包上的面，保留其引用并明确登记 violation；不以近似共面配给其它面。
 门：tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units。
 """
 
@@ -77,16 +77,17 @@ def polyhedron_with_aliases(pts: list[tuple[float, float, float]], tol: float = 
     被某个面引用（凸包角点），要么（棱中点 / 面中点这类 T 形顶点，或内点）→ ValueError，带块号、
     顶点号、坐标与分类。不许静默保留一个未被任何面引用的顶点（审查 C18）。
 
-    纪律 F：tol 是长度（调用方单位），抬到舍入下限 c·eps·C；凸包与共面归并在局部坐标（减去 pts[0]）里算，
-    只取面拓扑，返回的多面体用**原坐标**——对调用方透明、精确。
+    tol 是导入 alias 的长度窗口（历史导入层仍含舍入下限，不是内核成员谓词）。
+    保留代表点的原坐标直接建立精确凸包；只合并精确共面面，按输入顶点集合稳定排序。
     """
     n = len(pts)
     C = max((abs(v) for p in pts for v in p), default=0.0)
     fl = ROUND_C * EPS * C
     tol = max(tol, fl)
-    o = pts[0]
-    loc = [sub(p, o) for p in pts]
-    L = max((norm(sub(p, q)) for p in loc for q in loc), default=0.0)
+    # E5a: never form a second rounded point set by subtracting an origin.
+    # Alias identification is an explicit import window; hull topology is exact
+    # for the retained original coordinates.
+    loc = pts
     rep = list(range(n))
     for i in range(n):
         for j in range(i):
@@ -95,27 +96,15 @@ def polyhedron_with_aliases(pts: list[tuple[float, float, float]], tol: float = 
                 break
     alias: dict[int, int] = {i: rep[i] for i in range(n) if rep[i] != i}
     reps = [i for i in range(n) if rep[i] == i]
-    # convex_hull_3d 的 tol 是**相对**点集对角线的（M0.2 起），merge_coplanar 的 tol 是**角度**（弧度，内部再加逐面的
-    # 法向噪声）：去重长度 tol 不进这两个接口。旧版把绝对地板 fl 当相对容差传给凸包（C = 1e6 的 1 km 块：厚平面带放大
-    # L 倍到 2.5e-5 m，真实的小倒角被吸进去、再被当"非凸包角点"抛错）、把长度 tol 当角度传给归并（G6 第三轮 minor）。
-    # 凸包在局部坐标算（remap 对 loc 比对），**共面归并在原坐标**算、只取面拓扑：merge_coplanar 的逐面法向噪声按它看到的
-    # 坐标量级取 noise_floor，局部坐标里只有 ~L，比原坐标 C 处的真实舍入小 C/L 倍——含短棱 h 的细三角其 Newell 法向误差
-    # ~eps·C/h 超出容差，共面三角不被归并（一般旋转 + C ≥ 1e3 + h/L ≤ 1e-7：90 格 14 格返回 8～10 面，G6 第四轮 minor）
-    _rel = max(1e-12, fl / L if L > 0.0 else 0.0)
-    _hl = convex_hull_3d([loc[i] for i in reps], _rel)
-    _hm = merge_coplanar(Polyhedron([tuple(a + b for a, b in zip(v, o)) for v in _hl.verts], list(_hl.faces)), _rel)
-    hull = Polyhedron(list(_hl.verts), list(_hm.faces))
+    hull = merge_coplanar(convex_hull_3d([pts[i] for i in reps]))
     remap: dict[int, int] = {}
     for hi, hv in enumerate(hull.verts):
-        best, bd = None, float("inf")
-        for oi in reps:
-            d = norm(sub(hv, loc[oi]))
-            if d < bd:
-                best, bd = oi, d
-        if bd > tol:
-            raise ValueError(f"block {block}: hull vertex {hi} has no original counterpart (d={bd})")
-        remap[hi] = best
-    faces = [tuple(remap[i] for i in f) for f in hull.faces]
+        matches = [oi for oi in reps if tuple(pts[oi]) == tuple(hv)]
+        if not matches:
+            raise ValueError(f"block {block}: hull vertex {hi} has no exact original counterpart")
+        remap[hi] = matches[0]
+    faces = sorted((tuple(remap[i] for i in f) for f in hull.faces),
+                   key=lambda face: tuple(sorted(face)))
     P = Polyhedron(list(pts), faces)
     referenced = sorted({i for f in faces for i in f})
     for i in reps:
@@ -231,8 +220,14 @@ def compare(path: Path, *, window: float = G2_WINDOW, band: float = G2_BAND, tol
             hostfaces = faces_B if blocks[hb] is B else faces_A
             gi = next((k for k, vs in enumerate(hostfaces) if set(tri) <= vs), None)
             if gi is None:
-                pts = [tuple(blocks[hb].verts[i]) for i in tri]
-                raise ValueError(f"block {hb}: legacy triangle {tri} {pts} (refs {e['refs']}) lies on no merged face")
+                # A rounded rigid transform can make the legacy ideal face
+                # nonplanar or choose the other exact hull diagonal. Preserve
+                # this disagreement, rather than inventing an approximate face
+                # or aborting before the other covers have been reconciled.
+                n = len(blocks[hb].verts)
+                a, b, c = sorted(tri)
+                gi = -1 - ((a * n + b) * n + c)
+                violations.append(("legacy triangle not on exact hull face", hb, tuple(tri)))
             legacy.add((vblk, vidx, gi))
             legacy_detail.append((vblk, vidx, tuple(tri), gi))
 

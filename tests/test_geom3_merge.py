@@ -18,6 +18,9 @@ oracle（纪律 A）：期望的归并结果是**构造时就知道的原始多�
 import math
 import random
 import threading
+from collections import Counter
+from fractions import Fraction
+from itertools import combinations
 
 import pytest
 
@@ -61,6 +64,16 @@ def _rotation(seed: int):
 def _place(verts, seed: int, scale: float):
     R = _rotation(seed)
     o = (0.0, 0.0, 0.0) if seed == 0 else (0.7 * scale, -1.9 * scale, 2.3 * scale)
+    # Exact affine evaluation preserves the coplanarity this gate is about.
+    # R is a stored rational matrix close to a rotation; input rounding is not
+    # allowed to silently change the theorem's planar-input premise.
+    return [tuple(Fraction(o[i]) + Fraction(scale) * sum(Fraction(R[i][j]) * Fraction(p[j]) for j in range(3)) for i in range(3))
+            for p in verts]
+
+
+def _float_place(verts, seed: int, scale: float):
+    R = _rotation(seed)
+    o = (0.0, 0.0, 0.0) if seed == 0 else (0.7 * scale, -1.9 * scale, 2.3 * scale)
     return [tuple(o[i] + scale * (R[i][0] * p[0] + R[i][1] * p[1] + R[i][2] * p[2]) for i in range(3))
             for p in verts]
 
@@ -72,6 +85,86 @@ def _canon(ring):
 
 def _face_set(P):
     return sorted(_canon(list(f)) for f in P.faces)
+
+
+def _assert_exact_merge(P, M):
+    """Independent zero-band certificate for the supplied (also rounded) mesh.
+
+    Only Fraction coordinate arithmetic and integer directed edges are used:
+    own plane determinants, edge-adjacency graph and boundary multisets. No
+    production normal/orientation/component/merge helper is called. Nonplanar
+    input polygons are singleton hints and must remain unchanged.
+    """
+    assert M.verts == P.verts
+    points = [tuple(Fraction(x) for x in p) for p in P.verts]
+
+    def minus(a, b):
+        return tuple(x-y for x, y in zip(a, b))
+
+    def crossq(a, b):
+        return (a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0])
+
+    def dotq(a, b):
+        return sum(x*y for x, y in zip(a, b))
+
+    def plane(face):
+        o = points[face[0]]
+        for a, b in combinations(face[1:], 2):
+            n = crossq(minus(points[a], o), minus(points[b], o))
+            if any(n):
+                break
+        else:
+            raise AssertionError(('degenerate input face', face))
+        if any(dotq(n, minus(points[i], o)) for i in face):
+            return None
+        # Orient the plane with an independent projected signed-area sum.
+        k = next(i for i in range(3) if n[i])
+        u, v = ((1, 2), (2, 0), (0, 1))[k]
+        area = sum(points[a][u]*points[b][v]-points[b][u]*points[a][v]
+                   for a, b in zip(face, face[1:]+face[:1]))
+        assert area != 0
+        if area*n[k] < 0:
+            n = tuple(-x for x in n)
+        return o, n
+
+    rings = [tuple(f) for f in P.faces]
+    edges = [Counter(zip(f, f[1:]+f[:1])) for f in rings]
+    planes = [plane(f) for f in rings]
+    adjacency = [set() for _ in rings]
+    for i, j in combinations(range(len(rings)), 2):
+        if planes[i] is None or planes[j] is None:
+            continue
+        if not any((b, a) in edges[j] for a, b in edges[i]):
+            continue
+        o, n = planes[i]
+        if (all(dotq(n, minus(points[k], o)) == 0 for k in rings[j])
+                and dotq(n, planes[j][1]) > 0):
+            adjacency[i].add(j)
+            adjacency[j].add(i)
+
+    pending = set(range(len(rings)))
+    expected = []
+    while pending:
+        todo = [min(pending)]
+        component = set()
+        while todo:
+            i = todo.pop()
+            if i in component:
+                continue
+            component.add(i)
+            todo.extend(adjacency[i]-component)
+        pending -= component
+        all_edges = sum((edges[i] for i in component), Counter())
+        boundary = Counter({e: c-all_edges[e[::-1]] for e, c in all_edges.items()
+                            if c > all_edges[e[::-1]]})
+        assert all(c == 1 for c in boundary.values())
+        expected.append(tuple(sorted(boundary.elements())))
+
+    actual = []
+    for f in M.faces:
+        assert len(f) >= 3 and len(set(f)) == len(f)
+        actual.append(tuple(sorted(zip(f, f[1:]+f[:1]))))
+    assert Counter(actual) == Counter(expected), ('exact merge boundary mismatch', actual, expected)
 
 
 def _prism_faces(n):
@@ -119,23 +212,40 @@ def test_vertex_pinched_coplanar_faces_do_not_hang(seed, scale):
     """(a) 顶面两块共面方片只在顶点 12 相触（其余两个象限是凹坑）：旧实现死循环。
     两片不共棱 ⇒ 不应归并；结果与输入逐面相同。"""
     V, F = _dented_block()
+    # Retain the bit-for-bit historical floating construction at every cell.
+    rounded = Polyhedron(_float_place(V, seed, scale), F)
+    assert rounded.manifold_issues() == []
+    rounded_merge = _call_with_timeout(merge_coplanar, rounded)
+    assert _face_set(rounded_merge) == _face_set(rounded)
+    assert rounded_merge.volume() == pytest.approx(11.0 / 3.0 * scale ** 3, rel=1e-12)
+    assert rounded_merge.manifold_issues() == []
+    _assert_exact_merge(rounded, rounded_merge)
     P = Polyhedron(_place(V, seed, scale), F)
     assert P.manifold_issues() == []
     M = _call_with_timeout(merge_coplanar, P)
     assert _face_set(M) == _face_set(P)
     assert M.volume() == pytest.approx(11.0 / 3.0 * scale ** 3, rel=1e-12)
     assert M.manifold_issues() == []
+    _assert_exact_merge(P, M)
 
 
 @pytest.mark.parametrize("seed,scale", [(0, 1.0), (1, 1e-3), (2, 1e3)])
 def test_u_prism_prong_ends_stay_separate(seed, scale):
     """(b) U 形棱柱两个端面（y=3）共面但不共棱：旧实现强行归并后抛 ValueError。"""
+    rounded = Polyhedron(_float_place(_prism_verts(U_BASE), seed, scale), _prism_faces(8))
+    assert rounded.manifold_issues() == []
+    rounded_merge = _call_with_timeout(merge_coplanar, rounded)
+    assert _face_set(rounded_merge) == _face_set(rounded)
+    assert rounded_merge.volume() == pytest.approx(7.0 * scale ** 3, rel=1e-12)
+    assert rounded_merge.manifold_issues() == []
+    _assert_exact_merge(rounded, rounded_merge)
     P = Polyhedron(_place(_prism_verts(U_BASE), seed, scale), _prism_faces(8))
     assert P.manifold_issues() == []
     M = _call_with_timeout(merge_coplanar, P)
     assert _face_set(M) == _face_set(P)
     assert M.volume() == pytest.approx(7.0 * scale ** 3, rel=1e-12)
     assert M.manifold_issues() == []
+    _assert_exact_merge(P, M)
 
 
 # ---------------------------------------------------------------- 三角化 → 归并回原多边形
@@ -146,18 +256,53 @@ def test_triangulated_concave_prism_merges_back_to_its_polygons(name, seed, scal
     base, tris = (U_BASE, U_TRIS) if name == "U" else (L_BASE, L_TRIS)
     n = len(base)
     poly_faces = _prism_faces(n)
+    area = 7.0 if name == "U" else 5.0
+    rounded = Polyhedron(_float_place(_prism_verts(base), seed, scale), _triangulate(poly_faces, tris, n))
+    assert rounded.manifold_issues() == []
+    rounded_merge = _call_with_timeout(merge_coplanar, rounded)
+    assert rounded_merge.volume() == pytest.approx(area * scale ** 3, rel=1e-12)
+    assert rounded_merge.manifold_issues() == []
+    _assert_exact_merge(rounded, rounded_merge)
     V = _place(_prism_verts(base), seed, scale)
     T = Polyhedron(V, _triangulate(poly_faces, tris, n))
     assert T.manifold_issues() == []
     M = _call_with_timeout(merge_coplanar, T)
     assert _face_set(M) == _face_set(Polyhedron(V, poly_faces))       # 恰好回到原来的多边形面
-    area = 7.0 if name == "U" else 5.0
     assert M.volume() == pytest.approx(area * scale ** 3, rel=1e-12)
     assert M.manifold_issues() == []
+    _assert_exact_merge(T, M)
     if name == "U":                                                     # 两个端面各自保留
         ends = [f for f in M.faces if len(f) == 4 and all(abs(_unplace_y(V[i], seed, scale) - 3.0) < 1e-9
                                                           for i in f)]
         assert len(ends) == 2
+
+
+@pytest.mark.parametrize("defect", ["miss_exact_merge", "merge_rounded_microhinge"])
+def test_rounded_mesh_exact_merge_certificate_has_teeth(monkeypatch, defect):
+    """Inject inside production grouping, not into its completed output."""
+    import inspect
+    from eab.kernel3d import geom3
+
+    seed = 0 if defect == "miss_exact_merge" else 1
+    P = Polyhedron(_float_place(_prism_verts(U_BASE), seed, 1.0),
+                   _triangulate(_prism_faces(8), U_TRIS, 8))
+    _assert_exact_merge(P, _call_with_timeout(merge_coplanar, P))
+    source = inspect.getsource(geom3.merge_coplanar)
+    if defect == "miss_exact_merge":
+        old = 'for comp in _edge_connected_components(P, fis):'
+        new = 'for comp in [[i] for i in fis]:'
+    else:
+        old = ('not any(_eg.cross(n, gn))\n'
+               '                    and all(_eg.dot(gn, _eg.sub(p, go)) == 0 for p in verts)')
+        new = ('all(abs(float(x)) < 1e-10 for x in _eg.cross(n, gn))\n'
+               '                    and all(abs(float(_eg.dot(gn, _eg.sub(p, go)))) < 1e-10 for p in verts)')
+    assert old in source
+    namespace = dict(vars(geom3))
+    exec(source.replace(old, new, 1), namespace)
+    monkeypatch.setattr(geom3, 'merge_coplanar', namespace['merge_coplanar'])
+    bad = _call_with_timeout(geom3.merge_coplanar, P)
+    with pytest.raises(AssertionError, match='exact merge boundary mismatch'):
+        _assert_exact_merge(P, bad)
 
 
 def _unplace_y(p, seed, scale):
@@ -238,7 +383,14 @@ def test_pocketed_slab_with_separate_dents_merges_what_it_can():
 def test_rotated_box_far_from_origin_merges_to_six_faces(seed, off):
     R = _rotation(seed)
     pts = [(sx, sy, sz) for sx in (-1.0, 1.0) for sy in (-0.5, 0.5) for sz in (-0.3, 0.3)]
-    W = [tuple(off + sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in pts]
+    # Keep the rounded-input cells too: every output face must really be planar.
+    rounded = [tuple(off + sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in pts]
+    rounded_hull = _call_with_timeout(merge_coplanar, convex_hull_3d(rounded))
+    from test_hull_robustness import _fr_orient, _assert_exact_hull
+    _assert_exact_hull(rounded_hull, rounded)
+    assert all(_fr_orient(*(rounded_hull.verts[i] for i in f[:3]), rounded_hull.verts[j]) == 0
+               for f in rounded_hull.faces for j in f)
+    W = [tuple(Fraction(off) + sum(Fraction(R[i][j]) * Fraction(p[j]) for j in range(3)) for i in range(3)) for p in pts]
     M = _call_with_timeout(merge_coplanar, convex_hull_3d(W))
     assert len(M.faces) == 6, len(M.faces)
     assert M.manifold_issues() == []

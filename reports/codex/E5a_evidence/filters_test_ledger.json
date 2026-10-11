@@ -1,0 +1,10 @@
+[
+  {
+    "test": "tests/test_kernel2d_predicates.py::test_hull_of_a_rotated_collinear_strip_matches_exact_support",
+    "old": "3000 seeded point sets; every ordered distinct input pair is checked against every input point using Fraction support determinants; exact hull-vertex set equality and diversity assertion.",
+    "new": "The same 3000 sets, all ordered pairs and every support point; Fraction conversion is hoisted once per point and pairwise dx/dy once per pair. Both assertions are byte-for-byte unchanged.",
+    "not_weaker": "Only common subexpression elimination in an independent pure-Fraction oracle. Fraction arithmetic is exact, so hoisting conversions and differences cannot change any determinant, sample or assertion. No production primitive is shared.",
+    "classification": "mechanical_oracle_speedup_no_assertion_change",
+    "evidence": "filters_hull_oracle_after.xml: 1 passed in 9.61s; previous E3E4 full-suite XML had 25.187s for this test (historical, not paired same-run baseline)"
+  }
+]

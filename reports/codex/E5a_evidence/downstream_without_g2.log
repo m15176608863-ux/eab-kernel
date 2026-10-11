@@ -1,0 +1,107 @@
+.................F..F..........FF....F
+================================== FAILURES ===================================
+____ test_every_public_candidate_is_a_real_contact_at_its_own_height[0.05] ____
+tests\test_interlock_candidates_contract.py:30: in test_every_public_candidate_is_a_real_contact_at_its_own_height
+    cands = escape_candidates(A, L, off)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:195: in escape_candidates
+    return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+____ test_every_public_candidate_is_a_real_contact_at_its_own_height[0.3] _____
+tests\test_interlock_candidates_contract.py:30: in test_every_public_candidate_is_a_real_contact_at_its_own_height
+    cands = escape_candidates(A, L, off)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:195: in escape_candidates
+    return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+_ test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0] _
+tests\test_interlock_escape.py:90: in test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks
+    _check_escape(A, L, off, truth)
+tests\test_interlock_escape.py:60: in _check_escape
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+_ test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase0] _
+tests\test_interlock_escape.py:90: in test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks
+    _check_escape(A, L, off, truth)
+tests\test_interlock_escape.py:60: in _check_escape
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+__________ test_escape_height_covers_is_complete_under_scaling[0.01] __________
+tests\test_interlock_escape.py:109: in test_escape_height_covers_is_complete_under_scaling
+    _check_escape(A, L, off, truth, scale=s)
+tests\test_interlock_escape.py:60: in _check_escape
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+============================ slowest 20 durations =============================
+35.49s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[0.001]
+32.85s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1000.0]
+31.77s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1.0]
+16.74s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[2]
+14.29s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[0]
+13.85s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[1]
+11.80s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0]
+10.19s call     tests/test_interlocking.py::test_g0_distance_completeness_on_merged_interlocking_pair
+3.92s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase0]
+1.48s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-10-1.0]
+1.25s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_under_scaling[0.01]
+1.12s call     tests/test_interlock_candidates_contract.py::test_every_public_candidate_is_a_real_contact_at_its_own_height[0.13]
+1.06s call     tests/test_interlocking.py::test_min_cover_gap_is_not_a_membership_rule_for_concave_bodies
+0.94s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-09-1.0]
+0.92s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-09--1.0]
+0.92s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[5e-10--1.0]
+0.92s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-11-1.0]
+0.92s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-10--1.0]
+0.91s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-11--1.0]
+0.91s call     tests/test_interlock_candidates_contract.py::test_public_candidates_keep_both_branches_inside_the_predicate_band[5e-10-1.0]
+=========================== short test summary info ===========================
+FAILED tests/test_interlock_candidates_contract.py::test_every_public_candidate_is_a_real_contact_at_its_own_height[0.05]
+FAILED tests/test_interlock_candidates_contract.py::test_every_public_candidate_is_a_real_contact_at_its_own_height[0.3]
+FAILED tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0]
+FAILED tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase0]
+FAILED tests/test_interlock_escape.py::test_escape_height_covers_is_complete_under_scaling[0.01]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+5 failed, 33 passed in 188.86s (0:03:08)

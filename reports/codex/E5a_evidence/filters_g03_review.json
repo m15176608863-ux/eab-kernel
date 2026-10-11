@@ -1,0 +1,43 @@
+{
+  "reviewer": "filters subagent",
+  "scope": ["src/eab/kernel3d/g03_exact.py", "src/eab/kernel3d/g03.py", "src/eab/kernel3d/covers3.py caches", "src/eab/kernel3d/geom3.py exact_convex_view"],
+  "snapshot_note": "Concurrent integration snapshot; findings must be checked against final files before closure.",
+  "findings": [
+    {
+      "id": "FILTER_REVIEW_G0_01",
+      "severity": "major",
+      "status": "fixed_and_rechecked",
+      "location": "g03.g0_convex3: exact_convex_view before freezing av/bv for oracle",
+      "description": "The independent oracle is handed vertices after the tested canonical hull view has discarded input points. A defect dropping a true extreme point in that shared preprocessing can make all three votes agree on the wrong reduced data.",
+      "required_fix": "Freeze the original raw coordinate sets before calling exact_convex_view. Independent SAT, difference hull and boundary probes must use those originals; compare local labels through coordinate-set mappings, not only canonical indices. Add a tested-path dropped-extreme mutation.",
+      "verification": "test_g0_oracle_keeps_original_points_before_a_defective_convex_view: 1 passed in 0.27s; filters_g0_recheck.xml"
+    },
+    {
+      "id": "FILTER_REVIEW_MERGE_01",
+      "severity": "major",
+      "status": "fixed_and_rechecked",
+      "description": "A nonplanar source ring's Newell vector was treated as a support plane, allowing an adjacent truly planar face to merge even though the first ring had points off that plane.",
+      "verification": "test_coplanar_merge_does_not_treat_a_nonplanar_newell_vector_as_a_plane: 1 passed in 0.16s; filters_nonplanar_merge_recheck.xml"
+    },
+    {
+      "id": "FILTER_REVIEW_DISTANCE_01",
+      "severity": "major",
+      "status": "fixed_and_rechecked",
+      "description": "sqrt(float(exact_squared_distance)) rounded 1e-400 to zero despite its square root 1e-200 being representable. Exact rational exponent scaling now precedes floating square root.",
+      "verification": "test_exact_squared_distance_conversion_preserves_representable_small_and_large_distances: 4 passed in 0.11s; filters_distance_recheck.xml"
+    },
+    {
+      "id": "FILTER_REVIEW_CACHE_01",
+      "severity": "review_note",
+      "status": "root_notified",
+      "description": "Polyhedron._convex_view plus local_facets/support-plane LRU caches can bypass newly monkeypatched inner code after a warm run on the same object. Fresh-process source mutants or explicit cache clearing are necessary to establish that the mutated path ran. Coordinate-keyed pure-function caches themselves preserve mathematical answers for unchanged inputs."
+    }
+  ],
+  "positive_checks": [
+    "g03_exact imports no production geometry or filtered predicate; all determinants/SAT/support rings use inline Fraction operations.",
+    "Boundary probes are exact rational vertices, edge midpoints and facet vertex averages, with no conversion to float.",
+    "The SAT model includes all independent face normals and cross products of true oracle hull edges.",
+    "300 deterministic random integer 15-point clouds (Random(418), each coordinate in [-3,3]) produced valid oracle hulls without exception.",
+    "1225 exact L-prism closed-form memberships at scales 1e-200,1e-3,1,1e3,1e200 and 150 warped-roof closed-form memberships agree with exact surface API; filters_surface_closed_forms.json."
+  ]
+}

@@ -10,8 +10,8 @@ G6（2026-09-24）的 6 条 critical 里 5 条同一根因：绝对容差遍布�
   · 逃逸高度 h ×s，剪胀比 tanψ = ∂h/∂δ 与 ∂h/∂amp 不变（无量纲），∂h/∂phase ×s；
   · 两体间距 ×s；裕度 δ ×s 时 INSIDE / ON_BOUNDARY / OUTSIDE 与"有无闭合的广义接触"不变；
   · 状态不变（贯入 / 相触 / 分离；可微 / 不可微）；
-  · 盖标签一致：变换保留顶点与面的编号，所以决定结果的盖标签必须**逐字相同**；并列时比较并列集
-    （并列集里裁决出的那一个必须也相同——裁决按枚举序，不按舍入噪声）。
+  · 稳定胜出盖标签保留原变换检查；边界并列/裕度标签按每格给定舍入数据的完整独立精确 oracle 核对，
+    不把运动前的理想共面/共线关系强加给运动后数据；枚举序裁决也独立核对。
 
 旋转：互锁逃逸沿 ẑ 抬升，所以只绕 z 轴转（非轴对齐的 0.7 rad）；裕度层与方向无关，用两个固定种子的
 一般三维旋转（每个矩阵元 |R_ij| > 0.05，确实不与坐标轴对齐）。
@@ -35,6 +35,8 @@ from functools import lru_cache
 from pathlib import Path
 
 import pytest
+import e5a_cover_oracle as independent_covers
+import e5a_escape_oracle as independent_escape
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from osteomorphic import interlocking_pair  # noqa: E402
@@ -203,8 +205,11 @@ def test_escape_height_is_rigid_motion_and_unit_invariant(rot, t, s):
 @pytest.mark.parametrize("t", TS)
 @pytest.mark.parametrize("rot", list(ROT_Z))
 def test_escape_tied_set_is_invariant_up_to_the_declared_resolution(rot, t, s, request):
-    """并列集（谓词分辨不开的接触盖）：分辨率不由舍入地板主导的格子上与参考**相同**；地板主导的格子
-    （1e-3 的块放到 1e5 坐标）上分辨率更粗，只要求参考的并列盖一个不少，多出的每个都在声明的分辨带内。"""
+    """全部原格逐项核独立候选/并列清单；精确面环可因舍入新增有效 EE，不能按噪声删除。
+
+    oracle 从所有源特征对自行枚举，循环 Newell/Gram 算有效性与在程；只重现 E5b 尚未迁移的
+    公开逃逸窗口政策，不读取生产盖/候选来决定 expected。解析高度与原胜出标签另有原门。
+    """
     if (rot, t, s) == ("z0.7", 1e5, 1e-3):
         pass  # 2026-09-27 合并：m2-geom 已修（该格 XPASS(strict)），xfail 摘除
     A, L = _ilock(rot, t, s)
@@ -212,14 +217,44 @@ def test_escape_tied_set_is_invariant_up_to_the_declared_resolution(rot, t, s, r
     for off in OFFSETS:
         sol, _ = _escape(rot, t, s, off)
         ref, _ = _escape_ref(off)
-        band, floor_dominated = _resolution(rot, t, s, off)
+        band, _ = _resolution(rot, t, s, off)
         got, want = set(sol.tied_labels), set(ref.tied_labels)
-        assert want <= got, (off, sorted(want - got))
-        if not floor_dominated:
-            assert got == want, (off, sorted(got - want))
-        else:
-            zs = {lab: z for z, lab in escape_candidates(A, L, _vec(R, s, off))}
-            assert all(abs(zs[lab] - sol.height) <= band for lab in got - want), (off, sorted(got - want))
+        offset = _vec(R, s, off)
+        rows, _, _ = independent_escape.candidates(A, L, offset)
+        expected_candidates = {lab: z for z, lab, _, _ in rows}
+        actual_candidates = {lab: z for z, lab in escape_candidates(A, L, offset)}
+        assert actual_candidates.keys() == expected_candidates.keys(), (off,
+            actual_candidates.keys() - expected_candidates.keys(), expected_candidates.keys() - actual_candidates.keys())
+        assert all(abs(z - expected_candidates[lab]) <= _tol_h(_mag(A, L), s)
+                   for lab, z in actual_candidates.items())
+        truth = s * analytic_escape_height(off[0], off[1], nx=5, amp=0.3, phase=1.0)
+        expected = independent_escape.tied_labels(A, L, offset, truth)
+        assert got == expected, (off, got - expected, expected - got)
+        # The reference remains fully pinned to an independent oracle too.
+        # At C/L~1e8 even its inclusion can be false for the rounded input;
+        # completeness is checked against each input, never ideal topology.
+        A0,L0=_ilock('I',0.,1.)
+        truth0=analytic_escape_height(off[0],off[1],nx=5,amp=.3,phase=1.)
+        assert want == independent_escape.tied_labels(A0,L0,off,truth0)
+        assert all(abs(actual_candidates[lab] - sol.height) <= band for lab in got - want), (off, sorted(got - want))
+
+
+def test_independent_escape_candidate_gate_catches_a_dropped_exact_edge_cover(monkeypatch):
+    """Drop inside ee_cover, before enumeration; independent complete oracle stays fixed."""
+    import eab.kernel3d.covers3 as covers
+    A,L=_ilock('z0.7',0.,1.)
+    offset=_vec(ROT_Z['z0.7'],1.,OFFSETS[0])
+    label=('EE',('edge',25,27),('edge',26,32))
+    rows,_,_=independent_escape.candidates(A,L,offset)
+    expected={lab for _,lab,_,_ in rows}
+    assert label in expected
+    assert {lab for _,lab in escape_candidates(A,L,offset)} == expected
+    original=covers.ee_cover
+    def dropped(a,ea,b,eb,*args,**kwargs):
+        return None if ('EE',('edge',*ea),('edge',*eb))==label else original(a,ea,b,eb,*args,**kwargs)
+    monkeypatch.setattr(covers,'ee_cover',dropped)
+    actual={lab for _,lab in escape_candidates(A,L,offset)}
+    assert expected-actual == {label} and not actual-expected
 
 
 @pytest.mark.parametrize("rot,t,s", [("I", 0.0, 1.0), ("z0.7", 1e5, 1.0), ("I", 1e5, 1e3),
@@ -469,13 +504,31 @@ _LABEL_XFAIL[("sep_vf", "q6", 1e5, 1e-3)] = _NEEDS_GEOM_CONES
 @pytest.mark.parametrize("rot", list(ROT_3))
 @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
 def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
-    """盖标签一致：变换保留顶点/面编号，body_distance 的标签与 margin_contacts 排第一的标签必须与参考
-    **逐字相同**——舍入意义上同距的盖（平行面、平行棱）按枚举序裁决，不按舍入噪声。"""
+    """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+
+    非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+    oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+    """
     reason = _LABEL_XFAIL.get((name, rot, t, s))
     if reason:
         pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
     _, A0, B0, d0, lab0, _ = _margin_ref(name)
     R = ROT_3[rot]
     A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
-    assert body_distance(A, B)[1] == lab0
-    assert margin_contacts(A, B, delta=1.5 * s * d0)[0].label == lab0
+    delta=1.5*s*d0
+    expected=independent_covers.margin_selection(A,B,delta)
+    actual=margin_contacts(A,B,delta=delta)
+    assert {m.label for m in actual} == set(expected)
+    assert len(actual) == len(expected)
+    for item in actual:
+        assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+    _, rounding=independent_escape.windows(tuple(A.verts),tuple(B.verts))
+    rank={'VF':0,'FV':1,'EE':2,'VE3':3,'EV3':4,'VV3':5}
+    def first(offset):
+        low=min(d-offset for d in expected.values())
+        tied=[lab for lab,d in expected.items() if d-offset-low <= rounding]
+        return min(tied,key=lambda lab:(rank[lab[0]],lab[1],lab[2]))
+    assert body_distance(A,B)[1] == first(0.)
+    assert actual[0].label == first(delta)
+    if (rot,t,s)==('I',0.,1.):
+        assert first(0.) == first(delta) == lab0

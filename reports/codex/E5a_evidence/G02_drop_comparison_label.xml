@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="6" time="2.601" timestamp="2026-10-12T02:13:21.783973+08:00" hostname="RICH"><testcase classname="tests.test_covers3_g0_vote2" name="test_vote2_local_facets_equal_hull_facets_on_random_pairs[0]" time="0.440"><failure message="AssertionError: [('hull_only', (740035702749134503...9592094907216953344, 199725203953736291...9655535870896766976, 692074897388361027...8811415082214359040), 1, 1)]&#10;assert [('hull_only'...59040), 1, 1)] == []&#10;  &#10;  Left contains one more item: ('hull_only', (740035702749134503...9592094907216953344, 199725203953736291...9655535870896766976, 692074897388361027...8811415082214359040), 1, 1)&#10;  Use -v to get more diff">tests\test_covers3_g0_vote2.py:47: in test_vote2_local_facets_equal_hull_facets_on_random_pairs
+    assert rep.facet_symmetric_diff == [], rep.facet_symmetric_diff[:5]
+E   AssertionError: [('hull_only', (740035702749134503...9592094907216953344, 199725203953736291...9655535870896766976, 692074897388361027...8811415082214359040), 1, 1)]
+E   assert [('hull_only'...59040), 1, 1)] == []
+E     
+E     Left contains one more item: ('hull_only', (740035702749134503...9592094907216953344, 199725203953736291...9655535870896766976, 692074897388361027...8811415082214359040), 1, 1)
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_covers3_g0_vote2" name="test_vote2_local_facets_equal_hull_facets_on_random_pairs[1]" time="0.287"><failure message="AssertionError: [('hull_only', (-64263862089990425...7704723581374562304, -92577985419407055...9113695537674584064, 439962349374814834...9900753835326963712), 1, 1)]&#10;assert [('hull_only'...63712), 1, 1)] == []&#10;  &#10;  Left contains one more item: ('hull_only', (-64263862089990425...7704723581374562304, -92577985419407055...9113695537674584064, 439962349374814834...9900753835326963712), 1, 1)&#10;  Use -v to get more diff">tests\test_covers3_g0_vote2.py:47: in test_vote2_local_facets_equal_hull_facets_on_random_pairs
+    assert rep.facet_symmetric_diff == [], rep.facet_symmetric_diff[:5]
+E   AssertionError: [('hull_only', (-64263862089990425...7704723581374562304, -92577985419407055...9113695537674584064, 439962349374814834...9900753835326963712), 1, 1)]
+E   assert [('hull_only'...63712), 1, 1)] == []
+E     
+E     Left contains one more item: ('hull_only', (-64263862089990425...7704723581374562304, -92577985419407055...9113695537674584064, 439962349374814834...9900753835326963712), 1, 1)
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_covers3_g0_vote2" name="test_vote2_local_facets_equal_hull_facets_on_random_pairs[2]" time="0.473"><failure message="AssertionError: [('hull_only', (-12192822769422981...3503453722616791040, 250055050901315326...6658862884568170496, -20290835538492470...8630465566429151232), 1, 1)]&#10;assert [('hull_only'...51232), 1, 1)] == []&#10;  &#10;  Left contains one more item: ('hull_only', (-12192822769422981...3503453722616791040, 250055050901315326...6658862884568170496, -20290835538492470...8630465566429151232), 1, 1)&#10;  Use -v to get more diff">tests\test_covers3_g0_vote2.py:47: in test_vote2_local_facets_equal_hull_facets_on_random_pairs
+    assert rep.facet_symmetric_diff == [], rep.facet_symmetric_diff[:5]
+E   AssertionError: [('hull_only', (-12192822769422981...3503453722616791040, 250055050901315326...6658862884568170496, -20290835538492470...8630465566429151232), 1, 1)]
+E   assert [('hull_only'...51232), 1, 1)] == []
+E     
+E     Left contains one more item: ('hull_only', (-12192822769422981...3503453722616791040, 250055050901315326...6658862884568170496, -20290835538492470...8630465566429151232), 1, 1)
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_covers3_g0_vote2" name="test_vote2_local_facets_equal_hull_facets_on_random_pairs[3]" time="0.411"><failure message="AssertionError: [('hull_only', (173228364857655071...5783648611640803328, -68007497797369280...4938630398908825600, -30694003243879488...7433351200785301504), 1, 1)]&#10;assert [('hull_only'...01504), 1, 1)] == []&#10;  &#10;  Left contains one more item: ('hull_only', (173228364857655071...5783648611640803328, -68007497797369280...4938630398908825600, -30694003243879488...7433351200785301504), 1, 1)&#10;  Use -v to get more diff">tests\test_covers3_g0_vote2.py:47: in test_vote2_local_facets_equal_hull_facets_on_random_pairs
+    assert rep.facet_symmetric_diff == [], rep.facet_symmetric_diff[:5]
+E   AssertionError: [('hull_only', (173228364857655071...5783648611640803328, -68007497797369280...4938630398908825600, -30694003243879488...7433351200785301504), 1, 1)]
+E   assert [('hull_only'...01504), 1, 1)] == []
+E     
+E     Left contains one more item: ('hull_only', (173228364857655071...5783648611640803328, -68007497797369280...4938630398908825600, -30694003243879488...7433351200785301504), 1, 1)
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_covers3_g0_vote2" name="test_vote2_local_facets_equal_hull_facets_on_random_pairs[4]" time="0.267"><failure message="AssertionError: [('hull_only', (489069837970012248...2887301242040614912, -83602464516583407...8326902694167445504, 295555850549258988...1170652073057320960), 1, 1)]&#10;assert [('hull_only'...20960), 1, 1)] == []&#10;  &#10;  Left contains one more item: ('hull_only', (489069837970012248...2887301242040614912, -83602464516583407...8326902694167445504, 295555850549258988...1170652073057320960), 1, 1)&#10;  Use -v to get more diff">tests\test_covers3_g0_vote2.py:47: in test_vote2_local_facets_equal_hull_facets_on_random_pairs
+    assert rep.facet_symmetric_diff == [], rep.facet_symmetric_diff[:5]
+E   AssertionError: [('hull_only', (489069837970012248...2887301242040614912, -83602464516583407...8326902694167445504, 295555850549258988...1170652073057320960), 1, 1)]
+E   assert [('hull_only'...20960), 1, 1)] == []
+E     
+E     Left contains one more item: ('hull_only', (489069837970012248...2887301242040614912, -83602464516583407...8326902694167445504, 295555850549258988...1170652073057320960), 1, 1)
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_covers3_g0_vote2" name="test_vote2_local_facets_equal_hull_facets_on_random_pairs[5]" time="0.486"><failure message="AssertionError: [('hull_only', (774617901595339201...1793692646006325248, 973548575802424092...5736845733792841728, -17052054103775607...7078670228402995200), 1, 1)]&#10;assert [('hull_only'...95200), 1, 1)] == []&#10;  &#10;  Left contains one more item: ('hull_only', (774617901595339201...1793692646006325248, 973548575802424092...5736845733792841728, -17052054103775607...7078670228402995200), 1, 1)&#10;  Use -v to get more diff">tests\test_covers3_g0_vote2.py:47: in test_vote2_local_facets_equal_hull_facets_on_random_pairs
+    assert rep.facet_symmetric_diff == [], rep.facet_symmetric_diff[:5]
+E   AssertionError: [('hull_only', (774617901595339201...1793692646006325248, 973548575802424092...5736845733792841728, -17052054103775607...7078670228402995200), 1, 1)]
+E   assert [('hull_only'...95200), 1, 1)] == []
+E     
+E     Left contains one more item: ('hull_only', (774617901595339201...1793692646006325248, 973548575802424092...5736845733792841728, -17052054103775607...7078670228402995200), 1, 1)
+E     Use -v to get more diff</failure></testcase></testsuite></testsuites>

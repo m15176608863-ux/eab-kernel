@@ -1,0 +1,68 @@
+[
+  {
+    "test": "tests/test_g2_bdda3d.py::test_g2_band_catches_a_real_kernel_defect_through_enumeration; ::test_g2_edge_arc_defect_turns_the_gate_red",
+    "old": "Patch public vertex_cone_contains or edge_arc_contains to return boundary unconditionally; actual G2 band assertions must turn red.",
+    "new": "Patch the same unconditional-boundary defect into production _qvertex_contains or _qedge_contains, now used by exact enumeration. All fixtures and red assertions unchanged.",
+    "not_weaker": "Public float-direction wrappers are no longer the tested enumeration path. The mutation is moved inside the active exact predicate; no fake output added."
+  },
+  {
+    "test": "tests/test_kernel3d_covers.py::test_g0_gate_has_teeth_flipped_normals_are_caught",
+    "old": "Monkeypatch float face_normal to negate every normal; require G0 red.",
+    "new": "Monkeypatch the production raw-rational _qnormal to negate every normal and invalidate derived caches; require the same G0 red assertion.",
+    "not_weaker": "The same semantic sign defect now enters the actual predicate path instead of a float output that no longer drives decisions. Geometry, sample count and red assertion unchanged."
+  },
+  {
+    "test": "tests/test_kernel3d_covers.py::test_position_independence_gate_has_teeth_absolute_edge_direction",
+    "old": "Replace unit vertex directions with absolute endpoint coordinates; label-invariance gate must fail.",
+    "new": "Replace exact raw edge vector with exact absolute endpoint coordinates in _qedge; invalidate derived caches; unchanged label failure assertion.",
+    "not_weaker": "Same translation-dependent defect, injected inside the new tested path. No output fabricated and no original input removed."
+  },
+  {
+    "test": "tests/test_covers3_g0_vote2.py::test_vote2_two_labels_on_one_plane_are_reported_duplicate",
+    "old": "A triangulated box produces duplicated source-face planes and G0 reports duplicates.",
+    "new": "Exact convex view must merge twelve source triangles into six facets and pass G0. Supplying a repeated canonical label to the actual vote-two comparator must produce exactly its duplicate report.",
+    "not_weaker": "Canonicalization intentionally changes source-label semantics. Both the legitimate triangulated input and the duplicate-input rejection are now tested; the old erroneous duplicate geometry is not required."
+  },
+  {
+    "test": "tests/test_covers3_g0_vote2.py::test_yawed_stack_passes_g0_under_random_rotations",
+    "old": "Every rounded random rotation must retain ideal zero strict facets and ten degenerate facets.",
+    "new": "Every original rounded cell compares its complete exact local labels and strict/degenerate counts with independent rational support sets, with zero ambiguity. Original yaw-only input still must have (0,0,10).",
+    "not_weaker": "No rotated input or original analytic count is dropped; every actual micro-facet is checked rather than suppressed to preserve an ideal geometry."
+  },
+  {
+    "test": "tests/test_invariance_geom.py::test_cover_labels_and_strictness_are_invariant",
+    "old": "Rounded transformed source-cover labels/strictness and convex facets equal the ideal base sets.",
+    "new": "Every source label, strict bit and rejection agrees with the independent Fraction Newell/Gram/extreme-ray oracle; every canonical convex facet agrees with independent exact support sets.",
+    "not_weaker": "All parameter cells retained; exact classifications replace false ideal-invariance assumptions. The oracle shares no production geometry primitive; complete set equality checks both omissions and additions."
+  },
+  {
+    "test": "tests/test_invariance_geom.py::test_support_gaps_scale_and_membership_is_invariant",
+    "old": "Equal face counts and zipped gap scaling; membership checked only in stable base cells or an ideal exact-boundary base cell.",
+    "new": "Every gap and plane count checked against independent rational support arithmetic for that canonical view; maximum gap still scales; every displacement's zero-tol membership equals independent exact SAT, including boundaries; positive-domain-window invariance retained away from the boundary.",
+    "not_weaker": "Faces may split under rounded motion, so zipped unequal models are not the same theorem. Every new face is checked, the invariant maximum remains, and previously untested membership cells now have exact checks."
+  },
+  {
+    "test": "tests/test_invariance_geom.py::test_g0_three_votes_are_invariant",
+    "old": "Counts match ideal base allowing <=2 ambiguous facets and dropped labels in engineering cells.",
+    "new": "Exact source difference hull extreme-point count, complete independent strict support labels and degenerate count all match. Every ambiguity/drop/skipped counter is zero and all mandatory boundary probes are checked.",
+    "not_weaker": "All original cells remain; every exact feature is counted without a noise exemption. The original base G0 still must pass."
+  },
+  {
+    "test": "tests/test_invariance_geom.py::test_merge_coplanar_face_count_is_invariant",
+    "old": "Every rounded box has exactly six merged faces, is manifold, and scales in volume.",
+    "new": "Full returned face-coordinate sets equal an independently built exact hull for every rounded cell; manifold and original volume bound unchanged; identity box still has six merged faces.",
+    "not_weaker": "Checks complete exact facets rather than a false constant count that would hide micro-ridges; preserves the analytic identity and metric gates."
+  },
+  {
+    "test": "tests/test_invariance_geom.py::test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells",
+    "old": "Original t=1e6 cell permits two ambiguous facets, two dropped local labels and only37 strict facets.",
+    "new": "Both original t=1e5 and1e6 cells require39 strict facets against independent supports, exact degenerate counts, and zero ambiguities/drops.",
+    "not_weaker": "Strengthens the missing-feature side by eliminating the previous two-feature exemption. Historical parameter values remain only as provenance, not as allowed counts."
+  },
+  {
+    "test": "tests/test_g03_two_rulers.py module docstring; tests/test_invariance_geom.py module docstring",
+    "old": "Descriptions presented old noise-band repairs and ideal structural invariance as current behavior.",
+    "new": "Describe retained historical inputs and current exact rounded-input checks; explicitly disclaim general legacy intersection precision.",
+    "not_weaker": "Documentation-only changes; no tests or parameters changed by these edits."
+  }
+]

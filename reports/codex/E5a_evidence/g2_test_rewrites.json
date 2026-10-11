@@ -1,0 +1,16 @@
+[
+  {
+    "test": "tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units",
+    "old": "All 27 rounded-motion fixture cells had to retain zero legacy/kernel differences, zero band and penetration covers, zero violations and the ideal base feature/count digest.",
+    "new": "All original 27 cells remain. Original untransformed G2 gate is still fully asserted. Each moved block must equal an independent exhaustive rational supporting-face oracle, including outward orientation; each complete row field is compared with independent rational cover enumeration, Gram parameters, Gordan rays, witness construction and reconciliation, including true disagreement/unsupported legacy triangles, normals, strictness, counts, band and penetration. Original legacy references must be unchanged.",
+    "not_weaker": "The old ideal-face equality is false for rounded coordinates: exact planar faces may split, support diagonals change, boundary strictness changes and real EE covers appear. The replacement has no exclusions or ambiguity windows, checks every moved input and every recorded field rather than the former count digest, and retains original fixture isomorphism. It forbids both missing and spurious precise-input discrepancies.",
+    "mutation": "Inside compare, remove covs[0] at the actual window filter. New same-input field oracle fails; unchanged comparison first passes on the same moved input.",
+    "mutation_test": "tests/test_g2_bdda3d.py::test_g2_exact_moved_oracle_catches_a_dropped_real_cover"
+  },
+  {
+    "test": "tests/test_g2_bdda3d.py::test_polyhedron_with_aliases_keeps_a_small_chamfer_at_any_coordinate_magnitude",
+    "old": "All 9 coordinate/rotation cells must have exactly 7 merged faces and no manifold issues.",
+    "new": "All original 9 cells remain; no aliases, original coordinates and all 10 original vertex identities are required; full exact supporting-face set and outward orientation must equal independent rational all-triples oracle; manifold assertion preserved; all 3 identity-rotation cells still have exactly 7 faces.",
+    "not_weaker": "Fixed seven-face structure after rounded rotations required approximate coplanar merging and is no longer mathematically valid. New full feature oracle catches every swallowed chamfer, spurious face and invalid orientation, while explicitly preserving all ten chamfer vertices and all original manifold gates. No input removed or tolerated-band exception added."
+  }
+]

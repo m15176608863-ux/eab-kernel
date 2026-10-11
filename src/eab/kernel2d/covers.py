@@ -30,6 +30,7 @@ from fractions import Fraction
 from functools import lru_cache
 from math import atan2, isfinite
 
+from ..predicates import cross2_sign, dot2_sign
 from .exact import (convexity_violation, entrance_block_exact, ev_side_exact, membership_exact,
                     polygons_overlap_exact, ve_side_exact)
 from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, sub, unit)
@@ -152,9 +153,15 @@ def _ve_side(A, ia, B, jb, tol, cone_tol):
     e = _vsub(b1, b0)
     if e == (0, 0):
         raise ValueError(f"zero-length edge {jb}")
+    return _ve_side_directions(lo, hi, e, tol, cone_tol)
+
+
+@lru_cache(maxsize=32768)
+def _ve_side_directions(lo, hi, e, tol, cone_tol):
+    """Cache exact directions, not positions; certified filters only decide signs."""
     v = (-e[1], e[0])
-    turn, c1, c2 = cross(lo, hi), cross(lo, v), cross(v, hi)
-    if turn >= 0 and (turn > 0 or dot(lo, hi) > 0) and c1 >= 0 and c2 >= 0 and (turn > 0 or dot(lo, v) > 0):
+    turn, c1, c2 = cross2_sign(lo, hi), cross2_sign(lo, v), cross2_sign(v, hi)
+    if turn >= 0 and (turn > 0 or dot2_sign(lo, hi) > 0) and c1 >= 0 and c2 >= 0 and (turn > 0 or dot2_sign(lo, v) > 0):
         return 1 if c1 > 0 and c2 > 0 else 0
     if tol <= 0 and (cone_tol is None or cone_tol <= 0):
         return -1
@@ -189,7 +196,7 @@ def ev_cover(A: Poly, ka: int, B: Poly, ib: int, tol: float = 0.0, cone_tol: flo
 
 
 def _open_cone(lo, hi, v):
-    return cross(lo, v) > 0 and cross(v, hi) > 0
+    return cross2_sign(lo, v) > 0 and cross2_sign(v, hi) > 0
 
 
 def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
@@ -198,7 +205,7 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
     显式 tol/cone_tol 只放宽 window_active，strict 仍报告精确严格性。"""
     alo, ahi = _raw_cone(A, ia)
     blo, bhi = _raw_cone(B, jb)
-    if cross(alo, ahi) <= 0 or cross(blo, bhi) <= 0:
+    if cross2_sign(alo, ahi) <= 0 or cross2_sign(blo, bhi) <= 0:
         return None
     alo, ahi = neg(alo), neg(ahi)
     rays = (alo, ahi, blo, bhi)

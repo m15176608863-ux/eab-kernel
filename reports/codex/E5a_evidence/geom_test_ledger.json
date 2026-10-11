@@ -1,0 +1,460 @@
+[
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_ridge_and_needle_difference_hull_builds_at_the_requested_tolerance",
+    "affected_tests": [
+      "test_ridge_and_needle_difference_hull_builds_at_the_requested_tolerance"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('tol,nverts', [(1e-12, 22), (1e-09, 20), (1e-07, 20)])"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('tol,nverts', [(1e-12, 22), (1e-09, 22), (1e-07, 22)])"
+    ],
+    "old_assertions": [
+      "H.manifold_issues() == []",
+      "_worst_outside(H, diffs) <= 4.0 * max(tol * L, G3.noise_floor(5.0))",
+      "len(H.verts) == nverts",
+      "max((v[2] for v in H.verts)) == pytest.approx(1e-06 - 0.050001, abs=1e-12)"
+    ],
+    "new_assertions": [
+      "H.manifold_issues() == []",
+      "len(H.verts) == nverts",
+      "max((v[2] for v in H.verts)) == pytest.approx(1e-06 - 0.050001, abs=1e-12)"
+    ],
+    "old_contract": "The old tol=1e-9 and 1e-7 cells expected 20 vertices by deleting two real needle-scale extreme points.",
+    "new_contract": "All three tol cells now require 22 vertices plus zero-band exact support and extremality.",
+    "not_weaker_reason": "A positive-tolerance omission is replaced with preservation of every true extreme point; all three parameter values remain.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_rotated_box_pair_hull_has_exactly_eight_vertices_on_the_first_build",
+    "affected_tests": [
+      "test_rotated_box_pair_hull_has_exactly_eight_vertices_on_the_first_build"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('seed', range(12))"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('seed', range(12))"
+    ],
+    "old_assertions": [
+      "len(H.verts) == 8 and len(H.faces) == 12",
+      "H.volume() == pytest.approx(6.0 * 3.0 * 4.0, rel=1e-12)"
+    ],
+    "new_assertions": [
+      "len(H.verts) >= 8 and len(H.faces) == 2 * len(H.verts) - 4",
+      "H.volume() == pytest.approx(6.0 * 3.0 * 4.0, rel=1e-12)"
+    ],
+    "old_contract": "Rounded rotated input was required to have the ideal unrounded box topology: 8 vertices and 12 triangles.",
+    "new_contract": "Actual stored points must have an exact supported hull with no nonextreme vertices; triangular Euler count and volume check retained.",
+    "not_weaker_reason": "A false ideal-transform assumption is replaced with independent rational verification of the actual input; no grid cells removed.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_sliver_fallback_removes_the_middle_of_three_collinear_vertices",
+    "affected_tests": [
+      "test_sliver_fallback_removes_the_middle_of_three_collinear_vertices"
+    ],
+    "old_parameters": [],
+    "new_parameters": [],
+    "old_assertions": [
+      "src != inspect.getsource(G3._quickhull_once)",
+      "len(H9.verts) == 9 and _worst_outside(H9, diffs) > 10000.0 * eps_d",
+      "G3._sliver_middle_vertex(H9, eps_d) is not None",
+      "len(H.verts) == 8 and H.volume() == pytest.approx(72.0, rel=1e-12)",
+      "len(G3._quickhull(diffs, 1e-12).verts) == 9"
+    ],
+    "new_assertions": [
+      "old in src"
+    ],
+    "old_contract": "Injected tie-order mistake plus approximate sliver removal expected an 8-vertex repaired ideal box.",
+    "new_contract": "A production internal mutation retains exact face-interior, edge-interior and body-interior points; independent extreme-vertex certificate catches it.",
+    "not_weaker_reason": "The new gate checks the required exact nonredundancy property through the actual construction, without invoking a topology-changing noise filter.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_far_coordinate_minkowski_hulls_build_without_escalation",
+    "affected_tests": [
+      "test_far_coordinate_minkowski_hulls_build_without_escalation"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('C', [100000.0, 1000000.0])"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('C', [100000.0, 1000000.0])"
+    ],
+    "old_assertions": [
+      "len(calls) == 1",
+      "len(H.verts) == 8 and H.manifold_issues() == []",
+      "H.volume() == pytest.approx(72.0, rel=1e-07)"
+    ],
+    "new_assertions": [
+      "len(calls) == 1",
+      "H.manifold_issues() == []",
+      "H.volume() == pytest.approx(72.0, rel=1e-07)"
+    ],
+    "old_contract": "A positive numerical support band or obsolete prose described the hull.",
+    "new_contract": "Exact Fraction support and extreme-vertex checks replace the band; existing parameter grid and construction success checks remain.",
+    "not_weaker_reason": "Zero positive exterior distance is strictly stronger than a permitted exterior band.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_noise_floor_in_the_hull_has_teeth",
+    "affected_tests": [
+      "test_noise_floor_in_the_hull_has_teeth"
+    ],
+    "old_parameters": [],
+    "new_parameters": [],
+    "old_assertions": [
+      "len(G3._quickhull(diffs, 1e-14).verts) == 8",
+      "len(H.verts) > 8"
+    ],
+    "new_assertions": [
+      "after.verts == before.verts and after.faces == before.faces"
+    ],
+    "old_contract": "Disabling noise floor was expected to raise or retain extra rounded-input vertices.",
+    "new_contract": "Any noise-floor call raises; both runs must deliver the same exact hull at engineering coordinates.",
+    "not_weaker_reason": "The disallowed noise-band dependency becomes a negative dependency gate; independent exact support and extremality still required.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_ridge_needle_family_never_needs_tolerance_escalation",
+    "affected_tests": [
+      "test_ridge_needle_family_never_needs_tolerance_escalation"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('seed', range(40))"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('seed', range(40))"
+    ],
+    "old_assertions": [
+      "calls == [1e-12]",
+      "_worst_outside(H, diffs) <= 4.0 * max(1e-12 * 6.0, G3.noise_floor(5.0)) + 1e-15"
+    ],
+    "new_assertions": [
+      "calls == [1e-12]"
+    ],
+    "old_contract": "A positive numerical support band or obsolete prose described the hull.",
+    "new_contract": "Exact Fraction support and extreme-vertex checks replace the band; existing parameter grid and construction success checks remain.",
+    "not_weaker_reason": "Zero positive exterior distance is strictly stronger than a permitted exterior band.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_rotated_ridge_needle_family_builds_without_escalation",
+    "affected_tests": [
+      "test_rotated_ridge_needle_family_builds_without_escalation"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('tm,s', [(0.0, 1.0), (1000.0, 1.0), (100000.0, 0.001), (1000000.0, 1000.0)])",
+      "pytest.mark.parametrize('seed', range(30))"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('tm,s', [(0.0, 1.0), (1000.0, 1.0), (100000.0, 0.001), (1000000.0, 1000.0)])",
+      "pytest.mark.parametrize('seed', range(30))"
+    ],
+    "old_assertions": [
+      "H.manifold_issues() == []",
+      "len(H.verts) >= 20",
+      "_exact_worst_outside(H, diffs) <= 4.0 * eps_d",
+      "calls == [1e-12]"
+    ],
+    "new_assertions": [
+      "H.manifold_issues() == []",
+      "len(H.verts) >= 20",
+      "_exact_worst_outside(H, diffs) <= 4.0 * eps_d",
+      "calls == [1e-12]"
+    ],
+    "old_contract": "A positive numerical support band or obsolete prose described the hull.",
+    "new_contract": "Exact Fraction support and extreme-vertex checks replace the band; existing parameter grid and construction success checks remain.",
+    "not_weaker_reason": "Zero positive exterior distance is strictly stronger than a permitted exterior band.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_max_tol_cap_raises_instead_of_escalating_forever",
+    "affected_tests": [
+      "test_max_tol_cap_raises_instead_of_escalating_forever"
+    ],
+    "old_parameters": [],
+    "new_parameters": [],
+    "old_assertions": [
+      "max(calls) <= 1e-10",
+      "len(convex_hull_3d(pts, tol=1e-12, max_tol=1e-08).verts) == 8",
+      "calls[-1] == pytest.approx(1e-08)"
+    ],
+    "new_assertions": [
+      "calls == [1e-12]"
+    ],
+    "old_contract": "Expected successful retry at a larger tolerance after forced certificate failures.",
+    "new_contract": "Any failed exact certificate raises on the first attempt for both retained max_tol cells.",
+    "not_weaker_reason": "No failed geometry is accepted by weakening the criterion; finite fail-closed behavior is stronger.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_hull_robustness.py",
+    "test_or_helper": "test_exact_convexity_oracle_catches_a_point_the_build_was_made_to_ignore",
+    "affected_tests": [
+      "test_exact_convexity_oracle_catches_a_point_the_build_was_made_to_ignore"
+    ],
+    "old_parameters": [],
+    "new_parameters": [],
+    "old_assertions": [
+      "_exact_worst_outside(H, pts2) > 4.0 * eps_d"
+    ],
+    "new_assertions": [],
+    "old_contract": "An ignored point could be caught either by production selfcheck or only by a test-side relaxed oracle.",
+    "new_contract": "The production certificate itself must reject an exactly 2^-80 exterior point skipped inside construction.",
+    "not_weaker_reason": "The production guard must now catch the defect, not merely an after-the-fact test oracle.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_geom3_merge.py",
+    "test_or_helper": "_place",
+    "affected_tests": [
+      "test_vertex_pinched_coplanar_faces_do_not_hang",
+      "test_u_prism_prong_ends_stay_separate",
+      "test_triangulated_concave_prism_merges_back_to_its_polygons"
+    ],
+    "old_parameters": [],
+    "new_parameters": [],
+    "old_assertions": [],
+    "new_assertions": [],
+    "old_contract": "Float evaluation of a nominal rigid transform destroyed exact polygon coplanarity before a merge-back theorem test.",
+    "new_contract": "Both constructions are evaluated at every original cell: _float_place restores the exact historical floating expression and input bits; _place adds the same-coefficient rational affine construction. Original analytic coplanar topology checks remain on the rational track, while the historical rounded track retains timeout, volume/manifold, and an independent exact directed-boundary merge certificate.",
+    "not_weaker_reason": "The previous Fraction-only migration dropped rounded concave topology coverage; that audit finding is accepted and repaired. All 16 original rounded-input cells are restored bit-for-bit, not substituted by distant convex-box cells. Exact affine analytic assertions are additive; no old timeout or numeric bound is relaxed.",
+    "deleted_tests": [],
+    "review_correction": "Audit B: previous rounded coverage argument was insufficient for pinch and concave U/L families; fixed by same-cell dual-track checks.",
+    "input_identity_evidence": "merge_rounded_input_audit.json and tmp/audit_merge_input_restore.py"
+  },
+  {
+    "file": "tests/test_geom3_merge.py",
+    "test_or_helper": "test_rotated_box_far_from_origin_merges_to_six_faces",
+    "affected_tests": [
+      "test_rotated_box_far_from_origin_merges_to_six_faces"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('off', [0.0, 1000.0, 10000.0, 100000.0, 4500000.0])",
+      "pytest.mark.parametrize('seed', range(0, 6))"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('off', [0.0, 1000.0, 10000.0, 100000.0, 4500000.0])",
+      "pytest.mark.parametrize('seed', range(0, 6))"
+    ],
+    "old_assertions": [
+      "len(M.faces) == 6",
+      "M.manifold_issues() == []",
+      "M.volume() == pytest.approx(1.2, rel=1e-06)"
+    ],
+    "new_assertions": [
+      "all((_fr_orient(*(rounded_hull.verts[i] for i in f[:3]), rounded_hull.verts[j]) == 0 for f in rounded_hull.faces for j in f))",
+      "len(M.faces) == 6",
+      "M.manifold_issues() == []",
+      "M.volume() == pytest.approx(1.2, rel=1e-06)"
+    ],
+    "old_contract": "Required six merged faces for rounded transformed points whether or not they were coplanar.",
+    "new_contract": "Retains all rounded cells with exact support/planarity verification, plus rational affine cells with the original six-face and volume assertions.",
+    "not_weaker_reason": "Adds actual-input exact verification without removing the original intended planar box topology check.",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_kernel3d_geom.py",
+    "test_or_helper": "test_entrance_block_of_rotated_box_pair_is_a_clean_box",
+    "affected_tests": [
+      "test_entrance_block_of_rotated_box_pair_is_a_clean_box"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('scale', [0.001, 1.0, 1000.0])",
+      "pytest.mark.parametrize('seed', [2, 4, 7])"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('scale', [0.001, 1.0, 1000.0])",
+      "pytest.mark.parametrize('seed', [2, 4, 7])"
+    ],
+    "old_assertions": [
+      "E.manifold_issues() == []",
+      "E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-09)",
+      "E.is_convex(1e-09)",
+      "rep.passed",
+      "rep.hull_vertices == rep.e_vertices == 8"
+    ],
+    "new_assertions": [
+      "E.manifold_issues() == []",
+      "E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-09)",
+      "E.is_convex(1e-09)",
+      "rep.passed",
+      "H.manifold_issues() == []",
+      "rep.hull_vertices == rep.e_vertices == len(H.verts)",
+      "Eq.manifold_issues() == []",
+      "Eq.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-09)",
+      "len(Eq.verts) == 8 and len(merge_coplanar(Eq).faces) == 6",
+      "repq.passed",
+      "repq.hull_vertices == repq.e_vertices == 8"
+    ],
+    "old_contract": "Required ideal unrounded box/lattice vertex or merged-facet counts on rounded transformed coordinates.",
+    "new_contract": "Every original rounded input and volume/manifold assertion is retained; independent Fraction support/extreme-vertex certification is added. The same stored matrix/scale/offset is additionally evaluated rationally to retain the original exact eight-vertex/six-facet topology premise.",
+    "not_weaker_reason": "No input, random sample, parameter grid, or existing volume/manifold bound is dropped or relaxed. Actual stored coordinates now receive zero-tolerance support and extreme-rank proofs; ideal topology is still required on an additional premise-preserving exact transform, including every original seed and scale.",
+    "oracle": "test_hull_robustness._assert_exact_hull and _fr_orient use independent Fraction determinants and incident normal rank; no production orientation/cone/member/oracle functions.",
+    "red_evidence": "full_verified.log: the only 15 failed tests in the complete 7884-test run; 9 rotated pair plus 6 similarity grids.",
+    "deleted_tests": [],
+    "additional_boundary": "legacy margin entrance block is certified against its actual float difference inputs; G0 exact E counts are compared against a separately constructed hull of exact Fraction differences with independent certificate. No claim that margin is migrated.",
+    "green_evidence": "kernel3d_geom_final_migration.log: 68 passed in 10.52s; wrapper wall 11.426s; changed_during_run=[]"
+  },
+  {
+    "file": "tests/test_kernel3d_geom.py",
+    "test_or_helper": "test_convex_hull_is_similarity_invariant_on_degenerate_and_generic_sets",
+    "affected_tests": [
+      "test_convex_hull_is_similarity_invariant_on_degenerate_and_generic_sets"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('seed,scale,t', [(0, 1.0, 0.0), (1, 1e-05, 0.0), (2, 1000.0, 0.0), (3, 1.0, 100000.0), (4, 1000.0, 100000.0), (5, 0.001, 1000.0)])"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('seed,scale,t', [(0, 1.0, 0.0), (1, 1e-05, 0.0), (2, 1000.0, 0.0), (3, 1.0, 100000.0), (4, 1000.0, 100000.0), (5, 0.001, 1000.0)])"
+    ],
+    "old_assertions": [
+      "H.manifold_issues() == []",
+      "H.volume() == pytest.approx(vol0 * scale ** 3, rel=1e-07)",
+      "len(merge_coplanar(H).faces) == 6",
+      "len(H.verts) == 8"
+    ],
+    "new_assertions": [
+      "H.manifold_issues() == []",
+      "H.volume() == pytest.approx(vol0 * scale ** 3, rel=1e-07)",
+      "all((_fr_orient(*(M.verts[i] for i in f[:3]), M.verts[j]) == 0 for f in M.faces for j in f))",
+      "Hq.manifold_issues() == []",
+      "Hq.volume() == pytest.approx(vol0 * scale ** 3, rel=1e-07)",
+      "len(Hq.verts) == len(convex_hull_3d(pts).verts)",
+      "len(merge_coplanar(Hq).faces) == 6",
+      "len(Hq.verts) == 8"
+    ],
+    "old_contract": "Required ideal unrounded box/lattice vertex or merged-facet counts on rounded transformed coordinates.",
+    "new_contract": "Every original rounded input and volume/manifold assertion is retained; independent Fraction support/extreme-vertex certification is added. The same stored matrix/scale/offset is additionally evaluated rationally to retain the original exact eight-vertex/six-facet topology premise.",
+    "not_weaker_reason": "No input, random sample, parameter grid, or existing volume/manifold bound is dropped or relaxed. Actual stored coordinates now receive zero-tolerance support and extreme-rank proofs; ideal topology is still required on an additional premise-preserving exact transform, including every original seed and scale.",
+    "oracle": "test_hull_robustness._assert_exact_hull and _fr_orient use independent Fraction determinants and incident normal rank; no production orientation/cone/member/oracle functions.",
+    "red_evidence": "full_verified.log: the only 15 failed tests in the complete 7884-test run; 9 rotated pair plus 6 similarity grids.",
+    "deleted_tests": [],
+    "green_evidence": "kernel3d_geom_final_migration.log: 68 passed in 10.52s; wrapper wall 11.426s; changed_during_run=[]"
+  },
+  {
+    "file": "tests/test_geom3_merge.py",
+    "test_or_helper": "test_vertex_pinched_coplanar_faces_do_not_hang",
+    "affected_tests": [
+      "test_vertex_pinched_coplanar_faces_do_not_hang"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('seed,scale', [(0, 1.0), (1, 0.001), (2, 1000.0)])"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('seed,scale', [(0, 1.0), (1, 0.001), (2, 1000.0)])"
+    ],
+    "old_assertions": [
+      "P.manifold_issues() == []",
+      "_face_set(M) == _face_set(P)",
+      "M.volume() == pytest.approx(11.0 / 3.0 * scale ** 3, rel=1e-12)",
+      "M.manifold_issues() == []"
+    ],
+    "new_assertions": [
+      "rounded.manifold_issues() == []",
+      "_face_set(rounded_merge) == _face_set(rounded)",
+      "rounded_merge.volume() == pytest.approx(11.0 / 3.0 * scale ** 3, rel=1e-12)",
+      "rounded_merge.manifold_issues() == []",
+      "P.manifold_issues() == []",
+      "_face_set(M) == _face_set(P)",
+      "M.volume() == pytest.approx(11.0 / 3.0 * scale ** 3, rel=1e-12)",
+      "M.manifold_issues() == []"
+    ],
+    "old_contract": "Historical floating _place input required termination, closed manifold, unchanged volume and the intended concave mesh topology.",
+    "new_contract": "The same original floating input is restored at every cell; both it and the additional Fraction-affine input are tested. Rounded output must match the exact plane/adjacency/directed-boundary certificate; analytic Fraction-track assertions remain intact.",
+    "not_weaker_reason": "Every original coordinate bit, parameter cell, timeout, volume tolerance rel=1e-12 and manifold assertion is retained. Pinch and separate-prong face identity assertions also remain on the rounded inputs. Triangulated rounded U/L meshes require exactly the maximal genuinely coplanar edge-connected components and their full oriented boundary; this rejects both missing merges and merging real microhinges. The old original-polygon and two-prong analytic assertions still run on the additional rational-affine track.",
+    "oracle": "Test-local Fraction determinant planes, projected signed area orientation, reverse-edge graph and directed boundary multiset; calls no production normal/orientation/component/merge helper.",
+    "input_identity_evidence": "merge_rounded_input_audit.json: 16/16 original input cells bitwise identical, constructor byte expression identical except helper name",
+    "green_evidence": "merge_rounded_restored_teeth.log: 53 passed in 0.87s; wall1.553; source_drift=[]",
+    "teeth": "miss_exact_merge and merge_rounded_microhinge injected inside production merge function; both reach exact merge boundary mismatch assertion",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_geom3_merge.py",
+    "test_or_helper": "test_u_prism_prong_ends_stay_separate",
+    "affected_tests": [
+      "test_u_prism_prong_ends_stay_separate"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('seed,scale', [(0, 1.0), (1, 0.001), (2, 1000.0)])"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('seed,scale', [(0, 1.0), (1, 0.001), (2, 1000.0)])"
+    ],
+    "old_assertions": [
+      "P.manifold_issues() == []",
+      "_face_set(M) == _face_set(P)",
+      "M.volume() == pytest.approx(7.0 * scale ** 3, rel=1e-12)",
+      "M.manifold_issues() == []"
+    ],
+    "new_assertions": [
+      "rounded.manifold_issues() == []",
+      "_face_set(rounded_merge) == _face_set(rounded)",
+      "rounded_merge.volume() == pytest.approx(7.0 * scale ** 3, rel=1e-12)",
+      "rounded_merge.manifold_issues() == []",
+      "P.manifold_issues() == []",
+      "_face_set(M) == _face_set(P)",
+      "M.volume() == pytest.approx(7.0 * scale ** 3, rel=1e-12)",
+      "M.manifold_issues() == []"
+    ],
+    "old_contract": "Historical floating _place input required termination, closed manifold, unchanged volume and the intended concave mesh topology.",
+    "new_contract": "The same original floating input is restored at every cell; both it and the additional Fraction-affine input are tested. Rounded output must match the exact plane/adjacency/directed-boundary certificate; analytic Fraction-track assertions remain intact.",
+    "not_weaker_reason": "Every original coordinate bit, parameter cell, timeout, volume tolerance rel=1e-12 and manifold assertion is retained. Pinch and separate-prong face identity assertions also remain on the rounded inputs. Triangulated rounded U/L meshes require exactly the maximal genuinely coplanar edge-connected components and their full oriented boundary; this rejects both missing merges and merging real microhinges. The old original-polygon and two-prong analytic assertions still run on the additional rational-affine track.",
+    "oracle": "Test-local Fraction determinant planes, projected signed area orientation, reverse-edge graph and directed boundary multiset; calls no production normal/orientation/component/merge helper.",
+    "input_identity_evidence": "merge_rounded_input_audit.json: 16/16 original input cells bitwise identical, constructor byte expression identical except helper name",
+    "green_evidence": "merge_rounded_restored_teeth.log: 53 passed in 0.87s; wall1.553; source_drift=[]",
+    "teeth": "miss_exact_merge and merge_rounded_microhinge injected inside production merge function; both reach exact merge boundary mismatch assertion",
+    "deleted_tests": []
+  },
+  {
+    "file": "tests/test_geom3_merge.py",
+    "test_or_helper": "test_triangulated_concave_prism_merges_back_to_its_polygons",
+    "affected_tests": [
+      "test_triangulated_concave_prism_merges_back_to_its_polygons"
+    ],
+    "old_parameters": [
+      "pytest.mark.parametrize('seed,scale', [(0, s) for s in SCALES] + [(1, 1.0), (2, 1000.0)])",
+      "pytest.mark.parametrize('name', ['U', 'L'])"
+    ],
+    "new_parameters": [
+      "pytest.mark.parametrize('seed,scale', [(0, s) for s in SCALES] + [(1, 1.0), (2, 1000.0)])",
+      "pytest.mark.parametrize('name', ['U', 'L'])"
+    ],
+    "old_assertions": [
+      "T.manifold_issues() == []",
+      "_face_set(M) == _face_set(Polyhedron(V, poly_faces))",
+      "M.volume() == pytest.approx(area * scale ** 3, rel=1e-12)",
+      "M.manifold_issues() == []",
+      "len(ends) == 2"
+    ],
+    "new_assertions": [
+      "rounded.manifold_issues() == []",
+      "rounded_merge.volume() == pytest.approx(area * scale ** 3, rel=1e-12)",
+      "rounded_merge.manifold_issues() == []",
+      "T.manifold_issues() == []",
+      "_face_set(M) == _face_set(Polyhedron(V, poly_faces))",
+      "M.volume() == pytest.approx(area * scale ** 3, rel=1e-12)",
+      "M.manifold_issues() == []",
+      "len(ends) == 2"
+    ],
+    "old_contract": "Historical floating _place input required termination, closed manifold, unchanged volume and the intended concave mesh topology.",
+    "new_contract": "The same original floating input is restored at every cell; both it and the additional Fraction-affine input are tested. Rounded output must match the exact plane/adjacency/directed-boundary certificate; analytic Fraction-track assertions remain intact.",
+    "not_weaker_reason": "Every original coordinate bit, parameter cell, timeout, volume tolerance rel=1e-12 and manifold assertion is retained. Pinch and separate-prong face identity assertions also remain on the rounded inputs. Triangulated rounded U/L meshes require exactly the maximal genuinely coplanar edge-connected components and their full oriented boundary; this rejects both missing merges and merging real microhinges. The old original-polygon and two-prong analytic assertions still run on the additional rational-affine track.",
+    "oracle": "Test-local Fraction determinant planes, projected signed area orientation, reverse-edge graph and directed boundary multiset; calls no production normal/orientation/component/merge helper.",
+    "input_identity_evidence": "merge_rounded_input_audit.json: 16/16 original input cells bitwise identical, constructor byte expression identical except helper name",
+    "green_evidence": "merge_rounded_restored_teeth.log: 53 passed in 0.87s; wall1.553; source_drift=[]",
+    "teeth": "miss_exact_merge and merge_rounded_microhinge injected inside production merge function; both reach exact merge boundary mismatch assertion",
+    "deleted_tests": []
+  }
+]

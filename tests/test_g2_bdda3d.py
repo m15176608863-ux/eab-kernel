@@ -440,7 +440,9 @@ def test_g2_band_catches_a_real_kernel_defect_through_enumeration(path, monkeypa
     （都是枚举后追加）全绿、整套 460 全绿，而本测试会红（该变异下 band 恒空，门不报警）。
     """
     import eab.kernel3d.covers3 as cv
-    monkeypatch.setattr(cv, "vertex_cone_contains", lambda P, vi, d, tol=0.0: 0)
+    # E5a: inject the same defect into the raw-rational predicate actually used
+    # by VF/FV, not its public float-direction compatibility wrapper.
+    monkeypatch.setattr(cv, "_qvertex_contains", lambda P, vi, d, tol=0.0: 0)
     res = compare(path)
     assert any(r["band"] for r in res["rows"]), "内核缺陷产出的带内假盖没有进入 band"
     with pytest.raises(AssertionError):
@@ -535,7 +537,7 @@ def test_g2_edge_arc_defect_turns_the_gate_red(path, monkeypatch):
     """G6 minor 29 的复现钉成牙（缺陷在内核里，穿过枚举器）：edge_arc_contains 恒 0 时内核在窗口 1.0 内吐出
     EE −1.0 ×6、EE +1.0 ×2、VE3 1.0 ×8——旧门（带只收 VF/FV）三份夹具全绿。"""
     import eab.kernel3d.covers3 as cv
-    monkeypatch.setattr(cv, "edge_arc_contains", lambda *a, **k: 0)
+    monkeypatch.setattr(cv, "_qedge_contains", lambda *a, **k: 0)
     res = compare(path)
     kinds = {b[0] for r in res["rows"] for b in r["band"]}
     assert {"EE", "VE3"} <= kinds, kinds
@@ -640,28 +642,33 @@ def _row_digest(r, blocks):
 @pytest.mark.parametrize("s,tm", G2_MOTIONS)
 @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
 def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
-    """夹具整体随机旋转（固定种子、非轴对齐）× 平移 |t| ∈ {0, 1e3, 1e5} × 单位缩放 s ∈ {1e-3, 1, 1e3}；
-    窗口、带、容差随单位缩放。门必须照绿，块对、legacy/内核键、盖数、带/贯入/违规计数与恒等变换逐项相同。
-    b6468f3 上 s=1e-3、|t| ≥ 1e3 六格全红（共面归并在原点系里量平面偏移，顶面两片三角不归并，面号错位）；
-    本组修了拓扑那一半（凸包/归并挪到块局部坐标、容差抬到舍入下限），剩下的是内核 covers3 的法锥判据没有舍入下限
-    （面-面坐落的 VF 盖卡在锥边界上），属 m2-geom——六格曾标 strict xfail。2026-09-27 合并：m2-geom 的 angular_floor
-    已补上，xfail 标记摘除；合并时另发现摘要用面号（凸包枚举序）不可比，改用面的顶点集合（见 _row_digest）。"""
-    ref = [_row_digest(r, load_case(path)[2]) for r in compare(path)["rows"]]
+    """原 27 格全保留；每格逐字段核验给定舍入坐标，不把微折面当理想平面。
+
+    oracle 用全三元组有理支持面、独立 Gram 参数/法锥和 Gordan 极射线，
+    不与被测凸包/盖/adapter 共用几何原语。基准 legacy 同构门仍完整执行。
+    运动后真实产生的 facet/strict/EE/不支持的 legacy 三角均必须完整入账；
+    不允许用噪声带吞掉差异来保持理想的固定计数。
+    """
+    from e5a_g2_oracle import assert_comparison
+    from g2_bdda3d import load_case_full
+    _assert_g2_gate(compare(path))
     d = json.loads(path.read_text(encoding="utf-8"))
     _moved(d, s, tm)
     p = tmp_path / f"{path.stem}_moved.json"
     p.write_text(json.dumps(d), encoding="utf-8")
     res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
-    _assert_g2_gate(res, band=G2_BAND * s)
-    assert [_row_digest(r, load_case(p)[2]) for r in res["rows"]] == ref
+    loaded = load_case_full(p, tol=1e-9 * s)
+    assert loaded["entrances"] == json.loads(path.read_text(encoding="utf-8"))["entrances"]
+    assert_comparison(res, loaded, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
 
 
 @pytest.mark.parametrize("C,h", [(0.0, 1e-6), (1e5, 1e-6), (1e6, 1e-5)])
 @pytest.mark.parametrize("rot", [0, 3, 11])
 def test_polyhedron_with_aliases_keeps_a_small_chamfer_at_any_coordinate_magnitude(C, h, rot):
     """G6 第三轮 minor：1 km 立方体一个角削去 h 的倒角（10 顶点 7 面）：旧版把绝对地板当相对容差传给凸包，C = 1e5 时倒角
-    顶点被吸进厚平面带、再被当"非凸包角点"抛错。第四轮 minor：一般旋转后共面归并在局部坐标里低估法向噪声，返回 8～10 面——
-    归并改在原坐标做；这里加一般旋转格（rot = 0 为恒等）。"""
+    顶点被吸进厚平面带、再被当"非凸包角点"抛错。E5a：保留原全部一般旋转格，10 个原顶点必须逐个保留；
+    面集对同输入独立有理支持三元组 oracle 全量相等。只有精确共面的恒等旋转仍应是 7 面，舍入旋转不可强并。
+    """
     import math
     import random
     from g2_bdda3d import polyhedron_with_aliases
@@ -677,5 +684,27 @@ def test_polyhedron_with_aliases_keeps_a_small_chamfer_at_any_coordinate_magnitu
              (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
         pts = [tuple(sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in pts]
     pts = [(x + C, y + C, z + C) for x, y, z in pts]
-    P, _ = polyhedron_with_aliases(pts, block=1)
-    assert len(P.faces) == 7 and P.manifold_issues() == []
+    from e5a_g2_oracle import assert_exact_hull
+    P, aliases = polyhedron_with_aliases(pts, block=1)
+    assert aliases == {} and P.verts == pts
+    assert {i for f in P.faces for i in f} == set(range(10))
+    assert_exact_hull(P)
+    assert P.manifold_issues() == []
+    if rot == 0:
+        assert len(P.faces) == 7
+
+
+def test_g2_exact_moved_oracle_catches_a_dropped_real_cover(tmp_path):
+    """缺陷注入 compare 内部窗口裁决；独立逐字段门必须抓住真实盖漏项。"""
+    from e5a_g2_oracle import assert_comparison
+    from g2_bdda3d import load_case_full
+    d = json.loads(CASES[0].read_text(encoding="utf-8"))
+    _moved(d, 1.0, 1e3)
+    p = tmp_path / "moved_real_cover_tooth.json"
+    p.write_text(json.dumps(d), encoding="utf-8")
+    mutant = _mutant_g2("covs = [c for c in allc if abs(c.gap) <= window]",
+                        "covs = [c for c in allc if abs(c.gap) <= window][1:]")
+    loaded = load_case_full(p)
+    assert_comparison(compare(p), loaded, window=G2_WINDOW, band=G2_BAND, tol=1e-9)
+    with pytest.raises(AssertionError):
+        assert_comparison(mutant.compare(p), loaded, window=G2_WINDOW, band=G2_BAND, tol=1e-9)

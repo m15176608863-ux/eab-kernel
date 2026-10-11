@@ -1,0 +1,26 @@
+{
+  "id": "F01",
+  "mutation": "orient3d float filter bound divided by ten",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "-o",
+    "pythonpath=D:/eab-wt/cx-e2/reports/codex/E5a_evidence/tmp/filter_mutant",
+    "--basetemp=D:\\eab-wt\\cx-e2\\reports\\codex\\E5a_evidence\\tmp\\filter_mutant\\pytest",
+    "tests/test_filtered_predicates.py::test_orient3d_filter_vs_fraction_shrunken_bound_witness",
+    "--junitxml=D:\\eab-wt\\cx-e2\\reports\\codex\\E5a_evidence\\filters_mutation.xml"
+  ],
+  "returncode": 1,
+  "expected_assertion": "assert -1 == 1",
+  "killed": true,
+  "source_sha256": "6d406916e68742905eb95ea97fbfecfaa48007ea37a3c310738f90a8769c56a4",
+  "mutant_sha256": "7ad337a5fae853b5cbb7e0038b9e14479c3357f7e4ee8dfad7fa7e45c0d74863",
+  "source_unchanged": true,
+  "isolated_package": "D:\\eab-wt\\cx-e2\\reports\\codex\\E5a_evidence\\tmp\\filter_mutant\\eab"
+}

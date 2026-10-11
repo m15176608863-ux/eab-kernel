@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="8" time="3.093" timestamp="2026-10-12T01:57:33.057426+08:00" hostname="RICH"><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.0]" time="0.540" /><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.05]" time="0.192"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.15]" time="0.194"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.25]" time="0.648" /><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.35]" time="0.181"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.45]" time="0.193"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.5]" time="0.574" /><testcase classname="tests.test_interlock_sensitivity" name="test_escape_height_covers_matches_brute_force[0.6]" time="0.240"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase></testsuite></testsuites>

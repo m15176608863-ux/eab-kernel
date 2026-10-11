@@ -93,8 +93,21 @@ def test_vote2_two_labels_on_one_plane_are_reported_duplicate():
     assert len(tri_box.faces) == 12
     t = tetra((3.0, 0.2, 0.1), (4.0, 0.3, 0.2), (3.2, 1.0, 0.4), (3.3, 0.1, 1.0))
     rep = g0_convex3(t, tri_box, samples=0)
-    kinds = [e[0] for e in rep.facet_symmetric_diff]
-    assert kinds and set(kinds) == {"duplicate"}, rep.facet_symmetric_diff
+    # E5a convex views merge only exactly coplanar triangles before assigning
+    # facet labels. A split input surface must not manufacture duplicate facets.
+    from eab.kernel3d.geom3 import exact_convex_view
+    canonical = exact_convex_view(tri_box)
+    assert len(canonical.faces) == 6
+    assert rep.passed and rep.facet_symmetric_diff == []
+    assert rep.facet_local == rep.facet_global > 0
+    # Keep the old duplicate-defect tooth at the actual comparison path: two
+    # distinct encodings of one valid label are supplied to the iterable input.
+    from eab.kernel3d import g03_exact
+    a,b=exact_convex_view(t),canonical
+    p,f,_=g03_exact.difference_hull(tuple(a.verts),tuple(b.verts))
+    labels=sorted(local_facets3(a,b))
+    duplicate=g03.facet_vote3(a,b,labels+[labels[0]],Polyhedron(list(p),list(f)),list(p))
+    assert duplicate[-1] == [("duplicate", labels[0])]
 
 
 def test_vote2_accounts_for_degenerate_facets_tetra_box():
@@ -231,4 +244,15 @@ def test_yawed_stack_passes_g0_under_random_rotations(yaw, seed):
     xf = lambda P: Polyhedron([tuple(sum(R[i][j] * p[j] for j in range(3)) for i in range(3)) for p in P.verts], list(P.faces))
     r = g0_convex3(xf(A0), xf(B0), samples=12, seed=0)
     assert r.passed and r.facet_symmetric_diff == [] and not any(d[0] == "hull_anomaly" for d in r.facet_symmetric_diff), r
-    assert (r.facet_local, r.facet_global, r.facet_degenerate) == (0, 0, 10), r
+    # The original yaw-only data still has its analytic degeneracies. Rounded
+    # general rotations can introduce true micro-facets: check every one against
+    # independent exact supports, rather than suppressing them as ambiguous.
+    from eab.kernel3d import g03_exact
+    from eab.kernel3d.geom3 import exact_convex_view
+    r0=g0_convex3(A0,B0,samples=0)
+    assert (r0.facet_local,r0.facet_global,r0.facet_degenerate)==(0,0,10)
+    a,b=exact_convex_view(xf(A0)),exact_convex_view(xf(B0))
+    expected,deg=g03_exact.support_labels(tuple(a.verts),tuple(a.faces),tuple(b.verts),tuple(b.faces))
+    assert local_facets3(a,b)==expected
+    assert (r.facet_local,r.facet_global,r.facet_degenerate)==(len(expected),len(expected),deg)
+    assert r.facet_ambiguous==r.facet_local_dropped==r.e_vertices_ambiguous==0

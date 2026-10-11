@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.106" timestamp="2026-10-12T02:13:18.106471+08:00" hostname="RICH"><testcase classname="tests.test_filtered_predicates" name="test_orient3d_filter_vs_fraction_shrunken_bound_witness" time="0.001"><failure message="assert -1 == 1&#10; +  where -1 = &lt;function orient3d at 0x000000000470AD40&gt;(*((-0.8912983977775468, -0.7882294486878267, -0.8329292498683749), (0.7030062716913941, 0.4470157166494193, 1.064119690...1703294522026, -1.0703963362466453, -0.9415752128350756), (-1.178918572957056, 0.8367847723865847, 1.3679508826678572)))&#10; +    where &lt;function orient3d at 0x000000000470AD40&gt; = pred.orient3d">def test_orient3d_filter_vs_fraction_shrunken_bound_witness():
+        assert _orientation(*SHRUNK_BOUND_WITNESS) == 1
+&gt;       assert pred.orient3d(*SHRUNK_BOUND_WITNESS) == 1
+E       assert -1 == 1
+E        +  where -1 = &lt;function orient3d at 0x000000000470AD40&gt;(*((-0.8912983977775468, -0.7882294486878267, -0.8329292498683749), (0.7030062716913941, 0.4470157166494193, 1.064119690...1703294522026, -1.0703963362466453, -0.9415752128350756), (-1.178918572957056, 0.8367847723865847, 1.3679508826678572)))
+E        +    where &lt;function orient3d at 0x000000000470AD40&gt; = pred.orient3d
+
+tests\test_filtered_predicates.py:37: AssertionError</failure></testcase></testsuite></testsuites>

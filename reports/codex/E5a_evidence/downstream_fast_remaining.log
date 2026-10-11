@@ -1,0 +1,91 @@
+.FF.FF.F
+================================== FAILURES ===================================
+_____________ test_escape_height_covers_matches_brute_force[0.05] _____________
+tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+_____________ test_escape_height_covers_matches_brute_force[0.15] _____________
+tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+_____________ test_escape_height_covers_matches_brute_force[0.35] _____________
+tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+_____________ test_escape_height_covers_matches_brute_force[0.45] _____________
+tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+_____________ test_escape_height_covers_matches_brute_force[0.6] ______________
+tests\test_interlock_sensitivity.py:32: in test_escape_height_covers_matches_brute_force
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero
+============================ slowest 20 durations =============================
+0.65s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.25]
+0.57s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.5]
+0.54s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.0]
+0.24s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.6]
+0.19s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.15]
+0.19s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.45]
+0.19s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.05]
+0.18s call     tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.35]
+
+(12 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ===========================
+FAILED tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.05]
+FAILED tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.15]
+FAILED tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.35]
+FAILED tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.45]
+FAILED tests/test_interlock_sensitivity.py::test_escape_height_covers_matches_brute_force[0.6]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+5 failed, 3 passed in 3.14s

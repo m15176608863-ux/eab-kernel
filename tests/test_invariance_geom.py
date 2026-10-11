@@ -9,13 +9,13 @@ G6（`reports/g6_20260924.md`）的 6 条 critical 里 5 条同根：**绝对容
 
 结果必须按应有的方式变换：
   · 距离 ×s（body_distance、margin_contacts 的见证距离、distance_to_convex_entrance、support_gaps3）；
-  · 判定不变（polyhedra_overlap、membership_convex3、inflated_membership、PENETRATING 哨兵）；
-  · 盖标签不变（enumerate_covers3 的 (标签, strict) 集合、local_facets3）——顶点/面编号随物体走，
-    不因刚体运动改变；
-  · G0 三票照样通过且结构计数不变（g0_convex3）；E 的体积 ×s³、流形干净（entrance_block_convex）。
+  · 稳定区判定不变，边界逐格对给定舍入数据作精确检查；
+  · E5a 的盖标签/strict 和凸包结构可因输入舍入而改变，必须逐格等于独立精确 oracle，不能按噪声略过；
+  · G0 三票照样通过且所有精确极点/标签计数一致；E 的体积 ×s³、流形干净（entrance_block_convex）。
 
 **oracle（纪律 A）**：每一格的对照是**同一 API 在恒等变换下的结果**（蜕变关系），而恒等格本身再对
-闭式真值（本文件逐对写明：解析距离、解析贯入证人、E 的解析体积）——所以基准格不会"和变换格一起错"。
+闭式真值（本文件逐对写明：解析距离、解析贯入证人、E 的解析体积）。E5a 的边界标签和结构另对
+独立 Fraction 支撑集/Gram/极射线 oracle（不调用被测几何原语），所有旧参数格保留，零噪声豁免。
 容差：距离比较用 1e-9·s·L 加上坐标舍入的噪声预算 1e3·eps·(|t| + s·L)（L 为物体尺度），
 不许为了过门把输入先挪回原点——库函数自己必须稳健。
 
@@ -28,14 +28,17 @@ from __future__ import annotations
 import math
 import random
 from functools import lru_cache
+from fractions import Fraction
 
 import pytest
+from e5a_cover_oracle import cover_labels as independent_cover_labels
 
 from eab.kernel3d.covers3 import (enumerate_covers3, local_facets3, membership_convex3,
                                   support_gaps3)
 from eab.kernel3d.g03 import g0_convex3
+from eab.kernel3d import g03_exact as exact_oracle
 from eab.kernel3d.geom3 import (Polyhedron, box, brute_feature_distance, convex_hull_3d, merge_coplanar,
-                                polyhedra_overlap, tetra)
+                                polyhedra_overlap, tetra, exact_convex_view)
 from eab.margin import (INSIDE, OUTSIDE, PENETRATING, body_distance, distance_to_convex_entrance,
                         entrance_block_convex, inflated_membership, margin_contacts)
 
@@ -283,9 +286,14 @@ def test_cover_labels_and_strictness_are_invariant(name, rot, tmag, s):
     base, M, A, B = _cell(name, rot, tmag, s)
     covs = [c for c in enumerate_covers3(A, B, window=float("inf"), tol=1e-9) if c.in_extent]
     got = frozenset((c.label(), c.strict) for c in covs)
-    assert got == base["labels"], (sorted(got - base["labels"])[:6], sorted(base["labels"] - got)[:6])
+    expected_covers=independent_cover_labels(A,B,tol=1e-9)
+    assert got==expected_covers, (sorted(got-expected_covers)[:6],sorted(expected_covers-got)[:6])
     facets = frozenset(local_facets3(A, B, 1e-12))
-    assert facets == base["facets"], (sorted(facets - base["facets"]), sorted(base["facets"] - facets))
+    # Convex models are exact hulls of each rounded input, not the ideal rotated
+    # planes. Check every strict label against independent rational support sets.
+    ca,cb=exact_convex_view(A),exact_convex_view(B)
+    expected,_=exact_oracle.support_labels(tuple(ca.verts),tuple(ca.faces),tuple(cb.verts),tuple(cb.faces))
+    assert facets==expected, (sorted(facets-expected),sorted(expected-facets))
 
 
 # ================================================================ 成员判定与支撑间隙
@@ -304,13 +312,37 @@ def test_support_gaps_scale_and_membership_is_invariant(name, rot, tmag, s):
     for x in _displacements(name):
         g0 = support_gaps3(base["A"], base["B"], x)
         g1 = support_gaps3(A, B, M.vec(x))
-        assert len(g0) == len(g1)
-        for a, b in zip(g0, g1):
-            assert abs(b - s * a) <= M.dist_tol(L), (x, a, b)
+        ca,cb=exact_convex_view(A),exact_convex_view(B)
+        # The rounded input may split one source face into several exact facets.
+        # Each output plane, not just their maximum, has an independent value.
+        expected=_support_gap_oracle(ca,cb,M.vec(x))
+        assert len(g1)==len(expected)==len(ca.faces)+len(cb.faces)
+        for actual,want_gap in zip(g1,expected):
+            assert abs(actual-want_gap)<=32*EPS*max(abs(want_gap),s*L), (x,actual,want_gap)
+        assert abs(max(g1)-s*max(g0))<=M.dist_tol(L), (x,g0,g1)
+        assert membership_convex3(A,B,M.vec(x),0)==exact_oracle.overlap(tuple(A.verts),tuple(B.verts),M.vec(x))
         phi = max(g0)
-        if abs(phi) > 1e-6 or phi == 0.0:            # 基准格上离边界清楚（或恰在边界上）
+        if abs(phi) > 1e-6:  # Boundary inputs above are checked exactly, not skipped.
             want = membership_convex3(base["A"], base["B"], x, 1e-9)
             assert membership_convex3(A, B, M.vec(x), 1e-9 * s) == want, (x, phi)
+
+
+def _support_gap_oracle(A,B,x):
+    """Inline Fraction support arithmetic; no production normal/plane helper."""
+    av,bv=tuple(map(exact_oracle.qpoint,A.verts)),tuple(map(exact_oracle.qpoint,B.verts))
+    x=exact_oracle.qpoint(x)
+    result=[]
+    for pts,faces,other,sign in ((bv,B.faces,av,1),(av,A.faces,bv,-1)):
+        for face in faces:
+            p,q,r=(pts[i] for i in face[:3])
+            n=exact_oracle.wedge(exact_oracle.minus(q,p),exact_oracle.minus(r,p))
+            if sign==1:
+                v=min(exact_oracle.scalar(n,a) for a in other)+exact_oracle.scalar(n,x)-exact_oracle.scalar(n,p)
+            else:
+                v=min(exact_oracle.scalar(n,b) for b in other)-exact_oracle.scalar(n,x)-exact_oracle.scalar(n,p)
+            scale=max(map(abs,n));u=tuple(float(c/scale) for c in n)
+            result.append(float(v/scale)/math.sqrt(sum(c*c for c in u)))
+    return result
 
 
 # ================================================================ 裕度层（只调用，不改）
@@ -330,9 +362,23 @@ def test_margin_layer_is_invariant(name, rot, tmag, s):
     if want_in == INSIDE:
         assert m1, "间距 < δ 却返回 []（= 裕度安全）：fail-unsafe"
     m0 = margin_contacts(base["A"], base["B"], delta=delta)
-    assert {m.label for m in m1} == {m.label for m in m0}
-    for a, b in zip(sorted(m.distance for m in m0), sorted(m.distance for m in m1)):
-        assert abs(b - s * a) <= M.dist_tol(L)
+    # Rounded boundary features can become exactly strict/non-active. Instead
+    # of preserving ideal labels, independently enumerate every local cover,
+    # construct its witnesses and apply the existing margin selection contract.
+    from e5a_cover_oracle import margin_selection
+    expected = margin_selection(A, B, s * delta, touching=(ov == 0))
+    expected_base = margin_selection(base["A"], base["B"], delta, touching=(ov == 0))
+    current, original = {m.label: m for m in m1}, {m.label: m for m in m0}
+    assert len(current) == len(m1) and len(original) == len(m0), "duplicate margin labels"
+    assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+    assert set(original) == set(expected_base)
+    for label, contact in current.items():
+        assert abs(contact.distance - expected[label]) <= M.dist_tol(L), (label, contact.distance, expected[label])
+        assert contact.margin_gap == contact.distance - s * delta
+    # Retain rigid-motion/scale distance checks, now matching physical feature
+    # identities instead of zipping unrelated entries after labels split.
+    for label in set(current) & set(original):
+        assert abs(current[label].distance - s * original[label].distance) <= M.dist_tol(L), label
 
 
 # ================================================================ 凸入口块（定理二的 oracle）与 G0 三票
@@ -360,17 +406,15 @@ def test_g0_three_votes_are_invariant(name, rot, tmag, s):
     _, M, A, B = _cell(name, rot, tmag, s)
     r = g0_convex3(A, B, samples=12, seed=1)
     assert r.passed, (r.mismatches[:2], r.facet_symmetric_diff[:4], r.hull_vertices, r.e_vertices)
-    assert r.facet_local == rb.facet_local
     assert rb.facet_ambiguous == 0 and rb.e_vertices_ambiguous == 0
-    assert r.e_vertices + r.e_vertices_ambiguous == rb.e_vertices
-    assert r.hull_vertices + r.e_vertices_ambiguous == rb.hull_vertices
-    if r.facet_ambiguous == 0:
-        assert (r.facet_global, r.facet_degenerate, r.facet_local_dropped) == (rb.facet_global, rb.facet_degenerate, 0)
-    else:
-        # 凸包侧的分辨率以下（generic 在 |t| = 1e5、s = 1e-3：B 的一条 5.5e-5 长的棱与 A 的面只差 4.9e-4 rad，
-        # 这个特征的"高度" 2.7e-8 只是 C·eps 的 ~30 倍）：允许少量 facet 说不清，但要如实报出，且不许多于两个
-        assert r.facet_ambiguous <= 2 and r.facet_local_dropped <= 2 * r.facet_ambiguous, r
-        assert r.facet_global + r.facet_ambiguous <= rb.facet_global + rb.facet_degenerate
+    p,f,_=exact_oracle.difference_hull(tuple(A.verts),tuple(B.verts))
+    nv=len({i for face in f for i in face})
+    ca,cb=exact_convex_view(A),exact_convex_view(B)
+    labels,deg=exact_oracle.support_labels(tuple(ca.verts),tuple(ca.faces),tuple(cb.verts),tuple(cb.faces))
+    assert r.e_vertices==r.hull_vertices==nv
+    assert (r.facet_local,r.facet_global,r.facet_degenerate)==(len(labels),len(labels),deg)
+    assert r.facet_ambiguous==r.facet_local_dropped==r.e_vertices_ambiguous==r.band_skipped==0
+    assert r.samples==12+r.boundary_probes and r.boundary_checked==r.boundary_probes>0
 
 
 @pytest.mark.parametrize("rot,tmag,s", CELLS, ids=CELL_IDS)
@@ -379,7 +423,11 @@ def test_merge_coplanar_face_count_is_invariant(rot, tmag, s):
     M = Motion(rot, tmag, s)
     W = [M.point(p) for p in box(half=(1.0, 0.5, 0.3)).verts]
     H = merge_coplanar(convex_hull_3d(W))
-    assert len(H.faces) == 6 and H.manifold_issues() == [], len(H.faces)
+    points,faces,_=exact_oracle.hull(tuple(W))
+    expected={frozenset(points[i] for i in f) for f in faces}
+    actual={frozenset(tuple(Fraction(c) for c in H.verts[i]) for i in f) for f in H.faces}
+    assert actual==expected and H.manifold_issues()==[]
+    assert len(merge_coplanar(convex_hull_3d(box(half=(1,.5,.3)).verts)).faces)==6
     assert H.volume() == pytest.approx(1.2 * s ** 3, rel=1e-7)
 
 
@@ -387,11 +435,16 @@ def test_merge_coplanar_face_count_is_invariant(rot, tmag, s):
 
 @pytest.mark.parametrize("tmag,amb,dropped,glob", [(1e5, 0, 0, 39), (1e6, 2, 2, 37)])
 def test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells(tmag, amb, dropped, glob):
-    """带 (tight/16, 4·tight] 此前没有牙：删掉第二候选判据、把带改成 1/100–100 倍或单侧 1–4 倍，G03 组 + 本文件 1748 例照绿。
-    generic 对在 R7、s = 1e-3 的两个格上（精确算术复核过）：|t| = 1e5 时全部 39 个 facet 都是真 facet、带内比值 23.6/28.3
-    必须判清楚（上限 4 不许漂到 ≥ 24）；|t| = 1e6 时恰两个 facet 说不清（凸包按噪声地板建、支撑带按它实际用过的厚度 eps 之后的口径，2026-10-10）、丢两个局部标签（下限 1/16 不许收到
-    不含 2.825）。"""
+    """保留原两格及历史参数，E5a 不再允许带宽豁免。
+
+    独立精确支撑集在两格都要求39个严格facet；旧1e6格允许丢两个的口径已删除。
+    """
     base = _base("generic")
     M = Motion(7, tmag, 1e-3)
-    r = g0_convex3(M.poly(base["A"]), M.poly(base["B"]), samples=12, seed=1)
-    assert r.passed and (r.facet_ambiguous, r.facet_local_dropped, r.facet_global) == (amb, dropped, glob), r
+    A,B=M.poly(base["A"]),M.poly(base["B"])
+    r = g0_convex3(A,B, samples=12, seed=1)
+    ca,cb=exact_convex_view(A),exact_convex_view(B)
+    expected,deg=exact_oracle.support_labels(tuple(ca.verts),tuple(ca.faces),tuple(cb.verts),tuple(cb.faces))
+    assert r.passed and (r.facet_ambiguous,r.facet_local_dropped,r.e_vertices_ambiguous)==(0,0,0),r
+    assert r.facet_global==r.facet_local==len(expected)==39
+    assert r.facet_degenerate==deg

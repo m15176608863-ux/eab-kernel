@@ -1,0 +1,22 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+___ test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior[1e-30] ___
+tests\test_covers3_e5a.py:48: in test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior
+    assert edge_arc_contains(p, edge, (1., 0., 0.)) == 0
+E   assert 1 == 0
+E    +  where 1 = edge_arc_contains(Polyhedron(verts=[(-1.0, -1.0, -1.0), (1.0, -1.0, -1.0), (1.0, 1.0, -1.0), (-1.0, 1.0, -1.0), (-1.0, -1.0, 1.0), (1.0,...0, 1.0), (-1.0, 1.0, 1.0)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), (5, 6), (1.0, 0.0, 0.0))
+___ test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior[1e-16] ___
+tests\test_covers3_e5a.py:48: in test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior
+    assert edge_arc_contains(p, edge, (1., 0., 0.)) == 0
+E   assert 1 == 0
+E    +  where 1 = edge_arc_contains(Polyhedron(verts=[(-1.0, -1.0, -1.0), (1.0, -1.0, -1.0), (1.0, 1.0, -1.0), (-1.0, 1.0, -1.0), (-1.0, -1.0, 1.0), (1.0,...0, 1.0), (-1.0, 1.0, 1.0)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), (5, 6), (1.0, 0.0, 0.0))
+___ test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior[1e-09] ___
+tests\test_covers3_e5a.py:48: in test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior
+    assert edge_arc_contains(p, edge, (1., 0., 0.)) == 0
+E   assert 1 == 0
+E    +  where 1 = edge_arc_contains(Polyhedron(verts=[(-1.0, -1.0, -1.0), (1.0, -1.0, -1.0), (1.0, 1.0, -1.0), (-1.0, 1.0, -1.0), (-1.0, -1.0, 1.0), (1.0,...0, 1.0), (-1.0, 1.0, 1.0)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), (5, 6), (1.0, 0.0, 0.0))
+=========================== short test summary info ===========================
+FAILED tests/test_covers3_e5a.py::test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior[1e-30]
+FAILED tests/test_covers3_e5a.py::test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior[1e-16]
+FAILED tests/test_covers3_e5a.py::test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior[1e-09]
+3 failed, 66 deselected in 0.18s

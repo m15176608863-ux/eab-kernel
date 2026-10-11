@@ -1,0 +1,78 @@
+........................................................................ [ 10%]
+FFF.FF
+================================== FAILURES ===================================
+_ test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-0.001] _
+tests\test_invariance_interlock.py:219: in test_escape_tied_set_is_invariant_up_to_the_declared_resolution
+    assert got == want, (off, sorted(got - want))
+E   AssertionError: ((0.23, 0.07, 0.0), [('EE', ('edge', 27, 33), ('edge', 32, 34))])
+E   assert {('EE', ('edg...ce', 8)), ...} == {('EE', ('edg... ('face', 9))}
+E     
+E     Extra items in the left set:
+E     ('EE', ('edge', 27, 33), ('edge', 32, 34))
+E     Use -v to get more diff
+_ test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-1.0] _
+tests\test_invariance_interlock.py:219: in test_escape_tied_set_is_invariant_up_to_the_declared_resolution
+    assert got == want, (off, sorted(got - want))
+E   AssertionError: ((0.23, 0.07, 0.0), [('EE', ('edge', 25, 27), ('edge', 26, 32))])
+E   assert {('EE', ('edg...ce', 8)), ...} == {('EE', ('edg... ('face', 9))}
+E     
+E     Extra items in the left set:
+E     ('EE', ('edge', 25, 27), ('edge', 26, 32))
+E     Use -v to get more diff
+_ test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-1000.0] _
+tests\test_invariance_interlock.py:219: in test_escape_tied_set_is_invariant_up_to_the_declared_resolution
+    assert got == want, (off, sorted(got - want))
+E   AssertionError: ((0.23, 0.07, 0.0), [('EE', ('edge', 25, 27), ('edge', 26, 32)), ('EE', ('edge', 27, 33), ('edge', 32, 34))])
+E   assert {('EE', ('edg...x', 34)), ...} == {('EE', ('edg... ('face', 9))}
+E     
+E     Extra items in the left set:
+E     ('EE', ('edge', 25, 27), ('edge', 26, 32))
+E     ('EE', ('edge', 27, 33), ('edge', 32, 34))
+E     Use -v to get more diff
+_ test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-1000.0-1.0] _
+tests\test_invariance_interlock.py:219: in test_escape_tied_set_is_invariant_up_to_the_declared_resolution
+    assert got == want, (off, sorted(got - want))
+E   AssertionError: ((0.23, 0.07, 0.0), [('EE', ('edge', 25, 27), ('edge', 26, 32))])
+E   assert {('EE', ('edg...ce', 8)), ...} == {('EE', ('edg... ('face', 9))}
+E     
+E     Extra items in the left set:
+E     ('EE', ('edge', 25, 27), ('edge', 26, 32))
+E     Use -v to get more diff
+_ test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-1000.0-1000.0] _
+tests\test_invariance_interlock.py:219: in test_escape_tied_set_is_invariant_up_to_the_declared_resolution
+    assert got == want, (off, sorted(got - want))
+E   AssertionError: ((0.23, 0.07, 0.0), [('EE', ('edge', 25, 27), ('edge', 26, 32))])
+E   assert {('EE', ('edg...ce', 8)), ...} == {('EE', ('edg... ('face', 9))}
+E     
+E     Extra items in the left set:
+E     ('EE', ('edge', 25, 27), ('edge', 26, 32))
+E     Use -v to get more diff
+============================ slowest 20 durations =============================
+11.02s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[0.001-0.0]
+10.61s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-100000.0]
+10.26s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-0.0]
+9.73s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1000.0-100000.0]
+9.55s call     tests/test_interlock_sensitivity.py::test_candidate_set_contains_the_true_escape_height
+8.03s call     tests/test_interlock_sensitivity.py::test_phase_evenness_premise_holds_for_the_brute_force_oracle
+7.14s call     tests/test_interlock_sensitivity.py::test_dual_path_value_matches_float_path
+6.90s call     tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-1000.0-0.001]
+6.45s call     tests/test_interlock_sensitivity.py::test_phase_derivative_at_phase_zero_is_flagged_on_every_default_row
+6.41s call     tests/test_interlock_sensitivity.py::test_escape_profile_is_a_symmetric_ramp_with_peak_at_amplitude
+5.46s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[I-0.0-0.001]
+5.11s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[10000.0-1]
+4.89s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-0.001]
+4.88s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[100000.0-4]
+4.82s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1000.0]
+4.76s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[1000.0-4]
+4.64s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1000.0]
+4.58s call     tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[I-1000.0-0.001]
+4.50s call     tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[I-100000.0-0.001]
+3.96s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1.0]
+=========================== short test summary info ===========================
+FAILED tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-1000.0]
+FAILED tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-1000.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-1000.0-1000.0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+5 failed, 73 passed in 225.68s (0:03:45)

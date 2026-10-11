@@ -1,0 +1,11 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_g0_vote_one_checks_all_exact_vertices_edge_midpoints_and_face_centers __
+tests\test_g03_e5a.py:22: in test_g0_vote_one_checks_all_exact_vertices_edge_midpoints_and_face_centers
+    assert r.boundary_probes==r.boundary_checked==26
+E   assert 26 == 0
+E    +  where 26 = G0Report3(samples=3, band_skipped=0, mismatches=[], facet_local=0, facet_global=0, facet_degenerate=6, facet_ambiguous...ll_vertices=8, e_vertices=8, e_vertices_ambiguous=0, boundary_probes=26, boundary_checked=0, boundary_kinds=(8, 12, 6)).boundary_probes
+E    +  and   0 = G0Report3(samples=3, band_skipped=0, mismatches=[], facet_local=0, facet_global=0, facet_degenerate=6, facet_ambiguous...ll_vertices=8, e_vertices=8, e_vertices_ambiguous=0, boundary_probes=26, boundary_checked=0, boundary_kinds=(8, 12, 6)).boundary_checked
+=========================== short test summary info ===========================
+FAILED tests/test_g03_e5a.py::test_g0_vote_one_checks_all_exact_vertices_edge_midpoints_and_face_centers
+1 failed in 0.36s

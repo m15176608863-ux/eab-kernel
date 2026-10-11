@@ -1,466 +1,151 @@
-"""三维 G0 自证门：理论原生 oracle，不依赖任何 legacy。
+"""Three exact G0 votes for explicit convex models (WO-E5a).
 
-三票（沿用二维版审查 r7 的结论——单靠标签集相等对"共同符号错"是盲的）：
-  票一  逐样本：暴力多面体相交谓词 vs 盖系统的 E 成员谓词，凸情形要求恒等；
-  票二  局部法锥规则给出的严格 facet 集合 == 由 conv{b − a} 读出的严格 facet 集合（结构一致）；
-  票三  E 的顶点集 == conv{b − a} 的**极点**集（不经 A、B 的面法向、法锥、合并规则）。
-
-各票的 oracle 与被测对象共用了什么（纪律 A）：
-  票一  暴力谓词 polyhedra_overlap（射线奇偶 + geom3.point_in_face_polygon）与成员谓词
-        membership_convex3（面法向 + 支撑顶点 + EE 标签）不共用判定原语；二者共用
-        Polyhedron.face_normal，但暴力谓词的**判定**只用它的方向不用符号（内点、微推与接触锥证人的
-        搜索方向用到符号，而每个证人都经符号无关的 point_in_polyhedron 复验——符号错最多让
-        证人搜不到，不会造成假阳性），故对"法向整体翻号"不盲（test_kernel3d_covers 的翻转法向牙）。
-        接触锥证人的 Gordan 方向是 geom3 里的独立实现（`_gordan_direction`），不经 covers3 的
-        cone_relint_direction / closest_point_of_convex_hull_to_origin。
-  票二  局部侧经 covers3.facet_normal3（face_normal、edge_arc_contains）；凸包侧只用差点坐标：
-        三角面叉积给候选法向、**支撑定向**（全部差点落在非正侧）、再按 A、B 各自支撑集的
-        仿射维数判它是严格 facet 还是 FF/FE 退化。凸包（2026-09-24 起为 Quickhull）用自己的三角叉积
-        判可见性，**不再**调用 Polyhedron.face_normal——票二两侧的共用只剩 Polyhedron 的坐标本身。
-  票三  局部侧只用棱方向与坐标（cones_intersect_relint）；凸包侧只用差点坐标——凸包的顶点集就是
-        E 的顶点集（M0.3 起 Quickhull 保证容差内的共面/共线点不成为顶点：全局最远者优先、并列按离质心最远
-        裁决、细条面兜底；旧版另有一道"极点筛"按 1e-7 rad 合并相邻面的法向，把棱脊高 1e-6 的真顶点筛掉）。
-
-票二在 2026-09-21 之前只存了一个计数、从不比较（审查 C23/C27：删掉任一严格 facet，190 次里
-181 次仍 passed）。现在 `passed` 看 facet_symmetric_diff。
-
-尺度（2026-09-24 G6 minor 9，纪律 F）：g0_convex3 的 tol / band 是**相对** E 的尺度 L（差点集 AABB
-对角线）的；凸包、支撑容差、平面去重角、票三顶点匹配全部按 L 与坐标量级 C 的舍入地板取。此前凸包
-tol = 1e-12 与 ∝ 长度³ 的三重积比，尺度 ≤ 1e-5 时凸包报"共面"；票三用 round(·, 7) 的绝对顶点键。
-票三现在按距离容差逐点匹配（不用舍入键：键在舍入边界两侧会把同一点拆成两个）。
+The oracle in g03_exact imports no tested geometric primitive. Vote 1 uses
+independent rational SAT, including every exact E vertex/edge midpoint/facet
+centroid. Vote 2 compares complete support sets. Vote 3 compares exact extreme
+points with local cone intersections. No band, ambiguous or low-height exemption
+changes an answer. The compatibility counters for exemptions are always zero.
 """
-
 from __future__ import annotations
 
 import random
 from dataclasses import dataclass, field
-
-from .covers3 import facet_normal3, local_facets3, membership_convex3
-from .geom3 import (Polyhedron, Vec3, add, angle_between, brute_feature_distance, convex_hull_3d, convex_hull_3d_eps,
-                    coord_scale, cross, dot, mul, neg, noise_floor, norm, polyhedra_overlap, sub, unit)
+from fractions import Fraction
+from functools import lru_cache
+from .covers3 import local_facets3, membership_convex3
+from .geom3 import (Polyhedron, Vec3, brute_feature_distance, noise_floor, norm,
+                    polyhedra_overlap, sub, exact_convex_view)
+from . import g03_exact as oracle
 
 
 @dataclass(slots=True)
 class G0Report3:
     samples: int = 0
     band_skipped: int = 0
-    mismatches: list[tuple[Vec3, int, int]] = field(default_factory=list)
-    facet_local: int = 0              # 局部法锥规则给出的严格 facet 标签数
-    facet_global: int = 0             # conv{b − a} 上应当有严格标签的 facet 数
-    facet_degenerate: int = 0         # conv{b − a} 上的 FF/FE 退化 facet 数（按设计无严格标签）
-    facet_ambiguous: int = 0          # 凸包侧在噪声内说不清的 facet 数（两边都不计；见 _hull_facets）
-    facet_local_dropped: int = 0      # 落在 ambiguous facet 支撑集里、因此不计的局部标签数
-    # 票二的对称差：("hull_only", 法向, dimA, dimB) / ("local_only", 标签) / ("duplicate", 标签)
-    #              / ("hull_anomaly", 法向, dimA, dimB)（凸包侧自身不自洽）
-    facet_symmetric_diff: list[tuple] = field(default_factory=list)
+    mismatches: list = field(default_factory=list)
+    facet_local: int = 0
+    facet_global: int = 0
+    facet_degenerate: int = 0
+    facet_ambiguous: int = 0
+    facet_local_dropped: int = 0
+    facet_symmetric_diff: list = field(default_factory=list)
     hull_vertex_mismatch: int = 0
-    hull_vertices: int = 0            # 凸包顶点数（扣掉与"说不清"的局部顶点对重合的）
-    e_vertices: int = 0               # 局部锥相交规则给出的 E 顶点数（裕度 > 噪声）
-    e_vertices_ambiguous: int = 0     # 裕度落在噪声量级以内、两边都不计的顶点对数
+    hull_vertices: int = 0
+    e_vertices: int = 0
+    e_vertices_ambiguous: int = 0
+    boundary_probes: int = 0
+    boundary_checked: int = 0
+    boundary_kinds: tuple = (0, 0, 0)
 
     @property
-    def passed(self) -> bool:
+    def passed(self):
         return (not self.mismatches and not self.facet_symmetric_diff
-                and self.hull_vertex_mismatch == 0)
+                and self.hull_vertex_mismatch == 0 and self.band_skipped == 0
+                and self.boundary_checked == self.boundary_probes)
 
 
-def _affine_dim(points: list[Vec3], tol: float) -> int:
-    """点集的仿射维数（0 / 1 / 2 / 3），容差 tol（长度）。只用坐标。"""
-    p0 = points[0]
-    far = max(points, key=lambda p: norm(sub(p, p0)))
-    if norm(sub(far, p0)) <= tol:
-        return 0
-    t = unit(sub(far, p0))
-    off = [sub(sub(p, p0), tuple(dot(sub(p, p0), t) * c for c in t)) for p in points]
-    j = max(range(len(points)), key=lambda i: norm(off[i]))
-    if norm(off[j]) <= tol:
-        return 1
-    n = unit(cross(t, off[j]))
-    return 3 if any(abs(dot(n, sub(p, p0))) > tol for p in points) else 2
+def _label_sets(A, B, lab):
+    _,af,bf=lab
+    sa=frozenset(A.faces[af[1]]) if af[0]=='face' else frozenset(af[1:])
+    sb=frozenset(B.faces[bf[1]]) if bf[0]=='face' else frozenset(bf[1:])
+    return sa,sb
 
 
-def _plane_from_points(P: list[Vec3], fl: float) -> tuple[Vec3, float] | None:
-    """良态的平面法向：相距最远的两点 + 离该线最远的点（三点张成的三角高最大）。返回 (单位法向, 法向的角噪声
-    ≈ fl·(1/底 + 1/高))；点集在 4·fl 内共线或重合时返回 None。"""
-    # 基点取**最远点对**的一端（G6 第四轮 major：此前取 P[0]——frozenset 序里的任意一点，宽种子集混进邻近小面的顶点时
-    # 平面经一个离面点倾斜 5e-7 rad，而自报噪声只有 1e-11，紧带随之选错支撑集、造出 E 上不存在的 facet）
-    l1, p0, p1 = _farthest_pair(P)
-    e1 = sub(p1, p0)
-    if l1 <= 4.0 * fl:
-        return None
-    t = unit(e1)
-    best, h = None, 0.0
-    for p in P:
-        w = sub(p, p0)
-        d = norm(sub(w, mul(t, dot(w, t))))
-        if d > h:
-            best, h = p, d
-    if best is None or h <= 4.0 * fl:
-        return None
-    return unit(cross(e1, sub(best, p0))), fl * (1.0 / l1 + 1.0 / h)
+def _hull_facets(A,B,diffs,hull,fl=0,area_tol=0,eps=0):
+    """Exact supports; retained arguments cannot affect the theorem."""
+    return _hull_facets_cached(tuple(A.verts),tuple(B.verts),tuple(hull.verts),tuple(hull.faces),tuple(diffs))
 
 
-def _farthest_pair(P: list[Vec3]) -> tuple[float, Vec3, Vec3]:
-    best = (0.0, P[0], P[0])
-    for i in range(len(P)):
-        for j in range(i + 1, len(P)):
-            d = norm(sub(P[j], P[i]))
-            if d > best[0]:
-                best = (d, P[i], P[j])
-    return best
-
-
-def _hull_facets(A: Polyhedron, B: Polyhedron, diffs: list[Vec3], hull: Polyhedron,
-                 fl: float, area_tol: float, eps: float = 0.0) -> list[tuple]:
-    """凸包侧：conv{b − a} 的每个 facet → (支撑定向外法向, dim F_A, dim F_B, 是否支撑自洽, F_A 下标集, F_B 下标集,
-    说不清时的宽带种子集 (ia0, ib0)，否则 None)。
-
-    F_A = A 上使 n·a 最小的顶点集（−A 在 n 方向的支撑面），F_B = B 上使 n·b 最大的顶点集。
-    E 的 facet = F_B ⊕ (−F_A) 是二维的；严格 ⟺ (0,2) VF、(2,0) FV、(1,1) EE；其余为退化。
-    不读 Polyhedron.face_normal，不信面环朝向。
-
-    M0.3（G6 第二轮 major 的后半）："组合来自凸包、几何来自特征"。凸包三角（常是细条）的法向噪声 ≈ fl·周长/(2·面积)，
-    直接拿它判支撑集会把法向只差 5e-4 rad 的相邻 facet 混在一起。做法：
-      1. 三角法向 n0 + 宽带（4·fl + 力臂 × n0 的噪声）给出**种子**支撑集 F_A⁰、F_B⁰ 与自洽性（全部差点落在非正侧）；
-      2. 从种子支撑特征**重算**法向：A 面的平面、B 面的平面、A 棱 × B 棱——这些由物体自己的顶点算，良态；
-         取与 n0 最近的候选；若第二个候选在噪声内同样说得通，记 ambiguous；
-      3. 用重算的法向、逐顶点的紧带（fl + 法向噪声 × 到锚点的距离，锚点是该体的极值顶点）定最终支撑集；
-         有顶点落在紧带的 1/16（真实舍入量级：地板 c·eps·C 里 c = 64 是政策，4·eps·C 才是坐标自身的舍入）与 4 倍之间的
-         （阈值两侧都算），也记 ambiguous。
-    同一 facet 的多个三角按支撑顶点集组合去重。ambiguous 的 facet 两边都不计（见 facet_vote3）。
-    旧版：法向就用三角的、支撑带是人为的 1e-9·L、facet 按法向夹角 1e-7 去重。"""
-    out: list[tuple] = []
-    seen: set[tuple[frozenset, frozenset]] = set()
-    for f in hull.faces:
-        o = hull.verts[f[0]]
-        c = (0.0, 0.0, 0.0)
-        per = sum(norm(sub(hull.verts[f[(i + 1) % len(f)]], hull.verts[f[i]])) for i in range(len(f)))
-        for i in range(1, len(f) - 1):
-            c = add(c, cross(sub(hull.verts[f[i]], o), sub(hull.verts[f[i + 1]], o)))
-        area2 = norm(c)
-        lmax = max(norm(sub(hull.verts[f[(i + 1) % len(f)]], hull.verts[f[i]])) for i in range(len(f)))
-        # 细条判据按**这个三角自己**的高：高 = area2/最长边 ≤ 2·eps（凸包在 eps 内可把点压平）才是舍入级碎片。
-        # 旧版拿全局 area_tol = 2·fl·L 比裸面积：边长 ~sqrt(2·fl·L) 的真实小 facet（倒角三角 1.4 µm，边长是地板的 1e5 倍）
-        # 一平移到 |t| ≥ 100 就被当碎片跳过，局部侧的严格 VF 标签报 local_only（G6 第四轮 major）
-        if area2 <= max(area_tol * 0.0, 2.0 * max(4.0 * fl, eps) * lmax):
-            continue                                            # 零面积碎片（舍入级共面点间的细条三角）不给法向
-        n0 = unit(c)
-        noise0 = fl * per / area2
-        lever = max(norm(sub(p, o)) for p in diffs)
-        # 支撑带 ≥ 凸包自己的厚度容差 eps：凸包按 eps_d = max(tol·L, fl) 建、可放大到门的分辨率 ptol，高度在 (4·fl, eps) 之间的
-        # 真特征会被它合法地压平；带若只按 4·fl 判，这些三角就"不是支撑平面"→ hull_anomaly（G6 第四轮 major：两把尺）
-        band0 = max(4.0 * fl, eps) + lever * noise0
-        h0 = dot(n0, o)
-        vals = [dot(n0, p) for p in diffs]
-        ok = True
-        if max(vals) <= h0 + band0:
-            pass
-        elif min(vals) >= h0 - band0:
-            n0 = neg(n0)
-        else:
-            ok = False                                          # 不是支撑平面：凸包不自洽
-        amin = min(dot(n0, a) for a in A.verts)
-        bmax = max(dot(n0, b) for b in B.verts)
-        ia0 = frozenset(i for i, a in enumerate(A.verts) if dot(n0, a) <= amin + band0)
-        ib0 = frozenset(i for i, b in enumerate(B.verts) if dot(n0, b) >= bmax - band0)
-        FA0 = [A.verts[i] for i in ia0]
-        FB0 = [B.verts[i] for i in ib0]
-        cands: list[tuple[Vec3, float]] = []
-        for P in (FA0, FB0):
-            if len(P) >= 3:
-                pl = _plane_from_points(P, fl)
-                if pl is not None:
-                    cands.append(pl)
-        if len(FA0) >= 2 and len(FB0) >= 2:
-            # 棱×棱候选取种子集内**全部**棱对（A 的棱两端都在 ia0、B 的棱两端都在 ib0；没有这样的棱时退回最远点对）：
-            # 旧版每侧只取最远点对一根，三点种子集是个极小三角面时取哪条边由舍入并列决定，真 EE facet 的候选可能根本没生成
-            # （G6 第四轮 major：截角方块偏航 1e-3 平移到 1e5 后 local_only EE）
-            ea_list = [e for e in A.edges() if e[0] in ia0 and e[1] in ia0] or [None]
-            eb_list = [e for e in B.edges() if e[0] in ib0 and e[1] in ib0] or [None]
-            for ea in ea_list:
-                la, a0, a1 = _farthest_pair(FA0) if ea is None else (norm(sub(A.verts[ea[1]], A.verts[ea[0]])), A.verts[ea[0]], A.verts[ea[1]])
-                for eb in eb_list:
-                    lb, b0, b1 = _farthest_pair(FB0) if eb is None else (norm(sub(B.verts[eb[1]], B.verts[eb[0]])), B.verts[eb[0]], B.verts[eb[1]])
-                    cr = cross(sub(b1, b0), sub(a1, a0))
-                    if la > 4.0 * fl and lb > 4.0 * fl and norm(cr) > 0.0:
-                        # 叉积只正交到 eps/sinθ：近平行棱对的候选噪声要除以 sinθ = |cr|/(la·lb）（G6 第三轮 major）
-                        cands.append((unit(cr), fl * (1.0 / la + 1.0 / lb) * (la * lb / norm(cr))))
-        ambiguous = False
-        n1, noise = n0, noise0
-        if cands:
-            ranked = sorted((min(angle_between(n, n0), angle_between(neg(n), n0)), k) for k, (n, _) in enumerate(cands))
-            ang1, k1 = ranked[0]
-            n1, noise = cands[k1]
-            if ang1 > noise0 + noise:
-                n1, noise = n0, noise0                         # 没有候选落在三角法向的噪声内：用三角自己的法向，不硬凑
-            if dot(n1, n0) < 0.0:
-                n1 = neg(n1)
-            for ang2, k2 in ranked[1:]:
-                n2, noise2 = cands[k2]
-                apart = min(angle_between(n2, n1), angle_between(neg(n2), n1))
-                # 另一个候选也在三角法向的噪声内说得通，而且它与选中者**不是同一个平面**（平行面的 FF 退化
-                # facet 两个候选本就重合，不算说不清）
-                if ang2 <= ang1 + noise0 + noise + noise2 and apart > noise + noise2:
-                    ambiguous = True
-        ka = min(range(len(A.verts)), key=lambda i: dot(n1, A.verts[i]))
-        kb = max(range(len(B.verts)), key=lambda i: dot(n1, B.verts[i]))
-        ia: set[int] = set()
-        ib: set[int] = set()
-        # 紧带 = 长度地板 + 法向噪声 × 到锚点的距离（与 covers3 的逐特征口径一致：局部侧判"严格"的门槛正是
-        # 噪声 × 棱长 = fl）；落在阈值两侧 4 倍以内的顶点都算说不清——不许一边按 1 倍噪声判严格、另一边按 4 倍并掉
-        for i, a in enumerate(A.verts):
-            gap = dot(n1, sub(a, A.verts[ka]))
-            tight = fl + noise * norm(sub(a, A.verts[ka]))
-            if gap <= tight:
-                ia.add(i)
-            if tight / 16.0 < gap <= 4.0 * tight and i != ka:
-                ambiguous = True
-        for i, b in enumerate(B.verts):
-            gap = dot(n1, sub(B.verts[kb], b))
-            tight = fl + noise * norm(sub(b, B.verts[kb]))
-            if gap <= tight:
-                ib.add(i)
-            if tight / 16.0 < gap <= 4.0 * tight and i != kb:
-                ambiguous = True
-        key = (frozenset(ia), frozenset(ib))
-        if key in seen:
-            continue
+@lru_cache(maxsize=256)
+def _hull_facets_cached(av,bv,hp,faces,ds):
+    av,bv=tuple(map(oracle.qpoint,av)),tuple(map(oracle.qpoint,bv))
+    hp=tuple(map(oracle.qpoint,hp));ds=tuple(map(oracle.qpoint,ds))
+    out=[];seen=set()
+    for f in faces:
+        o=hp[f[0]]
+        n=next((oracle.wedge(oracle.minus(hp[f[i]],o),oracle.minus(hp[f[i+1]],o))
+                for i in range(1,len(f)-1)
+                if any(oracle.wedge(oracle.minus(hp[f[i]],o),oracle.minus(hp[f[i+1]],o)))),None)
+        if n is None:
+            out.append(((0,0,0),-1,-1,False,frozenset(),frozenset(),None));continue
+        h=oracle.scalar(n,o)
+        values=[oracle.scalar(n,d) for d in ds]
+        if min(values)>=h:n=tuple(-c for c in n);h=-h;values=[-v for v in values]
+        ok=max(values)<=h and all(oracle.scalar(n,hp[i])==h for i in f)
+        aa=[oracle.scalar(n,p) for p in av];bb=[oracle.scalar(n,p) for p in bv]
+        amin,bmax=min(aa),max(bb)
+        ia=frozenset(i for i,v in enumerate(aa) if v==amin)
+        ib=frozenset(i for i,v in enumerate(bb) if v==bmax)
+        key=oracle.plane_key(n,h)
+        if key in seen:continue
         seen.add(key)
-        out.append((n1, _affine_dim([A.verts[i] for i in ia], 4.0 * fl), _affine_dim([B.verts[i] for i in ib], 4.0 * fl),
-                    ok, key[0], key[1], (ia0, ib0) if ambiguous else None))
-    return out
+        ok=ok and bmax-amin==h
+        out.append((key[0],oracle.dimension([av[i] for i in ia]),
+                    oracle.dimension([bv[i] for i in ib]),ok,ia,ib,None))
+    return tuple(out)
 
 
-def _gate_scales(A: Polyhedron, B: Polyhedron, diffs: list[Vec3]) -> tuple[float, float, float]:
-    """(L, fl, area_tol)：E 的尺度 L（差点集 AABB 对角线）、长度舍入地板 fl（c·eps·C，与 covers3 同一口径；M0.2 曾乘 16
-    以掩盖凸包细条三角的法向噪声，现在法向从支撑特征重算，不再需要）、零面积碎片阈值。
-    差点由量级 C 的坐标相减得到，退化关系（共面、平行）被舍入破坏到 ~eps·C（纪律 F）。
-    M0.3：票二逐 facet 取支撑带、按组合匹配（见 `_hull_facets`）；票三的顶点匹配用 max(1e-7·L, fl)。"""
-    xs = [p[0] for p in diffs]
-    ys = [p[1] for p in diffs]
-    zs = [p[2] for p in diffs]
-    L = norm((max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(zs))) or 1.0
-    fl = noise_floor(max(A.metrics()[0], B.metrics()[0], coord_scale(*diffs)))
-    return L, fl, max(1e-14 * L * L, 2.0 * fl * L)
-
-
-def _label_sets(A: Polyhedron, B: Polyhedron, lab: tuple) -> tuple[frozenset, frozenset]:
-    """facet 标签涉及的 A、B 顶点下标集。"""
-    kind, af, bf = lab
-    sa = frozenset(A.faces[af[1]]) if af[0] == "face" else frozenset(af[1:])
-    sb = frozenset(B.faces[bf[1]]) if bf[0] == "face" else frozenset(bf[1:])
-    return sa, sb
-
-
-def facet_vote3(A: Polyhedron, B: Polyhedron, facets: set[tuple], hull: Polyhedron,
-                diffs: list[Vec3], eps: float | None = None) -> tuple[int, int, int, int, list[tuple]]:
-    """票二：返回 (facet_global, facet_degenerate, facet_ambiguous, facet_local_dropped, 对称差)。见模块文档。
-
-    标签与凸包 facet 的配对是**组合的**（M0.3）：标签涉及的 A、B 顶点集分别包含于该 facet 的两个支撑集，且标签
-    种类与支撑集维数一致（VF ↔ (0,2)、FV ↔ (2,0)、EE ↔ (1,1)）。旧版按法向夹角 ≤ 1e-7 配对。
-    凸包侧在噪声内说不清的 facet（`_hull_facets` 的 ambiguous）不进对称差，落在它支撑集里的局部标签也不计
-    （facet_local_dropped）——与二维 g0 的 ambiguous_facets 同一做法：分辨率以下的格子只声明"分辨不了"，不装作一致或不一致。"""
-    _, fl, area_tol = _gate_scales(A, B, diffs)
-    dims = {"VF": (0, 2), "FV": (2, 0), "EE": (1, 1)}
-
-    def key(n: Vec3) -> tuple:
-        return tuple(round(c, 7) + 0.0 for c in n)
-
-    strict: list[tuple[Vec3, int, int, frozenset, frozenset]] = []
-    amb: list[tuple[frozenset, frozenset]] = []
-    deg: list[tuple[Vec3, frozenset, frozenset]] = []
-    diff: list[tuple] = []
-    n_deg = 0
-    if eps is None:
-        eps = max(1e-12 * L, fl)
-    for n, da, db, ok, ia, ib, seed in _hull_facets(A, B, diffs, hull, fl, area_tol, eps):
-        if seed is not None:
-            amb.append(seed)                                    # 说不清：按宽带种子集丢标签（整个不确定区都不计）
-        elif not ok or (da, db) not in ((0, 2), (2, 0), (1, 1), (1, 2), (2, 1), (2, 2)):
-            # 说不清优先于异常（G6 第三轮 major：已标 ambiguous、但紧带支撑集退化成 (0,0)/(1,0) 的 facet 曾被报成 hull_anomaly）
-            diff.append(("hull_anomaly", key(n), da, db))
-        elif (da, db) in ((0, 2), (2, 0), (1, 1)):
-            strict.append((n, da, db, ia, ib))
-        else:
-            n_deg += 1
-            deg.append((n, ia, ib))
-
-    def label_noise(lab: tuple) -> float:
-        """局部标签自己的法向噪声：VF 用 B 面、FV 用 A 面、EE 用两条棱的方向噪声之和。"""
-        kind, af, bf = lab
-        if kind == "VF":
-            return B.face_noise(bf[1])
-        if kind == "FV":
-            return A.face_noise(af[1])
-        ea, eb = (af[1], af[2]), (bf[1], bf[2])
-        s = norm(cross(B.edge_dir(eb), A.edge_dir(ea)))        # 候选法向只正交到 eps/sinθ（与 ee_cover 同口径）
-        return (A.edge_noise(ea) + B.edge_noise(eb)) / max(s, 1e-300)
-
-    # (e) 说不清的宽种子集里的**凸包侧**严格 facet 也不计（同一几何 facet 的孪生三角可能一片说不清、一片严格；只丢局部标签
-    #     就把另一片报成 hull_only——G6 第四轮 major）
-    strict = [t for t in strict if not any(t[3] <= ia0 and t[4] <= ib0 for ia0, ib0 in amb)]
-
-    matched = [False] * len(strict)
-    n_dropped = 0
+def facet_vote3(A,B,facets,hull,diffs,eps=None):
+    """Full bidirectional combinatorial comparison; eps is ignored compatibility."""
+    A,B=exact_convex_view(A),exact_convex_view(B)
+    dims={'VF':(0,2),'FV':(2,0),'EE':(1,1)}
+    strict=[];diff=[];degenerate=0
+    for n,da,db,ok,ia,ib,_ in _hull_facets(A,B,diffs,hull):
+        if not ok or (da,db) not in ((0,2),(2,0),(1,1),(1,2),(2,1),(2,2)):
+            diff.append(('hull_anomaly',n,da,db))
+        elif (da,db) in dims.values():strict.append((n,da,db,ia,ib))
+        else:degenerate+=1
+    matched=set()
     for lab in sorted(facets):
-        sa, sb = _label_sets(A, B, lab)
-        if any(sa <= ia and sb <= ib for ia, ib in amb):
-            n_dropped += 1
-            continue
-        j = next((j for j, (_, da, db, ia, ib) in enumerate(strict)
-                  if (da, db) == dims[lab[0]] and sa <= ia and sb <= ib), None)
-        if j is None:
-            # 严格标签落进某个**退化** facet 的支撑集、且标签法向与它的夹角在标签自己的噪声之内：局部侧按它自己的
-            # 噪声分不清这个 facet 与那个退化 facet（两条 EE facet 法向只差 2e-9 rad、棱方向噪声 2e-8），不是不一致
-            nl = facet_normal3(A, B, lab)
-            if any(sa <= ia and sb <= ib and angle_between(nl, n) <= label_noise(lab) for n, ia, ib in deg):
-                n_dropped += 1
-                continue
-            # 局部侧的"分辨不了"（G6 第四轮 major 的另一半）：EE facet 的特征高度 = 棱长 × 它与相邻 facet 法向的夹角，
-            # 低于凸包的厚度 eps（×4）时凸包合法地把它并进邻面——两边口径下都说不清，不报 local_only
-            # （截角方块 1.4 µm 的棱偏航 1e-3 平移到 1e5：高度 1.4e-9 恰是坐标地板）
-            if lab[0] == "EE":
-                ea, eb = (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2])
-                la = norm(sub(A.verts[ea[1]], A.verts[ea[0]]))
-                lb = norm(sub(B.verts[eb[1]], B.verts[eb[0]]))
-                ha = min((la * angle_between(nl, neg(A.face_normal(f))) for f in A.edge_faces(ea)), default=float("inf"))
-                hb = min((lb * angle_between(nl, B.face_normal(f)) for f in B.edge_faces(eb)), default=float("inf"))
-                if min(ha, hb) <= 4.0 * eps:
-                    n_dropped += 1
-                    continue
-            diff.append(("local_only", lab))
-        elif matched[j]:
-            diff.append(("duplicate", lab))
-        else:
-            matched[j] = True
-    for j, (m, da, db, _, _) in enumerate(strict):
-        if not matched[j]:
-            diff.append(("hull_only", key(m), da, db))
-    return len(strict), n_deg, len(amb), n_dropped, sorted(diff)
+        sa,sb=_label_sets(A,B,lab)
+        j=next((j for j,(_,da,db,ia,ib) in enumerate(strict)
+                if (da,db)==dims.get(lab[0]) and sa==ia and sb==ib),None)
+        if j is None:diff.append(('local_only',lab))
+        elif j in matched:diff.append(('duplicate',lab))
+        else:matched.add(j)
+    for j,(n,da,db,_,_) in enumerate(strict):
+        if j not in matched:diff.append(('hull_only',n,da,db))
+    return len(strict),degenerate,0,0,sorted(diff)
 
 
-def sample_translations3(A: Polyhedron, B: Polyhedron, n: int, rng: random.Random,
-                         margin: float = 0.25) -> list[Vec3]:
-    (ax0, ay0, az0), (ax1, ay1, az1) = A.aabb()
-    (bx0, by0, bz0), (bx1, by1, bz1) = B.aabb()
-    lo = (bx0 - ax1, by0 - ay1, bz0 - az1)
-    hi = (bx1 - ax0, by1 - ay0, bz1 - az0)
-    w = tuple(hi[i] - lo[i] for i in range(3))
-    return [tuple(rng.uniform(lo[i] - margin * w[i], hi[i] + margin * w[i]) for i in range(3))
-            for _ in range(n)]
+def sample_translations3(A,B,n,rng,margin=0.25):
+    lo_a,hi_a=A.aabb();lo_b,hi_b=B.aabb()
+    lo=tuple(float(lo_b[i]-hi_a[i]) for i in range(3))
+    hi=tuple(float(hi_b[i]-lo_a[i]) for i in range(3))
+    return [tuple(rng.uniform(lo[i]-margin*(hi[i]-lo[i]),hi[i]+margin*(hi[i]-lo[i]))
+                  for i in range(3)) for _ in range(n)]
 
 
-def _dedup_points(pts: list[Vec3], tol: float) -> list[Vec3]:
-    out: list[Vec3] = []
-    for p in pts:
-        if not any(norm(sub(p, q)) <= tol for q in out):
-            out.append(p)
-    return out
-
-
-def _match(P: list[Vec3], Q: list[Vec3], tol: float) -> tuple[list[Vec3], list[Vec3]]:
-    """两点集按距离 ≤ tol 贪心一一配对，返回两侧各自剩余的点（点集对称差）。"""
-    free = list(Q)
-    miss: list[Vec3] = []
-    for p in P:
-        j = next((j for j, q in enumerate(free) if norm(sub(p, q)) <= tol), None)
-        if j is None:
-            miss.append(p)
-        else:
-            free.pop(j)
-    return miss, free
-
-
-def _unmatched(P: list[Vec3], Q: list[Vec3], tol: float) -> int:
-    a, b = _match(P, Q, tol)
-    return len(a) + len(b)
-
-
-def _height_over_hull(hull: Polyhedron, v: Vec3) -> float:
-    """点 v 高出凸包的高度：到各面平面的最大有符号距离（在内侧为负）。"""
-    return max(dot(hull.face_normal(fi), sub(v, hull.verts[hull.faces[fi][0]])) for fi in range(len(hull.faces)))
-
-
-def _vertex_height(hull: Polyhedron, v: Vec3, tol: float) -> float:
-    """凸包顶点 v 相对**其余顶点**的凸包的高度（去掉它重建、量它到新凸包各面的最大有符号距离）。
-    低于分辨率的顶点是真极点但特征低于容差，凸包保不保留它只取决于加点顺序——票三对这种顶点记"说不清"。"""
-    others = [p for p in hull.verts if p != v]
-    if len(others) < 4:
-        return float("inf")
-    try:
-        H = convex_hull_3d(others, tol=tol)
-    except ValueError:
-        return float("inf")
-    return max(dot(H.face_normal(fi), sub(v, H.verts[H.faces[fi][0]])) for fi in range(len(H.faces)))
-
-
-def g0_convex3(A: Polyhedron, B: Polyhedron, *, samples: int = 400, seed: int = 0,
-               tol: float = 1e-12, band: float = 1e-7) -> G0Report3:
-    """凸块 G0 三票。tol（票一暴力谓词的边界带、凸包的相对容差）与 band（票一成员谓词的跳过带）
-    都是**相对** E 的尺度 L 的（见模块文档"尺度"）；局部法锥规则的 tol 是角度，原样传给 covers3。"""
-    rng = random.Random(seed)
-    rep = G0Report3()
-    facets = local_facets3(A, B, tol)
-    rep.facet_local = len(facets)
-    # 票三：E 顶点集 = conv{b − a} 的顶点集（Quickhull 不把容差内的共面/共线点收作顶点）
-    diffs = [sub(b, a) for a in A.verts for b in B.verts]
-    L, fl, area_tol = _gate_scales(A, B, diffs)
-    ptol = max(1e-9 * L, fl)
-    # 凸包用细容差、且**不许**自适应放大越过门的分辨率（放大会静默抹平真特征，G6 第二轮 major）
-    # 凸包按**噪声地板**建（tol = fl/L，不再有 1e-12 的相对下限：局部侧按 2e-14 的噪声能分辨的脊，凸包按 1e-12·L 就压平了，
-    # 两把尺），自检失败才放大、至多到门的分辨率 ptol；实际用过的厚度 eps_used 交给票二作支撑带与细条判据（G6 第四轮 major）
-    hull, eps_used = convex_hull_3d_eps(diffs, tol=fl / L, max_tol=max(tol, ptol / L))
-    hv = _dedup_points(list(hull.verts), ptol)
-    # 票三：由**局部锥相交规则**判定为 E 顶点的 (a,b) 对，其差点集必须等于 hull 顶点集。
-    # 这条检验只用棱方向与坐标，不经面法向、不经任何合并规则，故对"整体符号错"不盲。
-    # 三态（M0.3，G6 第三轮 major）：锥相交裕度 |p| > 噪声 ⇒ E 顶点；噪声/16 < |p| ≤ 噪声 ⇒ 说不清——这组坐标的精度下
-    # 既不能说它是、也不能说它不是（针底 1.7 mm 的棱在 1e3 处噪声 5e-9 rad，而真 E 顶点的裕度 1e-9），对应的凸包顶点
-    # 两边都不计并如实报出；旧版一刀切成"不是"，凸包侧却按长度容差保留它，报成失配。
-    from .covers3 import cone_intersection_margin
-    ev_raw: list[Vec3] = []
-    amb_raw: list[Vec3] = []
-    for ia in range(len(A.verts)):
-        for ib in range(len(B.verts)):
-            dist, noise = cone_intersection_margin(A, ia, B, ib)
-            thr = max(tol, 1e-12, noise)
-            if dist > thr:
-                ev_raw.append(sub(B.verts[ib], A.verts[ia]))
-            elif dist > thr / 16.0:
-                amb_raw.append(sub(B.verts[ib], A.verts[ia]))
-    mtol = max(1e-7 * L, ptol)
-    ev = _dedup_points(ev_raw, ptol)
-    amb = [a for a in _dedup_points(amb_raw, ptol) if not any(norm(sub(a, e)) <= mtol for e in ev)]
-    hv_clear = [h for h in hv if not any(norm(sub(h, a)) <= mtol for a in amb)]
-    miss_h, miss_e = _match(hv_clear, ev, mtol)
-    # 凸包侧的"说不清"：没配上的凸包顶点若相对其余顶点凸包的高度 ≤ 4·ptol（特征低于分辨率；是真极点，但凸包保不保留它
-    # 只取决于加点顺序），两边都不计
-    low = [h for h in miss_h if _vertex_height(hull, h, max(tol, fl / L)) <= 4.0 * ptol]
-    hv_clear = [h for h in hv_clear if h not in low]
-    # 对称的另一半（G6 第四轮 major）：局部锥规则证实、凸包却压平了的 E 顶点（高出凸包 ≤ 4·ptol——凸包在它的容差 eps_d
-    # 乃至放大到 ptol 的容差下合法地不收它）同样是"说不清"，不是失配；旧版只豁免凸包侧多出的顶点
-    low_e = [e for e in miss_e if _height_over_hull(hull, e) <= 4.0 * ptol]
-    ev = [e for e in ev if e not in low_e]
-    rep.hull_vertices, rep.e_vertices = len(hv_clear), len(ev)
-    rep.e_vertices_ambiguous = len(amb) + len(low) + len(low_e)
-    rep.hull_vertex_mismatch = len(miss_h) - len(low) + len(miss_e) - len(low_e)
-    # 票二：严格 facet 集合（定向法向）== conv{b − a} 上的严格 facet 集合
-    (rep.facet_global, rep.facet_degenerate, rep.facet_ambiguous, rep.facet_local_dropped,
-     rep.facet_symmetric_diff) = facet_vote3(A, B, facets, hull, diffs, eps=eps_used)
-    # 票一：逐样本成员谓词（band、tol 相对 L；另加坐标舍入地板）
-    band_abs = max(band * L, ptol)
-    tol_abs = tol * L
-    for x in sample_translations3(A, B, samples, rng):
-        cov = membership_convex3(A, B, x, band_abs, facets)
-        if cov == 0:
-            rep.band_skipped += 1
-            continue
-        brute = polyhedra_overlap(A.translated(x), B, tol_abs)
-        if brute == 0:
-            rep.band_skipped += 1
-            continue
-        rep.samples += 1
-        if brute != cov:
-            rep.mismatches.append((x, brute, cov))
+def g0_convex3(A,B,*,samples=400,seed=0,tol=1e-12,band=1e-7):
+    """Exact theorem check. tol/band are retained but never alter a vote."""
+    from .covers3 import cones_intersect_relint
+    # Freeze source coordinates BEFORE tested hull canonicalization. A defective
+    # convex view must not erase its own counterexample from the oracle input.
+    source_av,source_bv=tuple(A.verts),tuple(B.verts)
+    A,B=exact_convex_view(A),exact_convex_view(B)
+    av,bv=tuple(A.verts),tuple(B.verts)
+    rep=G0Report3()
+    facets=local_facets3(A,B,0)
+    rep.facet_local=len(facets)
+    points,faces,_=oracle.difference_hull(source_av,source_bv)
+    hull=Polyhedron(list(points),list(faces))
+    hv={points[i] for f in faces for i in f}
+    ev={oracle.minus(oracle.qpoint(b),oracle.qpoint(a))
+        for ia,a in enumerate(av) for ib,b in enumerate(bv)
+        if cones_intersect_relint(A,ia,B,ib,0)}
+    rep.hull_vertices,rep.e_vertices=len(hv),len(ev)
+    rep.hull_vertex_mismatch=len(hv^ev)
+    (rep.facet_global,rep.facet_degenerate,rep.facet_ambiguous,
+     rep.facet_local_dropped,rep.facet_symmetric_diff)=facet_vote3(A,B,facets,hull,list(points))
+    bnd,rep.boundary_kinds=oracle.boundary_probes(source_av,source_bv)
+    rep.boundary_probes=len(bnd)
+    random_probes=sample_translations3(A,B,samples,random.Random(seed))
+    for i,x in enumerate(random_probes+bnd):
+        cov=membership_convex3(A,B,x,0,facets)
+        brute=oracle.overlap(source_av,source_bv,x)
+        rep.samples+=1
+        if i>=len(random_probes):rep.boundary_checked+=1
+        if brute!=cov:rep.mismatches.append((x,brute,cov))
     return rep
 
 

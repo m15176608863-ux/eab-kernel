@@ -157,7 +157,11 @@ def test_vote1_catches_a_wrong_facet_label(monkeypatch):
     monkeypatch.setattr(g03, "local_facets3", lambda a, b, t: set(full) | {bogus})
     rep = g0_convex3(A, B, samples=200, seed=3)
     assert rep.mismatches, rep
-    assert all(brute == 1 and cov == -1 for _, brute, cov in rep.mismatches)   # 只会错判成"外部"
+    # E5a now also probes the exact boundary. A false support plane can cut
+    # either interior or boundary away, but cannot create an interior point.
+    assert all(brute in (0, 1) and cov == -1 for _, brute, cov in rep.mismatches)
+    assert any(brute == 1 for _, brute, _ in rep.mismatches)
+    assert any(brute == 0 for _, brute, _ in rep.mismatches)
 
 
 # ---------------------------------------------------------------- G0 门在退化几何上
@@ -259,6 +263,117 @@ def _apply(R, v):
     return tuple(R[i][0] * v[0] + R[i][1] * v[1] + R[i][2] * v[2] for i in range(3))
 
 
+def _raw_support_classification(A, B):
+    """Independent complete Minkowski facet supports from raw coordinates.
+
+    No production hull/canonical-view/support/dimension predicate is called.
+    Every source triple supplies a possible face normal, and every pair of
+    source point-pair directions supplies a possible edge/edge normal. Thus
+    all facet normal types of a three-dimensional Minkowski sum are included;
+    exact support dimensions reject the extra candidates. A common integer
+    multiplier preserves the exact input coordinates, including Fraction.
+    """
+    from fractions import Fraction as F
+    from itertools import combinations
+    from math import gcd, lcm
+
+    raw_a, raw_b = tuple(tuple(F(x) for x in p) for p in A.verts), tuple(tuple(F(x) for x in p) for p in B.verts)
+    denominator = lcm(*(x.denominator for p in (*raw_a, *raw_b) for x in p))
+    a, b = (tuple(tuple(int(x * denominator) for x in p) for p in raw) for raw in (raw_a, raw_b))
+
+    def minus(p, q):
+        return tuple(x-y for x, y in zip(p, q))
+
+    def scalar(p, q):
+        return sum(x*y for x, y in zip(p, q))
+
+    def wedge(p, q):
+        return (p[1]*q[2]-p[2]*q[1], p[2]*q[0]-p[0]*q[2], p[0]*q[1]-p[1]*q[0])
+
+    def primitive(v):
+        common = gcd(*v)
+        if not common:
+            return None
+        if next(x for x in v if x) < 0:
+            common = -common
+        return tuple(x//common for x in v)
+
+    def rank(directions):
+        u = next((v for v in directions if any(v)), None)
+        if u is None:
+            return 0
+        normal = next((wedge(u, v) for v in directions if any(wedge(u, v))), None)
+        if normal is None:
+            return 1
+        return 3 if any(scalar(normal, v) for v in directions) else 2
+
+    normals = set()
+    for points in (a, b):
+        normals.update(primitive(wedge(minus(q, p), minus(r, p))) for p, q, r in combinations(points, 3))
+    da = {primitive(minus(q, p)) for p, q in combinations(a, 2)} - {None}
+    db = {primitive(minus(q, p)) for p, q in combinations(b, 2)} - {None}
+    normals.update(primitive(wedge(u, v)) for u in da for v in db)
+    normals.discard(None)
+    strict, degenerate = set(), set()
+    for unsigned in normals:
+        for n in (unsigned, tuple(-x for x in unsigned)):
+            va, vb = [scalar(n, p) for p in a], [scalar(n, p) for p in b]
+            ia = tuple(i for i, x in enumerate(va) if x == min(va))
+            ib = tuple(i for i, x in enumerate(vb) if x == max(vb))
+            u = tuple(minus(a[i], a[ia[0]]) for i in ia)
+            v = tuple(minus(b[i], b[ib[0]]) for i in ib)
+            if rank(u+v) != 2:
+                continue
+            dims = rank(u), rank(v)
+            support = frozenset(raw_a[i] for i in ia), frozenset(raw_b[i] for i in ib)
+            kind = {(0, 2): "VF", (2, 0): "FV", (1, 1): "EE"}.get(dims)
+            if kind is not None:
+                strict.add((kind, *support))
+            else:
+                assert dims in ((1, 2), (2, 1), (2, 2)), dims
+                degenerate.add(support)
+    return strict, degenerate
+
+
+def _assert_exact_facet_counts(A, B, rep):
+    from fractions import Fraction as F
+    from eab.kernel3d.geom3 import exact_convex_view
+    # The expected geometry is built above from the ORIGINAL coordinates.
+    # The tested view is used only to decode the actual label identities.
+    expected, degenerate = _raw_support_classification(A, B)
+    av, bv = exact_convex_view(A), exact_convex_view(B)
+
+    def coordinates(P, feature):
+        indices = P.faces[feature[1]] if feature[0] == "face" else feature[1:]
+        return frozenset(tuple(F(x) for x in P.verts[i]) for i in indices)
+
+    labels = local_facets3(A, B)
+    actual = {(kind, coordinates(av, fa), coordinates(bv, fb)) for kind, fa, fb in labels}
+    assert len(actual) == len(labels)
+    assert actual == expected, (actual-expected, expected-actual)
+    assert rep.facet_local == rep.facet_global == len(expected), rep
+    assert rep.facet_degenerate == len(degenerate), (rep.facet_degenerate, len(degenerate))
+    return len(expected), len(degenerate)
+
+
+def _assert_exact_rotated_vote_counts(A, B, rep):
+    """Rounded degeneracies may split; independently certify every resulting vertex.
+
+    The oracle is rational Gordan extreme-ray enumeration, not the tested
+    simplex/closest-point path. No ambiguous pair or boundary probe is exempt.
+    """
+    from eab.kernel3d.geom3 import exact_convex_view
+    from test_covers3_e5a import _ray_oracle
+    av, bv = exact_convex_view(A), exact_convex_view(B)
+    exact_count = sum(_ray_oracle(av, ia, bv, ib)
+                      for ia in range(len(av.verts)) for ib in range(len(bv.verts)))
+    assert rep.hull_vertices == rep.e_vertices == exact_count > 0, rep
+    assert rep.hull_vertex_mismatch == 0 and rep.e_vertices_ambiguous == 0, rep
+    _assert_exact_facet_counts(A, B, rep)
+    assert rep.facet_ambiguous == 0, rep
+    assert rep.boundary_checked == rep.boundary_probes > 0, rep
+
+
 @pytest.mark.parametrize("seed", range(3, 13))
 def test_rotated_tetra_box_keeps_every_E_vertex_and_the_vv3_pair(seed):
     from eab.kernel3d.covers3 import cones_intersect_relint
@@ -266,8 +381,7 @@ def test_rotated_tetra_box_keeps_every_E_vertex_and_the_vv3_pair(seed):
     R = _g6_rotation(seed)
     T1, B1 = _rotated(_tetra(), R), _rotated(box(half=(1.0, 1.0, 1.0)), R)
     rep = g0_convex3(T1, B1, samples=60, seed=seed)
-    assert rep.hull_vertices == rep.e_vertices == 13 and rep.hull_vertex_mismatch == 0, rep
-    assert (rep.facet_local, rep.facet_global, rep.facet_degenerate) == (7, 7, 3), rep
+    _assert_exact_rotated_vote_counts(T1, B1, rep)
     assert rep.mismatches == [] and rep.passed, rep
     assert cones_intersect_relint(T1, 3, B1, 2)
     r3 = 1.0 / math.sqrt(3.0)
@@ -286,8 +400,7 @@ def test_rotated_box_box_passes_the_three_votes(seed):
     A = _rotated(box(half=(1.0, 1.0, 1.0)), R)
     B = _rotated(box(center=(0.3, 0.0, -0.2), half=(2.0, 0.5, 1.0)), R)
     rep = g0_convex3(A, B, samples=60, seed=seed)
-    assert (rep.facet_local, rep.facet_global, rep.facet_degenerate) == (0, 0, 6), rep
-    assert rep.hull_vertices == rep.e_vertices == 8 and rep.hull_vertex_mismatch == 0, rep
+    _assert_exact_rotated_vote_counts(A, B, rep)
     assert rep.mismatches == [] and rep.passed, rep
     # 距离：同一旋转下 B 心 (3.5, 0.2, −2.9)、半宽 (2, 0.5, 3)，只有 x 向有缝 ⇒ 间距 0.5（闭式，
     # 面-面平行，最近对大量并列）；裕度层按它判违约 / 安全
@@ -297,6 +410,56 @@ def test_rotated_box_box_passes_the_three_votes(seed):
     assert abs(d - 0.5) <= 1e-12 and lab is not None, (d, lab)
     assert inflated_membership(A, B2, delta=0.6) == INSIDE
     assert inflated_membership(A, B2, delta=0.4) == OUTSIDE
+
+
+@pytest.mark.parametrize("seed", range(3, 13))
+@pytest.mark.parametrize("kind,strict,degenerate,vertices", [("tetra_box", 7, 3, 13), ("box_box", 0, 6, 8)])
+def test_same_rotation_as_rational_affine_map_preserves_analytic_degeneracies(seed, kind, strict, degenerate, vertices):
+    """Keep the old 3/6 claim where its hypothesis actually holds.
+
+    The identical stored binary64 R entries are treated as exact rationals;
+    no vertex-wise rounding is performed. A common invertible affine map
+    preserves the original support dimensions and incidence counts, although
+    this rational R is not claimed to be exactly orthogonal.
+    """
+    from fractions import Fraction as F
+    from eab.kernel3d.geom3 import Polyhedron
+    R = tuple(tuple(F(x) for x in row) for row in _g6_rotation(seed))
+    determinant = sum(R[0][i] * (R[1][(i+1)%3]*R[2][(i+2)%3]-R[1][(i+2)%3]*R[2][(i+1)%3]) for i in range(3))
+    assert determinant != 0
+
+    def mapped(P):
+        return Polyhedron([tuple(sum(R[i][j]*F(p[j]) for j in range(3)) for i in range(3)) for p in P.verts], list(P.faces))
+
+    if kind == "tetra_box":
+        A, B = mapped(_tetra()), mapped(box(half=(1.0, 1.0, 1.0)))
+    else:
+        A = mapped(box(half=(1.0, 1.0, 1.0)))
+        B = mapped(box(center=(0.3, 0.0, -0.2), half=(2.0, 0.5, 1.0)))
+    rep = g0_convex3(A, B, samples=60, seed=seed)
+    assert _assert_exact_facet_counts(A, B, rep) == (strict, degenerate)
+    assert rep.hull_vertices == rep.e_vertices == vertices
+    assert rep.facet_degenerate == degenerate
+    assert rep.boundary_checked == rep.boundary_probes > 0
+    assert rep.mismatches == [] and rep.passed, rep
+
+
+def test_rotated_support_dimension_gate_catches_internal_degenerate_miscount(monkeypatch):
+    """Mutate the real classifier counter, not a report after it is returned."""
+    import inspect
+    import eab.kernel3d.g03 as g03
+    source = inspect.getsource(g03.facet_vote3)
+    old = "else:degenerate+=1"
+    assert source.count(old) == 1
+    namespace = dict(vars(g03))
+    exec(compile(source.replace(old, "else:degenerate+=2"), g03.__file__, "exec"), namespace)
+    monkeypatch.setattr(g03, "facet_vote3", namespace["facet_vote3"])
+    A, B = _tetra(), box(half=(1.0, 1.0, 1.0))
+    rep = g03.g0_convex3(A, B, samples=60, seed=3)
+    # The original theorem status alone cannot see a wrong bookkeeping count.
+    assert rep.passed and rep.facet_degenerate == 6
+    with pytest.raises(AssertionError, match=r"\(6, 3\)"):
+        _assert_exact_facet_counts(A, B, rep)
 
 
 @pytest.mark.parametrize("scale", [1e-3, 1.0, 1e3])

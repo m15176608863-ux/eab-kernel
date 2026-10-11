@@ -368,7 +368,7 @@ def test_edges_that_round_to_duplicates_at_engineering_coordinates_are_rejected_
 def test_g0_three_votes_on_the_ridge_pair_at_engineering_coordinates(rot, tmag):
     """针底 1.7 mm 的短棱在 1e3 处的方向噪声 5e-9 rad，而两个真 E 顶点的锥相交裕度只有 1e-9：旧版票三一刀切成"不是顶点"、
     凸包侧按长度容差保留它们，报失配；票二在 1e6 处把法向只差 2e-9 rad 的两个 EE facet 并成退化 facet 而不报歧义。
-    现在：说不清的顶点对与 facet 两边都不计并如实报出，门必须通过；原点处没有任何歧义。"""
+    E5a：每格按给定坐标的精确凸包核对，无歧义豁免；舍入后真实新增的小特征也必须计数。"""
     from eab.kernel3d.g03 import g0_convex3
     B0 = _roof(1e-6, (0.0, 0.0, 0.0))
     A0 = _needle((0.3, 0.0, 1e-6 + 0.05), 0.001, 1.0)
@@ -377,12 +377,12 @@ def test_g0_three_votes_on_the_ridge_pair_at_engineering_coordinates(rot, tmag):
     A, B = _motion(A0, R, t), _motion(B0, R, t)
     rep = g0_convex3(A, B, samples=12, seed=1)
     assert rep.passed, (tmag, rep)
-    if tmag == 0.0:
-        assert rep.facet_ambiguous == 0 and rep.e_vertices_ambiguous == 0 and rep.e_vertices == 22, rep
-    else:
-        # 两个"针尖级"E 顶点（锥相交裕度 ~1e-9）在工程坐标上或被记为说不清、或两边都认为低于分辨率
-        assert 20 <= rep.e_vertices + rep.e_vertices_ambiguous <= 22, rep
-        assert rep.facet_ambiguous <= 2 and rep.e_vertices_ambiguous <= 4 and rep.facet_local_dropped <= 4, rep
+    # E5a: coordinate rounding creates genuine tiny facets. Check every exact
+    # vertex with an independent rational ray oracle, never an ambiguity range.
+    from test_covers3_membership import _assert_exact_rotated_vote_counts
+    _assert_exact_rotated_vote_counts(A, B, rep)
+    assert rep.band_skipped == 0 and rep.boundary_checked == rep.boundary_probes > 0
+    assert rep.facet_ambiguous == rep.e_vertices_ambiguous == rep.facet_local_dropped == 0, rep
 
 
 def test_margin_self_check_catches_a_relative_1e_6_witness_error(monkeypatch):

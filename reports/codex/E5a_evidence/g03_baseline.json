@@ -1,0 +1,283 @@
+[
+  {
+    "case": "raw_39_default_facet_vote",
+    "error": "NameError(\"name 'L' is not defined\")"
+  },
+  {
+    "case": "raw_28_ratio_1000_yaw_1e-06_R7",
+    "result": {
+      "passed": false,
+      "mismatch": 0,
+      "ambiguous": 8,
+      "facets": [
+        [
+          "hull_anomaly",
+          [
+            -0.7460794,
+            0.2799294,
+            -0.6041565
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            -0.6501573,
+            -0.5021277,
+            0.5702309
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.6501576,
+            0.502126,
+            -0.570232
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.7460794,
+            -0.2799294,
+            0.6041565
+          ],
+          0,
+          0
+        ]
+      ],
+      "skipped": 0,
+      "samples": 0
+    }
+  },
+  {
+    "case": "raw_28_ratio_100_yaw_1e-07_R7",
+    "result": {
+      "passed": false,
+      "mismatch": 0,
+      "ambiguous": 10,
+      "facets": [
+        [
+          "hull_anomaly",
+          [
+            -0.7460795,
+            0.2799301,
+            -0.604156
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            -0.7460795,
+            0.2799303,
+            -0.6041559
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            -0.6501575,
+            -0.5021269,
+            0.5702314
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.6501575,
+            0.5021269,
+            -0.5702314
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.7460795,
+            -0.2799303,
+            0.6041559
+          ],
+          0,
+          0
+        ]
+      ],
+      "skipped": 0,
+      "samples": 0
+    }
+  },
+  {
+    "case": "raw_28_ratio_10_yaw_1e-08_R3",
+    "result": {
+      "passed": false,
+      "mismatch": 0,
+      "ambiguous": 12,
+      "facets": [
+        [
+          "hull_anomaly",
+          [
+            -0.4785391,
+            -0.1344913,
+            0.8677053
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            -0.0818995,
+            0.9907288,
+            0.1083921
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.0818994,
+            -0.9907288,
+            -0.1083921
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.0818995,
+            -0.9907288,
+            -0.1083921
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.4785391,
+            0.1344913,
+            -0.8677053
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.4785391,
+            0.1344913,
+            -0.8677052
+          ],
+          0,
+          0
+        ]
+      ],
+      "skipped": 0,
+      "samples": 0
+    }
+  },
+  {
+    "case": "raw_28_ratio_100_yaw_1e-07_R11",
+    "result": {
+      "passed": false,
+      "mismatch": 0,
+      "ambiguous": 10,
+      "facets": [
+        [
+          "hull_anomaly",
+          [
+            -0.4007593,
+            0.0386003,
+            0.9153699
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            -0.3920698,
+            0.8957799,
+            -0.2094268
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            -0.3920696,
+            0.89578,
+            -0.2094268
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.3920698,
+            -0.8957799,
+            0.2094268
+          ],
+          0,
+          0
+        ],
+        [
+          "hull_anomaly",
+          [
+            0.4007593,
+            -0.0386003,
+            -0.9153699
+          ],
+          0,
+          0
+        ]
+      ],
+      "skipped": 0,
+      "samples": 0
+    }
+  },
+  {
+    "case": "raw_41_original_input",
+    "result": "passed False [('hull_anomaly', (-1.0, 0.0, 0.0), 0, 0), ('hull_anomaly', (-1.0, 0.0, 0.0), 0, 0), ('hull_anomaly', (1.0, 0.0, 0.0), 0, 0)]\n"
+  },
+  {
+    "case": "raw_42_original_input",
+    "result": "t 0.0 passed True []\nt 100.0 passed True []\nt 1000.0 passed False [('hull_only', (5e-07, 0.0, 1.0), 0, 2), ('hull_only', (5e-07, 1.0, 0.0), 0, 2), ('hull_only', (1.0, 5e-07, 0.0), 0, 2)]\nt 10000.0 passed False [('hull_only', (5e-07, 0.0, 1.0), 0, 2), ('hull_only', (5e-07, 1.0, 0.0), 0, 2), ('hull_only', (1.0, 5e-07, 0.0), 0, 2)]\nt 1000000.0 passed False [('hull_only', (5e-07, 0.0, 1.0), 0, 2), ('hull_only', (5e-07, 1.0, 0.0), 0, 2), ('hull_only', (1.0, 5e-07, 0.0), 0, 2)]\n"
+  },
+  {
+    "case": "raw_38_false_vertex_mutation",
+    "result": {
+      "before": {
+        "passed": true,
+        "mismatch": 0,
+        "ambiguous": 0,
+        "facets": [],
+        "skipped": 0,
+        "samples": 0
+      },
+      "after": {
+        "passed": true,
+        "mismatch": 0,
+        "ambiguous": 24,
+        "facets": [],
+        "skipped": 0,
+        "samples": 0
+      }
+    }
+  }
+]

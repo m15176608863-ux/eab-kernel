@@ -9,9 +9,9 @@
 
 from __future__ import annotations
 
-from ..dual import Number, val
-from .covers3 import _orth, edge_arc_contains
-from .geom3 import Polyhedron, cross, norm
+from ..dual import Dual, Number, val
+from .covers3 import _qedge_contains, _qunit
+from .geom3 import Polyhedron, cross, exact_edge_vector
 
 
 def face_normal_generic(P: Polyhedron, fi: int):
@@ -33,6 +33,13 @@ def face_normal_generic(P: Polyhedron, fi: int):
 def ee_normal_generic(A: Polyhedron, ea, B: Polyhedron, eb, sign: float = 1.0):
     """交叉棱-棱的单位法向。`sign` 是**冻结组合结构的一部分**（由 float 路径定），
     不在这里择支——对偶路径里做分支会把导数带进 if，破坏片内解析性。"""
+    endpoints = (A.verts[ea[0]], A.verts[ea[1]], B.verts[eb[0]], B.verts[eb[1]])
+    if not any(isinstance(c, Dual) for p in endpoints for c in p):
+        # E5a compatibility: the exact geometry layer now exposes micro-crossing
+        # edges whose binary64 cross product can be zero or point the wrong way.
+        # The Dual-through formula below is intentionally unchanged (WO-E5b).
+        n = _qunit(cross(exact_edge_vector(B, eb), exact_edge_vector(A, ea)))
+        return tuple(sign * c for c in n)
     tA = tuple(A.verts[ea[1]][i] - A.verts[ea[0]][i] for i in range(3))
     tB = tuple(B.verts[eb[1]][i] - B.verts[eb[0]][i] for i in range(3))
     nx = tB[1] * tA[2] - tB[2] * tA[1]
@@ -43,28 +50,31 @@ def ee_normal_generic(A: Polyhedron, ea, B: Polyhedron, eb, sign: float = 1.0):
 
 
 def _as_float(P: Polyhedron) -> Polyhedron:
-    """顶点坐标里有对偶数时取实部另建一个 float 多面体（择支只在 float 上做）；全是 float 原样返回。"""
-    if all(type(c) is float for v in P.verts for c in v):
+    """Primal-only view for branching; retain exact non-Dual coordinates."""
+    if not any(isinstance(c, Dual) for v in P.verts for c in v):
         return P
-    return Polyhedron([tuple(float(val(c)) for c in v) for v in P.verts], list(P.faces))
+    return Polyhedron([tuple(val(c) if isinstance(c, Dual) else c for c in v) for v in P.verts], list(P.faces))
 
 
 def frozen_ee_sign(A: Polyhedron, B: Polyhedron, ea, eb, tol: float = 1e-9) -> float:
-    """float 路径下定出的 EE 法向朝向，作为冻结组合结构的一部分交给对偶路径。
+    """Freeze the exact general-cover EE orientation on primal coordinates.
 
-    与 covers3.facet_normal3 / ee_cover **同一把尺**：候选 unit(t_B × t_A) 对 B 的棱按构造正交化后判弧，
-    弧判据的角容差 = 调用方 tol + 候选法向**自身**的方向噪声 (noise_A(ea) + noise_B(eb)) / |t_B × t_A|
-    （叉积只正交到 eps/sinθ，两条棱的方向噪声被 1/sinθ 放大）。
-    G6 第五轮 major：此前只用 tol，偏航 1e-5 的叠放方块（候选恰在 B 棱弧的边界上）一经一般旋转并平移到 |t| = 1e3，
-    就被判成弧外、取反向——margin_gap_from_frozen_cover 对 body_distance 自己选出的 EE 标签给出 −d（分离判成闭合），
-    而 facet_normal3 与 ee_cover 同一位形给 +d。这里是 float 择支，不进对偶通道。"""
+    E5a minimal adapter: use the same supplied face-ring interface as ee_cover,
+    not the separately numbered canonical-convex facet API. tol is the caller's
+    angular domain window; no normal-noise floor can reverse an exact sign.
+    The dual-through normal construction remains separate, pending WO-E5b.
+    """
     Af, Bf = _as_float(A), _as_float(B)
-    tA, tB = Af.edge_dir(ea), Bf.edge_dir(eb)
-    c = cross(tB, tA)
-    nc = norm(c)
-    ctol = tol + (Af.edge_noise(ea) + Bf.edge_noise(eb)) / nc
-    probe = _orth(c, tB)                     # 与 ee_normal_generic(…, +1) 同向（同一叉积 t_B × t_A），按构造 ⊥ t_B
-    return -1.0 if edge_arc_contains(Bf, eb, probe, ctol) < 0 else 1.0
+    c = cross(exact_edge_vector(Bf, eb), exact_edge_vector(Af, ea))
+    if not any(c):
+        raise ZeroDivisionError('parallel edges do not define a frozen EE normal')
+    for sign, direction in ((1.0, c), (-1.0, tuple(-v for v in c))):
+        if (_qedge_contains(Bf, eb, direction, tol) >= 0
+                and _qedge_contains(Af, ea, tuple(-v for v in direction), tol) >= 0):
+            return sign
+    # Retain a B-side orientation for callers freezing a non-valid candidate;
+    # valid ee_cover labels always take one of the exact two-sided branches.
+    return -1.0 if _qedge_contains(Bf, eb, c, tol) < 0 else 1.0
 
 
 # 冻结路径支持的盖种类 = `body_distance` / `escape_candidates` 可能给出的全部种类。

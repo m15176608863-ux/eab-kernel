@@ -149,8 +149,12 @@ def test_g0_gate_has_teeth_flipped_normals_are_caught(monkeypatch):
     B = box(half=(0.7, 0.9, 1.1))
     assert g0_convex3(A, B, samples=120, seed=1).passed
     import eab.kernel3d.covers3 as cv
-    orig = cv.Polyhedron.face_normal
-    monkeypatch.setattr(cv.Polyhedron, "face_normal", lambda self, fi: neg(orig(self, fi)))
+    # E5a: the float construction is no longer a predicate input. Inject the
+    # same sign defect into the exact raw-normal path and invalidate caches.
+    orig = cv._qnormal
+    monkeypatch.setattr(cv, "_qnormal", lambda self, fi: neg(orig(self, fi)))
+    cv._local_facets_cached.cache_clear()
+    cv._support_planes_cached.cache_clear()
     assert not g0_convex3(A, B, samples=120, seed=1).passed
 
 
@@ -218,8 +222,10 @@ def test_position_independence_gate_has_teeth_absolute_edge_direction(monkeypatc
                 out.append(_unit(self.verts[other]))
         return out
     # 顶点锥判据走 vertex_edges（方向 + 逐棱噪声，M0.3），VV3 的锥交走 vertex_edge_dirs：同一个变异打进两处
-    monkeypatch.setattr(geom3.Polyhedron, "vertex_edge_dirs", bad_dirs)
-    monkeypatch.setattr(geom3.Polyhedron, "vertex_edges", lambda self, vi: [(d, 0.0) for d in bad_dirs(self, vi)])
+    # The predicate now derives raw rational edges, not rounded unit directions.
+    monkeypatch.setattr(_cv, "_qedge", lambda self, e: _cv._qvector(self.verts[e[1]]))
+    _cv._local_facets_cached.cache_clear()
+    _cv._support_planes_cached.cache_clear()
     bad = _position_independence_violations(A, B)
     assert bad and bad[0][0] == "labels", bad[:2]
 

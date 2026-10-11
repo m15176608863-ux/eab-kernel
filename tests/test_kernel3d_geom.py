@@ -1,6 +1,7 @@
 """三维几何原语与暴力 oracle 的门（二维版审查的三条教训在此复检）。"""
 
 import random
+from fractions import Fraction
 
 import pytest
 
@@ -199,20 +200,52 @@ def _placed(P, R, s, t=(0.0, 0.0, 0.0)):
                        for p in P.verts], list(P.faces))
 
 
+def _placed_exact(P, R, s, t=(0.0, 0.0, 0.0)):
+    """同一存储矩阵精确仿射变换，保留共面/共线前提；不替换原浮点输入。"""
+    F = Fraction
+    return Polyhedron([tuple(F(t[i]) + F(s) * sum(F(R[i][j]) * F(p[j]) for j in range(3))
+                             for i in range(3)) for p in P.verts], list(P.faces))
+
+
 @pytest.mark.parametrize("scale", [1e-3, 1.0, 1e3])
 @pytest.mark.parametrize("seed", [2, 4, 7])
 def test_entrance_block_of_rotated_box_pair_is_a_clean_box(seed, scale):
+    """保留原浮点格：精确支持/极点；额外精确保共面的格仍须为八顶点盒。
+
+    oracle 用 test_hull_robustness 的独立 Fraction 行列式/法向秩证书，
+    不用生产 orient3d、法锥、成员原语或 G0 的内部 oracle。
+    """
     from eab.kernel3d.g03 import g0_convex3
     from eab.margin import entrance_block_convex
+    from test_hull_robustness import _assert_exact_hull
     R = _g6_rot(seed)
     A, B = _placed(box(half=(1.0, 1.0, 1.0)), R, scale), _placed(box(half=(2.0, 0.5, 3.0)), R, scale)
     E = entrance_block_convex(A, B)
     assert E.manifold_issues() == [], E.manifold_issues()[:3]
     assert E.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-9)
     assert E.is_convex(1e-9)
+    # margin 的旧入口仍先浮点构造差点；认证其实际输入，不假称为精确 E。
+    _assert_exact_hull(E, [tuple(b[i] - a[i] for i in range(3)) for a in A.verts for b in B.verts])
     rep = g0_convex3(A, B, samples=40, seed=seed)
     assert rep.passed, (rep.facet_symmetric_diff[:3], rep.hull_vertices, rep.e_vertices, rep.mismatches[:2])
-    assert rep.hull_vertices == rep.e_vertices == 8
+    exact_diffs = [tuple(Fraction(b[i]) - Fraction(a[i]) for i in range(3))
+                   for a in A.verts for b in B.verts]
+    H = convex_hull_3d(exact_diffs)
+    assert H.manifold_issues() == [], H.manifold_issues()[:3]
+    _assert_exact_hull(H, exact_diffs)
+    assert rep.hull_vertices == rep.e_vertices == len(H.verts)
+
+    # 原“同旋转的两盒之差是八顶点盒”解析门不删：把共面前提精确实现。
+    Aq = _placed_exact(box(half=(1.0, 1.0, 1.0)), R, scale)
+    Bq = _placed_exact(box(half=(2.0, 0.5, 3.0)), R, scale)
+    Eq = entrance_block_convex(Aq, Bq)
+    assert Eq.manifold_issues() == [], Eq.manifold_issues()[:3]
+    assert Eq.volume() == pytest.approx(144.0 * scale ** 3, rel=1e-9)
+    _assert_exact_hull(Eq, [tuple(b[i] - a[i] for i in range(3)) for a in Aq.verts for b in Bq.verts])
+    assert len(Eq.verts) == 8 and len(merge_coplanar(Eq).faces) == 6
+    repq = g0_convex3(Aq, Bq, samples=40, seed=seed)
+    assert repq.passed, repq
+    assert repq.hull_vertices == repq.e_vertices == 8
 
 
 LATTICE = [(float(i), float(j), float(k)) for i in range(3) for j in range(3) for k in range(3)]
@@ -221,8 +254,13 @@ LATTICE = [(float(i), float(j), float(k)) for i in range(3) for j in range(3) fo
 @pytest.mark.parametrize("seed,scale,t", [(0, 1.0, 0.0), (1, 1e-5, 0.0), (2, 1e3, 0.0), (3, 1.0, 1e5),
                                           (4, 1e3, 1e5), (5, 1e-3, 1e3)])
 def test_convex_hull_is_similarity_invariant_on_degenerate_and_generic_sets(seed, scale, t):
-    """同一点集经相似变换 p ↦ t + s·R·p：体积 ×s³、流形干净、极点个数不变。
-    退化集：3×3×3 格点（27 点里只有 8 个极点，其余在棱上 / 面上 / 体内）；一般集：随机 14 点。"""
+    """原浮点输入的支持/极点精确；同系数有理仿射输入另保留理想拓扑门。
+
+    oracle 为独立 Fraction 支持行列式与顶点法向秩，不共用生产几何谓词。
+    3×3×3 格点在精确保共线/共面变换下只有八极点；逐坐标舍入可产生微脊。
+    所有旧 volume/manifold 断言、原 seed/scale/t 和随机一般点集均保留。
+    """
+    from test_hull_robustness import _assert_exact_hull, _fr_orient
     R = _g6_rot(100 + seed)
     tv = tuple(t * c for c in (0.6, -0.48, 0.64))
     rng = random.Random(seed)
@@ -233,9 +271,21 @@ def test_convex_hull_is_similarity_invariant_on_degenerate_and_generic_sets(seed
         H = convex_hull_3d(W)
         assert H.manifold_issues() == [], H.manifold_issues()[:3]
         assert H.volume() == pytest.approx(vol0 * scale ** 3, rel=1e-7)
+        _assert_exact_hull(H, W)
+        M = merge_coplanar(H)
+        _assert_exact_hull(M, W)
+        assert all(_fr_orient(*(M.verts[i] for i in f[:3]), M.verts[j]) == 0
+                   for f in M.faces for j in f)
+
+        Wq = _placed_exact(Polyhedron(pts, []), R, scale, tv).verts
+        Hq = convex_hull_3d(Wq)
+        assert Hq.manifold_issues() == [], Hq.manifold_issues()[:3]
+        assert Hq.volume() == pytest.approx(vol0 * scale ** 3, rel=1e-7)
+        _assert_exact_hull(Hq, Wq)
+        assert len(Hq.verts) == len(convex_hull_3d(pts).verts)
         if pts is LATTICE:
-            assert len(merge_coplanar(H).faces) == 6
-            assert len(H.verts) == 8                 # 格点里的面内/棱上点不成为凸包顶点（M0.3）
+            assert len(merge_coplanar(Hq).faces) == 6
+            assert len(Hq.verts) == 8                # 精确共面/共线格点不成为凸包顶点
 
 
 # ================================================================ G6 minor 7：面接触在旋转 / 工程坐标下仍是"相触"

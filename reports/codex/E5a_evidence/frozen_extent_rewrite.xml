@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="12" time="4.330" timestamp="2026-10-12T01:42:26.991979+08:00" hostname="RICH"><testcase classname="tests.test_frozen_ee_sign" name="test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates[100000.0-0.001-4]" time="0.743" /><testcase classname="tests.test_frozen_ee_sign" name="test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates[100000.0-0.001-6]" time="0.731" /><testcase classname="tests.test_frozen_ee_sign" name="test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates[1000000.0-0.01-4]" time="0.602" /><testcase classname="tests.test_frozen_ee_sign" name="test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates[1000000.0-0.01-6]" time="0.594" /><testcase classname="tests.test_frozen_ee_sign" name="test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates[1000.0-1.0-4]" time="0.728" /><testcase classname="tests.test_frozen_ee_sign" name="test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates[1000.0-1.0-6]" time="0.694" /><testcase classname="tests.test_frozen_ee_sign" name="test_unrounded_yaw_stack_retains_the_analytic_eight_crossing_edge_pairs" time="0.058" /><testcase classname="tests.test_frozen_ee_sign" name="test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent[10000.0-0.001-4]" time="0.004"><failure message="assert (None is not None)">seed = 4, t = 10000.0, s = 0.001
+
+    @pytest.mark.parametrize("seed", (4, 6, 9, 11, 13, 17))
+    @pytest.mark.parametrize("t,s", [(1e4, 1e-3), (1e5, 1e-3), (1e6, 1e-2)])
+    def test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent(seed, t, s):
+        """原端点闭式条件保留；全部舍入运动格按独立精确参数分类，不以噪声窗口改成在程。"""
+        A0, B0 = _corner_pair(1e-5, 0.0)
+        c0,truth0 = _check_ee_exact(A0,(0,1),B0,(4,5))
+        assert c0 is not None and c0.in_extent and abs(c0.gap) &lt; 1e-12
+        assert abs(c0.params[0] - 1.0) &lt; 1e-9 and abs(c0.params[1] - 0.8) &lt; 1e-9
+        tv = (t * 0.6, -t * 0.48, t * 0.64)
+        A, B = _xf(A0, _rot3(seed), tv, s), _xf(B0, _rot3(seed), tv, s)
+        c,truth = _check_ee_exact(A,(0,1),B,(4,5))
+&gt;       assert c is not None and truth is not None
+E       assert (None is not None)
+
+tests\test_frozen_ee_sign.py:214: AssertionError</failure></testcase><testcase classname="tests.test_frozen_ee_sign" name="test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent[10000.0-0.001-6]" time="0.003"><failure message="assert (None is not None)">seed = 6, t = 10000.0, s = 0.001
+
+    @pytest.mark.parametrize("seed", (4, 6, 9, 11, 13, 17))
+    @pytest.mark.parametrize("t,s", [(1e4, 1e-3), (1e5, 1e-3), (1e6, 1e-2)])
+    def test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent(seed, t, s):
+        """原端点闭式条件保留；全部舍入运动格按独立精确参数分类，不以噪声窗口改成在程。"""
+        A0, B0 = _corner_pair(1e-5, 0.0)
+        c0,truth0 = _check_ee_exact(A0,(0,1),B0,(4,5))
+        assert c0 is not None and c0.in_extent and abs(c0.gap) &lt; 1e-12
+        assert abs(c0.params[0] - 1.0) &lt; 1e-9 and abs(c0.params[1] - 0.8) &lt; 1e-9
+        tv = (t * 0.6, -t * 0.48, t * 0.64)
+        A, B = _xf(A0, _rot3(seed), tv, s), _xf(B0, _rot3(seed), tv, s)
+        c,truth = _check_ee_exact(A,(0,1),B,(4,5))
+&gt;       assert c is not None and truth is not None
+E       assert (None is not None)
+
+tests\test_frozen_ee_sign.py:214: AssertionError</failure></testcase><testcase classname="tests.test_frozen_ee_sign" name="test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent[10000.0-0.001-9]" time="0.003"><failure message="assert (None is not None)">seed = 9, t = 10000.0, s = 0.001
+
+    @pytest.mark.parametrize("seed", (4, 6, 9, 11, 13, 17))
+    @pytest.mark.parametrize("t,s", [(1e4, 1e-3), (1e5, 1e-3), (1e6, 1e-2)])
+    def test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent(seed, t, s):
+        """原端点闭式条件保留；全部舍入运动格按独立精确参数分类，不以噪声窗口改成在程。"""
+        A0, B0 = _corner_pair(1e-5, 0.0)
+        c0,truth0 = _check_ee_exact(A0,(0,1),B0,(4,5))
+        assert c0 is not None and c0.in_extent and abs(c0.gap) &lt; 1e-12
+        assert abs(c0.params[0] - 1.0) &lt; 1e-9 and abs(c0.params[1] - 0.8) &lt; 1e-9
+        tv = (t * 0.6, -t * 0.48, t * 0.64)
+        A, B = _xf(A0, _rot3(seed), tv, s), _xf(B0, _rot3(seed), tv, s)
+        c,truth = _check_ee_exact(A,(0,1),B,(4,5))
+&gt;       assert c is not None and truth is not None
+E       assert (None is not None)
+
+tests\test_frozen_ee_sign.py:214: AssertionError</failure></testcase><testcase classname="tests.test_frozen_ee_sign" name="test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent[10000.0-0.001-11]" time="0.003"><failure message="assert (None is not None)">seed = 11, t = 10000.0, s = 0.001
+
+    @pytest.mark.parametrize("seed", (4, 6, 9, 11, 13, 17))
+    @pytest.mark.parametrize("t,s", [(1e4, 1e-3), (1e5, 1e-3), (1e6, 1e-2)])
+    def test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent(seed, t, s):
+        """原端点闭式条件保留；全部舍入运动格按独立精确参数分类，不以噪声窗口改成在程。"""
+        A0, B0 = _corner_pair(1e-5, 0.0)
+        c0,truth0 = _check_ee_exact(A0,(0,1),B0,(4,5))
+        assert c0 is not None and c0.in_extent and abs(c0.gap) &lt; 1e-12
+        assert abs(c0.params[0] - 1.0) &lt; 1e-9 and abs(c0.params[1] - 0.8) &lt; 1e-9
+        tv = (t * 0.6, -t * 0.48, t * 0.64)
+        A, B = _xf(A0, _rot3(seed), tv, s), _xf(B0, _rot3(seed), tv, s)
+        c,truth = _check_ee_exact(A,(0,1),B,(4,5))
+&gt;       assert c is not None and truth is not None
+E       assert (None is not None)
+
+tests\test_frozen_ee_sign.py:214: AssertionError</failure></testcase><testcase classname="tests.test_frozen_ee_sign" name="test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent[10000.0-0.001-13]" time="0.003"><failure message="assert (None is not None)">seed = 13, t = 10000.0, s = 0.001
+
+    @pytest.mark.parametrize("seed", (4, 6, 9, 11, 13, 17))
+    @pytest.mark.parametrize("t,s", [(1e4, 1e-3), (1e5, 1e-3), (1e6, 1e-2)])
+    def test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent(seed, t, s):
+        """原端点闭式条件保留；全部舍入运动格按独立精确参数分类，不以噪声窗口改成在程。"""
+        A0, B0 = _corner_pair(1e-5, 0.0)
+        c0,truth0 = _check_ee_exact(A0,(0,1),B0,(4,5))
+        assert c0 is not None and c0.in_extent and abs(c0.gap) &lt; 1e-12
+        assert abs(c0.params[0] - 1.0) &lt; 1e-9 and abs(c0.params[1] - 0.8) &lt; 1e-9
+        tv = (t * 0.6, -t * 0.48, t * 0.64)
+        A, B = _xf(A0, _rot3(seed), tv, s), _xf(B0, _rot3(seed), tv, s)
+        c,truth = _check_ee_exact(A,(0,1),B,(4,5))
+&gt;       assert c is not None and truth is not None
+E       assert (None is not None)
+
+tests\test_frozen_ee_sign.py:214: AssertionError</failure></testcase></testsuite></testsuites>

@@ -229,11 +229,16 @@ def test_hull_of_a_rotated_collinear_strip_matches_exact_support():
         pts += [(o[0] + e * 1e5 * u[0] + v[0], o[1] + e * 1e5 * u[1] + v[1]) for e in (1.0, -1.0)]
         hull=convex_hull(pts)
         from fractions import Fraction as F
+        # Exact conversion once per input point, not in every support test.
+        # All 3000 sets and all ordered (a,b,p) triples remain unchanged.
+        fpts=[(F(p[0]),F(p[1])) for p in pts]
         oracle=set()
-        for a in pts:
-            for b in pts:
+        for ia,a in enumerate(pts):
+            for ib,b in enumerate(pts):
                 if a==b: continue
-                ds=[(F(b[0])-F(a[0]))*(F(p[1])-F(a[1]))-(F(b[1])-F(a[1]))*(F(p[0])-F(a[0])) for p in pts]
+                fa,fb=fpts[ia],fpts[ib]
+                dx,dy=fb[0]-fa[0],fb[1]-fa[1]
+                ds=[dx*(p[1]-fa[1])-dy*(p[0]-fa[0]) for p in fpts]
                 if min(ds)>=0:
                     line=[p for p,d in zip(pts,ds) if d==0]
                     oracle.update((min(line),max(line)))

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="38" time="188.809" timestamp="2026-10-12T01:53:26.606897+08:00" hostname="RICH"><testcase classname="tests.test_interlocking" name="test_manifold_and_orientation[P0-box]" time="0.001" /><testcase classname="tests.test_interlocking" name="test_manifold_and_orientation[P1-tetra]" time="0.001" /><testcase classname="tests.test_interlocking" name="test_manifold_and_orientation[P2-osteo_4x2]" time="0.001" /><testcase classname="tests.test_interlocking" name="test_manifold_and_orientation[P3-osteo_6x3]" time="0.001" /><testcase classname="tests.test_interlocking" name="test_manifold_and_orientation[P4-osteo_flat]" time="0.001" /><testcase classname="tests.test_interlocking" name="test_osteomorphic_is_genuinely_concave_with_exact_prism_volume" time="0.002" /><testcase classname="tests.test_interlocking" name="test_interlock_blocks_lateral_motion_but_not_vertical" time="0.395" /><testcase classname="tests.test_interlocking" name="test_covers_at_seated_interlock_are_complete_and_zero_gap" time="0.394" /><testcase classname="tests.test_interlocking" name="test_lifted_interlock_normal_gap_is_lift_times_cos_slope" time="0.302" /><testcase classname="tests.test_interlocking" name="test_g0_distance_completeness_on_concave_interlocking_pair[0]" time="14.289" /><testcase classname="tests.test_interlocking" name="test_g0_distance_completeness_on_concave_interlocking_pair[1]" time="13.847" /><testcase classname="tests.test_interlocking" name="test_g0_distance_completeness_on_concave_interlocking_pair[2]" time="16.744" /><testcase classname="tests.test_interlocking" name="test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[0.001]" time="35.495" /><testcase classname="tests.test_interlocking" name="test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1.0]" time="31.767" /><testcase classname="tests.test_interlocking" name="test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1000.0]" time="32.846" /><testcase classname="tests.test_interlocking" name="test_g0_distance_completeness_on_merged_interlocking_pair" time="10.188" /><testcase classname="tests.test_interlocking" name="test_min_cover_gap_is_not_a_membership_rule_for_concave_bodies" time="1.059" /><testcase classname="tests.test_interlock_candidates_contract" name="test_every_public_candidate_is_a_real_contact_at_its_own_height[0.05]" time="0.451"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_candidates_contract.py:30: in test_every_public_candidate_is_a_real_contact_at_its_own_height
+    cands = escape_candidates(A, L, off)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:195: in escape_candidates
+    return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_candidates_contract" name="test_every_public_candidate_is_a_real_contact_at_its_own_height[0.13]" time="1.118" /><testcase classname="tests.test_interlock_candidates_contract" name="test_every_public_candidate_is_a_real_contact_at_its_own_height[0.2]" time="0.443" /><testcase classname="tests.test_interlock_candidates_contract" name="test_every_public_candidate_is_a_real_contact_at_its_own_height[0.3]" time="0.417"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_candidates_contract.py:30: in test_every_public_candidate_is_a_real_contact_at_its_own_height
+    cands = escape_candidates(A, L, off)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:195: in escape_candidates
+    return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_candidates_contract" name="test_every_public_candidate_is_a_real_contact_at_its_own_height[0.41]" time="0.379" /><testcase classname="tests.test_interlock_candidates_contract" name="test_every_public_candidate_is_a_real_contact_at_its_own_height[0.45]" time="0.359" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-11--1.0]" time="0.915" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-11-1.0]" time="0.921" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-10--1.0]" time="0.917" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-10-1.0]" time="1.481" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[5e-10--1.0]" time="0.924" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[5e-10-1.0]" time="0.907" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-09--1.0]" time="0.924" /><testcase classname="tests.test_interlock_candidates_contract" name="test_public_candidates_keep_both_branches_inside_the_predicate_band[1e-09-1.0]" time="0.940" /><testcase classname="tests.test_interlock_escape" name="test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0]" time="11.804"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_escape.py:90: in test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks
+    _check_escape(A, L, off, truth)
+tests\test_interlock_escape.py:60: in _check_escape
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_escape" name="test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase0]" time="3.923"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_escape.py:90: in test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks
+    _check_escape(A, L, off, truth)
+tests\test_interlock_escape.py:60: in _check_escape
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase><testcase classname="tests.test_interlock_escape" name="test_escape_height_covers_at_grid_aligned_offsets[off0]" time="0.657" /><testcase classname="tests.test_interlock_escape" name="test_escape_height_covers_at_grid_aligned_offsets[off1]" time="0.603" /><testcase classname="tests.test_interlock_escape" name="test_escape_height_covers_at_grid_aligned_offsets[off2]" time="0.557" /><testcase classname="tests.test_interlock_escape" name="test_escape_height_covers_at_grid_aligned_offsets[off3]" time="0.585" /><testcase classname="tests.test_interlock_escape" name="test_escape_height_covers_is_complete_under_scaling[0.01]" time="1.255"><failure message="ZeroDivisionError: float division by zero">tests\test_interlock_escape.py:109: in test_escape_height_covers_is_complete_under_scaling
+    _check_escape(A, L, off, truth, scale=s)
+tests\test_interlock_escape.py:60: in _check_escape
+    sol = escape_height_covers(A, L, off)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:219: in escape_height_covers
+    cands, r = _candidates(A, B, offset, tol, gtol)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:154: in _candidates
+    zn = _cover_escape_z(c, _normal_noise(At, B, c))
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\interlock.py:110: in _normal_noise
+    return (A.edge_noise(ea) + B.edge_noise(eb)) / norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: float division by zero</failure></testcase></testsuite></testsuites>

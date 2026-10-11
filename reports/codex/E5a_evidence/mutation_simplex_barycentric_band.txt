@@ -1,0 +1,20 @@
+FF.                                                                      [100%]
+================================== FAILURES ===================================
+_ test_exact_corrective_simplex_does_not_absorb_origin_just_outside_a_face[1e-16] _
+tests\test_covers3_e5a.py:39: in test_exact_corrective_simplex_does_not_absorb_origin_just_outside_a_face
+    assert closest_point_of_convex_hull_to_origin(points) == (epsilon, 0., 0.)
+E   assert (0.0, 0.0, 0.0) == (1e-16, 0.0, 0.0)
+E     
+E     At index 0 diff: 0.0 != 1e-16
+E     Use -v to get more diff
+_ test_exact_corrective_simplex_does_not_absorb_origin_just_outside_a_face[1e-13] _
+tests\test_covers3_e5a.py:39: in test_exact_corrective_simplex_does_not_absorb_origin_just_outside_a_face
+    assert closest_point_of_convex_hull_to_origin(points) == (epsilon, 0., 0.)
+E   assert (0.0, 0.0, 0.0) == (1e-13, 0.0, 0.0)
+E     
+E     At index 0 diff: 0.0 != 1e-13
+E     Use -v to get more diff
+=========================== short test summary info ===========================
+FAILED tests/test_covers3_e5a.py::test_exact_corrective_simplex_does_not_absorb_origin_just_outside_a_face[1e-16]
+FAILED tests/test_covers3_e5a.py::test_exact_corrective_simplex_does_not_absorb_origin_just_outside_a_face[1e-13]
+2 failed, 1 passed, 66 deselected in 0.19s
