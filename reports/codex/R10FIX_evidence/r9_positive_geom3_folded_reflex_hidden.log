@@ -1,0 +1,775 @@
+{
+  "result": "FIXED",
+  "cases": 24,
+  "summary": "exact local convexity API silently ignores a real folded-face concave diagonal",
+  "rows": [
+    {
+      "h": "1/2",
+      "scale": "1",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1/1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1/1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1/1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1/1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/2",
+      "scale": "1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1/1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1/1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1/1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1/1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1073741824",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": false,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    },
+    {
+      "h": "1/1208925819614629174706176",
+      "scale": "1073741824",
+      "translation": [
+        100000000,
+        -200000000,
+        300000000
+      ],
+      "rotated": true,
+      "actual_is_convex": false,
+      "expected_is_convex": false,
+      "actual_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "expected_reflex_edge": [
+        5,
+        7
+      ],
+      "surface_reflex_edges": [
+        [
+          5,
+          7
+        ]
+      ],
+      "midpoint_state": -1,
+      "expected_reflex_triple": "-1/604462909807314587353088",
+      "actual_dihedral_4_5": 1.5707963267948966,
+      "expected_dihedral_4_5": 1.5707963267948966
+    }
+  ]
+}

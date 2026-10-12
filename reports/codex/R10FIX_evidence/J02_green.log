@@ -1,0 +1,15 @@
+....................................J02 initial-branch mutant killed by: closed initial face boundary must not be discarded by motion
+assert 'none' == 'entrance'
+  
+  - entrance
+  + none
+.J02 finite-domain mutant killed by: initial tied label left its finite source domain
+assert Fraction(5, 4) <= Fraction(1, 1)
+ +  where Fraction(5, 4) = max(Fraction(5, 4), Fraction(-1, 1))
+ +    where Fraction(5, 4) = min(<generator object _assert_axis_aligned_label_has_closed_source_intersection.<locals>.<genexpr> at 0x0000000004923510>)
+ +    and   Fraction(-1, 1) = min(<generator object _assert_axis_aligned_label_has_closed_source_intersection.<locals>.<genexpr> at 0x00000000049232A0>)
+ +  and   Fraction(1, 1) = min(Fraction(5, 4), Fraction(1, 1))
+ +    where Fraction(5, 4) = max(<generator object _assert_axis_aligned_label_has_closed_source_intersection.<locals>.<genexpr> at 0x00000000049231D0>)
+ +    and   Fraction(1, 1) = max(<generator object _assert_axis_aligned_label_has_closed_source_intersection.<locals>.<genexpr> at 0x0000000004923370>)
+..
+39 passed in 1.11s

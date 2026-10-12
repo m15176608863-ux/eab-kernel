@@ -1,0 +1,88 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+_ test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale0-shift0-rotation0] _
+
+scale = Fraction(1, 1), shift = (0, 0)
+rotation = (Fraction(1, 1), Fraction(0, 1))
+
+    @pytest.mark.parametrize("scale,shift,rotation", [
+        (F(1), (0, 0), (F(1), F(0))),
+        (F(1, 10**9), (10**8, -10**8), (F(3, 5), F(4, 5))),
+        (F(10**8), (10**8, -10**8), (F(3, 5), F(4, 5))),
+    ])
+    def test_public_micro_reflex_cone_rejects_opposite_hemisphere(scale, shift, rotation):
+        c, s = rotation
+        poly = [(0, 0), (1, 0), (2, F(-1, 100)), (2, 1), (0, 1)]
+        transformed = [(scale*(c*x-s*y)+shift[0], scale*(s*x+c*y)+shift[1])
+                       for x, y in poly]
+        assert normal_cone(transformed, 1, tol=0) is None
+        cone = normal_cone(transformed, 1, tol=F(1, 50))
+        assert cone is not None
+        v = (c*F(1, 200)-s, s*F(1, 200)+c)
+        assert all(sum(F(a)*b for a, b in zip(n, v)) < 0 for n in cone)
+>       assert in_cone(cone, v, tol=F(1, 50)) == -1, "opposite thin sector is exterior"
+E       AssertionError: opposite thin sector is exterior
+E       assert 1 == -1
+E        +  where 1 = in_cone(((0.0, -1.0), (-0.009999500037496875, -0.9999500037496876)), (Fraction(1, 200), Fraction(1, 1)), tol=Fraction(1, 50))
+E        +    where Fraction(1, 50) = F(1, 50)
+
+tests\test_r10_cone_contract.py:28: AssertionError
+_ test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale1-shift1-rotation1] _
+
+scale = Fraction(1, 1000000000), shift = (100000000, -100000000)
+rotation = (Fraction(3, 5), Fraction(4, 5))
+
+    @pytest.mark.parametrize("scale,shift,rotation", [
+        (F(1), (0, 0), (F(1), F(0))),
+        (F(1, 10**9), (10**8, -10**8), (F(3, 5), F(4, 5))),
+        (F(10**8), (10**8, -10**8), (F(3, 5), F(4, 5))),
+    ])
+    def test_public_micro_reflex_cone_rejects_opposite_hemisphere(scale, shift, rotation):
+        c, s = rotation
+        poly = [(0, 0), (1, 0), (2, F(-1, 100)), (2, 1), (0, 1)]
+        transformed = [(scale*(c*x-s*y)+shift[0], scale*(s*x+c*y)+shift[1])
+                       for x, y in poly]
+        assert normal_cone(transformed, 1, tol=0) is None
+        cone = normal_cone(transformed, 1, tol=F(1, 50))
+        assert cone is not None
+        v = (c*F(1, 200)-s, s*F(1, 200)+c)
+        assert all(sum(F(a)*b for a, b in zip(n, v)) < 0 for n in cone)
+>       assert in_cone(cone, v, tol=F(1, 50)) == -1, "opposite thin sector is exterior"
+E       AssertionError: opposite thin sector is exterior
+E       assert 1 == -1
+E        +  where 1 = in_cone(((0.8, -0.6), (0.7939603029772518, -0.60796960227981)), (Fraction(-797, 1000), Fraction(151, 250)), tol=Fraction(1, 50))
+E        +    where Fraction(1, 50) = F(1, 50)
+
+tests\test_r10_cone_contract.py:28: AssertionError
+_ test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale2-shift2-rotation2] _
+
+scale = Fraction(100000000, 1), shift = (100000000, -100000000)
+rotation = (Fraction(3, 5), Fraction(4, 5))
+
+    @pytest.mark.parametrize("scale,shift,rotation", [
+        (F(1), (0, 0), (F(1), F(0))),
+        (F(1, 10**9), (10**8, -10**8), (F(3, 5), F(4, 5))),
+        (F(10**8), (10**8, -10**8), (F(3, 5), F(4, 5))),
+    ])
+    def test_public_micro_reflex_cone_rejects_opposite_hemisphere(scale, shift, rotation):
+        c, s = rotation
+        poly = [(0, 0), (1, 0), (2, F(-1, 100)), (2, 1), (0, 1)]
+        transformed = [(scale*(c*x-s*y)+shift[0], scale*(s*x+c*y)+shift[1])
+                       for x, y in poly]
+        assert normal_cone(transformed, 1, tol=0) is None
+        cone = normal_cone(transformed, 1, tol=F(1, 50))
+        assert cone is not None
+        v = (c*F(1, 200)-s, s*F(1, 200)+c)
+        assert all(sum(F(a)*b for a, b in zip(n, v)) < 0 for n in cone)
+>       assert in_cone(cone, v, tol=F(1, 50)) == -1, "opposite thin sector is exterior"
+E       AssertionError: opposite thin sector is exterior
+E       assert 1 == -1
+E        +  where 1 = in_cone(((0.8, -0.6), (0.7939603029772518, -0.60796960227981)), (Fraction(-797, 1000), Fraction(151, 250)), tol=Fraction(1, 50))
+E        +    where Fraction(1, 50) = F(1, 50)
+
+tests\test_r10_cone_contract.py:28: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r10_cone_contract.py::test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale0-shift0-rotation0]
+FAILED tests/test_r10_cone_contract.py::test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale1-shift1-rotation1]
+FAILED tests/test_r10_cone_contract.py::test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale2-shift2-rotation2]
+3 failed in 0.07s

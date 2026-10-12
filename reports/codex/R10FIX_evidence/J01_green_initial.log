@@ -1,0 +1,16 @@
+......................................................F................. [ 91%]
+.......                                                                  [100%]
+================================== FAILURES ===================================
+_____ test_all_source_and_test_oracles_use_reviewed_construction_boundary _____
+
+    def test_all_source_and_test_oracles_use_reviewed_construction_boundary():
+        issues = gate.scan_repository()
+>       assert not issues, "unsafe exact construction:\n" + "\n".join(map(str, issues))
+E       AssertionError: unsafe exact construction:
+E         ('tests/test_filtered_predicates.py', 121, 'test_orient3d_filter_has_a_real_fast_path', 'direct-float', 'map(ctor, q)')
+E       assert not [('tests/test_filtered_predicates.py', 121, 'test_orient3d_filter_has_a_real_fast_path', 'direct-float', 'map(ctor, q)')]
+
+tests\test_r9fix_construction_static.py:15: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r9fix_construction_static.py::test_all_source_and_test_oracles_use_reviewed_construction_boundary
+1 failed, 78 passed in 1.35s

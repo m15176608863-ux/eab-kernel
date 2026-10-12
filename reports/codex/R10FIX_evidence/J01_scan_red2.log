@@ -1,0 +1,200 @@
+..........................................FFF...........FF.              [100%]
+================================== FAILURES ===================================
+_ test_j01_local_call_assignment_and_container_forms_keep_provenance[holder.cast = scalar_rational\n    return sqrt_rational(holder.cast(q))-rounded-root] _
+
+body = 'holder.cast = scalar_rational\n    return sqrt_rational(holder.cast(q))'
+rule = 'rounded-root'
+
+    @pytest.mark.parametrize("body,rule", [
+        ("return sqrt_rational(**{'value': scalar_rational(q)})", "rounded-root"),
+        ("args = (scalar_rational(q),)\n    return sqrt_rational(*args)", "rounded-root"),
+        ("kwargs = {'value': scalar_rational(q)}\n    return sqrt_rational(**kwargs)", "rounded-root"),
+        ("return sqrt_rational(Fraction.from_float(scalar_rational(q)))", "rounded-root"),
+        ("return norm_rational(tuple(Fraction(x) for x in vector_rational(q)))", "rounded-vector"),
+        ("v = []\n    v.extend(vector_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+        ("v = [0]\n    v[0] = scalar_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+        ("v = {}\n    v.update(value=scalar_rational(q))\n    return sqrt_rational(v['value'])", "rounded-root"),
+        ("holder.value = scalar_rational(q)\n    return sqrt_rational(holder.value)", "rounded-root"),
+        ("a, *b = vector_rational(q)\n    return norm_rational(b)", "rounded-vector"),
+        ("a = b = scalar_rational(q)\n    return sqrt_rational(b)", "rounded-root"),
+        ("v: list = []\n    v += vector_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+        ("v = vector_rational(q)\n    for x, y in zip(v, v):\n        return sqrt_rational(x+y)", "rounded-root"),
+        ("v = vector_rational(q)\n    return sqrt_rational(sum(x*x for x in v))", "rounded-root"),
+        ("if flag:\n        v = vector_rational(q)\n    else:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+        ("v = [0]\n    alias = v\n    alias.append(scalar_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+        ("casts = {'convert': scalar_rational}\n    return sqrt_rational(casts['convert'](q))", "rounded-root"),
+        ("root, cast = sqrt_rational, scalar_rational\n    return root(cast(q))", "rounded-root"),
+        ("root: object = sqrt_rational\n    return root(value=scalar_rational(q))", "rounded-root"),
+        ("return (sqrt_rational if flag else sqrt_exact)(scalar_rational(q))", "rounded-root"),
+        ("return (lambda x: sqrt_rational(x))(scalar_rational(q))", "rounded-root"),
+        ("cast = lambda x: scalar_rational(x)\n    return sqrt_rational(cast(q))", "rounded-root"),
+        ("return sqrt_rational(list(map(*(Fraction, vector_rational(q))))[0])", "rounded-root"),
+        ("v = {'x': scalar_rational(q)}\n    return sqrt_rational(sum(v.values()))", "rounded-root"),
+        ("v = [scalar_rational(q)]\n    return sqrt_rational(v.copy()[0])", "rounded-root"),
+        ("return sqrt_rational(scalar_rational.__call__(q))", "rounded-root"),
+        ("return sqrt_rational.__call__(scalar_rational(q))", "rounded-root"),
+        ("root = sqrt_rational\n    if flag:\n        root = sqrt_exact\n    else:\n        root = abs\n    return root(scalar_rational(q))", "rounded-root"),
+        ("v = []\n    with context(scalar_rational(q)) as value:\n        v.append(value)\n    return sqrt_rational(v[0])", "rounded-root"),
+        ("v = vector_rational(q)\n    match v:\n        case [value, *_]:\n            return sqrt_rational(value)", "rounded-root"),
+        ("return [sqrt_rational(value) for value in vector_rational(q)]", "rounded-root"),
+        ("v = [0]\n    alias = v\n    alias[0] = scalar_rational(q)\n    alias = []\n    return norm_rational(v)", "rounded-vector"),
+        ("return list(map(float, q))", "direct-float"),
+        ("return list(map(*(float, q)))", "direct-float"),
+        ("return float.__call__(q)", "direct-float"),
+        ("holder.cast = scalar_rational\n    return sqrt_rational(holder.cast(q))", "rounded-root"),
+        ("return (root := sqrt_rational)(scalar_rational(q))", "rounded-root"),
+        ("try:\n        v = vector_rational(q)\n        risky()\n    except ValueError:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+    ])
+    def test_j01_local_call_assignment_and_container_forms_keep_provenance(body, rule):
+        issues = gate.scan_text("def bad(q,flag,holder):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (body, rule, issues)
+E       AssertionError: ('holder.cast = scalar_rational
+E             return sqrt_rational(holder.cast(q))', 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_local_call_assignment_and_container_forms_keep_provenance.<locals>.<genexpr> at 0x00000000047AFAE0>)
+
+tests\test_r10_static_construction.py:79: AssertionError
+_ test_j01_local_call_assignment_and_container_forms_keep_provenance[return (root := sqrt_rational)(scalar_rational(q))-rounded-root] _
+
+body = 'return (root := sqrt_rational)(scalar_rational(q))'
+rule = 'rounded-root'
+
+    @pytest.mark.parametrize("body,rule", [
+        ("return sqrt_rational(**{'value': scalar_rational(q)})", "rounded-root"),
+        ("args = (scalar_rational(q),)\n    return sqrt_rational(*args)", "rounded-root"),
+        ("kwargs = {'value': scalar_rational(q)}\n    return sqrt_rational(**kwargs)", "rounded-root"),
+        ("return sqrt_rational(Fraction.from_float(scalar_rational(q)))", "rounded-root"),
+        ("return norm_rational(tuple(Fraction(x) for x in vector_rational(q)))", "rounded-vector"),
+        ("v = []\n    v.extend(vector_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+        ("v = [0]\n    v[0] = scalar_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+        ("v = {}\n    v.update(value=scalar_rational(q))\n    return sqrt_rational(v['value'])", "rounded-root"),
+        ("holder.value = scalar_rational(q)\n    return sqrt_rational(holder.value)", "rounded-root"),
+        ("a, *b = vector_rational(q)\n    return norm_rational(b)", "rounded-vector"),
+        ("a = b = scalar_rational(q)\n    return sqrt_rational(b)", "rounded-root"),
+        ("v: list = []\n    v += vector_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+        ("v = vector_rational(q)\n    for x, y in zip(v, v):\n        return sqrt_rational(x+y)", "rounded-root"),
+        ("v = vector_rational(q)\n    return sqrt_rational(sum(x*x for x in v))", "rounded-root"),
+        ("if flag:\n        v = vector_rational(q)\n    else:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+        ("v = [0]\n    alias = v\n    alias.append(scalar_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+        ("casts = {'convert': scalar_rational}\n    return sqrt_rational(casts['convert'](q))", "rounded-root"),
+        ("root, cast = sqrt_rational, scalar_rational\n    return root(cast(q))", "rounded-root"),
+        ("root: object = sqrt_rational\n    return root(value=scalar_rational(q))", "rounded-root"),
+        ("return (sqrt_rational if flag else sqrt_exact)(scalar_rational(q))", "rounded-root"),
+        ("return (lambda x: sqrt_rational(x))(scalar_rational(q))", "rounded-root"),
+        ("cast = lambda x: scalar_rational(x)\n    return sqrt_rational(cast(q))", "rounded-root"),
+        ("return sqrt_rational(list(map(*(Fraction, vector_rational(q))))[0])", "rounded-root"),
+        ("v = {'x': scalar_rational(q)}\n    return sqrt_rational(sum(v.values()))", "rounded-root"),
+        ("v = [scalar_rational(q)]\n    return sqrt_rational(v.copy()[0])", "rounded-root"),
+        ("return sqrt_rational(scalar_rational.__call__(q))", "rounded-root"),
+        ("return sqrt_rational.__call__(scalar_rational(q))", "rounded-root"),
+        ("root = sqrt_rational\n    if flag:\n        root = sqrt_exact\n    else:\n        root = abs\n    return root(scalar_rational(q))", "rounded-root"),
+        ("v = []\n    with context(scalar_rational(q)) as value:\n        v.append(value)\n    return sqrt_rational(v[0])", "rounded-root"),
+        ("v = vector_rational(q)\n    match v:\n        case [value, *_]:\n            return sqrt_rational(value)", "rounded-root"),
+        ("return [sqrt_rational(value) for value in vector_rational(q)]", "rounded-root"),
+        ("v = [0]\n    alias = v\n    alias[0] = scalar_rational(q)\n    alias = []\n    return norm_rational(v)", "rounded-vector"),
+        ("return list(map(float, q))", "direct-float"),
+        ("return list(map(*(float, q)))", "direct-float"),
+        ("return float.__call__(q)", "direct-float"),
+        ("holder.cast = scalar_rational\n    return sqrt_rational(holder.cast(q))", "rounded-root"),
+        ("return (root := sqrt_rational)(scalar_rational(q))", "rounded-root"),
+        ("try:\n        v = vector_rational(q)\n        risky()\n    except ValueError:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+    ])
+    def test_j01_local_call_assignment_and_container_forms_keep_provenance(body, rule):
+        issues = gate.scan_text("def bad(q,flag,holder):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (body, rule, issues)
+E       AssertionError: ('return (root := sqrt_rational)(scalar_rational(q))', 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_local_call_assignment_and_container_forms_keep_provenance.<locals>.<genexpr> at 0x00000000047AFBC0>)
+
+tests\test_r10_static_construction.py:79: AssertionError
+_ test_j01_local_call_assignment_and_container_forms_keep_provenance[try:\n        v = vector_rational(q)\n        risky()\n    except ValueError:\n        v = q\n    return norm_rational(v)-rounded-vector] _
+
+body = 'try:\n        v = vector_rational(q)\n        risky()\n    except ValueError:\n        v = q\n    return norm_rational(v)'
+rule = 'rounded-vector'
+
+    @pytest.mark.parametrize("body,rule", [
+        ("return sqrt_rational(**{'value': scalar_rational(q)})", "rounded-root"),
+        ("args = (scalar_rational(q),)\n    return sqrt_rational(*args)", "rounded-root"),
+        ("kwargs = {'value': scalar_rational(q)}\n    return sqrt_rational(**kwargs)", "rounded-root"),
+        ("return sqrt_rational(Fraction.from_float(scalar_rational(q)))", "rounded-root"),
+        ("return norm_rational(tuple(Fraction(x) for x in vector_rational(q)))", "rounded-vector"),
+        ("v = []\n    v.extend(vector_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+        ("v = [0]\n    v[0] = scalar_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+        ("v = {}\n    v.update(value=scalar_rational(q))\n    return sqrt_rational(v['value'])", "rounded-root"),
+        ("holder.value = scalar_rational(q)\n    return sqrt_rational(holder.value)", "rounded-root"),
+        ("a, *b = vector_rational(q)\n    return norm_rational(b)", "rounded-vector"),
+        ("a = b = scalar_rational(q)\n    return sqrt_rational(b)", "rounded-root"),
+        ("v: list = []\n    v += vector_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+        ("v = vector_rational(q)\n    for x, y in zip(v, v):\n        return sqrt_rational(x+y)", "rounded-root"),
+        ("v = vector_rational(q)\n    return sqrt_rational(sum(x*x for x in v))", "rounded-root"),
+        ("if flag:\n        v = vector_rational(q)\n    else:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+        ("v = [0]\n    alias = v\n    alias.append(scalar_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+        ("casts = {'convert': scalar_rational}\n    return sqrt_rational(casts['convert'](q))", "rounded-root"),
+        ("root, cast = sqrt_rational, scalar_rational\n    return root(cast(q))", "rounded-root"),
+        ("root: object = sqrt_rational\n    return root(value=scalar_rational(q))", "rounded-root"),
+        ("return (sqrt_rational if flag else sqrt_exact)(scalar_rational(q))", "rounded-root"),
+        ("return (lambda x: sqrt_rational(x))(scalar_rational(q))", "rounded-root"),
+        ("cast = lambda x: scalar_rational(x)\n    return sqrt_rational(cast(q))", "rounded-root"),
+        ("return sqrt_rational(list(map(*(Fraction, vector_rational(q))))[0])", "rounded-root"),
+        ("v = {'x': scalar_rational(q)}\n    return sqrt_rational(sum(v.values()))", "rounded-root"),
+        ("v = [scalar_rational(q)]\n    return sqrt_rational(v.copy()[0])", "rounded-root"),
+        ("return sqrt_rational(scalar_rational.__call__(q))", "rounded-root"),
+        ("return sqrt_rational.__call__(scalar_rational(q))", "rounded-root"),
+        ("root = sqrt_rational\n    if flag:\n        root = sqrt_exact\n    else:\n        root = abs\n    return root(scalar_rational(q))", "rounded-root"),
+        ("v = []\n    with context(scalar_rational(q)) as value:\n        v.append(value)\n    return sqrt_rational(v[0])", "rounded-root"),
+        ("v = vector_rational(q)\n    match v:\n        case [value, *_]:\n            return sqrt_rational(value)", "rounded-root"),
+        ("return [sqrt_rational(value) for value in vector_rational(q)]", "rounded-root"),
+        ("v = [0]\n    alias = v\n    alias[0] = scalar_rational(q)\n    alias = []\n    return norm_rational(v)", "rounded-vector"),
+        ("return list(map(float, q))", "direct-float"),
+        ("return list(map(*(float, q)))", "direct-float"),
+        ("return float.__call__(q)", "direct-float"),
+        ("holder.cast = scalar_rational\n    return sqrt_rational(holder.cast(q))", "rounded-root"),
+        ("return (root := sqrt_rational)(scalar_rational(q))", "rounded-root"),
+        ("try:\n        v = vector_rational(q)\n        risky()\n    except ValueError:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+    ])
+    def test_j01_local_call_assignment_and_container_forms_keep_provenance(body, rule):
+        issues = gate.scan_text("def bad(q,flag,holder):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (body, rule, issues)
+E       AssertionError: ('try:
+E                 v = vector_rational(q)
+E                 risky()
+E             except ValueError:
+E                 v = q
+E             return norm_rational(v)', 'rounded-vector', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_local_call_assignment_and_container_forms_keep_provenance.<locals>.<genexpr> at 0x00000000047AECE0>)
+
+tests\test_r10_static_construction.py:79: AssertionError
+_ test_j01_rounded_default_arguments_keep_provenance[value=scalar_rational(q)] _
+
+signature = 'value=scalar_rational(q)'
+
+    @pytest.mark.parametrize("signature", ["value=scalar_rational(q)", "*, value=scalar_rational(q)"])
+    def test_j01_rounded_default_arguments_keep_provenance(signature):
+        issues = gate.scan_text(f"def bad({signature}):\n    return sqrt_rational(value)\n")
+>       assert any(row[2:4] == ("bad", "rounded-root") for row in issues), issues
+E       AssertionError: []
+E       assert False
+E        +  where False = any(<generator object test_j01_rounded_default_arguments_keep_provenance.<locals>.<genexpr> at 0x000000000487B440>)
+
+tests\test_r10_static_construction.py:133: AssertionError
+_ test_j01_rounded_default_arguments_keep_provenance[*, value=scalar_rational(q)] _
+
+signature = '*, value=scalar_rational(q)'
+
+    @pytest.mark.parametrize("signature", ["value=scalar_rational(q)", "*, value=scalar_rational(q)"])
+    def test_j01_rounded_default_arguments_keep_provenance(signature):
+        issues = gate.scan_text(f"def bad({signature}):\n    return sqrt_rational(value)\n")
+>       assert any(row[2:4] == ("bad", "rounded-root") for row in issues), issues
+E       AssertionError: []
+E       assert False
+E        +  where False = any(<generator object test_j01_rounded_default_arguments_keep_provenance.<locals>.<genexpr> at 0x0000000004A58FB0>)
+
+tests\test_r10_static_construction.py:133: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r10_static_construction.py::test_j01_local_call_assignment_and_container_forms_keep_provenance[holder.cast = scalar_rational\n    return sqrt_rational(holder.cast(q))-rounded-root]
+FAILED tests/test_r10_static_construction.py::test_j01_local_call_assignment_and_container_forms_keep_provenance[return (root := sqrt_rational)(scalar_rational(q))-rounded-root]
+FAILED tests/test_r10_static_construction.py::test_j01_local_call_assignment_and_container_forms_keep_provenance[try:\n        v = vector_rational(q)\n        risky()\n    except ValueError:\n        v = q\n    return norm_rational(v)-rounded-vector]
+FAILED tests/test_r10_static_construction.py::test_j01_rounded_default_arguments_keep_provenance[value=scalar_rational(q)]
+FAILED tests/test_r10_static_construction.py::test_j01_rounded_default_arguments_keep_provenance[*, value=scalar_rational(q)]
+5 failed, 54 passed in 0.31s

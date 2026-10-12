@@ -1,5 +1,7 @@
 # WO-E5a 三维精确几何设计（实现前冻结，2026-10-12）
 
+> **WO-R10FIX（2026-10-12，未提交、待独立 G6）**：G6J-J01～J05 的修复、同类扫描及验证见 [R10FIX 报告](../reports/codex/R10FIX_report.md) 与 [设计同步](r10fix_design_sync.md)。本树结果不构成 M0 退出；外部设计正本保持只读。
+
 > R9FIX 后续契约：实体拓扑/公共法锥按声明三角化、嵌套壳方向诊断及精确构造边界见 [r9fix_design_sync.md](r9fix_design_sync.md)。历史源单盖描述符豁免不适用于公共实体法锥；本单仍待独立 G6。
 
 > **WO-R8FIX（2026-10-12，修复留树，待独立 G6）**：本轮 G6H 确认 6 条 major；逐条红绿、内部变异、旧门对照、同类扫描和全套实测见 [R8FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R8FIX_report.md)。当前合同补充见 [R8FIX 设计同步](file:///D:/eab-wt/cx-e2/docs/r8fix_design_sync.md)。本树同步不等于只读外部正本已回写；M0 退出状态不升级。

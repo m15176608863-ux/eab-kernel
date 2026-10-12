@@ -1,5 +1,7 @@
 # eab-kernel
 
+> **WO-R10FIX（2026-10-12，未提交、待独立 G6）**：G6J-J01～J05 的修复、同类扫描及验证见 [R10FIX 报告](reports/codex/R10FIX_report.md) 与 [设计同步](docs/r10fix_design_sync.md)。本树结果不构成 M0 退出；外部设计正本保持只读。
+
 > **WO-R9FIX（2026-10-12，工作树未提交、待独立 G6）**：处置 G6I-01～06：二维共线链首入先核有限源特征域；实体凸性/凹棱及公共法锥按声明三角拓扑；壳方向按嵌套分量核验；精确到浮点统一构造并有独立中点证书与 AST 门。源单盖描述符仍是独立窄域，不等于折面实体完整法锥。设计同步见 `docs/r9fix_design_sync.md`；红绿/变异/全套见 `reports/codex/R9FIX_report.md`。本单未新建 worktree，不是独立六路 G6，不宣称 M0 退出。
 
 

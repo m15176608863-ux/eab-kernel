@@ -1,0 +1,359 @@
+FFFFFFFFFFFFFF                                                           [100%]
+================================== FAILURES ===================================
+________ test_j01_all_seven_review_syntaxes_are_rejected[sqrt_keyword] ________
+
+label = 'sqrt_keyword', body = 'return sqrt_rational(value=scalar_rational(q))'
+rule = 'rounded-root'
+
+    @pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+        issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+E       AssertionError: ('sqrt_keyword', 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_all_seven_review_syntaxes_are_rejected.<locals>.<genexpr> at 0x0000000004878580>)
+
+tests\test_r10_static_construction.py:36: AssertionError
+________ test_j01_all_seven_review_syntaxes_are_rejected[norm_keyword] ________
+
+label = 'norm_keyword', body = 'return norm_rational(values=vector_rational(q))'
+rule = 'rounded-vector'
+
+    @pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+        issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+E       AssertionError: ('norm_keyword', 'rounded-vector', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_all_seven_review_syntaxes_are_rejected.<locals>.<genexpr> at 0x00000000047F9C40>)
+
+tests\test_r10_static_construction.py:36: AssertionError
+______ test_j01_all_seven_review_syntaxes_are_rejected[fraction_barrier] ______
+
+label = 'fraction_barrier'
+body = 'return sqrt_rational(Fraction(scalar_rational(q)))'
+rule = 'rounded-root'
+
+    @pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+        issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+E       AssertionError: ('fraction_barrier', 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_all_seven_review_syntaxes_are_rejected.<locals>.<genexpr> at 0x00000000047FA260>)
+
+tests\test_r10_static_construction.py:36: AssertionError
+____ test_j01_all_seven_review_syntaxes_are_rejected[map_fraction_barrier] ____
+
+label = 'map_fraction_barrier'
+body = 'return norm_rational(tuple(map(Fraction, vector_rational(q))))'
+rule = 'rounded-vector'
+
+    @pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+        issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+E       AssertionError: ('map_fraction_barrier', 'rounded-vector', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_all_seven_review_syntaxes_are_rejected.<locals>.<genexpr> at 0x00000000047F89E0>)
+
+tests\test_r10_static_construction.py:36: AssertionError
+_________ test_j01_all_seven_review_syntaxes_are_rejected[local_loop] _________
+
+label = 'local_loop'
+body = 'v = vector_rational(q)\n    square = Fraction(0)\n    for x in v:\n        square += x*x\n    return sqrt_rational(square)'
+rule = 'rounded-root'
+
+    @pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+        issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+E       AssertionError: ('local_loop', 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_all_seven_review_syntaxes_are_rejected.<locals>.<genexpr> at 0x00000000047F8200>)
+
+tests\test_r10_static_construction.py:36: AssertionError
+________ test_j01_all_seven_review_syntaxes_are_rejected[local_append] ________
+
+label = 'local_append'
+body = 'v = []\n    v.append(scalar_rational(q))\n    return sqrt_rational(v[0])'
+rule = 'rounded-root'
+
+    @pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+        issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+E       AssertionError: ('local_append', 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_all_seven_review_syntaxes_are_rejected.<locals>.<genexpr> at 0x000000000480B920>)
+
+tests\test_r10_static_construction.py:36: AssertionError
+___ test_j01_all_seven_review_syntaxes_are_rejected[augmented_subtraction] ____
+
+label = 'augmented_subtraction'
+body = 'a = scalar_rational(a)\n    b = scalar_rational(b)\n    a -= b\n    return a'
+rule = 'subtract-rounded'
+
+    @pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+        issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+>       assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+E       AssertionError: ('augmented_subtraction', 'subtract-rounded', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_all_seven_review_syntaxes_are_rejected.<locals>.<genexpr> at 0x000000000480ACE0>)
+
+tests\test_r10_static_construction.py:36: AssertionError
+__ test_j01_seven_mutations_inside_real_cone_path_are_rejected[sqrt_keyword] __
+
+index = 0
+
+    @pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        old = "return norm_rational(p), noise"
+        full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+        assert full.count(old) == 1
+        mutated = full.replace(old, REAL_MUTANTS[index])
+        namespace = dict(vars(covers))
+        source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        delta = Fraction(u)
+        point = (-delta / 3,) * 3
+        squared = delta * delta / 3
+        rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+        assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+        assert (delta/2)**2 < squared < (3*delta/2)**2
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+        issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+        rule = REVIEW_CASES[index][2]
+>       assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+E       AssertionError: (0, 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_seven_mutations_inside_real_cone_path_are_rejected.<locals>.<genexpr> at 0x000000000482FA00>)
+
+tests\test_r10_static_construction.py:124: AssertionError
+__ test_j01_seven_mutations_inside_real_cone_path_are_rejected[norm_keyword] __
+
+index = 1
+
+    @pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        old = "return norm_rational(p), noise"
+        full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+        assert full.count(old) == 1
+        mutated = full.replace(old, REAL_MUTANTS[index])
+        namespace = dict(vars(covers))
+        source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        delta = Fraction(u)
+        point = (-delta / 3,) * 3
+        squared = delta * delta / 3
+        rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+        assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+        assert (delta/2)**2 < squared < (3*delta/2)**2
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+        issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+        rule = REVIEW_CASES[index][2]
+>       assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+E       AssertionError: (1, 'rounded-vector', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_seven_mutations_inside_real_cone_path_are_rejected.<locals>.<genexpr> at 0x000000000480B300>)
+
+tests\test_r10_static_construction.py:124: AssertionError
+_ test_j01_seven_mutations_inside_real_cone_path_are_rejected[fraction_barrier] _
+
+index = 2
+
+    @pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        old = "return norm_rational(p), noise"
+        full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+        assert full.count(old) == 1
+        mutated = full.replace(old, REAL_MUTANTS[index])
+        namespace = dict(vars(covers))
+        source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        delta = Fraction(u)
+        point = (-delta / 3,) * 3
+        squared = delta * delta / 3
+        rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+        assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+        assert (delta/2)**2 < squared < (3*delta/2)**2
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+        issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+        rule = REVIEW_CASES[index][2]
+>       assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+E       AssertionError: (2, 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_seven_mutations_inside_real_cone_path_are_rejected.<locals>.<genexpr> at 0x00000000047FA960>)
+
+tests\test_r10_static_construction.py:124: AssertionError
+_ test_j01_seven_mutations_inside_real_cone_path_are_rejected[map_fraction_barrier] _
+
+index = 3
+
+    @pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        old = "return norm_rational(p), noise"
+        full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+        assert full.count(old) == 1
+        mutated = full.replace(old, REAL_MUTANTS[index])
+        namespace = dict(vars(covers))
+        source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        delta = Fraction(u)
+        point = (-delta / 3,) * 3
+        squared = delta * delta / 3
+        rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+        assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+        assert (delta/2)**2 < squared < (3*delta/2)**2
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+        issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+        rule = REVIEW_CASES[index][2]
+>       assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+E       AssertionError: (3, 'rounded-vector', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_seven_mutations_inside_real_cone_path_are_rejected.<locals>.<genexpr> at 0x00000000047F8900>)
+
+tests\test_r10_static_construction.py:124: AssertionError
+___ test_j01_seven_mutations_inside_real_cone_path_are_rejected[local_loop] ___
+
+index = 4
+
+    @pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        old = "return norm_rational(p), noise"
+        full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+        assert full.count(old) == 1
+        mutated = full.replace(old, REAL_MUTANTS[index])
+        namespace = dict(vars(covers))
+        source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        delta = Fraction(u)
+        point = (-delta / 3,) * 3
+        squared = delta * delta / 3
+        rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+        assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+        assert (delta/2)**2 < squared < (3*delta/2)**2
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+        issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+        rule = REVIEW_CASES[index][2]
+>       assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+E       AssertionError: (4, 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_seven_mutations_inside_real_cone_path_are_rejected.<locals>.<genexpr> at 0x00000000047F9C40>)
+
+tests\test_r10_static_construction.py:124: AssertionError
+__ test_j01_seven_mutations_inside_real_cone_path_are_rejected[local_append] __
+
+index = 5
+
+    @pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        old = "return norm_rational(p), noise"
+        full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+        assert full.count(old) == 1
+        mutated = full.replace(old, REAL_MUTANTS[index])
+        namespace = dict(vars(covers))
+        source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        delta = Fraction(u)
+        point = (-delta / 3,) * 3
+        squared = delta * delta / 3
+        rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+        assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+        assert (delta/2)**2 < squared < (3*delta/2)**2
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+        issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+        rule = REVIEW_CASES[index][2]
+>       assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+E       AssertionError: (5, 'rounded-root', [])
+E       assert False
+E        +  where False = any(<generator object test_j01_seven_mutations_inside_real_cone_path_are_rejected.<locals>.<genexpr> at 0x000000000482EB20>)
+
+tests\test_r10_static_construction.py:124: AssertionError
+_ test_j01_seven_mutations_inside_real_cone_path_are_rejected[augmented_subtraction] _
+
+index = 6
+
+    @pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+    def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        old = "return norm_rational(p), noise"
+        full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+        assert full.count(old) == 1
+        mutated = full.replace(old, REAL_MUTANTS[index])
+        namespace = dict(vars(covers))
+        source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        delta = Fraction(u)
+        point = (-delta / 3,) * 3
+        squared = delta * delta / 3
+        rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+        assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+        assert (delta/2)**2 < squared < (3*delta/2)**2
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+        issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+        rule = REVIEW_CASES[index][2]
+>       assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+E       AssertionError: (6, 'subtract-rounded', [('src/eab/kernel3d/covers3.py', 439, 'cone_intersection_margin', 'rounded-vector', 'norm_rational((a,)*3)')])
+E       assert False
+E        +  where False = any(<generator object test_j01_seven_mutations_inside_real_cone_path_are_rejected.<locals>.<genexpr> at 0x000000000482DC40>)
+
+tests\test_r10_static_construction.py:124: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r10_static_construction.py::test_j01_all_seven_review_syntaxes_are_rejected[sqrt_keyword]
+FAILED tests/test_r10_static_construction.py::test_j01_all_seven_review_syntaxes_are_rejected[norm_keyword]
+FAILED tests/test_r10_static_construction.py::test_j01_all_seven_review_syntaxes_are_rejected[fraction_barrier]
+FAILED tests/test_r10_static_construction.py::test_j01_all_seven_review_syntaxes_are_rejected[map_fraction_barrier]
+FAILED tests/test_r10_static_construction.py::test_j01_all_seven_review_syntaxes_are_rejected[local_loop]
+FAILED tests/test_r10_static_construction.py::test_j01_all_seven_review_syntaxes_are_rejected[local_append]
+FAILED tests/test_r10_static_construction.py::test_j01_all_seven_review_syntaxes_are_rejected[augmented_subtraction]
+FAILED tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[sqrt_keyword]
+FAILED tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[norm_keyword]
+FAILED tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[fraction_barrier]
+FAILED tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[map_fraction_barrier]
+FAILED tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[local_loop]
+FAILED tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[local_append]
+FAILED tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[augmented_subtraction]
+14 failed in 0.26s

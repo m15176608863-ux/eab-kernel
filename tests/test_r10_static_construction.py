@@ -1,0 +1,177 @@
+"""G6J-J01: syntax-independent local premature-construction provenance.
+
+Oracle: the static assertions inspect rules, not numeric geometry. The real
+cone mutation uses only Fraction KKT identities and squared midpoint cells,
+with no production geometry/construction primitive in its expected value.
+"""
+from fractions import Fraction
+import importlib.util
+import inspect
+import math
+from pathlib import Path
+import subprocess
+import sys
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location("r10_construction_scan", ROOT / "tools/check_exact_construction.py")
+gate = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(gate)
+
+REVIEW_CASES = [
+    ("sqrt_keyword", "return sqrt_rational(value=scalar_rational(q))", "rounded-root"),
+    ("norm_keyword", "return norm_rational(values=vector_rational(q))", "rounded-vector"),
+    ("fraction_barrier", "return sqrt_rational(Fraction(scalar_rational(q)))", "rounded-root"),
+    ("map_fraction_barrier", "return norm_rational(tuple(map(Fraction, vector_rational(q))))", "rounded-vector"),
+    ("local_loop", "v = vector_rational(q)\n    square = Fraction(0)\n    for x in v:\n        square += x*x\n    return sqrt_rational(square)", "rounded-root"),
+    ("local_append", "v = []\n    v.append(scalar_rational(q))\n    return sqrt_rational(v[0])", "rounded-root"),
+    ("augmented_subtraction", "a = scalar_rational(a)\n    b = scalar_rational(b)\n    a -= b\n    return a", "subtract-rounded"),
+]
+
+
+@pytest.mark.parametrize("label,body,rule", REVIEW_CASES, ids=[row[0] for row in REVIEW_CASES])
+def test_j01_all_seven_review_syntaxes_are_rejected(label, body, rule):
+    issues = gate.scan_text("def bad(q,a,b):\n    " + body + "\n", "src/eab/j01_injected.py")
+    assert any(row[2:4] == ("bad", rule) for row in issues), (label, rule, issues)
+
+
+@pytest.mark.parametrize("body,rule", [
+    ("return sqrt_rational(**{'value': scalar_rational(q)})", "rounded-root"),
+    ("args = (scalar_rational(q),)\n    return sqrt_rational(*args)", "rounded-root"),
+    ("kwargs = {'value': scalar_rational(q)}\n    return sqrt_rational(**kwargs)", "rounded-root"),
+    ("return sqrt_rational(Fraction.from_float(scalar_rational(q)))", "rounded-root"),
+    ("return norm_rational(tuple(Fraction(x) for x in vector_rational(q)))", "rounded-vector"),
+    ("v = []\n    v.extend(vector_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+    ("v = [0]\n    v[0] = scalar_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+    ("v = {}\n    v.update(value=scalar_rational(q))\n    return sqrt_rational(v['value'])", "rounded-root"),
+    ("holder.value = scalar_rational(q)\n    return sqrt_rational(holder.value)", "rounded-root"),
+    ("a, *b = vector_rational(q)\n    return norm_rational(b)", "rounded-vector"),
+    ("a = b = scalar_rational(q)\n    return sqrt_rational(b)", "rounded-root"),
+    ("v: list = []\n    v += vector_rational(q)\n    return norm_rational(v)", "rounded-vector"),
+    ("v = vector_rational(q)\n    for x, y in zip(v, v):\n        return sqrt_rational(x+y)", "rounded-root"),
+    ("v = vector_rational(q)\n    return sqrt_rational(sum(x*x for x in v))", "rounded-root"),
+    ("if flag:\n        v = vector_rational(q)\n    else:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+    ("v = [0]\n    alias = v\n    alias.append(scalar_rational(q))\n    return norm_rational(v)", "rounded-vector"),
+    ("casts = {'convert': scalar_rational}\n    return sqrt_rational(casts['convert'](q))", "rounded-root"),
+    ("root, cast = sqrt_rational, scalar_rational\n    return root(cast(q))", "rounded-root"),
+    ("root: object = sqrt_rational\n    return root(value=scalar_rational(q))", "rounded-root"),
+    ("return (sqrt_rational if flag else sqrt_exact)(scalar_rational(q))", "rounded-root"),
+    ("return (lambda x: sqrt_rational(x))(scalar_rational(q))", "rounded-root"),
+    ("cast = lambda x: scalar_rational(x)\n    return sqrt_rational(cast(q))", "rounded-root"),
+    ("return sqrt_rational(list(map(*(Fraction, vector_rational(q))))[0])", "rounded-root"),
+    ("v = {'x': scalar_rational(q)}\n    return sqrt_rational(sum(v.values()))", "rounded-root"),
+    ("v = [scalar_rational(q)]\n    return sqrt_rational(v.copy()[0])", "rounded-root"),
+    ("return sqrt_rational(scalar_rational.__call__(q))", "rounded-root"),
+    ("return sqrt_rational.__call__(scalar_rational(q))", "rounded-root"),
+    ("root = sqrt_rational\n    if flag:\n        root = sqrt_exact\n    else:\n        root = abs\n    return root(scalar_rational(q))", "rounded-root"),
+    ("v = []\n    with context(scalar_rational(q)) as value:\n        v.append(value)\n    return sqrt_rational(v[0])", "rounded-root"),
+    ("v = vector_rational(q)\n    match v:\n        case [value, *_]:\n            return sqrt_rational(value)", "rounded-root"),
+    ("return [sqrt_rational(value) for value in vector_rational(q)]", "rounded-root"),
+    ("v = [0]\n    alias = v\n    alias[0] = scalar_rational(q)\n    alias = []\n    return norm_rational(v)", "rounded-vector"),
+    ("return list(map(float, q))", "direct-float"),
+    ("return list(map(*(float, q)))", "direct-float"),
+    ("return float.__call__(q)", "direct-float"),
+    ("holder.cast = scalar_rational\n    return sqrt_rational(holder.cast(q))", "rounded-root"),
+    ("return (root := sqrt_rational)(scalar_rational(q))", "rounded-root"),
+    ("try:\n        v = vector_rational(q)\n        risky()\n    except ValueError:\n        v = q\n    return norm_rational(v)", "rounded-vector"),
+    ("try:\n        risky()\n    except ValueError:\n        x = scalar_rational(q)\n    except RuntimeError:\n        x = 0\n    return sqrt_rational(x)", "rounded-root"),
+    ("try:\n        risky()\n    except* ValueError:\n        x = scalar_rational(q)\n    except* RuntimeError:\n        x = 0\n    return sqrt_rational(x)", "rounded-root"),
+    ("v = vector_rational(q)\n    [(x := a) for a in v]\n    return sqrt_rational(x)", "rounded-root"),
+    ("root = sqrt_rational\n    try:\n        risky()\n    except ValueError:\n        root = abs\n    return root(scalar_rational(q))", "rounded-root"),
+    ("match flag:\n        case True:\n            root = sqrt_rational\n        case False:\n            root = abs\n    return root(scalar_rational(q))", "rounded-root"),
+])
+def test_j01_local_call_assignment_and_container_forms_keep_provenance(body, rule):
+    issues = gate.scan_text("def bad(q,flag,holder):\n    " + body + "\n", "src/eab/j01_injected.py")
+    assert any(row[2:4] == ("bad", rule) for row in issues), (body, rule, issues)
+
+
+REAL_MUTANTS = [
+    "return sqrt_rational(value=scalar_rational(sum(x*x for x in p), allow_underflow=True)), noise",
+    "return norm_rational(values=vector_rational(p, allow_underflow=True)), noise",
+    "return sqrt_rational(Fraction(scalar_rational(sum(x*x for x in p), allow_underflow=True))), noise",
+    "return norm_rational(tuple(map(Fraction, vector_rational(p, allow_underflow=True)))), noise",
+    "v = vector_rational(p, allow_underflow=True)\n    square = Fraction(0)\n    for x in v:\n        square += x*x\n    return sqrt_rational(square), noise",
+    "v = []\n    for x in p:\n        v.append(scalar_rational(x, allow_underflow=True))\n    return sqrt_rational(sum(x*x for x in v)), noise",
+    "a = scalar_rational(p[0], allow_underflow=True)\n    b = scalar_rational(Fraction(0))\n    a -= b\n    return norm_rational((a,)*3), noise",
+]
+
+
+@pytest.mark.parametrize("index", range(7), ids=[row[0] for row in REVIEW_CASES])
+def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
+    import eab.kernel3d.covers3 as covers
+    from eab.kernel3d.geom3 import tetra
+
+    old = "return norm_rational(p), noise"
+    full = (ROOT / "src/eab/kernel3d/covers3.py").read_text(encoding="utf-8")
+    assert full.count(old) == 1
+    mutated = full.replace(old, REAL_MUTANTS[index])
+    namespace = dict(vars(covers))
+    source = inspect.getsource(covers.cone_intersection_margin)
+    exec(compile(source.replace(old, REAL_MUTANTS[index]), "<j01 real cone mutant>", "exec"), namespace)
+    u = math.ulp(0.0)
+    shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+    delta = Fraction(u)
+    point = (-delta / 3,) * 3
+    squared = delta * delta / 3
+    rows = ((-Fraction(1), Fraction(1), -delta), (-delta, -Fraction(1), Fraction(1)), (Fraction(1), -delta, -Fraction(1)))
+    assert all(sum(x*y for x, y in zip(point, row)) == squared for row in rows)
+    assert (delta/2)**2 < squared < (3*delta/2)**2
+    assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+    assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+    issues = gate.scan_text(mutated, "src/eab/kernel3d/covers3.py")
+    rule = REVIEW_CASES[index][2]
+    assert any(row[2:4] == ("cone_intersection_margin", rule) for row in issues), (index, rule, issues)
+
+
+@pytest.mark.parametrize("body", [
+    "return sqrt_rational(Fraction(q))",
+    "return norm_rational(tuple(map(Fraction,q)))",
+    "return sqrt_rational(value=Fraction(q))",
+    "v = []\n    v.append(Fraction(q))\n    return sqrt_rational(v[0])",
+])
+def test_j01_fraction_on_unrounded_supplied_data_remains_allowed(body):
+    assert gate.scan_text("def good(q):\n    " + body + "\n") == []
+
+
+@pytest.mark.parametrize("signature", ["value=scalar_rational(q)", "*, value=scalar_rational(q)"])
+def test_j01_rounded_default_arguments_keep_provenance(signature):
+    issues = gate.scan_text(f"def bad({signature}):\n    return sqrt_rational(value)\n")
+    assert any(row[2:4] == ("bad", "rounded-root") for row in issues), issues
+
+
+def test_j01_self_expanding_attribute_alias_terminates():
+    """Timeout protects the test runner against a=a.x canonical expansion."""
+    script = (
+        "import importlib.util; "
+        "s=importlib.util.spec_from_file_location('gate', 'tools/check_exact_construction.py'); "
+        "g=importlib.util.module_from_spec(s); s.loader.exec_module(g); "
+        "print(g.scan_text('def bad(a):\\n    a=a.x\\n    return sqrt_rational(a)\\n'))"
+    )
+    try:
+        result = subprocess.run([sys.executable, "-X", "utf8", "-c", script], cwd=ROOT,
+                                text=True, capture_output=True, timeout=2, check=False)
+    except subprocess.TimeoutExpired:
+        pytest.fail("J01 canonical alias resolution must terminate for a=a.x")
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "[]"
+
+
+def test_j01_removing_keyword_step_inside_gate_trips_real_cone_assertion():
+    """Rollback is in scanner code, not fabricated scan results."""
+    source = (ROOT / "tools/check_exact_construction.py").read_text(encoding="utf-8")
+    step = "return [*node.args, *(item.value for item in node.keywords)]"
+    assert source.count(step) == 1
+    namespace = {"__file__": str(ROOT / "tools/check_exact_construction.py"), "__name__": "j01_gate_mutant"}
+    exec(compile(source.replace(step, "return node.args"), "<j01 gate keyword rollback>", "exec"), namespace)
+    path = "src/eab/kernel3d/covers3.py"
+    source = (ROOT / path).read_text(encoding="utf-8")
+    source = source.replace("return norm_rational(p), noise", REAL_MUTANTS[1])
+
+    def check(scan):
+        issues = scan(source, path)
+        assert any(row[2:4] == ("cone_intersection_margin", "rounded-vector") for row in issues), "J01 real cone rounded-vector assertion"
+
+    check(gate.scan_text)
+    with pytest.raises(AssertionError, match="J01 real cone rounded-vector assertion"):
+        check(namespace["scan_text"])

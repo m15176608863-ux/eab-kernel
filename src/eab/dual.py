@@ -104,11 +104,19 @@ class Dual:
         if self.v < 0.0 and not p.is_integer():
             raise ValueError(f"Dual ** {p!r}: negative base {self.v!r} has no real power")
         value = self.v ** p
+        if not math.isfinite(value):
+            raise OverflowError("Dual power is outside finite binary64 range")
+        if value == 0.0 and self.v != 0.0:
+            raise FloatingPointError("nonzero Dual power is below the binary64 range")
         if p.is_integer():
             # Integer powers admit an exact derivative even if v**(p-1)
             # over/underflows before a representable derivative is formed.
             c = Fraction(p) * Fraction(self.v) ** (int(p) - 1)
             return Dual(value, tuple(_derivative_float(c * Fraction(a)) for a in self.e))
+        if Fraction(p).denominator == 2:
+            # The complete half-integer derivative has a rational square;
+            # Decimal precision must not perturb exact subnormal ties.
+            return Dual(value, tuple(_half_power_derivative(self.v, p, a) for a in self.e))
         # There is no input-only safe exponent box for powers: even inputs
         # in [2**-200, 2**200] can produce an out-of-range v**(p-1), then
         # return to range after multiplying a seed. Retain a separate exponent
@@ -116,8 +124,10 @@ class Dual:
         with localcontext() as ctx:
             ctx.prec = 80
             ctx.traps[Underflow] = True
-            c = Decimal(p) * ctx.power(Decimal(self.v), Decimal(p) - 1)
-            return Dual(value, tuple(_derivative_float(Fraction(c * Decimal(a)))
+            # General powers retain an 80-digit transcendental approximation;
+            # no exact/correctly-rounded claim is made for that coefficient.
+            c = ctx.power(Decimal(self.v), Decimal(p) - 1)
+            return Dual(value, tuple(_derivative_float(Fraction(p) * Fraction(c) * Fraction(a))
                                      for a in self.e))
 
     # ---------------- 择支（只看 primal，禁止参与本构） ----------------
@@ -166,7 +176,8 @@ def _derivative_float(q: Fraction) -> float:
 def _ratio_derivative(u: float, v: float, a: float, b: float, *, angular=False) -> float:
     """(a*v-u*b)/v^2, or /(u^2+v^2), without intermediate range loss.
 
-    Ordinary, non-cancelling inputs retain the fast floating calculation.
+    Ordinary, non-cancelling quotient inputs retain the fast calculation.
+    Angular derivatives always use the complete rational expression (R10).
     Otherwise normalize the primal pair by an exact power of two, evaluate
     the rational scaled expression and round once. Rational normalization
     also retains components whose exponent span exceeds binary64's range.
@@ -174,7 +185,7 @@ def _ratio_derivative(u: float, v: float, a: float, b: float, *, angular=False) 
     """
     if a == b == 0.0 and (u != 0.0 or v != 0.0) and (angular or v != 0.0):
         return 0.0
-    if _ordinary(u, v, a, b):
+    if not angular and _ordinary(u, v, a, b):
         av, ub = a * v, u * b
         num = av - ub
         if abs(num) > 2.0 ** -40 * (abs(av) + abs(ub)):
@@ -216,16 +227,35 @@ def is_exact_zero(x: Number) -> bool:
     return x.is_exact_zero() if isinstance(x, Dual) else (float(x) == 0.0)
 
 
-def sqrt(x: Number) -> Number:
-    """Finite scalar roots cross the shared exact construction boundary.
+def _half_power_derivative(value: float, power: float, seed: float) -> float:
+    """Exact square of p*value**(p-1)*seed for half-integer p."""
+    coefficient = Fraction(power) * Fraction(seed)
+    squared = coefficient**2 * Fraction(value)**(int(2*power)-2)
+    magnitude = sqrt_rational(squared)
+    return -magnitude if coefficient < 0 else magnitude
 
-    Gate: test_r9_dual_primal_sqrt_large_integer_keeps_representable_root.
-    The Dual derivative formula and explicit nonfinite float behavior are unchanged.
+
+def _sqrt_derivative(value: float, seed: float) -> float:
+    """Round seed/(2*sqrt(value)) only after forming its exact square."""
+    magnitude = sqrt_rational(Fraction(seed)**2 / (4*Fraction(value)))
+    return -magnitude if seed < 0 else magnitude
+
+
+def sqrt(x: Number) -> Number:
+    """Construct both the primal root and complete analytic derivative once.
+
+    The derivative uses its exact rational square, not the rounded primal.
+    Gate: test_r10_sqrt_derivative_rounds_the_complete_expression;
+    test_r10_sqrt_derivative_out_of_range_fails_loudly.
+    Scalar nonfinite behavior is unchanged; a nonfinite Dual has no finite jet.
     """
     if isinstance(x, Dual):
         s = sqrt(x.v)
-        c = 0.5 / s
-        return Dual(s, tuple(c * a for a in x.e))
+        if not math.isfinite(s):
+            raise ValueError("Dual sqrt requires a finite primal")
+        if x.v == 0:
+            raise ZeroDivisionError("Dual sqrt derivative is undefined at zero")
+        return Dual(s, tuple(_sqrt_derivative(x.v, a) for a in x.e))
     if isinstance(x, float) and not math.isfinite(x):
         if x < 0:
             raise ValueError("math domain error")
@@ -234,16 +264,27 @@ def sqrt(x: Number) -> Number:
 
 
 def sin(x: Number) -> Number:
+    """libm primal/coefficient; checked final coefficient-times-seed product.
+
+    No correctly-rounded transcendental claim is made for libm coefficients.
+    Gate: test_r10_trigonometric_nonzero_derivative_cannot_underflow_silently.
+    """
     if isinstance(x, Dual):
         c = math.cos(x.v)
-        return Dual(math.sin(x.v), tuple(c * a for a in x.e))
+        return Dual(math.sin(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
+                                        for a in x.e))
     return math.sin(x)
 
 
 def cos(x: Number) -> Number:
+    """Same libm-coefficient/range contract as sin; exact zero remains zero.
+
+    Gate: test_r10_trigonometric_representable_subnormal_and_zero_channels.
+    """
     if isinstance(x, Dual):
         c = -math.sin(x.v)
-        return Dual(math.cos(x.v), tuple(c * a for a in x.e))
+        return Dual(math.cos(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
+                                        for a in x.e))
     return math.cos(x)
 
 

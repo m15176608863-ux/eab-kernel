@@ -31,6 +31,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from fractions import Fraction
+import math
 
 from .limit import (_FLIP, _SELF_CHECK, _UNCERTAIN, LimitContact, _build_columns, _exact_shift,
                     _exact_wrench, _fl, _live_uncertainty, _norm, _twist_back, _twist_forward,
@@ -144,7 +145,7 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
     local_d = [tuple(Fraction(oi[i][q])-Fraction(oc[q]) for q in range(dim)) for i in range(nb)]
     local_live = [_exact_shift(b.live, origin, oi[i], dim) for i,b in enumerate(bodies)]
     radii = [arms[i] + _norm(tuple(oi[i][q]-origin[q] for q in range(dim))) for i in range(nb)]
-    e_in = [_wrench_rounding([_fl(v) for v in lv], dim, radii[i]) for i,lv in enumerate(local_live)]
+    e_in = [_wrench_rounding(lv, dim, radii[i]) for i,lv in enumerate(local_live)]
     C = _build_columns(cts, oc, dim, k, unit_cohesion=True)
     Cx = [_exact_wrench(col[:dim], cts[C.owner[j]].point, oc, dim) for j, col in enumerate(C.cols)]
     capx = [Fraction(0)] * C.n_rows
@@ -192,14 +193,14 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
 
     def _U(ys):
         local_y = [_twist_forward(yi, di, dim) for yi,di in zip(ys,local_d)]
-        flat_y = [_fl(v) for yi in local_y for v in yi]
-        flat_l = [_fl(v) for lc in local_live for v in lc]
+        flat_y = [v for yi in local_y for v in yi]
+        flat_l = [v for lc in local_live for v in lc]
         flat_e = [v for ei in e_in for v in ei]
         return _live_uncertainty(flat_y, flat_l, flat_e)
 
     def _pushes(ys):
         local_y = [_twist_forward(yi, di, dim) for yi,di in zip(ys,local_d)]
-        push_local = [[Fraction((1.0 if yi > 0 else -1.0 if yi < 0 else 0.0) * _FLIP * ei)
+        push_local = [[((yi > 0) - (yi < 0)) * Fraction(_FLIP) * ei
                        for yi,ei in zip(y,e)] for y,e in zip(local_y,e_in)]
         push = [_exact_shift(pv, oi[i], oc, dim) for i,pv in enumerate(push_local)]
         minus = [[li - pi for li, pi in zip(lv, pv)] for lv, pv in zip(live_x, push)]
@@ -211,10 +212,12 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
         rmin = _solve(live_x,-1.0)
         its = r.iterations+rmin.iterations
         U0, resolution, statuses = 0.0, "resolved", ()
-        if rmin.status == OPTIMAL and rmin.x[ia] > 0.0:
+        if rmin.status == OPTIMAL and _lp_values(rmin.x, rmin.exact_x)[ia] > 0:
             ys = _ys(rmin)
             U0 = _U(ys)
-            if U0 > _UNCERTAIN:
+            if not math.isfinite(U0):
+                resolution = "unresolved"
+            elif U0 > _UNCERTAIN:
                 rm,rp = _pushes(ys)
                 its += rm.iterations+rp.iterations
                 statuses = (rm.status,rp.status)
@@ -224,18 +227,22 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
                                 resolvability=resolution,resolvability_statuses=statuses)
     if r.status != OPTIMAL:
         return MultiLimitResult(r.status,float("nan"),[],[],iterations=r.iterations)
-    alpha = r.x[ia]
+    alpha = _lp_values(r.x, r.exact_x)[ia]
     ys = _ys(r)
     U = _U(ys)
     its, resolution, statuses = 0, "resolved", ()
-    if U > _UNCERTAIN:
+    if not math.isfinite(U):
+        resolution = "unresolved"
+    elif U > _UNCERTAIN:
         rm,rp = _pushes(ys)
         its = rm.iterations+rp.iterations
         statuses = (rm.status,rp.status)
         if "infeasible" in statuses:
             resolution = "nearby_infeasible"
         elif rm.status == rp.status == OPTIMAL and alpha > 0.0:
-            U = max(abs(rm.x[ia]-alpha),abs(rp.x[ia]-alpha))/(_FLIP*alpha)
+            am = _lp_values(rm.x, rm.exact_x)[ia]
+            ap = _lp_values(rp.x, rp.exact_x)[ia]
+            U = _fl(max(abs(am-alpha), abs(ap-alpha))/(Fraction(_FLIP)*alpha))
             resolution = "resolved" if U <= _UNCERTAIN else "unresolved"
         else:
             resolution = "unresolved"

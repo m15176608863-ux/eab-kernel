@@ -140,11 +140,20 @@ def cone_width(cone: tuple[Point, Point]) -> float:
 
 
 def in_cone(cone: tuple[Point, Point], v: Point, tol: float = 0.0) -> int:
-    """对给定向量精确判：1 严格内部 / 0 边界或显式 sin 角窗 / -1 外部。"""
+    """给定非零边界射线：1 精确凸锥严格内部 / 0 边界或显式 sin 角窗 / -1 外部。
+
+    与 normal_cone 相同，微反射只允许同向显式窗口（最多 0），大反射/反向射线不构成
+    这里的凸法锥，返回 -1；零边界射线拒收。门：test_r10_cone_contract。
+    """
     lo, hi, v = _fr(cone[0]), _fr(cone[1]), _fr(v)
-    if cross(lo, v) > 0 and cross(v, hi) > 0:
+    if lo == (0, 0) or hi == (0, 0):
+        raise ValueError("zero boundary ray does not define a normal cone")
+    w2 = Fraction(max(tol, 0.0)) ** 2
+    if not _cone_nonreflex(lo, hi, w2):
+        return -1
+    if cross(lo, hi) > 0 and cross(lo, v) > 0 and cross(v, hi) > 0:
         return 1
-    return 0 if _cone_accepts(lo, hi, v, Fraction(max(tol, 0.0)) ** 2) else -1
+    return 0 if _cone_accepts(lo, hi, v, w2) else -1
 
 
 def _project(p: Point, a: Point, b: Point) -> tuple[float, Point]:

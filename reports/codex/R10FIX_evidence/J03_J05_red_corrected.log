@@ -1,0 +1,334 @@
+FFF......FFF.FFFF......FFFFFF                                            [100%]
+================================== FAILURES ===================================
+_ test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale0-shift0-rotation0] _
+
+scale = Fraction(1, 1), shift = (0, 0)
+rotation = (Fraction(1, 1), Fraction(0, 1))
+
+    @pytest.mark.parametrize("scale,shift,rotation", [
+        (F(1), (0, 0), (F(1), F(0))),
+        (F(1, 10**9), (10**8, -10**8), (F(3, 5), F(4, 5))),
+        (F(10**8), (10**8, -10**8), (F(3, 5), F(4, 5))),
+    ])
+    def test_public_micro_reflex_cone_rejects_opposite_hemisphere(scale, shift, rotation):
+        c, s = rotation
+        poly = [(0, 0), (1, 0), (2, F(-1, 100)), (2, 1), (0, 1)]
+        transformed = [(scale*(c*x-s*y)+shift[0], scale*(s*x+c*y)+shift[1])
+                       for x, y in poly]
+        assert normal_cone(transformed, 1, tol=0) is None
+        cone = normal_cone(transformed, 1, tol=F(1, 50))
+        assert cone is not None
+        v = (c*F(1, 200)-s, s*F(1, 200)+c)
+        assert all(sum(F(a)*b for a, b in zip(n, v)) < 0 for n in cone)
+>       assert in_cone(cone, v, tol=F(1, 50)) == -1, "opposite thin sector is exterior"
+E       AssertionError: opposite thin sector is exterior
+E       assert 1 == -1
+E        +  where 1 = in_cone(((0.0, -1.0), (-0.009999500037496875, -0.9999500037496876)), (Fraction(1, 200), Fraction(1, 1)), tol=Fraction(1, 50))
+E        +    where Fraction(1, 50) = F(1, 50)
+
+tests\test_r10_cone_contract.py:28: AssertionError
+_ test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale1-shift1-rotation1] _
+
+scale = Fraction(1, 1000000000), shift = (100000000, -100000000)
+rotation = (Fraction(3, 5), Fraction(4, 5))
+
+    @pytest.mark.parametrize("scale,shift,rotation", [
+        (F(1), (0, 0), (F(1), F(0))),
+        (F(1, 10**9), (10**8, -10**8), (F(3, 5), F(4, 5))),
+        (F(10**8), (10**8, -10**8), (F(3, 5), F(4, 5))),
+    ])
+    def test_public_micro_reflex_cone_rejects_opposite_hemisphere(scale, shift, rotation):
+        c, s = rotation
+        poly = [(0, 0), (1, 0), (2, F(-1, 100)), (2, 1), (0, 1)]
+        transformed = [(scale*(c*x-s*y)+shift[0], scale*(s*x+c*y)+shift[1])
+                       for x, y in poly]
+        assert normal_cone(transformed, 1, tol=0) is None
+        cone = normal_cone(transformed, 1, tol=F(1, 50))
+        assert cone is not None
+        v = (c*F(1, 200)-s, s*F(1, 200)+c)
+        assert all(sum(F(a)*b for a, b in zip(n, v)) < 0 for n in cone)
+>       assert in_cone(cone, v, tol=F(1, 50)) == -1, "opposite thin sector is exterior"
+E       AssertionError: opposite thin sector is exterior
+E       assert 1 == -1
+E        +  where 1 = in_cone(((0.8, -0.6), (0.7939603029772518, -0.60796960227981)), (Fraction(-797, 1000), Fraction(151, 250)), tol=Fraction(1, 50))
+E        +    where Fraction(1, 50) = F(1, 50)
+
+tests\test_r10_cone_contract.py:28: AssertionError
+_ test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale2-shift2-rotation2] _
+
+scale = Fraction(100000000, 1), shift = (100000000, -100000000)
+rotation = (Fraction(3, 5), Fraction(4, 5))
+
+    @pytest.mark.parametrize("scale,shift,rotation", [
+        (F(1), (0, 0), (F(1), F(0))),
+        (F(1, 10**9), (10**8, -10**8), (F(3, 5), F(4, 5))),
+        (F(10**8), (10**8, -10**8), (F(3, 5), F(4, 5))),
+    ])
+    def test_public_micro_reflex_cone_rejects_opposite_hemisphere(scale, shift, rotation):
+        c, s = rotation
+        poly = [(0, 0), (1, 0), (2, F(-1, 100)), (2, 1), (0, 1)]
+        transformed = [(scale*(c*x-s*y)+shift[0], scale*(s*x+c*y)+shift[1])
+                       for x, y in poly]
+        assert normal_cone(transformed, 1, tol=0) is None
+        cone = normal_cone(transformed, 1, tol=F(1, 50))
+        assert cone is not None
+        v = (c*F(1, 200)-s, s*F(1, 200)+c)
+        assert all(sum(F(a)*b for a, b in zip(n, v)) < 0 for n in cone)
+>       assert in_cone(cone, v, tol=F(1, 50)) == -1, "opposite thin sector is exterior"
+E       AssertionError: opposite thin sector is exterior
+E       assert 1 == -1
+E        +  where 1 = in_cone(((0.8, -0.6), (0.7939603029772518, -0.60796960227981)), (Fraction(-797, 1000), Fraction(151, 250)), tol=Fraction(1, 50))
+E        +    where Fraction(1, 50) = F(1, 50)
+
+tests\test_r10_cone_contract.py:28: AssertionError
+_ test_in_cone_explicit_window_never_creates_reflex_strict_interior[cone6-v6-tol6--1] _
+
+cone = ((1, 0), (1, Fraction(-1, 100))), v = (-1, Fraction(1, 200))
+tol = Fraction(1, 50), expected = -1
+
+    @pytest.mark.parametrize("cone,v,tol,expected", [
+        (((1, 0), (0, 1)), (1, 1), 0, 1),
+        (((1, 0), (0, 1)), (1, 0), 0, 0),
+        (((1, 0), (0, 1)), (-1, -1), 1, -1),
+        (((1, 0), (1, 0)), (1, 0), 0, 0),
+        (((1, 0), (1, 0)), (-1, 0), 1, -1),
+        (((1, 0), (1, F(-1, 100))), (1, 0), F(1, 50), 0),
+        (((1, 0), (1, F(-1, 100))), (-1, F(1, 200)), F(1, 50), -1),
+        (((1, 0), (0, -1)), (-1, 1), 1, -1),
+        (((1, 0), (-1, 0)), (0, 1), 1, -1),
+        (((1, 0), (-1, 1)), (0, 1), 0, 1),
+    ])
+    def test_in_cone_explicit_window_never_creates_reflex_strict_interior(cone, v, tol, expected):
+>       assert in_cone(cone, v, tol=tol) == expected
+E       assert 1 == -1
+E        +  where 1 = in_cone(((1, 0), (1, Fraction(-1, 100))), (-1, Fraction(1, 200)), tol=Fraction(1, 50))
+
+tests\test_r10_cone_contract.py:46: AssertionError
+_ test_in_cone_explicit_window_never_creates_reflex_strict_interior[cone7-v7-1--1] _
+
+cone = ((1, 0), (0, -1)), v = (-1, 1), tol = 1, expected = -1
+
+    @pytest.mark.parametrize("cone,v,tol,expected", [
+        (((1, 0), (0, 1)), (1, 1), 0, 1),
+        (((1, 0), (0, 1)), (1, 0), 0, 0),
+        (((1, 0), (0, 1)), (-1, -1), 1, -1),
+        (((1, 0), (1, 0)), (1, 0), 0, 0),
+        (((1, 0), (1, 0)), (-1, 0), 1, -1),
+        (((1, 0), (1, F(-1, 100))), (1, 0), F(1, 50), 0),
+        (((1, 0), (1, F(-1, 100))), (-1, F(1, 200)), F(1, 50), -1),
+        (((1, 0), (0, -1)), (-1, 1), 1, -1),
+        (((1, 0), (-1, 0)), (0, 1), 1, -1),
+        (((1, 0), (-1, 1)), (0, 1), 0, 1),
+    ])
+    def test_in_cone_explicit_window_never_creates_reflex_strict_interior(cone, v, tol, expected):
+>       assert in_cone(cone, v, tol=tol) == expected
+E       assert 1 == -1
+E        +  where 1 = in_cone(((1, 0), (0, -1)), (-1, 1), tol=1)
+
+tests\test_r10_cone_contract.py:46: AssertionError
+_ test_in_cone_explicit_window_never_creates_reflex_strict_interior[cone8-v8-1--1] _
+
+cone = ((1, 0), (-1, 0)), v = (0, 1), tol = 1, expected = -1
+
+    @pytest.mark.parametrize("cone,v,tol,expected", [
+        (((1, 0), (0, 1)), (1, 1), 0, 1),
+        (((1, 0), (0, 1)), (1, 0), 0, 0),
+        (((1, 0), (0, 1)), (-1, -1), 1, -1),
+        (((1, 0), (1, 0)), (1, 0), 0, 0),
+        (((1, 0), (1, 0)), (-1, 0), 1, -1),
+        (((1, 0), (1, F(-1, 100))), (1, 0), F(1, 50), 0),
+        (((1, 0), (1, F(-1, 100))), (-1, F(1, 200)), F(1, 50), -1),
+        (((1, 0), (0, -1)), (-1, 1), 1, -1),
+        (((1, 0), (-1, 0)), (0, 1), 1, -1),
+        (((1, 0), (-1, 1)), (0, 1), 0, 1),
+    ])
+    def test_in_cone_explicit_window_never_creates_reflex_strict_interior(cone, v, tol, expected):
+>       assert in_cone(cone, v, tol=tol) == expected
+E       assert 1 == -1
+E        +  where 1 = in_cone(((1, 0), (-1, 0)), (0, 1), tol=1)
+
+tests\test_r10_cone_contract.py:46: AssertionError
+______________ test_in_cone_zero_boundary_ray_is_rejected[cone0] ______________
+
+cone = ((0, 0), (1, 0))
+
+    @pytest.mark.parametrize("cone", [((0, 0), (1, 0)), ((1, 0), (0, 0))])
+    def test_in_cone_zero_boundary_ray_is_rejected(cone):
+>       with pytest.raises(ValueError, match="zero"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_r10_cone_contract.py:51: Failed
+______________ test_in_cone_zero_boundary_ray_is_rejected[cone1] ______________
+
+cone = ((1, 0), (0, 0))
+
+    @pytest.mark.parametrize("cone", [((0, 0), (1, 0)), ((1, 0), (0, 0))])
+    def test_in_cone_zero_boundary_ray_is_rejected(cone):
+>       with pytest.raises(ValueError, match="zero"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_r10_cone_contract.py:51: Failed
+_ test_unbounded_capacity_reports_finite_analytic_uncertainty_bounds[5e-324-False] _
+
+multi = False, live_scale = 5e-324
+
+    @pytest.mark.parametrize("multi", [False, True])
+    @pytest.mark.parametrize("live_scale", [math.ulp(0.0), 2.**-1000, 1., 2.**1000])
+    def test_unbounded_capacity_reports_finite_analytic_uncertainty_bounds(multi, live_scale):
+        # N = alpha*live_scale - 1 >= 0, equal contacts cancel moment. No upper cap.
+        result = _unbounded(multi, live_scale)
+        assert result.status == "unbounded" and result.alpha == math.inf
+>       assert math.isfinite(result.uncertainty), "display range must not produce NaN U"
+E       AssertionError: display range must not produce NaN U
+E       assert False
+E        +  where False = <built-in function isfinite>(nan)
+E        +    where <built-in function isfinite> = math.isfinite
+E        +    and   nan = LimitResult(status='unbounded', alpha=inf, lambdas=[], mechanism=[], contact_forces=[], active=[], iterations=6, row_duals=[], uncertainty=nan, resolvability='resolved', resolvability_statuses=()).uncertainty
+
+tests\test_r10_resolution.py:27: AssertionError
+_ test_unbounded_capacity_reports_finite_analytic_uncertainty_bounds[5e-324-True] _
+
+multi = True, live_scale = 5e-324
+
+    @pytest.mark.parametrize("multi", [False, True])
+    @pytest.mark.parametrize("live_scale", [math.ulp(0.0), 2.**-1000, 1., 2.**1000])
+    def test_unbounded_capacity_reports_finite_analytic_uncertainty_bounds(multi, live_scale):
+        # N = alpha*live_scale - 1 >= 0, equal contacts cancel moment. No upper cap.
+        result = _unbounded(multi, live_scale)
+        assert result.status == "unbounded" and result.alpha == math.inf
+>       assert math.isfinite(result.uncertainty), "display range must not produce NaN U"
+E       AssertionError: display range must not produce NaN U
+E       assert False
+E        +  where False = <built-in function isfinite>(nan)
+E        +    where <built-in function isfinite> = math.isfinite
+E        +    and   nan = MultiLimitResult(status='unbounded', alpha=inf, lambdas=[], mechanisms=[], contact_forces=[], active=[], iterations=6, row_duals=[], uncertainty=nan, resolvability='resolved', resolvability_statuses=()).uncertainty
+
+tests\test_r10_resolution.py:27: AssertionError
+______ test_nonfinite_uncertainty_is_never_reported_resolved[nan-False] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004582EA0>
+multi = False, bad = nan
+
+    @pytest.mark.parametrize("multi", [False, True])
+    @pytest.mark.parametrize("bad", [math.nan, math.inf])
+    def test_nonfinite_uncertainty_is_never_reported_resolved(monkeypatch, multi, bad):
+        # Source-side diagnostic failure injection, before the resolution branches.
+        monkeypatch.setattr(M if multi else L, "_live_uncertainty", lambda *args: bad)
+        result = _unbounded(multi, 1.)
+        assert result.status == "unbounded"
+>       assert result.resolvability == "unresolved", "unknown U cannot certify resolved"
+E       AssertionError: unknown U cannot certify resolved
+E       assert 'resolved' == 'unresolved'
+E         
+E         - unresolved
+E         ? --
+E         + resolved
+
+tests\test_r10_resolution.py:41: AssertionError
+_______ test_nonfinite_uncertainty_is_never_reported_resolved[nan-True] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004673E30>
+multi = True, bad = nan
+
+    @pytest.mark.parametrize("multi", [False, True])
+    @pytest.mark.parametrize("bad", [math.nan, math.inf])
+    def test_nonfinite_uncertainty_is_never_reported_resolved(monkeypatch, multi, bad):
+        # Source-side diagnostic failure injection, before the resolution branches.
+        monkeypatch.setattr(M if multi else L, "_live_uncertainty", lambda *args: bad)
+        result = _unbounded(multi, 1.)
+        assert result.status == "unbounded"
+>       assert result.resolvability == "unresolved", "unknown U cannot certify resolved"
+E       AssertionError: unknown U cannot certify resolved
+E       assert 'resolved' == 'unresolved'
+E         
+E         - unresolved
+E         ? --
+E         + resolved
+
+tests\test_r10_resolution.py:41: AssertionError
+______ test_nonfinite_uncertainty_is_never_reported_resolved[inf-False] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000045716D0>
+multi = False, bad = inf
+
+    @pytest.mark.parametrize("multi", [False, True])
+    @pytest.mark.parametrize("bad", [math.nan, math.inf])
+    def test_nonfinite_uncertainty_is_never_reported_resolved(monkeypatch, multi, bad):
+        # Source-side diagnostic failure injection, before the resolution branches.
+        monkeypatch.setattr(M if multi else L, "_live_uncertainty", lambda *args: bad)
+        result = _unbounded(multi, 1.)
+        assert result.status == "unbounded"
+>       assert result.resolvability == "unresolved", "unknown U cannot certify resolved"
+E       AssertionError: unknown U cannot certify resolved
+E       assert 'resolved' == 'unresolved'
+E         
+E         - unresolved
+E         ? --
+E         + resolved
+
+tests\test_r10_resolution.py:41: AssertionError
+_______ test_nonfinite_uncertainty_is_never_reported_resolved[inf-True] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000456AA20>
+multi = True, bad = inf
+
+    @pytest.mark.parametrize("multi", [False, True])
+    @pytest.mark.parametrize("bad", [math.nan, math.inf])
+    def test_nonfinite_uncertainty_is_never_reported_resolved(monkeypatch, multi, bad):
+        # Source-side diagnostic failure injection, before the resolution branches.
+        monkeypatch.setattr(M if multi else L, "_live_uncertainty", lambda *args: bad)
+        result = _unbounded(multi, 1.)
+        assert result.status == "unbounded"
+>       assert result.resolvability == "unresolved", "unknown U cannot certify resolved"
+E       AssertionError: unknown U cannot certify resolved
+E       assert 'resolved' == 'unresolved'
+E         
+E         - unresolved
+E         ? --
+E         + resolved
+
+tests\test_r10_resolution.py:41: AssertionError
+__________ test_uncertainty_ratio_completes_before_binary64_display ___________
+
+    def test_uncertainty_ratio_completes_before_binary64_display():
+        huge = F(2)**2000
+        assert L._live_uncertainty([huge], [1/huge], [F(1, 8)/huge]) == .125
+        # Exact cancellation leaves a tiny but nonzero drive, not rounded zero.
+>       assert L._live_uncertainty([huge, -huge+1], [F(1), F(1)], [1/huge]*2) == 2.
+E       assert Fraction(2296261390548509048465666402355363968044635404177390400955285473651532522784740627713318972633012539836891929...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376) == 2.0
+E        +  where Fraction(2296261390548509048465666402355363968044635404177390400955285473651532522784740627713318972633012539836891929...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376) = <function _live_uncertainty at 0x00000000048005E0>([Fraction(114813069527425452423283320117768198402231770208869520047764273682576626139237031385665948631650626991844596...957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029375, 1)], [Fraction(1, 1), Fraction(1, 1)], ([Fraction(1, 114813069527425452423283320117768198402231770208869520047764273682576626139237031385665948631650626991844...081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)] * 2))
+E        +    where <function _live_uncertainty at 0x00000000048005E0> = L._live_uncertainty
+
+tests\test_r10_resolution.py:48: AssertionError
+____________ test_rounding_budget_keeps_subnormal_load_information ____________
+
+    def test_rounding_budget_keeps_subnormal_load_information():
+        u = F(math.ulp(0.0))
+        budget = L._wrench_rounding([0, -u, 0], 2, 1)
+>       assert budget == [F(4*2.**-53)*u]*3
+E       assert [0.0, 0.0, 0.0] == [Fraction(1, ...510505746432)]
+E         
+E         At index 0 diff: 0.0 != Fraction(1, 455769356286876421213391376429838886925099892492896311359073203585443629295319008244476198689326433780162368020962991167191110613607139517741900808291216386005762763108913764753265553690611976382226145357950239793122692242822302122332514317008108070827274337186476319071835298862424880252130670164301449339557783552772064084296510505746432)
+E         Use -v to get more diff
+
+tests\test_r10_resolution.py:54: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r10_cone_contract.py::test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale0-shift0-rotation0]
+FAILED tests/test_r10_cone_contract.py::test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale1-shift1-rotation1]
+FAILED tests/test_r10_cone_contract.py::test_public_micro_reflex_cone_rejects_opposite_hemisphere[scale2-shift2-rotation2]
+FAILED tests/test_r10_cone_contract.py::test_in_cone_explicit_window_never_creates_reflex_strict_interior[cone6-v6-tol6--1]
+FAILED tests/test_r10_cone_contract.py::test_in_cone_explicit_window_never_creates_reflex_strict_interior[cone7-v7-1--1]
+FAILED tests/test_r10_cone_contract.py::test_in_cone_explicit_window_never_creates_reflex_strict_interior[cone8-v8-1--1]
+FAILED tests/test_r10_cone_contract.py::test_in_cone_zero_boundary_ray_is_rejected[cone0]
+FAILED tests/test_r10_cone_contract.py::test_in_cone_zero_boundary_ray_is_rejected[cone1]
+FAILED tests/test_r10_resolution.py::test_unbounded_capacity_reports_finite_analytic_uncertainty_bounds[5e-324-False]
+FAILED tests/test_r10_resolution.py::test_unbounded_capacity_reports_finite_analytic_uncertainty_bounds[5e-324-True]
+FAILED tests/test_r10_resolution.py::test_nonfinite_uncertainty_is_never_reported_resolved[nan-False]
+FAILED tests/test_r10_resolution.py::test_nonfinite_uncertainty_is_never_reported_resolved[nan-True]
+FAILED tests/test_r10_resolution.py::test_nonfinite_uncertainty_is_never_reported_resolved[inf-False]
+FAILED tests/test_r10_resolution.py::test_nonfinite_uncertainty_is_never_reported_resolved[inf-True]
+FAILED tests/test_r10_resolution.py::test_uncertainty_ratio_completes_before_binary64_display
+FAILED tests/test_r10_resolution.py::test_rounding_budget_keeps_subnormal_load_information
+16 failed, 13 passed in 0.21s

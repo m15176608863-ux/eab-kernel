@@ -1,0 +1,20 @@
+[
+  {
+    "path": "docs/canon_map.md",
+    "meaning": "proposition 7 is implemented but proposition 8 and entrance control are not",
+    "result": "FIXED",
+    "current": "依赖命题 7、8；命题 7 首入已有二维/三维 API 与门，命题 8 及完整首入控制仍未实现"
+  },
+  {
+    "path": "README.md",
+    "meaning": "canon map has historical independent review, not current M0 exit",
+    "result": "FIXED",
+    "current": "随后已经过 G6 第二至第五轮独立重审"
+  },
+  {
+    "path": "tests/test_invariance_2d.py",
+    "meaning": "every supplied cell has an exact oracle, without an implicit tolerance floor",
+    "result": "FIXED",
+    "current": "默认分类对每格实际给定坐标精确；舍入后的刚体变换\n可能改变边界输入，但每格必须通过独立精确 oracle，不能凭旧格子清单豁免。\n仅对有分辨余量的格子另外要求标签不变；显式调用方窗口不含隐式 tol_eff 地板。"
+  }
+]

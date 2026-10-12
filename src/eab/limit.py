@@ -389,7 +389,7 @@ _FLIP = 16.0           # "分辨率内不可行"的扰动幅度：活荷载各�
 _U_IN = 4.0 * 2.0 ** -53   # 调用方构造荷载旋量（三角函数、叉积、平移）的相对舍入量级
 
 
-def _wrench_rounding(w: list[float], dim: int, R: float) -> list[float]:
+def _wrench_rounding(w: list[float], dim: int, R: float) -> list[Fraction]:
     """旋量各分量（内部参考点下）的**输入舍入量级** e_i。
 
     力分量 e_F = u·|F|（旋转框架里每个分量都带整个力的舍入），力矩分量 e_M = u·(|M| + |F|·R)，u = _U_IN，
@@ -397,8 +397,20 @@ def _wrench_rounding(w: list[float], dim: int, R: float) -> list[float]:
     各带进 ~u·|p|·|F| 的舍入，块体放在工程坐标上时这一项主导。**不用 |M|/|F| 当长度**（2026-09-27 订正）：
     近纯力偶的荷载只剩舍入级的合力，|M|/|F| 被撑到 ~1e16，曾把另一荷载的真实力矩当噪声清零、α 静默偏高
     2–3.8 倍（复核者 reverify3 的 critical）。对刚体运动与单位缩放按量纲协变。"""
-    fl, ml = _norm(w[:dim]), _norm(w[dim:])
-    return [_U_IN * fl] * dim + [_U_IN * (ml + fl * R)] * (len(w) - dim)
+    # This is an input-error estimate, not an exact irrational norm. Approximate
+    # only a dimensionless norm in [1,sqrt(n)], then retain its rational scale;
+    # neither a subnormal load nor its smaller noise budget is displayed first.
+    def scaled_norm(values):
+        values = tuple(_rational(v) for v in values)
+        scale = max(map(abs, values), default=Fraction(0))
+        if not scale:
+            return Fraction(0)
+        squared = sum((v/scale)**2 for v in values)
+        return Fraction(sqrt_rational(squared)) * scale
+
+    fl, ml = scaled_norm(w[:dim]), scaled_norm(w[dim:])
+    u = Fraction(_U_IN)
+    return [u * fl] * dim + [u * (ml + fl * Fraction(R))] * (len(w) - dim)
 
 
 def _live_uncertainty(y: list[float], live_c: list[float], e: list[float]) -> float:
@@ -411,11 +423,17 @@ def _live_uncertainty(y: list[float], live_c: list[float], e: list[float]) -> fl
     无摩擦地面 + 带水平分量的恒载、θ = 3π/2 的"竖直"推力给 α = 5.44e15（与恒载大小无关——旧判据"α 超过
     自然荷载尺度 1e10 倍"在恒载 1e6 以上漏掉了它，复核者 res_probe 实测）。近自锁的真实答案 U ≈ u/余量，
     离自锁 1e-8 时 U ~ 6e-8，照常认证。"""
+    # Exact LP witnesses and exact noise scales survive even when their float
+    # views are inf/zero. Only the completed dimensionless ratio is displayed.
+    try:
+        y, live_c, e = (tuple(_rational(v) for v in values) for values in (y, live_c, e))
+    except (ValueError, OverflowError):
+        return float("nan")  # explicitly classified unresolved by both callers
     drive = abs(sum(yi * li for yi, li in zip(y, live_c)))
     num = sum(abs(yi) * ei for yi, ei in zip(y, e))
     if drive == 0.0:
         return float("inf") if num > 0.0 else 0.0
-    return num / drive
+    return _fl(num / drive)
 
 
 def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float], *,
@@ -452,7 +470,7 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
     live_c = [_fl(v) for v in live_x]
     # 活荷载的输入舍入量级（不确定度 U 用，见下面"可分辨性"）。荷载本身**不做任何清洗**。
     Rmag = max((_norm(tuple(ct.point[i] - origin[i] for i in range(dim))) for ct in contacts), default=0.0)
-    e_in = _wrench_rounding(live_c, dim, Rmag)
+    e_in = _wrench_rounding(live_x, dim, Rmag)
     C = _build_columns(contacts, oc, dim, k, unit_cohesion=True)
     Cx = [_exact_wrench(col[:dim], contacts[C.owner[j]].point, oc, dim) for j, col in enumerate(C.cols)]
     # 黏聚上限 c·A 也精确（reverify5：曾用浮点乘积 fl(c·A)，c = 0.1、A = 3 的刀刃上状态可翻）
@@ -487,15 +505,17 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
 
     def _pushes(y):
         """沿机构 y 最敏感的方向把活荷载推 ±_FLIP 倍舍入量级（δ_i = ±sign(y_i)·_FLIP·e_i），精确重解原问题（max α）。"""
-        push = [(1.0 if yi > 0.0 else -1.0 if yi < 0.0 else 0.0) * _FLIP * ei for yi, ei in zip(y, e_in)]
+        push = [((yi > 0) - (yi < 0)) * Fraction(_FLIP) * ei for yi, ei in zip(y, e_in)]
         return (_solve([li - Fraction(pi) for li, pi in zip(live_x, push)]),
                 _solve([li + Fraction(pi) for li, pi in zip(live_x, push)]))
 
     def _resolvable(res):
         """报告原解对输入舍入的分辨性；邻域问题的状态绝不能替换原问题的精确答案。"""
-        a0 = res.x[ia]
-        y = list(res.y[:nw])
-        U0 = _live_uncertainty(y, live_c, e_in)
+        a0 = _lp_values(res.x, res.exact_x)[ia]
+        y = _lp_values(res.y, res.exact_y)[:nw]
+        U0 = _live_uncertainty(y, live_x, e_in)
+        if not math.isfinite(U0):
+            return U0, "unresolved", 0, ()
         if U0 <= _UNCERTAIN:
             return U0, "resolved", 0, ()
         rm, rp = _pushes(y)
@@ -504,7 +524,9 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
         if "infeasible" in statuses:
             return U0, "nearby_infeasible", its, statuses
         if rm.status == OPTIMAL and rp.status == OPTIMAL and a0 > 0.0:
-            U = max(abs(rm.x[ia]-a0),abs(rp.x[ia]-a0))/(_FLIP*a0)
+            am = _lp_values(rm.x, rm.exact_x)[ia]
+            ap = _lp_values(rp.x, rp.exact_x)[ia]
+            U = _fl(max(abs(am-a0), abs(ap-a0))/(Fraction(_FLIP)*a0))
             return U, ("resolved" if U <= _UNCERTAIN else "unresolved"), its, statuses
         return U0, "unresolved", its, statuses
 
@@ -513,10 +535,12 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
         rmin = _solve(live_x, -1.0)
         its = r.iterations + rmin.iterations
         U0, resolution, statuses = 0.0, "resolved", ()
-        if rmin.status == OPTIMAL and rmin.x[ia] > 0.0:
-            y = list(rmin.y[:nw])
-            U0 = _live_uncertainty(y, live_c, e_in)
-            if U0 > _UNCERTAIN:
+        if rmin.status == OPTIMAL and _lp_values(rmin.x, rmin.exact_x)[ia] > 0:
+            y = _lp_values(rmin.y, rmin.exact_y)[:nw]
+            U0 = _live_uncertainty(y, live_x, e_in)
+            if not math.isfinite(U0):
+                resolution = "unresolved"
+            elif U0 > _UNCERTAIN:
                 rm, rp = _pushes(y)
                 its += rm.iterations + rp.iterations
                 statuses = (rm.status,rp.status)

@@ -1,0 +1,874 @@
+FFFFFFFFF.F.FFFFFF..............                                         [100%]
+================================== FAILURES ===================================
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction0-cap0-pose0] _
+
+pose = (Fraction(1, 1), (0, 0, 0), False), direction = (1, 0, 0)
+cap = Fraction(0, 1)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+        got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+>       assert got.kind == 'entrance', 'closed initial face boundary must not be discarded by motion'
+E       AssertionError: closed initial face boundary must not be discarded by motion
+E       assert 'none' == 'entrance'
+E         
+E         - entrance
+E         + none
+
+tests\test_r10_initial_boundary.py:55: AssertionError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction0-cap0-pose1] _
+
+pose = (Fraction(1, 1000000000), (100000000, -100000000, 100000000), True)
+direction = (1, 0, 0), cap = Fraction(0, 1)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+        got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+>       assert got.kind == 'entrance', 'closed initial face boundary must not be discarded by motion'
+E       AssertionError: closed initial face boundary must not be discarded by motion
+E       assert 'none' == 'entrance'
+E         
+E         - entrance
+E         + none
+
+tests\test_r10_initial_boundary.py:55: AssertionError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction0-cap0-pose2] _
+
+pose = (Fraction(100000000, 1), (100000000, -100000000, 100000000), True)
+direction = (1, 0, 0), cap = Fraction(0, 1)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+        got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+>       assert got.kind == 'entrance', 'closed initial face boundary must not be discarded by motion'
+E       AssertionError: closed initial face boundary must not be discarded by motion
+E       assert 'none' == 'entrance'
+E         
+E         - entrance
+E         + none
+
+tests\test_r10_initial_boundary.py:55: AssertionError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction1-cap1-pose0] _
+
+pose = (Fraction(1, 1), (0, 0, 0), False), direction = (1, 0, 0)
+cap = Fraction(1, 16)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+        got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+>       assert got.kind == 'entrance', 'closed initial face boundary must not be discarded by motion'
+E       AssertionError: closed initial face boundary must not be discarded by motion
+E       assert 'none' == 'entrance'
+E         
+E         - entrance
+E         + none
+
+tests\test_r10_initial_boundary.py:55: AssertionError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction1-cap1-pose1] _
+
+pose = (Fraction(1, 1000000000), (100000000, -100000000, 100000000), True)
+direction = (1, 0, 0), cap = Fraction(1, 16)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+        got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+>       assert got.kind == 'entrance', 'closed initial face boundary must not be discarded by motion'
+E       AssertionError: closed initial face boundary must not be discarded by motion
+E       assert 'none' == 'entrance'
+E         
+E         - entrance
+E         + none
+
+tests\test_r10_initial_boundary.py:55: AssertionError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction1-cap1-pose2] _
+
+pose = (Fraction(100000000, 1), (100000000, -100000000, 100000000), True)
+direction = (1, 0, 0), cap = Fraction(1, 16)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+        got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+>       assert got.kind == 'entrance', 'closed initial face boundary must not be discarded by motion'
+E       AssertionError: closed initial face boundary must not be discarded by motion
+E       assert 'none' == 'entrance'
+E         
+E         - entrance
+E         + none
+
+tests\test_r10_initial_boundary.py:55: AssertionError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction2-cap2-pose0] _
+
+pose = (Fraction(1, 1), (0, 0, 0), False), direction = (0, 0, 1)
+cap = Fraction(1, 16)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(-3, 4), Fraction(-7, 8), Fraction(1, 1)), (Fraction(5, 4), Fraction(-7, 8), Fraction(1, 1)...on(9, 8), Fraction(3, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(-1, 1), Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1), Fraction(-1, ...on(1, 1), Fraction(1, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (Fraction(0, 1), Fraction(0, 1), Fraction(1, 1))
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction2-cap2-pose1] _
+
+pose = (Fraction(1, 1000000000), (100000000, -100000000, 100000000), True)
+direction = (0, 0, 1), cap = Fraction(1, 16)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(400000000000000001, 4000000000), Fraction(-800000000000000009, 8000000000), Fraction(10000...00000000003, 1000000000))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(500000000000000001, 5000000000), Fraction(-500000000000000007, 5000000000), Fraction(99999...00000000001, 1000000000))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (Fraction(0, 1), Fraction(0, 1), Fraction(1, 1000000000))
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction2-cap2-pose2] _
+
+pose = (Fraction(100000000, 1), (100000000, -100000000, 100000000), True)
+direction = (0, 0, 1), cap = Fraction(1, 16)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(125000000, 1), Fraction(-212500000, 1), Fraction(200000000, 1)), (Fraction(245000000, 1), ..., Fraction(400000000, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(120000000, 1), Fraction(-240000000, 1), Fraction(0, 1)), (Fraction(240000000, 1), Fraction..., Fraction(200000000, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (Fraction(0, 1), Fraction(0, 1), Fraction(100000000, 1))
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+_ test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction3-cap3-pose1] _
+
+pose = (Fraction(1, 1000000000), (100000000, -100000000, 100000000), True)
+direction = (0, 0, -1), cap = Fraction(1, 16)
+
+    @pytest.mark.parametrize('pose',POSES)
+    @pytest.mark.parametrize('direction,cap',MOTIONS)
+    def test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells(pose,direction,cap):
+        A,B = _pair(pose)
+        got = entrance3.first_entrance3(A,B,(0,0,0),_pose(direction,pose[0],(0,0,0),pose[2]),tol=0,t_max=cap)
+        assert got.kind == 'entrance', 'closed initial face boundary must not be discarded by motion'
+        assert got.exact_t == 0, 'closed initial face boundary has exact first time zero'
+        assert got.t == 0 and got.x == (0,0,0) and got.gap == 0
+        assert got.label is not None and got.members and got.tied_labels
+        assert set(got.members) <= set(got.tied_labels)
+>       assert got.point_a == got.point_b
+E       assert (Fraction(400..., 1000000000)) == (100000000.0,..., 100000000.0)
+E         
+E         At index 0 diff: Fraction(400000000000000001, 4000000000) != 100000000.0
+E         Use -v to get more diff
+
+tests\test_r10_initial_boundary.py:60: AssertionError
+_ test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction0-face] _
+
+contact = 'face', direction = (1, 0, 0)
+
+    @pytest.mark.parametrize('contact',['face','edge','vertex'])
+    @pytest.mark.parametrize('direction',[(1,0,0),(0,0,1),(0,0,-1)])
+    def test_initial_lower_dimensional_boundary_keeps_every_contact_direction(contact,direction):
+        A,B = _pair(POSES[0],contact)
+        got = entrance3.first_entrance3(A,B,(0,0,0),direction,tol=0,t_max=0)
+>       assert got.kind == 'entrance' and got.exact_t == 0, 'closed lower-dimensional initial boundary was lost'
+E       AssertionError: closed lower-dimensional initial boundary was lost
+E       assert ('none' == 'entrance'
+E         
+E         - entrance
+E         + none)
+
+tests\test_r10_initial_boundary.py:68: AssertionError
+_ test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction0-edge] _
+
+contact = 'edge', direction = (1, 0, 0)
+
+    @pytest.mark.parametrize('contact',['face','edge','vertex'])
+    @pytest.mark.parametrize('direction',[(1,0,0),(0,0,1),(0,0,-1)])
+    def test_initial_lower_dimensional_boundary_keeps_every_contact_direction(contact,direction):
+        A,B = _pair(POSES[0],contact)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),direction,tol=0,t_max=0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(1, 1), Fraction(-7, 8), Fraction(1, 1)), (Fraction(3, 1), Fraction(-7, 8), Fraction(1, 1))...on(9, 8), Fraction(3, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(-1, 1), Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1), Fraction(-1, ...on(1, 1), Fraction(1, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (1, 0, 0)
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+_ test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction0-vertex] _
+
+contact = 'vertex', direction = (1, 0, 0)
+
+    @pytest.mark.parametrize('contact',['face','edge','vertex'])
+    @pytest.mark.parametrize('direction',[(1,0,0),(0,0,1),(0,0,-1)])
+    def test_initial_lower_dimensional_boundary_keeps_every_contact_direction(contact,direction):
+        A,B = _pair(POSES[0],contact)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),direction,tol=0,t_max=0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(1, 1), Fraction(1, 1), Fraction(1, 1)), (Fraction(3, 1), Fraction(1, 1), Fraction(1, 1)), ...on(3, 1), Fraction(3, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(-1, 1), Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1), Fraction(-1, ...on(1, 1), Fraction(1, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (1, 0, 0)
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+_ test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction1-face] _
+
+contact = 'face', direction = (0, 0, 1)
+
+    @pytest.mark.parametrize('contact',['face','edge','vertex'])
+    @pytest.mark.parametrize('direction',[(1,0,0),(0,0,1),(0,0,-1)])
+    def test_initial_lower_dimensional_boundary_keeps_every_contact_direction(contact,direction):
+        A,B = _pair(POSES[0],contact)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),direction,tol=0,t_max=0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(-3, 4), Fraction(-7, 8), Fraction(1, 1)), (Fraction(5, 4), Fraction(-7, 8), Fraction(1, 1)...on(9, 8), Fraction(3, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(-1, 1), Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1), Fraction(-1, ...on(1, 1), Fraction(1, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (0, 0, 1)
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+_ test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction1-edge] _
+
+contact = 'edge', direction = (0, 0, 1)
+
+    @pytest.mark.parametrize('contact',['face','edge','vertex'])
+    @pytest.mark.parametrize('direction',[(1,0,0),(0,0,1),(0,0,-1)])
+    def test_initial_lower_dimensional_boundary_keeps_every_contact_direction(contact,direction):
+        A,B = _pair(POSES[0],contact)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),direction,tol=0,t_max=0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(1, 1), Fraction(-7, 8), Fraction(1, 1)), (Fraction(3, 1), Fraction(-7, 8), Fraction(1, 1))...on(9, 8), Fraction(3, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(-1, 1), Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1), Fraction(-1, ...on(1, 1), Fraction(1, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (0, 0, 1)
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+_ test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction1-vertex] _
+
+contact = 'vertex', direction = (0, 0, 1)
+
+    @pytest.mark.parametrize('contact',['face','edge','vertex'])
+    @pytest.mark.parametrize('direction',[(1,0,0),(0,0,1),(0,0,-1)])
+    def test_initial_lower_dimensional_boundary_keeps_every_contact_direction(contact,direction):
+        A,B = _pair(POSES[0],contact)
+>       got = entrance3.first_entrance3(A,B,(0,0,0),direction,tol=0,t_max=0)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r10_initial_boundary.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=[(Fraction(1, 1), Fraction(1, 1), Fraction(1, 1)), (Fraction(3, 1), Fraction(1, 1), Fraction(1, 1)), ...on(3, 1), Fraction(3, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(-1, 1), Fraction(-1, 1), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-1, 1), Fraction(-1, ...on(1, 1), Fraction(1, 1))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+x0 = (0, 0, 0), d = (0, 0, 1)
+
+    def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: float = 1e-9,
+                        geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
+        """Exact supplied-data first event; floating normal/point/time are outputs only.
+    
+        An initial topological int(E) configuration, including a tight-fit seam
+        without body-interior overlap, uses shortest_exit3. This is the existing
+        local-facet policy, not global nonconvex penetration depth: a seam's local
+        exit gap can be zero without asserting that it lies on the true boundary E.
+        Gate: test_r8fix_initial_state3.
+    
+        geom_tol is retained for source compatibility but never thickens the set.
+        Candidate roots, ordering, t_max and ties are rational. The complete surface
+        event partition supplies an exact preceding interval for the self-check.
+        """
+        if not any(d):
+            raise ValueError("direction must be nonzero")
+        A, B = exact_surface(A), exact_surface(B)
+        At = _translated_exact(A, x0)
+        if entrance_membership3(At, B) == 1:
+            return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+        raw = []
+        for idx, c in enumerate(_facet_covers(At, B, tol)):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            nd, gap = dot(n, _qvector(d)), -dot(n, p)
+            if nd >= 0 or gap < 0:
+                continue
+            t = -gap / nd
+            if not isfinite(t_max) or t <= Fraction(t_max):
+                raw.append((t, c, nd, idx))
+        raw.sort(key=lambda q: (q[0], q[3]))
+        # Import locally to avoid a circular dependency with domain-level callers.
+        from .exact_sweep import surface_events
+        events = tuple(event.time for event in surface_events(
+            A, B, direction=d, start=x0, t_min=0,
+            t_max=Fraction(t_max) if isfinite(t_max) else None))
+        for t, c, nd, idx in raw:
+            exact_x = _ray_shift(x0, d, t)
+            Ax = _translated_exact(A, exact_x)
+            cc = _cover_at(Ax, B, c.label(), tol, 0.0)
+            if cc is None or not cc.in_extent:
+                continue
+            if polyhedra_overlap(Ax, B, 0.0) < 0:
+                continue
+            earlier = min(events, default=t)
+            if earlier < t and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, earlier)), B, 0.0) >= 0:
+                raise RuntimeError("first_entrance3: the facet-cover candidate set missed an earlier entrance "
+                                   f"at exact surface event {earlier!r} before {t!r}")
+            before = _preceding_probe(t, events)
+            if t > 0 and polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, before)), B, 0.0) >= 0:
+                raise RuntimeError(f"first_entrance3: bodies already touch at t = {before!r} < candidate {t!r} "
+                                   f"({c.label()}); the facet-cover candidate set missed an earlier entrance")
+            tied = []
+            for t2, c2, _, _ in raw:
+                if t2 == t:
+                    c2x = _cover_at(Ax, B, c2.label(), tol, 0.0)
+                    if c2x is not None and c2x.in_extent:
+                        tied.append(c2x)
+            tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
+            rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
+            return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+                             cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
+                             members, len(raw), t), A, B)
+        # No valid local cover must never silently hide a genuine surface event.
+        for tp in events:
+            if polyhedra_overlap(_translated_exact(A, _ray_shift(x0, d, tp)), B, 0.0) >= 0:
+>               raise RuntimeError(f"first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = {tp!r}; "
+                                   "the candidate set missed an earlier entrance")
+E               RuntimeError: first_entrance3: no in-extent facet-cover candidate, yet the bodies touch at t = Fraction(0, 1); the candidate set missed an earlier entrance
+
+src\eab\kernel3d\entrance3.py:295: RuntimeError
+=========================== short test summary info ===========================
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction0-cap0-pose0]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction0-cap0-pose1]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction0-cap0-pose2]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction1-cap1-pose0]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction1-cap1-pose1]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction1-cap1-pose2]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction2-cap2-pose0]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction2-cap2-pose1]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction2-cap2-pose2]
+FAILED tests/test_r10_initial_boundary.py::test_initial_face_boundary_is_closed_first_entrance_in_all_review_cells[direction3-cap3-pose1]
+FAILED tests/test_r10_initial_boundary.py::test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction0-face]
+FAILED tests/test_r10_initial_boundary.py::test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction0-edge]
+FAILED tests/test_r10_initial_boundary.py::test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction0-vertex]
+FAILED tests/test_r10_initial_boundary.py::test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction1-face]
+FAILED tests/test_r10_initial_boundary.py::test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction1-edge]
+FAILED tests/test_r10_initial_boundary.py::test_initial_lower_dimensional_boundary_keeps_every_contact_direction[direction1-vertex]
+16 failed, 16 passed in 1.02s

@@ -235,7 +235,10 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
     without body-interior overlap, uses shortest_exit3. This is the existing
     local-facet policy, not global nonconvex penetration depth: a seam's local
     exit gap can be zero without asserting that it lies on the true boundary E.
-    Gate: test_r8fix_initial_state3.
+    Gate: test_r8fix_initial_state3. An initial boundary E configuration
+    returns exact_t=0, including tangential/departing motion and t_max=0;
+    finite zero-gap facets are collected independently of motion direction.
+    Gate: test_r10_initial_boundary.
 
     geom_tol is retained for source compatibility but never thickens the set.
     Candidate roots, ordering, t_max and ties are rational. The complete surface
@@ -245,8 +248,26 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
         raise ValueError("direction must be nonzero")
     A, B = exact_surface(A), exact_surface(B)
     At = _translated_exact(A, x0)
-    if entrance_membership3(At, B) == 1:
+    initial = entrance_membership3(At, B)
+    if initial == 1:
         return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
+    if initial == 0:
+        # Closed first entrance already occurred, independent of d and its
+        # approaching/tangential/departing signs. Keep all finite zero-gap
+        # facets; filtering nd < 0 here would lose tangential/departing touch.
+        tied = []
+        for c in _facet_covers(At, B, tol):
+            n, p = _facet_plane_on_views(At, B, c.label(), tol)
+            if c.in_extent and dot(n, p) == 0:
+                tied.append(c)
+        if not tied:
+            raise RuntimeError("first_entrance3: initial boundary has no in-extent zero-gap facet cover")
+        best = tied[0]
+        rep_label, members = _representative(merge_degenerate(At, B, tied, tol), best.label())
+        return _restore_sources(Entrance3(
+            "entrance", 0.0, tuple(map(scalar_rational, x0)), rep_label, best.normal,
+            tuple(map(scalar_rational, best.point_a)), tuple(map(scalar_rational, best.point_b)),
+            best.gap, tuple(c.label() for c in tied), members, len(tied), Fraction(0)), A, B)
     raw = []
     for idx, c in enumerate(_facet_covers(At, B, tol)):
         n, p = _facet_plane_on_views(At, B, c.label(), tol)

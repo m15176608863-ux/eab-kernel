@@ -1,0 +1,16 @@
+{
+  "result": "FIXED",
+  "expected_component_signed_volumes": [
+    64,
+    -8
+  ],
+  "total_volume": 56.0,
+  "whole_issues": [
+    "component 1: orientation is inward at nesting depth 0 (expected outward)"
+  ],
+  "small_component_issues": [
+    "component 0: orientation is inward at nesting depth 0 (expected outward)"
+  ],
+  "failure": "larger outward component masks disconnected inward component under advertised empty-list certificate",
+  "scope": "diagnostic/documentation only; invalid orientation excluded from core surface API domain"
+}
