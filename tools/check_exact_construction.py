@@ -1,7 +1,10 @@
-"""AST gate for the exact-to-binary64 boundary (src and test oracles).
+"""Auxiliary AST code check for the exact-to-binary64 boundary.
 
-Positive closed-subset admission plus default rejection, NOT a numerical proof
-of arbitrary Python. exact_construction_subset.py rejects unknown syntax,
+This tool and its closed-subset admission are NOT a safety guarantee. Runtime
+per-value differential tests against independent rational references, including
+subnormal/ordinary/overflow-edge scales, are the primary construction guard.
+No static analysis here claims complete reliable data flow for arbitrary Python.
+Positive subset admission plus default rejection is a maintenance aid only. exact_construction_subset.py rejects unknown syntax,
 dispatch, imports and callable flow. The JSON policy records individually
 reviewed sites pinned to their AST node and enclosing function source. No automatic waiver generation occurs during a scan.
 The original local may-analysis still rejects premature sqrt/norm/unit and

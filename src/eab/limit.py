@@ -219,17 +219,25 @@ def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
 
 def friction_generators(normal: Vec, mu: float, dim: int, k: int = 8,
                         tangent: Vec | None = None) -> list[Vec]:
-    """库仑锥的棱方向（单位法向 + μ·切向）。二维恰两条（精确）；三维 k 条（内接，偏安全）。"""
+    """库仑锥的棱方向（单位法向 + μ·切向）。二维恰两条；三维 k 条。
+
+    Complete each component in Fraction before its final binary64 view. The
+    3D model retains the supplied frame and libm angular coefficients; it does
+    not claim an exact transcendental cone. Gate:
+    test_public_friction_generators_round_complete_component.
+    """
     ts = _tangents(normal, dim, tangent)
     if dim == 2:
         t = ts[0]
-        return [tuple(normal[i] + mu * t[i] for i in range(2)),
-                tuple(normal[i] - mu * t[i] for i in range(2))]
+        return [tuple(scalar_rational(Fraction(normal[i]) + Fraction(mu) * Fraction(t[i])) for i in range(2)),
+                tuple(scalar_rational(Fraction(normal[i]) - Fraction(mu) * Fraction(t[i])) for i in range(2))]
     t1, t2 = ts
     out = []
     for j in range(k):
         a = 2.0 * pi * j / k
-        out.append(tuple(normal[i] + mu * (cos(a) * t1[i] + sin(a) * t2[i]) for i in range(3)))
+        cosine, sine = Fraction(cos(a)), Fraction(sin(a))
+        out.append(tuple(scalar_rational(Fraction(normal[i]) + Fraction(mu) *
+                         (cosine * Fraction(t1[i]) + sine * Fraction(t2[i]))) for i in range(3)))
     return out
 
 

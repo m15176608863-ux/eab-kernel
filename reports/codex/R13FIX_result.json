@@ -1,0 +1,35 @@
+{
+  "status": "R13FIX_PARTIAL",
+  "baseline": "fabe303b9d574891094b0b9e86b171343e469bfc",
+  "branch": "codex-work",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "confirmed_review_ids": {
+    "G6M-01": "fixed-with-runtime-and-static-teeth; auxiliary-check-only",
+    "G6M-02": "fixed-plus-2D-same-family",
+    "G6M-03": "fixed-current-summary"
+  },
+  "tests": {
+    "collected": 11723,
+    "executed": 11723,
+    "new_nodes": 215,
+    "wall_seconds": 541.6818422000215,
+    "all_checks": {
+      "collection_union_exact_no_duplicates": true,
+      "executed_union_exact_no_duplicates": true,
+      "full_collection_itself_unique": true,
+      "all_pytest_processes_exit_zero": true,
+      "all_setup_call_teardown_pass": true,
+      "source_policy_unchanged": true,
+      "all_original_11508_nodes_preserved": true
+    }
+  },
+  "static_policy_entries": 2451,
+  "static_diagnostics": 0,
+  "remaining": [
+    "Full public construction API extreme-scale differential coverage incomplete",
+    "Mixed int/float raw algebra overflow",
+    "face_noise intermediate long edge range rejection",
+    "Explicit approximate/legacy model exclusions and dynamic protocol limits"
+  ],
+  "final_report": "reports/codex/R13FIX_report.md"
+}

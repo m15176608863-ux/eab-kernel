@@ -1,0 +1,38 @@
+[
+  {
+    "case": "geom3.add all-float overflow output",
+    "outcome": "raised",
+    "observed": "OverflowError: integer division result too large for a float",
+    "status": "fixed: checked overflow"
+  },
+  {
+    "case": "geom3.mul all-float nonzero underflow",
+    "outcome": "raised",
+    "observed": "ArithmeticError: nonzero exact scalar is below binary64 output range",
+    "status": "fixed: checked nonzero underflow"
+  },
+  {
+    "case": "geom2.translate all-float output overflow",
+    "outcome": "raised",
+    "observed": "OverflowError: integer division result too large for a float",
+    "status": "fixed: checked overflow"
+  },
+  {
+    "case": "box all-float output overflow",
+    "outcome": "raised",
+    "observed": "OverflowError: integer division result too large for a float",
+    "status": "fixed: checked overflow"
+  },
+  {
+    "case": "face_noise intermediate edge length exceeds binary64",
+    "outcome": "raised",
+    "observed": "OverflowError: exact root is outside finite binary64 range",
+    "status": "unfixed: exact final relative quantity representable"
+  },
+  {
+    "case": "geom3.add mixed int/float overflow",
+    "outcome": "returned",
+    "observed": "(inf, 0, 0)",
+    "status": "unfixed: mixed-type original algebra path"
+  }
+]

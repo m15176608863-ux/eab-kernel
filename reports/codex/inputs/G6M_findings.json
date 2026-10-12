@@ -1,0 +1,468 @@
+{
+  "schema": "G6M.correctness-audit.v1",
+  "work_order": "WO-G6M",
+  "head": "fabe303b9d574891094b0b9e86b171343e469bfc",
+  "reviewer_role": "独立审查，不修代码",
+  "confirmed_counts": {
+    "critical": 0,
+    "major": 1,
+    "minor": 2
+  },
+  "m0_strict_exit_criteria_satisfied": false,
+  "m0_exit_conclusion": "严格0 critical/0 major不满足；不撤销所有者既有管理退出决定，不能据本轮声称独立零major。",
+  "declared_legacy_exclusions": {
+    "count": 2365,
+    "unproved_sites_alone_counted_as_findings": false
+  },
+  "full_suite": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests",
+      "--basetemp=D:\\eab-wt\\g6m\\review\\tmp\\full"
+    ],
+    "mode": "serial",
+    "exit_code": 0,
+    "elapsed_seconds": 1646.201875925064,
+    "passed": 11508,
+    "pytest_seconds": 1636.79,
+    "verified_output": "11508 passed in 1636.79s (0:27:16)",
+    "log": "review/logs/full_pytest.log"
+  },
+  "tracked_integrity": {
+    "head": "fabe303b9d574891094b0b9e86b171343e469bfc",
+    "tracked_files": 4051,
+    "changed_tracked_files": [],
+    "tracked_path_set_unchanged": true,
+    "all_original_sha256_equal": true,
+    "git_diff_name_only": "",
+    "tracked_status": "",
+    "status_including_untracked": "?? review/",
+    "verified_at": "2026-10-13T01:39:39.584252+08:00",
+    "baseline": "review/evidence/tracked_baseline.json"
+  },
+  "findings": [
+    {
+      "id": "G6M-01",
+      "severity": "major",
+      "file:line": "tools/exact_construction_flow.py:945-979,1013-1021; tools/exact_construction_subset.py:124-135",
+      "conclusion": "类创建及实例方法的字段副作用没有完整建模，实际舍入写回被当作精确输入字段，全新代码仍可零违例通过静态构造门。",
+      "failure_scenario": "q=Fraction(1,2**1075), points=(q,q)。新 dataclass 的 __post_init__、祖先 __init__ 或显式实例 update() 把每个分量乘 1.0 后写回 points，实际 norm_rational(points)=0.0，而独立 Fraction 平方中点证书给正确最终范数 5e-324。三个新文件均没有任何 policy waiver，scan_text=[]；全部 src/tests/tools 副本加入这三文件后的 scan_repository=[]。这不是当前未变异生产代码错误，按门无牙可让 critical 潜入分为 major。",
+      "how_to_reproduce": "$env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/static_lifecycle_bypass.py",
+      "repro_path": "review/repro/static_lifecycle_bypass.py",
+      "suggested_fix": "对 dataclass 后初始化、MRO 继承初始化和实例方法写回，传播与普通直接 helper 一致的 mutations/field_mutations/sink_effects/unproved_effects；没有摘要时默认拒绝。补三种真正执行舍入错误的静态门及副本全仓扫描，不依赖旧例外 hash 失效。",
+      "verified_output": {
+        "confirmed": true,
+        "kind": "static default-reject regression, not unmutated production numerical critical",
+        "results": [
+          {
+            "case": "dataclass_post_init",
+            "path": "src/eab/g6m_dataclass_post_init_new.py",
+            "input_q": "1 / 2**1075",
+            "expected_by_independent_squared_midpoint_certificate": "5e-324",
+            "actual": "0.0",
+            "scan_text_issues": [],
+            "approved_sites": 0,
+            "explicit_ordinary_init_control_issues": [
+              [
+                "src/eab/g6m_dataclass_post_init_new.py",
+                8,
+                "update",
+                "closed-unproved-arithmetic",
+                "component*1.0"
+              ],
+              [
+                "src/eab/g6m_dataclass_post_init_new.py",
+                12,
+                "bad",
+                "closed-rounded-construction",
+                "norm_rational(holder.points)"
+              ]
+            ],
+            "source": "from dataclasses import dataclass\nfrom fractions import Fraction\nfrom eab.construction import norm_rational\n@dataclass\nclass Holder:\n    points: tuple[Fraction, Fraction]\n    def __post_init__(self):\n        self.points = tuple(component*1.0 for component in self.points)\ndef bad(q: Fraction):\n    return norm_rational(Holder((q,q)).points)\n"
+          },
+          {
+            "case": "inherited_init",
+            "path": "src/eab/g6m_inherited_init_new.py",
+            "input_q": "1 / 2**1075",
+            "expected_by_independent_squared_midpoint_certificate": "5e-324",
+            "actual": "0.0",
+            "scan_text_issues": [],
+            "approved_sites": 0,
+            "explicit_ordinary_init_control_issues": [
+              [
+                "src/eab/g6m_inherited_init_new.py",
+                8,
+                "update",
+                "closed-unproved-arithmetic",
+                "component*1.0"
+              ],
+              [
+                "src/eab/g6m_inherited_init_new.py",
+                12,
+                "bad",
+                "closed-rounded-construction",
+                "norm_rational(holder.points)"
+              ]
+            ],
+            "source": "from dataclasses import dataclass\nfrom fractions import Fraction\nfrom eab.construction import norm_rational\nclass Parent:\n    def __init__(self, points: tuple[Fraction,Fraction]):\n        self.points = tuple(component*1.0 for component in points)\nclass Holder(Parent):\n    points: tuple[Fraction,Fraction]\ndef bad(q: Fraction):\n    return norm_rational(Holder((q,q)).points)\n"
+          },
+          {
+            "case": "instance_method_mutation",
+            "path": "src/eab/g6m_instance_method_mutation_new.py",
+            "input_q": "1 / 2**1075",
+            "expected_by_independent_squared_midpoint_certificate": "5e-324",
+            "actual": "0.0",
+            "scan_text_issues": [],
+            "approved_sites": 0,
+            "explicit_ordinary_init_control_issues": [
+              [
+                "src/eab/g6m_instance_method_mutation_new.py",
+                8,
+                "update",
+                "closed-unproved-arithmetic",
+                "component*1.0"
+              ],
+              [
+                "src/eab/g6m_instance_method_mutation_new.py",
+                12,
+                "bad",
+                "closed-rounded-construction",
+                "norm_rational(holder.points)"
+              ]
+            ],
+            "source": "from dataclasses import dataclass\nfrom fractions import Fraction\nfrom eab.construction import norm_rational\n@dataclass\nclass Holder:\n    points: tuple[Fraction, Fraction]\n    def update(self):\n        self.points = tuple(component*1.0 for component in self.points)\ndef bad(q: Fraction):\n    holder=Holder((q,q))\n    holder.update()\n    return norm_rational(holder.points)\n"
+          }
+        ],
+        "whole_repository_scan_issues": [],
+        "whole_repository_scan_seconds": 58.75643310000305,
+        "copied_policy_sha256": "73fde62383d7064ad94b58523a79586015c056b3bc57cea7ea0dd6d30a0abffe",
+        "policy_unchanged": true,
+        "original_flow_sha256_unchanged": "24d07687a8103b7fd71ae0ad4956e1b4fb4a3551941d3d6cd5fb05e774b702c6"
+      },
+      "confirmation_boundary": "子审亲自运行；主审已独立复跑确认并映射为 G6M-01。2365 条旧排除未证明本身不计发现。",
+      "primary_review_verified": true,
+      "primary_review_log": "review/logs/root_verified_static_lifecycle.log"
+    },
+    {
+      "id": "G6M-02",
+      "severity": "minor",
+      "file": "tests/test_entrance3.py",
+      "line": 159,
+      "failure_scenario": "在review副本first_entrance3正事件Entrance3构造器里，把返回x的exact_x改成x0，候选/时刻/法向/见证及自校验不改。随机seed0 expected_x=(-0.3112355578308868,0.45770106421456686,0.6282038688737575)，mutant返回start=(-3.017738778724177,3.152165214937428,2.3413999174549023)，t=3.3193317016553476仍正确。旧随机24格23 failed，新同名24格及相关六文件164格全passed。现生产baseline的x正确；完整门有静态冗余，不是当前生产数学错误。",
+      "how_to_reproduce": "$env:PYTHONDONTWRITEBYTECODE='1'; python -X utf8 review/repro/history_x_migration.py; python -X utf8 review/repro/history_x_exhibit.py; python -X utf8 review/repro/history_x_static_redundancy.py",
+      "suggested_fix": "在原随机格直接核result.exact_t==independent_interval[0]，用独立Fraction midpoint证书核每个result.x分量是RN-even(x0+t_exact*d)，不强求将浮点端点回代必相触。加入x→x0真实构造器内部缺陷牙；迁移台账注明旧端点覆盖被此不变量替代。",
+      "verified_output": "old baseline 24 passed in 8.42s; old mutant 23 failed, 1 passed in 8.41s; current baseline 24 passed in 9.26s; current mutant 24 passed in 9.00s; current 6-file mathematical domain mutant 164 passed in 17.44s; static first_entrance3 baseline=0 / mutant=24 issues (closed-stale-waiver + related expired-site diagnostics). All copied source SHA-256 restored.",
+      "evidence": [
+        "review/logs/history_x_migration/results.json",
+        "review/logs/history_x_static_redundancy.json",
+        "review/logs/history_x_exhibit.json",
+        "review/logs/history_x_migration_final.log",
+        "review/logs/history_x_final_verification.json"
+      ],
+      "classification_boundary": "recommended minor because static redundancy blocks the actual source mutant; not a critical/major current wrong answer",
+      "concrete_exhibit": [
+        {
+          "seed": 0,
+          "start": [
+            -3.017738778724177,
+            3.152165214937428,
+            2.3413999174549023
+          ],
+          "direction": [
+            0.8153759443636078,
+            -0.8117489883216957,
+            -0.5161267997792374
+          ],
+          "exact_time": "1004139483583575262962424459322025043832044118908/302512545848554957045687895979560504994722154541",
+          "returned_exact_time": "1004139483583575262962424459322025043832044118908/302512545848554957045687895979560504994722154541",
+          "expected_rounded_x": [
+            -0.3112355578308868,
+            0.45770106421456686,
+            0.6282038688737575
+          ],
+          "returned_x": [
+            -0.3112355578308868,
+            0.45770106421456686,
+            0.6282038688737575
+          ],
+          "x_mismatch": false,
+          "kind": "entrance",
+          "returned_t": 3.3193317016553476,
+          "stage": "baseline"
+        },
+        {
+          "seed": 0,
+          "start": [
+            -3.017738778724177,
+            3.152165214937428,
+            2.3413999174549023
+          ],
+          "direction": [
+            0.8153759443636078,
+            -0.8117489883216957,
+            -0.5161267997792374
+          ],
+          "exact_time": "1004139483583575262962424459322025043832044118908/302512545848554957045687895979560504994722154541",
+          "returned_exact_time": "1004139483583575262962424459322025043832044118908/302512545848554957045687895979560504994722154541",
+          "expected_rounded_x": [
+            -0.3112355578308868,
+            0.45770106421456686,
+            0.6282038688737575
+          ],
+          "returned_x": [
+            -3.017738778724177,
+            3.152165214937428,
+            2.3413999174549023
+          ],
+          "x_mismatch": true,
+          "kind": "entrance",
+          "returned_t": 3.3193317016553476,
+          "stage": "mutant"
+        }
+      ],
+      "final_script_sha256": "1071ae049368879b8867507c0ca2fd47f6d60251871ade757bb0fddf03f141ef",
+      "file:line": "tests/test_entrance3.py:159-165",
+      "conclusion": "三维随机首入门迁移后不再约束返回平移x与精确事件时刻的关系：同一个内部x→x0缺陷旧门23红，当前相关164数学门全绿；R12静态函数锁仍报红。",
+      "repro_path": "review/repro/history_x_migration.py",
+      "primary_review_verified": true,
+      "primary_review_log": "review/logs/root_verified_history_x.log",
+      "primary_static_redundancy_log": "review/logs/root_verified_history_static_redundancy.log"
+    },
+    {
+      "id": "G6M-03",
+      "severity": "minor",
+      "file:line": "docs/canon_map.md:3",
+      "conclusion": "canon顶部R12FIX说明未同步为R12FIXb局部站点锁及可证明Fraction数据流子集。",
+      "failure_scenario": "现行顶部仍称完整模块AST及全src/tests/tools原字节依赖图钉住、只纯整数字面量自动证明；当前policy明示Local AST site and minimal enclosing source SHA256 only / No dependency snapshot，且设计同步撤销旧机制。对真实geom3.py内存文本加无关尾注，内容hash改变但approved_sites仍88、诊断仍[]，与新合同一致而非旧说明。",
+      "how_to_reproduce": "python -X utf8 review/repro/root_doc_contract_drift.py",
+      "repro_path": "review/repro/root_doc_contract_drift.py",
+      "suggested_fix": "同步canon顶部，或明确标注该段为已被R12FIXb替代的历史版本；不要把已撤销全库依赖快照说成当前机制。",
+      "verified_output": {
+        "confirmed_minor_document_drift": true,
+        "location": "docs/canon_map.md:3",
+        "old_current_intro": "> **WO-R12FIX（2026-10-12，工作树修复，待独立复审）**：实际输入仅 G6L-01 一条 major；静态构造门改为“封闭子集上的静态保证 + 默认拒绝”，不是任意 Python 的数值证明。未知语法、动态/高阶 callable 与未登记调用不再按无违例放行；逐点例外须带理由并由完整模块 AST/上下文及全 src/tests/tools 原字节依赖图钉住，无返回/副作用证明的普通调用直接拒绝，已舍入实参跨未证明调用边界另行拒绝。自动算术证明仅限纯整数字面量子集；变量/Fraction 算法、sum、未知属性/注解/格式化仍逐站点审阅，不靠名字猜类型。测试驱动的显式豁免、oracle/helper 范围与限制见 [本树设计同步](r12fix_design_sync.md)；定向门为 `tests/test_r12fix_static_closed.py`，修前红/修后绿、变异、扫描和全套实测见 [R12FIX 报告](../reports/codex/R12FIX_report.md)。M0 所有者退出决定不变，不宣称新鲜 worktree/独立 G6 已通过；M4a 离线合同与门保留。",
+        "policy_review_contract": "Local AST site and minimal enclosing source SHA256 only. No dependency snapshot; no automatic refresh. PARTIAL legacy inventory: see R12FIXb_report.md for count, proof gaps, approximate scope exclusions and unfinished numerical rewrites.",
+        "module": "src/eab/kernel3d/geom3.py",
+        "approved_sites_before": 88,
+        "approved_sites_after_unrelated_comment": 88,
+        "diagnostics_before": [],
+        "diagnostics_after": [],
+        "source_hash_changed": true,
+        "tracked_source_written": false,
+        "note": "Latest README and r12fix_design_sync explicitly supersede this historical design; not a mathematical-core false promise major."
+      },
+      "primary_review_verified": true,
+      "primary_review_log": "review/logs/root_doc_contract_drift.log",
+      "classification_boundary": "最新README和设计同步已诚实纠正；非核心数学保证虚报major。"
+    }
+  ],
+  "unconfirmed": [
+    {
+      "id": "U01",
+      "topic": "reader近重复floor可改变原输入数学状态",
+      "counted": false,
+      "reason": "局部docstring明示L5近似清洗模型，未确认dup_tol=0保原字节数学模型合同",
+      "evidence": "review/evidence/root_reader_risk.json",
+      "repro": "review/repro/root_reader_feature_loss.py"
+    },
+    {
+      "id": "U02",
+      "topic": "2D G0 subULP精确最近标签遗漏仍显示正确根",
+      "counted": false,
+      "reason": "仅1ULP候选窗内标签差，未证明标量错误或完整门及静态冗余同绿",
+      "evidence": "review/geometry/g0_subulp_probe.json",
+      "repro": "review/repro/geometry_g0_subulp_probe.py"
+    },
+    {
+      "id": "U03",
+      "topic": "round(float,ndigits)静态准入边界",
+      "counted": false,
+      "reason": "显式round是否定义新模型未明确，无原生产具体错误答案",
+      "evidence": "review/static_logs/initial_protocol_probes.json"
+    },
+    {
+      "id": "U04",
+      "topic": "二维in_cone零方向判外部",
+      "counted": false,
+      "reason": "需确认非零法向前置条件，无当前非零正常调用反例"
+    },
+    {
+      "id": "U05",
+      "topic": "3D首入自检未逐证所有更早区间",
+      "counted": false,
+      "reason": "未找到有效输入早期孤立碰撞遗漏而后续成功的实例",
+      "evidence": "review/geometry_audit.md"
+    }
+  ],
+  "coverage": [
+    {
+      "lens": 1,
+      "title": "精确性与浮点分支",
+      "raw_candidate_rows": 325,
+      "root_classified_rows": 95,
+      "geometry_expanded_rows": 257,
+      "note": "候选重复且检索非穷尽；只将实际改变答案的确认问题计数",
+      "evidence": [
+        "review/evidence/branch_inventory_raw.json",
+        "review/evidence/root_branch_classification.json",
+        "review/geometry_branch_classification.json"
+      ]
+    },
+    {
+      "lens": 2,
+      "title": "过滤构造缓存兜底",
+      "numeric_comparisons": 78600,
+      "constructor_pressure": {
+        "sqrt_cells": 4643,
+        "norm_cells": 4244,
+        "unit_cells": 12528,
+        "difference_cells": 2366,
+        "range_rejections": 1243,
+        "seconds": 2.0808472633361816
+      },
+      "cache_cases": 120,
+      "evidence": [
+        "review/geometry/numeric_pressure.json",
+        "review/geometry/cache_fallback_pressure.json"
+      ]
+    },
+    {
+      "lens": 3,
+      "title": "oracle独立性",
+      "poisoned_production_functions": 281,
+      "expected_paths_unchanged": 8,
+      "note": "实际动态路径及清cache；不冒充所有分支静态证明",
+      "evidence": [
+        "review/logs/history_oracle_poison.log"
+      ]
+    },
+    {
+      "lens": 4,
+      "title": "测试迁移",
+      "old_test_functions": 561,
+      "new_test_functions": 1245,
+      "changed_shared_functions": 116,
+      "paired_mutation": "G6M-02",
+      "evidence": [
+        "review/logs/history_test_migration_inventory.json",
+        "review/logs/history_x_migration/results.json",
+        "review/logs/history_x_static_redundancy.json"
+      ]
+    },
+    {
+      "lens": 5,
+      "title": "几何压力",
+      "new_prism_cases": 96,
+      "new_escape_union_cases": 48,
+      "replayed_scanline_cases": 240,
+      "replayed_tetra_cases": 96,
+      "replayed_nested_shell_cases": 48,
+      "targeted_tests_passed": 119,
+      "evidence": [
+        "review/geometry_audit.md",
+        "review/geometry/"
+      ]
+    },
+    {
+      "lens": 6,
+      "title": "窗口分支可靠性",
+      "product_box_cases": 108,
+      "contract": "axis => rho<=w, not PD_closed<=w; core => all overlap regions in radial shell thickness<=w",
+      "evidence": [
+        "review/logs/root_window_certificates.json",
+        "review/geometry/escape_union_pressure.json"
+      ]
+    },
+    {
+      "lens": 7,
+      "title": "极限分析LP与可分辨性",
+      "lp_pressure": {
+        "lp_cases": 1000,
+        "exact_views": 239,
+        "reduced_sign_cases": 15000,
+        "status": {
+          "optimal": 239,
+          "unbounded": 356,
+          "infeasible": 405
+        },
+        "poison_checks": 0,
+        "seconds": 0.8712637424468994
+      },
+      "selfcheck_pressure": {
+        "single_cases": 24,
+        "multi_cases": 24,
+        "edited_rejections": 144,
+        "injected_rejections": 96,
+        "seconds": 0.5292878150939941
+      },
+      "evidence": [
+        "review/evidence/root_lp_pressure.json",
+        "review/evidence/root_selfcheck_pressure.json"
+      ]
+    },
+    {
+      "lens": 8,
+      "title": "文档对代码及正本",
+      "claim_candidate_lines": 67,
+      "missing_file_reference_occurrences": 0,
+      "confirmed_drift": "G6M-03",
+      "note": "存在检查非语义证明；01/03/07全文，00相关段",
+      "evidence": [
+        "review/evidence/document_claim_inventory.json",
+        "review/evidence/root_doc_drift.json"
+      ]
+    },
+    {
+      "lens": 9,
+      "title": "历史G6E重放",
+      "unique_ids": 30,
+      "original_scripts": 24,
+      "equivalent_replays": 6,
+      "ids": [
+        7,
+        9,
+        11,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        34,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        47,
+        48,
+        49,
+        50
+      ],
+      "evidence": [
+        "review/logs/history_g6e_replay_dispositions.json",
+        "review/logs/history_legacy_manifest.json"
+      ]
+    }
+  ],
+  "completeness_critique": "详见G6M_report.md第8节及三个分报告；未逐行证明全仓、未逐条变异116迁移函数、未实跑第五轮剩余20条、未消化2365遗留站点、有限oracle/缓存/几何压力非全域数学证明。",
+  "done_marker": "G6M_DONE critical=0 major=1 minor=2"
+}

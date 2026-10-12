@@ -1,8 +1,10 @@
 """Positive admission policy, separate from the rounding-provenance analysis.
 
-This is a deliberately small first-order Python subset, NOT a Python numeric
-proof. Every unsupported node/call/escape is an issue, including unknown future
-AST nodes. Reviewed departures are exact, context-pinned sites in the manifest;
+This is an auxiliary code check over a small first-order Python subset, NOT a
+safety guarantee or Python numeric proof. Runtime differential tests against
+independent rational references are the primary construction guard. Unsupported
+nodes/calls/escapes identified by this finite model are issues, including future
+AST nodes; zero diagnostics does not prove arbitrary Python safe. Reviewed departures are exact, context-pinned sites in the manifest;
 they do not turn a callable spelling or an entire function into a safe API.
 The old provenance checks still run at admitted and waived sites.
 """

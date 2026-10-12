@@ -134,6 +134,8 @@ def test_first_entrance_agrees_with_the_predicate_only_oracle_on_random_convex_p
     The returned floating translation need not land exactly on that boundary;
     its actual input-coordinate state is checked independently instead of
     silently thickening a separated rounded endpoint into contact.
+    R13 binds exact_t and every returned x component to the independent SAT
+    interval, with rational midpoint certificates (not returned-point state).
     """
     from e5a2_entrance_oracle import assert_supporting_surface, convex_overlap, convex_ray_interval
     rng = random.Random(900 + seed)
@@ -156,6 +158,8 @@ def test_first_entrance_agrees_with_the_predicate_only_oracle_on_random_convex_p
     assert interval is not None and interval[0] > 0
     exact_time = interval[0]
     assert e.t == pytest.approx(scalar_exact(exact_time), abs=2e-8)
+    from r13_event_oracle import assert_event_binding
+    assert_event_binding(e.t, e.exact_t, e.x, start, d, exact_time)
     rounded = A.translated(e.x)
     assert_supporting_surface(rounded.verts, rounded.faces)
     assert polyhedra_overlap(rounded, B) == convex_overlap(rounded.verts, B.verts)

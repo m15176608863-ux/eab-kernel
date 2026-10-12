@@ -1,7 +1,14 @@
 """Source-derived, sink-directed facts for the construction preflight.
 
-This is an abstract interpreter for ordinary first-order Python, not execution
-or a claim about arbitrary Python protocols.  It distinguishes supplied float
+This is an auxiliary abstract interpreter for ordinary first-order Python, not
+execution, a safety guarantee, or complete data flow for arbitrary Python.
+Runtime differential tests with independent rational references are primary.
+Known source instance methods, a single-inheritance initializer chain, generated
+dataclass post-initialization, and explicit property setters replay effects.
+Unresolved/multiple-inheritance MRO and dynamic object protocols are rejected
+where recognized, not modeled as safe. Metaclasses, dynamically installed
+methods/descriptors, monkeypatching, extension calls, general aliasing and
+re-entrant protocol execution are outside any completeness claim.  It distinguishes supplied float
 data from arithmetic-derived floats.  Only the latter is forbidden on a path
 to a root, norm, unit vector or geometric difference construction.  Converting
 an already-derived float back to Fraction does not erase that history.
@@ -114,6 +121,7 @@ class Module:
         self.globals = {}
         self.parents = {}
         self.functions = []
+        self.setters = {}
         package = name.split(".") if path.endswith("__init__.py") else name.split(".")[:-1]
 
         def collect(body, prefix=""):
@@ -121,6 +129,11 @@ class Module:
             for node in body:
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     qualified = prefix + node.name
+                    setter = any(isinstance(d, ast.Attribute) and d.attr == "setter"
+                                 and dotted(d.value) == node.name for d in node.decorator_list)
+                    if setter:
+                        self.setters[qualified] = qualified + ".<setter>"
+                        qualified = self.setters[qualified]
                     self.definitions[qualified] = node
                     bindings[node.name] = ("definition", qualified)
                     self.functions.append((qualified, node))
@@ -301,7 +314,7 @@ class Analysis:
     @staticmethod
     def _data_value(result):
         return (bool(result.types) and result.types <= {I, Q, F, B, S, N}
-                and all(item.startswith(("container:", "literal:")) for item in result.objects))
+                and all(item.startswith(("container:", "literal:", "sequence:")) for item in result.objects))
 
     def _prepare_write(self, module, scope, target, env):
         if isinstance(target, (ast.Tuple, ast.List)):
@@ -336,6 +349,94 @@ class Analysis:
                         return result
         return None, None
 
+    def _class_chain(self, module, cls, seen=()):
+        """Known single-inheritance source chain; no guessed dynamic/C3 MRO."""
+        marker = (module.name, cls)
+        if marker in seen or cls not in module.classes:
+            return None
+        bases = module.classes[cls].bases
+        if not bases:
+            return [(module, cls)]
+        base_names = [self._qualified(module, dotted(base), cls) for base in bases]
+        # Ordinary literal string Enums have a known stdlib constructor and no
+        # user lifecycle body. This is not permission for arbitrary metaclasses.
+        if set(base_names) == {"str", "enum.Enum"} and all(isinstance(member, (ast.Assign, ast.Expr, ast.Pass)) for member in module.classes[cls].body):
+            return [(module, cls)]
+        if len(bases) != 1:
+            return None
+        base = base_names[0]
+        if base in {"object", "builtins.object"} | EXCEPTIONS:
+            return [(module, cls)]
+        owner, parent = self._definition(base)
+        if owner is None or parent not in owner.classes:
+            return None
+        tail = self._class_chain(owner, parent, (*seen, marker))
+        return None if tail is None else [(module, cls), *tail]
+
+    def _method(self, module, cls, member, *, setter=False):
+        chain = self._class_chain(module, cls)
+        for owner, ancestor in chain or ():
+            name = ancestor + "." + member
+            if setter:
+                name = owner.setters.get(name)
+            if name in owner.definitions:
+                return owner, name
+        return None, None
+
+    def _invoke(self, module, scope, node, env, owner, target, args, keywords,
+                argument_nodes=(), closure=None):
+        """Replay the same return, heap, sink and unknown effects for every call."""
+        result = self._function(owner, target, args, keywords, closure=closure)
+        definition = owner.definitions[target]
+        parameters = [*definition.args.posonlyargs, *definition.args.args]
+        actual = {parameter.arg: (passed, argument_nodes[index] if index < len(argument_nodes) else None)
+                  for index, (parameter, passed) in enumerate(zip(parameters, args))}
+        actual.update({name: (passed, None) for name, passed in keywords.items()})
+        for parameter, (passed, argument) in actual.items():
+            for (changed_parameter, field), changed in self.last_field_mutations.items():
+                if changed_parameter != parameter:
+                    continue
+                for ref in passed.refs:
+                    fields = self.record_fields.setdefault(ref, {})
+                    fields[field] = join(fields.get(field, EMPTY), changed)
+                    if self.field_write_effects:
+                        marker = (ref, field)
+                        self.field_write_effects[-1][marker] = join(self.field_write_effects[-1].get(marker, EMPTY), changed)
+            if parameter in self.last_mutations:
+                for local, old in list(env.items()):
+                    if (isinstance(argument, ast.Name) and local == argument.id) or passed.refs & old.refs:
+                        env[local] = join(old, self.last_mutations[parameter])
+        if module is self.main and node is not None and self.last_function_effects:
+            visible = list(node.args) if isinstance(node, ast.Call) else []
+            positions = {visible.index(argument_node) for argument_node, argument in zip(argument_nodes, args)
+                         if argument_node in visible and any(argument.origins & affected.origins for affected, _, _ in self.last_function_effects)}
+            positions.update(name for name, argument in keywords.items()
+                             if any(argument.origins & affected.origins for affected, _, _ in self.last_function_effects))
+            self.call_sink_arguments.setdefault(key(node), set()).update(positions)
+            if positions:
+                self.sink_nodes.add(key(node))
+            if any(affected.bad for affected, _, _ in self.last_function_effects):
+                self.sink_issues.add(key(node))
+        return result
+
+    def _assign(self, module, scope, target, result, env):
+        if isinstance(target, ast.Attribute):
+            receiver = self._expr(module, scope, target.value, env)
+            setters = []
+            for obj in receiver.objects:
+                owner, cls = self._definition(obj)
+                if owner is not None and cls in owner.classes:
+                    setter_owner, setter = self._method(owner, cls, target.attr, setter=True)
+                    if setter_owner is not None:
+                        setters.append((setter_owner, setter))
+            if setters:
+                for owner, setter in setters:
+                    self._invoke(module, scope, target, env, owner, setter,
+                                 [receiver, result], {}, [target.value])
+                return
+        self._prepare_write(module, scope, target, env)
+        self._bind(target, result, env)
+
     def _annotation(self, module, node):
         if node is None:
             return value(INPUT)
@@ -360,7 +461,8 @@ class Analysis:
             children = list(node.slice.elts) if isinstance(node.slice, ast.Tuple) else [node.slice]
             element = join(*(self._annotation(module, child) for child in children if not (isinstance(child, ast.Constant) and child.value is Ellipsis)))
             if base in {"tuple", "list", "set", "frozenset", "dict", "Sequence", "Iterable", "Iterator", "Mapping", "Optional", "Union"}:
-                return join(element, value(objects={"container:" + base}))
+                nonempty = base == "tuple" and bool(children) and not any(isinstance(child, ast.Constant) and child.value is Ellipsis for child in children)
+                return join(element, value(objects={"container:" + base} | ({"sequence:nonempty"} if nonempty else set())))
         if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
             return join(self._annotation(module, node.left), self._annotation(module, node.right))
         owner, cls = self._definition(name)
@@ -449,7 +551,8 @@ class Analysis:
                         marker = (ref, target.attr)
                         previous = self.field_write_effects[-1].get(marker, EMPTY)
                         self.field_write_effects[-1][marker] = join(previous, result)
-            env[target.value.id] = join(env.get(target.value.id, EMPTY), result)
+            if isinstance(target, ast.Subscript):
+                env[target.value.id] = join(env.get(target.value.id, EMPTY), result)
 
     def _function(self, module, name, supplied, keywords, closure=None):
         node = module.definitions[name]
@@ -463,6 +566,12 @@ class Analysis:
             if result is None:
                 captured = (closure or {}).get("<default:" + name + ":" + parameter.arg + ">", self.defaults.get((module.name, name, parameter.arg)))
                 result = captured if captured is not None else self._expr(module, name, defaults[parameter.arg], env) if parameter.arg in defaults else self._annotation(module, parameter.annotation)
+            # A fixed-tuple parameter contract supplies arity, not element
+            # rounding/type facts. Valid calls to Point/Vec3 are nonempty even
+            # when a preceding comprehension has forgotten their arity.
+            annotation = self._annotation(module, parameter.annotation)
+            if "sequence:nonempty" in annotation.objects and any(obj.startswith("container:") for obj in result.objects):
+                result = join(result, value(objects={"sequence:nonempty"}))
             env[parameter.arg] = result
         if node.args.vararg:
             env[node.args.vararg.arg] = join(*supplied[len(parameters):], value(objects={"container:tuple"}))
@@ -473,13 +582,30 @@ class Analysis:
         if closure is not None:
             argument_names += [p for p in closure if p not in argument_names]
         actual = {p: env[p] for p in argument_names}
-        signature = (module.name, name, tuple((p, v.types, bool(v.bad), v.objects) for p, v in actual.items()))
+        actual_fields = {p: {field: join(*(self.record_fields.get(ref, {}).get(field, EMPTY) for ref in result.refs))
+                             for field in set().union(*(set(self.record_fields.get(ref, {})) for ref in result.refs))}
+                         for p, result in actual.items()}
+        signature = (module.name, name, tuple((p, v.types, bool(v.bad), v.objects,
+                     tuple(sorted((field, fv.types, bool(fv.bad), fv.objects) for field, fv in actual_fields[p].items())))
+                     for p, v in actual.items()))
         substitutions = {}
         for p, result in actual.items():
             marker = ("parameter", module.name, name, p)
             substitutions[marker] = result
             env[p] = value(*result.types, origins={marker}, bad={marker} if result.bad else (), objects=result.objects,
                            refs={marker} if result.objects else ())
+        # Field provenance is not the union of every constructor argument.
+        # Abstract each known field independently and include its type/rounding
+        # shape in the cache key, so a position cannot taint an exact normal.
+        for p, fields in actual_fields.items():
+            parameter_ref = ("parameter", module.name, name, p)
+            self.record_fields[parameter_ref] = {}
+            for field, result in fields.items():
+                marker = ("parameter-field", module.name, name, p, field)
+                substitutions[marker] = result
+                self.record_fields[parameter_ref][field] = value(*result.types, origins={marker},
+                    bad={marker} if result.bad else (), objects=result.objects,
+                    refs={marker} if result.objects else ())
         initial_parameters = {p: env[p] for p in actual}
 
         def instantiate(result):
@@ -554,18 +680,16 @@ class Analysis:
                 result = self._expr(module, scope, node.value, env)
                 if isinstance(node.value, (ast.Tuple, ast.List)) and len(node.targets) == 1 and isinstance(node.targets[0], (ast.Tuple, ast.List)) and len(node.targets[0].elts) == len(node.value.elts):
                     for target, expression in zip(node.targets[0].elts, node.value.elts):
-                        self._bind(target, self._expr(module, scope, expression, env), env)
+                        self._assign(module, scope, target, self._expr(module, scope, expression, env), env)
                 else:
                     for target in node.targets:
-                        self._prepare_write(module, scope, target, env)
-                        self._bind(target, result, env)
+                        self._assign(module, scope, target, result, env)
             elif isinstance(node, ast.AnnAssign):
                 result = self._expr(module, scope, node.value, env) if node.value is not None else self._annotation(module, node.annotation)
-                self._prepare_write(module, scope, node.target, env)
-                self._bind(node.target, result, env)
+                self._assign(module, scope, node.target, result, env)
             elif isinstance(node, ast.AugAssign):
                 result = self._arithmetic(module, node, self._expr(module, scope, node.target, env), self._expr(module, scope, node.value, env))
-                self._bind(node.target, result, env)
+                self._assign(module, scope, node.target, result, env)
             elif isinstance(node, ast.Return):
                 returned.append(self._expr(module, scope, node.value, env))
                 break
@@ -716,10 +840,22 @@ class Analysis:
             negated = value(B, objects={"literal:" + str(not truth)} if truth is not None else ())
             return self._record(module, node, negated if isinstance(node.op, ast.Not) else result)
         if isinstance(node, ast.Compare):
-            self._expr(module, scope, node.left, env)
+            left = self._expr(module, scope, node.left, env)
             for child in node.comparators:
                 self._expr(module, scope, child, env)
-            return self._record(module, node, value(B))
+            truth = None
+            if len(node.ops) == 1 and isinstance(node.ops[0], (ast.Is, ast.IsNot)):
+                name, shadowed = self._bound_name(module, scope, dotted(node.comparators[0]), env)
+                builtin_type = {"float": F, "int": I, "bool": B, "str": S}.get(name)
+                tags = {item for item in left.objects if item.startswith("type:")}
+                if not shadowed and builtin_type is not None and tags:
+                    wanted = "type:" + str(builtin_type)
+                    truth = True if tags == {wanted} else False if wanted not in tags else None
+                    if truth is not None and isinstance(node.ops[0], ast.IsNot):
+                        truth = not truth
+                    if module is self.main:
+                        self.references.add(key(node.comparators[0]))
+            return self._record(module, node, value(B, objects={"literal:" + str(truth)} if truth is not None else ()))
         if isinstance(node, ast.BoolOp):
             return self._record(module, node, join(*(self._expr(module, scope, child, env) for child in node.values)))
         if isinstance(node, ast.IfExp):
@@ -731,18 +867,23 @@ class Analysis:
             return self._record(module, node, result)
         if isinstance(node, (ast.Tuple, ast.List, ast.Set, ast.Dict)):
             children = [*node.keys, *node.values] if isinstance(node, ast.Dict) else node.elts
-            result = join(*(self._expr(module, scope, child, env) for child in children if child is not None), value(objects={"container:" + type(node).__name__.lower()}, refs={("allocation", module.name, node.lineno, node.col_offset)}))
+            contents = [self._expr(module, scope, child, env) for child in children if child is not None]
+            nonempty = any(not isinstance(child, ast.Starred) for child in children if child is not None) or any("sequence:nonempty" in part.objects for part in contents)
+            result = join(*contents, value(objects={"container:" + type(node).__name__.lower()} | ({"sequence:nonempty"} if nonempty else set()), refs={("allocation", module.name, node.lineno, node.col_offset)}))
             if module is self.main:
                 self.allocations.add(key(node))
             return self._record(module, node, result)
         if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
             local = dict(env)
+            nonempty = True
             for generator in node.generators:
-                self._bind(generator.target, self._expr(module, scope, generator.iter, local), local)
+                sequence = self._expr(module, scope, generator.iter, local)
+                nonempty = nonempty and not generator.ifs and "sequence:nonempty" in sequence.objects
+                self._bind(generator.target, sequence, local)
                 for condition in generator.ifs:
                     self._expr(module, scope, condition, local)
             children = [node.key, node.value] if isinstance(node, ast.DictComp) else [node.elt]
-            result = join(*(self._expr(module, scope, child, local) for child in children), value(objects={"container:generator"}, refs={("allocation", module.name, node.lineno, node.col_offset)}))
+            result = join(*(self._expr(module, scope, child, local) for child in children), value(objects={"container:generator"} | ({"sequence:nonempty"} if nonempty else set()), refs={("allocation", module.name, node.lineno, node.col_offset)}))
             return self._record(module, node, result)
         if isinstance(node, ast.Subscript):
             result = self._expr(module, scope, node.value, env)
@@ -751,6 +892,18 @@ class Analysis:
         if isinstance(node, ast.Attribute):
             owner = self._expr(module, scope, node.value, env)
             results = []
+            # A property descriptor takes precedence over an annotated/stored
+            # field of the same spelling, just as it does at runtime.
+            for obj in owner.objects:
+                cls_module, cls = self._definition(obj)
+                if cls_module is not None and cls in cls_module.classes:
+                    method_owner, method = self._method(cls_module, cls, node.attr)
+                    if method_owner is not None and any(dotted(d) == "property" for d in method_owner.definitions[method].decorator_list):
+                        results.append(self._invoke(module, scope, node, env, method_owner, method, [owner], {}, [node.value]))
+            if results:
+                if module is self.main:
+                    self.attributes.add(key(node))
+                return self._record(module, node, join(*results))
             stored = [self.record_fields[ref][node.attr] for ref in owner.refs if node.attr in self.record_fields.get(ref, {})]
             if stored:
                 if module is self.main:
@@ -771,9 +924,6 @@ class Analysis:
                             if default is not None and default.types != {N}:
                                 typed = default
                             results.append(join(typed, value(origins=owner.origins, bad=owner.bad)))
-                    method = cls + "." + node.attr
-                    if method in cls_module.definitions and any(dotted(d) == "property" for d in cls_module.definitions[method].decorator_list):
-                        results.append(self._function(cls_module, method, [owner], {}))
             qualified, shadowed = self._bound_name(module, scope, dotted(node), env)
             if qualified in {"math.inf", "math.nan", "math.pi", "math.e", "math.tau"}:
                 results.append(value(F))
@@ -842,8 +992,15 @@ class Analysis:
             kind, result = "pure", join(numeric, value(I) if name in {"range", "enumerate"} else EMPTY, value(objects={"container:" + name}, refs={("allocation", module.name, node.lineno, node.col_offset)}))
         elif not shadowed and name in DISCRETE | EXCEPTIONS:
             kind, result = "pure", value(I if name in {"len", "hash", "id", "ord"} else B)
+            if name in {"all", "any"} and len(args) == 1:
+                truth = self._truth(args[0])
+                # all(True) / any(False) are valid even for empty iterables;
+                # the opposite answers additionally require nonemptiness.
+                if truth is not None and ("sequence:nonempty" in args[0].objects or truth == (name == "all")):
+                    result = value(B, objects={"literal:" + str(truth)})
         elif not shadowed and name == "type" and len(args) == 1 and not keywords:
-            kind, result = "pure", value(N)
+            types = args[0].types
+            kind, result = "pure", value(N, objects={"type:" + str(t) for t in types} if types and types <= {I, Q, F, B, S, N} else ())
         elif not shadowed and name == "next":
             kind, result = "pure", combined
         elif not shadowed and name == "dict.fromkeys":
@@ -914,67 +1071,70 @@ class Analysis:
                         if parameter.arg not in used and isinstance(argument, (ast.Name, ast.Attribute)):
                             self.references.add(key(argument))
                 lexical = env if owner is module and "." in target and target.rsplit(".", 1)[0] not in owner.classes else None
-                result = self._function(owner, target, args, keywords, closure=lexical)
+                result = self._invoke(module, scope, node, env, owner, target, args, keywords,
+                                      node.args, closure=lexical)
                 if self.last_unproved_effects:
                     kind = "unknown"
-                mutations = dict(self.last_mutations)
-                field_mutations = dict(self.last_field_mutations)
-                for argument, parameter, passed in zip(node.args, parameters, args):
-                    for (changed_parameter, field), changed in field_mutations.items():
-                        if changed_parameter == parameter.arg:
-                            for ref in passed.refs:
-                                stored_fields = self.record_fields.setdefault(ref, {})
-                                stored_fields[field] = join(stored_fields.get(field, EMPTY), changed)
-                                if self.field_write_effects:
-                                    marker = (ref, field)
-                                    self.field_write_effects[-1][marker] = join(self.field_write_effects[-1].get(marker, EMPTY), changed)
-                    if parameter.arg in mutations:
-                        changed = mutations[parameter.arg]
-                        identities = passed.refs
-                        for local, old in list(env.items()):
-                            if isinstance(argument, ast.Name) and local == argument.id or identities & old.refs:
-                                env[local] = join(old, changed)
-                if module is self.main and self.last_function_effects:
-                    positions = {index for index, argument in enumerate(args) if any(argument.origins & affected.origins for affected, _, _ in self.last_function_effects)}
-                    positions.update(name for name, argument in keywords.items() if any(argument.origins & affected.origins for affected, _, _ in self.last_function_effects))
-                    self.call_sink_arguments.setdefault(key(node), set()).update(positions)
-                    if positions:
-                        self.sink_nodes.add(key(node))
-                    if any(affected.bad for affected, _, _ in self.last_function_effects):
-                        self.sink_issues.add(key(node))
             elif owner is not None and target in owner.classes and not shadowed:
                 self._module_env(owner)
                 cls = owner.classes[target]
-                fields = [member for member in cls.body if isinstance(member, ast.AnnAssign) and isinstance(member.target, ast.Name)]
+                chain = self._class_chain(owner, target) or [(owner, target)]
+                fields = {}
+                for field_owner, field_class in reversed(chain):
+                    for member in field_owner.classes[field_class].body:
+                        if isinstance(member, ast.AnnAssign) and isinstance(member.target, ast.Name):
+                            fields[member.target.id] = (field_owner, field_class, member)
                 stored = {}
-                initializer = target + ".__init__"
-                dataclass = any(self._qualified(owner, dotted(d.func if isinstance(d, ast.Call) else d)) == "dataclasses.dataclass" for d in cls.decorator_list)
-                for index, field in enumerate(fields):
-                    field_name = field.target.id
+                init_owner, initializer = self._method(owner, target, "__init__")
+                generated_init = False
+                # An undecorated subclass inherits a generated dataclass init
+                # too. Stop at the nearest explicit or generated initializer.
+                for class_owner, class_name in chain:
+                    if class_name + ".__init__" in class_owner.definitions:
+                        break
+                    decorators = [d for d in class_owner.classes[class_name].decorator_list
+                                  if self._qualified(class_owner, dotted(d.func if isinstance(d, ast.Call) else d)) == "dataclasses.dataclass"]
+                    if decorators and not any(isinstance(d, ast.Call) and any(
+                        item.arg == "init" and isinstance(item.value, ast.Constant) and item.value.value is False
+                        for item in d.keywords) for d in decorators):
+                        generated_init = True
+                        init_owner, initializer = None, None
+                        break
+                dataclass = generated_init
+                for index, (field_name, (field_owner, field_class, field)) in enumerate(fields.items()):
                     supplied = keywords.get(field_name)
                     if supplied is None and dataclass and index < len(args):
                         supplied = args[index]
                     if supplied is None:
-                        supplied = self.class_defaults.get((owner.name, target, field_name), self._annotation(owner, field.annotation))
+                        supplied = self.class_defaults.get((field_owner.name, field_class, field_name), self._annotation(field_owner, field.annotation))
+                        if isinstance(field.value, ast.Call) and self._qualified(field_owner, dotted(field.value.func)) == "dataclasses.field":
+                            default = next((item.value for item in field.value.keywords if item.arg == "default"), None)
+                            supplied = self._expr(field_owner, field_class, default, {}) if default is not None else self._annotation(field_owner, field.annotation)
                     stored[field_name] = supplied
                 record_ref = ("record", module.name, node.lineno, node.col_offset,
                               tuple((field, item.types, bool(item.bad), item.objects) for field, item in stored.items()))
                 self.record_fields[record_ref] = stored
-                kind, result = "record", join(combined, value(objects={name}, refs={record_ref}))
-                if initializer in owner.definitions:
-                    self._function(owner, initializer, [result, *args], keywords)
-                    init_parameters = [*owner.definitions[initializer].args.posonlyargs, *owner.definitions[initializer].args.args]
-                    self_name = init_parameters[0].arg if init_parameters else "self"
-                    for (parameter, field), changed in self.last_field_mutations.items():
-                        if parameter == self_name:
-                            self.record_fields[record_ref][field] = changed
+                kind, result = "record", value(objects={name}, refs={record_ref})
+                # A generated dataclass initializer supersedes an inherited one.
+                own_init = target + ".__init__" in owner.definitions
+                lifecycle = [(init_owner, initializer, [result, *args], keywords)] if init_owner is not None and (own_init or not generated_init) else []
+                if generated_init and not own_init:
+                    post_owner, post_init = self._method(owner, target, "__post_init__")
+                    if post_owner is not None:
+                        lifecycle.append((post_owner, post_init, [result], {}))
+                for lifecycle_owner, method, supplied, named in lifecycle:
+                    self._invoke(module, scope, node, env, lifecycle_owner, method, supplied, named)
+                    definition = lifecycle_owner.definitions[method]
+                    self_name = definition.args.args[0].arg if definition.args.args else "self"
                     result = join(result, self.last_mutations.get(self_name, EMPTY))
                     if self.last_unproved_effects:
                         kind = "unknown"
+                if self._class_chain(owner, target) is None:
+                    kind = "unknown"
                 # These protocols can replace the instance or reinterpret a
                 # field independently of its declaration.  They have no
                 # first-order record summary here, so do not guess one.
-                if any(target + "." + protocol in owner.definitions for protocol in
+                if any(self._method(owner, target, protocol)[0] is not None for protocol in
                        ("__new__", "__getattribute__", "__getattr__", "__setattr__", "__delattr__")):
                     kind = "unknown"
             elif isinstance(node.func, ast.Attribute):
@@ -1014,11 +1174,13 @@ class Analysis:
                     method_results = []
                     for obj in receiver.objects:
                         owner, cls = self._definition(obj)
-                        method = (cls + "." + node.func.attr) if cls else ""
-                        if owner is not None and method in owner.definitions:
-                            method_results.append(self._function(owner, method, [receiver, *args], keywords))
+                        if owner is not None and cls in owner.classes:
+                            method_owner, method = self._method(owner, cls, node.func.attr)
+                            if method_owner is not None:
+                                method_results.append(self._invoke(module, scope, node, env, method_owner, method,
+                                                                   [receiver, *args], keywords, [node.func.value, *node.args]))
                     if method_results:
-                        kind, result = "defined", join(*method_results)
+                        kind, result = "unknown" if self.last_unproved_effects else "defined", join(*method_results)
         self._classify(module, node, kind)
         if kind in {"unknown", "dynamic"} and self.unproved_effects:
             self.unproved_effects[-1].add((module.name, scope, node.lineno, kind))

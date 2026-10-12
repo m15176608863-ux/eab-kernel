@@ -33,7 +33,7 @@ NOISE_ULPS = 64.0                    # 舍入噪声地板的倍数 c（几十个
 
 def noise_floor(C: float) -> float:
     """坐标量级 C 处的舍入噪声地板 c·eps·C（长度量纲）。见模块文档的容差政策。"""
-    return NOISE_ULPS * EPS * C
+    return scalar_rational(Fraction(NOISE_ULPS)*Fraction(EPS)*Fraction(C))
 
 
 def coord_scale(*pts: Vec3) -> float:
@@ -45,10 +45,14 @@ from eab.predicates import orient3d
 
 
 def sub(a: Vec3, b: Vec3) -> Vec3:
+    if all(type(x) is float for x in (*a, *b)):
+        return tuple(scalar_rational(Fraction(x)-Fraction(y)) for x,y in zip(a,b))
     return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
 
 
 def add(a: Vec3, b: Vec3) -> Vec3:
+    if all(type(x) is float for x in (*a, *b)):
+        return tuple(scalar_rational(Fraction(x)+Fraction(y)) for x,y in zip(a,b))
     return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
 
 
@@ -57,18 +61,33 @@ def neg(a: Vec3) -> Vec3:
 
 
 def mul(a: Vec3, s: float) -> Vec3:
+    if all(type(x) is float for x in (*a, s)):
+        return tuple(scalar_rational(Fraction(x)*Fraction(s)) for x in a)
     return (a[0] * s, a[1] * s, a[2] * s)
 
 
 def dot(a: Vec3, b: Vec3) -> float:
+    """Float inputs are one checked exact final sum; other scalar algebra stays.
+
+    Gate: test_public_dot_cross_round_after_cancellation.
+    """
     if _rational3.fraction_vectors(a, b):
         return _rational3.dot(a, b)
+    if all(type(x) is float for x in (*a, *b)):
+        return scalar_rational(sum((Fraction(x)*Fraction(y) for x,y in zip(a,b)), Fraction(0)))
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 
 
 def cross(a: Vec3, b: Vec3) -> Vec3:
+    """Float component determinants are each checked and rounded only once.
+
+    Gate: test_public_dot_cross_round_after_cancellation.
+    """
     if _rational3.fraction_vectors(a, b):
         return _rational3.cross(a, b)
+    if all(type(x) is float for x in (*a, *b)):
+        qa, qb = tuple(Fraction(x) for x in a), tuple(Fraction(x) for x in b)
+        return tuple(scalar_rational(x) for x in _rational3.cross(qa, qb))
     return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
 
 
@@ -168,13 +187,22 @@ class Polyhedron:
     def edge_noise(self, e: tuple[int, int]) -> float:
         """棱 e 的单位方向的舍入噪声 c·eps·C/|e|（弧度）：刚体运动把顶点挪动 ~eps·C，方向随之转这么多。
         只看**这条棱自己**的长度（纪律 F 的逐特征口径）。零长棱为 +inf。"""
-        ell = norm(exact_edge_vector(self, e))
-        return noise_floor(self.metrics()[0]) / ell if ell > 0.0 else float("inf")
+        d = exact_edge_vector(self, e)
+        square = _eg.dot(d, d)
+        numerator = Fraction(NOISE_ULPS)*Fraction(EPS)*Fraction(coord_scale(*self.verts))
+        return _eg.sqrt_rational(numerator*numerator/square) if square else float("inf")
 
     def face_noise(self, fi: int) -> float:
         """面 fi 的单位外法向的舍入噪声（弧度）：顶点挪动 δ = c·eps·C 时 Newell 向量（= 2·面积·n）至多变
         δ·周长，方向至多转 δ·周长/(2·面积)。三角形上 2·面积/周长 是内切圆半径——细条三角的法向本来就不准。
-        退化面（面积 0）为 +inf。缓存。"""
+        退化面（面积 0）为 +inf。缓存。
+
+        Reporting contract: perimeter is the exact sum of individually rounded
+        edge lengths, not a correctly-rounded sum of real radicals. The final
+        ratio uses that perimeter and the exact Newell square without first
+        constructing an absolute noise floor or an area that may not fit.
+        Gate: test_relative_noise_diagnostics_do_not_round_away_scale_before_ratio.
+        """
         self._sync_geometry_cache()
         cache = self._face_noise
         if cache is None:
@@ -182,9 +210,16 @@ class Polyhedron:
         v = cache[fi]
         if v is None:
             f = self.faces[fi]
-            per = sum(norm(sub(self.verts[f[(i + 1) % len(f)]], self.verts[f[i]])) for i in range(len(f)))
-            area2 = 2.0 * self.face_area(fi)
-            v = cache[fi] = noise_floor(self.metrics()[0]) * per / area2 if area2 > 0.0 else float("inf")
+            per = sum((Fraction(norm(exact_edge_vector(self, (f[i], f[(i+1)%len(f)]))))
+                       for i in range(len(f))), Fraction(0))
+            try:
+                n = exact_face_normal(self, fi)
+            except ValueError:
+                v = float("inf")
+            else:
+                numerator = Fraction(NOISE_ULPS)*Fraction(EPS)*Fraction(coord_scale(*self.verts))*per
+                v = _eg.sqrt_rational(numerator*numerator/_eg.dot(n,n))
+            cache[fi] = v
         return v
 
     def dihedral_noise(self, e: tuple[int, int]) -> float:
@@ -290,14 +325,14 @@ class Polyhedron:
             for a, b in self.edges():
                 cache.setdefault(a, []).append(b)
                 cache.setdefault(b, []).append(a)
-            fl = noise_floor(self.metrics()[0])
+            fl = Fraction(NOISE_ULPS)*Fraction(EPS)*Fraction(coord_scale(*self.verts))
             for v, nbrs in cache.items():
                 out = []
                 for w in dict.fromkeys(nbrs):
                     d = exact_edge_vector(self, (v, w))
-                    ell = norm(d)
-                    if ell > 0.0:
-                        out.append((unit(d), fl / ell))
+                    square = _eg.dot(d,d)
+                    if square:
+                        out.append((unit(d), _eg.sqrt_rational(fl*fl/square)))
                 cache[v] = out
         return list(cache.get(vi, ()))
 
@@ -948,11 +983,15 @@ def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: boo
 # ------------------------------------------------------------------ 构造器
 
 def box(center: Vec3 = (0.0, 0.0, 0.0), half: Vec3 = (1.0, 1.0, 1.0)) -> Polyhedron:
-    cx, cy, cz = center
-    hx, hy, hz = half
-    v = [(cx - hx, cy - hy, cz - hz), (cx + hx, cy - hy, cz - hz), (cx + hx, cy + hy, cz - hz),
-         (cx - hx, cy + hy, cz - hz), (cx - hx, cy - hy, cz + hz), (cx + hx, cy - hy, cz + hz),
-         (cx + hx, cy + hy, cz + hz), (cx - hx, cy + hy, cz + hz)]
+    """Coordinate box; all-float affine outputs are checked before publication.
+
+    Fraction/other scalar inputs retain the existing scalar-algebra contract.
+    Gate: test_public_float_coordinate_operations_reject_nonfinite_or_erased_outputs.
+    """
+    lx, ly, lz = sub(center, half)
+    hx, hy, hz = add(center, half)
+    v = [(lx, ly, lz), (hx, ly, lz), (hx, hy, lz), (lx, hy, lz),
+         (lx, ly, hz), (hx, ly, hz), (hx, hy, hz), (lx, hy, hz)]
     f = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]
     return Polyhedron(v, f)
 

@@ -31,7 +31,7 @@ def coord_scale(*groups) -> float:
 
 def round_floor(C: float) -> float:
     """坐标量级 C 下长度判定的舍入下限 c·eps·C。"""
-    return ROUND_C * EPS * C
+    return scalar_rational(Fraction(ROUND_C)*Fraction(EPS)*Fraction(C))
 
 
 def eff_tol(tol: float, *groups) -> float:
@@ -45,10 +45,14 @@ def angle_floor(C: float, ell: float) -> float:
 
 
 def sub(a: Point, b: Point) -> Point:
+    if all(type(x) is float for x in (*a, *b)):
+        return tuple(scalar_rational(Fraction(x)-Fraction(y)) for x,y in zip(a,b))
     return (a[0] - b[0], a[1] - b[1])
 
 
 def add(a: Point, b: Point) -> Point:
+    if all(type(x) is float for x in (*a, *b)):
+        return tuple(scalar_rational(Fraction(x)+Fraction(y)) for x,y in zip(a,b))
     return (a[0] + b[0], a[1] + b[1])
 
 
@@ -57,10 +61,22 @@ def neg(a: Point) -> Point:
 
 
 def dot(a: Point, b: Point) -> float:
+    """Float inputs: round the exact sum once; retain non-float scalar algebra.
+
+    Gate: test_public_dot_cross_round_after_cancellation.
+    """
+    if all(type(x) is float for x in (*a, *b)):
+        return scalar_rational(Fraction(a[0])*Fraction(b[0])+Fraction(a[1])*Fraction(b[1]))
     return a[0] * b[0] + a[1] * b[1]
 
 
 def cross(a: Point, b: Point) -> float:
+    """Float determinant construction without intermediate range loss.
+
+    Gate: test_public_dot_cross_round_after_cancellation.
+    """
+    if all(type(x) is float for x in (*a, *b)):
+        return scalar_rational(Fraction(a[0])*Fraction(b[1])-Fraction(a[1])*Fraction(b[0]))
     return a[0] * b[1] - a[1] * b[0]
 
 

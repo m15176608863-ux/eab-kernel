@@ -137,13 +137,18 @@ def test_first_entrance_agrees_with_the_predicate_only_oracle_on_random_convex_p
     d = (3.0 - x0[0] + 0.3 * rng.gauss(0, 1), -x0[1] + 0.3 * rng.gauss(0, 1))
     e = first_entrance(A, B, x0, d, t_max=4.0)
     bt = first_entrance_brute(A, B, x0, d, t_max=4.0, steps=800)
+    from r13_event_oracle import assert_event_binding, convex_ray_interval_2d
+    interval = convex_ray_interval_2d(A, B, x0, d, 4)
     if bt is None:
+        assert interval is None
         assert e.kind == "none", (e.kind, e.t, e.label)
         return
     assert e.kind == "entrance", (bt, e.kind)
     assert e.t == pytest.approx(bt, abs=5e-9), (e.t, bt, e.label)
     from fractions import Fraction as F
     assert e.t_exact is not None
+    assert interval is not None
+    assert_event_binding(e.t, e.t_exact, e.x, x0, d, interval[0])
     exact_x=tuple(F(x0[i])+e.t_exact*F(d[i]) for i in range(2))
     assert _independent_overlap(A,B,exact_x)==0
     rounded=translate(A,e.x)
