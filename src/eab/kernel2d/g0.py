@@ -7,6 +7,7 @@ Relative/roundoff allowances audit float witness construction only, never truth.
 """
 
 from __future__ import annotations
+from eab.oracle_construction import scalar_exact, norm_exact
 
 import math
 import random
@@ -77,7 +78,10 @@ def _minimum_witness_distance(covs):
     for c in covs:
         if c.point_a is None or c.point_b is None:
             continue
-        distance = math.hypot(c.point_a[0]-c.point_b[0], c.point_a[1]-c.point_b[1])
+        try:
+            distance = norm_exact(tuple(Fraction(a)-Fraction(b) for a,b in zip(c.point_a,c.point_b)))
+        except (ArithmeticError, ValueError):
+            return math.inf
         if not math.isfinite(distance):
             return math.inf
         distances.append(distance)
@@ -158,7 +162,7 @@ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: floa
     probes = sample_translations(A, B, samples, rng)
     exact_bnd = list(ex.vertices)
     exact_bnd += [(f.start[0] + f.direction[0] / 2, f.start[1] + f.direction[1] / 2) for f in ex.facets]
-    bnd = exact_bnd + [(float(x), float(y)) for x, y in exact_bnd]
+    bnd = exact_bnd + [(scalar_exact(x), scalar_exact(y)) for x, y in exact_bnd]
     rep.boundary_probes = len(bnd)
     for x in probes + bnd:
         cov = membership_convex(A, B, x)
@@ -172,10 +176,10 @@ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: floa
 # ---------------------------------------------------------------- 凹块（也适用于凸块）：距离完备性
 
 def _point_segment_distance(px, py, ax, ay, bx, by):
-    """Independent rational closed-segment oracle; final sqrt is Decimal-only."""
+    """Independent rational closed-segment oracle; final sqrt has independent rational midpoint certification."""
     square, t = independent.segment_square((Fraction(px), Fraction(py)),
                                            (Fraction(ax), Fraction(ay)), (Fraction(bx), Fraction(by)))
-    return independent.sqrt_display(square), float(t)
+    return independent.sqrt_display(square), scalar_exact(t)
 
 
 def brute_polygon_distance(A: Poly, B: Poly) -> tuple[float, tuple[str, int, int, float]]:
@@ -208,7 +212,7 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
     """Exact classification plus independent rational distance-completeness vote.
 
     Oracle primitives: inline integer winding/intersections, rational closed-
-    segment projection and Decimal sqrt; zero production geometry is shared.
+    segment projection and midpoint-certified independent sqrt; zero production geometry is shared.
     Translation stays rational. Only actual overlap/contact samples are outside
     the separation theorem. Every strict gap, however small, is checked.
     atol*max(L, truth)+roundoff audits float witnesses, never sample membership.

@@ -15,6 +15,7 @@
 纪律 B：分界点（t = 1.0 恰相触、t = −2.0 恰相触）、非对称输入（非均匀半宽、偏心方块、
 一般位置随机平移）、尺度 ×1e-3 / ×1 / ×1e3。
 """
+from construction_oracle import scalar_exact
 
 import math
 import random
@@ -215,7 +216,7 @@ def test_g0_vote3_counts_only_extreme_points_on_degenerate_input():
     T, B = _tetra(), box(half=(1.0, 1.0, 1.0))
     hull = convex_hull_3d([sub(b, a) for a in T.verts for b in B.verts], tol=1e-12)
     got = {tuple(round(c, 7) + 0.0 for c in v) for v in hull.verts}
-    assert got == {tuple(float(c) for c in p) for p in truth}
+    assert got == {tuple(scalar_exact(c) for c in p) for p in truth}
     rep = g0_convex3(_tetra(), box(half=(1.0, 1.0, 1.0)), samples=0)
     assert rep.hull_vertices == rep.e_vertices == 13 and rep.hull_vertex_mismatch == 0, rep
     rep = g0_convex3(box(half=(1.0, 1.0, 1.0)), box(half=(2.0, 0.5, 1.5)), samples=0)

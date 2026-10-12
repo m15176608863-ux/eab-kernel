@@ -4,6 +4,7 @@ Oracle uses only test-local Fraction dot/cross, squared ratios and cone formulas
 none of the production sign, angle-window, cone or integerization primitives
 is reused. Independent rational Pythagorean rays pin both window boundaries.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import random
@@ -51,14 +52,14 @@ def direction_cases(kind, scale, offset):
     rng = random.Random(938421)
     for k in range(48):
         # Compute differences from the actual rounded engineering coordinates.
-        origin = (float(offset), float(-2*offset))
+        origin = (scalar_exact(offset), scalar_exact(-2*offset))
         vectors = []
         for _ in range(3):
             raw = tuple(F(rng.randrange(-20, 21), rng.choice((1, 3, 7))) for _ in range(2))
             if raw == (0, 0):
                 raw = (F(1), F(0))
             if offset:
-                endpoint = tuple(float(F(origin[j])+scale*raw[j]) for j in range(2))
+                endpoint = tuple(scalar_exact(F(origin[j])+scale*raw[j]) for j in range(2))
                 vector = tuple(F(endpoint[j])-F(origin[j]) for j in range(2))
             else:
                 vector = tuple(scale*x for x in raw)
@@ -120,7 +121,7 @@ def test_integer_ve_binary64_subnormal_length_window_is_scaled_without_float_pro
     tiny = F(1, 2**1074)
     lo, hi, e = (tiny, F(0)), (F(0), tiny), (-3*tiny, -4*tiny)
     # The exact ratio tol/min_length is 1 even though D cannot convert to float.
-    assert C._ve_side_directions(lo, hi, e, float(tiny), None) == 0, "no premature float rescaling"
+    assert C._ve_side_directions(lo, hi, e, scalar_exact(tiny), None) == 0, "no premature float rescaling"
 
 
 def test_integer_ve_length_rescaling_mutation_has_teeth(monkeypatch):

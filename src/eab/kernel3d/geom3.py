@@ -17,10 +17,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from fractions import Fraction
 from eab import rational3 as _rational3
+from eab.construction import norm_rational, ratio_rational, scalar_rational, unit_rational
 from itertools import combinations
 from functools import lru_cache
 import math
-from math import atan2, hypot, sqrt
+from math import atan2, sqrt
 from . import exact_geom as _eg
 
 Vec3 = tuple[float, float, float]
@@ -76,13 +77,7 @@ def norm(a: Vec3) -> float:
 
     Gate: test_r6fix_norm_does_not_lose_representable_result_to_intermediate_square.
     """
-    if any(isinstance(x, Fraction) for x in a):
-        q = _eg.vector(a)
-        return _eg.sqrt_rational(_eg.dot(q, q))
-    result = hypot(*a)
-    if not math.isfinite(result) and all(math.isfinite(x) for x in a):
-        raise OverflowError("exact geometric norm exceeds finite binary64 range")
-    return result
+    return norm_rational(a)
 
 
 def unit(a: Vec3, *, allow_underflow: bool = False) -> Vec3:
@@ -97,11 +92,7 @@ def unit(a: Vec3, *, allow_underflow: bool = False) -> Vec3:
 
 @lru_cache(maxsize=16384)
 def _unit_cached(a, allow_underflow):
-    q = _eg.vector(a)
-    squared = _eg.dot(q, q)
-    if not squared:
-        raise ZeroDivisionError("unit of zero vector")
-    return tuple((-1 if x < 0 else 1) * _eg.sqrt_rational(x*x/squared, allow_underflow=allow_underflow) for x in q)
+    return unit_rational(a, allow_underflow=allow_underflow)
 
 
 def angle_between(a: Vec3, b: Vec3) -> float:
@@ -115,7 +106,9 @@ def angle_between(a: Vec3, b: Vec3) -> float:
     if not scale:
         return 0.0
     sine = _eg.sqrt_rational(_eg.dot(c, c)/(scale*scale), allow_underflow=d <= 0)
-    return atan2(sine, float(d/scale))
+    # A sub-binary64 cosine is only the display of an angle near pi/2;
+    # all orientation and zero tests above consumed the exact dot product.
+    return atan2(sine, ratio_rational(d, scale, allow_underflow=True))
 
 
 @dataclass(slots=True)
@@ -193,7 +186,7 @@ class Polyhedron:
 
     # ---------------- 拓扑 ----------------
     def face_normal(self, fi: int) -> Vec3:
-        """面的单位外法向（Newell 法，对非三角面与近退化面都稳）。缓存。"""
+        """源环 Newell 单位方向；仅平面环是面外法向，折面实体先取 exact_surface。"""
         self._sync_geometry_cache()
         cache = self._normals
         if cache is None:
@@ -267,7 +260,7 @@ class Polyhedron:
         return list(self._edir.get((min(e), max(e)), ()))
 
     def vertex_edge_dirs(self, vi: int) -> list[Vec3]:
-        """顶点 vi 的**入射棱方向**（由 vi 指向邻点，单位化）。局部法锥由它们定义。"""
+        """源环顶点 vi 的入射棱方向；折面实体的调用方先取 exact_surface。"""
         out: list[Vec3] = []
         seen: set[int] = set()
         for e in self.edges():
@@ -282,7 +275,7 @@ class Polyhedron:
         return out
 
     def vertex_edges(self, vi: int) -> list[tuple[Vec3, float]]:
-        """顶点 vi 的入射棱：(由 vi 指向邻点的单位方向, 该棱的方向噪声 `edge_noise`)。零长棱跳过。缓存。"""
+        """源环入射棱的(单位方向, edge_noise)；折面实体先取 exact_surface。零长棱跳过。"""
         self._sync_geometry_cache()
         cache = self._vedges
         if cache is None:
@@ -311,18 +304,21 @@ class Polyhedron:
     def dihedral_turn(self, e: tuple[int, int]) -> float:
         """棱 e 的二面转角（弧度）：凸棱 >0、平棱 =0、反射（凹）棱 <0。需恰好两个相邻面。
 
+        非平面源环先按声明三角化，含内部折棱；不把 Newell 描述符当实体法向。
+        门：test_g6i02_dihedral_uses_incident_declared_triangles。
         判据：取棱在第一个面环里的遍历方向 t = a→b，n1 该面外法向，n2 另一面外法向，
         转角 = atan2((n1×n2)·t, n1·n2)。闭合且一致朝向（外看 CCW）的多面体上此式恒正确。
 
         **不要用"沿两外法向的角平分线探测实体内外"**：凸棱实体占小角、凹棱占大角，
         平分线在两种情形下都指向实体外，区分不了（2026-09-18 实测 L 块凹棱被误判为凸）。
         """
-        trav = self.edge_traversals(e)
+        P = exact_surface(self)
+        trav = P.edge_traversals(e)
         if len(trav) != 2:
             raise ValueError(f"edge {e} has {len(trav)} incident face traversals, need 2")
         (f1, a1, b1), (f2, _, _) = trav
-        t = exact_edge_vector(self, (a1, b1))
-        n1, n2 = exact_face_normal(self, f1), exact_face_normal(self, f2)
+        t = exact_edge_vector(P, (a1, b1))
+        n1, n2 = exact_face_normal(P, f1), exact_face_normal(P, f2)
         triple, cosine = dot(cross(n1, n2), t), dot(n1, n2)
         tt = dot(t, t)
         if not tt:
@@ -408,10 +404,13 @@ class Polyhedron:
         return Polyhedron([neg(p) for p in self.verts], [tuple(reversed(f)) for f in self.faces])
 
     def manifold_issues(self, tol: float = 1e-9) -> list[str]:
-        """闭合性与朝向一致性自检。空列表 = 合法的闭合定向流形（外法向朝外）。
+        """检查源环闭合、遍历方向、平面度和声明表面的逐分量朝向。
 
-        三项：① 每条棱恰好两个面遍历；② 两次遍历方向**相反**（同向 ⇒ 有面绕反）；
-        ③ 有符号体积为正（整体朝向朝外）。面绕向错会静默污染所有盖的法向，必须有门。
+        对不相交嵌入闭壳，偶数嵌套深度须正体积、奇数深度空腔须负体积；
+        分量接触/相交会报错。空列表只表示这些检查通过，不认证单分量无自交、
+        顶点链为圆或全部输入有效性。源环平面度仍是带 tol 的诊断，不用于实体分支。
+        门：test_g6i05_disconnected_inward_component_is_not_hidden_by_total_volume；
+        test_g6i05_component_orientation_obeys_nested_cavity_parity。
         """
         issues: list[str] = []
         for e in self.edges():
@@ -432,7 +431,9 @@ class Polyhedron:
             if len(f) < 3:
                 issues.append(f"face {fi}: only {len(f)} vertices")
                 continue
-            if self.face_area(fi) == 0.0:
+            try:
+                exact_face_normal(self, fi)
+            except ValueError:
                 issues.append(f"face {fi}: zero area")
                 continue
             if len(f) == 3:
@@ -446,35 +447,43 @@ class Polyhedron:
                                   f"{dot(n, sub(self.verts[i], o)):.3g})")
                     break
         try:
-            v = self.volume()
+            issues.extend(_component_orientation_issues(self))
         except ValueError as error:
             issues.append(f"invalid volume surface: {error}")
             return issues
-        if v <= 0.0:
-            issues.append(f"signed volume {v:.6g} <= 0 (global orientation is inward)")
         return issues
 
     def is_convex(self, tol: float = 1e-12) -> bool:
-        """Exact local convexity for a closed outward polyhedron.
+        """Exact convexity of the declared closed embedded outward surface.
 
         tol is a retained compatibility argument, not a geometric noise band.
+        Nonplanar source rings use their declared triangles; disconnected solids
+        and cavity boundaries are not convex. Source descriptors are not planes.
         Supplied coordinates, including roundoff in a transformed model, define
         the geometry. Gate: test_g6f03_zero_band_convexity_keeps_every_exact_reflex.
+        Gate: test_g6i02_declared_folded_surface_is_not_convex.
         """
-        for e in self.edges():
-            if len(self.edge_faces(e)) != 2:
+        P = exact_surface(self)
+        if len(_edge_connected_components(P, list(range(len(P.faces))))) != 1:
+            return False
+        for e in P.edges():
+            if len(P.edge_faces(e)) != 2:
                 return False
-            if self._exact_dihedral_orientation(e) < 0:
+            if P._exact_dihedral_orientation(e) < 0:
                 return False
         return True
 
     def reflex_edges(self, tol: float = 1e-12) -> list[tuple[int, int]]:
-        """Exact negative dihedral signs; tol is compatibility-only, as is_convex."""
-        return [e for e in self.edges()
-                if len(self.edge_faces(e)) == 2 and self._exact_dihedral_orientation(e) < 0]
+        """Exact declared-surface reflex edges, including folded-ring diagonals.
+
+        tol is compatibility-only. Gate: test_g6i02_reflex_edges_include_declared_internal_ridge.
+        """
+        P = exact_surface(self)
+        return [e for e in P.edges()
+                if len(P.edge_faces(e)) == 2 and P._exact_dihedral_orientation(e) < 0]
 
     def _exact_dihedral_orientation(self, e: tuple[int, int]):
-        """Unnormalised exact sign; neither coordinate scale nor angle noise enters."""
+        """Exact sign on a planar-face surface view; public callers resolve folds first."""
         (f1, a, b), (f2, _, _) = self.edge_traversals(e)
         t = _eg.sub(exact_vector(self.verts[b]), exact_vector(self.verts[a]))
         n1, n2 = exact_face_normal(self, f1), exact_face_normal(self, f2)
@@ -689,8 +698,8 @@ def _gordan_direction(ns: list[Vec3], margin: float = 1e-9) -> tuple[Vec3, float
                 continue
             pp = dot(p, p)
             if all(dot(p, n) >= pp - 1e-12 for n in uniq):
-                r = sqrt(pp)
-                return (mul(p, -1.0 / r), r) if r > margin else None
+                r = norm_rational(p)
+                return (neg(unit_rational(p)), r) if r > margin else None
     return None
 
 
@@ -786,7 +795,8 @@ def _exact_line_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, f
     w = [a - b for a, b in zip(P2, P1)]
     wd2 = [w[1] * D2[2] - w[2] * D2[1], w[2] * D2[0] - w[0] * D2[2], w[0] * D2[1] - w[1] * D2[0]]
     wd1 = [w[1] * D1[2] - w[2] * D1[1], w[2] * D1[0] - w[0] * D1[2], w[0] * D1[1] - w[1] * D1[0]]
-    return float(sum(a * b for a, b in zip(wd2, n)) / nn), float(sum(a * b for a, b in zip(wd1, n)) / nn)
+    return (ratio_rational(sum(a * b for a, b in zip(wd2, n)), nn),
+            ratio_rational(sum(a * b for a, b in zip(wd1, n)), nn))
 
 
 def _seg_seg_distance(p1: Vec3, p2: Vec3, q1: Vec3, q2: Vec3) -> float:
@@ -818,12 +828,7 @@ def _point_face_distance(p: Vec3, P: Polyhedron, fi: int) -> float | None:
 
 def _checked_scalar(value):
     """Final rational construction must not silently overflow or erase a nonzero."""
-    result = float(value)
-    if not math.isfinite(result):
-        raise OverflowError("exact construction exceeds finite binary64 range")
-    if value and not result:
-        raise ArithmeticError("nonzero exact construction is below binary64 output range")
-    return result
+    return scalar_rational(value)
 
 
 @lru_cache(maxsize=1024)
@@ -839,6 +844,38 @@ def _mass_properties(vertices, faces):
         volume6 += weight
         moments = _eg.add(moments, _eg.mul(_eg.add(_eg.add(a, b), c), weight))
     return volume6, moments
+
+
+def _component_orientation_issues(P):
+    """Exact shell orientation with even/odd nesting; no rounded volume branch.
+
+    Shells must be pairwise disjoint embedded surfaces for nesting to be defined.
+    The caller separately checks closure and traversals. Single-shell self-crossing
+    is deliberately outside this diagnostic, not certified by an empty result.
+    """
+    components = _edge_connected_components(P, list(range(len(P.faces))))
+    if not components:
+        return ['surface has no closed components']
+    shells = [Polyhedron(list(P.verts), [P.faces[fi] for fi in comp]) for comp in components]
+    volumes = [_mass_properties(tuple(shell.verts), tuple(shell.faces))[0] for shell in shells]
+    depths = [0] * len(shells)
+    if len(shells) > 1:
+        triangles = [_eg.triangles(shell) for shell in shells]
+        for i, j in combinations(range(len(shells)), 2):
+            if _surfaces_intersect(triangles[i], triangles[j]):
+                return [f'components {i} and {j}: surfaces touch or intersect; nesting undefined']
+            for inner, outer in ((i, j), (j, i)):
+                sample = exact_vector(P.verts[shells[inner].faces[0][0]])
+                depths[inner] += _eg._point_in_triangles(sample, triangles[outer]) == 1
+    issues = []
+    for i, (volume6, depth) in enumerate(zip(volumes, depths)):
+        if volume6 == 0:
+            issues.append(f'component {i}: exact signed volume is zero')
+        elif depth % 2 == 0 and volume6 < 0:
+            issues.append(f'component {i}: orientation is inward at nesting depth {depth} (expected outward)')
+        elif depth % 2 == 1 and volume6 > 0:
+            issues.append(f'component {i}: orientation is outward at nesting depth {depth} (expected inward cavity)')
+    return issues
 
 
 def _surface_distance_edges(P):

@@ -1,0 +1,171 @@
+........................................................................ [  2%]
+........................................................................ [  5%]
+........................................................................ [  8%]
+........................................................................ [ 10%]
+........................................................................ [ 13%]
+........................................................................ [ 16%]
+........................................................................ [ 19%]
+........................................................................ [ 21%]
+........................................................................ [ 24%]
+........................................................................ [ 27%]
+........................................................................ [ 30%]
+........................................................................ [ 32%]
+........................................................................ [ 35%]
+........................................................................ [ 38%]
+........................................................................ [ 41%]
+........................................................................ [ 43%]
+........................................................................ [ 46%]
+........................................................................ [ 49%]
+........................................................................ [ 52%]
+........................................................................ [ 54%]
+........................................................................ [ 57%]
+........................................................................ [ 60%]
+........................................................................ [ 63%]
+........................................................................ [ 65%]
+........................................................................ [ 68%]
+.....F.................................................................. [ 71%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 82%]
+........................................................................ [ 85%]
+........................................................................ [ 87%]
+.....................................F..F............................... [ 90%]
+........................................................................ [ 93%]
+........................................................................ [ 96%]
+........................................................................ [ 98%]
+................................                                         [100%]
+================================== FAILURES ===================================
+_______ test_exact_witness_is_preserved_by_copy_not_by_float_arithmetic _______
+
+    def test_exact_witness_is_preserved_by_copy_not_by_float_arithmetic():
+        import json
+        cs,dead,live=slide(mu=.6,h=3.)
+        r=L.limit_load(cs,dead,live,dim=2)
+        assert isinstance(r.alpha,float) and q(r.alpha) == F(10,3)
+        assert L.check_duality(copy.deepcopy(r),cs,dead,live,dim=2)["ok"]
+        assert json.loads(json.dumps(r.alpha)) == scalar_exact(r.alpha)
+        assert not hasattr(r.alpha*1.,"exact")
+        with pytest.raises(AttributeError): r.alpha.exact = F(0)
+        # 显示值不是精确解，显式 float 往返后不再假称静力成立。
+        r.alpha=scalar_exact(r.alpha)
+>       assert not L.check_duality(r,cs,dead,live,dim=2)["static_ok"]
+E       assert not True
+
+tests\test_limit_exact_selfcheck.py:133: AssertionError
+___ test_r7fix_margin_normal_underflow_retains_exact_direction_certificate ____
+
+    def test_r7fix_margin_normal_underflow_retains_exact_direction_certificate():
+        tiny = U/4
+        a = G.box(center=(F(2),F(2),F(1)+tiny),half=(F(1,2),)*3)
+        b = G.box(half=(F(1,2),)*3)
+>       contact = M.margin_contacts(a,b,delta=2,tol=0)[0]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r7fix_geom3.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\margin.py:451: in margin_contacts
+    ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:370: in _resolved
+    ctol, rnd, wits, contact, minimum2 = _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+src\eab\margin.py:384: in _resolved_cached
+    ctol, rnd, wits, contact, minimum2 = implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:334: in _resolve
+    for c, w, n in _witnesses(A, B, tol, exact_surface=contact_window is None or not ctol):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:194: in _witnesses
+    for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\covers3.py:698: in enumerate_covers3
+    c = ee_cover(A, ea, B, eb, tol, extent_tol)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\covers3.py:579: in ee_cover
+    _float_vector(qa), _float_vector(qb), (scalar_rational(s), scalar_rational(t)), None,
+                                           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(-1, 809609013229242473409981386875669228198226599056568473427605432109721358271981387567841534805748497980748...0980274248029933698770794472413422596638225363240226049435078209333658460922010128745310034584025053230830964373979136)
+
+    def scalar_rational(value, *, allow_underflow=False):
+        """Correctly rounded rational scalar, with explicit output-range checks."""
+        exact = Fraction(value)
+        result = float(exact)
+        if not math.isfinite(result):
+            raise OverflowError("exact scalar is outside finite binary64 range")
+        if exact and result == 0 and not allow_underflow:
+>           raise ArithmeticError("nonzero exact scalar is below binary64 output range")
+E           ArithmeticError: nonzero exact scalar is below binary64 output range
+
+src\eab\construction.py:21: ArithmeticError
+_________ test_r7fix_internal_mutation_normal_certificate_is_required _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000076BE390>
+
+    def test_r7fix_internal_mutation_normal_certificate_is_required(monkeypatch):
+        _inject(monkeypatch,M,'margin_contacts',
+                'd2, direction))','d2, None))')
+        with pytest.raises(AssertionError,match='underflow-direction-certificate'):
+>           test_r7fix_margin_normal_underflow_retains_exact_direction_certificate()
+
+tests\test_r7fix_geom3.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_r7fix_geom3.py:181: in test_r7fix_margin_normal_underflow_retains_exact_direction_certificate
+    contact = M.margin_contacts(a,b,delta=2,tol=0)[0]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<r7fix-internal-mutation-margin_contacts>:17: in margin_contacts
+    ???
+src\eab\margin.py:370: in _resolved
+    ctol, rnd, wits, contact, minimum2 = _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+src\eab\margin.py:384: in _resolved_cached
+    ctol, rnd, wits, contact, minimum2 = implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:334: in _resolve
+    for c, w, n in _witnesses(A, B, tol, exact_surface=contact_window is None or not ctol):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:194: in _witnesses
+    for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\covers3.py:698: in enumerate_covers3
+    c = ee_cover(A, ea, B, eb, tol, extent_tol)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\covers3.py:579: in ee_cover
+    _float_vector(qa), _float_vector(qb), (scalar_rational(s), scalar_rational(t)), None,
+                                           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(-1, 809609013229242473409981386875669228198226599056568473427605432109721358271981387567841534805748497980748...0980274248029933698770794472413422596638225363240226049435078209333658460922010128745310034584025053230830964373979136)
+
+    def scalar_rational(value, *, allow_underflow=False):
+        """Correctly rounded rational scalar, with explicit output-range checks."""
+        exact = Fraction(value)
+        result = float(exact)
+        if not math.isfinite(result):
+            raise OverflowError("exact scalar is outside finite binary64 range")
+        if exact and result == 0 and not allow_underflow:
+>           raise ArithmeticError("nonzero exact scalar is below binary64 output range")
+E           ArithmeticError: nonzero exact scalar is below binary64 output range
+
+src\eab\construction.py:21: ArithmeticError
+============================ slowest 15 durations =============================
+18.45s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_convex_400
+14.49s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[1000.0-4]
+12.54s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[100000.0-4]
+12.51s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[10000.0-1]
+11.06s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase0]
+10.33s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0]
+9.37s call     tests/test_kernel2d_predicates.py::test_hull_of_a_rotated_collinear_strip_matches_exact_support
+9.07s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw1-8]
+7.08s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[1000.0-4]
+6.23s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[100000.0-4]
+6.17s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[10000.0-1]
+5.91s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_scaled[0.001]
+5.37s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw0-1]
+5.27s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_scaled[1000.0]
+4.98s call     tests/test_lp_certificates.py::test_accuracy_against_the_exact_rational_optimum[1-1149]
+=========================== short test summary info ===========================
+FAILED tests/test_limit_exact_selfcheck.py::test_exact_witness_is_preserved_by_copy_not_by_float_arithmetic
+FAILED tests/test_r7fix_geom3.py::test_r7fix_margin_normal_underflow_retains_exact_direction_certificate
+FAILED tests/test_r7fix_geom3.py::test_r7fix_internal_mutation_normal_certificate_is_required
+3 failed, 2621 passed in 234.75s (0:03:54)

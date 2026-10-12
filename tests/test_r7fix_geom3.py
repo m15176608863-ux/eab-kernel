@@ -3,6 +3,7 @@
 The primary oracles use fixed slab inequalities, axis-product integration and
 rational rounding midpoints, not eab projection, hull, distance or triangulation.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import math
@@ -38,12 +39,12 @@ def test_g6g04_folded_internal_ridges_attain_slab_distance(translation, rotation
     assert tuple((F(AV[5][k])+AV[7][k])/2 for k in range(3)) == (0,0,1)
     assert all(sum(rotation[k][i]*rotation[k][j] for k in range(3)) == (i==j) for i in range(3) for j in range(3))
     a,b = _ridge_pair(translation=translation,rotation=rotation,scale=scale)
-    assert G.brute_feature_distance(a,b) == float(2*scale), 'folded-ridge-slab-distance'
+    assert G.brute_feature_distance(a,b) == scalar_exact(2*scale), 'folded-ridge-slab-distance'
     at,bt = _ridge_pair(translation=translation,rotation=rotation,scale=scale,triangles=True)
     assert G.brute_feature_distance(at,bt) == G.brute_feature_distance(a,b), 'same-surface-source-independence'
 
 
-@pytest.mark.parametrize('height,expected', [(F(29,10)*U,float(U)), (F(31,10)*U,float(2*U)), (F(7,2)*U,float(2*U))])
+@pytest.mark.parametrize('height,expected', [(F(29,10)*U,scalar_exact(U)), (F(31,10)*U,scalar_exact(2*U)), (F(7,2)*U,scalar_exact(2*U))])
 def test_g6g05_face_area_rounds_after_final_halving(height,expected):
     p = G.Polyhedron([(0,0,0),(1,0,0),(1,height,0)],[(0,1,2)])
     assert p.face_area(0) == expected, 'area-final-rounding'
@@ -63,7 +64,7 @@ def test_g6g05_facet_gap_rounds_after_normal_length_division(sign,method):
     # 1 < (51/20)^2/3 < (3/2)^2 certifies nearest subnormal is U.
     assert 1 < F(51,20)**2/3 < F(3,2)**2
     gap = C.facet_gap3(t,t,('VF',('vertex',0),('face',3)),x) if method=='facet' else C.support_gaps3(t,t,x)[3]
-    assert gap == sign*float(U), 'signed-gap-final-rounding'
+    assert gap == sign*scalar_exact(U), 'signed-gap-final-rounding'
 
 
 @pytest.mark.parametrize('gap,translation,rotation,swap', [
@@ -73,10 +74,10 @@ def test_g6g06_margin_normal_does_not_subtract_display_points(gap,translation,ro
     a,b = _ridge_pair(gap,translation,rotation,triangles=True)
     if swap:
         a,b = b,a
-    expected = tuple((1 if swap else -1)*float(rotation[k][2]) for k in range(3))
+    expected = tuple((1 if swap else -1)*scalar_exact(rotation[k][2]) for k in range(3))
     cs = M.margin_contacts(a,b,delta=2*gap,tol=0)
     assert len(cs) == 1 and cs[0].exact_distance_squared == gap*gap
-    assert cs[0].distance == float(gap)
+    assert cs[0].distance == scalar_exact(gap)
     assert cs[0].normal == pytest.approx(expected,abs=2e-16), 'exact-local-margin-normal'
 
 
@@ -85,7 +86,7 @@ def test_g6g08_mass_properties_use_exact_products_before_final_rounding(exponent
     s,h = math.ldexp(1.,exponent), math.ldexp(1.,-exponent)
     p = G.box(half=(s,s,h))
     # Independent integration over a Cartesian product of three intervals.
-    expected = float(8*F(s)*F(s)*F(h))
+    expected = scalar_exact(8*F(s)*F(s)*F(h))
     assert p.volume() == expected, 'axis-product-volume'
     assert p.centroid() == (0.,0.,0.), 'axis-product-centroid'
 
@@ -101,7 +102,7 @@ def test_g6g08_volume_independent_of_cyclic_face_ring_start(shift):
     faces = [(0,2,1),(0,1,3),(0,3,2),(1,2,3)]
     faces[-1] = faces[-1][shift:]+faces[-1][:shift]
     p = G.Polyhedron([(0.,0.,0.),(0.,0.,h),(s,0.,0.),(0.,s,0.)],faces)
-    assert p.volume() == float(F(s)*F(s)*F(h)/6), 'tetra-ring-independent-volume'
+    assert p.volume() == scalar_exact(F(s)*F(s)*F(h)/6), 'tetra-ring-independent-volume'
     assert p.centroid() == (s/4,s/4,h/4), 'tetra-axis-centroid'
 
 
@@ -109,13 +110,13 @@ def test_r7fix_unit_retains_extreme_components_before_normalization():
     # Exact z lies above midpoint 3U/2 although rounding z first yields U.
     v = (F(1),F(1),F(43,20)*U)
     assert v[2]**2/(2+v[2]**2) > (F(3,2)*U)**2
-    assert G.unit(v)[2] == float(2*U), 'normalized-component-final-rounding'
-    assert C._qunit(v)[2] == float(2*U), 'cover-normal-final-rounding'
+    assert G.unit(v)[2] == scalar_exact(2*U), 'normalized-component-final-rounding'
+    assert C._qunit(v)[2] == scalar_exact(2*U), 'cover-normal-final-rounding'
 
 
 def test_r7fix_inflated_normal_retains_extreme_final_component():
     point = G.Polyhedron([(0,0,0)],[])
-    assert M.inflated_normal(point,(F(1),F(1),F(43,20)*U))[2] == float(2*U), 'inflated-normal-final-rounding'
+    assert M.inflated_normal(point,(F(1),F(1),F(43,20)*U))[2] == scalar_exact(2*U), 'inflated-normal-final-rounding'
 
 
 def test_r7fix_face_normal_does_not_discard_one_underflowed_cross_component():
@@ -147,7 +148,7 @@ def test_g6g05_internal_mutation_rounding_norm_before_halving_is_caught(monkeypa
                                '_eg.sqrt_rational(_eg.dot(n, n)) / 2'),'<r7fix-area-mutation>','exec'),namespace)
     monkeypatch.setattr(G.Polyhedron,'face_area',namespace['face_area'])
     with pytest.raises(AssertionError,match='area-final-rounding'):
-        test_g6g05_face_area_rounds_after_final_halving(F(29,10)*U,float(U))
+        test_g6g05_face_area_rounds_after_final_halving(F(29,10)*U,scalar_exact(U))
 
 
 def test_g6g05_internal_mutation_rounding_plane_numerator_is_caught(monkeypatch):

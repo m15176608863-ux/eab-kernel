@@ -18,6 +18,7 @@
 纪律 B：分界点（棱上、顶点上、反射顶点上、tol 内外各一侧）、一般位置（随机旋转、非对称
 星形多边形）、尺度 ×1e-3 / ×1 / ×1e3。
 """
+from construction_oracle import scalar_exact
 
 import math
 import random
@@ -93,7 +94,7 @@ SHAPES = {
 
 
 def _face_poly(ring2d, fr: Frame) -> Polyhedron:
-    return fr.poly([(float(x), float(y), 0.0) for x, y in ring2d], [tuple(range(len(ring2d)))])
+    return fr.poly([(scalar_exact(x), scalar_exact(y), 0.0) for x, y in ring2d], [tuple(range(len(ring2d)))])
 
 
 # ================================================================ point_in_face_polygon 本身

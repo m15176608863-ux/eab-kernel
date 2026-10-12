@@ -2,7 +2,7 @@
 
 Only coordinates and face rings enter. No production geometry or predicates are
 imported: integer face-plane/winding and edge parameters determine separation;
-rational squared distances are rounded only after an independent Decimal sqrt.
+rational squared distances use the independent midpoint-certified reference boundary.
 """
 from fractions import Fraction as F
 from functools import lru_cache

@@ -14,6 +14,7 @@ oracle（纪律 A）：期望的归并结果是**构造时就知道的原始多�
 拓扑计数，与 merge_coplanar 的实现不共享代码路径。
 纪律 B：分界（单点相触 pinch、完全不相触、共棱）、一般位置（随机旋转）、尺度 ×1e-3 / ×1 / ×1e3。
 """
+from construction_oracle import scalar_exact
 
 import math
 import random
@@ -176,7 +177,7 @@ def _prism_faces(n):
 
 
 def _prism_verts(base, h=1.0):
-    return [(float(x), float(y), 0.0) for x, y in base] + [(float(x), float(y), h) for x, y in base]
+    return [(scalar_exact(x), scalar_exact(y), 0.0) for x, y in base] + [(scalar_exact(x), scalar_exact(y), h) for x, y in base]
 
 
 def _triangulate(poly_faces, top_tris, n):
@@ -204,7 +205,7 @@ def _dented_block():
     F = [(0, 3, 2, 1), (4, 5, 12, 11), (12, 7, 8, 9), (0, 1, 6, 5, 4), (1, 2, 8, 7, 6), (2, 3, 10, 9, 8),
          (3, 0, 4, 11, 10), (5, 6, 13), (6, 7, 13), (7, 12, 13), (12, 5, 13), (11, 12, 14), (12, 9, 14),
          (9, 10, 14), (10, 11, 14)]
-    return [tuple(float(c) for c in p) for p in V], F
+    return [tuple(scalar_exact(c) for c in p) for p in V], F
 
 
 @pytest.mark.parametrize("seed,scale", [(0, 1.0), (1, 1e-3), (2, 1e3)])
@@ -323,7 +324,7 @@ def _pocketed_slab(dents=frozenset({(1, 1), (0, 2)})):
     """3×3 网格顶面，dents 里的格是向下的金字塔凹坑，其余格平顶。
     默认 (1,1) 与 (0,2)：7 个平顶格**共棱连通**，而两个凹坑在 (1,2) 顶点处相触 ⇒ 平顶区域的
     边界在 (1,2) 处 pinch（一个贴着外边界的洞），不是简单多边形。"""
-    V = [(float(i), float(j), 1.0) for i in range(4) for j in range(4)]          # idx = 4i + j
+    V = [(scalar_exact(i), scalar_exact(j), 1.0) for i in range(4) for j in range(4)]          # idx = 4i + j
     T = lambda i, j: 4 * i + j                                                    # noqa: E731
     b = [(0.0, 0.0, 0.0), (3.0, 0.0, 0.0), (3.0, 3.0, 0.0), (0.0, 3.0, 0.0)]
     b0 = len(V)

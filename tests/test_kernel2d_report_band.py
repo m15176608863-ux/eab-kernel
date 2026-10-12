@@ -4,6 +4,7 @@
 新门不跳过带内样本：凸对逐点对闭式欧氏距离；凹对逐点对已知 E 的闭式成员与边界距离，并明确保守报告带的不完备性。
 纪律 A：主 oracle 仅用方块/L 形的闭式有理数区间与距离，不调用 exact/geom/covers 的任何几何原语。
 """
+from construction_oracle import scalar_exact
 
 from fractions import Fraction as F
 
@@ -32,7 +33,7 @@ def _square_report(x, tol):
 @pytest.mark.parametrize("tol", [F(0), F(1, 4), F(5, 16), F(1, 2)])
 def test_convex_report_band_equals_closed_euclidean_boundary_distance(scale, x, tol):
     """旧口径 max facet gap 把外角方形带当欧氏带；新口径含精确阈值和角外点，逐格闭式零错且随单位缩放。"""
-    sq = [(float(scale * u), float(scale * v)) for u, v in SQUARE]
+    sq = [(scalar_exact(scale * u), scalar_exact(scale * v)) for u, v in SQUARE]
     scaled_x = (scale * x[0], scale * x[1])
     assert membership_convex(sq, sq, scaled_x, scale * tol) == _square_report(x, tol)
 
@@ -64,8 +65,8 @@ def test_nonconvex_report_band_has_no_coordinate_roundoff_floor(scale, sign):
     """旧回退把 tol 抬到工程坐标舍入地板，吞掉真实间隙/侵入；新门在闭式 L 的竖直界面两侧逐点精确。"""
     delta = F(1, 2**32)
     offset = F(10**6)
-    a = [(float(offset + scale * u), float(-offset + scale * v)) for u, v in SQUARE]
-    b = [(float(offset + scale * u), float(-offset + scale * v)) for u, v in L_SHAPE]
+    a = [(scalar_exact(offset + scale * u), scalar_exact(-offset + scale * v)) for u, v in SQUARE]
+    b = [(scalar_exact(offset + scale * u), scalar_exact(-offset + scale * v)) for u, v in L_SHAPE]
     # E 在 y=1.5 的局部边界 x=1。x 的平移必须在 Fraction 上，不能先加到大坐标后舍入。
     x = (scale * (1 + sign * delta), scale * F(3, 2))
     assert membership_convex(a, b, x, scale * F(1, 2**60)) == -sign

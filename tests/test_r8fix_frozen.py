@@ -4,6 +4,7 @@ All rotations are the independently checked rational 3-4-5 orthogonal map.
 Gap and tangent derivatives follow directly from unrotated interval products;
 there is no rounded unit normal in any expected result.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import pytest
 from eab.dual import Dual
@@ -35,14 +36,14 @@ def test_frozen_gap_and_jet_do_not_reinterpret_rounded_normals(c,s,M,gap,swap,qu
     if swap:
         A,B=B,A
     distance,label=body_distance(A,B,tol=0)
-    assert distance == float(gap)
+    assert distance == scalar_exact(gap)
     assert label[0] == ("FV" if swap else "VF")
-    x=tuple(Dual(0.,(float(Q[k][1]*10**20),)) for k in range(3))
+    x=tuple(Dual(0.,(scalar_exact(Q[k][1]*10**20),)) for k in range(3))
     jet=margin_gap_from_frozen_cover(A,B,label,x,0)
     if quantity == "gap":
-        assert margin_gap_from_frozen_cover(A,B,label,(0,0,0),0) == float(gap), "frozen signed gap"
-        assert jet.v == float(gap), "zero-primal tangent seed changed gap"
-        assert frozen_gap(A,B,label,x,frozen_normal(A,B,label,x=x)).v == float(gap)
+        assert margin_gap_from_frozen_cover(A,B,label,(0,0,0),0) == scalar_exact(gap), "frozen signed gap"
+        assert jet.v == scalar_exact(gap), "zero-primal tangent seed changed gap"
+        assert frozen_gap(A,B,label,x,frozen_normal(A,B,label,x=x)).v == scalar_exact(gap)
     else:
         assert jet.e == (0.,), "exact rigid tangent derivative"
 
@@ -87,7 +88,7 @@ def test_frozen_lift_plain_and_dual_share_exact_raw_plane_ratio(kind,seed):
     expected=-F(5,8) if kind=="FV" else F(5,8)
     assert escape_height_from_frozen_cover(A,B,label,(0,0,0)) == expected
     jet=escape_height_from_frozen_cover(A,B,label,(Dual(0.,(seed,)),0,0))
-    assert jet.v == float(expected), "Dual seed changed exact lift primal"
+    assert jet.v == scalar_exact(expected), "Dual seed changed exact lift primal"
     assert jet.e == (-.75*seed,), "lift derivative from independent 3-4-5 plane"
 
 
@@ -198,7 +199,7 @@ def test_margin_postround_subtraction_mutant_is_caught(monkeypatch):
     import eab.kernel3d.frozen as frozen
     original=frozen._normalized_difference
     def premature_round(c,nn,offset):
-        return original(c,nn,0)-float(offset)
+        return original(c,nn,0)-scalar_exact(offset)
     monkeypatch.setattr(frozen,"_normalized_difference",premature_round)
     with pytest.raises(AssertionError,match="margin was subtracted after gap rounding"):
         test_frozen_margin_rounds_after_subtracting_the_margin_parameter("gap")
@@ -214,7 +215,7 @@ def test_frozen_margin_exact_halfway_rounding_obeys_ties_to_even(sign,step):
     B=Polyhedron([(F(0),)*3,(F(0),F(1),F(0)),(F(0),F(0),F(1))],[(0,1,2)])
     result=margin_gap_from_frozen_cover(A,B,("VF",("vertex",0),("face",0)),(0,0,0),sign*F(10**20))
     expected=1+(step+(step%2))*ulp
-    assert result == sign*float(expected)
+    assert result == sign*scalar_exact(expected)
 
 
 def test_frozen_margin_exact_zero_and_nonrepresentable_result_are_distinguished():
@@ -242,7 +243,7 @@ def test_margin_contact_difference_is_constructed_before_display_rounding(scale,
     assert rows
     first=rows[0]
     assert first.exact_distance_squared == ((M+excess)*scale)**2
-    assert first.margin_gap == float(excess*scale), "contact margin rounded before subtraction"
+    assert first.margin_gap == scalar_exact(excess*scale), "contact margin rounded before subtraction"
     assert first.closed == (excess<=0)
 
 
@@ -251,7 +252,7 @@ def test_contact_margin_postround_subtraction_mutant_is_caught(monkeypatch):
     from eab.construction import sqrt_rational
     def premature_round(c,nn,offset,**kwargs):
         root=sqrt_rational(c*c/nn,allow_underflow=True)
-        return (-root if c<0 else root)-float(offset)
+        return (-root if c<0 else root)-scalar_exact(offset)
     monkeypatch.setattr(margin,"_normalized_difference",premature_round)
     with pytest.raises(AssertionError,match="contact margin rounded before subtraction"):
         test_margin_contact_difference_is_constructed_before_display_rounding(F(1),10000)

@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from fractions import Fraction
 import math
-import struct
 
 from ..construction import sqrt_rational
 from ..dual import Dual, Number, val, _derivative_float
@@ -245,80 +244,9 @@ def _frozen_gap_polynomial(A, B, label, x, raw, derivatives):
 
 
 def _normalized_difference(c, nn, offset, *, allow_underflow=False):
-    """Round c/sqrt(nn)-offset once; exact comparisons certify float midpoints.
-
-    The usual adjacent-float candidate is constant work. Severe cancellation,
-    including a nonrepresentable intermediate gap, falls back to a bounded
-    63-step binary64 search, never a precision guess or an absolute threshold.
-    allow_underflow is only for displays carrying a separate exact certificate.
-    Gates: test_frozen_margin_irrational_cancellation_has_exact_midpoint_certificate,
-    test_frozen_margin_rounds_after_subtracting_the_margin_parameter.
-    """
-    c, offset = Fraction(c), Fraction(offset)
-    if not offset:
-        magnitude = sqrt_rational(c*c/nn, allow_underflow=allow_underflow)
-        return -magnitude if c < 0 else magnitude
-
-    def compare_root(r):
-        if c >= 0 > r:
-            return 1
-        if c < 0 <= r:
-            return -1
-        difference = c*c-r*r*nn
-        order = (difference > 0)-(difference < 0)
-        return -order if c < 0 else order
-
-    sign = compare_root(offset)
-    if not sign:
-        return 0.0
-    if sign < 0:
-        return -_normalized_difference(-c, nn, -offset, allow_underflow=allow_underflow)
-
-    def compare(value):
-        return compare_root(offset + Fraction(value))
-
-    def from_bits(bits):
-        return struct.unpack(">d", struct.pack(">Q", bits))[0]
-
-    try:
-        root = sqrt_rational(c*c/nn, allow_underflow=True)
-        candidate = (-root if c < 0 else root)-float(offset)
-    except (ArithmeticError, OverflowError):
-        candidate = math.inf
-    lower = None
-    if math.isfinite(candidate) and candidate >= 0:
-        order = compare(candidate)
-        if not order:
-            return candidate
-        if order > 0:
-            upper = math.nextafter(candidate, math.inf)
-            if math.isfinite(upper) and compare(upper) <= 0:
-                lower = candidate
-        else:
-            below = math.nextafter(candidate, -math.inf)
-            if below >= 0 and compare(below) >= 0:
-                lower, upper = below, candidate
-    if lower is None:
-        lo, hi = 0, 0x7fefffffffffffff
-        if compare(from_bits(hi)) > 0:
-            raise OverflowError("exact frozen difference exceeds finite binary64 range")
-        while lo < hi:
-            mid = (lo+hi+1)//2
-            if compare(from_bits(mid)) >= 0:
-                lo = mid
-            else:
-                hi = mid-1
-        lower = from_bits(lo)
-        if not compare(lower):
-            return lower
-        upper = from_bits(lo+1)
-    midpoint = (Fraction(lower)+Fraction(upper))/2
-    order = compare(midpoint)
-    even = not (struct.unpack(">Q", struct.pack(">d", lower))[0] & 1)
-    result = lower if order < 0 or (not order and even) else upper
-    if not result and not allow_underflow:
-        raise ArithmeticError("nonzero exact frozen difference is below binary64 output range")
-    return result
+    """Compatibility seam; the sole compound constructor lives at the boundary."""
+    from eab.construction import normalized_difference_rational
+    return normalized_difference_rational(c, nn, offset, allow_underflow=allow_underflow)
 
 
 def frozen_gap(A: Polyhedron, B: Polyhedron, label: tuple, x, n=None, *, ee_sign=1.0, delta=0) -> Number:

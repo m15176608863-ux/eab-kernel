@@ -1,0 +1,72 @@
+{
+  "findings": [
+    {
+      "id": "G6I-01",
+      "severity": "major",
+      "test": "tests/test_r9fix_entrance_domain.py",
+      "red": "geom2_red.log",
+      "green": "geom2_targeted_final.log",
+      "internal_mutation": "_facet_in_domain -> True; finite source edge labels",
+      "mutation_evidence": "geom2_mutation.log",
+      "included_in_final_suite": true
+    },
+    {
+      "id": "G6I-02",
+      "severity": "major",
+      "test": "tests/test_r9fix_topology.py",
+      "red": "topology_before.log",
+      "green": "topology_legacy_final.log",
+      "internal_mutation": "exact_surface(self) -> self; roof concavity / reflex ridge / real dihedral",
+      "mutation_evidence": "topology_after.log",
+      "included_in_final_suite": true
+    },
+    {
+      "id": "G6I-03",
+      "severity": "major",
+      "test": "tests/test_r9fix_construction.py",
+      "red": "construction_red.log",
+      "green": "construction_green.log",
+      "internal_mutation": "norm(_float_vector(p)); G6I-03 exact cone margin",
+      "mutation_evidence": "construction_green.log",
+      "included_in_final_suite": true
+    },
+    {
+      "id": "G6I-04",
+      "severity": "major",
+      "test": "tests/test_r9fix_construction.py",
+      "red": "construction_red.log",
+      "green": "construction_green.log",
+      "internal_mutation": "sqrt(float(d2)) inside real body_distance/margin_contacts; default-exact construction",
+      "mutation_evidence": "construction_green.log",
+      "included_in_final_suite": true
+    },
+    {
+      "id": "G6I-05",
+      "severity": "minor",
+      "test": "tests/test_r9fix_topology.py",
+      "red": "topology_before.log",
+      "green": "topology_legacy_final.log",
+      "internal_mutation": "component check -> total-volume check; disconnected-inward-component",
+      "mutation_evidence": "topology_after.log",
+      "included_in_final_suite": true
+    },
+    {
+      "id": "G6I-06",
+      "severity": "minor",
+      "test": "tests/test_r9fix_docs.py",
+      "red": "docs_red.log",
+      "green": "final3_preflight.log",
+      "internal_mutation": "replace corresponding current clause by original stale text; G6I-06",
+      "mutation_evidence": "final3_preflight.log",
+      "included_in_final_suite": true
+    }
+  ],
+  "supplemental_workstreams": [
+    "unified constructors and midpoint certificates",
+    "whole-repository AST boundary and migration",
+    "finite domains and declared solid cones",
+    "oracle/mechanics/window/parameter/G03 same-family fixes",
+    "preservation/full-suite/docs/canon audit"
+  ],
+  "formal_G6_exit_claim": false
+}

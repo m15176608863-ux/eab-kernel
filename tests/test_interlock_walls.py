@@ -8,6 +8,7 @@ the original physical intent without silently discarding near-vertical events.
 """
 
 from __future__ import annotations
+from construction_oracle import scalar_exact
 
 import math
 import random
@@ -29,7 +30,7 @@ DIR = (0.6, -0.48, 0.64)
 
 def _prism_xz(prof, y0, y1):
     n = len(prof)
-    v = [(float(x), float(y0), float(z)) for x, z in prof] + [(float(x), float(y1), float(z)) for x, z in prof]
+    v = [(scalar_exact(x), scalar_exact(y0), scalar_exact(z)) for x, z in prof] + [(scalar_exact(x), scalar_exact(y1), scalar_exact(z)) for x, z in prof]
     faces = [tuple(range(n - 1, -1, -1)), tuple(range(n, 2 * n))] + [(i, (i + 1) % n, (i + 1) % n + n, i + n) for i in range(n)]
     P = Polyhedron(v, faces)
     return P if P.volume() > 0 else Polyhedron(v, [tuple(reversed(f)) for f in faces])
@@ -74,7 +75,7 @@ def test_vertical_walls_do_not_hijack_the_escape_height(t, ulps):
         lab = sol.cover_label
         assert lab[0] in ("VF", "FV", "EE")
         sg = frozen_ee_sign(A, L, (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2])) if lab[0] == "EE" else 1.0
-        zf = float(escape_height_from_frozen_cover(A, L, lab, (0.0, 0.0, 0.0), ee_sign=sg))
+        zf = scalar_exact(escape_height_from_frozen_cover(A, L, lab, (0.0, 0.0, 0.0), ee_sign=sg))
         assert abs(zf - 0.2) <= 1e-6, (seed, lab, zf)
         if seed < 3:
             assert abs(sol.height - escape_height_brute(A, L, (0.0, 0.0, 0.0), hi=2.0, contact_window=window)) <= 1e-6
@@ -92,7 +93,7 @@ def test_clearance_keeps_jittered_walls_from_controlling_height(t,ulps):
         assert abs(sol.height-.2)<=1e-6
         lab=sol.cover_label
         sg=frozen_ee_sign(A,L,(lab[1][1],lab[1][2]),(lab[2][1],lab[2][2])) if lab[0]=='EE' else 1.
-        frozen=float(escape_height_from_frozen_cover(A,L,lab,(0.,0.,0.),ee_sign=sg))
+        frozen=scalar_exact(escape_height_from_frozen_cover(A,L,lab,(0.,0.,0.),ee_sign=sg))
         assert abs(frozen-.2)<=1e-6, (seed,lab,frozen)
 
 
@@ -112,4 +113,4 @@ def test_exactly_vertical_ideal_walls_give_point_two(scale,translation):
     assert abs(sol.height/scale-.2)<1e-12
     lab=sol.cover_label
     sg=frozen_ee_sign(A,L,(lab[1][1],lab[1][2]),(lab[2][1],lab[2][2])) if lab[0]=='EE' else 1.
-    assert abs(float(escape_height_from_frozen_cover(A,L,lab,(0,0,0),ee_sign=sg))/scale-.2)<1e-10
+    assert abs(scalar_exact(escape_height_from_frozen_cover(A,L,lab,(0,0,0),ee_sign=sg))/scale-.2)<1e-10

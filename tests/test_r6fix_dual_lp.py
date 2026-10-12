@@ -3,6 +3,7 @@
 The oracle uses only Fraction and the defining algebra, not production scaling,
 Dual arithmetic, simplex bases or certificate helpers.
 """
+from construction_oracle import scalar_exact
 
 from fractions import Fraction as F
 import inspect
@@ -40,7 +41,7 @@ def test_r6fix07_atan2_matches_independent_fraction_derivative(y, x, dy, dx):
     q = (F(x) * F(dy) - F(y) * F(dx)) / (F(x) ** 2 + F(y) ** 2)
     got = atan2(Dual(y, (dy,)), Dual(x, (dx,)))
     assert got.v == math.atan2(y, x)
-    assert got.e == (float(q),), (got.e, float(q))
+    assert got.e == (scalar_exact(q),), (got.e, scalar_exact(q))
 
 
 @pytest.mark.parametrize("u,v,du,dv", [
@@ -54,7 +55,7 @@ def test_r6fix07_quotient_with_two_active_inputs_matches_fraction(u, v, du, dv):
     q = (F(du) * F(v) - F(u) * F(dv)) / F(v) ** 2
     got = Dual(u, (du,)) / Dual(v, (dv,))
     assert got.v == u / v
-    assert got.e == (float(q),), (got.e, float(q))
+    assert got.e == (scalar_exact(q),), (got.e, scalar_exact(q))
 
 
 @pytest.mark.parametrize("u,v,du,dv", [
@@ -63,7 +64,7 @@ def test_r6fix07_quotient_with_two_active_inputs_matches_fraction(u, v, du, dv):
     (2.0 ** -600, 2.0 ** -600, 2.0 ** -475, 2.0 ** -475),
 ])
 def test_r6fix07_related_product_derivative_avoids_intermediate_range_loss(u, v, du, dv):
-    expected = float(F(du) * F(v) + F(u) * F(dv))
+    expected = scalar_exact(F(du) * F(v) + F(u) * F(dv))
     r = Dual(u, (du,)) * Dual(v, (dv,))
     assert r.e == (expected,), (r, expected)
 
@@ -71,7 +72,7 @@ def test_r6fix07_related_product_derivative_avoids_intermediate_range_loss(u, v,
 @pytest.mark.parametrize("base,seed", [(1e-200, 1e-200), (-1e-200, 1e-200)])
 def test_r6fix07_related_inverse_power_derivative_is_representable(base, seed):
     r = Dual(base, (seed,)) ** -1
-    assert r.e == (float(-F(seed) / F(base) ** 2),)
+    assert r.e == (scalar_exact(-F(seed) / F(base) ** 2),)
 
 
 @pytest.mark.parametrize("base,power,seed,expected", [
@@ -83,12 +84,12 @@ def test_r6fix07_related_inverse_power_derivative_is_representable(base, seed):
 def test_r6fix07_fractional_power_never_loses_a_representable_derivative(base, power, seed, expected):
     # Half-integer powers of powers of two have independent exact rational derivatives.
     expected = F(expected)
-    if float(expected) == 0.0:
+    if abs(expected) <= F(2)**-1075:  # Exact RN-even zero cell, not a failed display.
         with pytest.raises((FloatingPointError, OverflowError, ArithmeticError)):
             Dual(base, (seed,)) ** power
     else:
         result = Dual(base, (seed,)) ** power
-        assert result.e == (float(expected),)
+        assert result.e == (scalar_exact(expected),)
 
 
 @pytest.mark.parametrize("operation", [
@@ -105,7 +106,7 @@ def test_r6fix07_unrepresentable_derivatives_fail_loudly(operation):
 @pytest.mark.parametrize("width", [0, 1, 3])
 @pytest.mark.parametrize("exponent", [0, 0.0, -0.0])
 def test_r6fix11_zero_power_is_constant_one_with_same_width(base, width, exponent):
-    r = Dual(base, tuple(float(i + 1) for i in range(width))) ** exponent
+    r = Dual(base, tuple(scalar_exact(i + 1) for i in range(width))) ** exponent
     assert r.v == 1.0 and r.e == (0.0,) * width
 
 
@@ -143,8 +144,8 @@ def test_r6fix12_every_optimal_path_has_complete_exact_witnesses(monkeypatch, ma
         monkeypatch.setattr(lp, "_float_solve", no_float)
     target = [-t for t in c] if maximize else c
     fn = lp.maximize if maximize else lp.solve
-    r = fn([[float(t) for t in row] for row in A], [float(t) for t in b],
-           [float(t) for t in target], exact=(A, b, target))
+    r = fn([[scalar_exact(t) for t in row] for row in A], [scalar_exact(t) for t in b],
+           [scalar_exact(t) for t in target], exact=(A, b, target))
     _assert_exact_optimal_certificate(r, A, b, target, maximize)
 
 

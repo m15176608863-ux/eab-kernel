@@ -7,6 +7,7 @@ angle_floor/turn_floor/round_floor remain available, not predicate truth.
 """
 
 from __future__ import annotations
+from eab.construction import scalar_rational
 
 import sys
 from fractions import Fraction
@@ -14,7 +15,7 @@ from functools import lru_cache
 from itertools import chain
 from math import hypot
 
-from ..construction import sqrt_rational
+from ..construction import sqrt_rational, unit_rational
 
 Point = tuple[float, float]
 Poly = list[Point]
@@ -80,10 +81,7 @@ def unit(a: Point) -> Point:
 
 @lru_cache(maxsize=4096)
 def _unit_exact(x, y):
-    square = x*x+y*y
-    if not square:
-        raise ZeroDivisionError("unit of zero vector")
-    return tuple(((v > 0)-(v < 0))*sqrt_rational(v*v/square) for v in (x, y))
+    return unit_rational((x, y))
 
 
 def _area2_exact(poly):
@@ -93,7 +91,7 @@ def _area2_exact(poly):
 
 
 def _display_fraction(value):
-    out=float(value)
+    out=scalar_rational(value)
     if value and out==0:raise ArithmeticError('nonzero geometry construction below binary64 output range')
     return out
 
@@ -126,7 +124,7 @@ def outward_normal(poly: Poly, i: int) -> Point:
     零长边（连续重复顶点）没有法向：抛 ValueError('zero-length edge ...')，而不是 unit() 的
     ZeroDivisionError（审查 C19）。输入归一化在读取器边界做（readers.bdda_geom.strip_duplicate_vertices）。
     """
-    from ..construction import sqrt_rational
+    from ..construction import sqrt_rational, unit_rational
     p, q = edge(poly, i)
     ex,ey=(Fraction(q[k])-Fraction(p[k]) for k in (0,1))
     square=ex*ex+ey*ey
@@ -162,7 +160,8 @@ def turn_angle(poly: Poly, i: int) -> float:
     if not scale:
         raise ValueError("turn angle at zero-length edge")
     from math import atan2
-    angle = atan2(float(determinant/scale), float(scalar/scale))
+    angle = atan2(scalar_rational(determinant/scale, allow_underflow=True),
+                  scalar_rational(scalar/scale, allow_underflow=True))
     if determinant and angle == 0:
         raise ArithmeticError("nonzero turn angle below binary64 output range")
     return angle
@@ -466,4 +465,4 @@ def convex_hull(points: list[Point], tol: float = 0.0) -> Poly:
     门：tests/test_kernel2d_covers_e3.py::test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop。
     """
     from .exact import hull_exact
-    return [(float(p[0]), float(p[1])) for p in hull_exact(points)]
+    return [(scalar_rational(p[0]), scalar_rational(p[1])) for p in hull_exact(points)]

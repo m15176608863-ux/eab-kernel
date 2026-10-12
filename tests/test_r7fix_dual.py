@@ -3,6 +3,7 @@
 The review's complete 876 representable exponent cells are retained. Fraction
 powers provide exact derivatives; no finite-difference or geometric helper is shared.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import math
@@ -21,13 +22,13 @@ def _power_cases():
             for p in (F(k, 2) for k in range(-16, 17) if k):
                 q = p * F(2) ** int(exponent * (p - 1)) * F(2) ** seed_exp
                 try:
-                    expected = float(q)
-                    primal = float(F(2) ** int(exponent * p))
+                    expected = scalar_exact(q, allow_underflow=True)  # Classify the same historical range grid.
+                    primal = scalar_exact(F(2) ** int(exponent * p), allow_underflow=True)
                 except OverflowError:
                     continue
                 if not expected or not primal or not math.isfinite(primal):
                     continue
-                cases.append((exponent, seed_exp, float(p), primal, expected))
+                cases.append((exponent, seed_exp, scalar_exact(p), primal, expected))
     assert len(cases) == 876
     assert len({c[-1] for c in cases}) > 400
     return cases
@@ -42,7 +43,7 @@ def test_g6g07_derived_power_range_not_just_inputs(exponent, seed_exp, p, primal
 
 def test_g6g07_minimal_representable_derivative_survives():
     x = 2. ** 200
-    expected = float(F(-5) * F(x) ** -6 * F(x))
+    expected = scalar_exact(F(-5) * F(x) ** -6 * F(x))
     result = Dual(x, (x, -x, 0.0)) ** -5
     assert result.v == 2. ** -1000
     assert result.e == (expected, -expected, 0.0), "nonzero derivative must not become signed zero"

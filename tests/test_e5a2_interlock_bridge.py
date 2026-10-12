@@ -4,6 +4,7 @@ The oracle reads raw (x,y,z) coordinates only, reconstructs the two piecewise
 linear height envelopes and solves strict affine interval inequalities. It
 uses no production membership, normals, covers, ray, distance or triangulation.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import math
@@ -82,7 +83,7 @@ def test_returned_lift_is_safe_for_actual_float_translation_against_independent_
     assert sol.exact_height==nominal, "exact affine root against independent profile"
     assert not _intrudes(actual,B), 'returned height, not a higher probe, must be safe'
     C=max(abs(v) for P in (A,B) for p in P.verts for v in p)
-    assert abs(sol.height-float(nominal)) <= 4e-12*scale+128*math.ulp(C), "constructed height must approximate the independent profile root"
+    assert abs(sol.height-scalar_exact(nominal)) <= 4e-12*scale+128*math.ulp(C), "constructed height must approximate the independent profile root"
     if _intrudes(translate_exact(A,off),B):
         assert sol.height>0, 'a true tiny initial intrusion cannot be reported as zero'
 

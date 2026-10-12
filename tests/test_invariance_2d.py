@@ -14,15 +14,14 @@ G6（2026-09-24）的 6 条 critical 里 5 条同根：绝对容差遍布内核�
   · 凸性 / 反射顶点：精确仿射下不变；原浮点变换每格须满足独立有理转角 oracle（不抹除真实微凹）；
   · 读取器边界的重复点剥除（readers.bdda_geom）：近重复点照样被剥，工程坐标上只差一个 ulp 的重复点也认得出。
 调用方给的长度容差随单位一起缩放（tol → s·tol）——这是换单位的本义；角度容差是无量纲的，不缩放。
-**库内部不许再有绝对阈值**：参考结果取恒等变换下的库输出，变换后的输出必须与它一致。
-唯一的例外有数有据：bb52 真几何里相邻块沿同一节理的边近乎平行（sin 夹角 1.7e-8 … 3e-6，Fraction 精确算），
-低于 s=1e-3 且搬到 1e3/1e5 处时的角度舍入下限——那 19 个格子只断言夹逼（见 test_cover_enumeration_is_invariant）。
-
-先在 b6468f3 上跑出红（见 M0.2 返回值 red_before），再修（相对容差 tol_eff = max(tol, c·eps·C)，
-角度侧 c·eps·C/ℓ；库函数自己稳健，不在测试里把输入挪回原点）。
+**现行口径（E2/E3 后）**：默认分类对每格实际给定坐标精确；舍入后的刚体变换
+可能改变边界输入，但每格必须通过独立精确 oracle，不能凭旧格子清单豁免。
+仅对有分辨余量的格子另外要求标签不变；显式调用方窗口不含隐式 tol_eff 地板。
+历史 b6468f3 的 M0.2 red_before 曾记录 19 格角度分辨率现象，该历史记录不再是现门的例外。
 """
 
 from __future__ import annotations
+from construction_oracle import scalar_exact, sqrt_exact
 
 import math
 import random
@@ -211,7 +210,7 @@ def _min_near_parallel_sin(P, Q, reach=0.3):
             fx, fy = Fraction(f1[0]) - Fraction(f0[0]), Fraction(f1[1]) - Fraction(f0[1])
             c = ex * fy - ey * fx
             if c != 0:
-                out = min(out, abs(float(c)) / (math.hypot(float(ex), float(ey)) * math.hypot(float(fx), float(fy))))
+                out = min(out, sqrt_exact(c*c/((ex*ex+ey*ey)*(fx*fx+fy*fy))))
     return out
 
 
@@ -432,7 +431,7 @@ def _support_labels_exact(A, B):
                 i = mins[0]
                 labels.add((kind, i, j) if kind == "VE" else (kind, j, i))
                 gap = min(v - lo for v in projs if v > lo)
-                strict_margins.append(float(gap) / math.hypot(float(nx), float(ny)))
+                strict_margins.append(sqrt_exact(gap*gap/(nx*nx+ny*ny)))
             else:
                 boundary = True
                 assert len(mins) == 2
@@ -454,7 +453,7 @@ def _sat_gap_exact(A, B, x):
             q = P[(j + 1) % len(P)]
             nx, ny = q[1] - p[1], p[0] - q[0]
             gap = min(nx * v[0] + ny * v[1] for v in Q) - nx * p[0] - ny * p[1]
-            gaps.append(float(gap) / math.hypot(float(nx), float(ny)))
+            gaps.append((-1 if gap < 0 else 1)*sqrt_exact(gap*gap/(nx*nx+ny*ny)))
     return max(gaps)
 
 

@@ -5,6 +5,7 @@ traversal/Newell sums. No production edge traversal, normal, cone, sign, cache,
 or geometry predicate is called by the reference. Production Polyhedron is
 only an input container. The full -1/0/1 result, not acceptance alone, is tested.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import random
@@ -107,7 +108,7 @@ def _body(kind, scale, offset, rounded):
         faces = [tuple(reversed(face)) for face in faces]
     vertices = [tuple(scale*x+(j+1)*offset for j, x in enumerate(p)) for p in vertices]
     if rounded:
-        vertices = [tuple(map(float, p)) for p in vertices]
+        vertices = [tuple(map(scalar_exact, p)) for p in vertices]
     return Polyhedron(vertices, faces)
 
 

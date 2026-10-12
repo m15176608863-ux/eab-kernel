@@ -3,6 +3,7 @@
 不以生产 polygons_overlap_exact、法锥、Minkowski 或候选生成器作主 oracle。
 注入门修改真实候选生成路径；同实现精确谓词 brute 仅作辅助检查。
 """
+from construction_oracle import scalar_exact
 import math
 from fractions import Fraction as F
 
@@ -49,7 +50,7 @@ def test_concave_fraction_time_is_not_replaced_by_rounded_float_candidate():
     A = shifted(SQ, 1.4, .9)
     e = first_entrance(A, STEP, (0., 0.), (-.7, -.1), t_max=2.)
     want = (F(1.4) - 1) / F(.7)
-    assert e.kind == 'entrance' and e.t == float(want), (e.kind, e.t, want)
+    assert e.kind == 'entrance' and e.t == scalar_exact(want), (e.kind, e.t, want)
     assert e.t_exact == want
 
 
@@ -129,7 +130,7 @@ def test_concave_rotated_translated_and_scaled_ray_matches_independent_piecewise
              for tri in ((0,1,2),(0,2,3),(0,3,4),(0,4,5))]
     want = min(t for t in times if t is not None)
     e = first_entrance(A,B,(0.,0.),d,t_max=3.)
-    assert e.kind == 'entrance' and e.t_exact == want and e.t == float(want)
+    assert e.kind == 'entrance' and e.t_exact == want and e.t == scalar_exact(want)
 
 
 def test_exact_selfcheck_catches_an_earlier_narrow_contact_interval_not_just_the_last_step(monkeypatch):

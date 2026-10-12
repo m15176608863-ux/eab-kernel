@@ -4,6 +4,7 @@ Main wall oracle uses only test-only integer temporal triangle SAT and parity;
 profile oracle uses independently triangulated star tetrahedra with swept SAT.
 Neither calls production events, predicate, normal/cone or translation helpers.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import math
 import pytest
@@ -110,7 +111,7 @@ def test_first_escape_precedes_a_later_reentry_and_is_not_a_monotone_bisection(s
     B=Polyhedron(verts,faces)
     sol=I.escape_height_covers(A,B,(0,0,0))
     assert sol.exact_height==F(3,2)*scale
-    assert I.escape_height_brute(A,B,(0,0,0),hi=5*scale)==float(sol.exact_height)
+    assert I.escape_height_brute(A,B,(0,0,0),hi=5*scale)==scalar_exact(sol.exact_height)
     _assert_interval_proof(sol)
 
 

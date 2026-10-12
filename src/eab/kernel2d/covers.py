@@ -31,7 +31,7 @@ from functools import lru_cache
 from math import atan2, isfinite, lcm
 
 from ..predicates import cross2_sign, dot2_sign
-from ..construction import sqrt_rational
+from ..construction import scalar_rational, sqrt_rational, vector_rational
 from .exact import (convexity_violation, entrance_block_exact, entrance_membership_exact, ev_side_exact, membership_exact,
                     ve_side_exact)
 from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, sub, unit)
@@ -128,7 +128,12 @@ def cone_width(cone: tuple[Point, Point]) -> float:
     scale = max(abs(determinant), abs(scalar))
     if not scale:
         return 0.0
-    angle = atan2(float(determinant / scale), float(scalar / scale))
+    # Homogeneous atan2 arguments are not geometric output coordinates:
+    # a tiny horizontal component may round to zero while pi/2 is valid.
+    # Retain the final nonzero-angle guard; no correctly-rounded transcendental
+    # guarantee beyond platform atan2 is asserted.
+    angle = atan2(scalar_rational(determinant / scale, allow_underflow=True),
+                  scalar_rational(scalar / scale, allow_underflow=True))
     if determinant and angle == 0:
         raise ArithmeticError("nonzero cone width below binary64 output range")
     return angle
@@ -147,7 +152,7 @@ def _project(p: Point, a: Point, b: Point) -> tuple[float, Point]:
     P, A, B = _fr(p), _fr(a), _fr(b)
     e = _vsub(B, A)
     t = dot(_vsub(P, A), e) / dot(e, e)
-    return float(t), (float(A[0] + t * e[0]), float(A[1] + t * e[1]))
+    return scalar_rational(t), vector_rational((A[0] + t * e[0], A[1] + t * e[1]))
 
 
 def _angle_window2(tol, cone_tol, vectors):
@@ -362,7 +367,7 @@ def convex_entrance_block(A: Poly, B: Poly, a0: Point = (0.0, 0.0), tol: float =
             raise ValueError(f"input polygon {name} not convex: {why}")
     ex = entrance_block_exact(A, B)
     fa0 = (Fraction(a0[0]), Fraction(a0[1]))
-    verts = [(float(v[0] + fa0[0]), float(v[1] + fa0[1])) for v in ex.vertices]
+    verts = [vector_rational((v[0] + fa0[0], v[1] + fa0[1])) for v in ex.vertices]
     return EntranceBlock(verts, [f.label for f in ex.facets], list(ex.pairs))
 
 

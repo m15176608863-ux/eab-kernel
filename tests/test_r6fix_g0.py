@@ -1,4 +1,5 @@
-﻿from fractions import Fraction as F
+﻿from construction_oracle import scalar_exact
+from fractions import Fraction as F
 import math
 import pytest
 from eab.kernel2d import covers as c2, g0
@@ -69,7 +70,7 @@ def test_g0_surface_distance_matches_independent_product_intervals(scale,transla
         return [tuple(translation+scale*(F(c)*size+(dx if i==0 else 0)) for i,c in enumerate(v)) for v in VERTS]
     a,b=cube(F(3,2)),cube(0)
     got=separated_distance(a,FACES,b,FACES)
-    assert got == float(scale/2)
+    assert got == scalar_exact(scale/2)
     assert separated_distance(cube(1),FACES,b,FACES) is None
     assert separated_distance(cube(F(1,2)),FACES,b,FACES) is None
     assert separated_distance(cube(F(1,4),F(1,2)),FACES,b,FACES) is None
@@ -106,7 +107,7 @@ def test_r6scan_2d_centroid_and_orientation_survive_unrepresentable_area(exponen
     s=2.**exponent
     P=[(0.,0.),(2*s,0.),(s,s),(0.,s)]
     assert is_ccw(P), 'exact positive area sign must not depend on float area display'
-    want=(float(F(7,9)*F(s)),float(F(4,9)*F(s)))
+    want=(scalar_exact(F(7,9)*F(s)),scalar_exact(F(4,9)*F(s)))
     assert centroid(P)==want
 
 
@@ -136,5 +137,5 @@ def test_r6scan_interior_point_retains_exact_affine_geometry(case):
 def test_r6scan_outward_normal_preserves_mixed_scalar_short_edge():
     from eab.kernel2d.geom import outward_normal
     t=10**8;s=F(1,10**9)
-    P=[(float(t),float(t)),(F(t),F(t)+s),(F(t)-s,F(t)+s),(F(t)-s,F(t))]
+    P=[(scalar_exact(t),scalar_exact(t)),(F(t),F(t)+s),(F(t)-s,F(t)+s),(F(t)-s,F(t))]
     assert outward_normal(P,0)==(1.,0.)

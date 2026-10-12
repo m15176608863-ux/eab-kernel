@@ -24,6 +24,7 @@ margin 层（body_distance / margin_contacts / inflated_membership / entrance_bl
 """
 
 from __future__ import annotations
+from construction_oracle import scalar_exact, sqrt_exact
 
 import math
 import random
@@ -379,8 +380,7 @@ def _support_gap_oracle(A,B,x):
                 v=min(exact_oracle.scalar(n,a) for a in other)+exact_oracle.scalar(n,x)-exact_oracle.scalar(n,p)
             else:
                 v=min(exact_oracle.scalar(n,b) for b in other)-exact_oracle.scalar(n,x)-exact_oracle.scalar(n,p)
-            scale=max(map(abs,n));u=tuple(float(c/scale) for c in n)
-            result.append(float(v/scale)/math.sqrt(sum(c*c for c in u)))
+            result.append((-1 if v < 0 else 1)*sqrt_exact(v*v/exact_oracle.scalar(n,n)))
     return result
 
 

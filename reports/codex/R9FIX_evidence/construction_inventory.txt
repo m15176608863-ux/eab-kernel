@@ -1,0 +1,772 @@
+src\eab\construction.py
+23: math.sqrt(float(scaled))
+23: float(scaled)
+
+src\eab\contact_record.py
+184: float(x)
+182: float(x)
+
+src\eab\dual.py
+154: float(q)
+218: math.sqrt(x)
+100: float(p)
+199: float(x)
+215: math.sqrt(x.v)
+36: float(v)
+43: float(v)
+60: float(o)
+210: float(x)
+132: float(o)
+135: float(o)
+138: float(o)
+141: float(o)
+
+src\eab\limit.py
+113: float(value)
+565: sqrt_rational(sum(Fraction(x)**2 for x in v))
+564: math.hypot(*v)
+411: float("inf")
+519: float("inf")
+522: float("nan")
+594: float(v)
+258: sqrt_rational(v*v/square)
+
+src\eab\limit_multi.py
+223: float("inf")
+226: float("nan")
+
+src\eab\lp.py
+251: float("inf")
+501: float(v)
+258: float("inf")
+858: float("inf")
+409: float("-inf")
+503: float("inf")
+503: float("-inf")
+610: float("nan")
+632: float("-inf")
+388: float("inf")
+
+src\eab\margin.py
+100: float("inf")
+119: float(geom_tol)
+484: float(atol)
+193: float("inf")
+340: float("inf")
+405: float("inf")
+
+src\eab\predicates.py
+28: float(x)
+30: float("inf")
+30: float("inf")
+
+src\eab\kernel2d\covers.py
+131: float(determinant / scale)
+131: float(scalar / scale)
+150: float(t)
+204: sqrt_rational(g*g/l2)
+217: sqrt_rational(g*g/l2)
+274: float("inf")
+404: sqrt_rational(numerator*numerator/dot(direction, direction))
+448: float("inf")
+150: float(A[0] + t * e[0])
+150: float(A[1] + t * e[1])
+261: float("inf")
+365: float(v[0] + fa0[0])
+365: float(v[1] + fa0[1])
+442: float("inf")
+
+src\eab\kernel2d\entrance.py
+93: sqrt_rational(square, allow_underflow=True)
+99: float("inf")
+364: float(up)
+176: float(t_in)
+248: sqrt_rational(g * g / length2)
+254: float("inf")
+265: float("inf")
+300: float(t)
+338: float("inf")
+358: float(lo)
+358: float(up)
+358: float(up)
+144: float("inf")
+358: float(lo)
+
+src\eab\kernel2d\g0.py
+217: float("inf")
+286: float("inf")
+80: math.hypot(c.point_a[0]-c.point_b[0], c.point_a[1]-c.point_b[1])
+178: float(t)
+161: float(x)
+161: float(y)
+
+src\eab\kernel2d\g0_oracle.py
+16: float((Decimal(q.numerator) / Decimal(q.denominator)).sqrt())
+16: (Decimal(q.numerator) / Decimal(q.denominator)).sqrt()
+17: float('inf')
+112: float(t)
+
+src\eab\kernel2d\geom.py
+73: sqrt_rational(x*x+y*y)
+96: float(value)
+43: float("inf")
+165: float(determinant/scale)
+165: float(scalar/scale)
+182: sqrt_rational((Fraction(ROUND_C*EPS)*C)**2/length2)
+182: float("inf")
+469: float(p[0])
+469: float(p[1])
+86: sqrt_rational(v*v/square)
+
+src\eab\kernel3d\covers3.py
+272: _float_vector(_qclosest_segment(_qvector(a), _qvector(b)))
+297: _float_vector(_qclosest_triangle(*map(_qvector, (a, b, c))))
+387: _float_vector(_qclosest_hull(tuple(map(_qvector, pts))))
+434: sqrt_rational(squared, allow_underflow=True)
+196: float("inf")
+214: _float_vector(witness)
+463: sqrt_rational(nn/4, allow_underflow=True)
+479: sqrt_rational(nn/4, allow_underflow=True)
+570: sqrt_rational(vv, allow_underflow=True)
+571: _float_vector(add(p0, mul(d, _qclamp(s))))
+597: sqrt_rational(vv, allow_underflow=True)
+614: float("inf")
+771: sqrt_rational(numerator*numerator / dot(n, n))
+840: float("inf")
+90: float(x)
+212: _float_vector(x)
+408: _float_vector(p)
+547: _float_vector(qa)
+547: _float_vector(qb)
+571: float(s)
+495: float(x)
+547: float(s)
+547: float(t)
+821: sqrt_rational(numerator*numerator / dot(n, n))
+
+src\eab\kernel3d\entrance3.py
+230: float("inf")
+51: float("inf")
+288: float(t)
+
+src\eab\kernel3d\exact_geom.py
+18: float(x)
+
+src\eab\kernel3d\frozen.py
+55: sqrt_rational(c * c / nn)
+259: sqrt_rational(c*c/nn, allow_underflow=allow_underflow)
+284: sqrt_rational(c*c/nn, allow_underflow=True)
+285: float(offset)
+
+src\eab\kernel3d\g03.py
+114: float(lo_b[i]-hi_a[i])
+115: float(hi_b[i]-lo_a[i])
+213: float("inf")
+204: float("inf")
+
+src\eab\kernel3d\geom3.py
+82: hypot(*a)
+821: float(value)
+118: float(d/scale)
+539: sqrt(max(0.0, 1.0 - z * z))
+789: float(sum(a * b for a, b in zip(wd2, n)) / nn)
+789: float(sum(a * b for a, b in zip(wd1, n)) / nn)
+900: float('inf')
+172: float("inf")
+187: float("inf")
+692: sqrt(pp)
+
+src\eab\kernel3d\interlock.py
+304: float(root)
+95: sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))
+97: float("inf")
+179: float("inf")
+
+src\eab\readers\bdda3d.py
+63: float(c["area"])
+71: float(c["o3t"])
+64: float(c["t1"])
+64: float(c["t2"])
+45: float(x)
+72: float(x)
+
+src\eab\readers\bdda_df.py
+66: float(v)
+112: float(raw["x"])
+112: float(raw["y"])
+192: float(g["b1"])
+191: float(g["cs3"])
+227: float(g[f"s{i}"])
+257: float(c["o5"])
+90: float(raw["o3"])
+90: float(raw["o4"])
+91: float(raw["t3"])
+91: float(raw["w0"])
+189: float(g["x1"])
+189: float(g["y1"])
+189: float(g["x2"])
+189: float(g["y2"])
+190: float(g["x3"])
+190: float(g["y3"])
+194: float(c["o2"])
+248: float(c["o3"])
+251: float(c["o2"])
+249: float(c["o4"])
+
+src\eab\readers\bdda_geom.py
+95: float(r["x"])
+95: float(r["y"])
+
+src\eab\readers\tf_probe.py
+75: float(r["time"])
+82: float(r["area"])
+86: float(r["gap"])
+88: float(r["normal_force"])
+55: float(r["time"])
+81: float(r["nx"])
+81: float(r["ny"])
+81: float(r["nz"])
+87: float(r["shear_dx"])
+87: float(r["shear_dy"])
+87: float(r["shear_dz"])
+80: float(r["px"])
+80: float(r["py"])
+80: float(r["pz"])
+
+tests\e5a_cover_oracle.py
+303: math.sqrt(sum(x*x for x in d))
+330: float((Decimal(squared.numerator)/Decimal(squared.denominator)).sqrt())
+330: (Decimal(squared.numerator)/Decimal(squared.denominator)).sqrt()
+408: math.sqrt(sum((hi[k]-lo[k])**2 for k in range(3)))
+405: math.sqrt(sum((v[k]-P.verts[0][k])**2 for k in range(3)))
+414: float("inf")
+
+tests\e5a_escape_oracle.py
+21: math.sqrt(sum(x*x for x in q))
+26: math.sqrt(sum(float(x)*float(x) for x in v))
+114: math.sqrt(float(dot(n,n)/(dot(da,da)*dot(db,db))))
+114: float(dot(n,n)/(dot(da,da)*dot(db,db)))
+20: float(x/s)
+26: float(x)
+26: float(x)
+63: float(w[k])
+85: float(pa[k]-pb[k])
+
+tests\e5a_g2_oracle.py
+47: math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2])
+60: float(value.sqrt())
+46: float(x/maximum)
+60: value.sqrt()
+
+tests\e5b_margin_oracle.py
+83: math.sqrt(float(nearest))
+83: float(nearest)
+90: math.sqrt(float(d2))
+90: float(d2)
+
+tests\perf_cover_oracle_reference.py
+270: math.sqrt(sum(x*x for x in d))
+286: math.sqrt(sum((hi[k]-lo[k])**2 for k in range(3)))
+283: math.sqrt(sum((v[k]-P.verts[0][k])**2 for k in range(3)))
+292: float("inf")
+
+tests\perf_escape_oracle_reference.py
+19: math.sqrt(sum(x*x for x in q))
+24: math.sqrt(sum(float(x)*float(x) for x in v))
+109: math.sqrt(float(dot(n,n)/(dot(da,da)*dot(db,db))))
+109: float(dot(n,n)/(dot(da,da)*dot(db,db)))
+18: float(x/s)
+24: float(x)
+24: float(x)
+60: float(w[k])
+80: float(pa[k]-pb[k])
+
+tests\test_covers3_g0_vote2.py
+221: math.sqrt(sum(c * c for c in q))
+
+tests\test_covers3_membership.py
+249: math.sqrt(sum(c * c for c in q))
+492: math.sqrt(sum(c * c for c in q))
+387: math.sqrt(3.0)
+218: float(c)
+
+tests\test_covers3_strict_lowdim.py
+147: math.sqrt(sum(c * c for c in q))
+40: math.hypot(gy, gz)
+79: float("inf")
+51: float("inf")
+63: float("inf")
+78: float("inf")
+
+tests\test_dual.py
+25: math.sqrt(0.7)
+25: sqrt(x)
+
+tests\test_e5a2_covers.py
+124: math.sqrt(3.)
+
+tests\test_e5a2_integer_arithmetic.py
+176: float((Decimal(gap2.numerator)/Decimal(gap2.denominator)).sqrt())
+185: float(s)
+185: float(t)
+176: (Decimal(gap2.numerator)/Decimal(gap2.denominator)).sqrt()
+
+tests\test_e5a2_interlock_bridge.py
+85: float(nominal)
+
+tests\test_e5b_triangle_near.py
+82: float(c)
+83: float(c)
+
+tests\test_end_to_end_cb2.py
+35: math.sqrt(0.5)
+35: math.sqrt(0.5)
+94: float("inf")
+74: math.sqrt(2.0)
+78: math.sqrt(2.0)
+
+tests\test_entrance3.py
+38: math.sqrt(sum(c * c for c in q))
+157: float(exact_time)
+
+tests\test_entrance3_concave.py
+80: float("inf")
+
+tests\test_entrance3_exact.py
+42: float(time)
+42: float(time)
+54: float('inf')
+
+tests\test_frozen_ee_sign.py
+92: math.sqrt(sum(c * c for c in q))
+66: float(x/max(map(abs,n)))
+215: math.sqrt(float(distance_squared))
+348: float(margin_gap_from_frozen_cover(A, B, lab, (0.0, 0.0, 0.0), 0.0, ee_sign=sgn))
+48: math.hypot(*scaled)
+67: math.hypot(*scaled)
+215: float(distance_squared)
+47: float(c/max(map(abs,direction)))
+68: float(a[i]-b[i])
+
+tests\test_frozen_lowdim.py
+81: math.sqrt(sum(g.e[k] ** 2 for k in range(3)))
+145: math.sqrt(sum(c * c for c in r))
+
+tests\test_frozen_surface_diagonal.py
+38: float(scale*(F(1.7)-F(1.5)))
+
+tests\test_g03_two_rulers.py
+23: math.sqrt(sum(c * c for c in q))
+161: math.hypot(0.8 * g, 0.8 * g)
+105: math.sqrt(3.0)
+
+tests\test_g2_bdda3d.py
+602: math.sqrt(sum(x * x for x in q))
+608: math.sqrt(sum(x * x for x in u))
+680: math.sqrt(sum(c * c for c in q))
+
+tests\test_geom3_e5a.py
+97: math.sqrt(float(sum(x*x for x in n)/4))
+99: math.sqrt(float(sum(x*x for x in n)))
+97: float(sum(x*x for x in n)/4)
+99: float(sum(x*x for x in n))
+100: float(x)
+
+tests\test_geom3_face_polygon.py
+48: math.sqrt(sum(c * c for c in q))
+169: math.hypot(q[0], q[1])
+327: math.sqrt(sum(max(0.0, lo2[i] - hi1[i], lo1[i] - hi2[i]) ** 2 for i in range(3)))
+135: math.hypot(bx - ax, by - ay)
+96: float(x)
+96: float(y)
+417: float("inf")
+346: float("inf")
+395: float("inf")
+416: float("inf")
+
+tests\test_geom3_merge.py
+57: math.sqrt(sum(c * c for c in q))
+326: float(i)
+326: float(j)
+179: float(x)
+179: float(y)
+179: float(x)
+179: float(y)
+207: float(c)
+
+tests\test_geom3_overlap_witness.py
+35: math.sqrt(sum(c * c for c in q))
+147: math.sqrt(sum(c * c for c in q))
+345: math.sqrt(sum(c * c for c in q))
+194: math.sqrt(dot(c, c))
+
+tests\test_hull_robustness.py
+111: math.sqrt(sum(c * c for c in q))
+44: math.sqrt(float(top * top / nn))
+44: float(top * top / nn)
+
+tests\test_interlocking.py
+142: float("inf")
+148: float("inf")
+
+tests\test_interlock_e5a.py
+26: math.sqrt(float(sine_squared))
+26: float(sine_squared)
+
+tests\test_interlock_exact.py
+113: float(sol.exact_height)
+
+tests\test_interlock_walls.py
+77: float(escape_height_from_frozen_cover(A, L, lab, (0.0, 0.0, 0.0), ee_sign=sg))
+95: float(escape_height_from_frozen_cover(A,L,lab,(0.,0.,0.),ee_sign=sg))
+32: float(x)
+32: float(y0)
+32: float(z)
+32: float(x)
+32: float(y1)
+32: float(z)
+115: float(escape_height_from_frozen_cover(A,L,lab,(0,0,0),ee_sign=sg))
+
+tests\test_invariance_2d.py
+176: math.hypot(*e)
+183: math.hypot(*d)
+197: math.hypot(p[0] - u[0] - t * ex, p[1] - u[1] - t * ey)
+177: math.hypot(*r)
+183: math.hypot(*r)
+180: math.hypot(*d)
+186: math.hypot(*u)
+186: math.hypot(*v)
+402: math.hypot(*ru)
+457: float(gap)
+457: math.hypot(float(nx), float(ny))
+435: float(gap)
+435: math.hypot(float(nx), float(ny))
+457: float(nx)
+457: float(ny)
+214: float(c)
+214: math.hypot(float(ex), float(ey))
+214: math.hypot(float(fx), float(fy))
+435: float(nx)
+435: float(ny)
+214: float(ex)
+214: float(ey)
+214: float(fx)
+214: float(fy)
+
+tests\test_invariance_geom.py
+82: math.sqrt(sum(c * c for c in q))
+125: math.sqrt(3.0)
+236: float("inf")
+233: float("inf")
+325: float("inf")
+382: float(c/scale)
+383: float(v/scale)
+383: math.sqrt(sum(c*c for c in u))
+
+tests\test_invariance_interlock.py
+91: math.sqrt(sum(c * c for c in q))
+135: math.sqrt(1.0 + m * m)
+172: math.hypot(o[0], o[1])
+443: float("inf")
+
+tests\test_invariance_limit.py
+60: sqrt(_dot(a, a))
+80: sqrt(sum(x * x for x in q))
+
+tests\test_kernel2d_convex_ray_exact.py
+98: float(want)
+
+tests\test_kernel2d_entrance_e3.py
+52: float(want)
+132: float(want)
+
+tests\test_kernel2d_exact.py
+43: float(v[0])
+44: float(v[1])
+39: float(v[0])
+39: float(v[1])
+42: float(m[0])
+42: float(m[1])
+84: math.sqrt(3)
+84: math.sqrt(3)
+
+tests\test_kernel2d_g0.py
+117: hypot(p[0] - q[0], p[1] - q[1])
+
+tests\test_kernel2d_predicates.py
+63: float(x)
+63: float(y)
+84: float(di)
+84: float(dj)
+
+tests\test_kernel2d_report_band.py
+35: float(scale * u)
+35: float(scale * v)
+67: float(offset + scale * u)
+67: float(-offset + scale * v)
+68: float(offset + scale * u)
+68: float(-offset + scale * v)
+
+tests\test_kernel2d_review.py
+100: math.hypot(dx, dy)
+
+tests\test_kernel3d_geom.py
+260: float(i)
+260: float(j)
+260: float(k)
+
+tests\test_limit_exact_selfcheck.py
+131: float(r.alpha)
+109: float("nan")
+109: float("inf")
+109: float("-inf")
+127: float(r.alpha)
+
+tests\test_limit_fuzz.py
+142: float(obj)
+
+tests\test_limit_multi.py
+240: math.hypot(y[0] - y[2] * p[1], y[1] + y[2] * p[0])
+355: float("nan")
+348: float("nan")
+348: float("nan")
+349: float("inf")
+
+tests\test_limit_selfcheck.py
+49: float("nan")
+49: float("inf")
+
+tests\test_limit_tangent_noise.py
+16: math.sqrt(3.0)
+
+tests\test_lp.py
+135: float(rng.randint(0, 3))
+137: float(rng.randint(-3, 4))
+198: float(rng.randint(0, 3))
+200: float(rng.randint(0, 4))
+277: float(rng.randint(0, 3))
+279: float(rng.randint(0, 4))
+134: float(rng.randint(-3, 4))
+197: float(rng.randint(-3, 4))
+276: float(rng.randint(-3, 4))
+
+tests\test_lp_certificates.py
+212: sqrt(sum(x * x for x in q))
+465: float(obj)
+364: sqrt(sum(x * x for x in q))
+510: float(-obj)
+510: float(-obj)
+809: sqrt(float(F[0] ** 2 + F[1] ** 2))
+130: float(v)
+455: float(result.alpha)
+455: float(value)
+457: float("inf")
+522: float(-obj)
+532: float(-obj)
+676: float(v)
+677: float(v)
+677: float(v)
+681: float(-ex_obj)
+702: float("inf")
+721: float(rng.randint(0, 1))
+723: float(rng.randint(-3, 3))
+809: float(F[0] ** 2 + F[1] ** 2)
+834: float(v)
+838: float(v)
+522: float(-obj)
+719: float(rng.randint(-2, 2))
+728: float(-obj)
+728: float(-obj)
+810: sqrt(sum(v * v for v in ct.point))
+819: float(obj)
+
+tests\test_margin_exact.py
+93: math.sqrt(2.)
+122: float(expected)
+36: float(gap)
+51: float(gap)
+125: float(expected)
+105: float(p[0])
+
+tests\test_margin_resolution.py
+218: math.sqrt(sum(c * c for c in q))
+283: math.sqrt(0.5)
+161: math.hypot(*v)
+345: float("inf")
+285: math.sqrt(2.0)
+
+tests\test_near_parallel_edges.py
+68: math.sqrt(sum(x * x for x in q))
+62: math.sqrt(float(best))
+62: float(best)
+
+tests\test_perf_2d_directions.py
+54: float(offset)
+54: float(-2*offset)
+123: float(tiny)
+61: float(F(origin[j])+scale*raw[j])
+
+tests\test_perf_integer_geometry.py
+32: float(x)
+
+tests\test_r6fix_construction.py
+45: float(s)
+84: sqrt_rational(midpoint**2-F(1, 2**300))
+85: sqrt_rational(midpoint**2)
+86: sqrt_rational(midpoint**2+F(1, 2**300))
+88: sqrt_rational(F(1, 2**2200))
+90: sqrt_rational(F(2**2200))
+128: float(s)
+129: float(s)
+136: float(T)
+197: float(2*s)
+47: float(translation+s)
+82: sqrt_rational(s*s)
+82: float(s)
+95: math.sqrt(float(value))
+125: float(T-1)
+125: float(T)
+125: float(T)
+125: float(T-1)
+95: float(value)
+151: float(scale)
+151: math.sqrt(5)
+152: float(c)
+152: math.sqrt(5)
+165: math.sqrt(3)
+185: float(s)
+185: math.sqrt(3)
+
+tests\test_r6fix_dual_lp.py
+66: float(F(du) * F(v) + F(u) * F(dv))
+43: float(q)
+57: float(q)
+86: float(expected)
+43: float(q)
+57: float(q)
+74: float(-F(seed) / F(base) ** 2)
+146: float(t)
+147: float(t)
+91: float(expected)
+146: float(t)
+108: float(i + 1)
+
+tests\test_r6fix_frozen_construction.py
+55: math.sqrt(0.28)
+48: float(s)
+45: float(s)
+
+tests\test_r6fix_g0.py
+72: float(scale/2)
+109: float(F(7,9)*F(s))
+109: float(F(4,9)*F(s))
+139: float(t)
+139: float(t)
+
+tests\test_r6fix_g2_oracle.py
+30: float(s)
+34: math.sqrt(float(squared))
+34: float(squared)
+
+tests\test_r6fix_geom3.py
+133: float(scale)
+212: float(s)
+219: float(s)
+225: float(2*s)
+183: math.sqrt(G.dot(a, a))
+
+tests\test_r7fix_docs.py
+55: float(F(center[k]) + s[k]*half)
+
+tests\test_r7fix_dual.py
+45: float(F(-5) * F(x) ** -6 * F(x))
+24: float(q)
+25: float(F(2) ** int(exponent * p))
+30: float(p)
+
+tests\test_r7fix_frozen.py
+24: float(2*q)
+29: math.sqrt(3)
+34: float(q)
+
+tests\test_r7fix_g03.py
+39: float(c.point_a[0])
+
+tests\test_r7fix_geom2.py
+182: float(F(64*sys.float_info.epsilon)*2*F(m))
+74: math.hypot(*c.normal)
+63: float(q)
+63: float(q)
+68: float(2*q if rational else q)
+71: float((Decimal((F(v)**2/square).numerator) /
+                                Decimal((F(v)**2/square).denominator)).sqrt())
+107: math.sqrt(.5)
+107: math.sqrt(.5)
+71: (Decimal((F(v)**2/square).numerator) /
+                                Decimal((F(v)**2/square).denominator)).sqrt()
+
+tests\test_r7fix_geom3.py
+88: float(8*F(s)*F(s)*F(h))
+41: float(2*scale)
+79: float(gap)
+104: float(F(s)*F(s)*F(h)/6)
+112: float(2*U)
+113: float(2*U)
+118: float(2*U)
+46: float(U)
+46: float(2*U)
+46: float(2*U)
+66: float(U)
+150: float(U)
+76: float(rotation[k][2])
+125: math.sqrt(2)
+
+tests\test_r7fix_limit_construction.py
+31: float(2*q)
+17: float(7*q)
+23: float(2*q)
+
+tests\test_r7fix_margin_oracle.py
+27: float(2*scale)
+
+tests\test_r8fix_dihedral.py
+21: float(F(1,6))
+24: float(F(1,2*M*M))
+
+tests\test_r8fix_frozen.py
+38: float(gap)
+90: float(expected)
+245: float(excess*scale)
+253: sqrt_rational(c*c/nn,allow_underflow=True)
+43: float(gap)
+44: float(gap)
+45: float(gap)
+201: float(offset)
+217: float(expected)
+254: float(offset)
+40: float(Q[k][1]*10**20)
+
+tests\test_r8fix_initial_state.py
+137: float(1 / Decimal((M+1)**2+M*M).sqrt())
+159: float(determinant/scalar)
+57: float(offset+scale*x)
+57: float(-2*offset+scale*y)
+117: float(p[0]+shear*p[1])
+117: float(p[1])
+133: float(M)
+133: float(M-2)
+133: float(M+1)
+133: float(M-2)
+133: float(M)
+133: float(M-1)
+134: float(M+1)
+134: float(M)
+137: Decimal((M+1)**2+M*M).sqrt()
+
+tests\test_readers_roundtrip.py
+139: float(d["p3"])
+140: float(d["mtype"])
+
+tests\test_tf_reader.py
+94: float(o["time"])
+99: float(o[c])

@@ -36,6 +36,8 @@ def test_g03_a_finite_minimum_cannot_hide_a_nonfinite_candidate(monkeypatch):
     monkeypatch.setattr(C,'enumerate_covers3',scope['enumerate_covers3'])
     A,B=box(),box(center=(3,0,0))
     real=C.enumerate_covers3(A,B,window=math.inf,tol=0)
-    assert any(c.in_extent and math.isnan(float(c.point_a[0])) for c in real)
+    # The injected coordinate already is a binary64 NaN, not an exact quantity
+    # to be constructed. Inspect it directly before asking the report to fail.
+    assert any(c.in_extent and math.isnan(c.point_a[0]) for c in real)
     report=G.g0_distance_completeness3(A,B,radius=0,samples=1,tol=0)
     assert not report.passed, 'finite minimum must not hide an invalid constructed witness'

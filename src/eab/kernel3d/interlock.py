@@ -17,6 +17,7 @@ tests/test_interlock_walls.py, tests/test_e5a2_interlock_bridge.py.
 """
 
 from __future__ import annotations
+from eab.construction import scalar_rational
 
 import sys
 import math
@@ -301,7 +302,7 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
         if root==0:
             break
     root,event,proof,state,events,name=min(solved,key=lambda row:row[0])
-    display=float(root)
+    display=scalar_rational(root)
     if F(display)<root:
         display=math.nextafter(display,math.inf)
     lab=None; tied=()

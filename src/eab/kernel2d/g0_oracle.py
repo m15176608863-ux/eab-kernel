@@ -1,22 +1,17 @@
 ﻿"""Independent exact G0 oracle, sharing no production geometric primitive.
 
 The implementation uses integer winding/intersections and rational segment
-projections/events. Only final distance display uses Decimal square root.
+projections/events. Final display uses the independent Fraction-midpoint reference boundary.
 """
-from decimal import Decimal, localcontext
+from eab.oracle_construction import sqrt_exact, scalar_exact
 from fractions import Fraction as F
 from math import lcm
 from functools import cmp_to_key
 
 
 def sqrt_display(q):
-    """Independent wide-exponent square root; never round the square to float."""
-    with localcontext() as ctx:
-        ctx.prec = 80
-        value = float((Decimal(q.numerator) / Decimal(q.denominator)).sqrt())
-    if q and (value == 0 or value == float('inf')):
-        raise OverflowError('G0 distance cannot be represented as a nonzero finite float')
-    return value
+    """Independent midpoint-certified square root; never round the square to float."""
+    return sqrt_exact(q)
 
 
 def points(P):
@@ -109,7 +104,7 @@ def distance(A,B):
             for j,a in enumerate(Q):
                 square,t=segment_square(p,a,Q[(j+1)%len(Q)])
                 if best is None or square<best:
-                    best,arg=square,(tag,i,j,float(t))
+                    best,arg=square,(tag,i,j,scalar_exact(t))
     return sqrt_display(best),arg
 
 

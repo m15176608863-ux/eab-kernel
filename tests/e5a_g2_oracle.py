@@ -3,7 +3,7 @@
 Hull faces are found by exhaustive rational support triples (not incremental
 hull construction). Local labels use e5a_cover_oracle's independent Newell,
 Gram and Gordan-ray formulas. Float normals/gaps are construction outputs;
-gaps are independently rounded from rational squared distance with Decimal,
+gaps are independently rounded from rational squared distance by bit search,
 not a production construction helper or a dot product of rounded vectors.
 The enumeration window itself compares exact rational squared feature distance.
 """
@@ -11,7 +11,7 @@ from functools import lru_cache
 from itertools import combinations
 import math
 from fractions import Fraction
-from decimal import Decimal, localcontext
+from construction_oracle import sqrt_exact, unit_exact
 
 from e5a_cover_oracle import q, sub, add, scale, dot, cross, model, arc, cover_labels
 
@@ -42,22 +42,13 @@ def assert_exact_hull(P):
 
 
 def _unit(n):
-    maximum = max(map(abs, n))
-    v = tuple(float(x/maximum) for x in n)
-    length = math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2])
-    return tuple(x/length for x in v)
+    # Display normal only; direction and window branches retain the exact model.
+    return unit_exact(n, allow_underflow=True)
 
 
 def _distance_display(squared):
-    """Independent high-precision root; only the final display is binary64.
-
-    Precision follows the rational input bit lengths, including subnormals and
-    near-cancelling engineering coordinates. No eab scalar helper is called.
-    """
-    with localcontext() as context:
-        context.prec = max(100, (squared.numerator.bit_length()+squared.denominator.bit_length()+2200)*302//1000+32)
-        value = Decimal(squared.numerator)/Decimal(squared.denominator)
-        return float(value.sqrt())
+    """Independent bit search with exact midpoint rounding, never a production constructor."""
+    return sqrt_exact(squared)
 
 
 def construction(A, B, label, tol, *, distance_squared=False):

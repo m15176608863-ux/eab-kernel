@@ -4,6 +4,7 @@ No production geometric primitive computes the expected answer. The raw boxes
 and folded roof are assigned explicitly; the oracle's test-only triangulation
 must not replace the closed-form lower/upper bound used here.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 from types import SimpleNamespace
 import pytest
@@ -24,7 +25,7 @@ def test_margin_oracle_uses_actual_folded_surface_not_newell_descriptor(scale,tr
     assert tuple((F(bv[5][k])+bv[7][k])/2 for k in range(3))==(0,0,1)
     expected=O.margin_selection(a,b,F(5,2)*scale)
     assert label in expected, 'folded-margin-oracle-inclusion'
-    assert expected[label]==float(2*scale), 'folded-margin-oracle-distance'
+    assert expected[label]==scalar_exact(2*scale), 'folded-margin-oracle-distance'
 
 
 def test_restoring_newell_margin_distance_is_rejected(monkeypatch):

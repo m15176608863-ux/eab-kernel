@@ -1,4 +1,5 @@
 """Independent G2 construction oracle contracts; no production sqrt reference."""
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import math
 
@@ -27,7 +28,7 @@ def test_g2_oracle_signed_gap_cannot_cancel_exact_small_offset():
     point = rotate((-1-s, t, 0))
     a = box(center=tuple(v+1 for v in point), half=(F(1),)*3)
     gap, _ = O.construction(a, b, ('VF', ('vertex', 0), ('face', 5)), 0.)
-    assert gap == float(s), 'g2-oracle-exact-signed-plane-distance'
+    assert gap == scalar_exact(s), 'g2-oracle-exact-signed-plane-distance'
 
 
 def test_g2_oracle_early_square_rounding_mutation_is_caught(monkeypatch):

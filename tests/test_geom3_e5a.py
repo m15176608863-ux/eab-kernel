@@ -3,6 +3,7 @@
 Oracles use rectangular unions, determinant formulas and rational affine maps;
 they do not call production normals, membership, convex hull, or SAT routines.
 """
+from construction_oracle import scalar_exact, sqrt_exact, unit_exact
 from fractions import Fraction as F
 import inspect
 import math
@@ -94,10 +95,9 @@ def test_exact_thin_hull_facet_is_not_reported_as_zero_area_by_float_cancellatio
     u,v=[tuple(p[i]-a[i] for i in range(3)) for p in (b,c)]
     n=(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])
     assert any(n)
-    want=math.sqrt(float(sum(x*x for x in n)/4))
+    want=sqrt_exact(sum(x*x for x in n)/4)
     assert P.face_area(0) == pytest.approx(want,rel=1e-15,abs=0)
-    length=math.sqrt(float(sum(x*x for x in n)))
-    assert P.face_normal(0) == pytest.approx(tuple(float(x)/length for x in n),rel=1e-15,abs=0)
+    assert P.face_normal(0) == pytest.approx(unit_exact(n),rel=1e-15,abs=0)
 
 
 def test_coplanar_merge_never_merges_a_genuine_subulp_scale_ridge():

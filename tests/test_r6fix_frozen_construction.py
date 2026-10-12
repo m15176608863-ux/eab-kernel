@@ -1,4 +1,5 @@
 """Closed-form axis/3-4-5 jet oracles; no production geometry primitives."""
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import math
 
@@ -42,10 +43,10 @@ def test_frozen_affine_gap_preserves_fraction_microfeature_at_large_coordinates(
     g = frozen_gap(A, B, label, x, n)
     if with_dual:
         assert [q.v for q in n] == [1.0, 0.0, 0.0]
-        assert g.v == float(s) and g.e == (1.0,)
+        assert g.v == scalar_exact(s) and g.e == (1.0,)
     else:
         assert n == (1.0, 0.0, 0.0)
-        assert g == float(s)
+        assert g == scalar_exact(s)
 
 
 def test_frozen_gap_does_not_overflow_cancelling_dot_products():

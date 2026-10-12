@@ -69,6 +69,7 @@ tests/test_lp_certificates.py（精确层的牙：`test_a_lying_float_layer_cann
 from __future__ import annotations
 
 from dataclasses import dataclass
+from eab.construction import scalar_rational
 from fractions import Fraction
 from math import frexp, ldexp
 
@@ -498,7 +499,7 @@ _EXACT_PIVOT_CAP = 1_000_000  # 有理数单纯形的换基上限：有限步终
 def _fl(v: Fraction) -> float:
     """有理数 → 浮点（正确舍入）；超出浮点范围时给 ±inf 而不是抛 OverflowError（近奇异基上精确解可以超出范围）。"""
     try:
-        return float(v)
+        return scalar_rational(v, allow_underflow=True)  # Display/candidate; exact certificate is retained.
     except OverflowError:
         return float("inf") if v > 0 else float("-inf")
 

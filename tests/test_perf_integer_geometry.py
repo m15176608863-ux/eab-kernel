@@ -4,6 +4,7 @@ The old Fraction expressions are a secondary implementation comparison, not
 an independent G0 oracle. The primary analytic segment/plane/box constructions
 below use only rational arithmetic and no production geometric primitives.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import random
@@ -29,7 +30,7 @@ def distance_cases():
         s = (F(1, 10**9), F(1), F(10**4))[k % 3]
         pts = [tuple(s*x+(j+1)*t for j, x in enumerate(p)) for p in pts]
         if k % 4 == 0:
-            pts = [tuple(float(x) for x in p) for p in pts]
+            pts = [tuple(scalar_exact(x) for x in p) for p in pts]
         cases.append(tuple(pts))
     # Near-parallel, exact crossing, subnormal, and enormous original inputs.
     for s in (F(1, 2**1074), F(1, 2**500), F(1), F(2**500)):
@@ -78,7 +79,7 @@ def _move(P, t, s, rounded=False):
         x, y = F(3, 5)*x-F(4, 5)*y, F(4, 5)*x+F(3, 5)*y
         y, z = F(5, 13)*y-F(12, 13)*z, F(12, 13)*y+F(5, 13)*z
         p = (s*x+t, s*y-2*t, s*z+3*t)
-        points.append(tuple(map(float, p)) if rounded else p)
+        points.append(tuple(map(scalar_exact, p)) if rounded else p)
     return Polyhedron(points, list(P.faces))
 
 

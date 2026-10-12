@@ -22,6 +22,7 @@ oracle 与被测代码不共用原语（纪律 A）：精确 LP（`_exact_max`�
 极限分析的真值用闭式。精度门与三维扭转门用 `_build_columns` 造同一个 LP——它核验的是**求解器**在给定 LP 上的
 精度，不是建模。
 """
+from construction_oracle import scalar_exact, sqrt_exact
 
 import random
 from fractions import Fraction
@@ -127,7 +128,7 @@ def test_infeasible_status_carries_a_farkas_certificate(name):
     for j in range(len(c)):
         v = sum(y[i] * Fraction(A[i][j]) for i in range(len(A)))
         scale = sum(abs(y[i] * Fraction(A[i][j])) for i in range(len(A))) + ymax * max(abs(Fraction(A[i][j])) for i in range(len(A)))
-        assert v <= Fraction(1, 10 ** 9) * scale, (name, j, float(v))       # y 是精确证书舍入成浮点，只差舍入
+        assert v <= Fraction(1, 10 ** 9) * scale, (name, j, scalar_exact(v))       # y 是精确证书舍入成浮点，只差舍入
 
 
 def test_exact_certificate_rejects_wrong_candidates():
@@ -452,7 +453,7 @@ def _assert_same_exact_limit_result(result, cts, dead, live, dim, k):
     assert result.status == status, (result.status, status, getattr(result,"resolvability",None))
     if status == "optimal":
         assert result.alpha.exact == value, (result.alpha.exact, value)
-        assert float(result.alpha) == float(value)
+        assert scalar_exact(result.alpha) == scalar_exact(value)
     if status == "unbounded":
         assert result.alpha == float("inf")
     return status, value
@@ -462,7 +463,7 @@ def _exact_alpha(cts, dead, live, dim, k):
     """同一个 LP 的精确最优值（见 `_exact_limit_lp`）。"""
     st, obj = _exact_max(*_exact_limit_lp(cts, dead, live, dim, k))
     assert st == "optimal"
-    return float(obj)
+    return scalar_exact(obj)
 
 
 # 09-27 对 3000 例做精确对照时误差最大的几例（43d1e50 在其中最多偏低 5.3e-7，58752a5 最多 1.07e-7；
@@ -507,7 +508,7 @@ def test_reverify3_lp_counterexamples_are_answered_exactly(name):
     st, obj = _exact_max(A, b, [-v for v in c])
     r = solve(A, b, c)
     assert st == "optimal" and r.status == OPTIMAL
-    assert r.obj == float(-obj), (name, r.obj, float(-obj))
+    assert r.obj == scalar_exact(-obj), (name, r.obj, scalar_exact(-obj))
 
 
 @pytest.mark.parametrize("eta", [1e-5, 1e-8, 1e-10])
@@ -519,7 +520,7 @@ def test_optimality_is_exact_when_the_step_is_huge(eta, d):
     for c in ([-1.0, 1.0, 1.0 - d, 0.0], [-1.0, 1.0 - d, 1.0, 0.0]):              # 两种列序
         st, obj = _exact_max(A, [1.0, 1.0], [-v for v in c])
         r = solve(A, [1.0, 1.0], c)
-        assert st == "optimal" and r.status == OPTIMAL and r.obj == float(-obj), (eta, d, r.obj, float(-obj))
+        assert st == "optimal" and r.status == OPTIMAL and r.obj == scalar_exact(-obj), (eta, d, r.obj, scalar_exact(-obj))
 
 
 @pytest.mark.parametrize("d", [1e-6, 1e-8, 1e-10, 1e-11, 1e-12, 1e-13])
@@ -529,7 +530,7 @@ def test_nearly_parallel_rows_are_feasible_exactly(d):
     A = [[1.0, -1.0, 0.0], [-1.0, 1.0 + d, -1.0]]
     st, obj = _exact_max(A, [1.0, 0.0], [0.0, -1.0, 0.0])
     r = solve(A, [1.0, 0.0], [0.0, 1.0, 0.0])
-    assert st == "optimal" and r.status == OPTIMAL and r.obj == float(-obj), (d, r.status, r.obj)
+    assert st == "optimal" and r.status == OPTIMAL and r.obj == scalar_exact(-obj), (d, r.status, r.obj)
 
 
 @pytest.mark.parametrize("xg", [0.5, 0.2, -0.3])
@@ -673,12 +674,12 @@ def test_exact_simplex_terminates_on_classic_cycling_examples(monkeypatch, name)
            "chvatal": ([[0.5, -5.5, -2.5, 9, 1, 0, 0], [0.5, -1.5, -0.5, 1, 0, 1, 0], [1, 0, 0, 0, 0, 0, 1]],
                        [0, 0, 1], [-10, 57, 9, 24, 0, 0, 0], [4, 5, 6])}
     A, b, c, start = LPS[name]
-    Af = [[float(v) for v in row] for row in A]
-    X = lp._Exact(Af, [float(v) for v in b], [float(v) for v in c], (A, b, c))
+    Af = [[scalar_exact(v) for v in row] for row in A]
+    X = lp._Exact(Af, [scalar_exact(v) for v in b], [scalar_exact(v) for v in c], (A, b, c))
     st, basis, e, piv = lp._exact_simplex(X, start)
     res = X.certify(st, basis, e, piv)
     ex_st, ex_obj = _exact_max(A, b, [-Fraction(v) for v in c])
-    assert res is not None and st == ex_st == "optimal" and res.obj == float(-ex_obj), (name, st, piv)
+    assert res is not None and st == ex_st == "optimal" and res.obj == scalar_exact(-ex_obj), (name, st, piv)
 
 
 def test_unbounded_certificate_requires_a_descent_direction(monkeypatch):
@@ -716,16 +717,16 @@ def test_redundant_and_degenerate_rows_through_the_exact_path(monkeypatch):
     rng = random.Random(4)
     for t in range(200):
         m, n = rng.randint(2, 4), rng.randint(2, 6)
-        base = [[float(rng.randint(-2, 2)) for _ in range(n)] for _ in range(m)]
+        base = [[scalar_exact(rng.randint(-2, 2)) for _ in range(n)] for _ in range(m)]
         rows = base + [[2.0 * v for v in base[rng.randrange(m)]]]          # 一行冗余（另一行的 2 倍）
-        x0 = [float(rng.randint(0, 1)) for _ in range(n)]                  # 右端项取一个 0/1 解，大量退化
+        x0 = [scalar_exact(rng.randint(0, 1)) for _ in range(n)]                  # 右端项取一个 0/1 解，大量退化
         b = [sum(a * x for a, x in zip(row, x0)) for row in rows]
-        c = [float(rng.randint(-3, 3)) for _ in range(n)]
+        c = [scalar_exact(rng.randint(-3, 3)) for _ in range(n)]
         st, obj = _exact_max(rows, b, [-v for v in c])
         r = solve(rows, b, c)
         assert r.status == st, (t, r.status, st)
         if st == "optimal":
-            assert r.obj == float(-obj), (t, r.obj, float(-obj))
+            assert r.obj == scalar_exact(-obj), (t, r.obj, scalar_exact(-obj))
 
 
 @pytest.mark.parametrize("th,mu", [(0.1, 0.4), (0.2, 0.4), (0.3, 0.6), (0.1, 0.6), (0.25, 0.5)])
@@ -806,7 +807,7 @@ def test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certif
     ia = [j for j, cj in enumerate(c) if cj == 1.0][0]
     u = Fraction(4) * Fraction(2) ** -53
     F = [A[i][ia] for i in range(2)]
-    Fn = Fraction(sqrt(float(F[0] ** 2 + F[1] ** 2)))
+    Fn = Fraction(sqrt_exact(F[0] ** 2 + F[1] ** 2))
     R = Fraction(max(sqrt(sum(v * v for v in ct.point)) for ct in cts))
     e = [u * Fn, u * Fn, u * (abs(A[2][ia]) + Fn * R)]
     finite = []
@@ -816,7 +817,7 @@ def test_an_unbounded_conclusion_that_turns_finite_within_rounding_is_not_certif
             A2[i][ia] = A[i][ia] + sg[i] * 16 * e[i]
         st, obj = _exact_max(A2, b, c)
         if st == "optimal":
-            finite.append(float(obj))
+            finite.append(scalar_exact(obj))
     assert finite, "the ±16e box should contain a finite capacity"
     r = limit_load(cts, dead, live, dim=2, k=4)
     status,_ = _assert_same_exact_limit_result(r,cts,dead,live,2,4)
@@ -831,9 +832,9 @@ def test_float_filter_never_decides_a_sign_from_an_overflowed_estimate():
     A = [[1.0], [1.0], [1.0]]
     X = lp._Exact(A, [1.0, 1.0, 1.0], [1.7e308])
     y = [Fraction(-1.7e308), Fraction(1.79e308), Fraction(1.79e308)]         # r = 1.7 + 1.7 − 1.79 − 1.79 (e308) < 0
-    sg, s = X.reduced_sign(X.c, X.cf, y, [float(v) for v in y], 0)
+    sg, s = X.reduced_sign(X.c, X.cf, y, [scalar_exact(v) for v in y], 0)
     assert sg == -1, (sg, s)
     X2 = lp._Exact(A, [1.0, 1.0, 1.0], [-1.7e308])
     y2 = [Fraction(1.7e308), Fraction(-1.79e308), Fraction(-1.79e308)]      # r = −1.7 − 1.7 + 1.79 + 1.79 (e308) > 0
-    sg2, s2 = X2.reduced_sign(X2.c, X2.cf, y2, [float(v) for v in y2], 0)
+    sg2, s2 = X2.reduced_sign(X2.c, X2.cf, y2, [scalar_exact(v) for v in y2], 0)
     assert sg2 == 1, (sg2, s2)

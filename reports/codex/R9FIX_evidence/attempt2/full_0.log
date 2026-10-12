@@ -1,0 +1,63 @@
+........................................................................ [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 18%]
+........................................................................ [ 22%]
+........................................................................ [ 26%]
+........................................................................ [ 30%]
+...................................................................F.... [ 33%]
+........................................................................ [ 37%]
+........................................................................ [ 41%]
+........................................................................ [ 45%]
+........................................................................ [ 48%]
+........................................................................ [ 52%]
+........................................................................ [ 56%]
+........................................................................ [ 60%]
+........................................................................ [ 63%]
+........................................................................ [ 67%]
+........................................................................ [ 71%]
+........................................................................ [ 75%]
+........................................................................ [ 78%]
+........................................................................ [ 82%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+................................................                         [100%]
+================================== FAILURES ===================================
+_ test_migrated_margin_gate_catches_real_pre_subtraction_rounding[old_subtraction-ordinary_1ulp] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000082C50A0>
+gate = <function _ordinary_gap_gate at 0x000000000491FF60>
+fault = 'old_subtraction'
+
+    @pytest.mark.parametrize("gate", [_ordinary_gap_gate, _large_gap_gate], ids=["ordinary_1ulp", "large_cancellation"])
+    @pytest.mark.parametrize("fault", ["old_subtraction", "omit_delta", "reverse_delta", "double_distance"])
+    def test_migrated_margin_gate_catches_real_pre_subtraction_rounding(monkeypatch, gate, fault):
+        gate()
+        _arithmetic_fault_inside_margin_contacts(monkeypatch, fault)
+>       with pytest.raises(AssertionError, match="exact margin-gap midpoint"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'AssertionError'>
+
+tests\test_r8fix_margin_gap_gate.py:55: Failed
+============================ slowest 15 durations =============================
+57.50s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[drop_VE_subset]
+44.11s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[no_EV_covers]
+29.16s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[strict_cone_only]
+29.03s call     tests/test_bb52_g1.py::test_g0_exit_completeness_is_blind_to_vv_by_construction
+27.77s setup    tests/test_bb52_g1.py::test_geometry_reconstruction
+20.88s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[no_VV_covers]
+14.08s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[strict_cone_only]
+13.70s call     tests/test_bb52_g1.py::test_g0_rerun_replays_the_original_1186_translations
+3.08s call     tests/test_margin_exact.py::test_content_cache_is_value_identical_to_the_uncached_exact_path
+0.50s call     tests/test_geom3_overlap_witness.py::test_overlap_is_exact_on_random_convex_pairs_with_coplanar_faces[shared_rotation]
+0.50s call     tests/test_geom3_overlap_witness.py::test_overlap_is_exact_on_random_convex_pairs_with_coplanar_faces[independent_rotations]
+0.47s call     tests/test_e5b_triangle_boolean.py::test_boolean_intersection_matches_independent_rational_feasibility
+0.45s call     tests/test_kernel3d_covers.py::test_proposition_2i_position_independence[generic]
+0.45s call     tests/test_covers3_membership.py::test_rotated_box_box_passes_the_three_votes[7]
+0.38s call     tests/test_r8fix_margin_gap_gate.py::test_migrated_margin_gate_catches_real_pre_subtraction_rounding[old_subtraction-ordinary_1ulp]
+=========================== short test summary info ===========================
+FAILED tests/test_r8fix_margin_gap_gate.py::test_migrated_margin_gate_catches_real_pre_subtraction_rounding[old_subtraction-ordinary_1ulp]
+1 failed, 1919 passed in 265.86s (0:04:25)

@@ -5,6 +5,7 @@ edges cross at the origin, so the plane separation is attained and proves the
 exact distance independently of production covers, triangulation or predicates.
 Exact rational rigid transforms preserve that certificate.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import pytest
@@ -35,7 +36,7 @@ def _check(mirrored,scale,translation):
     distance,label=body_distance(a,b)
     assert label==('EE',('edge',0,1),('edge',5,7))
     assert (5,7) not in b.edges()
-    expected=float(scale*(F(1.7)-F(1.5)))
+    expected=scalar_exact(scale*(F(1.7)-F(1.5)))
     assert distance==pytest.approx(expected,rel=1e-13,abs=0.)
     sign=frozen.frozen_ee_sign(a,b,(0,1),(5,7))
     gap=margin_gap_from_frozen_cover(a,b,label,(0,0,0),0.,ee_sign=sign)

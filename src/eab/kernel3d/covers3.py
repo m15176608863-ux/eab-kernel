@@ -20,6 +20,9 @@ floor. Positive caller tol / extent_tol may only expand closed domain windows;
 strictness always reads the exact zero threshold. window is a caller distance
 search window. Construction outputs (unit normals, points and gaps) are floats.
 
+Public vertex/edge/cone APIs resolve the declared triangulated solid before
+any cone test; only source-labelled single-cover helpers keep descriptor semantics.
+
 Gordan cone feasibility is certified with an exact minimum-norm active-simplex
 algorithm; no thin triangle/simplex or barycentric tolerance changes the answer.
 """
@@ -32,7 +35,7 @@ from functools import lru_cache
 from itertools import combinations
 from math import gcd, lcm
 
-from eab.construction import sqrt_rational
+from eab.construction import sqrt_rational, norm_rational, vector_rational, scalar_rational
 
 from . import geom3
 from .geom3 import (Polyhedron, Vec3, add, cross, dot, mul, neg, norm,
@@ -87,7 +90,7 @@ def _qincident_cached(vertices, faces, vi, edge_implementation):
 
 
 def _float_vector(v):
-    return tuple(float(x) for x in v)
+    return vector_rational(v, allow_underflow=True)
 
 
 def _qunit(v, *, allow_underflow=False):
@@ -124,6 +127,7 @@ def _normalised_constraint(v):
 
 
 def _qvertex_contains(P, vi, d, tol=0.0):
+    """Internal source-ring cone; public solid APIs resolve exact_surface first."""
     edges = _qincident(P, vi)
     return _qvertex_state_cached(edges, tuple(d), tol, _outside_dot_band)
 
@@ -151,7 +155,9 @@ def _integer_ray(v):
 
 
 def _qedge_contains(P, e, d, tol=0.0):
-    """Exact oriented wedge; integer rays preserve the normalized-dot window.
+    """Internal source-ring wedge; public solid APIs resolve exact_surface first.
+
+    Integer rays preserve the normalized-dot window.
 
     Each vector is multiplied by its own strictly positive rational factor.
     Signs/zeros and value**2/(norm(a)**2*norm(b)**2) therefore do not change.
@@ -243,6 +249,10 @@ class Cover3:
     exact_area_squared: Fraction | None = None
     exact_normal_direction: tuple[Fraction, ...] | None = None  # unnormalised display certificate
 
+    # Projection parameters may display zero below binary64; exact values remain
+    # available and control extent. Gate: test_cover_parameter_underflow_keeps_exact_certificate.
+    exact_params: tuple[Fraction, ...] | None = None
+
     def label(self) -> tuple:
         return (self.kind, self.a_feature, self.b_feature)
 
@@ -250,22 +260,39 @@ class Cover3:
 # ------------------------------------------------------------------ 法锥判据
 
 def vertex_cone_contains(P: Polyhedron, vi: int, d: Vec3, tol: float = 0.0) -> int:
-    """Exact local vertex cone: 1 strict / 0 boundary / -1 outside.
+    """Declared-solid vertex cone: 1 strict / 0 boundary / -1 outside.
 
-    The supplied direction and original vertex coordinates are exact inputs.
-    Positive tol only expands the closed cone; it never changes strictness.
+    Resolve nonplanar rings to their declared triangles before collecting
+    incident edges. exact_surface preserves every original vertex index.
+    Positive tol expands only the closed cone, not strictness.
+    Gate: test_public_vertex_cone_uses_declared_surface_while_source_single_cover_is_explicit.
     """
-    return _qvertex_contains(P, vi, _qvector(d), tol)
+    return _qvertex_contains(geom3.exact_surface(P), vi, _qvector(d), tol)
 
 
 def edge_arc_contains(P: Polyhedron, e: tuple[int, int], d: Vec3, tol: float = 0.0) -> int:
-    """Exact local convex edge arc, with an optional explicit angular window."""
-    return _qedge_contains(P, e, _qvector(d), tol)
+    """Declared-solid convex edge arc, with an explicit angular window.
+
+    Actual adjacent triangle normals are used on folded rings, including
+    internal diagonal edges; source vertex indices are preserved.
+    Gate: test_public_edge_arc_uses_declared_adjacent_triangle_normal.
+    """
+    return _qedge_contains(geom3.exact_surface(P), e, _qvector(d), tol)
+
+
+def _source_cone_constraints(A, ia, B, ib):
+    """Source-ring descriptors only, used by explicitly source-labelled covers."""
+    return [*_qincident(B, ib), *(neg(f) for f in _qincident(A, ia))]
 
 
 def cone_constraints(A: Polyhedron, ia: int, B: Polyhedron, ib: int) -> list[Vec3]:
-    """Unnormalized exact incident vectors defining N_B(b) intersect -N_A(a)."""
-    return [*_qincident(B, ib), *(neg(f) for f in _qincident(A, ia))]
+    """Exact incident constraints on the declared triangulated solids.
+
+    Folded-ring internal diagonals are real incident edges. This public solid
+    API is distinct from the explicitly source-labelled single-cover helpers.
+    Gate: test_public_cone_constraints_include_folded_internal_incident_ridge.
+    """
+    return _source_cone_constraints(geom3.exact_surface(A), ia, geom3.exact_surface(B), ib)
 
 
 def _closest_point_on_segment(a: Vec3, b: Vec3) -> Vec3:
@@ -398,14 +425,15 @@ def cone_relint_direction(g: list[Vec3], tol: float = 1e-12) -> Vec3 | None:
 
 def cone_intersection_margin(A: Polyhedron, ia: int, B: Polyhedron, ib: int) -> tuple[float, float]:
     """Distance to an exact positively-rescaled constraint hull; noise is report-only."""
-    g = cone_constraints(A, ia, B, ib)
+    A, B = geom3.exact_surface(A), geom3.exact_surface(B)
+    g = _source_cone_constraints(A, ia, B, ib)
     # Rational normalization preserves whether zero is in the convex hull.
     points = tuple(_normalised_constraint(x) for x in g if any(x))
     noise = max((nz for _, nz in A.vertex_edges(ia) + B.vertex_edges(ib)), default=0.0)
     if not points:
         return 0.0, noise
     p = _qclosest_hull(points)
-    return norm(_float_vector(p)), noise
+    return norm_rational(p), noise
 
 
 def cones_intersect_relint(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 1e-12) -> bool:
@@ -416,13 +444,21 @@ def cones_intersect_relint(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: 
     return _cone_relint_cached(tuple(A.verts), tuple(A.faces), ia,
                               tuple(B.verts), tuple(B.faces), ib,
                               (cone_constraints, _qincident, _qedge, _qclosest_hull,
+                               _qclosest_simplex, _qtetra_contains_origin, _normalised_constraint, geom3.exact_surface))
+
+
+def _source_cones_intersect_relint(A, ia, B, ib):
+    """Exact descriptor feasibility for source-labelled VV3, not solid API."""
+    return _cone_relint_cached(tuple(A.verts), tuple(A.faces), ia,
+                              tuple(B.verts), tuple(B.faces), ib,
+                              (_source_cone_constraints, _qincident, _qedge, _qclosest_hull,
                                _qclosest_simplex, _qtetra_contains_origin, _normalised_constraint))
 
 
 @lru_cache(maxsize=8192)
 def _cone_relint_cached(av, af, ia, bv, bf, ib, implementations):
     A, B = Polyhedron(list(av), list(af)), Polyhedron(list(bv), list(bf))
-    g = cone_constraints(A, ia, B, ib)
+    g = implementations[0](A, ia, B, ib)
     if not g:
         return False
     points = tuple(_normalised_constraint(x) for x in g if any(x))
@@ -492,7 +528,7 @@ def _qclosest_params(p1, d1, p2, d2):
 def _closest_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, float] | None:
     """Exact parallel decision and rational line parameters, float output only."""
     result = _qclosest_params(*map(_qvector, (p1, d1, p2, d2)))
-    return None if result is None else tuple(float(x) for x in result)
+    return None if result is None else vector_rational(result)
 
 
 def _qparameter_in_extent(s, d, extent_tol):
@@ -544,9 +580,9 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
             qb = add(pb0, mul(dB, _qclamp(t)))
             qa = add(pa0, mul(dA, _qclamp(dot(sub(qb, pa0), dA) / dot(dA, dA))))
         return Cover3("EE", ("edge", *ea), ("edge", *eb), unit_normal, gap,
-                      _float_vector(qa), _float_vector(qb), (float(s), float(t)), None,
+                      _float_vector(qa), _float_vector(qb), (scalar_rational(s, allow_underflow=True), scalar_rational(t, allow_underflow=True)), None,
                       sb == 1 and sa == 1, inside,
-                      numerator*numerator/nn, (numerator > 0)-(numerator < 0), None, candidate)
+                      numerator*numerator/nn, (numerator > 0)-(numerator < 0), None, candidate, (s, t))
     return None
 
 
@@ -568,8 +604,8 @@ def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: f
         return None
     vv = dot(v, v)
     return Cover3("VE3", ("vertex", ia), ("edge", *eb), _qunit(v, allow_underflow=True), sqrt_rational(vv, allow_underflow=True),
-                  A.verts[ia], _float_vector(add(p0, mul(d, _qclamp(s)))), (float(s),), None,
-                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1, None, v)
+                  A.verts[ia], _float_vector(add(p0, mul(d, _qclamp(s)))), (scalar_rational(s, allow_underflow=True),), None,
+                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1, None, v, (s,))
 
 
 def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: float = 0.0,
@@ -581,12 +617,12 @@ def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: f
     return Cover3("EV3", ("edge", *ea), ("vertex", ib), neg(c.normal), c.gap,
                   c.point_b, c.point_a, c.params, None, c.strict, c.in_extent,
                   c.exact_gap_squared, c.exact_gap_sign, None,
-                  neg(c.exact_normal_direction) if c.exact_normal_direction is not None else None)
+                  neg(c.exact_normal_direction) if c.exact_normal_direction is not None else None, c.exact_params)
 
 
 def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
     """VV3 existence uses exact Gordan; activity uses the exact separation vector."""
-    if not cones_intersect_relint(A, ia, B, ib):
+    if not _source_cones_intersect_relint(A, ia, B, ib):
         return None
     a, b = A.verts[ia], B.verts[ib]
     v = sub(_qvector(a), _qvector(b))

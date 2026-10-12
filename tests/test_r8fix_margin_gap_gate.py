@@ -27,9 +27,39 @@ def _arithmetic_fault_inside_margin_contacts(monkeypatch, fault):
 
 
 def _ordinary_gap_gate():
-    # Window-mode distance is a historical display-point construction; replacing
-    # w by correctly-rounded sqrt(d2) would NOT faithfully restore this fault.
+    # Preserve the original pose and every assertion. R9 correctly constructs
+    # RN(sqrt(d2)) in window mode too; old subtraction happens to round correctly
+    # for this pose, so add an ordinary binary64 cell that provably distinguishes it.
     invariance.test_margin_layer_is_invariant("box_box_face", 7, 0., .001)
+    _ordinary_binary64_midpoint_gap_gate()
+
+
+def _ordinary_binary64_midpoint_gap_gate():
+    # Independent Cartesian intervals: A.x=[1,2], B.x=[-1,-2**-53],
+    # overlapping y/z intervals. Every supplied vertex coordinate is binary64.
+    # d=1+2**-53 is exactly halfway between 1 and its successor; RN-even(d)=1.
+    # But d-1/4=3/4+2**-53 is representable, one ulp above RN(d)-1/4.
+    quantum = F(1, 2**53)
+    exact_distance, delta = F(1)+quantum, F(1, 4)
+    assert exact_distance == (F(1.)+F(math.nextafter(1., math.inf)))/2
+    assert struct.unpack('>Q', struct.pack('>d', 1.))[0] % 2 == 0
+    expected = math.nextafter(.75, math.inf)
+    assert F(expected) == exact_distance-delta
+    assert F(.75) < exact_distance-delta
+    A = box((1.5, 0., 0.), (.5, .5, .5))
+    B = box((-.5, 0., 0.), (.5, 1., 1.))
+    B.verts = [(-2.**-53 if x == 0. else x, y, z) for x, y, z in B.verts]
+    rows = margin.margin_contacts(A, B, delta=.25, band=1., tol=0, contact_window=0.)
+    assert rows
+    squared = exact_distance**2
+    nearest = min(row.exact_distance_squared for row in rows)
+    assert nearest == squared, "independent interval-product distance"
+    for row in rows:
+        if row.exact_distance_squared == nearest:
+            assert row.distance == 1., "distance root midpoint rounds to even"
+            assert_margin_gap_rounding(row.margin_gap, squared, delta)
+            assert row.margin_gap == expected, "ordinary representable cancellation"
+            assert not row.closed
 
 
 def _large_gap_gate():

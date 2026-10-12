@@ -1,6 +1,7 @@
 """M2 · 三维首入（命题 7）的门：闭式真值 + 不经盖的 oracle（纪律 A）+ 刚体运动不变（纪律 F）+ 集值点如实报出。"""
 
 from __future__ import annotations
+from construction_oracle import scalar_exact
 
 import math
 import random
@@ -154,7 +155,7 @@ def test_first_entrance_agrees_with_the_predicate_only_oracle_on_random_convex_p
     assert abs(e.gap) <= 1e-9
     assert interval is not None and interval[0] > 0
     exact_time = interval[0]
-    assert e.t == pytest.approx(float(exact_time), abs=2e-8)
+    assert e.t == pytest.approx(scalar_exact(exact_time), abs=2e-8)
     rounded = A.translated(e.x)
     assert_supporting_surface(rounded.verts, rounded.faces)
     assert polyhedra_overlap(rounded, B) == convex_overlap(rounded.verts, B.verts)

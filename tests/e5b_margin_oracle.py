@@ -7,6 +7,7 @@ triangulator or distance primitive participates in the expected answers.
 from fractions import Fraction as F
 from functools import lru_cache
 from types import SimpleNamespace
+from construction_oracle import assert_sqrt_rounding
 
 import e5a_cover_oracle as covers
 from e5b_frozen_oracle import surface
@@ -59,7 +60,8 @@ def check_exact_margin(A, B, delta, *, state, minimum_squared=None):
 
     Only actual API calls below import production code; all expected geometry
     is generated above or supplied by the independent tetrahedral SAT oracle.
-    Float distances are construction outputs (four ulps); labels, inclusion,
+    Float distances have exact round-to-nearest-even midpoint certificates;
+    labels, inclusion,
     closed state and both neighboring binary64 delta decisions are exact.
     """
     import math
@@ -80,15 +82,14 @@ def check_exact_margin(A, B, delta, *, state, minimum_squared=None):
     if state == 0:
         assert nearest == 0, "exact surface contact has a zero witness"
     assert label in {lab for lab, d2 in expected.items() if d2 == nearest}, "default-exact surface nearest label"
-    want_distance = math.sqrt(float(nearest))
-    assert abs(distance - want_distance) <= 4 * math.ulp(want_distance), "default-exact distance construction"
+    assert_sqrt_rounding(distance, nearest, "default-exact distance construction")
+    want_distance = distance  # Already certified, not a shared expected constructor.
     selected = {lab: d2 for lab, d2 in expected.items() if delta >= 0 and d2 <= F(delta)**2}
     current = {m.label: m for m in actual}
     assert len(current) == len(actual), "default-exact no duplicate labels"
     assert current.keys() == selected.keys(), "default-exact complete surface label set"
     for lab, d2 in selected.items():
-        want = math.sqrt(float(d2))
-        assert abs(current[lab].distance-want) <= 4*math.ulp(want), "default-exact cover distance"
+        assert_sqrt_rounding(current[lab].distance, d2, "default-exact cover distance")
         assert current[lab].closed == (d2 <= F(delta)**2), "default-exact closed state"
     # Retain original delta and additionally straddle the exact boundary with
     # adjacent binary64 values. No distance-rounding band decides these states.

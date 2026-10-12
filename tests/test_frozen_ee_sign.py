@@ -8,6 +8,7 @@
 """
 
 from __future__ import annotations
+from construction_oracle import scalar_exact, sqrt_exact, unit_exact
 
 import math
 import random
@@ -44,9 +45,7 @@ def _ee_exact(A, ea, B, eb, tol=1e-9):
         sb = independent.arc(b,eb,direction,tol)
         sa = independent.arc(a,ea,independent.scale(direction,-1),tol)
         if sa >= 0 and sb >= 0:
-            scaled = [float(c/max(map(abs,direction))) for c in direction]
-            length = math.hypot(*scaled)
-            unit = tuple(c/length for c in scaled)
+            unit = unit_exact(direction)
             return unit,(s,t),sa == sb == 1,0 <= s <= 1 and 0 <= t <= 1
     return None
 
@@ -63,9 +62,8 @@ def _line_parameters_and_gap(A,ea,B,eb):
     assert den > 0
     params=((vv*uw-uv*vw)/den,(uv*uw-uu*vw)/den)
     n=independent.cross(v,u)
-    scaled=[float(x/max(map(abs,n))) for x in n]
-    unit=[x/math.hypot(*scaled) for x in scaled]
-    gap=sum(unit[i]*float(a[i]-b[i]) for i in range(3))
+    numerator=independent.dot(n,independent.sub(a,b))
+    gap=(-1 if numerator < 0 else 1)*sqrt_exact(numerator*numerator/independent.dot(n,n))
     return params,gap
 
 
@@ -75,7 +73,7 @@ def _check_ee_exact(A, ea, B, eb, tol=1e-9):
     assert (got is not None) == (truth is not None), (ea,eb,truth,got)
     if truth is not None:
         normal,params,strict,inside = truth
-        assert got.params == tuple(map(float,params)), (ea,eb,got.params,params)
+        assert got.params == tuple(map(scalar_exact,params)), (ea,eb,got.params,params)
         assert got.strict == strict and got.in_extent == inside, (ea,eb,params)
         assert sum(x*y for x,y in zip(got.normal,normal)) > 1-1e-12
     return got,truth
@@ -212,7 +210,7 @@ def test_near_parallel_crossing_edges_stay_in_extent_in_engineering_coordinates(
         assert actual_labels == oracle_labels, 'complete exact-surface cover set'
         exact_distance,exact_label=body_distance(P,Q)
         distance_squared=surface_oracle.distance_squared(P,Q)
-        oracle_distance=math.sqrt(float(distance_squared))
+        oracle_distance=sqrt_exact(distance_squared)
         assert exact_label in {lab for lab,_ in oracle_labels}, 'exact-surface chosen label'
         assert abs(exact_distance-oracle_distance) <= 4*math.ulp(oracle_distance), 'independent exact surface distance'
         exact_sign=frozen_ee_sign(P,Q,exact_label[1][1:],exact_label[2][1:]) if exact_label[0]=='EE' else 1.0
@@ -304,7 +302,7 @@ def test_touching_near_parallel_edges_crossing_at_an_endpoint_stay_in_extent(see
     assert abs(gap) <= 4096 * 2.220446049250313e-16 * t
     if c is not None:
         assert c.in_extent == (0 <= params[0] <= 1 and 0 <= params[1] <= 1)
-        assert c.params == tuple(map(float,params))
+        assert c.params == tuple(map(scalar_exact,params))
         assert abs(c.gap) <= 4096 * 2.220446049250313e-16 * t
     else:
         # This is an exact arc rejection, not an exemption from the extent gate.
@@ -345,7 +343,7 @@ def _wedge_pair(k, g=0.1):
 def _frozen_gap_of_chosen_label(A, B):
     d, lab = body_distance(A, B)
     sgn = frozen_ee_sign(A, B, (lab[1][1], lab[1][2]), (lab[2][1], lab[2][2])) if lab[0] == "EE" else 1.0
-    return d, lab, float(margin_gap_from_frozen_cover(A, B, lab, (0.0, 0.0, 0.0), 0.0, ee_sign=sgn))
+    return d, lab, scalar_exact(margin_gap_from_frozen_cover(A, B, lab, (0.0, 0.0, 0.0), 0.0, ee_sign=sgn))
 
 
 @pytest.mark.parametrize("theta", (1e-3, 1e-4))

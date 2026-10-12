@@ -3,6 +3,7 @@
 Oracles use interval products and Fraction coordinate differences only; no
 production relation, cover, normal, distance, hull or tolerance primitive.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import math
@@ -33,7 +34,7 @@ def _assert_window_contract():
         expected = M.INSIDE if gap < -F(w) else M.OUTSIDE if gap > F(w) else M.ON_BOUNDARY
         assert M.inflated_membership(A, B, delta=0, contact_window=w) == expected, ("explicit-window", gap, w)
         assert (label == (M.PENETRATING,)) == (gap < -F(w)), ("explicit-window", gap, label)
-        assert d == (float(gap) if gap > F(w) else 0), ("explicit-window", gap, d)
+        assert d == (scalar_exact(gap) if gap > F(w) else 0), ("explicit-window", gap, d)
         contacts = M.margin_contacts(A, B, delta=0, contact_window=w)
         assert bool(contacts) == (gap <= F(w)), ("explicit-window", gap, contacts)
         if contacts:
@@ -48,7 +49,7 @@ def _assert_default_contract():
         d, label = M.body_distance(A, B)
         assert M.inflated_membership(A, B, delta=0) == expected, ("default-exact", gap)
         assert (label == (M.PENETRATING,)) == (gap < 0), ("default-exact", gap, label)
-        assert d == max(0, float(gap)), ("default-exact", gap, d)
+        assert d == max(0, scalar_exact(gap)), ("default-exact", gap, d)
         assert bool(M.margin_contacts(A, B, delta=0)) == (gap <= 0)
 
 
@@ -102,7 +103,7 @@ def test_entrance_block_forms_differences_before_any_float_rounding():
     E = M.entrance_block_convex(A, B)
     differences = [tuple(F(b[k])-F(a[k]) for k in range(3)) for a in A.verts for b in B.verts]
     axes = [(1, 0, 0), (-1, 0, 0), (1, 2, 3), (3, -5, 2)]
-    assert any(F(float(p[0])) != p[0] for p in differences)
+    assert any(F(scalar_exact(p[0])) != p[0] for p in differences)
     for n in axes:
         want = max(sum(n[k]*p[k] for k in range(3)) for p in differences)
         got = max(sum(n[k]*F(p[k]) for k in range(3)) for p in E.verts)
@@ -119,10 +120,10 @@ def test_folded_source_ring_distance_uses_the_actual_surface_triangle():
     # The other top ear lies on x+y>=0; all other sides are farther away.
     expected = F(1.2)-1
     d, label = M.body_distance(A, B)
-    assert d == float(expected)
+    assert d == scalar_exact(expected)
     assert label[0] == "VF" and label[2][2] == "triangle"
     assert set(label[2][3:]) == {7, 4, 5}
-    assert M.inflated_membership(A, B, delta=float(expected)) == M.ON_BOUNDARY
+    assert M.inflated_membership(A, B, delta=scalar_exact(expected)) == M.ON_BOUNDARY
     assert M.inflated_membership(A, B, delta=math.nextafter(d, 0.)) == M.OUTSIDE
     assert M.inflated_membership(A, B, delta=math.nextafter(d, math.inf)) == M.INSIDE
     assert M.margin_gap_from_frozen_cover(A, B, label, (0, 0, 0), 0) == d

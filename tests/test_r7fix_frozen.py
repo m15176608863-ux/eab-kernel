@@ -1,4 +1,5 @@
 """Same-family construction scan: independent exact midpoint certificates."""
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import math
 import pytest
@@ -21,7 +22,7 @@ def test_frozen_unit_component_rounds_after_final_normalization(with_dual, sign)
     B = Polyhedron([(0., 0., 0.)], [])
     n = frozen_normal(A, B, ("VV3", ("V",0), ("V",0)))
     value = n[2].v if with_dual else n[2]
-    assert value == sign * float(2*q), "final normalized component was rounded twice"
+    assert value == sign * scalar_exact(2*q), "final normalized component was rounded twice"
 
 
 def test_frozen_unit_derivative_rounds_after_exact_normalization():
@@ -31,4 +32,4 @@ def test_frozen_unit_derivative_rounds_after_exact_normalization():
     A = Polyhedron([(Dual(1., (t,)), Dual(1., (-t/2,)), Dual(1., (-t/2,)))], [])
     B = Polyhedron([(0., 0., 0.)], [])
     n = frozen_normal(A, B, ("VV3", ("V",0), ("V",0)))
-    assert n[0].e == (float(q),), "rounded norm changed derivative midpoint decision"
+    assert n[0].e == (scalar_exact(q),), "rounded norm changed derivative midpoint decision"

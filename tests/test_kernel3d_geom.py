@@ -1,4 +1,5 @@
 """三维几何原语与暴力 oracle 的门（二维版审查的三条教训在此复检）。"""
+from construction_oracle import scalar_exact
 
 import random
 import math
@@ -257,7 +258,7 @@ def test_entrance_block_of_rotated_box_pair_is_a_clean_box(seed, scale):
     assert repq.hull_vertices == repq.e_vertices == 8
 
 
-LATTICE = [(float(i), float(j), float(k)) for i in range(3) for j in range(3) for k in range(3)]
+LATTICE = [(scalar_exact(i), scalar_exact(j), scalar_exact(k)) for i in range(3) for j in range(3) for k in range(3)]
 
 
 @pytest.mark.parametrize("seed,scale,t", [(0, 1.0, 0.0), (1, 1e-5, 0.0), (2, 1e3, 0.0), (3, 1.0, 1e5),

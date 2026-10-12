@@ -3,6 +3,7 @@
 Oracle: direct rational coordinate inequalities / all-chord integer SAT in
  e5a2_entrance_oracle; no production geometric primitive is an oracle.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import math
 import pytest
@@ -39,7 +40,7 @@ def test_exact_predecessor_selfcheck_never_rounds_back_to_the_event():
     a=box(center=(time+1,0,0),half=(F(1,2),)*3)
     b=box(half=(F(1,2),)*3)
     assert min(p[0] for p in a.verts)-max(p[0] for p in b.verts) == time
-    assert float(time)-2e-9 == float(time)
+    assert scalar_exact(time)-2e-9 == scalar_exact(time)
     result=first_entrance3(a,b,(0,0,0),(-1,0,0))
     assert result.kind == 'entrance' and result.exact_t == time
     assert result.label[0] == 'FF' and len(result.members) == 8

@@ -6,6 +6,7 @@ SAT equivalence keeps the independent oracle's original hull/axis construction
 and original five-column Fraction projections, then compares every query. This
 is an optimization-equivalence gate, not a new independent geometric oracle.
 """
+from construction_oracle import scalar_exact, sqrt_exact
 
 from fractions import Fraction as F
 import math
@@ -171,9 +172,7 @@ def _eager_ee(A, ea, B, eb, tol=0., extent_tol=0.):
         numerator = _dot(candidate, c.sub(qa, qb))
         gap2 = numerator*numerator/_dot(candidate, candidate)
         sign = (numerator > 0)-(numerator < 0)
-        with localcontext() as context:
-            context.prec = 100
-            gap = sign*float((Decimal(gap2.numerator)/Decimal(gap2.denominator)).sqrt())
+        gap = sign*sqrt_exact(gap2)
         inside = c._qparameter_in_extent(s, dA, extent_tol) and c._qparameter_in_extent(t, dB, extent_tol)
         if not 0 <= s <= 1:
             qa = c.add(pa0, c.mul(dA, c._qclamp(s)))
@@ -182,8 +181,8 @@ def _eager_ee(A, ea, B, eb, tol=0., extent_tol=0.):
             qb = c.add(pb0, c.mul(dB, c._qclamp(t)))
             qa = c.add(pa0, c.mul(dA, c._qclamp(_dot(c.sub(qb, pa0), dA)/_dot(dA, dA))))
         return c.Cover3('EE', ('edge', *ea), ('edge', *eb), unit_normal, gap,
-                        c._float_vector(qa), c._float_vector(qb), (float(s), float(t)),
-                        None, sb == 1 and sa == 1, inside, gap2, sign, None, candidate)
+                        c._float_vector(qa), c._float_vector(qb), (scalar_exact(s), scalar_exact(t)),
+                        None, sb == 1 and sa == 1, inside, gap2, sign, None, candidate, (s, t))
     return None
 
 

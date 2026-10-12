@@ -1,4 +1,5 @@
-﻿from fractions import Fraction as F
+﻿from construction_oracle import scalar_exact, unit_exact
+from fractions import Fraction as F
 import math
 import sys
 
@@ -57,19 +58,16 @@ def _vv(dx, dy, size):
 
 @pytest.mark.parametrize('rational', [False, True])
 def test_g6g02_vv_uses_exact_difference_and_independent_unit_normal(rational):
-    """Oracle: rational midpoint squares for gap, independent Decimal unit root."""
+    """Oracle: rational midpoint squares for gap, independent midpoint-certified unit components."""
     from decimal import Decimal, localcontext
     q = F(2)**-1074
-    dx, dy = (F(149, 100)*q, F(49, 100)*q) if rational else (float(q), float(q))
+    dx, dy = (F(149, 100)*q, F(49, 100)*q) if rational else (math.ulp(0.0), math.ulp(0.0))
     c = _vv(dx, dy, F(2)**-600 if rational else 2.**-600)
     square = F(dx)**2 + F(dy)**2
     if rational:
         assert (F(3, 2)*q)**2 < square < (F(5, 2)*q)**2
-    assert c.strict and c.gap == float(2*q if rational else q)
-    with localcontext() as ctx:
-        ctx.prec = 100
-        expected = tuple(float((Decimal((F(v)**2/square).numerator) /
-                                Decimal((F(v)**2/square).denominator)).sqrt()) for v in (dx, dy))
+    assert c.strict and c.gap == scalar_exact(2*q if rational else q)
+    expected = unit_exact((dx, dy))
     assert c.normal == pytest.approx(expected, rel=1e-15, abs=0)
     assert math.hypot(*c.normal) == pytest.approx(1, rel=1e-15)
 
@@ -179,7 +177,7 @@ def test_r7scan_entrance_report_floor_avoids_intermediate_overflow():
     m = sys.float_info.max
     P = [(m, 0.)]
     # Original magnitude sum 2m overflows; final roundoff bound is finite.
-    expected = float(F(64*sys.float_info.epsilon)*2*F(m))
+    expected = scalar_exact(F(64*sys.float_info.epsilon)*2*F(m))
     assert _floor(P, [(0., 0.)], (m, 0.), (0., 0.)) == expected
 
 

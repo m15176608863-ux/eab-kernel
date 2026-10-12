@@ -69,6 +69,7 @@
 """
 
 from __future__ import annotations
+from eab.construction import scalar_rational
 
 import sys
 import math
@@ -116,7 +117,7 @@ def rounding_floor(*bodies: Polyhedron) -> float:
 
 def effective_geom_tol(A: Polyhedron, B: Polyhedron, geom_tol: float | None = None) -> float:
     """相触分辨率：geom_tol=None 时 max(1e-9·L, 64·eps·C)；显式给出时按绝对长度，但不低于舍入地板。"""
-    base = REL_GEOM_TOL * characteristic_length(A, B) if geom_tol is None else float(geom_tol)
+    base = REL_GEOM_TOL * characteristic_length(A, B) if geom_tol is None else scalar_rational(geom_tol)
     return max(base, rounding_floor(A, B))
 
 
@@ -137,7 +138,12 @@ def _tie_groups(items: list, key, window: float) -> list:
 # ------------------------------------------------------------------ 见证与距离
 
 def cover_witness(c) -> tuple[float, Vec3 | None] | None:
-    """盖的见证：(特征对间距, 单位见证方向 B→A)。距离用 |point_a − point_b|，**不用 gap**。"""
+    """显示见证自检：(已舍入 point_a/point_b 的间距, 单位方向 B→A)。
+
+    该显示距离只用于见证构造误差自检，不是精确源特征的最终距离。
+    body_distance / margin_contacts 的最终标量从原坐标精确距离平方构造。
+    保留点误差诊断，不能用证书距离替换后让坏显示见证逃过旧自检门。
+    """
     if c.point_a is None or c.point_b is None:
         return None
     v = sub(c.point_a, c.point_b)
@@ -285,7 +291,7 @@ def _repair_folded_construction(A, B, c, w, n, squared, rounding):
                for tri in pieces]
     delta = min(vectors, key=lambda v: _exact.dot(v, v))
     projected = _exact.add(point, delta)
-    a, b = tuple(map(float, point)), tuple(map(float, projected))
+    a, b = tuple(map(scalar_rational, point)), tuple(map(scalar_rational, projected))
     if c.kind == "FV":
         a, b = b, a
     c.point_a, c.point_b = a, b
@@ -396,7 +402,8 @@ def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: 
     It is not a whole-body Euclidean penetration-depth (PD) threshold: a shell
     certificate does not bound PD, and rejection does not imply PD > w.
     Six-axis sampling/L1 radial shells do not guarantee rotation invariance.
-    Window mode retains the historical floating witness/tie reporting order.
+    Window mode retains the historical tie reporting order, while each returned
+    distance is constructed from its exact source-feature squared distance.
     """
     ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:
@@ -407,9 +414,9 @@ def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: 
         c, w, _, d2 = min(wits, key=lambda row: row[3])
         return (0.0 if contact else _exact.sqrt_rational(d2)), c.label()
     c, w, _, d2 = _tie_groups(wits, lambda t: t[1], rnd)[0]
-    if minimum2 is not None and abs(w-_exact.sqrt_rational(minimum2)) > 4*rnd:
-        w = _exact.sqrt_rational(minimum2)
-    return (0.0 if contact else w), c.label()
+    # Retain the caller-requested tie window, not an inaccurate scalar display:
+    # global witness points were rounded separately and are only a self-check.
+    return (0.0 if contact else _exact.sqrt_rational(d2)), c.label()
 
 
 # ------------------------------------------------------------------ 裕度接触
@@ -444,8 +451,9 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
     subtraction of two display floats. Display underflow is accompanied by
     exact_distance_squared and the separately exact closed classification.
     Gate: test_margin_contact_difference_is_constructed_before_display_rounding.
-    Default ordering uses exact squared distances. Window-mode construction
-    distances and tie reporting retain the historical floating convention.
+    Default ordering uses exact squared distances. Window-mode tie reporting
+    retains the historical convention, not distances from rounded global points.
+    Gate: test_window_contact_distance_rounds_exact_scalar_not_global_witness_points.
     """
     ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:
@@ -457,7 +465,7 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
     for c, w, n, d2 in wits:
         if contact and (d2 <= ctol*ctol or d2 == nearest2):
             w, n, d2 = 0.0, None, Fraction(0)
-        elif contact_window is None or not ctol:
+        else:
             w = _exact.sqrt_rational(d2, allow_underflow=True)
         if threshold < 0 or d2 > threshold*threshold:
             continue
@@ -481,7 +489,7 @@ def boundary_band(A: Polyhedron, B: Polyhedron, atol: float | None = None) -> fl
 
     Callers wanting the old delta band may explicitly pass atol=boundary_band(A,B).
     """
-    base = REL_BOUNDARY_TOL * characteristic_length(A, B) if atol is None else float(atol)
+    base = REL_BOUNDARY_TOL * characteristic_length(A, B) if atol is None else scalar_rational(atol)
     return max(base, rounding_floor(A, B))
 
 
@@ -547,7 +555,7 @@ def nearest_point_on_convex_entrance(E: Polyhedron, x: Vec3, *, exact: bool = Fa
     X = _exact.vector(x)
     displacement = _qclosest_hull(tuple(_exact.sub(_exact.vector(e), X) for e in E.verts))
     point = _exact.add(X, displacement)
-    return point if exact else tuple(map(float, point))
+    return point if exact else tuple(map(scalar_rational, point))
 
 
 def distance_to_convex_entrance(E: Polyhedron, x: Vec3) -> float:

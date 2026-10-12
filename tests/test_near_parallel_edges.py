@@ -10,6 +10,7 @@ from fractions import Fraction
 
 import pytest
 from e5b_margin_oracle import check_exact_margin
+from construction_oracle import sqrt_exact
 import eab.margin as exact_margin
 
 from eab.kernel3d.geom3 import Polyhedron, _seg_seg_distance, brute_feature_distance, tetra
@@ -59,7 +60,7 @@ def exact_seg_seg(p1, p2, q1, q2, *, squared=False):
         s = _fdot(_fsub(_fadd(Q1, _fmul(d2, t)), P1), d1) / a
         cands.append((min(max(s, Fraction(0)), Fraction(1)), t))
     best = min(_fdot(v, v) for v in (_fsub(_fadd(P1, _fmul(d1, s)), _fadd(Q1, _fmul(d2, t))) for s, t in cands))
-    return best if squared else math.sqrt(float(best))
+    return best if squared else sqrt_exact(best)
 
 
 def _quat(seed: int):

@@ -10,6 +10,7 @@
   (3) TF_MODE 对状态 4/5/6 的折叠：docs/sibling_observations.md 没有 tf.cpp 行号引文为它作证，
       所以映射标 UNVERIFIED，不断言 SLIDING/LOCKED；原始码照旧保留在 raw_mode。
 """
+from construction_oracle import scalar_exact
 
 import sys
 from collections import Counter
@@ -91,12 +92,12 @@ def _assert_rows_agree(stage, probes):
     for r, o in zip(stage, raw):
         for k in _STAGE_INT:
             assert getattr(r, k) == int(o[k]), ("stage " + k, getattr(r, k), o[k])
-        assert r.time == float(o["time"]) and r.load_bucket == o["load_bucket"], ("stage time/bucket", r, o)
+        assert r.time == scalar_exact(o["time"]) and r.load_bucket == o["load_bucket"], ("stage time/bucket", r, o)
     for name, recs in probes.items():
         raw = _raw_table(TF / name / "retry_contact_pair_probe.tsv")
         assert len(raw) == len(recs), ("probe rows", name, len(recs), len(raw))
         for rec, o in zip(recs, raw):
-            f = {c: float(o[c]) for c in ("gap", "area", "normal_force", "px", "py", "pz", "nx", "ny", "nz",
+            f = {c: scalar_exact(o[c]) for c in ("gap", "area", "normal_force", "px", "py", "pz", "nx", "ny", "nz",
                                           "shear_dx", "shear_dy", "shear_dz", "time")}
             assert rec.source == "tf", ("source", rec.source)
             assert rec.step == int(o["step"]), ("step", rec.step, o["step"])

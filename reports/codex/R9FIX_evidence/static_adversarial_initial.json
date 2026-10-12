@@ -1,0 +1,32 @@
+[
+  {
+    "case": "annassign",
+    "code": "def bad(q):\n    v: tuple = _float_vector(q)\n    return norm(v)\n",
+    "issues": []
+  },
+  {
+    "case": "converter_alias",
+    "code": "def bad(q):\n    cast = vector_rational\n    return norm(cast(q))\n",
+    "issues": []
+  },
+  {
+    "case": "root_alias",
+    "code": "def bad(q):\n    root = math.sqrt\n    return root(scalar_rational(q))\n",
+    "issues": []
+  },
+  {
+    "case": "mapped_converter",
+    "code": "def bad(q):\n    v = tuple(map(scalar_rational, q))\n    return norm(v)\n",
+    "issues": []
+  },
+  {
+    "case": "module_capture",
+    "code": "v = _float_vector(q)\ndef bad():\n    return norm(v)\n",
+    "issues": []
+  },
+  {
+    "case": "namedexpr",
+    "code": "def bad(q):\n    (v := _float_vector(q))\n    return unit(v)\n",
+    "issues": []
+  }
+]

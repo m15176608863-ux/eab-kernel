@@ -4,6 +4,7 @@
 旧版 (5) 处是 `len(keys) == len(records)`——列表推导式的长度恒等于输入长度，同义反复（审查 C20）。
 夹具缺失时 skip（夹具由 tools/ingest_fixtures.py / tools/ingest_bdda3d.py 生成）。
 """
+from construction_oracle import scalar_exact
 
 import dataclasses
 from pathlib import Path
@@ -136,8 +137,8 @@ def _raw_contacts(case_dir):
     out = {}
     for ln in lines[1:]:
         d = dict(zip(head, ln.split(",")))
-        out[(int(d["step"]), int(d["contact"]))] = {"p1": int(d["p1"]), "p2": int(d["p2"]), "p3": int(float(d["p3"])),
-                                                     "mtype": int(float(d["mtype"]))}
+        out[(int(d["step"]), int(d["contact"]))] = {"p1": int(d["p1"]), "p2": int(d["p2"]), "p3": int(scalar_exact(d["p3"])),
+                                                     "mtype": int(scalar_exact(d["mtype"]))}
     return out
 
 

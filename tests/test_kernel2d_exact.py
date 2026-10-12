@@ -4,6 +4,7 @@
 """
 
 from __future__ import annotations
+from construction_oracle import scalar_exact
 
 import math
 import random
@@ -36,12 +37,12 @@ def _probe_points(eb, rng, k):
     """E 的顶点（恰相触）、facet 中点（恰相触）、以及随机平移。"""
     pts = []
     for v in eb.vertices:
-        pts.append((float(v[0]), float(v[1])))
+        pts.append((scalar_exact(v[0]), scalar_exact(v[1])))
     for f in eb.facets:
         m = (f.start[0] + f.direction[0] / 2, f.start[1] + f.direction[1] / 2)
-        pts.append((float(m[0]), float(m[1])))
-    xs = [float(v[0]) for v in eb.vertices]
-    ys = [float(v[1]) for v in eb.vertices]
+        pts.append((scalar_exact(m[0]), scalar_exact(m[1])))
+    xs = [scalar_exact(v[0]) for v in eb.vertices]
+    ys = [scalar_exact(v[1]) for v in eb.vertices]
     for _ in range(k):
         pts.append((rng.uniform(min(xs) - 0.2, max(xs) + 0.2), rng.uniform(min(ys) - 0.2, max(ys) + 0.2)))
     return pts

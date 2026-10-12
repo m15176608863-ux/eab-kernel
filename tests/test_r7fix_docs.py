@@ -5,6 +5,7 @@ production geometry primitive. Production overlap/margin are the tested side.
 Document mutation guards pass altered actual file contents through the same
 assertions as the current-document gates; they do not fabricate runtime output.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 from itertools import product
 from pathlib import Path
@@ -52,7 +53,7 @@ def _box(half, center=(0, 0, 0)):
     signs = ((-1, -1, -1), (1, -1, -1), (1, 1, -1), (-1, 1, -1),
              (-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1))
     # All inputs in this reproduction are exactly representable binary64.
-    return Polyhedron([tuple(float(F(center[k]) + s[k]*half) for k in range(3))
+    return Polyhedron([tuple(scalar_exact(F(center[k]) + s[k]*half) for k in range(3))
                        for s in signs], list(FACES))
 
 

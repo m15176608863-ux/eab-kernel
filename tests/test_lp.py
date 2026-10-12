@@ -6,6 +6,7 @@
     ⟺ 截面 {Ad = 0, Σd = 1, d ≥ 0}（有界多面体）的某个顶点——即某条极射线——满足 cᵀd < 0。
     顶点 = 该增广系统的基本可行解，逐个 (m+1) 列基用有理数精确解出。
 """
+from construction_oracle import scalar_exact
 
 import itertools
 import random
@@ -131,10 +132,10 @@ def test_unbounded_is_detected():
 def _random_lp(seed):
     rng = random.Random(seed)
     m, n = rng.choice([(2, 5), (3, 6), (2, 6)])
-    A = [[float(rng.randint(-3, 4)) for _ in range(n)] for _ in range(m)]
-    x0 = [float(rng.randint(0, 3)) for _ in range(n)]               # 保证可行
+    A = [[scalar_exact(rng.randint(-3, 4)) for _ in range(n)] for _ in range(m)]
+    x0 = [scalar_exact(rng.randint(0, 3)) for _ in range(n)]               # 保证可行
     b = [sum(A[i][j] * x0[j] for j in range(n)) for i in range(m)]
-    c = [float(rng.randint(-3, 4)) for _ in range(n)]
+    c = [scalar_exact(rng.randint(-3, 4)) for _ in range(n)]
     return A, b, c
 
 
@@ -194,10 +195,10 @@ def test_weak_and_strong_duality(seed):
     """
     rng = random.Random(100 + seed)
     m, n = 3, 7
-    A = [[float(rng.randint(-3, 4)) for _ in range(n)] for _ in range(m)]
-    x0 = [float(rng.randint(0, 3)) for _ in range(n)]
+    A = [[scalar_exact(rng.randint(-3, 4)) for _ in range(n)] for _ in range(m)]
+    x0 = [scalar_exact(rng.randint(0, 3)) for _ in range(n)]
     b = [sum(A[i][j] * x0[j] for j in range(n)) for i in range(m)]
-    c = [float(rng.randint(0, 4)) for _ in range(n)]                 # c ≥ 0 ⇒ 有下界
+    c = [scalar_exact(rng.randint(0, 4)) for _ in range(n)]                 # c ≥ 0 ⇒ 有下界
     r = solve(A, b, c)
     assert r.status == OPTIMAL, seed
     assert sum(y * bi for y, bi in zip(r.y, b)) == pytest.approx(r.obj, abs=1e-7), seed
@@ -273,10 +274,10 @@ def test_objective_scaling_by_a_power_of_two_is_bitwise_invariant(seed):
     因子本身（如 2^1072）不可表示也不上溢。）"""
     rng = random.Random(100 + seed)
     m, n = 3, 7
-    A = [[float(rng.randint(-3, 4)) for _ in range(n)] for _ in range(m)]
-    x0 = [float(rng.randint(0, 3)) for _ in range(n)]
+    A = [[scalar_exact(rng.randint(-3, 4)) for _ in range(n)] for _ in range(m)]
+    x0 = [scalar_exact(rng.randint(0, 3)) for _ in range(n)]
     b = [sum(A[i][j] * x0[j] for j in range(n)) for i in range(m)]
-    c = [float(rng.randint(0, 4)) for _ in range(n)]
+    c = [scalar_exact(rng.randint(0, 4)) for _ in range(n)]
     ref = solve(A, b, c)
     assert ref.status == OPTIMAL
     for p in (-1070, -1000, -60, -40, 40, 1000):           # −1070：c 落进次正规数

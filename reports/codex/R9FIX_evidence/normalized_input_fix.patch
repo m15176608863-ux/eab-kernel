@@ -1,0 +1,9 @@
+*** Begin Patch
+*** Update File: D:/eab-wt/cx-e2/src/eab/construction.py
+@@
+-    c, offset = Fraction(c), Fraction(offset)
++    c, nn, offset = Fraction(c), Fraction(nn), Fraction(offset)
++    if nn <= 0:
++        raise ValueError("normal squared length must be positive")
+     if not offset:
+*** End Patch

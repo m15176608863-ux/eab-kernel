@@ -14,6 +14,7 @@ from fractions import Fraction as F
 from functools import lru_cache
 from itertools import combinations
 import math
+from construction_oracle import norm_exact, vector_exact
 
 
 def q(p):
@@ -223,12 +224,12 @@ def _cover_labels_cached(av_raw, af_raw, bv_raw, bf_raw, tol):
     return frozenset(out)
 
 
-def witness_points(A, B, label):
+def witness_points(A, B, label, *, exact=False):
     """Independent exact witnesses for an in-extent local cover.
 
     Gram solves, not production projection/line helpers, determine both points.
-    The final float conversion is explicit because margin.py consumes the
-    rounded witness coordinates, not the rational geometric distance.
+    R9 retains the pre-optimisation geometric reference, but shares the test-only
+    certified final construction boundary. Distance uses exact=True witnesses.
     """
     kind, fa, fb = label
     am, bm = _model(A), _model(B)
@@ -238,7 +239,7 @@ def witness_points(A, B, label):
         origin, normal = bv[bm[1][fb[1]][0]], bm[2][fb[1]]
         a, b = p, sub(p, scale(normal, dot(normal, sub(p, origin))/dot(normal, normal)))
     elif kind == "FV":
-        b, a = witness_points(B, A, ("VF", fb, fa))
+        b, a = witness_points(B, A, ("VF", fb, fa), exact=exact)
         return a, b
     elif kind == "EE":
         a0, b0 = av[fa[1]], bv[fb[1]]
@@ -255,19 +256,21 @@ def witness_points(A, B, label):
         t = dot(sub(a, p), d)/dot(d, d)
         b = add(p, scale(d, t))
     elif kind == "EV3":
-        b, a = witness_points(B, A, ("VE3", fb, fa))
+        b, a = witness_points(B, A, ("VE3", fb, fa), exact=exact)
         return a, b
     elif kind == "VV3":
         a, b = av[fa[1]], bv[fb[1]]
     else:
         raise ValueError(label)
-    return tuple(map(float, a)), tuple(map(float, b))
+    if exact:
+        return a, b
+    return vector_exact(a), vector_exact(b)
 
 
 def witness_distance(A, B, label):
-    a, b = witness_points(A, B, label)
+    a, b = witness_points(A, B, label, exact=True)
     d = tuple(x-y for x, y in zip(a, b))
-    return math.sqrt(sum(x*x for x in d))
+    return norm_exact(d)
 
 
 def margin_selection(A, B, delta, *, touching=False, tol=1e-9):
@@ -280,10 +283,10 @@ def margin_selection(A, B, delta, *, touching=False, tol=1e-9):
     """
     lengths, diagonals = [], []
     for P in (A, B):
-        lengths.append(max(math.sqrt(sum((v[k]-P.verts[0][k])**2 for k in range(3))) for v in P.verts))
+        lengths.append(max(norm_exact(F(v[k])-F(P.verts[0][k]) for k in range(3)) for v in P.verts))
         lo = tuple(min(v[k] for v in P.verts) for k in range(3))
         hi = tuple(max(v[k] for v in P.verts) for k in range(3))
-        diagonals.append(math.sqrt(sum((hi[k]-lo[k])**2 for k in range(3))))
+        diagonals.append(norm_exact(F(hi[k])-F(lo[k]) for k in range(3)))
     length = min(lengths)
     coordinate = max(abs(x) for P in (A, B) for v in P.verts for x in v)
     rounding = 64*2.220446049250313e-16*max(coordinate, length)

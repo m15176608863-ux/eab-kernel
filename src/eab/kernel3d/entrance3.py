@@ -15,6 +15,7 @@ first_entrance_brute 共用生产重叠谓词，只是抽样佐证，不是独�
 """
 
 from __future__ import annotations
+from eab.construction import scalar_rational
 
 from dataclasses import dataclass
 from fractions import Fraction
@@ -285,7 +286,7 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
                     tied.append(c2x)
         tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
         rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
-        return _restore_sources(Entrance3("entrance", float(t), tuple(map(float, exact_x)), rep_label, cc.normal,
+        return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
                          cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
                          members, len(raw), t), A, B)
     # No valid local cover must never silently hide a genuine surface event.

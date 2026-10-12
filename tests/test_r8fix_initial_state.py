@@ -4,6 +4,7 @@ Primary oracle: a U solid is the union of three Cartesian rectangles; their
 Minkowski interval unions below use only Fraction arithmetic. No production
 triangulation, membership, hull, angular-sector or cone primitive is shared.
 """
+from construction_oracle import scalar_exact, sqrt_exact
 from fractions import Fraction as F
 
 import pytest
@@ -54,7 +55,7 @@ def test_tight_fit_interior_uses_shortest_exit_not_zero_time_entrance(asymmetric
         x, y = p
         if rotated:
             x, y = -y, x
-        return float(offset+scale*x), float(-2*offset+scale*y)
+        return scalar_exact(offset+scale*x), scalar_exact(-2*offset+scale*y)
     A, B = list(map(transform, A)), list(map(transform, B))
     _assert_tight_seam_exit(A, B, (-scale, 0) if rotated else (0, scale))
 
@@ -114,7 +115,7 @@ def test_initial_topology_preserves_a_narrow_true_exterior_sector(shear):
     B = [(0, 0), (3, 0), (3, 1), (1, 1), (1, 3), (0, 3)]
     A = [(1, 1), (F(3, 2), 1), (F(3, 2), F(3, 2)), (1, F(3, 2))]
     def transform(p):
-        return (float(p[0]+shear*p[1]), float(p[1]))
+        return (scalar_exact(p[0]+shear*p[1]), scalar_exact(p[1]))
     A, B = list(map(transform, A)), list(map(transform, B))
     assert covers.membership_convex(A, B, (0, 0)) == 0
     assert entrance.first_entrance(A, B, (0, 0), (1, 1)).kind == 'entrance'
@@ -130,11 +131,9 @@ def test_2d_analytic_gap_keeps_unit_determinant_under_large_tangential_span(expo
     """
     from decimal import Decimal, localcontext
     M = 2**exponent
-    A = [(float(M), float(M-2)), (float(M+1), float(M-2)), (float(M), float(M-1))]
-    B = [(0., 0.), (float(M+1), float(M)), (0., 1.)]
-    with localcontext() as ctx:
-        ctx.prec = 80
-        want = float(1 / Decimal((M+1)**2+M*M).sqrt())
+    A = [(scalar_exact(M), scalar_exact(M-2)), (scalar_exact(M+1), scalar_exact(M-2)), (scalar_exact(M), scalar_exact(M-1))]
+    B = [(0., 0.), (scalar_exact(M+1), scalar_exact(M)), (0., 1.)]
+    want = sqrt_exact(F(1, (M+1)**2+M*M))
     assert covers.facet_gap(A, B, ('VE', 2, 0), (0, 0)) == want
     assert covers.ve_cover(A, 2, B, 0).gap == want
     assert entrance._contact_report(A, B, ('VE', 2, 0), (F(0), F(0)))[3] == want
@@ -156,7 +155,7 @@ def test_2d_cone_width_keeps_representable_angle_after_product_cancellation(reve
     lo, hi = (1., 1.-eps), (1.-eps, 1.-2*eps)
     determinant = -F(2)**-106
     scalar = F(1-eps)+F(1-eps)*F(1-2*eps)
-    want = math.atan2(float(determinant/scalar), 1.)
+    want = math.atan2(scalar_exact(determinant/scalar), 1.)
     if reverse:
         lo, hi, want = hi, lo, -want
     assert covers.cone_width((lo, hi)) == want

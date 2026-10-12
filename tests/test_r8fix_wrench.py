@@ -1,4 +1,5 @@
 """G6H-04: raw Fraction determinants, no production construction oracle."""
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import math
 
@@ -22,7 +23,7 @@ def test_wrench_cancels_overflowing_products_before_final_rounding(dim, scale, r
     force = (scale,)*dim
     point = (scale,)*dim
     origin = (0.0,)*dim if not reference else (-scale,)*dim
-    expected = list(map(float, _oracle(force, point, origin, dim)))
+    expected = list(map(scalar_exact, _oracle(force, point, origin, dim)))
     actual = limit.wrench(force, point, origin, dim)
     assert all(map(math.isfinite, actual)), "finite exact wrench must not contain NaN/inf"
     assert actual == expected, "exact zero moments were lost in intermediate products"
@@ -34,7 +35,7 @@ def test_wrench_preserves_representable_nonzero_cancellation_residual(dim):
     force = (a, math.nextafter(a, math.inf)) + ((a,) if dim == 3 else ())
     point = (a,)*dim
     origin = (0.0,)*dim
-    expected = list(map(float, _oracle(force, point, origin, dim)))
+    expected = list(map(scalar_exact, _oracle(force, point, origin, dim)))
     actual = limit.wrench(force, point, origin, dim)
     assert actual == expected, "representable residual of overflowing products must survive"
     assert expected[-1] == 2.0**1008
@@ -43,13 +44,13 @@ def test_wrench_preserves_representable_nonzero_cancellation_residual(dim):
 def test_wrench_subtracts_unrepresentable_lever_before_rounding_final_moment():
     point, origin = (1e308, 0.0), (-1e308, 0.0)
     force = (0.0, 1e-308)
-    assert limit.wrench(force, point, origin, 2) == list(map(float, _oracle(force, point, origin, 2)))
+    assert limit.wrench(force, point, origin, 2) == list(map(scalar_exact, _oracle(force, point, origin, 2)))
 
 
 def test_wrench_retains_final_subnormal_when_each_product_underflows():
     a = 2.0**-538
     force, point, origin = (a, -a), (2*a, 2*a), (0.0, 0.0)
-    expected = list(map(float, _oracle(force, point, origin, 2)))
+    expected = list(map(scalar_exact, _oracle(force, point, origin, 2)))
     assert expected[-1] == -math.ulp(0.0)
     assert limit.wrench(force, point, origin, 2) == expected
 

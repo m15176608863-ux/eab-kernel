@@ -4,6 +4,7 @@ Oracles use only Fraction scalar algebra, coordinate Newell identities, Gram
 normal equations, and analytic boxes/tetrahedra. No production geometry helper
 is used to compute an expected predicate or distance.
 """
+from construction_oracle import scalar_exact
 
 from fractions import Fraction as F
 from itertools import combinations
@@ -221,7 +222,7 @@ def test_source_ring_descriptor_is_not_a_folded_surface_cover():
     c = C.vf_cover(A, 0, B, 1)
     assert c is not None and c.strict and c.in_extent
     expected = (F(7, 12), F(1, 12), F(5, 3))
-    assert c.point_b == tuple(map(float, expected))
+    assert c.point_b == tuple(map(scalar_exact, expected))
     ring = [_q(B.verts[i]) for i in B.faces[1]]
     # Covers both choices of diagonal, without calling production triangulation.
     for a, b, d in combinations(ring, 3):

@@ -12,6 +12,7 @@ oracle 全部独立：Fraction 精确叉积/面积、网格多联骨牌的格子
 """
 
 from __future__ import annotations
+from construction_oracle import scalar_exact
 
 import math
 import random
@@ -60,7 +61,7 @@ def _polyomino(rng, ncells, span=6):
         p = nxt[p]
     if len(ring) != len(nxt):
         return None                             # 有洞：不止一条边界链
-    return cells, [(float(x), float(y)) for x, y in ring]
+    return cells, [(scalar_exact(x), scalar_exact(y)) for x, y in ring]
 
 
 def _grid_truth(S1, S2):
@@ -81,7 +82,7 @@ def _polyomino_pairs(seed, count):
             continue
         di, dj = rng.randint(-4, 4), rng.randint(-4, 4)
         S2 = {(i + di, j + dj) for i, j in b[0]}
-        out.append((a[0], a[1], S2, translate(b[1], (float(di), float(dj)))))
+        out.append((a[0], a[1], S2, translate(b[1], (scalar_exact(di), scalar_exact(dj)))))
     return out
 
 

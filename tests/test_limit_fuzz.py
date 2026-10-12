@@ -11,6 +11,7 @@ limit_load 在单位尺度的普通块体上抛 RuntimeError（验证者物理�
   · 同一个物理模糊生成器（3–5 个不同基面接触、法向 +z、单位尺度、随机 μ / 黏聚 / 推力方向与高度；
     二维 2–3 个接触），固定种子，**零抛错**且每个结果过自校验。
 """
+from construction_oracle import scalar_exact
 
 import random
 from fractions import Fraction
@@ -139,7 +140,7 @@ def _exact_status_alpha(cts, dead, live, dim, k):
     （test_lp_certificates._exact_limit_lp / _exact_max）。"""
     from test_lp_certificates import _exact_limit_lp, _exact_max
     st, obj = _exact_max(*_exact_limit_lp(cts, dead, live, dim, k))
-    return st, (float(obj) if obj is not None else None)
+    return st, (scalar_exact(obj) if obj is not None else None)
 
 
 def _genuinely_unresolvable(cts, dead, live, dim, k, rng):

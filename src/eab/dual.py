@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from eab.construction import scalar_rational, sqrt_rational
 from fractions import Fraction
 from decimal import Decimal, localcontext, Underflow
 from typing import Iterable, Sequence, Union
@@ -151,7 +152,12 @@ def _ordinary(*values: float) -> bool:
 
 def _derivative_float(q: Fraction) -> float:
     """Round once; an unrepresentable nonzero derivative must not silently be 0."""
-    result = float(q)             # overflow deliberately raises OverflowError
+    try:
+        result = scalar_rational(q)
+    except ArithmeticError as exc:
+        if isinstance(exc, OverflowError):
+            raise
+        raise FloatingPointError("nonzero Dual derivative is below the binary64 range") from exc
     if result == 0.0 and q:
         raise FloatingPointError("nonzero Dual derivative is below the binary64 range")
     return result
@@ -211,11 +217,20 @@ def is_exact_zero(x: Number) -> bool:
 
 
 def sqrt(x: Number) -> Number:
+    """Finite scalar roots cross the shared exact construction boundary.
+
+    Gate: test_r9_dual_primal_sqrt_large_integer_keeps_representable_root.
+    The Dual derivative formula and explicit nonfinite float behavior are unchanged.
+    """
     if isinstance(x, Dual):
-        s = math.sqrt(x.v)
+        s = sqrt(x.v)
         c = 0.5 / s
         return Dual(s, tuple(c * a for a in x.e))
-    return math.sqrt(x)
+    if isinstance(x, float) and not math.isfinite(x):
+        if x < 0:
+            raise ValueError("math domain error")
+        return x
+    return sqrt_rational(x)
 
 
 def sin(x: Number) -> Number:

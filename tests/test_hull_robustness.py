@@ -6,6 +6,7 @@ Mutation gates act inside the construction or supporting-plane certificate.
 """
 
 from __future__ import annotations
+from construction_oracle import scalar_exact, sqrt_exact
 
 import math
 import random
@@ -41,7 +42,7 @@ def _exact_worst_outside(H: Polyhedron, pts) -> float:
             continue
         top = max(sum(ni * (Fraction(pi) - oi) for ni, pi, oi in zip(n, p, o)) for p in pts)
         if top > 0:
-            worst = max(worst, math.sqrt(float(top * top / nn)))
+            worst = max(worst, sqrt_exact(top * top / nn))
     return worst
 
 

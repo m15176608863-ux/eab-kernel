@@ -14,6 +14,7 @@ from fractions import Fraction as F
 from functools import lru_cache
 from itertools import combinations
 import math
+from construction_oracle import norm_exact, sqrt_exact, vector_exact
 
 
 def q(p):
@@ -294,13 +295,13 @@ def witness_points(A, B, label, *, exact=False):
         raise ValueError(label)
     if exact:
         return a, b
-    return tuple(map(float, a)), tuple(map(float, b))
+    return vector_exact(a), vector_exact(b)
 
 
 def witness_distance(A, B, label):
-    a, b = witness_points(A, B, label)
+    a, b = witness_points(A, B, label, exact=True)
     d = tuple(x-y for x, y in zip(a, b))
-    return math.sqrt(sum(x*x for x in d))
+    return norm_exact(d)
 
 
 def _margin_witness_distance(A, B, label):
@@ -321,20 +322,17 @@ def _margin_witness_distance(A, B, label):
     origin = points[ring[0]]
     if not any(dot(normal, sub(points[i], origin)) for i in ring):
         return witness_distance(A, B, label)
-    from decimal import Decimal, localcontext
     from e5a2_surface_oracle import _ring_triangles, _point_tri_sq
     point = q(X.verts[vertex])
     squared = min(_point_tri_sq(point, triangle) for triangle in _ring_triangles(points, ring))
-    with localcontext() as context:
-        context.prec = 120
-        return float((Decimal(squared.numerator)/Decimal(squared.denominator)).sqrt())
+    return sqrt_exact(squared)
 
 
 def margin_witness_squared(A, B, label):
     """Independent exact source-feature value; folded faces use actual triangles.
 
     Gram witnesses and test-owned ear cutting share no production primitive.
-    Unlike witness_distance this never rounds an intermediate global point.
+    Like witness_distance this never rounds an intermediate global point.
     """
     kind, fa, fb = label
     if kind in ("VF", "FV"):
@@ -402,10 +400,10 @@ def margin_selection(A, B, delta, *, touching=False, tol=1e-9):
     """
     lengths, diagonals = [], []
     for P in (A, B):
-        lengths.append(max(math.sqrt(sum((v[k]-P.verts[0][k])**2 for k in range(3))) for v in P.verts))
+        lengths.append(max(norm_exact(F(v[k])-F(P.verts[0][k]) for k in range(3)) for v in P.verts))
         lo = tuple(min(v[k] for v in P.verts) for k in range(3))
         hi = tuple(max(v[k] for v in P.verts) for k in range(3))
-        diagonals.append(math.sqrt(sum((hi[k]-lo[k])**2 for k in range(3))))
+        diagonals.append(norm_exact(F(hi[k])-F(lo[k]) for k in range(3)))
     length = min(lengths)
     coordinate = max(abs(x) for P in (A, B) for v in P.verts for x in v)
     rounding = 64*2.220446049250313e-16*max(coordinate, length)

@@ -3,6 +3,7 @@
 旧口径用两次间隙之差求斜率并把1e-12速度夹平；新门用方块闭式区间及内联 Fraction SAT 射线裁剪，
 与被测 Minkowski 边归并/法向/gap 零共用原语。容差只许影响并列标签，不许把带外射线变成命中。
 """
+from construction_oracle import scalar_exact
 import math
 import random
 from fractions import Fraction as F
@@ -95,4 +96,4 @@ def test_convex_ray_time_matches_independent_fraction_sat(seed, offset):
     if want is None:
         assert got.kind == 'none'
     else:
-        assert got.kind == 'entrance' and got.t == float(want)
+        assert got.kind == 'entrance' and got.t == scalar_exact(want)

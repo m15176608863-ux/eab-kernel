@@ -7,6 +7,7 @@ points with local cone intersections. No band, ambiguous or low-height exemption
 changes an answer. The compatibility counters for exemptions are always zero.
 """
 from __future__ import annotations
+from eab.construction import scalar_rational
 
 import random
 import math
@@ -111,10 +112,12 @@ def facet_vote3(A,B,facets,hull,diffs,eps=None):
 
 def sample_translations3(A,B,n,rng,margin=0.25):
     lo_a,hi_a=A.aabb();lo_b,hi_b=B.aabb()
-    lo=tuple(float(lo_b[i]-hi_a[i]) for i in range(3))
-    hi=tuple(float(hi_b[i]-lo_a[i]) for i in range(3))
-    return [tuple(rng.uniform(lo[i]-margin*(hi[i]-lo[i]),hi[i]+margin*(hi[i]-lo[i]))
-                  for i in range(3)) for _ in range(n)]
+    lo=tuple(Fraction(lo_b[i])-Fraction(hi_a[i]) for i in range(3))
+    hi=tuple(Fraction(hi_b[i])-Fraction(lo_a[i]) for i in range(3))
+    padding=tuple(Fraction(margin)*(hi[i]-lo[i]) for i in range(3))
+    bounds=tuple((scalar_rational(lo[i]-padding[i]), scalar_rational(hi[i]+padding[i]))
+                 for i in range(3))
+    return [tuple(rng.uniform(*bounds[i]) for i in range(3)) for _ in range(n)]
 
 
 def g0_convex3(A,B,*,samples=400,seed=0,tol=1e-12,band=1e-7):
@@ -166,6 +169,23 @@ class DistanceReport3:
         return not self.failures
 
 
+def _display_witness_distance(point_a, point_b):
+    """Report invalid displays as failures, never feed them to a finite constructor.
+
+    This only audits constructed coordinates; exact feature completeness is
+    evaluated independently. Gate: test_g03_invalid_display_is_reported_without_calling_finite_constructor.
+    """
+    if point_a is None or point_b is None or not all(
+            math.isfinite(x) for x in (*point_a, *point_b)):
+        return math.inf
+    try:
+        return norm(tuple(Fraction(a)-Fraction(b) for a,b in zip(point_a, point_b)))
+    except ArithmeticError:
+        # A finite but unrepresentable display distance is likewise a failed
+        # construction, not a reason for an audit to abort without a report.
+        return math.inf
+
+
 def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, samples: int = 200,
                               seed: int = 0, base: Vec3 = (0.0, 0.0, 0.0), tol: float = 1e-9,
                               atol: float = 1e-9) -> DistanceReport3:
@@ -208,9 +228,8 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
         incomplete = minimum2 != truth2
         if incomplete:
             rep.completeness_failures.append((x,minimum2,truth2))
-        cand = [norm(sub(c.point_a, c.point_b)) for c in covs
-                if c.point_a is not None and c.point_b is not None]
-        got = min(cand) if cand else float("inf")
+        cand = [_display_witness_distance(c.point_a, c.point_b) for c in covs]
+        got = min(cand) if cand and all(math.isfinite(v) for v in cand) else float("inf")
         rep.samples += 1
         err = abs(got - truth)
         rep.worst_abs_error = max(rep.worst_abs_error, err)

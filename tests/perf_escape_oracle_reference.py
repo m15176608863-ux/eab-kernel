@@ -9,19 +9,25 @@ import math
 from functools import lru_cache
 from fractions import Fraction as F
 from perf_cover_oracle_reference import model, vertex, arc, face_extent, dot, sub, add, scale, cross
+from construction_oracle import norm_exact, scalar_exact, sqrt_exact, unit_exact
 
 EPS = 2.220446049250313e-16
 
 
 def unit(v):
-    s = max(map(abs, v))
-    q = tuple(float(x/s) for x in v)
-    length = math.sqrt(sum(x*x for x in q))
-    return tuple(x/length for x in q)
+    # Display only, backed by the exact model and exact cone tests; candidate nz
+    # must exceed the explicit >=1e-12 window, never the subnormal range.
+    return unit_exact(v, allow_underflow=True)
 
 
 def norm(v):
-    return math.sqrt(sum(float(x)*float(x) for x in v))
+    return norm_exact(v)
+
+
+def _signed_gap(n, displacement):
+    numerator = dot(n, displacement)
+    magnitude = sqrt_exact(numerator*numerator/dot(n, n))
+    return -magnitude if numerator < 0 else magnitude
 
 
 def move(v, offset):
@@ -48,7 +54,7 @@ def parameter_band(t, direction, extent):
     return 0 <= t <= 1 or (min(abs(t),abs(t-1))**2*dot(direction,direction) <= F(extent)**2)
 
 
-def facet(a,b,label,tol=1e-9,extent=0.):
+def facet(a,b,label,tol=1e-9,extent=0., *, extent_only=False, exact_coefficients=False):
     kind, af, bf = label
     if kind == 'VF':
         p, n = a[0][af[1]], b[2][bf[1]]
@@ -56,11 +62,18 @@ def facet(a,b,label,tol=1e-9,extent=0.):
             return None
         w = sub(p,b[0][b[1][bf[1]][0]])
         projection = sub(p,scale(n,dot(n,w)/dot(n,n)))
+        if extent_only:
+            return None,None,face_band(b,bf[1],projection,extent)
+        if exact_coefficients:
+            return n,dot(n,w),face_band(b,bf[1],projection,extent)
         normal = unit(n)
-        gap = sum(normal[k]*float(w[k]) for k in range(3))
+        gap = _signed_gap(n, w)
         return normal,gap,face_band(b,bf[1],projection,extent)
     if kind == 'FV':
-        record = facet(b,a,('VF',bf,af),tol,extent)
+        record = facet(b,a,('VF',bf,af),tol,extent,extent_only=extent_only,
+                       exact_coefficients=exact_coefficients)
+        if extent_only:
+            return record
         return None if record is None else (tuple(-x for x in record[0]),record[1],record[2])
     ea,eb = af[1:],bf[1:]
     u,v = sub(a[0][ea[1]],a[0][ea[0]]),sub(b[0][eb[1]],b[0][eb[0]])
@@ -76,8 +89,12 @@ def facet(a,b,label,tol=1e-9,extent=0.):
         if arc(b,eb,d,tol) < 0 or arc(a,ea,scale(d,-1),tol) < 0:
             continue
         pa,pb = add(a[0][ea[0]],scale(u,s)),add(b[0][eb[0]],scale(v,t))
+        if extent_only:
+            return None,None,parameter_band(s,u,extent) and parameter_band(t,v,extent)
+        if exact_coefficients:
+            return d,dot(d,sub(pa,pb)),parameter_band(s,u,extent) and parameter_band(t,v,extent)
         normal = unit(d)
-        gap = sum(normal[k]*float(pa[k]-pb[k]) for k in range(3))
+        gap = _signed_gap(d, sub(pa, pb))
         return normal,gap,parameter_band(s,u,extent) and parameter_band(t,v,extent)
     return None
 
@@ -106,8 +123,15 @@ def direction_noise(av, af, bv, bf, label):
     ea,eb=x[1:],y[1:]
     da,db=sub(a[0][ea[1]],a[0][ea[0]]),sub(b[0][eb[1]],b[0][eb[0]])
     n=cross(da,db)
-    sine=math.sqrt(float(dot(n,n)/(dot(da,da)*dot(db,db))))
-    return (ae[ea]+be[eb])/sine if sine else math.inf
+    nn = dot(n,n)
+    if not nn:
+        return math.inf
+    total = F(ae[ea])+F(be[eb])
+    try:
+        return sqrt_exact(total*total*dot(da,da)*dot(db,db)/nn)
+    except OverflowError:
+        # Explicit saturation of a legacy uncertainty diagnostic, not geometry.
+        return math.inf
 
 
 def windows(av,bv):
@@ -131,15 +155,17 @@ def _candidates(av,af,bv,bf,offset):
     labels += [('EE',('edge',*ea),('edge',*eb)) for ea in sorted(a[3]) for eb in sorted(b[3])]
     raw=[]
     for index,label in enumerate(labels):
-        c=facet(a,b,label)
+        c=facet(a,b,label,exact_coefficients=True)
         if c is None:
             continue
-        normal,gap,_=c
-        nz=normal[2]
-        if nz <= max(1e-12,direction_noise(av,af,bv,bf,label)):
+        normal,numerator,_=c
+        nn = dot(normal,normal)
+        threshold = max(1e-12,direction_noise(av,af,bv,bf,label))
+        if normal[2] <= 0 or math.isinf(threshold) or normal[2]**2 <= F(threshold)**2*nn:
             continue
-        z=-gap/nz
-        if z*nz >= -rounding:
+        if numerator <= 0 or numerator*numerator <= F(rounding)**2*nn:
+            z=scalar_exact(-numerator/normal[2])
+            nz=unit(normal)[2]
             raw.append((max(0.,z),label,nz,index))
     raw.sort(key=lambda row:row[0])
     out=[]
@@ -150,7 +176,8 @@ def _candidates(av,af,bv,bf,offset):
             continue
         if zprev is None or z-zprev>rounding:
             zprev,az=z,model(move(av,(0.,0.,z)),af)
-        c=facet(az,b,label,extent=extent)
+        # Extent-only validation never constructs an unused display residual.
+        c=facet(az,b,label,extent=extent,extent_only=True)
         if c is not None and c[2]:
             out.append((z,label,nz,index))
     return tuple(out),extent,rounding

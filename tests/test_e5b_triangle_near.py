@@ -6,6 +6,7 @@ motions preserve that distance. It shares no production geometric primitive.
 The secondary old path is the unmodified all-feature distance implementation,
 kept here to ensure the new rejection changes neither true nor false answers.
 """
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import random
 import pytest
@@ -79,8 +80,8 @@ def test_triangle_near_rejection_matches_full_feature_path_on_rounded_general_po
         if not valid(a):a=((F(0),)*3,(F(1),F(0),F(0)),(F(0),F(1),F(0)))
         if not valid(b):b=((F(0),F(0),F(1)),(F(1),F(0),F(1)),(F(0),F(1),F(1)))
         # Inputs intentionally round only once; no ideal-position oracle is claimed here.
-        a=tuple(tuple(F(float(c)) for c in _move(p,scale,translation,case%3)) for p in a)
-        b=tuple(tuple(F(float(c)) for c in _move(p,scale,translation,case%3)) for p in b)
+        a=tuple(tuple(F(scalar_exact(c)) for c in _move(p,scale,translation,case%3)) for p in a)
+        b=tuple(tuple(F(scalar_exact(c)) for c in _move(p,scale,translation,case%3)) for p in b)
         band=scale*(F(0),F(1,128),F(1,4),F(2))[case%4]
         assert G._triangles_near([(0,a)],[(0,b)],band)==_full_feature_reference([(0,a)],[(0,b)],band),case
 

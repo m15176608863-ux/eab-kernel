@@ -7,7 +7,7 @@
 定义。参考点沿射线 x(t) = x0 + t·d（t ≥ 0；A 平移 x(t)，B 固定）运动，首入时刻 t* = min{t ≥ 0 : x(t) ∈ E(A, B)}。
   · **凸对**（A、B 都凸 ⇒ E 凸）：E 有显式的 H 表示（`convex_entrance_block` 的 facet），每条 facet 的间隙沿平移仿射：
     g_i(t) = g_i(x0) + t·(n_i·d)。射线进入凸集的时刻是全部"进入型"facet（n_i·d < 0）时刻的**最大者** t_in，离开时刻是
-    "离开型"facet 时刻的最小者 t_out，t_in ≤ t_out 才触及。闭式，不经谓词；取到最大值的 facet 就是首入 facet。
+    "离开型"facet 时刻的最小者 t_out，t_in ≤ t_out 才触及。闭式，不经谓词；取到最大值的支撑线经有限源特征域精确复核后才确定首入 facet。
   · **凹对**：没有全局 E（M3 之前），用局部盖（VE/EV）给完备候选、在各自时刻重验"投影落在边内"、精确谓词 `polygons_overlap_exact`
     裁决（t* 处相触或相交；t* 前全部原始接触事件及相邻事件中点分离，否则抛 RuntimeError——候选集漏了更早的首入，不静默）；与三维同一结构。
   · 集值点（首入点落在 E 的顶点上，两条 facet 精确同时被触及）：按枚举序取第一个作裁决，并列集如实报出（tied_labels）。
@@ -27,7 +27,7 @@ from .covers import _facet_normal_own, enumerate_covers, facet_gap
 from .exact import (convexity_violation, entrance_block_exact, entrance_membership_exact, membership_exact,
                     polygons_overlap_exact, ve_side_exact, ev_side_exact)
 from .geom import Point, Poly, add, coord_scale, dot, edge, norm, round_floor, sub
-from ..construction import sqrt_rational
+from ..construction import scalar_rational, sqrt_rational, vector_rational
 
 
 @dataclass(slots=True)
@@ -52,21 +52,21 @@ def _facet_normal(A: Poly, B: Poly, label: tuple) -> Point:
 
 
 def _facet_points(A: Poly, B: Poly, label: tuple, x: Point) -> tuple[Point, Point]:
-    """首入位形下的接触点对（A 侧、B 侧）。VE：A 的顶点与它在 B 边上的投影；EV：B 的顶点与它在 A 边上的投影；FF：两条边的起点。"""
+    """已精确核有限域的首入接触点对：VE/EV 取源顶点与边上投影；FF 取两闭段真实重叠上的同点，不以 clamp 掩盖域外标签。"""
     kind, ai, bj = label
     A, B, x = [tuple(map(Fraction, p)) for p in A], [tuple(map(Fraction, p)) for p in B], tuple(map(Fraction, x))
     if kind == "VE":
         a = add(A[ai], x)
         b0, b1 = edge(B, bj)
         e = sub(b1, b0)
-        parameter = min(max(dot(sub(a, b0), e) / dot(e, e), 0), 1)
+        parameter = dot(sub(a, b0), e) / dot(e, e)
         pa, pb = a, add(b0, (e[0]*parameter, e[1]*parameter))
     elif kind == "EV":
         b = B[bj]
         a0, a1 = edge(A, ai)
         a0, a1 = add(a0, x), add(a1, x)
         e = sub(a1, a0)
-        parameter = min(max(dot(sub(b, a0), e) / dot(e, e), 0), 1)
+        parameter = dot(sub(b, a0), e) / dot(e, e)
         pa, pb = add(a0, (e[0]*parameter, e[1]*parameter)), b
     else:
         # Parallel face contact: report an actual common point of the closed
@@ -80,7 +80,48 @@ def _facet_points(A: Poly, B: Poly, label: tuple, x: Point) -> tuple[Point, Poin
         if low > high:
             raise ArithmeticError("convex entrance face witness has no segment overlap")
         pa = pb = add(b0, (low*e[0], low*e[1]))
-    return tuple(map(float, pa)), tuple(map(float, pb))
+    return vector_rational(pa), vector_rational(pb)
+
+
+def _facet_in_domain(A: Poly, B: Poly, label: tuple, x: Point) -> bool:
+    """Exact finite projected source-feature domain; no gap/report window.
+
+    VE / EV require the orthogonal foot in the closed source edge. FF requires
+    closed segment projection overlap. Supporting-line contact itself is
+    checked separately; this predicate also applies to near-label reports.
+    Gate: test_r9fix_entrance_domain (independent raw-coordinate intervals).
+    """
+    kind, ai, bj = label
+    if kind in ("VE", "EV"):
+        _, _, projection, length2, _ = _feature_data(A, B, label, x)
+        return 0 <= projection <= length2
+    a0, a1 = (add(_frpoint(p), x) for p in edge(A, ai))
+    b0, b1 = (_frpoint(p) for p in edge(B, bj))
+    e = sub(b1, b0)
+    projection0, projection1 = dot(sub(a0, b0), e), dot(sub(a1, b0), e)
+    return max(projection0, projection1) >= 0 and min(projection0, projection1) <= dot(e, e)
+
+
+def _support_groups(facets):
+    """Coalesce equal oriented lines for clipping, retain every source label.
+
+    The exact Minkowski walk is already angularly ordered. Consecutive
+    positively collinear directions have the same support, including a
+    possible cyclic seam; no rounded angle or tolerance is used.
+    """
+    groups = []
+    def parallel(f, g):
+        u, v = f.direction, g.direction
+        return u[0]*v[1] == u[1]*v[0] and dot(u, v) > 0
+    for facet in facets:
+        if groups and parallel(groups[-1][0], facet):
+            groups[-1].append(facet)
+        else:
+            groups.append([facet])
+    if len(groups) > 1 and parallel(groups[-1][0], groups[0][0]):
+        groups[0] = groups[-1] + groups[0]
+        groups.pop()
+    return groups
 
 
 def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> Fraction:
@@ -120,21 +161,19 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
     eb = entrance_block_exact(A, B)
     X, D = tuple(map(Fraction, x0)), tuple(map(Fraction, d))
     enter = []
-    active = []
     t_out = None
 
     def none():
         return Entrance2("none", 0.0, None, None, None, None, None, 0.0, (), len(enter))
 
-    for f in eb.facets:
+    for group in _support_groups(eb.facets):
+        f = group[0]
         ex, ey = f.direction
         # h >= 0 是 E 的内半空间；不用单位法向或浮点差分求斜率。
         h = ex * (X[1] - f.start[1]) - ey * (X[0] - f.start[0])
         slope = ex * D[1] - ey * D[0]
-        if h == 0:
-            active.append(f)
         if slope > 0:
-            enter.append((-h / slope, slope, f))
+            enter.append((-h / slope, slope, group))
         elif slope < 0:
             bound = -h / slope
             t_out = bound if t_out is None else min(t_out, bound)
@@ -143,37 +182,32 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
     t_in = max([Fraction(0)] + [t for t, _, _ in enter])
     if (t_out is not None and t_in > t_out) or (t_max != float("inf") and t_in > Fraction(t_max)):
         return none()
-    best = max(enter, key=lambda q: q[0]) if enter else None
-    if t_in == 0 and active:
-        # 已恰好接触：定义 min{t>=0:x(t)∈E}=0，包括沿边或背离运动。
-        fbest = next((f for t, _, f in enter if t == 0), active[0])
-    elif best is not None and best[0] == t_in:
-        fbest = best[2]
-    else:
-        return none()
+    exact_x = (X[0] + D[0] * t_in, X[1] + D[1] * t_in)
+    # Collinear source facets share one supporting-line constraint, but not
+    # one finite source-feature domain. Coalesce their clipping roots above,
+    # then remap each active support to its actual finite VE / EV / FF labels.
+    valid = [f for f in eb.facets if _facet_in_domain(A, B, f.label, exact_x)]
+    active = [f for f in valid if (
+        f.direction[0] * (exact_x[1] - f.start[1])
+        - f.direction[1] * (exact_x[0] - f.start[0]) == 0)]
+    if not active:
+        raise ArithmeticError("convex boundary has no finite source-feature contact")
+    fbest = next((f for _, slope, group in enter for f in group
+                  if f in active), active[0])
     band2 = (Fraction(ctol) + r) ** 2
     near = []
-    tied = []
-    for t, slope, f in enter:
-        ex, ey = f.direction
+    for t, slope, group in enter:
+        ex, ey = group[0].direction
         if ((t - t_in) * slope) ** 2 <= band2 * (ex * ex + ey * ey):
-            near.append(f.label)
-    # 恰在角点/沿边的闭集首触也有活动侧：不只报告进入型 facet。
-    for f in eb.facets:
-        ex, ey = f.direction
-        h = ex * (X[1] + t_in * D[1] - f.start[1]) - ey * (X[0] + t_in * D[0] - f.start[0])
-        if h == 0 and f.label not in tied:
-            tied.append(f.label)
-            if f.label not in near:
-                near.append(f.label)
-    if fbest.label not in tied:
-        tied.insert(0, fbest.label)
+            near.extend(f.label for f in group if f in valid and f.label not in near)
+    # Tangential / departing closed first contact also has active supports.
+    tied = list(dict.fromkeys(f.label for f in active))
+    near.extend(label for label in tied if label not in near)
     tied.sort(key=lambda lab: 0 if lab == fbest.label else 1)
     lab = fbest.label
-    exact_x = (X[0] + D[0] * t_in, X[1] + D[1] * t_in)
-    x = tuple(map(float, exact_x))
+    x = vector_rational(exact_x)
     pa, pb = _facet_points(A, B, lab, exact_x)
-    return Entrance2("entrance", float(t_in), x, lab, _facet_normal(A, B, lab), pa, pb,
+    return Entrance2("entrance", scalar_rational(t_in), x, lab, _facet_normal(A, B, lab), pa, pb,
                      facet_gap(A, B, lab, exact_x), tuple(tied), len(enter), tuple(near), t_in)
 
 
@@ -246,7 +280,7 @@ def _contact_report(A, B, label, X):
         pa = (a0[0] + X[0] + parameter * (a1[0] - a0[0]), a0[1] + X[1] + parameter * (a1[1] - a0[1]))
         pb = _frpoint(B[bj])
     gap = sqrt_rational(g * g / length2) * ((g > 0) - (g < 0))
-    return _facet_normal(A, B, label), tuple(map(float, pa)), tuple(map(float, pb)), gap
+    return _facet_normal(A, B, label), vector_rational(pa), vector_rational(pb), gap
 
 
 def _candidate_labels(A, B):
@@ -297,7 +331,7 @@ def _first_entrance_concave(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, 
                     near.append(label2)
         tied.sort(key=lambda lab: 0 if lab == label else 1)
         normal, pa, pb, gap = _contact_report(A, B, label, x)
-        return Entrance2("entrance", float(t), tuple(map(float, x)), label, normal, pa, pb,
+        return Entrance2("entrance", scalar_rational(t), vector_rational(x), label, normal, pa, pb,
                          gap, tuple(tied), len(raw), tuple(near), t)
     # 无候选也检查全部原始几何事件，不靠有限粗探漏掉短暂碰撞或无限射线上的触及。
     for tp in _all_event_times(A, B, X, D, bound):
@@ -355,10 +389,14 @@ def first_entrance_brute(A: Poly, B: Poly, x0: Point, d: Point, *, t_max: float,
         return None
     lo, up = prev, hit
     from math import nextafter, inf
-    while float(lo) != float(up) and nextafter(float(lo), inf) < float(up):
+    # Bracket displays may underflow; exact Fraction endpoints still control
+    # membership, and the final scalar below is range checked.
+    while (scalar_rational(lo, allow_underflow=True) != scalar_rational(up, allow_underflow=True)
+           and nextafter(scalar_rational(lo, allow_underflow=True), inf)
+           < scalar_rational(up, allow_underflow=True)):
         mid = (lo + up) / 2
         if state(mid) >= 0:
             up = mid
         else:
             lo = mid
-    return float(up)
+    return scalar_rational(up)

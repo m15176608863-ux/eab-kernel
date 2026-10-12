@@ -1,4 +1,5 @@
 """G6H-03: independent cross-section angle formula; no production oracle primitive."""
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import math
 import pytest
@@ -18,10 +19,10 @@ def test_dihedral_turn_preserves_exact_thin_angle_and_orientation(M,scale,revers
     assert all(len(P.edge_traversals(edge)) == 2 for edge in P.edges())
     if scale == 1.:
         assert P.manifold_issues() == []
-        assert P.volume() == float(F(1,6))
+        assert P.volume() == scalar_exact(F(1,6))
     if reverse:
         P=Polyhedron(P.verts,[tuple(reversed(face)) for face in P.faces])
-    expected=math.atan(float(F(1,2*M*M))) * (-1 if reverse else 1)
+    expected=math.atan(scalar_exact(F(1,2*M*M))) * (-1 if reverse else 1)
     actual=P.dihedral_turn((0,1))
     assert actual == pytest.approx(expected, rel=2e-15, abs=0.), "exact thin signed dihedral"
     assert (actual>0) != reverse, "nonzero orientation must not be rounded away"

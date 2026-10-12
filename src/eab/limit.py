@@ -101,7 +101,7 @@ from fractions import Fraction
 from math import cos, pi, sin
 
 from .lp import OPTIMAL, UNBOUNDED, _fl, maximize
-from .construction import sqrt_rational
+from .construction import sqrt_rational, scalar_rational, unit_rational
 
 Vec = tuple[float, ...]
 
@@ -110,7 +110,7 @@ Vec = tuple[float, ...]
 
 def _construction_float(value: Fraction) -> float:
     """Round a completed exact construction; never silently erase its range."""
-    result = float(value)  # Fraction raises on overflow, including finite inputs.
+    result = scalar_rational(value)
     if result == 0.0 and value:
         raise ArithmeticError("nonzero wrench/twist construction is below binary64 range")
     return result
@@ -185,29 +185,35 @@ def _twist_forward(y: list[float], d: Vec, dim: int) -> list[float]:
 
 def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
     """切向基架。二维 t = n 转 +90°（随转动协变）。三维默认按全局坐标轴选 t₁（不协变，见诚实条款），
-    给了 `tangent` 时取它在切平面上的投影；两种情况 t₂ = n × t₁。"""
+    给了 `tangent` 时先精确投影、以精确平方比较相对噪声窗口，再构造单位方向；两种情况 t₂ = n × t₁。
+    门：test_r9_tangent_frame_is_invariant_to_representable_direction_scale。
+    """
     if dim == 2:
         return [(-n[1], n[0])]
+    n = tuple(map(Fraction, n))
     if tangent is None:
-        a = (1.0, 0.0, 0.0) if abs(n[0]) < 0.9 else (0.0, 1.0, 0.0)
+        a = (1, 0, 0) if abs(n[0]) < 0.9 else (0, 1, 0)
         t1 = (a[1] * n[2] - a[2] * n[1], a[2] * n[0] - a[0] * n[2], a[0] * n[1] - a[1] * n[0])
     else:
+        tangent = tuple(map(Fraction, tangent))
         nn = sum(v * v for v in n)
         tn = sum(t * v for t, v in zip(tangent, n)) / nn
         t1 = tuple(tangent[i] - tn * n[i] for i in range(3))
         # 被测量是投影 |t1|，它的噪声是 ~u·|tangent| 的舍入（纪律 F）：tangent 与 n 在舍入内平行时 t1 是逐分量的舍入垃圾，
         # 归一化后不在切平面内（n·t1 可达 0.17），内接棱锥被歪斜、承载力静默高估 19%（G6 第五轮 minor）。说不清就报错。
-        lt = sum(v * v for v in tangent) ** 0.5
-        if not sum(v * v for v in t1) ** 0.5 > 64.0 * 2.220446049250313e-16 * lt:
+        relative_noise = Fraction(64) * Fraction(2.220446049250313e-16)
+        if sum(v * v for v in t1) <= relative_noise**2 * sum(v * v for v in tangent):
             raise ValueError(f"tangent {tangent!r} is parallel to normal {n!r} within rounding; it has no resolvable "
                              f"component in the tangent plane")
-        tn2 = sum(t * v for t, v in zip(t1, n)) / nn                      # 第二遍正交化：余量压到 eps
-        t1 = tuple(t1[i] - tn2 * n[i] for i in range(3))
-    ln = sum(v * v for v in t1) ** 0.5
-    if not ln > 0.0:
+    if not any(t1):
         raise ValueError(f"tangent {tangent!r} has no component in the tangent plane of normal {n!r}")
-    t1 = tuple(v / ln for v in t1)
-    t2 = (n[1] * t1[2] - n[2] * t1[1], n[2] * t1[0] - n[0] * t1[2], n[0] * t1[1] - n[1] * t1[0])
+    t1 = unit_rational(t1)
+    # The model defines t2 = n cross the returned binary64 t1. Complete each
+    # cross-product subtraction exactly before rounding that final component.
+    first = tuple(map(Fraction, t1))
+    t2 = tuple(scalar_rational(v) for v in (
+        n[1] * first[2] - n[2] * first[1], n[2] * first[0] - n[0] * first[2],
+        n[0] * first[1] - n[1] * first[0]))
     return [t1, t2]
 
 
@@ -255,7 +261,7 @@ class LimitContact:
         # Model directions are rounded only after the complete normalization.
         # In particular v/m/n can round a representable subnormal component
         # twice; no rounded norm or scaled component is an intermediate here.
-        self.normal = tuple((-1 if v < 0 else 1)*sqrt_rational(v*v/square) for v in exact)
+        self.normal = unit_rational(exact)
         # G6 第四轮 minor：cohesion / area 为 NaN 或负数曾被 `cohesion > 0 and area > 0` 静默当成"无黏聚"，α 按纯摩擦给出、
         # 自校验照常通过；mu 为 NaN 只在 Fraction(nan) 处以无关信息报错。非有限输入要在入口响亮失败（与法向同一家族）
         for name in ("mu", "cohesion", "area"):

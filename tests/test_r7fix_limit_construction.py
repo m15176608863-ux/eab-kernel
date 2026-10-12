@@ -1,4 +1,5 @@
 """R7 same-family limit normalization: independent exact midpoint oracles."""
+from construction_oracle import scalar_exact
 from fractions import Fraction as F
 import inspect
 import math
@@ -14,13 +15,13 @@ import eab.limit as limit_module
 @pytest.mark.parametrize('sign', [-1, 1])
 def test_limit_contact_normal_retains_final_subnormal_component(sign):
     q = F(2)**-1074
-    vector = (3., 3., sign*float(7*q))
+    vector = (3., 3., sign*scalar_exact(7*q))
     square = sum(F(v)**2 for v in vector)
     component_square = (7*q)**2/square
     # Unique nearest floating output is 2q. No production helper is shared.
     assert (F(3, 2)*q)**2 < component_square < (F(5, 2)*q)**2
     result = LimitContact((0., 0., 0.), vector)
-    assert result.normal[2] == sign*float(2*q), 'normal component rounded before final normalization'
+    assert result.normal[2] == sign*scalar_exact(2*q), 'normal component rounded before final normalization'
 
 
 def test_limit_norm_retains_final_representable_root_before_rounding():
@@ -28,7 +29,7 @@ def test_limit_norm_retains_final_representable_root_before_rounding():
     vector = (F(149, 100)*q, F(49, 100)*q)
     square = sum(v*v for v in vector)
     assert (F(3, 2)*q)**2 < square < (F(5, 2)*q)**2
-    assert limit_module._norm(vector) == float(2*q)
+    assert limit_module._norm(vector) == scalar_exact(2*q)
 
 
 def test_limit_norm_finite_input_unrepresentable_result_fails_loud():
