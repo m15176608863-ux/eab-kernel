@@ -33,10 +33,27 @@ def scale(a, k):
 
 
 def dot(a, b):
-    return sum(x*y for x, y in zip(a, b))
+    # Independent test-only integer algebra. Never import production rational3.
+    # Nonrational inputs retain the original floating operation order exactly.
+    if not all(type(x) in (F, int) for x in (*a, *b)):
+        return sum(x*y for x, y in zip(a, b))
+    terms = [(x.numerator*y.numerator, x.denominator*y.denominator) for x, y in zip(a, b)]
+    denominator = math.lcm(*(d for _, d in terms))
+    return F(sum(n*(denominator//d) for n, d in terms), denominator)
+
+
+def _minor(a, b, c, d):
+    left, right = a.denominator*b.denominator, c.denominator*d.denominator
+    denominator = math.lcm(left, right)
+    return F(a.numerator*b.numerator*(denominator//left)
+             - c.numerator*d.numerator*(denominator//right), denominator)
 
 
 def cross(a, b):
+    if all(type(x) in (F, int) for x in (*a, *b)):
+        return (_minor(a[1], b[2], a[2], b[1]),
+                _minor(a[2], b[0], a[0], b[2]),
+                _minor(a[0], b[1], a[1], b[0]))
     return (a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0])
 
 
@@ -73,8 +90,15 @@ def vertex(m, vi, d, tol):
     values = [dot(d, e) for e in m[4][vi]]
     if not values:
         return -1
+    dd = None
     for value, e in zip(values, m[4][vi]):
-        if outside(value, dot(d, d)*dot(e, e), tol):
+        # outside is false whenever value <= 0: its norm argument cannot affect
+        # the result. Avoid constructing that exact quantity for these edges.
+        if value <= 0:
+            continue
+        if dd is None:
+            dd = dot(d, d)
+        if outside(value, dd*dot(e, e), tol):
             return -1
     return int(all(value < 0 for value in values))
 
@@ -88,23 +112,29 @@ def arc(m, edge, d, tol):
     t, n1, n2 = sub(v[j], v[i]), normals[f1], normals[f2]
     tt = dot(t, t)
     turn = dot(t, cross(n1, n2))
-    if turn <= 0 or outside(abs(dot(d, t)), dot(d, d)*tt, tol):
+    if turn <= 0:
+        return -1
+    td = dot(d, t)
+    dd = dot(d, d)
+    if td and outside(abs(td), dd*tt, tol):
+        return -1
+    # Check the exact exterior half-planes before building a Gram solve whose
+    # coefficients are only read for accepted rays. No tolerance is altered.
+    sa = dot(t, cross(n1, d))
+    sb = dot(t, cross(d, n2))
+    tn1, tn2 = dot(t, n1), dot(t, n2)
+    if sa < 0 and outside(-sa, (tt*dot(n1, n1)-tn1**2)*dd, tol):
+        return -1
+    if sb < 0 and outside(-sb, (tt*dot(n2, n2)-tn2**2)*dd, tol):
         return -1
     # Project both generators into the exact edge-normal plane and solve their
     # Gram system. Scaling avoids division and remains positive.
-    a = sub(scale(n1, tt), scale(t, dot(n1, t)))
-    b = sub(scale(n2, tt), scale(t, dot(n2, t)))
+    a = sub(scale(n1, tt), scale(t, tn1))
+    b = sub(scale(n2, tt), scale(t, tn2))
     aa, ab, bb = dot(a, a), dot(a, b), dot(b, b)
     da, db = dot(d, a), dot(d, b)
     alpha, beta = bb*da-ab*db, aa*db-ab*da
-    # Domain-band distances to each bounding ray are independently squared.
-    sa = dot(t, cross(n1, d))
-    sb = dot(t, cross(d, n2))
-    if outside(-sa, (tt*dot(n1, n1)-dot(t, n1)**2)*dot(d, d), tol):
-        return -1
-    if outside(-sb, (tt*dot(n2, n2)-dot(t, n2)**2)*dot(d, d), tol):
-        return -1
-    return int(alpha > 0 and beta > 0 and dot(d, t) == 0)
+    return int(alpha > 0 and beta > 0 and td == 0)
 
 
 def face_extent(m, fi, p):

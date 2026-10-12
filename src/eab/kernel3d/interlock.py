@@ -22,11 +22,12 @@ import sys
 import math
 from fractions import Fraction as F
 from functools import lru_cache
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ..dual import Dual, Number, val
 from ..margin import characteristic_length, effective_geom_tol, rounding_floor
 from .covers3 import ee_cover, enumerate_covers3, fv_cover, vf_cover
+from . import covers3 as _covers
 from .frozen import FACET_KINDS, frozen_ee_sign, frozen_gap, frozen_normal  # noqa: F401  (L5 转出的公共入口)
 from .geom3 import Polyhedron, Vec3, cross, dot, norm, polyhedra_overlap, sub
 from .geom3 import exact_edge_vector
@@ -127,7 +128,46 @@ def _cover_at(Az: Polyhedron, B: Polyhedron, label: tuple, tol: float, extent_to
     return None
 
 
-def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_tol: float
+@dataclass(frozen=True, slots=True)
+class _CandidateSnapshot:
+    signature: tuple
+    arguments: tuple = field(compare=False, hash=False)
+
+
+def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_tol: float):
+    """Reuse nominal reports only for identical complete, typed input content.
+
+    Fresh list results protect the cache from callers. Source vertices, face
+    rings, offset and both reporting bands are part of the key. Numeric types
+    also matter: translated float and Fraction coordinates can round differently.
+    Direct cover implementations participate so injected defects remain visible.
+    Exact escape decisions are independent of this nominal-report cache.
+    """
+    av, af = tuple(map(tuple, A.verts)), tuple(map(tuple, A.faces))
+    bv, bf = tuple(map(tuple, B.verts)), tuple(map(tuple, B.faces))
+    offset = tuple(offset)
+    numeric_types = tuple(type(x) for vertices in (av, bv, (offset,))
+                          for p in vertices for x in p) + (type(tol), type(extent_tol))
+    implementations = (_candidates_uncached, enumerate_covers3, _cover_at,
+                       _normal_noise, _cover_escape_z, rounding_floor,
+                       _covers.vf_cover, _covers.fv_cover, _covers.ee_cover,
+                       vf_cover, fv_cover, ee_cover)
+    arguments = (av, af, bv, bf, offset, tol, extent_tol)
+    signature = arguments + (numeric_types, implementations)
+    rows, r = _candidates_cached(_CandidateSnapshot(signature, arguments))
+    return list(rows), r
+
+
+@lru_cache(maxsize=512)
+def _candidates_cached(snapshot):
+    av, af, bv, bf, offset, tol, extent_tol = snapshot.arguments
+    implementation = snapshot.signature[-1][0]
+    rows, r = implementation(Polyhedron(list(av), list(af)),
+                             Polyhedron(list(bv), list(bf)), offset, tol, extent_tol)
+    return tuple(rows), r
+
+
+def _candidates_uncached(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_tol: float
                 ) -> tuple[list[tuple], float]:
     """Legacy nominal report candidates and their floating construction band.
 
@@ -227,7 +267,10 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     open event interval is certified penetrating, and the exact root itself is
     independently tested nonpenetrating. No near-vertical event is suppressed.
 
-    Explicit contact_window uses exactly the same finite rational certificate
+    Explicit contact_window is the local penetration-thickness reporting
+    window, not Euclidean rigid-body penetration depth (PD). A rejected window
+    is not evidence that PD > window; coordinate-axis and L1 shell construction
+    do not guarantee rotation invariance. It uses the same rational certificate
     models as margin: original geometry, two available star cores, and six
     coordinate-axis shifts by +/-window. The earliest root is the minimum over
     those complete event partitions; the winner carries its exact proof. This

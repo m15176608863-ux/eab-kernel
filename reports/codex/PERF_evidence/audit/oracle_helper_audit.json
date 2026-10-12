@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "file": "tests/e5a_cover_oracle.py",
+      "reference": "tests/perf_cover_oracle_reference.py",
+      "allowed_changed_helpers": [
+        "arc",
+        "cross",
+        "dot",
+        "vertex"
+      ],
+      "actual_changed_helpers": [
+        "arc",
+        "cross",
+        "dot",
+        "vertex"
+      ],
+      "frozen_reference_matches_baseline_ast": true,
+      "imports_unchanged": true,
+      "no_production_geometry_imports": true,
+      "reference_sha256": "d3b40d4a2a169a2ed6ef0750657f0ff0a95a7e44487639ff27cdb51602ba4947",
+      "optimized_sha256": "8d5bfb9aed2d1909b443b969c2c8a76110a500ecf10d9b766fade3705a16626e",
+      "status": "PASS"
+    },
+    {
+      "file": "tests/e5a_escape_oracle.py",
+      "reference": "tests/perf_escape_oracle_reference.py",
+      "allowed_changed_helpers": [
+        "facet"
+      ],
+      "actual_changed_helpers": [
+        "facet"
+      ],
+      "frozen_reference_matches_baseline_ast": true,
+      "imports_unchanged": true,
+      "no_production_geometry_imports": true,
+      "reference_sha256": "4f6ef050fde895e981efaeda54dcc65f6d75a1ff2ad9e685fe21aaad05d866fa",
+      "optimized_sha256": "0f550f29a7c101e64668d083af7e38ca42f60a97d9a7185183112e2ae03ff8d5",
+      "status": "PASS"
+    }
+  ],
+  "equivalence_gate": "tests/test_perf_oracle_algebra.py",
+  "boundary": "Only test-only oracle algebra/construction was accelerated. Original test_*.py gates and parameter grids have no exemptions. Frozen references retain independent Newell/Gram logic, not production geometry."
+}

@@ -28,7 +28,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 from functools import lru_cache
-from math import atan2, isfinite
+from math import atan2, isfinite, lcm
 
 from ..predicates import cross2_sign, dot2_sign
 from .exact import (convexity_violation, entrance_block_exact, ev_side_exact, membership_exact,
@@ -158,13 +158,23 @@ def _ve_side(A, ia, B, jb, tol, cone_tol):
 
 @lru_cache(maxsize=32768)
 def _ve_side_directions(lo, hi, e, tol, cone_tol):
-    """Cache exact directions, not positions; certified filters only decide signs."""
+    """Exact directions with one common positive integer scale; same cache key.
+
+    A shared denominator preserves the shortest of all three vector lengths.
+    Length tol is lifted exactly by the same factor; cone_tol is dimensionless.
+    Gate: test_perf_2d_directions::test_integer_ve_state_matches_fraction_reference.
+    """
+    den = lcm(*(c.denominator for vector in (lo, hi, e) for c in vector))
+    lo, hi, e = (tuple(c.numerator * (den // c.denominator) for c in vector)
+                 for vector in (lo, hi, e))
     v = (-e[1], e[0])
-    turn, c1, c2 = cross2_sign(lo, hi), cross2_sign(lo, v), cross2_sign(v, hi)
-    if turn >= 0 and (turn > 0 or dot2_sign(lo, hi) > 0) and c1 >= 0 and c2 >= 0 and (turn > 0 or dot2_sign(lo, v) > 0):
+    turn, c1, c2 = cross(lo, hi), cross(lo, v), cross(v, hi)
+    if turn >= 0 and (turn > 0 or dot(lo, hi) > 0) and c1 >= 0 and c2 >= 0 and (turn > 0 or dot(lo, v) > 0):
         return 1 if c1 > 0 and c2 > 0 else 0
     if tol <= 0 and (cone_tol is None or cone_tol <= 0):
         return -1
+    if cone_tol is None:
+        tol = Fraction(tol) * den
     w2 = _angle_window2(tol, cone_tol, (lo, hi, e))
     return 0 if w2 > 0 and _cone_nonreflex(lo, hi, w2) and _cone_accepts(lo, hi, v, w2) else -1
 

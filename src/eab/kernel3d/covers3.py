@@ -143,21 +143,34 @@ def _qvertex_state_cached(edges, d, tol, band_implementation):
     return 1 if strict else 0
 
 
+def _integer_ray(v):
+    """Exact positive rescaling of a Fraction/integer vector; preserve all signs."""
+    den = lcm(*(c.denominator for c in v))
+    result = tuple(c.numerator * (den // c.denominator) for c in v)
+    divisor = gcd(*result)
+    return tuple(c // divisor for c in result) if divisor else result
+
+
 def _qedge_contains(P, e, d, tol=0.0):
-    """Exact oriented wedge, no atan2, normalized vectors, or noise bands."""
+    """Exact oriented wedge; integer rays preserve the normalized-dot window.
+
+    Each vector is multiplied by its own strictly positive rational factor.
+    Signs/zeros and value**2/(norm(a)**2*norm(b)**2) therefore do not change.
+    Gate: test_perf_edge_frame::test_integer_edge_frame_matches_fraction_reference.
+    """
     trav = P.edge_traversals(e)
     if len(trav) != 2:
         return -1
     (f1, a, b), (f2, _, _) = trav
     t = _qedge(P, (a, b))
     n1, n2 = _qnormal(P, f1), _qnormal(P, f2)
-    convex, h1, h2 = _qedge_frame_cached(t, n1, n2, cross, dot)
+    convex, t, h1, h2 = _qedge_frame_cached(t, n1, n2, cross, dot)
     if not convex:
         return -1
+    d = _integer_ray(d)
     axial = dot(d, t)
     if _outside_dot_band(abs(axial), d, t, tol):
         return -1
-    # The inward normals to the two sides of the arc. Both are exact.
     s1, s2 = dot(h1, d), dot(h2, d)
     if _outside_dot_band(-s1, h1, d, tol) or _outside_dot_band(-s2, h2, d, tol):
         return -1
@@ -166,9 +179,11 @@ def _qedge_contains(P, e, d, tol=0.0):
 
 @lru_cache(maxsize=8192)
 def _qedge_frame_cached(t, n1, n2, cross_implementation, dot_implementation):
-    """Cache only edge-invariant exact wedge data; predicates are unchanged."""
+    """Same content/implementation key; store positive-rescaled integer rays."""
     return (dot_implementation(cross_implementation(n1, n2), t) > 0,
-            cross_implementation(t, n1), cross_implementation(n2, t))
+            _integer_ray(t),
+            _integer_ray(cross_implementation(t, n1)),
+            _integer_ray(cross_implementation(n2, t)))
 
 
 def _clamp01(s: float) -> float:
@@ -281,31 +296,54 @@ def _qtetra_contains_origin(a, b, c, d):
     v = volume(a, b, c, d)
     if not v:
         return False
-    zero = (Fraction(0),) * 3
+    zero = (0,) * 3
     numerators = (volume(zero, b, c, d), volume(a, zero, c, d),
                   volume(a, b, zero, d), volume(a, b, c, zero))
     return all(x * v >= 0 for x in numerators)
 
 
 def _qclosest_simplex(points):
-    """Nearest simplex point and its smallest positive-dimensional support."""
-    best = min(points, key=lambda x: dot(x, x))
-    support = (best,)
-    best2 = dot(best, best)
-    for subset in combinations(points, 2):
-        p = _qclosest_segment(*subset)
-        d2 = dot(p, p)
-        if d2 < best2:
-            best, best2, support = p, d2, subset
-    for subset in combinations(points, 3):
-        p = _qclosest_triangle(*subset)
-        d2 = dot(p, p)
-        if d2 < best2:
-            best, best2, support = p, d2, subset
-    for subset in combinations(points, 4):
-        if _qtetra_contains_origin(*subset):
-            return (Fraction(0),) * 3, subset
-    return best, support
+    """Exact nearest point/support, retaining historical candidate and tie order.
+
+    Inputs are exact Fraction/integer vectors, as supplied by _qclosest_hull.
+    A shared positive denominator maps the simplex to integer coordinates.
+    Candidate squared norms are compared by integer cross multiplication; only
+    the returned point is made into Fractions. Triangle projections outside the
+    triangle cannot improve on its edges, all already considered. For an inside
+    projection p parallel to n, cross(u-p,v-p).n equals cross(u,v).n exactly.
+    Gate: test_perf_covers::test_integer_simplex_matches_fraction_reference.
+    """
+    scale = lcm(*(c.denominator for p in points for c in p))
+    integer = tuple(tuple(c.numerator * (scale // c.denominator) for c in p) for p in points)
+    indices = range(len(points))
+    first = min(indices, key=lambda i: dot(integer[i], integer[i]))
+    best, den, support = integer[first], 1, (points[first],)
+    best_num, best_den2 = dot(best, best), 1
+    for i, j in combinations(indices, 2):
+        a, b = integer[i], integer[j]
+        d = sub(b, a)
+        dd = dot(d, d)
+        ad = -dot(a, d)
+        if dd and 0 < ad < dd:
+            candidate = add(mul(a, dd), mul(d, ad))
+            numerator, denominator2 = dot(candidate, candidate), dd * dd
+            if numerator * best_den2 < best_num * denominator2:
+                best, den, support = candidate, dd, (points[i], points[j])
+                best_num, best_den2 = numerator, denominator2
+    for i, j, k in combinations(indices, 3):
+        a, b, c = integer[i], integer[j], integer[k]
+        n = cross(sub(b, a), sub(c, a))
+        nn = dot(n, n)
+        if nn and all(dot(cross(u, v), n) >= 0 for u, v in ((b, c), (c, a), (a, b))):
+            an = dot(a, n)
+            numerator, denominator2 = an * an, nn
+            if numerator * best_den2 < best_num * denominator2:
+                best, den, support = mul(n, an), nn, (points[i], points[j], points[k])
+                best_num, best_den2 = numerator, denominator2
+    for subset in combinations(indices, 4):
+        if _qtetra_contains_origin(*(integer[i] for i in subset)):
+            return (Fraction(0),) * 3, tuple(points[i] for i in subset)
+    return tuple(Fraction(c, den * scale) for c in best), support
 
 
 @lru_cache(maxsize=2048)

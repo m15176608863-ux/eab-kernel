@@ -1,0 +1,317 @@
+{
+  "interlocking_distance": {
+    "total_seconds": 56.18835899999996,
+    "production_top5": [
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\g03.py",
+        "line": 165,
+        "function": "g0_distance_completeness3",
+        "primitive_calls": 3,
+        "calls": 3,
+        "self_seconds": 0.0035929000000000004,
+        "cumulative_seconds": 55.44764790000001
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py",
+        "line": 614,
+        "function": "enumerate_covers3",
+        "primitive_calls": 39,
+        "calls": 39,
+        "self_seconds": 0.14661770000000002,
+        "cumulative_seconds": 37.199216400000005
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py",
+        "line": 812,
+        "function": "brute_feature_distance",
+        "primitive_calls": 39,
+        "calls": 39,
+        "self_seconds": 0.14392470000000002,
+        "cumulative_seconds": 12.893781800000001
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py",
+        "line": 532,
+        "function": "ve3_cover",
+        "primitive_calls": 131040,
+        "calls": 131040,
+        "self_seconds": 0.36847300000000005,
+        "cumulative_seconds": 11.9645373
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\covers3.py",
+        "line": 489,
+        "function": "ee_cover",
+        "primitive_calls": 122304,
+        "calls": 122304,
+        "self_seconds": 0.3411055,
+        "cumulative_seconds": 10.489472500000002
+      }
+    ],
+    "oracle_top5": []
+  },
+  "invariance_height": {
+    "total_seconds": 18.21622979999995,
+    "production_top5": [
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 260,
+        "function": "escape_height_covers",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0002086,
+        "cumulative_seconds": 17.5026118
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 227,
+        "function": "_exact_escape",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0001139,
+        "cumulative_seconds": 11.4224286
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 232,
+        "function": "_exact_escape_cached",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0006866,
+        "cumulative_seconds": 11.4222502
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 213,
+        "function": "_nonpenetrating_at",
+        "primitive_calls": 258,
+        "calls": 258,
+        "self_seconds": 0.0008186000000000001,
+        "cumulative_seconds": 10.4215453
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\geom3.py",
+        "line": 547,
+        "function": "polyhedra_overlap",
+        "primitive_calls": 258,
+        "calls": 258,
+        "self_seconds": 0.0037814000000000003,
+        "cumulative_seconds": 10.3211508
+      }
+    ],
+    "oracle_top5": [
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_cover_oracle.py",
+        "line": 1,
+        "function": "<module>",
+        "primitive_calls": 1,
+        "calls": 1,
+        "self_seconds": 7.9e-06,
+        "cumulative_seconds": 0.0020968000000000002
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 1,
+        "function": "<module>",
+        "primitive_calls": 1,
+        "calls": 1,
+        "self_seconds": 6.900000000000001e-06,
+        "cumulative_seconds": 1.7800000000000002e-05
+      }
+    ]
+  },
+  "invariance_ties": {
+    "total_seconds": 34.977209799999926,
+    "production_top5": [
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 260,
+        "function": "escape_height_covers",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0002053,
+        "cumulative_seconds": 10.6415656
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 137,
+        "function": "_candidates",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 0.0003391,
+        "cumulative_seconds": 5.3637723
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 161,
+        "function": "_candidates_cached",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0003701,
+        "cumulative_seconds": 5.3631592
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 170,
+        "function": "_candidates_uncached",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0057718000000000005,
+        "cumulative_seconds": 5.3627861
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 227,
+        "function": "_exact_escape",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0001082,
+        "cumulative_seconds": 5.2743944
+      }
+    ],
+    "oracle_top5": [
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 120,
+        "function": "candidates",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 0.0022866,
+        "cumulative_seconds": 23.6679415
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 124,
+        "function": "_candidates",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0639764,
+        "cumulative_seconds": 23.6656549
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 51,
+        "function": "facet",
+        "primitive_calls": 57696,
+        "calls": 67872,
+        "self_seconds": 0.2499705,
+        "cumulative_seconds": 22.935206400000002
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_cover_oracle.py",
+        "line": 82,
+        "function": "arc",
+        "primitive_calls": 75643,
+        "calls": 75643,
+        "self_seconds": 0.5185773,
+        "cumulative_seconds": 15.2625243
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_cover_oracle.py",
+        "line": 35,
+        "function": "dot",
+        "primitive_calls": 1253908,
+        "calls": 1253908,
+        "self_seconds": 0.3839345,
+        "cumulative_seconds": 13.018849300000001
+      }
+    ]
+  },
+  "invariance_ties_after": {
+    "total_seconds": 25.855530099999967,
+    "production_top5": [
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 260,
+        "function": "escape_height_covers",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.00020700000000000002,
+        "cumulative_seconds": 10.217101300000001
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 137,
+        "function": "_candidates",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 0.0003222,
+        "cumulative_seconds": 5.339965800000001
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 161,
+        "function": "_candidates_cached",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0003932,
+        "cumulative_seconds": 5.3393682
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 170,
+        "function": "_candidates_uncached",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.006084600000000001,
+        "cumulative_seconds": 5.338972200000001
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel3d\\interlock.py",
+        "line": 227,
+        "function": "_exact_escape",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.0001116,
+        "cumulative_seconds": 4.8737896
+      }
+    ],
+    "oracle_top5": [
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 120,
+        "function": "candidates",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 0.0022458,
+        "cumulative_seconds": 14.937392000000001
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 124,
+        "function": "_candidates",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 0.08874510000000001,
+        "cumulative_seconds": 14.9351462
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 51,
+        "function": "facet",
+        "primitive_calls": 57696,
+        "calls": 67872,
+        "self_seconds": 0.2554514,
+        "cumulative_seconds": 14.235185600000001
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_cover_oracle.py",
+        "line": 106,
+        "function": "arc",
+        "primitive_calls": 75643,
+        "calls": 75643,
+        "self_seconds": 0.3795443,
+        "cumulative_seconds": 8.2192941
+      },
+      {
+        "file": "D:\\eab-wt\\cx-e2\\tests\\e5a_escape_oracle.py",
+        "line": 159,
+        "function": "tied_labels",
+        "primitive_calls": 8,
+        "calls": 8,
+        "self_seconds": 6.31e-05,
+        "cumulative_seconds": 7.2237185
+      }
+    ]
+  }
+}

@@ -418,27 +418,44 @@ def segment_crosses(p,q,P,fi,tol=0):
     return False
 
 
+def _integer_points(points):
+    """One positive scale clears all exact denominators; no rounded data/cache."""
+    points=tuple(map(vector,points))
+    den=math.lcm(*(x.denominator for p in points for x in p))
+    return tuple(tuple(x.numerator*(den//x.denominator) for x in p) for p in points),den
+
+
+def _integer_point_segment_squared(p,a,b):
+    d,w=sub(b,a),sub(p,a)
+    dd=_int_dot(d,d); wd=_int_dot(w,d); ww=_int_dot(w,w)
+    if wd <= 0 or dd == 0:
+        return F(ww)
+    if wd >= dd:
+        r=sub(p,b)
+        return F(_int_dot(r,r))
+    return F(ww*dd-wd*wd,dd)
+
+
 def segment_distance_squared(p1,p2,q1,q2):
-    p1,p2,q1,q2=map(vector,(p1,p2,q1,q2))
+    """Same exact five active sets, with denominators cleared once.
+
+    Gate: test_perf_integer_distances_match_unoptimized_fraction_on_all_input_classes.
+    Integer dot/cross expressions represent the original rational geometry scaled
+    uniformly by den. Only the final squared distances divide by den**2.
+    """
+    (p1,p2,q1,q2),den=_integer_points((p1,p2,q1,q2))
     u,v,w=sub(p2,p1),sub(q2,q1),sub(q1,p1)
-    a,c=dot(u,u),dot(v,v)
-    candidates=[]
-    n=cross(u,v);nn=dot(n,n)
+    n=cross(u,v); nn=_int_dot(n,n)
+    values=[_integer_point_segment_squared(p1,q1,q2),
+            _integer_point_segment_squared(p2,q1,q2),
+            _integer_point_segment_squared(q1,p1,p2),
+            _integer_point_segment_squared(q2,p1,p2)]
     if nn:
-        s,t=dot(cross(w,v),n)/nn,dot(cross(w,u),n)/nn
-        if 0 <= s <= 1 and 0 <= t <= 1:
-            candidates.append((s,t))
-    for s in (F(0),F(1)):
-        t=dot(sub(add(p1,mul(u,s)),q1),v)/c if c else F(0)
-        candidates.append((s,max(F(0),min(F(1),t))))
-    for t in (F(0),F(1)):
-        s=dot(sub(add(q1,mul(v,t)),p1),u)/a if a else F(0)
-        candidates.append((max(F(0),min(F(1),s)),t))
-    values=[]
-    for s,t in candidates:
-        delta=sub(add(p1,mul(u,s)),add(q1,mul(v,t)))
-        values.append(dot(delta,delta))
-    return min(values)
+        sn,tn=_int_dot(cross(w,v),n),_int_dot(cross(w,u),n)
+        if 0 <= sn <= nn and 0 <= tn <= nn:
+            h=_int_dot(w,n)
+            values.append(F(h*h,nn))
+    return min(values)/(den*den)
 
 
 def triangle_intersection(first, second):
@@ -488,17 +505,25 @@ def point_segment_distance_squared(p,a,b):
 
 
 def point_triangle_distance_squared(p,tri):
-    """Exact Euclidean distance squared, including edge/vertex minimisers."""
-    p=vector(p)
-    a,b,c=tri
-    n=cross(sub(b,a),sub(c,a)); nn=dot(n,n)
+    """Exact Euclidean squared distance with one common-denominator lift.
+
+    The projection's edge signs equal n dot ((v-u) cross (p-u)): subtracting
+    its normal component contributes n dot ((v-u) cross n) = 0.
+    Gate: test_perf_integer_distances_match_unoptimized_fraction_on_all_input_classes.
+    """
+    (p,a,b,c),den=_integer_points((p,*tri))
+    n=cross(sub(b,a),sub(c,a)); nn=_int_dot(n,n)
     if not nn:
         raise ValueError('distance requires a nondegenerate triangle')
-    h=dot(n,sub(p,a)); q=sub(p,mul(n,h/nn))
-    if triangle_locate(q,a,b,c) >= 0:
-        return h*h/nn
-    return min(point_segment_distance_squared(p,u,v)
-               for u,v in ((a,b),(b,c),(c,a)))
+    h=_int_dot(n,sub(p,a))
+    # Homogeneous integer projection: (nn*p-h*n) onto the triangle nn*(a,b,c).
+    # Keep the shared triangle predicate on the live path (including its fault
+    # injection gate), without constructing/normalising intermediate Fractions.
+    q=sub(mul(p,nn),mul(n,h))
+    if triangle_locate(q,mul(a,nn),mul(b,nn),mul(c,nn),n) >= 0:
+        return F(h*h,nn*den*den)
+    return min(_integer_point_segment_squared(p,u,v)
+               for u,v in ((a,b),(b,c),(c,a)))/(den*den)
 
 
 def _planes(tris):
@@ -510,31 +535,53 @@ def _direction_key(n):
     return tuple(x/n[i] for x in n) if i is not None else None
 
 
-def _convex_surface_sat(av,bv,at,bt,ap,bp):
-    """SAT only if every given triangle has every vertex on its inner side.
+def _integer_direction(n):
+    divisor=math.gcd(*n)
+    if not divisor:
+        return None
+    if next(x for x in n if x) < 0:
+        divisor=-divisor
+    return tuple(x//divisor for x in n)
 
-    The input must be a valid outward-oriented closed embedded surface. This
-    certificate proves that the original surface, not its hull replacement,
-    bounds a convex solid. None means the general surface path is required.
+
+def _convex_surface_sat(av,bv,at,bt,ap,bp):
+    """Equivalent certified convex SAT using a positive integer coordinate lift.
+
+    No new float filter or cache. All supplied triangle halfspaces still certify
+    convexity before SAT; face axes precede edge products for exact early exit.
+    Gate: test_perf_integer_convex_sat_matches_unoptimized_random_degenerate_engineering.
     """
+    points,den=_integer_points((*av,*bv))
+    lift=dict(zip((*av,*bv),points))
+    av,bv=tuple(lift[p] for p in av),tuple(lift[p] for p in bv)
+    at,bt=(tuple(tuple(lift[p] for p in tri) for _,tri in ts) for ts in (at,bt))
+    ap,bp=(tuple((cross(sub(b,a),sub(c,a)),a) for a,b,c in ts) for ts in (at,bt))
     for verts,planes in ((av,ap),(bv,bp)):
-        if any(dot(n,sub(v,o)) > 0 for n,o in planes for v in verts):
+        if any(_int_dot(n,sub(v,o)) > 0 for n,o in planes for v in verts):
             return None
-    axes={_direction_key(n) for n,_ in ap+bp}
-    ae={_direction_key(sub(b,a)) for _,tri in at
-        for a,b in zip(tri,tri[1:]+tri[:1])}
-    be={_direction_key(sub(b,a)) for _,tri in bt
-        for a,b in zip(tri,tri[1:]+tri[:1])}
-    axes.update(_direction_key(cross(a,b)) for a in ae for b in be)
+    axes={_integer_direction(n) for n,_ in ap+bp}
     boundary=False
     for axis in axes:
         if axis is None:
             continue
-        x=[dot(axis,p) for p in av]; y=[dot(axis,p) for p in bv]
+        x=[_int_dot(axis,p) for p in av]; y=[_int_dot(axis,p) for p in bv]
         gap=max(min(x)-max(y),min(y)-max(x))
         if gap > 0:
             return -1
         boundary |= gap == 0
+    ae={_integer_direction(sub(b,a)) for tri in at for a,b in zip(tri,tri[1:]+tri[:1])}
+    be={_integer_direction(sub(b,a)) for tri in bt for a,b in zip(tri,tri[1:]+tri[:1])}
+    for a in ae:
+        for b in be:
+            axis=_integer_direction(cross(a,b))
+            if axis is None or axis in axes:
+                continue
+            axes.add(axis)
+            x=[_int_dot(axis,p) for p in av]; y=[_int_dot(axis,p) for p in bv]
+            gap=max(min(x)-max(y),min(y)-max(x))
+            if gap > 0:
+                return -1
+            boundary |= gap == 0
     return 0 if boundary else 1
 
 
@@ -583,24 +630,50 @@ def _surface_interior_witness(at,bt,ap,bp):
     two boundaries coincide there and their inward sides agree. Thus these
     cells exhaust the possibilities, including common-edge and coplanar cases.
     Rational points strictly inside both solids are the returned certificates.
+
+    Repeated-plane preparation and exact no-op pruning preserve the very first
+    witness, not merely its existence. Gate: test_perf_surface_witness.py::
+    test_arrangement_pruning_preserves_exact_first_witness.
     """
     planes=ap+bp
     for pt,qt,pp,qp in ((at,bt,ap,bp),(bt,at,bp,ap)):
         pb,qb=_triangle_bounds(pt),_triangle_bounds(qt)
+        # Same insertion order and last representative as rebuilding qp for
+        # every triangle. Later coplanar edge cuts still overwrite identically.
+        base_unique={}
+        coplanar={}
+        for (_,other),(m,a) in zip(qt,qp):
+            key=_direction_key(m)
+            if key is not None:
+                plane=(key,dot(key,a))
+                base_unique[plane]=(m,a)
+                coplanar.setdefault(plane,[]).append(other)
         for (_,tri),(n,o) in zip(pt,pp):
-            cuts=list(qp)
-            for (_,other),(m,a) in zip(qt,qp):
-                if not any(cross(n,m)) and dot(n,sub(a,o)) == 0:
-                    cuts.extend((cross(n,sub(v,u)),u)
-                                for u,v in zip(other,other[1:]+other[:1]))
+            # A surface patch outside the other solid's closed bounds cannot
+            # supply either an interior or a common-boundary witness.
+            if any(max(v[i] for v in tri)<lo or min(v[i] for v in tri)>hi
+                   for i,(lo,hi) in enumerate(qb)):
+                continue
+            cuts=[]
+            key=_direction_key(n)
+            # Exact supporting-plane grouping selects the same triangles, in
+            # their original order. Keep source n for identical cut orientation.
+            for other in coplanar.get((key,dot(key,o)),()):
+                cuts.extend((cross(n,sub(v,u)),u)
+                            for u,v in zip(other,other[1:]+other[:1]))
             # Repeated supporting planes cannot refine the arrangement again.
-            unique={}
+            unique=base_unique.copy()
             for m,a in cuts:
                 key=_direction_key(m)
                 if key is not None:
                     unique[(key,dot(key,a))]=(m,a)
             cells=[list(tri)]
             for m,a in unique.values():
+                # Every later cell is a convex subset of the source triangle.
+                # A plane that cannot split it cannot split any later cell.
+                source_sides=[dot(m,sub(p,a)) for p in tri]
+                if min(source_sides)>=0 or max(source_sides)<=0:
+                    continue
                 cells=[part for cell in cells for part in _split_polygon(cell,m,a)]
             for cell in cells:
                 p=tuple(sum(v[i] for v in cell)/len(cell) for i in range(3))

@@ -1,0 +1,44 @@
+{
+  "status": "WINDOW_CONTRACT_DONE",
+  "scope": "WO-PERF A and window mutations in C",
+  "api_name": "contact_window",
+  "api_renamed": false,
+  "semantics": "local penetration-thickness window, not whole-body Euclidean penetration depth PD",
+  "guarantees": [
+    "axis certificate: an exact coordinate-axis translation of length w separates interiors, hence PD <= w",
+    "shell certificate: every strict overlap region lies in the certified body's radial shell of thickness <= w",
+    "PENETRATING in window mode does not imply PD > w"
+  ],
+  "limitations": [
+    "six-axis certificates depend on the coordinate frame",
+    "shorter oblique exits can be missed",
+    "rotation invariance is not guaranteed; L1-radius shell construction is also frame dependent"
+  ],
+  "test_file": "tests/test_perf_contact_window.py",
+  "test_count": 25,
+  "test_final_line": "25 passed in 0.87s",
+  "test_seconds": 0.87,
+  "test_command": "$env:PYTHONDONTWRITEBYTECODE='1'; python -X utf8 -m pytest -q tests/test_perf_contact_window.py --basetemp=reports/codex/PERF_evidence/window/tmp --junitxml=reports/codex/PERF_evidence/window/window_junit.xml",
+  "oracle_primitives": ["Fraction scalar arithmetic", "exact orthonormal frame coordinates", "interval products", "Cartesian-product corner validation", "squared norms"],
+  "oracle_uses_production_geometry_primitives": false,
+  "boundary_scale_cases": "18 single-axis gates: 6 signed axes x 3 scale/origin pairs; PD exactly w; engineering coordinate 1e6",
+  "shell_counterexample": "two-wall key, half lengths (1,1/16,1/16), w=1/64, each overlap=3w/4; shell accepts despite independently proven PD>1",
+  "oblique_counterexample": "boxes half lengths (1,4,4), PD=9/40 < w=1/4; exact z rotation cos=3/5 sin=4/5 causes all finite certificates to fail",
+  "mutations": [
+    {"name": "shell_w_to_2w", "caught": true, "assertion": "reject-thicker-than-w-shell", "path": "star_core -> contact_models -> margin.inflated_membership"},
+    {"name": "six_axes_to_five", "caught": true, "assertion": "axis-public-report", "path": "contact_models -> margin.inflated_membership"}
+  ],
+  "mutation_rerun_command": "$env:PYTHONDONTWRITEBYTECODE='1'; python -X utf8 reports/codex/PERF_evidence/window/run_window_mutations.py",
+  "changed_by_window_agent": [
+    "src/eab/margin.py (docstrings only)",
+    "tests/test_perf_contact_window.py (new)",
+    "README.md",
+    "docs/canon_map.md",
+    "docs/exact_3d_design.md",
+    "docs/exact_predicates_plan.md"
+  ],
+  "coordinated_docstrings_in_other_agent_files": ["src/eab/kernel3d/exact_sweep.py", "src/eab/kernel3d/interlock.py"],
+  "existing_tests_modified": false,
+  "g6_claimed": false,
+  "source_tests_docs_frozen": true
+}

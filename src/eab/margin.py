@@ -39,7 +39,7 @@
 处处**单值**，且因为凸集投影是非扩张映射，n 在 {dist ≥ δ} 上 Lipschitz，常数 ≤ 2/δ。
 尖角变圆角，梯度不再跳——这对可微接触直接有用（见 `tests/test_margin.py` 的实测）。
 
-## E5b 契约：默认精确，显式接触窗口
+## E5 契约：默认精确，显式局部贯入厚度窗口（非 PD）
 
 给定二进制坐标按其精确有理值解释。默认 `contact_window=None` 不使用库内 ctol：
 严格贯入给 `(0, ("PENETRATING",))` / INSIDE；真实正间隙即使小于旧分辨率也不钳零。
@@ -47,11 +47,14 @@
 门：`tests/test_margin_exact.py::test_default_has_no_hidden_contact_resolution` 与
 `test_inflated_boundary_comparison_does_not_use_a_float_sqrt_or_implicit_band`。
 
-调用方可以显式给 `contact_window=w`。分离侧精确距离 ≤ w 报距离零与相触；贯入侧必须有
+调用方可以显式给 `contact_window=w`（局部贯入厚度窗口，参数名为兼容保留；不是整体最短
+分离平移的欧氏贯入深度 PD）。分离侧精确距离 ≤ w 报距离零与相触；贯入侧必须有
 精确证书证明窗口可接受：`exact_sweep.contact_models` 的六个 ±w 坐标轴平移，或经验证
 星核的内核收缩证明贯入仅落在厚度 ≤ w 的表面壳层；原几何模型也保留。前者是全局平移
 深度的有限充分证书，后者是局部接触厚度上界。有限证书不是完整欧氏距离偏置，不把证书
-失败说成真深度超窗；无证书时保持 PENETRATING。互锁在完全相同的有限模型集上求最早根。
+失败说成 PD > w；无证书时保持 PENETRATING。六轴证书及 L1 半径构造依赖坐标系，可能漏掉
+长度 ≤ w 的斜向脱离，不保证旋转不变性。互锁在完全相同的有限模型集上求最早根。
+独立可靠性与限制反例门：`tests/test_perf_contact_window.py`。
 窗口是调用方选择的报告模型，不是恢复被舍入丢失的理想几何。`geom_tol` 仅留兼容签名。
 旧公式 `contact_resolution(A,B)` 只是调用方可选择的数值；库不隐式调用它。
 门：`test_explicit_window_matches_exact_interval_oracle`；不变性文件的旧断言全部留在显式
@@ -278,11 +281,14 @@ def _repair_folded_construction(A, B, c, w, n, squared, rounding):
     return target, n
 
 def _penetration_within_window(A, B, window):
-    """Shared finite certificate window, not the complete Euclidean depth set.
+    """Local penetration-thickness window, not Euclidean whole-body depth (PD).
 
     See exact_sweep.contact_models: original solids, six exact axis shifts of
     length window, and either body's certified inner star core. Any model's
-    nonpenetration is sufficient. Failure does not prove depth > window.
+    nonpenetration is sufficient. An axis certificate proves PD <= window; a
+    core certificate bounds local radial shell thickness only. Failure does not
+    prove PD > window. Coordinate dependence and missed oblique exits are
+    intentional limitations, not rotation-invariant PD decisions.
     interlock solves the first accepted height over this very same model set.
     """
     if not window:
@@ -354,7 +360,10 @@ def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: 
     """Exact default relation and nearest-cover comparison; floating distance output.
 
     Penetration returns (0, (PENETRATING,)). An explicit contact_window accepts
-    certified shallow penetration and exact separated distance <= the window.
+    certified local penetration thickness and exact separated distance <= w.
+    It is not a whole-body Euclidean penetration-depth (PD) threshold: a shell
+    certificate does not bound PD, and rejection does not imply PD > w.
+    Six-axis sampling/L1 radial shells do not guarantee rotation invariance.
     Window mode retains the historical floating witness/tie reporting order.
     """
     ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
@@ -394,7 +403,8 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
     """Generalized contacts with exact squared-distance inclusion <= delta+band.
 
     Default penetration returns one closed sentinel; explicit contact_window
-    accepts certified shallow penetration and exact separated distances <= w.
+    accepts certified local penetration thickness and separated distances <= w.
+    This is not a Euclidean whole-body PD threshold; see body_distance.
     Accepted contact distances are zero, normal is None, margin_gap=-delta.
     Default ordering uses exact squared distances. Window-mode construction
     distances and tie reporting retain the historical floating convention.
@@ -441,7 +451,9 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
     """Exact squared-distance comparison against δ; optional explicit boundary band.
 
     atol=None means zero (no implicit rounding floor). contact_window changes
-    only contact reporting; every accepted shallow penetration is certified.
+    only contact reporting by the local penetration-thickness policy (not PD).
+    Axis acceptance certifies PD <= w; shell acceptance certifies only a local
+    radial thickness <= w. Rejection does not certify PD > w.
     """
     ctol, _, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:

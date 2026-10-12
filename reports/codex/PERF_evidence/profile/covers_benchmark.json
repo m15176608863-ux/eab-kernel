@@ -1,0 +1,66 @@
+{
+  "baseline_source": "reports\\codex\\PERF_evidence\\baseline\\src\\eab\\kernel3d\\covers3.py",
+  "baseline_sha256": "b60db5150d573caeaf2deb10455e01f8a6c6baa1d6e3938833648ea711caa94c",
+  "optimized_sha256": "8f9fb5a7c4735a90ddaaa1d47a5d84a85a841196378221c54eb328dd463f4218",
+  "measurement": "alternating order, median of seven same-input rounds; no caches or filters added",
+  "results": [
+    {
+      "operation": "_qclosest_simplex",
+      "cases": 360,
+      "rounds": 7,
+      "exact_point_and_support_equality": true,
+      "baseline_seconds": 0.09281349999946542,
+      "optimized_seconds": 0.006226999990758486,
+      "speedup": 14.905010460448095,
+      "runs": {
+        "baseline": [
+          0.09136829999624752,
+          0.09281349999946542,
+          0.092447799994261,
+          0.09323850000509992,
+          0.09282839999650605,
+          0.09388149999722373,
+          0.09129020001273602
+        ],
+        "optimized": [
+          0.006805900004110299,
+          0.006339899991871789,
+          0.006107600012910552,
+          0.006044099995051511,
+          0.006293999991612509,
+          0.006226999990758486,
+          0.0061443000013241544
+        ]
+      }
+    },
+    {
+      "operation": "_qclosest_hull_uncached",
+      "cases": 180,
+      "rounds": 7,
+      "exact_point_and_support_equality": true,
+      "baseline_seconds": 0.008883500006049871,
+      "optimized_seconds": 0.004472799992072396,
+      "speedup": 1.9861160842861325,
+      "runs": {
+        "baseline": [
+          0.00868879999325145,
+          0.008834499996737577,
+          0.009307900007115677,
+          0.008962799998698756,
+          0.008883500006049871,
+          0.008587500007706694,
+          0.009145600008196197
+        ],
+        "optimized": [
+          0.004472799992072396,
+          0.004409600005601533,
+          0.004473799999686889,
+          0.00443960000120569,
+          0.004610999996657483,
+          0.00444769999012351,
+          0.004643100008252077
+        ]
+      }
+    }
+  ]
+}

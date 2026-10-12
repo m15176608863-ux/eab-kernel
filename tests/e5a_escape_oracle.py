@@ -68,13 +68,15 @@ def facet(a,b,label,tol=1e-9,extent=0.):
     det = aa*bb-ab*ab
     if not det:
         return None
-    w = sub(b[0][eb[0]],a[0][ea[0]])
-    aw,bw = dot(u,w),dot(v,w)
-    s,t = (bb*aw-ab*bw)/det,(ab*aw-aa*bw)/det
     n = cross(v,u)
     for d in (n,scale(n,-1)):
         if arc(b,eb,d,tol) < 0 or arc(a,ea,scale(d,-1),tol) < 0:
             continue
+        # These original Gram parameters are only consumed after both cone
+        # checks pass. Delay exact witness construction for rejected pairs.
+        w = sub(b[0][eb[0]],a[0][ea[0]])
+        aw,bw = dot(u,w),dot(v,w)
+        s,t = (bb*aw-ab*bw)/det,(ab*aw-aa*bw)/det
         pa,pb = add(a[0][ea[0]],scale(u,s)),add(b[0][eb[0]],scale(v,t))
         normal = unit(d)
         gap = sum(normal[k]*float(pa[k]-pb[k]) for k in range(3))

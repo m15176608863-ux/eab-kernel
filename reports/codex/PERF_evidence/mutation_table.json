@@ -1,0 +1,114 @@
+[
+  {
+    "component": "窗口薄壳 w → 2w",
+    "injection": "star_core 的 alpha=min(w/radius,1/2) 改为 2w/radius",
+    "gate": "test_shell_window_doubling_mutation_is_caught_by_public_rejection",
+    "guarded_assertion": "reject-thicker-than-w-shell",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "六轴 → 五轴",
+    "injection": "contact_models 内去掉 +z 方向",
+    "gate": "test_five_axis_mutation_is_caught_by_the_missing_direction_gate",
+    "guarded_assertion": "axis-public-report",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "新候选缓存删 offset",
+    "injection": "_candidates 内签名去掉 offset、计算参数仍保留 offset",
+    "gate": "test_candidate_cache_has_teeth_when_signature_omits_offset",
+    "guarded_assertion": "offset content must not alias",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "全局/本地 EE 内部缺陷",
+    "injection": "covers3.ee_cover / interlock.ee_cover 返回 None",
+    "gate": "test_candidate_cache_does_not_hide_a_cover_implementation_mutation",
+    "guarded_assertion": "原输出确实不同、缓存结果必须等于未缓存缺陷路径",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "精确 AABB 错删闭端点",
+    "injection": "_events_cached 内严格不相交 < 改为 <=",
+    "gate": "test_exact_aabb_pruning_keeps_tangent_events_and_detects_strict_bound_mutation",
+    "guarded_assertion": "tangent events must survive",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "段距少除一个 D",
+    "injection": "segment_distance_squared 内 /D² 改为 /D",
+    "gate": "test_perf_integer_distance_scale_mutation_has_teeth",
+    "guarded_assertion": "squared scale restoration",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "SAT 接触报分离",
+    "injection": "_convex_surface_sat 内 gap>0 改为 >=0",
+    "gate": "test_perf_integer_sat_boundary_mutation_has_teeth",
+    "guarded_assertion": "independent box state",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "单纯形平局改序",
+    "injection": "_qclosest_simplex 内严格更优比较改为允许相等",
+    "gate": "test_integer_simplex_support_tie_gate_has_internal_teeth",
+    "guarded_assertion": "原最小支持及顺序逐值相等",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "单纯形漏回缩",
+    "injection": "_qclosest_simplex 内返回点漏除共同分母 scale",
+    "gate": "test_integer_simplex_rescaling_gate_has_internal_teeth",
+    "guarded_assertion": "参考点与支持逐值相等",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "3D整数方向丢符号",
+    "injection": "_integer_ray 对各分量取abs",
+    "gate": "test_integer_edge_direction_sign_mutation_has_teeth",
+    "guarded_assertion": "analytic edge direction/window state",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "3D整数方向漏分母",
+    "injection": "_integer_ray 遗漏分量分母，非等比缩放",
+    "gate": "test_integer_edge_anisotropic_rescaling_mutation_has_teeth",
+    "guarded_assertion": "analytic edge direction/window state",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "2D长度阈值漏缩放",
+    "injection": "_ve_side_directions 内tol省略乘D",
+    "gate": "test_integer_ve_length_rescaling_mutation_has_teeth",
+    "guarded_assertion": "length window retains exact scale and boundary",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "2D严格性错收边界",
+    "injection": "_ve_side_directions 内strict >改为>=",
+    "gate": "test_integer_ve_strict_boundary_mutation_has_teeth",
+    "guarded_assertion": "exact boundary cannot become strict",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "arrangement错删AABB闭边界",
+    "injection": "_surface_interior_witness 中严格不交改为闭界剔除",
+    "gate": "test_arrangement_aabb_is_closed_and_mutation_removing_boundary_has_teeth",
+    "guarded_assertion": "coplanar witness must survive",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "arrangement同侧符号错",
+    "injection": "_surface_interior_witness 原三角形同侧判据反号",
+    "gate": "test_arrangement_source_plane_sign_mutation_is_caught_by_first_witness",
+    "guarded_assertion": "first exact witness changed",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  },
+  {
+    "component": "arrangement平面分组丢offset",
+    "injection": "仅从coplanar分组键去掉offset，支持平面去重不改",
+    "gate": "test_coplanar_grouping_keeps_the_plane_offset_not_only_its_direction",
+    "guarded_assertion": "parallel planes are not coplanar; pinned (-3/32,-7/16,1/8)",
+    "result": "KILLED by targeted assertion inside passing final gate"
+  }
+]

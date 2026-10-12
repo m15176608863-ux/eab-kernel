@@ -1,9 +1,9 @@
 # WO-E5a 三维精确几何设计（实现前冻结，2026-10-12）
 
-> **E5b 未完成项（契约口径）**：当前显式 `contact_window` 为六轴刚性脱离证书 OR 局部径向薄壳政策，不是完整贯入深度 ≤ 窗口的必要充分判定；未经所有者确认替代定义，不把该项计为完成。默认精确路径不采用此政策，详情与全套结果见 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md)。
+> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴脱离证书 ⇒ PD ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”；报贯入不推出 PD > w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。对应独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
 
 
-> **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的接触报告政策。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
+> **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的局部贯入厚度报告政策（非 PD）。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
 
 
 > 阅读边界：下文保留 E5a 实现前设计，描述目标语义，不是已完成证明。WO-E5a2 中所有者已澄清系统临时目录允许使用，将 E5a 按部分完成提交为 `5b09ea3`；旧报告的“整单作废”不再适用。续作的已验证范围、实测和遗留项以 [E5a2 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5a2_report.md) 为准，未过 G6。
@@ -94,9 +94,9 @@ orient3d 用浮点 determinant 和严格误差上界；只有 |det|>bound 才采
 
 门：`test_margin_exact.py` 的默认微贯入、精确边界、非共面三角距离与 underflow closed 状态；`test_margin_resolution.py` 保留原网格，精确模式另对独立四面体并集整数 SAT。`entrance_block_convex` 先将每个原坐标转为有理数再作差，不能先舍入差点；见 `test_kernel3d_geom.py` 与 `test_margin_exact.py`。
 
-### 2. 显式窗口的数学定义与限度
+### 2. 显式局部贯入厚度窗口的数学定义与限度（E5 已完成）
 
-`contact_resolution(A,B)` 只提供旧口径数值 `max(effective_geom_tol, 1e-12*max(diag)) + rounding_floor`，调用方必须显式传入 `contact_window=w`。w 有限且非负。分离侧精确表面距离平方 ≤ w² 时按相触报告（距离 0、ON_BOUNDARY、闭合）。贯入侧采用**六轴刚性脱离充分证书 OR 局部径向薄壳政策**，不是全局欧氏穿透深度的完整子水平集：
+`contact_resolution(A,B)` 只提供旧口径数值 `max(effective_geom_tol, 1e-12*max(diag)) + rounding_floor`，调用方必须显式传入 `contact_window=w`。w 有限且非负。分离侧精确表面距离平方 ≤ w² 时按相触报告（距离 0、ON_BOUNDARY、闭合）。贯入侧采用所有者批准的**局部贯入厚度窗口**：六轴刚性脱离充分证书 OR 局部径向薄壳证书。`contact_window` 名称保留兼容，未新增参数或别名；该量不是整体最短分离平移的欧氏贯入深度 PD，也不是其完整子水平集：
 
 1. 原实体对；
 2. A 沿每个坐标轴精确平移 +w 或 −w 后的六个实体对：任一不贯入证明存在长度 w 的刚性脱离位移；
@@ -105,6 +105,26 @@ orient3d 用浮点 determinant 和严格误差上界；只有 |det|>bound 才采
 `exact_sweep.contact_models` 唯一生成此集合；margin 对集合作精确 OR，interlock 对同一集合的最早根取最小。证书失败只表示未被该窗口接受，**不能声称真欧氏穿透深度 > w**。六方向证书是坐标系相关的有限政策，不宣称它等于旋转不变的完整欧氏偏置；星核壳证书也不等于最短刚体脱离。双侧微量夹持可能需要很大的整块脱离，却仍属于薄局部接触壳；这正是原抖动墙窗口可以回到名义高度的区别。严格物理默认路径不采用任何此政策。
 
 独立门：原 margin touch/subtol 逐格整数 SAT；墙的独立扫掠 SAT、严格分离轴和自有射线包含排除；`test_interlock_exact.py` 的三尺度/大平移盒对窗口根闭式值与 margin 相触、根前 INSIDE 的一致检查。所有旧不变性断言留在调用方显式窗口下，另保留默认精确 oracle。并未宣称对任意凹体提供完整欧氏穿透深度算法。
+
+### 2a. 可靠性、限制与独立门（WO-PERF 定稿）
+
+“相触”的可靠性是带分支的精确析取，不能把两分支混为 PD 证书：
+
+- 六轴分支：存在 `d ∈ {±w e_x, ±w e_y, ±w e_z}`，`int(A+d) ∩ int(B)=∅`，因而 `PD ≤ ||d||₂ = w`。对原本分离输入另由真实距离平方 `d² ≤ w²` 接受；这不是贯入分支的结论。
+- 薄壳分支：存在经认证的 A 或 B 星核 K，`int(K) ∩ int(other)=∅`；原实体每处严格重叠都在该体的闭径向壳内，任意径向壳段欧氏长度至多 `αR ≤ w`。这不意味着有同一个短平移能同时解除每处接触。
+- 反向不成立：报 `PENETRATING` 只意味着有限证书未通过，**不推出 PD > w**；默认 `None/0` 则仍是原实体严格精确三态，不走窗口。
+
+独立门均在 `tests/test_perf_contact_window.py`。oracle 只用 Fraction 标量、预先给定的精确正交基、区间积、笛卡尔积及平方范数；不调用被测侧法向、SAT、点成员、星核、距离或三角化原语。每个参与区间判定的实体先证明其八个顶点恰好是区间积的全部角点，防止把 AABB 当真实实体。
+
+| 声称 / 不保证项 | 具体位形及独立判据 | 命名门 |
+| --- | --- | --- |
+| 六轴成功 ⇒ PD ≤ w，六个方向都保留 | 两等大盒重叠恰好 w，仅一个指定符号轴能分开；18 格含三尺度、非对称平移与工程坐标 1e6；直接测位移平方 = w²，并用盒构型差的最近面算 PD | `test_each_of_six_axis_certificates_proves_pd_at_most_window` |
+| 薄壳成功 ⇒ 每处重叠在 ≤w 径向壳内，但不保证 PD≤w | 半长 `(1,1/16,1/16)` 的键被双壁夹持，w=1/64，两侧重叠 3w/4；独立区间证明两重叠区均避开内核，逐顶点同胚比例和凸范数最大值证明全部径向壳段≤w；禁入平移盒的并覆盖 `[-1,1]^3`，故 PD>1 | `test_shell_certificate_contains_every_overlap_region_but_does_not_bound_pd` |
+| 六轴坐标依赖；斜向短脱离可能漏 | 半长 `(1,4,4)` 盒沿法向重叠 9/40，w=1/4；绕 z 作有理正交旋转 `(cos,sin)=(3/5,4/5)` 后六轴与双内核全贯入，但独立斜向平移长度 PD=9/40<w 即可接触分离 | `test_shorter_oblique_escape_can_be_missed_so_penetrating_does_not_mean_pd_exceeds_w`；`test_six_axis_coordinate_dependence_means_rotation_invariance_is_not_guaranteed` |
+| 旋转不变性连薄壳分支也未保证 | 前述双壁键作同一精确旋转；两姿态都不存在轴向短脱离，未旋转只有 core_A 证书通过，旋转后 L1 半径上界变大而全部失败；几何 PD 本身未改变 | `test_local_shell_rotation_invariance_is_not_guaranteed_either` |
+| 门穿过真实窗口路径 | `star_core` 内 α 的 w 改 2w：两侧 3w/2 真实厚重叠被错误接纳，公开 membership 断言 `reject-thicker-than-w-shell` 报红；`contact_models` 内删 +z：+z 唯一证书格公开 membership 的 `axis-public-report` 报红 | `test_shell_window_doubling_mutation_is_caught_by_public_rejection`；`test_five_axis_mutation_is_caught_by_the_missing_direction_gate` |
+
+上述限制是明示的窗口定义，不修改默认精确路径的刚体/单位不变性契约。窗口参数是局部接触建模政策，不应写成“有保证的 PD 求解器”；DDA 式各接触分别贯入的解释由所有者批准，未据此声称工程标定或姊妹求解器已部署。
 
 ### 3. 最早逃逸根与首入
 

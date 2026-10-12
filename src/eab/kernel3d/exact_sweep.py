@@ -59,18 +59,26 @@ def surface_events(A,B,direction=(0,0,1),start=(0,0,0),t_min=0,t_max=None):
 @lru_cache(maxsize=256)
 def _events_cached(av,af,bv,bf,d,t_min,t_max):
     at=G.triangulate(av,af); bt=G.triangulate(bv,bf)
+    # Exact static-coordinate intervals: a moving contact cannot occur if the
+    # source features are disjoint along an axis with zero velocity. Inclusive
+    # endpoints preserve every tangent/degenerate event; no float filter is used.
+    static_axes=tuple(k for k,x in enumerate(d) if not x)
+    minus_d=G.mul(d,F(-1))
     events={}
     def put(t,label,n):
         if t >= t_min and (t_max is None or t <= t_max):
             events[(t,label)]=SurfaceEvent(t,label,n)
-    for verts,tris,other,faces,velocity,kind in ((av,bt,bv,bf,d,'VF'),(bv,at,av,af,G.mul(d,F(-1)),'FV')):
+    for verts,tris,other,faces,velocity,kind in ((av,bt,bv,bf,d,'VF'),(bv,at,av,af,minus_d,'FV')):
         for fi,indices in tris:
             a,b,c=(other[i] for i in indices)
             n=G.cross(G.sub(b,a),G.sub(c,a)); den=G.dot(n,velocity)
             if not den:
                 continue
             descriptor=_descriptor(other,faces,fi,indices)
+            bounds=tuple((k,min(a[k],b[k],c[k]),max(a[k],b[k],c[k])) for k in static_axes)
             for vi,p in enumerate(verts):
+                if any(p[k]<lo or p[k]>hi for k,lo,hi in bounds):
+                    continue
                 t=G.dot(n,G.sub(a,p))/den
                 if t < t_min or (t_max is not None and t>t_max):
                     continue
@@ -81,10 +89,17 @@ def _events_cached(av,af,bv,bf,d,t_min,t_max):
                 put(t,label,n if kind=='VF' else G.mul(n,F(-1)))
     ae=sorted({tuple(sorted(e)) for _,tri in at for e in zip(tri,tri[1:]+tri[:1])})
     be=sorted({tuple(sorted(e)) for _,tri in bt for e in zip(tri,tri[1:]+tri[:1])})
-    for ai,aj in ae:
-        a=av[ai]; u=G.sub(av[aj],a)
-        for bi,bj in be:
-            b=bv[bi]; v=G.sub(bv[bj],b); n=G.cross(u,v); den=G.dot(n,d)
+    def edges(vertices,indices):
+        return tuple((i,j,vertices[i],G.sub(vertices[j],vertices[i]),
+                      tuple((min(vertices[i][k],vertices[j][k]),
+                             max(vertices[i][k],vertices[j][k])) for k in static_axes))
+                     for i,j in indices)
+    edges_b=edges(bv,be)
+    for ai,aj,a,u,ab in edges(av,ae):
+        for bi,bj,b,v,bb in edges_b:
+            if any(ahi<blo or bhi<alo for (alo,ahi),(blo,bhi) in zip(ab,bb)):
+                continue
+            n=G.cross(u,v); den=G.dot(n,d)
             label=('EE',('edge',ai,aj),('edge',bi,bj))
             if den:
                 t=G.dot(n,G.sub(b,a))/den
@@ -101,7 +116,7 @@ def _events_cached(av,af,bv,bf,d,t_min,t_max):
                     for t in _point_edge_time(p,d,b,bv[bj]):
                         put(t,label,n)
                 for p in (b,bv[bj]):
-                    for t in _point_edge_time(p,G.mul(d,F(-1)),a,av[aj]):
+                    for t in _point_edge_time(p,minus_d,a,av[aj]):
                         put(t,label,n)
                 if not any(n):
                     k=next((k for k,x in enumerate(d) if x),None)
@@ -114,13 +129,14 @@ def _events_cached(av,af,bv,bf,d,t_min,t_max):
     return tuple(sorted(events.values(),key=lambda e:(e.time,e.label)))
 
 def star_core(P, window):
-    """Exact inner homothetic core with removed shell thickness at most window.
+    """Exact inner homothetic core for a local radial-thickness certificate.
 
     A certified star centre lies behind every oriented surface triangle. Rays
     from that centre give a radial boundary parametrisation. Each removed radial
     segment is no longer than window (L1 is a rational upper bound on L2), so
     nonintersection of the core proves purely local shallow penetration.
     None means no such certificate was found, not that the body is non-star.
+    This is not a bound on the whole-body shortest separating translation (PD).
     """
     w=F(window)
     if w<0:
@@ -138,12 +154,17 @@ def star_core(P, window):
     return Polyhedron([G.add(centre,G.mul(G.sub(p,centre),1-alpha)) for p in verts],P.faces)
 
 def contact_models(A,B,window):
-    """Shared finite rational contact-window certificate geometries.
+    """Local penetration-thickness window certificate geometries (not PD).
 
-    A supplied window is a nonnegative Euclidean displacement/shell *upper
-    bound*, not an implicit tolerance. Membership is exact OR over the original
-    pair, each available star core, and six exact coordinate-axis translations
-    of A by +/-window. The same list is used by static margin and kinetic escape.
+    A nonnegative explicit window is a reporting policy, never a hidden tolerance.
+    For overlapping inputs, a nonpenetrating +/-window coordinate-axis translation
+    proves rigid-body Euclidean penetration depth PD <= window. A nonpenetrating
+    certified star core proves every overlap region lies in that body's radial
+    shell, whose Euclidean thickness is <= window; it does not bound whole-body PD.
+    The original pair, available star cores and all six translations are ORed by
+    margin and kinetic escape. Rejection does not imply PD > window. Six-axis
+    sampling and the L1-radius shell are coordinate dependent: shorter oblique
+    escapes can be missed and rotation invariance is not guaranteed.
     """
     w=F(window)
     if w<0:
