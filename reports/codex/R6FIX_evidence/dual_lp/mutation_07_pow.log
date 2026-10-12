@@ -1,0 +1,40 @@
+INTERNAL MUTATION 07_pow: reinstated pre-fix arithmetic / removed guard or certificate fields
+F
+================================== FAILURES ===================================
+_ test_r6fix07_related_inverse_power_derivative_is_representable[1e-200-1e-200] _
+
+base = 1e-200, seed = 1e-200
+
+    @pytest.mark.parametrize("base,seed", [(1e-200, 1e-200), (-1e-200, 1e-200)])
+    def test_r6fix07_related_inverse_power_derivative_is_representable(base, seed):
+>       r = Dual(base, (seed,)) ** -1
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r6fix_dual_lp.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Dual(1e-200, (1e-200,)), p = -1.0
+
+    """前向模式对偶数（多通道）。纪律照搬 b-DDA 的 bdda2，逐条都有血的教训在后面。
+    
+      Dual(v, e) 表示 v + Σ_k e_k·ε_k，ε_k·ε_l = 0。W = 通道数（同时对 W 个参数求导）。
+    
+    三条铁律：
+    1. **`val()` 只用于择支**（开闭判定、主元选择、钳位、排序）。任何进入本构/几何量的运算
+       都必须走对偶通道，否则导数被静默丢掉。
+    2. **跳过恒等更新前必须 `is_exact_zero()` 看全部通道**，不许写 `if x != 0`。
+>      `v == 0 而 e ≠ 0` 的分量导数会被静默清零，而这类错误**任何逐位门都抓不到**
+                   ^^^^^^^^^
+       （b-DDA 2026-08-14 实证：GJ 消去里只看 primal，primal 逐位不变而 Jacobian 被清零）。
+    3. 判据函数（primal-only）与本构函数（dual-through）在**签名上**区分开。
+    
+    梯度正确性的判据是**收敛阶**（h 扫描误差呈 V 形、大端按 O(h²)），不是某个 h 上的一致；
+    纯相对误差判据会被接近零的分量主导而误报。
+    """
+E   OverflowError: (34, 'Result too large')
+
+src\eab\dual.py:9: OverflowError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_dual_lp.py::test_r6fix07_related_inverse_power_derivative_is_representable[1e-200-1e-200]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.06s

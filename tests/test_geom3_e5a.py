@@ -155,7 +155,7 @@ def test_g6e_near_parallel_oracle_uses_consistent_exact_distance():
     A,B=_g6e_distance_case()
     args=(A.verts[0],A.verts[1],B.verts[0],B.verts[1])
     want=exact_seg_seg(*args)
-    assert abs(G._seg_seg_distance(*args)-want) <= 2*math.ulp(want)
+    assert abs(G._seg_seg_distance(*args)-want) <= 2*math.ulp(want), 'near-parallel-distance-two-ulps'
     assert abs(G._seg_seg_distance(*args[2:],*args[:2])-want) <= 2*math.ulp(want)
     assert body_distance(A,B)[0] == pytest.approx(want,abs=1e-15)
 
@@ -165,16 +165,39 @@ def test_exact_squared_distance_conversion_preserves_representable_small_and_lar
     assert G._seg_seg_distance((0.,0.,0.),(length,0.,0.),(0.,gap,0.),(length,gap,0.)) == gap
 
 
-def test_g6e_near_parallel_legacy_parameter_mutation_is_killed():
+def test_g6e_near_parallel_legacy_parameter_mutation_is_killed(monkeypatch):
     from test_near_parallel_edges import exact_seg_seg
+    # R6 makes the whole construction exact, so removing an obsolete float
+    # fallback condition is no longer an internal mutation. Restore precisely
+    # the old failure mechanism: rounded parameters, then global projections.
+    def rounded_parameters(p1, p2, q1, q2):
+        d1, d2 = G.sub(p2, p1), G.sub(q2, q1)
+        def at(s, t):
+            return G.norm(G.sub(G.add(p1, G.mul(d1, s)), G.add(q1, G.mul(d2, t))))
+        candidates = []
+        st = G._exact_line_params(p1, d1, q1, d2)
+        if st is not None and all(0. <= x <= 1. for x in st):
+            candidates.append(at(*st))
+        a, c = G.dot(d1, d1), G.dot(d2, d2)
+        for s in (0., 1.):
+            t = max(0., min(1., G.dot(G.sub(G.add(p1, G.mul(d1, s)), q1), d2)/c)) if c else 0.
+            candidates.append(at(s, t))
+        for t in (0., 1.):
+            s = max(0., min(1., G.dot(G.sub(G.add(q1, G.mul(d2, t)), p1), d1)/a)) if a else 0.
+            candidates.append(at(s, t))
+        return min(candidates)
     src=inspect.getsource(G._seg_seg_distance)
-    old='if a > 0.0 and c > 0.0 and nn <= 1e-8 * a * c:'
+    old='return _eg.sqrt_rational(_eg.segment_distance_squared(p1, p2, q1, q2))'
     assert old in src
-    ns=dict(vars(G));exec(src.replace(old,'if False:'),ns)
+    ns=dict(vars(G), _rounded_parameters=rounded_parameters)
+    exec(src.replace(old,'return _rounded_parameters(p1, p2, q1, q2)'),ns)
     A,B=_g6e_distance_case()
     args=(A.verts[0],A.verts[1],B.verts[0],B.verts[1])
     want=exact_seg_seg(*args)
     assert abs(ns['_seg_seg_distance'](*args)-want) > 2*math.ulp(want)
+    monkeypatch.setattr(G, '_seg_seg_distance', ns['_seg_seg_distance'])
+    with pytest.raises(AssertionError, match='near-parallel-distance-two-ulps'):
+        test_g6e_near_parallel_oracle_uses_consistent_exact_distance()
 
 
 def test_segment_face_extent_mutation_is_killed_through_the_real_path(monkeypatch):

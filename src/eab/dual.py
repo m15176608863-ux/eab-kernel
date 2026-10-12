@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from fractions import Fraction
+from decimal import Decimal, localcontext, Underflow
 from typing import Iterable, Sequence, Union
 
 Number = Union[int, float, "Dual"]
@@ -75,21 +77,20 @@ class Dual:
 
     def __mul__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        return Dual(self.v * ov, tuple(a * ov + self.v * b for a, b in zip(self.e, oe)))
+        return Dual(self.v * ov, tuple(_product_derivative(self.v, ov, a, b)
+                                      for a, b in zip(self.e, oe)))
 
     __rmul__ = __mul__
 
     def __truediv__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        inv = 1.0 / ov
-        return Dual(self.v * inv, tuple((a * ov - self.v * b) * inv * inv
-                                        for a, b in zip(self.e, oe)))
+        return Dual(self.v / ov, tuple(_ratio_derivative(self.v, ov, a, b)
+                                      for a, b in zip(self.e, oe)))
 
     def __rtruediv__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        inv = 1.0 / self.v
-        return Dual(ov * inv, tuple((b * self.v - ov * a) * inv * inv
-                                    for a, b in zip(self.e, oe)))
+        return Dual(ov / self.v, tuple(_ratio_derivative(ov, self.v, b, a)
+                                      for a, b in zip(self.e, oe)))
 
     def __pow__(self, p: float) -> "Dual":
         """实指数幂。负底的非整数幂在实数里无定义：float.__pow__ 会静默给出复数并流进后续
@@ -97,10 +98,29 @@ class Dual:
         if isinstance(p, Dual):
             raise TypeError("Dual ** Dual is not supported (no derivative w.r.t. the exponent)")
         p = float(p)
+        if p == 0.0:
+            return Dual(1.0, (0.0,) * self.width)
         if self.v < 0.0 and not p.is_integer():
             raise ValueError(f"Dual ** {p!r}: negative base {self.v!r} has no real power")
+        value = self.v ** p
+        if p.is_integer() and not _ordinary(self.v, p, *self.e):
+            # Integer powers admit an exact derivative even if v**(p-1)
+            # over/underflows before a representable derivative is formed.
+            c = Fraction(p) * Fraction(self.v) ** (int(p) - 1)
+            return Dual(value, tuple(_derivative_float(c * Fraction(a)) for a in self.e))
+        if not _ordinary(self.v, p, *self.e):
+            # Noninteger powers need a real-valued construction. Decimal's
+            # separate exponent retains the coefficient until the final seed
+            # multiplication, even when both primal power and coefficient
+            # would underflow as binary64. No branch decision uses this path.
+            with localcontext() as ctx:
+                ctx.prec = 80
+                ctx.traps[Underflow] = True
+                c = Decimal(p) * ctx.power(Decimal(self.v), Decimal(p) - 1)
+                return Dual(value, tuple(_derivative_float(Fraction(c * Decimal(a)))
+                                         for a in self.e))
         c = p * (self.v ** (p - 1.0))
-        return Dual(self.v ** p, tuple(c * a for a in self.e))
+        return Dual(value, tuple(c * a for a in self.e))
 
     # ---------------- 择支（只看 primal，禁止参与本构） ----------------
     def __float__(self) -> float:
@@ -125,6 +145,56 @@ class Dual:
 
     def __repr__(self) -> str:
         return f"Dual({self.v!r}, {self.e!r})"
+
+
+def _ordinary(*values: float) -> bool:
+    """A safe exponent box for the fast arithmetic path, not a predicate tolerance."""
+    return all(v == 0.0 or 2.0 ** -200 <= abs(v) <= 2.0 ** 200 for v in values)
+
+
+def _derivative_float(q: Fraction) -> float:
+    """Round once; an unrepresentable nonzero derivative must not silently be 0."""
+    result = float(q)             # overflow deliberately raises OverflowError
+    if result == 0.0 and q:
+        raise FloatingPointError("nonzero Dual derivative is below the binary64 range")
+    return result
+
+
+def _ratio_derivative(u: float, v: float, a: float, b: float, *, angular=False) -> float:
+    """(a*v-u*b)/v^2, or /(u^2+v^2), without intermediate range loss.
+
+    Ordinary, non-cancelling inputs retain the fast floating calculation.
+    Otherwise normalize the primal pair by an exact power of two, evaluate
+    the rational scaled expression and round once. Rational normalization
+    also retains components whose exponent span exceeds binary64's range.
+    The oracle for this contract is test_r6fix07_* (raw Fraction formulas).
+    """
+    if a == b == 0.0 and (u != 0.0 or v != 0.0) and (angular or v != 0.0):
+        return 0.0
+    if _ordinary(u, v, a, b):
+        av, ub = a * v, u * b
+        num = av - ub
+        if abs(num) > 2.0 ** -40 * (abs(av) + abs(ub)):
+            den = u * u + v * v if angular else v * v
+            return num / den
+    exponent = math.frexp(max(abs(u), abs(v)))[1]
+    scale = Fraction(2) ** exponent
+    un, vn = Fraction(u) / scale, Fraction(v) / scale
+    den = un * un + vn * vn if angular else vn * vn
+    q = (Fraction(a) * vn - un * Fraction(b)) / den / scale
+    return _derivative_float(q)
+
+
+def _product_derivative(u: float, v: float, a: float, b: float) -> float:
+    """a*v+u*b: the same two-product cancellation risk as quotient/atan2."""
+    if a == b == 0.0:
+        return 0.0
+    if _ordinary(u, v, a, b):
+        av, ub = a * v, u * b
+        result = av + ub
+        if abs(result) > 2.0 ** -40 * (abs(av) + abs(ub)):
+            return result
+    return _derivative_float(Fraction(a) * Fraction(v) + Fraction(u) * Fraction(b))
 
 
 def val(x: Number) -> float:
@@ -174,8 +244,8 @@ def atan2(y: Number, x: Number) -> Number:
     w = y.width if isinstance(y, Dual) else x.width       # type: ignore[union-attr]
     ye = grad(y, w)
     xe = grad(x, w)
-    den = xv * xv + yv * yv
-    return Dual(math.atan2(yv, xv), tuple((xv * a - yv * b) / den for a, b in zip(ye, xe)))
+    return Dual(math.atan2(yv, xv), tuple(_ratio_derivative(yv, xv, a, b, angular=True)
+                                        for a, b in zip(ye, xe)))
 
 
 def lift(xs: Sequence[float], width: int) -> tuple[Dual, ...]:

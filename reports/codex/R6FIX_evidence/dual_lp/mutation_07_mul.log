@@ -1,0 +1,27 @@
+INTERNAL MUTATION 07_mul: reinstated pre-fix arithmetic / removed guard or certificate fields
+F
+================================== FAILURES ===================================
+_ test_r6fix07_related_product_derivative_avoids_intermediate_range_loss[1e+150-1e+150-1e+160--1e+160] _
+
+u = 1e+150, v = 1e+150, du = 1e+160, dv = -1e+160
+
+    @pytest.mark.parametrize("u,v,du,dv", [
+        (1e150, 1e150, 1e160, -1e160),
+        (1e150, 1e150, 1e160, -math.nextafter(1e160, math.inf)),
+        (2.0 ** -600, 2.0 ** -600, 2.0 ** -475, 2.0 ** -475),
+    ])
+    def test_r6fix07_related_product_derivative_avoids_intermediate_range_loss(u, v, du, dv):
+        expected = float(F(du) * F(v) + F(u) * F(dv))
+        r = Dual(u, (du,)) * Dual(v, (dv,))
+>       assert r.e == (expected,), (r, expected)
+E       AssertionError: (Dual(9.999999999999999e+299, (nan,)), 0.0)
+E       assert (nan,) == (0.0,)
+E         
+E         At index 0 diff: nan != 0.0
+E         Use -v to get more diff
+
+tests\test_r6fix_dual_lp.py:68: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_dual_lp.py::test_r6fix07_related_product_derivative_avoids_intermediate_range_loss[1e+150-1e+150-1e+160--1e+160]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.06s

@@ -71,14 +71,26 @@ def cross(a: Vec3, b: Vec3) -> Vec3:
 
 
 def norm(a: Vec3) -> float:
-    return sqrt(dot(a, a))
+    """Primal construction avoiding a rounded intermediate squared norm.
+
+    Gate: test_r6fix_norm_does_not_lose_representable_result_to_intermediate_square.
+    """
+    if any(isinstance(x, Fraction) for x in a):
+        q = _eg.vector(a)
+        return _eg.sqrt_rational(_eg.dot(q, q))
+    result = hypot(*a)
+    if not math.isfinite(result) and all(math.isfinite(x) for x in a):
+        raise OverflowError("exact geometric norm exceeds finite binary64 range")
+    return result
 
 
 def unit(a: Vec3) -> Vec3:
-    n = norm(a)
-    if n == 0.0:
+    scale = max(map(abs, a))
+    if scale == 0:
         raise ZeroDivisionError("unit of zero vector")
-    return (a[0] / n, a[1] / n, a[2] / n)
+    scaled = tuple(float(x/scale) for x in a)
+    n = hypot(*scaled)
+    return tuple(x/n for x in scaled)
 
 
 def angle_between(a: Vec3, b: Vec3) -> float:
@@ -214,21 +226,21 @@ class Polyhedron:
         if self._edges is None:
             self._build_topology()
         assert self._edges is not None
-        return self._edges
+        return list(self._edges)
 
     def vertex_faces(self, vi: int) -> list[int]:
         self._sync_geometry_cache()
         if self._vf is None:
             self._build_topology()
         assert self._vf is not None
-        return self._vf.get(vi, [])
+        return list(self._vf.get(vi, ()))
 
     def edge_faces(self, e: tuple[int, int]) -> list[int]:
         self._sync_geometry_cache()
         if self._ef is None:
             self._build_topology()
         assert self._ef is not None
-        return self._ef.get((min(e), max(e)), [])
+        return list(self._ef.get((min(e), max(e)), ()))
 
     def _build_topology(self) -> None:
         vf: dict[int, list[int]] = {}
@@ -252,7 +264,7 @@ class Polyhedron:
         if self._edir is None:
             self._build_topology()
         assert self._edir is not None
-        return self._edir.get((min(e), max(e)), [])
+        return list(self._edir.get((min(e), max(e)), ()))
 
     def vertex_edge_dirs(self, vi: int) -> list[Vec3]:
         """顶点 vi 的**入射棱方向**（由 vi 指向邻点，单位化）。局部法锥由它们定义。"""
@@ -287,7 +299,7 @@ class Polyhedron:
                     if ell > 0.0:
                         out.append((unit(d), fl / ell))
                 cache[v] = out
-        return cache.get(vi, [])
+        return list(cache.get(vi, ()))
 
     def edge_dir(self, e: tuple[int, int]) -> Vec3:
         d = sub(self.verts[e[1]], self.verts[e[0]])
@@ -378,6 +390,15 @@ class Polyhedron:
         return (min(xs), min(ys), min(zs)), (max(xs), max(ys), max(zs))
 
     def translated(self, x: Vec3) -> "Polyhedron":
+        """Preserve exact affine values when coordinates or offsets are Fraction.
+
+        Ordinary float construction retains its historical rounding order;
+        mixed rational/float input is rationalised before any addition.
+        Gate: test_g6f09_mixed_fraction_translation_preserves_exact_affine_coordinates.
+        """
+        if any(isinstance(c, Fraction) for p in (*self.verts, x) for c in p):
+            q = exact_vector(x)
+            return Polyhedron([_eg.add(exact_vector(p), q) for p in self.verts], list(self.faces))
         return Polyhedron([add(p, x) for p in self.verts], list(self.faces))
 
     def reflected(self) -> "Polyhedron":
@@ -428,32 +449,37 @@ class Polyhedron:
         return issues
 
     def is_convex(self, tol: float = 1e-12) -> bool:
-        """tol 是角度；另加该棱二面角的舍入噪声（平棱在旋转 / 远坐标下的转角是 ±噪声，不许判成反射）。"""
+        """Exact local convexity for a closed outward polyhedron.
+
+        tol is a retained compatibility argument, not a geometric noise band.
+        Supplied coordinates, including roundoff in a transformed model, define
+        the geometry. Gate: test_g6f03_zero_band_convexity_keeps_every_exact_reflex.
+        """
         for e in self.edges():
             if len(self.edge_faces(e)) != 2:
                 return False
-            if self.dihedral_turn(e) < -max(tol, self.dihedral_noise(e)):
+            if self._exact_dihedral_orientation(e) < 0:
                 return False
         return True
 
     def reflex_edges(self, tol: float = 1e-12) -> list[tuple[int, int]]:
-        out = []
-        for e in self.edges():
-            if len(self.edge_faces(e)) == 2 and self.dihedral_turn(e) < -max(tol, self.dihedral_noise(e)):
-                out.append(e)
-        return out
+        """Exact negative dihedral signs; tol is compatibility-only, as is_convex."""
+        return [e for e in self.edges()
+                if len(self.edge_faces(e)) == 2 and self._exact_dihedral_orientation(e) < 0]
+
+    def _exact_dihedral_orientation(self, e: tuple[int, int]):
+        """Unnormalised exact sign; neither coordinate scale nor angle noise enters."""
+        (f1, a, b), (f2, _, _) = self.edge_traversals(e)
+        t = _eg.sub(exact_vector(self.verts[b]), exact_vector(self.verts[a]))
+        n1, n2 = exact_face_normal(self, f1), exact_face_normal(self, f2)
+        return _eg.dot(_eg.cross(n1, n2), t)
 
 
 # ------------------------------------------------------------------ 面多边形内点（唯一实现）
 
 def _point_segment_distance(x: Vec3, a: Vec3, b: Vec3) -> float:
-    d = sub(b, a)
-    dd = dot(d, d)
-    if dd <= 0.0:
-        return norm(sub(x, a))
-    t = dot(sub(x, a), d) / dd
-    t = 0.0 if t < 0.0 else (1.0 if t > 1.0 else t)
-    return norm(sub(x, add(a, mul(d, t))))
+    x, a, b = map(exact_vector, (x, a, b))
+    return _eg.sqrt_rational(_eg.point_segment_distance_squared(x, a, b))
 
 
 def face_polygon_locate(x: Vec3, P: Polyhedron, fi: int, tol: float = 0.0) -> int:
@@ -508,7 +534,7 @@ def _ray_directions(n: int = 64) -> list[Vec3]:
         th = ga * i + 0.123456789      # 偏置：避开与坐标面对齐
         out.append(unit((r * math.cos(th), r * math.sin(th), z)))
     _RAY_DIRS = out
-    return out
+    return list(out)
 
 
 def point_in_polyhedron(p: Vec3, P: Polyhedron, tol: float = 0.0) -> int:
@@ -562,26 +588,31 @@ def polyhedra_overlap(A: Polyhedron, B: Polyhedron, tol: float = 0.0) -> int:
 
 
 def _segment_closest_points(p1: Vec3, p2: Vec3, q1: Vec3, q2: Vec3) -> tuple[Vec3, Vec3]:
-    """两线段上的最近点对（Ericson《Real-Time Collision Detection》5.1.9；平行判据是相对的）。"""
+    """Exact affine closest-point witnesses; no implicit parallel window.
+
+    Gate: test_r6fix_closest_points_do_not_drop_nonzero_segments.
+    """
+    p1, p2, q1, q2 = map(exact_vector, (p1, p2, q1, q2))
+    zero, one = Fraction(0), Fraction(1)
     d1, d2, r = sub(p2, p1), sub(q2, q1), sub(p1, q1)
     a, e, f = dot(d1, d1), dot(d2, d2), dot(d2, r)
     if a <= 0.0 and e <= 0.0:
         return p1, q1
     if a <= 0.0:
-        s, t = 0.0, min(1.0, max(0.0, f / e))
+        s, t = zero, min(one, max(zero, f / e))
     else:
         c = dot(d1, r)
         if e <= 0.0:
-            s, t = min(1.0, max(0.0, -c / a)), 0.0
+            s, t = min(one, max(zero, -c / a)), zero
         else:
             b = dot(d1, d2)
             den = a * e - b * b
-            s = min(1.0, max(0.0, (b * f - c * e) / den)) if den > 1e-24 * a * e else 0.0
+            s = min(one, max(zero, (b * f - c * e) / den)) if den else zero
             t = (b * s + f) / e
             if t < 0.0:
-                s, t = min(1.0, max(0.0, -c / a)), 0.0
+                s, t = min(one, max(zero, -c / a)), zero
             elif t > 1.0:
-                s, t = min(1.0, max(0.0, (b - c) / a)), 1.0
+                s, t = min(one, max(zero, (b - c) / a)), one
     return add(p1, mul(d1, s)), add(q1, mul(d2, t))
 
 
@@ -753,45 +784,13 @@ def _exact_line_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, f
 
 
 def _seg_seg_distance(p1: Vec3, p2: Vec3, q1: Vec3, q2: Vec3) -> float:
-    """两线段的最短距离：**候选枚举**——内点候选用叉积式参数 s = ((q1 − p1) × d2)·n/|n|²、t = ((q1 − p1) × d1)·n/|n|²
-    （n = d1 × d2，不经 a·c − b² 的抵消），再加四条边上（s ∈ {0, 1}、t ∈ {0, 1}）各一个钳位候选，取最小。
-    G6 第四轮 major：旧版 den = a·c − b² ∝ sin²θ，近平行棱（θ ≲ 1e-7）上 den 是舍入垃圾，s 先算成垃圾再钳位，距离偏向端点垂足
-    （θ = 1e-8、间隙 1e-9 时报 1.8e-9 … 7e-9，且与参数次序有关）；盖路径 covers3._closest_params 用同一公式，两边同错同值，
-    裕度层自校验失明。候选枚举对参数次序对称。"""
-    d1, d2 = sub(p2, p1), sub(q2, q1)
-    a, c = dot(d1, d1), dot(d2, d2)
-    w = sub(q1, p1)
-    if (not all(math.isfinite(x) for x in (*d1, *d2, *w, a, c))
-            or (a == 0.0 and any(d1)) or (c == 0.0 and any(d2))
-            or (any(w) and dot(w, w) == 0.0)):
-        return _eg.sqrt_rational(_eg.segment_distance_squared(p1, p2, q1, q2))
+    """Exact relative squared distance, rounded only after the minimum is known.
 
-    def at(s: float, t: float) -> float:
-        return norm(sub(add(p1, mul(d1, s)), add(q1, mul(d2, t))))
-    best = float("inf")
-    n = cross(d1, d2)
-    nn = dot(n, n)
-    # The independent rounded parameters can be separated along the edges by
-    # much more than the small normal gap. Evaluate the *squared distance* in
-    # rational arithmetic for this ill-conditioned construction, not merely s,t.
-    if a > 0.0 and c > 0.0 and nn <= 1e-8 * a * c:
-        return _eg.sqrt_rational(_eg.segment_distance_squared(p1, p2, q1, q2))
-    if nn > 0.0:
-        if nn <= 1e-12 * a * c:                     # sin²θ ≤ 1e-12：浮点参数不可信，按坐标精确算（_exact_line_params）
-            st = _exact_line_params(p1, d1, q1, d2)
-            s, t = st if st is not None else (-1.0, -1.0)
-        else:
-            s = dot(cross(w, d2), n) / nn
-            t = dot(cross(w, d1), n) / nn
-        if 0.0 <= s <= 1.0 and 0.0 <= t <= 1.0:
-            best = at(s, t)
-    for s in (0.0, 1.0):
-        t = max(0.0, min(1.0, dot(sub(add(p1, mul(d1, s)), q1), d2) / c)) if c > 0.0 else 0.0
-        best = min(best, at(s, t))
-    for t in (0.0, 1.0):
-        s = max(0.0, min(1.0, dot(sub(add(q1, mul(d2, t)), p1), d1) / a)) if a > 0.0 else 0.0
-        best = min(best, at(s, t))
-    return best
+    No projected global point is rounded then subtracted. Shared production
+    arithmetic: this construction helper is not an independent G0 oracle.
+    Gate: test_r6fix_segment_distance_keeps_exact_local_difference_at_large_coordinates.
+    """
+    return _eg.sqrt_rational(_eg.segment_distance_squared(p1, p2, q1, q2))
 
 
 def _point_face_distance(p: Vec3, P: Polyhedron, fi: int) -> float | None:
@@ -800,39 +799,41 @@ def _point_face_distance(p: Vec3, P: Polyhedron, fi: int) -> float | None:
     多边形内点用 `point_in_face_polygon`（非凸面正确）。此前用半平面核（审查 C7：L 块臂上的
     投影被判"面外"，距离高估 0.673 vs 0.5）。边界带取 0：落在棱上的投影由顶点/棱对同样给出。
     """
-    n = P.face_normal(fi)
-    o = P.verts[P.faces[fi][0]]
-    g = dot(n, sub(p, o))
-    proj = add(p, mul(n, -g))
+    p = exact_vector(p)
+    n = exact_face_normal(P, fi)
+    o = exact_vector(P.verts[P.faces[fi][0]])
+    nn = _eg.dot(n, n)
+    g = _eg.dot(n, _eg.sub(p, o))
+    proj = _eg.sub(p, _eg.mul(n, g / nn))
     if not point_in_face_polygon(proj, P, fi, 0.0):
         return None
-    return abs(g)
+    return _eg.sqrt_rational(g*g / nn)
 
 
-def brute_feature_distance(A: Polyhedron, B: Polyhedron) -> float:
-    """两个（可非凸）分离多面体的距离：对**全部**特征对取最小，**不施加任何法锥筛选**。
+def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: bool = False) -> float:
+    """Exact all-feature surface distance, with one final floating construction.
 
-    这是 G0 的独立 oracle：多面体间距离必由顶-顶、顶-棱、顶-面、棱-棱之一实现，
-    枚举全部即得真值。它只用坐标，不用法向、不用法锥——因此可以检验"法锥有效性筛选
-    是否会丢掉最近特征对"这条完备性命题。
+    Triangulated face projections include vertex/edge endpoints; all source
+    edge pairs provide the remaining minima. This is internal corroboration,
+    not an independent G0 oracle: it shares exact_geom primitives with production.
+    G0 uses the separate g03_surface_oracle. Explicit allow_underflow is only for
+    display callers retaining an exact squared-distance certificate.
+    Gate: test_r6fix_brute_distance_does_not_subtract_rounded_global_projections.
     """
-    best = float("inf")
-    for a in A.verts:
-        for b in B.verts:
-            best = min(best, norm(sub(a, b)))
-    for P, Q in ((A, B), (B, A)):
-        for p in P.verts:
-            for e in Q.edges():
-                best = min(best, _seg_seg_distance(p, p, Q.verts[e[0]], Q.verts[e[1]]))
-            for fi in range(len(Q.faces)):
-                d = _point_face_distance(p, Q, fi)
-                if d is not None:
-                    best = min(best, d)
+    vertices = (tuple(map(exact_vector, A.verts)), tuple(map(exact_vector, B.verts)))
+    triangles = (_eg.triangles(A), _eg.triangles(B))
+    best = None
+    for points, faces in ((vertices[0], triangles[1]), (vertices[1], triangles[0])):
+        for p in points:
+            for _, tri in faces:
+                value = _eg.point_triangle_distance_squared(p, tri)
+                best = value if best is None else min(best, value)
     for ea in A.edges():
         for eb in B.edges():
-            best = min(best, _seg_seg_distance(A.verts[ea[0]], A.verts[ea[1]],
-                                               B.verts[eb[0]], B.verts[eb[1]]))
-    return best
+            value = _eg.segment_distance_squared(vertices[0][ea[0]], vertices[0][ea[1]],
+                                                 vertices[1][eb[0]], vertices[1][eb[1]])
+            best = value if best is None else min(best, value)
+    return float('inf') if best is None else _eg.sqrt_rational(best, allow_underflow=allow_underflow)
 
 
 # ------------------------------------------------------------------ 构造器
@@ -1113,18 +1114,28 @@ def exact_convex_view(P: Polyhedron) -> Polyhedron:
     If every input face already is a complete exact supporting facet the input
     numbering is retained. Otherwise canonical facets are ordered deterministically
     and source_faces lists the input face hints containing that facet's vertices.
-    General surface APIs never call this implicitly.
+    General surface APIs never call this implicitly. Non-self cached views are
+    immutable coordinate/ring payloads and every public result is isolated;
+    source content is checked before reuse. Gate: test_g6f01_convex_view_mutation_cannot_poison_unchanged_source.
     """
     P._sync_geometry_cache()
     if P._convex_view is not None:
-        return P._convex_view
+        if P._convex_view is P:
+            return P
+        verts, faces, source_vertices, source_faces = P._convex_view
+        out = Polyhedron(list(verts), list(faces), source_vertices=source_vertices,
+                         source_faces=source_faces)
+        out._sync_geometry_cache()
+        out._convex_view = out
+        return out
     H = merge_coplanar(convex_hull_3d(P.verts), 0.0)
     original = {p:i for i,p in enumerate(P.verts)}
     source = tuple(original[p] for p in H.verts)
     rings = [tuple(source[i] for i in f) for f in H.faces]
     matches = {frozenset(f):i for i,f in enumerate(P.faces)}
     if (len(source) == len(P.verts) and len(rings) == len(P.faces)
-            and all(frozenset(f) in matches for f in rings)):
+            and all(frozenset(f) in matches
+                    and _same_oriented_ring(f, P.faces[matches[frozenset(f)]]) for f in rings)):
         P._convex_view = P
         return P
     order = sorted(range(len(H.verts)), key=lambda i: source[i])
@@ -1137,8 +1148,18 @@ def exact_convex_view(P: Polyhedron) -> Polyhedron:
                                               if set(ring).issubset(hint)) for _,ring in faced))
     out._sync_geometry_cache()
     out._convex_view = out
-    P._convex_view = out
+    P._convex_view = (tuple(out.verts), tuple(out.faces), out.source_vertices, out.source_faces)
     return out
+
+
+def _same_oriented_ring(first, second):
+    """Cyclic equality, not vertex-set equality: reversed/crossed hints are not facets.
+
+    Gate: test_g6f02_convex_model_is_independent_of_face_hint_winding.
+    """
+    first, second = tuple(first), tuple(second)
+    return len(first) == len(second) and any(first == second[k:] + second[:k]
+                                           for k in range(len(second)))
 
 
 def exact_point_in_polyhedron(p: Vec3, P: Polyhedron) -> int:

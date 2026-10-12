@@ -139,7 +139,7 @@ def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_t
 
     Fresh list results protect the cache from callers. Source vertices, face
     rings, offset and both reporting bands are part of the key. Numeric types
-    also matter: translated float and Fraction coordinates can round differently.
+    are retained in the reporting key; affine translation itself is exact.
     Direct cover implementations participate so injected defects remain visible.
     Exact escape decisions are independent of this nominal-report cache.
     """
@@ -172,8 +172,11 @@ def _candidates_uncached(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float,
     """Legacy nominal report candidates and their floating construction band.
 
     These feed derivative labels/ties, not the complete exact event partition.
+    Affine coordinates are formed exactly before nominal reporting, so a large
+    offset cannot collapse a valid small body before the authoritative solve.
+    Gate: test_g6f09_nominal_report_cannot_collapse_float_body_under_large_offset.
     Extent is checked at each candidate construction as in the public report."""
-    At = A.translated(offset)
+    At = translate_exact(A, offset)
     r = rounding_floor(At, B)
     raw: list[tuple] = []
     for idx, c in enumerate(enumerate_covers3(At, B, window=float("inf"), tol=tol, require_in_extent=False,
@@ -192,7 +195,7 @@ def _candidates_uncached(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float,
             out.append((z, lab, nz, idx))     # 已接触/已分离：由调用方的谓词裁决，无需抬升
             continue
         if z_prev is None or z - z_prev > r:
-            z_prev, Az = z, At.translated((0.0, 0.0, z))
+            z_prev, Az = z, translate_exact(At, (0.0, 0.0, z))
         c = _cover_at(Az, B, lab, tol, extent_tol)
         if c is not None and c.in_extent:
             out.append((z, lab, nz, idx))
@@ -206,7 +209,7 @@ def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float 
     Preserves the documented extent/normal report band for frozen derivatives.
     It is not the complete exact kinetic event list: use exact_sweep.surface_events
     for that list. escape_height_covers uses the latter for all decisions."""
-    gtol = effective_geom_tol(A.translated(offset), B, geom_tol)
+    gtol = effective_geom_tol(translate_exact(A, offset), B, geom_tol)
     return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
 
 
@@ -285,7 +288,7 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     """
     if contact_window is not None and F(contact_window)<0:
         raise ValueError('contact_window must be nonnegative')
-    report_A=A.translated(offset)
+    report_A=translate_exact(A,offset)
     gtol=effective_geom_tol(report_A,B,geom_tol)
     cands,r=_candidates(A,B,offset,tol,gtol)
     choices=(('exact',A,B),) if contact_window is None else contact_models(A,B,contact_window)

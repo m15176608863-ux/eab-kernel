@@ -12,7 +12,7 @@ from __future__ import annotations
 from fractions import Fraction
 from math import hypot
 
-from ..dual import Dual, Number, val
+from ..dual import Dual, Number, val, _derivative_float
 from .covers3 import _oriented_ee_normal
 from .geom3 import Polyhedron, cross, dot, sub, add, exact_edge_vector, exact_surface
 
@@ -35,12 +35,15 @@ def _unit_jet(n, derivatives, sign=1.0):
         raise ZeroDivisionError("zero normal in frozen geometry")
     length = hypot(*(float(c / scale) for c in n))
     value = [sign * float(c / scale) / length for c in n]
+    if any(c and v == 0.0 for c, v in zip(n, value)):
+        raise FloatingPointError("nonzero frozen normal component is below the binary64 range")
     if not derivatives:
         return tuple(value)
     nn = dot(n, n)
     result = []
     for i in range(3):
-        channels = tuple(sign * float((dn[i] - n[i] * dot(n, dn) / nn) / scale) / length
+        channels = tuple(_derivative_float(Fraction(sign) * (dn[i] - n[i] * dot(n, dn) / nn)
+                                           / (scale * Fraction(length)))
                          for dn in derivatives)
         result.append(Dual(value[i], channels))
     return tuple(result)
@@ -121,34 +124,36 @@ def _check_kind(label: tuple) -> str:
     return kind
 
 
-def _moved(P: Polyhedron, vi: int, x):
-    """P 的第 vi 个顶点平移 x（x=None 即不平移）。泛型标量。"""
-    p = P.verts[vi]
-    if x is None:
-        return p
-    return (p[0] + x[0], p[1] + x[1], p[2] + x[2])
+def _affine_point_jets(points, offset, moved):
+    """Convert before translation/subtraction, retaining all derivative channels."""
+    primal, derivative = _exact_jet_points([*points, offset or (0, 0, 0)])
+    for i in moved:
+        primal[i] = add(primal[i], primal[-1])
+        for channel in derivative:
+            channel[i] = add(channel[i], channel[-1])
+    return primal[:-1], [channel[:-1] for channel in derivative]
 
 
-def _unit_generic(v):
-    ln = (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) ** 0.5
-    return (v[0] / ln, v[1] / ln, v[2] / ln)
-
-
-def _line_residual_normal(p, e0, e1):
-    """点 p 到直线 e0e1 的正交投影残差之单位向量（从直线指向 p）。泛型标量、无择支。
+def _line_residual_normal(p, e0, e1, *, offset=None, moved=()):
+    """点到直线的精确有理投影 jet；浮点仅构造最后的单位向量。
 
     残差为零（点在直线上，两体相触）时法向集值、无定义：除零照常抛出。
-
-    残差做两遍正交化（Gram–Schmidt "两遍就够"）：精确算术里第二遍恒为零、导数也恒为零（r·d ≡ 0），
-    浮点里它把 ∝ eps·|w|/|r| 的棱向残留压到 eps——与 float 路径 covers3.ve3_cover 同一口径（G6 critical 6）。
+    不先计算浮点平方范数或全局平移；故短棱、工程坐标、primal 为零的导数均保留。
+    门：test_frozen_line_normal_keeps_zero_primal_nonzero_derivative_without_square_range_loss。
     """
-    d = (e1[0] - e0[0], e1[1] - e0[1], e1[2] - e0[2])
-    w = (p[0] - e0[0], p[1] - e0[1], p[2] - e0[2])
-    dd = d[0] * d[0] + d[1] * d[1] + d[2] * d[2]
-    s = (w[0] * d[0] + w[1] * d[1] + w[2] * d[2]) / dd
-    r = (w[0] - s * d[0], w[1] - s * d[1], w[2] - s * d[2])
-    s2 = (r[0] * d[0] + r[1] * d[1] + r[2] * d[2]) / dd
-    return _unit_generic((r[0] - s2 * d[0], r[1] - s2 * d[1], r[2] - s2 * d[2]))
+    points, channels = _affine_point_jets([p, e0, e1], offset, moved)
+    p, e0, e1 = points
+    d, w = sub(e1, e0), sub(p, e0)
+    dd = dot(d, d)
+    s = dot(w, d) / dd
+    r = tuple(w[i] - s * d[i] for i in range(3))
+    derivatives = []
+    for channel in channels:
+        dp, de0, de1 = channel
+        dv, dw = sub(de1, de0), sub(dp, de0)
+        ds = (dot(dw, d) + dot(w, dv) - 2 * s * dot(d, dv)) / dd
+        derivatives.append(tuple(dw[i] - ds * d[i] - s * dv[i] for i in range(3)))
+    return _unit_jet(r, derivatives)
 
 
 def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1.0, x=None):
@@ -170,12 +175,12 @@ def frozen_normal(A: Polyhedron, B: Polyhedron, label: tuple, ee_sign: float = 1
     if kind == "EE":
         return ee_normal_generic(A, (af[1], af[2]), B, (bf[1], bf[2]), ee_sign)
     if kind == "VV3":
-        a, b = _moved(A, af[1], x), B.verts[bf[1]]
-        return _unit_generic((a[0] - b[0], a[1] - b[1], a[2] - b[2]))
+        points, channels = _affine_point_jets([A.verts[af[1]], B.verts[bf[1]]], x, (0,))
+        return _unit_jet(sub(points[0], points[1]), [sub(e[0], e[1]) for e in channels])
     if kind == "VE3":
-        return _line_residual_normal(_moved(A, af[1], x), B.verts[bf[1]], B.verts[bf[2]])
+        return _line_residual_normal(A.verts[af[1]], B.verts[bf[1]], B.verts[bf[2]], offset=x, moved=(0,))
     # EV3
-    n = _line_residual_normal(B.verts[bf[1]], _moved(A, af[1], x), _moved(A, af[2], x))
+    n = _line_residual_normal(B.verts[bf[1]], A.verts[af[1]], A.verts[af[2]], offset=x, moved=(1, 2))
     return (-n[0], -n[1], -n[2])
 
 
@@ -193,14 +198,16 @@ def frozen_gap(A: Polyhedron, B: Polyhedron, label: tuple, x, n) -> Number:
     kind = _check_kind(label)
     _, af, bf = label
     if kind == "VF":
-        a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
-        b0 = B.verts[bf[3] if len(bf) > 2 else B.faces[bf[1]][0]]
-        return sum(n[i] * (a[i] - b0[i]) for i in range(3))
-    if kind == "FV":
-        a0 = tuple(A.verts[af[3] if len(af) > 2 else A.faces[af[1]][0]][i] + x[i] for i in range(3))
-        b = B.verts[bf[1]]
-        return sum(n[i] * (a0[i] - b[i]) for i in range(3))
-    # EE / VV3 / VE3 / EV3：af[1] 是 A 的顶点或 A 棱的起点，bf[1] 是 B 的顶点或 B 棱的起点
-    a = tuple(A.verts[af[1]][i] + x[i] for i in range(3))
-    b = B.verts[bf[1]]
-    return sum(n[i] * (a[i] - b[i]) for i in range(3))
+        a, b = A.verts[af[1]], B.verts[bf[3] if len(bf) > 2 else B.faces[bf[1]][0]]
+    elif kind == "FV":
+        a, b = A.verts[af[3] if len(af) > 2 else A.faces[af[1]][0]], B.verts[bf[1]]
+    else:
+        a, b = A.verts[af[1]], B.verts[bf[1]]
+    points, channels = _affine_point_jets([a, b, n], x, (0,))
+    delta = sub(points[0], points[1])
+    value = _derivative_float(dot(points[2], delta))
+    if not channels:
+        return value
+    derivative = tuple(_derivative_float(dot(e[2], delta) + dot(points[2], sub(e[0], e[1])))
+                       for e in channels)
+    return Dual(value, derivative)

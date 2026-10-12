@@ -31,6 +31,7 @@ from functools import lru_cache
 from math import atan2, isfinite, lcm
 
 from ..predicates import cross2_sign, dot2_sign
+from ..construction import sqrt_rational
 from .exact import (convexity_violation, entrance_block_exact, ev_side_exact, membership_exact,
                     polygons_overlap_exact, ve_side_exact)
 from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, sub, unit)
@@ -190,7 +191,9 @@ def ve_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
     a, (b0, b1) = A[ia], edge(B, jb)
     nB = outward_normal(B, jb)
     s, pt = _project(a, b0, b1)
-    return Cover("VE", ia, jb, nB, dot(nB, sub(a, b0)), s, pt, side == 1, a, pt)
+    g, l2, _ = _line_data(a, b0, b1)
+    gap = sqrt_rational(g*g/l2) * ((g > 0)-(g < 0))
+    return Cover("VE", ia, jb, nB, gap, s, pt, side == 1, a, pt)
 
 
 def ev_cover(A: Poly, ka: int, B: Poly, ib: int, tol: float = 0.0, cone_tol: float | None = None) -> Cover | None:
@@ -201,7 +204,9 @@ def ev_cover(A: Poly, ka: int, B: Poly, ib: int, tol: float = 0.0, cone_tol: flo
     b, (a0, a1) = B[ib], edge(A, ka)
     nA = outward_normal(A, ka)
     s, pt = _project(b, a0, a1)
-    return Cover("EV", ka, ib, neg(nA), dot(nA, sub(b, a0)), s, pt, side == 1, pt, b)
+    g, l2, _ = _line_data(b, a0, a1)
+    gap = sqrt_rational(g*g/l2) * ((g > 0)-(g < 0))
+    return Cover("EV", ka, ib, neg(nA), gap, s, pt, side == 1, pt, b)
 
 
 
@@ -359,8 +364,24 @@ def _facet_normal_own(A: Poly, B: Poly, label: tuple[str, int, int]) -> tuple[Po
 def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
     """E 的一条 facet 在平移 x 下的有符号间隙（>0 参考点在该 facet 外侧）。**构造量**：facet 自己那条边的单位外法向点乘
     (x − facet 上一点)；成员与首入的**分支**判定不看它的符号（见 `membership_convex`、`entrance.first_entrance`）。"""
-    n, p = _facet_normal_own(A, B, label)
-    return dot(n, sub(x, p))
+    kind, ai, bj = label
+    X = _fr(x)
+    if kind == "VE":
+        b0, b1 = map(_fr, edge(B, bj))
+        direction = sub(b1, b0)
+        v = sub(add(_fr(A[ai]), X), b0)
+    elif kind == "EV":
+        a0, a1 = map(_fr, edge(A, ai))
+        direction = sub(a1, a0)
+        v = sub(_fr(B[bj]), add(a0, X))
+    else:
+        a0, a1 = map(_fr, edge(A, ai))
+        b0, b1 = map(_fr, edge(B, bj))
+        da, db = sub(a1, a0), sub(b1, b0)
+        direction = db if dot(db, db) >= dot(da, da) else neg(da)
+        v = sub(add(a0, X), b0)
+    numerator = direction[1]*v[0]-direction[0]*v[1]
+    return sqrt_rational(numerator*numerator/dot(direction, direction)) * ((numerator > 0)-(numerator < 0))
 
 
 def _in_exact_boundary_band(ex, x: Point, tol: float) -> bool:

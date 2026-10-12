@@ -13,9 +13,9 @@ from dataclasses import dataclass, field
 from fractions import Fraction
 from functools import lru_cache
 from .covers3 import local_facets3, membership_convex3
-from .geom3 import (Polyhedron, Vec3, brute_feature_distance, noise_floor, norm,
-                    polyhedra_overlap, sub, exact_convex_view)
+from .geom3 import Polyhedron, Vec3, noise_floor, norm, sub, exact_convex_view
 from . import g03_exact as oracle
+from . import g03_surface_oracle as surface_oracle
 
 
 @dataclass(slots=True)
@@ -165,27 +165,12 @@ class DistanceReport3:
 def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, samples: int = 200,
                               seed: int = 0, base: Vec3 = (0.0, 0.0, 0.0), tol: float = 1e-9,
                               atol: float = 1e-9) -> DistanceReport3:
-    """凹块（也适用于凸块）的 G0 正确形式：**距离完备性**。
+    """Exact nonconvex separation and independent rational distance oracle.
 
-    命题：A、B 分离时，d(A,B) = min over 法锥有效且落在特征范围内的盖 of |特征间距|。
-    即法锥筛选不会把实现最短距离的那一对特征滤掉。oracle 是 `brute_feature_distance`
-    （枚举全部特征对、零法锥筛选、只用坐标）。
-
-    纪律 A（共用与风险）：oracle 的点-面距离与盖的 in_extent 共用 geom3.point_in_face_polygon——
-    它若错，两边一起错，本门看不见（2026-09-21 审查 C7 正是这样：两边都用半平面核，凹面上
-    同错）。所以 point_in_face_polygon 另有不经 geom3 的独立门（tests/test_geom3_face_polygon.py：
-    矩形并集、星形极坐标、闭式距离），本门只对"法锥筛选丢特征对"有牙。
-    另：本门的采样区只在给定 base 附近，凹面臂上的最近对需要**定点探针**才会被采到
-    （tests/test_geom3_face_polygon.py 的骨形块侧面探针）。
-
-    **不要**用"最小盖间隙的符号"当成员谓词（2026-09-18 实测被推翻）：VF 盖的 gap 是顶点到
-    面**所在平面**的有符号距离，分离的两块之间也常有顶点落在对方某个面平面的内侧，故 min 会
-    报出 −2.7 这类假侵入。凸块的成员谓词是 facet 间隙取 **max**（见 membership_convex3）；
-    凹块的 E 非凸，max 与 min 都不成立，成员判定需要入口块的**全局**构造（Phase 3 的目标）。
-
-    容差（纪律 F，M0.3）：tol 是盖枚举的**角度**容差（无量纲）；atol 是**相对** L 的距离判据：
-    |盖距离 − 真值| > atol·max(L, 真值) + c·eps·C 即失败（L = 两体 AABB 对角线之大者，C = 坐标量级）；贯入预筛带
-    1e-12·L。旧版是绝对的 atol·max(1, 真值) 与 1e-12：同一个无量纲误差在 s = 1 报红、s = 1e-3 放行（G6 第二轮 minor）。
+    Oracle primitives: integer planes/ring winding and generic-ray parity,
+    rational vertex/face and edge/edge squared distances; zero production
+    geometry is shared. No implicit band excludes a strict positive gap.
+    Only float witness construction is audited with the relative allowance.
     """
     from .covers3 import enumerate_covers3
     rng = random.Random(seed)
@@ -198,12 +183,13 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
         if nv > 1.0 or nv == 0.0:
             continue
         drawn += 1
-        x = tuple(base[i] + radius * v[i] for i in range(3))
-        At = A.translated(x)
-        if polyhedra_overlap(At, B, 1e-12 * L) != -1:
+        x = tuple(Fraction(base[i]) + Fraction(radius) * Fraction(v[i]) for i in range(3))
+        At = Polyhedron([tuple(Fraction(v[i]) + Fraction(x[i]) for i in range(3))
+                         for v in A.verts], list(A.faces))
+        truth = surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces)
+        if truth is None:
             rep.skipped_intersecting += 1
             continue
-        truth = brute_feature_distance(At, B)
         covs = [c for c in enumerate_covers3(At, B, window=float("inf"), tol=tol) if c.in_extent]
         cand = [norm(sub(c.point_a, c.point_b)) for c in covs
                 if c.point_a is not None and c.point_b is not None]

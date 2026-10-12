@@ -1,0 +1,48 @@
+INTERNAL MUTATION 12: reinstated pre-fix arithmetic / removed guard or certificate fields
+F
+================================== FAILURES ===================================
+_ test_r6fix12_every_optimal_path_has_complete_exact_witnesses[A0-b0-c0-normal-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000047DE5D0>
+maximize = False, mode = 'normal', A = [], b = [], c = []
+
+    @pytest.mark.parametrize("maximize", [False, True])
+    @pytest.mark.parametrize("mode", ["normal", "forced_exact"])
+    @pytest.mark.parametrize("A,b,c", [
+        ([], [], []),
+        ([], [], [0.0, 1.0]),
+        ([[]], [0.0], []),
+        ([[1.0]], [0.0], [1.0]),
+        ([[1.0, 1.0], [2.0, 2.0]], [1.0, 2.0], [1.0, 2.0]),
+        ([[F(3)]], [F(1)], [F(1)]),
+    ])
+    def test_r6fix12_every_optimal_path_has_complete_exact_witnesses(monkeypatch, maximize, mode, A, b, c):
+        if mode == "forced_exact":
+            def no_float(*args, **kw):
+                raise RuntimeError("force exact simplex path")
+            monkeypatch.setattr(lp, "_float_solve", no_float)
+        target = [-t for t in c] if maximize else c
+        fn = lp.maximize if maximize else lp.solve
+        r = fn([[float(t) for t in row] for row in A], [float(t) for t in b],
+               [float(t) for t in target], exact=(A, b, target))
+>       _assert_exact_optimal_certificate(r, A, b, target, maximize)
+
+tests\test_r6fix_dual_lp.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+r = LPResult(status='optimal', x=[], obj=0.0, y=[], iterations=0, basis=[], ray=None, exact_x=None, exact_y=None)
+A = [], b = [], c = [], maximize = False
+
+    def _assert_exact_optimal_certificate(r, A, b, c, maximize):
+        """Independent standard-form primal/dual feasibility and strong duality."""
+        assert r.status == lp.OPTIMAL
+>       assert r.exact_x is not None, "optimal result must carry exact_x"
+E       AssertionError: optimal result must carry exact_x
+E       assert None is not None
+E        +  where None = LPResult(status='optimal', x=[], obj=0.0, y=[], iterations=0, basis=[], ray=None, exact_x=None, exact_y=None).exact_x
+
+tests\test_r6fix_dual_lp.py:115: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_dual_lp.py::test_r6fix12_every_optimal_path_has_complete_exact_witnesses[A0-b0-c0-normal-False]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.06s

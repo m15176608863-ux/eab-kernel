@@ -1,0 +1,37 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_______________ test_margin_internal_cached_views_are_isolated ________________
+
+    def test_margin_internal_cached_views_are_isolated():
+        E = box()
+        vertices, faces = tuple(E.verts), tuple(E.faces)
+        view, _ = M._surface_view(vertices, faces)
+        view.verts = [(x+100, y, z) for x, y, z in view.verts]
+        fresh, _ = M._surface_view(vertices, faces)
+>       assert tuple(fresh.verts) == vertices, "surface payload alias"
+E       AssertionError: surface payload alias
+E       assert ((99.0, -1.0,....0, 1.0), ...) == ((-1.0, -1.0,....0, 1.0), ...)
+E         
+E         At index 0 diff: (99.0, -1.0, -1.0) != (-1.0, -1.0, -1.0)
+E         Use -v to get more diff
+
+tests\test_r6fix_construction.py:65: AssertionError
+______________ test_margin_internal_cached_records_are_isolated _______________
+
+    def test_margin_internal_cached_records_are_isolated():
+        A, B = box(center=(0, 0, 3)), box()
+        resolved = M._resolved(A, B, 0., None, None)
+        first = resolved[2][0][0]
+        original = first.gap
+        first.gap = 12345.
+        again = M._resolved(A, B, 0., None, None)
+>       assert again[2][0][0].gap == original, "record payload alias"
+E       AssertionError: record payload alias
+E       assert 12345.0 == 98.00510190801293
+E        +  where 12345.0 = Cover3(kind='VE3', a_feature=('vertex', 1), b_feature=('edge', 4, 7), normal=(-0.999947942424286, 0.0, 0.0102035504329...p=12345.0, point_a=(1.0, -1.0, 2.0), point_b=(99.0, -1.0, 1.0), params=(0.0,), area=None, strict=False, in_extent=True).gap
+
+tests\test_r6fix_construction.py:75: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_construction.py::test_margin_internal_cached_views_are_isolated
+FAILED tests/test_r6fix_construction.py::test_margin_internal_cached_records_are_isolated
+2 failed, 19 deselected in 0.13s

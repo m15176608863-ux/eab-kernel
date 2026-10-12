@@ -1,0 +1,16 @@
+..................G6F-06 mutant: ('representable signed gap', -0.0, -1.204959932551442e-181)
+assert -0.0 == (-2.409919865102884e-181 / 2)
+ +  where -0.0 = Entrance2(kind='exit', t=0.0, x=(1.204959932551442e-181, 0), label=('VE', 0, 1), normal=(1.0, -0.0), point_a=(1.204959... 3, 2)), n_candidates=12, near_labels=(('VE', 0, 1), ('VE', 3, 1), ('EV', 3, 1), ('EV', 3, 2)), t_exact=Fraction(0, 1)).gap
+.G6F-08 mutant: exact relative distance
+assert 0.0 == 1e-09
+ +  where 0.0 = <function distance_to_convex_entrance at 0x00000000047A5440>(Polyhedron(verts=[(Fraction(100000000000000001, 1000000000), Fraction(-1, 1000000000), Fraction(-1, 1000000000)), (Fra... Fraction(1, 1000000000))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), (Fraction(100000000, 1), 0, 0))
+ +    where <function distance_to_convex_entrance at 0x00000000047A5440> = M.distance_to_convex_entrance
+ +  and   1e-09 = float(Fraction(1, 1000000000))
+.G6F-10 mutant: stale pre-rounded margin difference claim
+assert '仍先浮点构造' not in '| **1** 定义 ...没有全局 E，M3） |'
+  
+  '仍先浮点构造' is contained here:
+    k_convex` 仍先浮点构造 b−a，保存精确差点后构造凸包（E5b）；门 `test_margin_exact.py::test_entrance_block_forms_differences_before_any_float_rounding` | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**；E2 新路径待 G6。凹：**未实现**（没有全局 E，M3） |
+  ?           ++++++
+.................
+37 passed in 3.52s

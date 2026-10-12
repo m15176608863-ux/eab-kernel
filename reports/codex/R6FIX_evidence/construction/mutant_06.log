@@ -1,0 +1,22 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____ test_g6f06_exit_gap_preserves_representable_nonzero_magnitude[-600] _____
+
+exponent = -600
+
+    @pytest.mark.parametrize("exponent", [-600, 0, 600])
+    def test_g6f06_exit_gap_preserves_representable_nonzero_magnitude(exponent):
+        s = 2.**exponent
+        r = shortest_exit(_square(s), _square(s), (s/2, 0))
+        assert r.kind == "exit"
+        assert r.label == ("VE", 0, 1)
+        assert r.normal == (1., 0.)
+>       assert r.gap == -s/2, ("representable signed gap", r.gap, -s/2)
+E       AssertionError: ('representable signed gap', -0.0, -1.204959932551442e-181)
+E       assert -0.0 == (-2.409919865102884e-181 / 2)
+E        +  where -0.0 = Entrance2(kind='exit', t=0.0, x=(1.204959932551442e-181, 0), label=('VE', 0, 1), normal=(1.0, -0.0), point_a=(1.204959... 3, 2)), n_candidates=12, near_labels=(('VE', 0, 1), ('VE', 3, 1), ('EV', 3, 1), ('EV', 3, 2)), t_exact=Fraction(0, 1)).gap
+
+tests\test_r6fix_construction.py:28: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_construction.py::test_g6f06_exit_gap_preserves_representable_nonzero_magnitude[-600]
+1 failed in 0.09s

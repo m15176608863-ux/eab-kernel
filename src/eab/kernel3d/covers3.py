@@ -32,6 +32,8 @@ from functools import lru_cache
 from itertools import combinations
 from math import gcd, lcm
 
+from eab.construction import sqrt_rational
+
 from . import geom3
 from .geom3 import (Polyhedron, Vec3, add, cross, dot, mul, neg, norm,
                     sub, unit)
@@ -236,6 +238,13 @@ class Cover3:
     strict: bool                  # 法锥相对内部条件严格成立
     in_extent: bool               # 投影/最近点落在面内或段内
 
+    # Exact magnitude/sign certificates accompany the rounded displays, even
+    # when a nonzero value is below binary64. They never replace source-based
+    # cone/window decisions. Gate: test_cover_construction_exposes_exact_nonzero_gap_and_area.
+    exact_gap_squared: Fraction | None = None
+    exact_gap_sign: int | None = None
+    exact_area_squared: Fraction | None = None
+
     def label(self) -> tuple:
         return (self.kind, self.a_feature, self.b_feature)
 
@@ -422,12 +431,19 @@ def _cone_relint_cached(av, af, ia, bv, bf, ib, implementations):
     return bool(points) and any(_qclosest_hull(points))
 
 
+def _signed_gap(numerator, denominator):
+    squared = numerator*numerator/denominator
+    magnitude = sqrt_rational(squared, allow_underflow=True)
+    return -magnitude if numerator < 0 else magnitude
+
+
 def _project_on_face(p: Vec3, P: Polyhedron, fi: int) -> tuple[Vec3, float]:
     n = _qnormal(P, fi)
     point, origin = _qvector(p), _qvector(P.verts[P.faces[fi][0]])
     h = dot(n, sub(point, origin)) / dot(n, n)
     projection = sub(point, mul(n, h))
-    gap = dot(_qunit(n), _float_vector(sub(point, origin)))
+    numerator = dot(n, sub(point, origin))
+    gap = _signed_gap(numerator, dot(n, n))
     return projection, gap
 
 
@@ -443,7 +459,11 @@ def vf_cover(A: Polyhedron, ia: int, B: Polyhedron, fb: int, tol: float = 0.0, e
     a = A.verts[ia]
     proj, g = _project_on_face(a, B, fb)
     wit, inside = _face_witness(proj, g, B, fb, extent_tol)
-    return Cover3("VF", ("vertex", ia), ("face", fb), _qunit(n), g, a, wit, (), B.face_area(fb), side == 1, inside)
+    numerator = dot(n, sub(_qvector(a), _qvector(B.verts[B.faces[fb][0]])))
+    nn = dot(n, n)
+    return Cover3("VF", ("vertex", ia), ("face", fb), _qunit(n), g, a, wit, (),
+                  sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,
+                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4)
 
 
 def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, extent_tol: float = 0.0) -> Cover3 | None:
@@ -455,7 +475,11 @@ def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, e
     b = B.verts[ib]
     proj, g = _project_on_face(b, A, fa)
     wit, inside = _face_witness(proj, g, A, fa, extent_tol)
-    return Cover3("FV", ("face", fa), ("vertex", ib), neg(_qunit(n)), g, wit, b, (), A.face_area(fa), side == 1, inside)
+    numerator = dot(n, sub(_qvector(b), _qvector(A.verts[A.faces[fa][0]])))
+    nn = dot(n, n)
+    return Cover3("FV", ("face", fa), ("vertex", ib), neg(_qunit(n)), g, wit, b, (),
+                  sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,
+                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4)
 
 
 def _qclosest_params(p1, d1, p2, d2):
@@ -511,7 +535,8 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         # consistently constructed from one exact witness pair, then rounded.
         qa, qb = add(pa0, mul(dA, s)), add(pb0, mul(dB, t))
         unit_normal = _qunit(candidate)
-        gap = dot(unit_normal, _float_vector(sub(qa, qb)))
+        numerator, nn = dot(candidate, sub(qa, qb)), dot(candidate, candidate)
+        gap = _signed_gap(numerator, nn)
         inside = (_qparameter_in_extent(s, dA, extent_tol)
                   and _qparameter_in_extent(t, dB, extent_tol))
         if not 0 <= s <= 1:
@@ -522,7 +547,8 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
             qa = add(pa0, mul(dA, _qclamp(dot(sub(qb, pa0), dA) / dot(dA, dA))))
         return Cover3("EE", ("edge", *ea), ("edge", *eb), unit_normal, gap,
                       _float_vector(qa), _float_vector(qb), (float(s), float(t)), None,
-                      sb == 1 and sa == 1, inside)
+                      sb == 1 and sa == 1, inside,
+                      numerator*numerator/nn, (numerator > 0)-(numerator < 0))
     return None
 
 
@@ -542,9 +568,10 @@ def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: f
     sb, sa = _qedge_contains(B, eb, v, tol), _qvertex_contains(A, ia, neg(v), tol)
     if sb < 0 or sa < 0:
         return None
-    return Cover3("VE3", ("vertex", ia), ("edge", *eb), _qunit(v), norm(_float_vector(v)),
+    vv = dot(v, v)
+    return Cover3("VE3", ("vertex", ia), ("edge", *eb), _qunit(v), sqrt_rational(vv, allow_underflow=True),
                   A.verts[ia], _float_vector(add(p0, mul(d, _qclamp(s)))), (float(s),), None,
-                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol))
+                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1)
 
 
 def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: float = 0.0,
@@ -554,7 +581,8 @@ def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: f
     if c is None:
         return None
     return Cover3("EV3", ("edge", *ea), ("vertex", ib), neg(c.normal), c.gap,
-                  c.point_b, c.point_a, c.params, None, c.strict, c.in_extent)
+                  c.point_b, c.point_a, c.params, None, c.strict, c.in_extent,
+                  c.exact_gap_squared, c.exact_gap_sign)
 
 
 def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
@@ -564,10 +592,11 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) 
     a, b = A.verts[ia], B.verts[ib]
     v = sub(_qvector(a), _qvector(b))
     if not any(v):
-        return Cover3("VV3", ("vertex", ia), ("vertex", ib), None, 0.0, a, b, (), None, True, True)
+        return Cover3("VV3", ("vertex", ia), ("vertex", ib), None, 0.0, a, b, (), None, True, True, Fraction(0), 0)
     active = (_qvertex_contains(B, ib, v, tol) >= 0 and _qvertex_contains(A, ia, neg(v), tol) >= 0)
-    return Cover3("VV3", ("vertex", ia), ("vertex", ib), _qunit(v), norm(_float_vector(v)),
-                  a, b, (), None, True, active)
+    vv = dot(v, v)
+    return Cover3("VV3", ("vertex", ia), ("vertex", ib), _qunit(v), sqrt_rational(vv, allow_underflow=True),
+                  a, b, (), None, True, active, vv, 1)
 
 
 # Enumeration

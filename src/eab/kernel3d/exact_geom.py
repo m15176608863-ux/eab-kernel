@@ -76,18 +76,8 @@ def _vector_cached(p):
     return tuple(F(x) for x in p)
 
 
-def sqrt_rational(value):
-    """Convert sqrt(nonnegative Fraction), without overflowing/underflowing its square."""
-    if value < 0:
-        raise ValueError('square root of negative rational')
-    if not value:
-        return 0.0
-    exponent=(value.numerator.bit_length()-value.denominator.bit_length())//2
-    scaled=value/F(2**(2*exponent)) if exponent >= 0 else value*F(2**(-2*exponent))
-    try:
-        return math.ldexp(math.sqrt(float(scaled)),exponent)
-    except OverflowError:
-        return math.inf
+# Compatibility name; shared checked construction is dimension independent.
+from eab.construction import sqrt_rational
 
 
 def sub(a, b):

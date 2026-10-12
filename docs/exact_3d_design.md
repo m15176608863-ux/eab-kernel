@@ -1,5 +1,8 @@
 # WO-E5a 三维精确几何设计（实现前冻结，2026-10-12）
 
+> **WO-R6FIX（2026-10-12，修复留树，待独立复核）**：第六轮确认 12 条（1 critical / 7 major / 4 minor），原审查见 [G6F 输入](file:///D:/eab-wt/cx-e2/reports/codex/inputs/G6F_report.md)。修复、修前红/修后绿、内部变异、同类扫描和完整测试结果统一见 [R6FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R6FIX_report.md)。本次本树测试不等于独立六路 G6，且按工单禁止创建 worktree；M0 退出状态不升级。
+
+
 > **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴脱离证书 ⇒ PD ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”；报贯入不推出 PD > w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。对应独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
 
 
@@ -147,3 +150,16 @@ Polyhedron 保留可变外层 API；全部缓存按顶点与面内容签名失�
 适配器必须显式选择：(a) 默认精确按传入数据回报微贯入，或 (b) 将其物理/离散化接触厚度作为 `contact_window` 传入。库不能暗猜 ctol；不得把窗口相触当作原实体严格不贯入证明。保留源坐标、运动有理根与证书，显示/导出若必须舍入则对舍入后的实际数据重新判定；冻结使用精确 surface 特征而非非共面源环的拟合平面。姊妹三线本单只读，**未改适配器、未部署开关、未进行求解器标定/工程验证**。
 
 本单完整测试、耗时、逐条处置与突变目标断言见 `reports/codex/E5b_report.md`。本树开发验证和同组交叉审查不替代独立六路 G6；按工单禁令未创建新 worktree。
+
+## R6FIX 契约补充（第六轮修复，待独立复核）
+
+- **缓存不是共享可变结果**：内容签名覆盖源顶点和面；canonical view 的缓存保存不可变内容，非自视图每次返回隔离对象；拓扑列表和 margin 内部视图/盖记录不能经返回别名污染后续答案。既有源内容失效门继续保留。门：`tests/test_r6fix_geom3.py`、`tests/test_e5b_polyhedron_cache.py`、`tests/test_r6fix_construction.py::test_margin_internal_cached_views_are_isolated` / `test_margin_internal_cached_records_are_isolated`。
+- **面提示不是凸体定义**：显式凸 API 只依赖 `conv(vertices)`；只有面环符合 canonical 朝外支撑环时才允许保留编号捷径。`is_convex/reflex_edges` 用精确未归一化符号，不再用 dihedral_noise 吞掉微凹。门：`tests/test_r6fix_geom3.py`。
+- **严格样本必须真正被检验**：非凸 G0 的分类、距离和首出口 oracle 独立于被测生产几何原语；原来 `1e-12*L` 预筛删除。二维/三维微间隙和二维微贯入均计入实测样本，法锥内部变异使盖集丢失时不能通过。门：`tests/test_r6fix_g0.py`。一般任意表面仍须符合各 oracle 声明的有效输入前提，不把有限测试外推成穷举证明。
+- **构造的相对量先精确后舍入**：`nearest_point_on_convex_entrance(..., exact=True)` 输出有理数投影见证；默认全局浮点点仅是显示，可能与查询点舍入相同。距离/法向从精确相对向量构造，不能反减显示点。门：`test_g6f08_distance_and_normal_use_exact_relative_projection`、`test_projection_exposes_exact_witness_beyond_global_float_resolution`、`test_exact_relative_projection_covariance_on_nonaxis_corner`（均在 `tests/test_r6fix_construction.py`）。
+- **输出可表达性与状态分开**：`eab.construction.sqrt_rational` 先拆指数给候选，再用精确相邻中点正确舍入；默认在非零结果下溢/溢出时响亮失败。允许显示下溢的内部流程必须显式传 `allow_underflow=True`；`MarginContact.exact_distance_squared` 保留非零精确证据，`closed` 仍精确。门：`test_rational_sqrt_rounds_only_the_final_root` 和 `tests/test_margin_exact.py::test_closed_is_exact_when_the_display_gap_underflows_to_zero`。
+- nominal 非 Dual 平移保留输入有理仿射值，不能因 `0` / `0.0` 等值偏移改变是否可构造。门：`tests/test_r6fix_geom3.py`。一般 surface 与显式凸模型仍是不同契约，不暗中凸化。
+
+- **盖的显示证书**：`Cover3.exact_gap_squared/exact_gap_sign` 与 VF/FV 的 `exact_area_squared` 保留舍入前的幅值与符号。六类盖从有理相对量作最终开方，非零小量显示为 0 时仍有公开证书；窗口继续读取原数据而非显示 gap。门：`tests/test_r6fix_construction.py::test_cover_construction_exposes_exact_nonzero_gap_and_area`、`tests/test_e5a2_covers.py::test_enumeration_window_does_not_read_a_gap_rounded_to_zero`。
+
+外部正本 `D:/E(A, B)` 按本工单只读；此节是仓内设计同步，不声称已改外部设计正本。

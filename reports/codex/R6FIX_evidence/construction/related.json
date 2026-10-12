@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_margin.py",
+    "tests/test_margin_exact.py",
+    "tests/test_kernel2d_entrance_e3.py",
+    "tests/test_kernel2d_convex_ray_exact.py",
+    "tests/test_geom3_e5a.py",
+    "--basetemp=reports/codex/R6FIX_evidence/tmp/construction_related"
+  ],
+  "cwd": "D:\\eab-wt\\cx-e2",
+  "exit_code": 1,
+  "elapsed_seconds": 8.92992769999546,
+  "last_line": "2 failed, 211 passed in 7.97s"
+}

@@ -1,25 +1,9 @@
-"""G0 自证门：理论原生 oracle。
+"""G0 exact independent votes and concave distance/first-exit completeness.
 
-E(A,B) 的成员谓词可以暴力验证——随机采样参考点平移 x，直接做多边形相交测试，与盖系统给出的
-判定比对；同时检验"局部法锥规则 = 全局 Minkowski facet 结构"（命题 4/5）。这条门不依赖任何 legacy。
-
-**凸情形是精确的定理检验**（2026-10-10，E2）：三票都在有理数上做、零容差、不跳过任何样本——
-  票一  成员（精确 E 的 facet 符号）== 独立内联 Fraction 分离轴（`exact.convex_overlap_exact`），
-        样本含随机平移、E 的全部 Fraction 顶点/facet 中点及其浮点舍入像（真边界与边界附近分别检验）；
-  票二  局部法锥严格/边界集 == 独立全顶点投影支持集；walk 的严格 VE/EV == 唯一支持标签集；
-        平直链的非 FF 余段须属于精确边界集，不再错误地算作严格 facet，也不豁免任何标签；
-  票三  E 的严格凸顶点集 == 独立内联 Fraction gift-wrap 的 conv{b − a} 顶点集（差点不舍入）。
-此前三票都带"分辨带"与"说不清"豁免（票一跳过带内样本、票二票三的 ambiguous 两边不计），第五轮复核指出这些豁免本身
-就是第二把尺，且边界类（恰相触）从未被探测。输入须精确凸（否则 `convex_entrance_block` 清晰报错）。
-
-凹情形没有局部成员谓词（E 非凸，facet 间隙取 max 或 min 都不成立），G0 改检验同一条定理
-"∂E ⊆ ∪ 有效盖的平移线段"的两面：分离样本上的**距离完备性**（`g0_distance_completeness`，与三维
-`g0_distance_completeness3` 同构），相交样本上的**出口完备性**（`g0_exit_completeness`：沿射线首次离开
-E 的那个 ∂E 点必有有效盖作见证）。两者都不是凹块的成员谓词——成员判定要等入口块全局构造（M3）。
-
-以下容差口径只适用于凹块距离/出口完备性，凸 G0 不使用容差：暴力谓词的接触带取 1e-12·L，判据阈值取 atol·L（或 atol·真值）
-加舍入下限 c·eps·C——L 为两块的特征长度（包围盒对角线的较大者），C 为坐标量级。所以同一位形经刚体运动、
-搬到工程坐标、换单位后，样本分类（分离/接触/相交）与判定不变。门：tests/test_invariance_2d.py。
+Convex votes use rational SAT, independent support sets and gift-wrap.
+Concave membership, event partitioning and distance truth use g0_oracle's
+independent integer/rational arithmetic. No hidden band excludes strict samples.
+Relative/roundoff allowances audit float witness construction only, never truth.
 """
 
 from __future__ import annotations
@@ -30,10 +14,10 @@ from dataclasses import dataclass, field
 
 from fractions import Fraction
 
+from . import g0_oracle as independent
 from .covers import ambiguous_facets, enumerate_covers, local_facets, membership_convex
 from .exact import convex_overlap_exact, entrance_block_exact, strict_vertices
-from .geom import (EPS, ROUND_C, Point, Poly, convex_hull, coord_scale, cross, norm, polygons_overlap, round_floor, sub,
-                   translate)
+from .geom import Point, Poly, convex_hull, coord_scale, round_floor
 
 
 @dataclass(slots=True)
@@ -156,39 +140,20 @@ def g0_convex(A: Poly, B: Poly, *, samples: int = 2000, seed: int = 0, tol: floa
 
 # ---------------------------------------------------------------- 凹块（也适用于凸块）：距离完备性
 
-def _point_segment_distance(px: float, py: float, ax: float, ay: float, bx: float, by: float
-                            ) -> tuple[float, float]:
-    """点到**闭线段**的欧氏距离与夹紧后的参数 t∈[0,1]。只用内联浮点算术（不调 geom/covers 的任何原语）。"""
-    ex, ey = bx - ax, by - ay
-    l2 = ex * ex + ey * ey
-    t = 0.0 if l2 == 0.0 else ((px - ax) * ex + (py - ay) * ey) / l2
-    t = 0.0 if t < 0.0 else (1.0 if t > 1.0 else t)
-    return math.hypot(px - (ax + t * ex), py - (ay + t * ey)), t
+def _point_segment_distance(px, py, ax, ay, bx, by):
+    """Independent rational closed-segment oracle; final sqrt is Decimal-only."""
+    square, t = independent.segment_square((Fraction(px), Fraction(py)),
+                                           (Fraction(ax), Fraction(ay)), (Fraction(bx), Fraction(by)))
+    return independent.sqrt_display(square), float(t)
 
 
 def brute_polygon_distance(A: Poly, B: Poly) -> tuple[float, tuple[str, int, int, float]]:
-    """两个**不相交**简单多边形之间的距离（暴力 oracle），附实现它的特征对。
+    """Independent rational vertex/closed-segment minimum for separated polygons.
 
-    依据：不相交紧集的距离在边界上实现；边界是有限条闭线段之并；两条不相交闭线段的距离必在
-    其中一条的端点处实现。故 d(A,B) = min{ 点-线段距离 : A 顶点 × B 边，B 顶点 × A 边 }。
-    **零法锥筛选、零投影参数容差、零方向约定**——只用顶点坐标与内联算术，与盖枚举
-    （法锥、转角、外法向、投影）不共用任何几何原语（纪律 A）。
-
-    返回 (距离, (类别, i, j, t))：类别 "A-vertex/B-edge" 时 i 为 A 顶点、j 为 B 边；反之亦然；
-    t 为夹紧后的线段参数（0 或 1 表示实现于端点，即顶点-顶点）。相交输入的返回值无意义，调用方先用
-    `polygons_overlap` 判分离。
+    Oracle primitives are only g0_oracle's inline rational projections and Decimal
+    square root. None is imported or called by production geometry/covers.
     """
-    best = math.inf
-    arg: tuple[str, int, int, float] = ("", -1, -1, 0.0)
-    for P, Q, tag in ((A, B, "A-vertex/B-edge"), (B, A, "B-vertex/A-edge")):
-        m = len(Q)
-        for i, (px, py) in enumerate(P):
-            for j in range(m):
-                (ax, ay), (bx, by) = Q[j], Q[(j + 1) % m]
-                d, t = _point_segment_distance(px, py, ax, ay, bx, by)
-                if d < best:
-                    best, arg = d, (tag, i, j, t)
-    return best, arg
+    return independent.distance(A, B)
 
 
 @dataclass(slots=True)
@@ -209,34 +174,21 @@ class DistanceReport:
 
 def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol: float = 1e-9,
                              atol: float = 1e-9) -> DistanceReport:
-    """凹块（也适用于凸块）二维 G0 的正确形式：**距离完备性**。
+    """Exact classification plus independent rational distance-completeness vote.
 
-    真值：`polygons_overlap`（暴力谓词）判分离；分离时的真距离由 `brute_polygon_distance` 给出。
-    被检验的命题：A+x 与 B 分离时，
-        d(A+x, B) = min{ |point_a − point_b| : c ∈ enumerate_covers(A+x, B, window=∞) }，
-    即法锥有效性筛选与边内筛选不会把实现最短距离的那一对特征滤掉。见证点都在各自多边形上
-    （边内容差 tol 除外），所以见证距离恒 ≥ 真距离；相等 ⟺ 完备。
-    tol 是长度（随单位缩放）；atol 是**相对**阈值：|见证 − 真值| > atol·max(L, 真值) + c·eps·C 判失败
-    （旧版 atol·max(1, 真值) 混了绝对量纲）。暴力谓词的接触带 1e-12·L（旧版绝对 1e-12：搬到 1e5 处，贴合样本
-    因舍入被判成分离，G6 纪律 F 复现）。
-
-    **不要**用 sign(min gap) 当凹块的成员谓词：VE 盖的 gap 是顶点到对方边**所在直线**的有符号距离，
-    分离的两块之间也常有顶点落在对方某条边直线的内侧（细臂 L 块 + 凹槽内悬浮方块：gap −0.16，
-    实际分离），三维上同一条规则 2026-09-18 已被证伪，二维 2026-09-21 审查复现。
-    凹块的成员判定需要入口块的全局构造（M3）；在那之前，相交样本只计数、不检验。
-
-    oracle 与被测对象的共用（纪律 A）：`polygons_overlap` 与盖枚举共用 geom 的向量算术
-    （sub/dot/cross/norm）与舍入下限 `round_floor`；它另用的 `point_in_polygon`/`segments_properly_cross`/
-    `triangulate`/`orient2d` 盖枚举都不用；不共用法锥、转角、外法向、投影、窗口或边内判据。
-    `brute_polygon_distance` 只用内联算术。
+    Oracle primitives: inline integer winding/intersections, rational closed-
+    segment projection and Decimal sqrt; zero production geometry is shared.
+    Translation stays rational. Only actual overlap/contact samples are outside
+    the separation theorem. Every strict gap, however small, is checked.
+    atol*max(L, truth)+roundoff audits float witnesses, never sample membership.
     """
     rep = DistanceReport()
     inf = float("inf")
     L = char_length(A, B)
     for x in translations:
         rep.draws += 1
-        At = translate(A, x)
-        brute = polygons_overlap(At, B, 1e-12 * L)
+        At = independent.translate(A, x)
+        brute = independent.overlap(At, B)
         if brute == 1:
             rep.overlapping += 1
             continue
@@ -257,60 +209,15 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
 
 # ---------------------------------------------------------------- 相交样本：出口完备性（∂E 完备性的另一面）
 
-def brute_ray_exit(A: Poly, B: Poly, u: Point) -> float:
-    """A 与 B 内部相交时，A 沿方向 u 平移、**首次**离开 int E 的平移参数 t*（暴力 oracle；t 以 u 的长度计）。
+def brute_ray_exit(A: Poly, B: Poly, u: Point) -> Fraction:
+    """Independent exact first exit parameter from int E along nonzero u.
 
-    依据：z ∈ ∂E ⟹ A+z 与 B 仅边界接触。两条边在各自内部横截相交必致内部相交，所以接触处必有"一方的
-    顶点落在另一方的边上"（共线重叠时，重叠段的端点也是顶点）。于是 ∂E ⊆ ∪{顶点 × 边 的候选线段}——
-    取**全部**顶点-边对、两个方向、**不做任何法锥筛选**。射线 x + t·u 在相邻两次候选命中之间不碰 ∂E，
-    成员状态恒定，取区间中点用 `polygons_overlap` 判一次即可。t ≥ t_sep = max_B(b·u) − min_A(a·u)
-    时 A 在 u 方向整体越过 B、必不内部相交，t_sep 作最后一个命中。t* = 第一个"中点不相交"区间的左端。
-
-    oracle 与被测对象的共用（纪律 A）：射线-线段求交只用内联算术；状态判定用 `polygons_overlap`（与盖枚举
-    共用 geom 的 sub/dot/cross/norm，见 `g0_distance_completeness`）；不用法锥、转角、外法向、投影或窗口。
-    输入须满足 polygons_overlap(A, B) == 1（调用方判），u 非零。
-
-    t 以 |u| 为单位：t_sep 是投影长度差，要除以 |u|²（G6 minor 13：旧版漏除，|u|<1 时哨兵落在真出口之前，
-    返回的 t 处两块仍相交——u=(0.5,0) 的方块对报 0.35 而非 1.4）。候选线段参数 s 放宽舍入下限（端点命中不许
-    因舍入漏掉：漏一个命中，区间中点就可能跨过 ∂E，返回更晚的出口）；多出的命中只会细分区间，无害。
-    区间状态的接触带取 1e-12·L（纪律 F，旧版绝对 1e-12）。
+    Every rational vertex-edge event (including collinear endpoints) partitions
+    the ray; independent integer winding checks each interval without a noise
+    band. The Fraction result preserves the exact event for gate construction.
+    No production geometric primitive is shared with the oracle.
     """
-    ux, uy = u
-    uu = ux * ux + uy * uy
-    if uu == 0.0:
-        raise ValueError("brute_ray_exit: direction u must be non-zero")
-    hits: list[float] = []
-    L = char_length(A, B)
-    fl = ROUND_C * EPS * coord_scale(A, B)
-
-    def hit(px: float, py: float, dx: float, dy: float, q0: Point, q1: Point) -> None:
-        # 点 p 沿 (dx, dy) 走 t 落在闭线段 [q0, q1] 上：p + t·d = q0 + s·e，t > 0，s ∈ [0, 1]（放宽 fl/|e|）
-        ex, ey = q1[0] - q0[0], q1[1] - q0[1]
-        den = dx * ey - dy * ex
-        if den == 0.0:                       # 射线与该边平行：共线段只在测度零的方向上出现
-            return
-        wx, wy = q0[0] - px, q0[1] - py
-        t = (wx * ey - wy * ex) / den
-        s = (wx * dy - wy * dx) / den
-        sl = fl / math.hypot(ex, ey)
-        if t > 0.0 and -sl <= s <= 1.0 + sl:
-            hits.append(t)
-
-    nA, nB = len(A), len(B)
-    for px, py in A:                          # A 的顶点随 A 走 +u，撞 B 的边
-        for j in range(nB):
-            hit(px, py, ux, uy, B[j], B[(j + 1) % nB])
-    for qx, qy in B:                          # 相对地，B 的顶点走 −u，撞 A 的边
-        for k in range(nA):
-            hit(qx, qy, -ux, -uy, A[k], A[(k + 1) % nA])
-    t_sep = (max(bx * ux + by * uy for bx, by in B) - min(ax * ux + ay * uy for ax, ay in A)) / uu
-    lo = 0.0
-    for t in sorted({h for h in hits if h < t_sep}) + [t_sep]:
-        mid = 0.5 * (lo + t)
-        if polygons_overlap(translate(A, (mid * ux, mid * uy)), B, 1e-12 * L) != 1:
-            return lo
-        lo = t
-    return t_sep
+    return independent.ray_exit(A, B, u)
 
 
 @dataclass(slots=True)
@@ -331,22 +238,12 @@ class ExitReport:
 
 def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions: list[Point], *,
                          tol: float = 1e-9, atol: float = 1e-9) -> ExitReport:
-    """相交样本上的二维 G0：**出口完备性**——∂E 完备性在 E 内侧的检验。
+    """Exact first-exit completeness with an independent rational oracle.
 
-    定理（与距离完备性同一条）：∂E ⊆ ∪{有效盖的平移线段}。z ∈ ∂E 处接触若是"顶点 a 对边 e 的内部"，
-    a 为反射顶点则 A 在 a 附近必越过 e 所在直线、内部相交；a 凸但 −n_B(e) ∉ N_A(a) 同理——所以
-    边界位形上的顶点-边接触都是法锥有效的盖；纯顶点-顶点接触的 z 是相邻有效线段的端点（投影参数 0/1）。
-    检验：对每个暴力判相交的平移 x 与对应方向 u，z = x + t*·u（`brute_ray_exit`）处
-        min{ |point_a − point_b| : c ∈ enumerate_covers(A+z, B, window=∞) } ≤ atol·L + c·eps·C，
-    即法锥有效性筛选与边内筛选没有把出口处那段 ∂E 滤掉。atol 是相对阈值（L 为特征长度），c·eps·C 是出口位形
-    坐标的舍入下限（旧版 atol·max(1, 坐标量级) 把绝对量纲与坐标量级混在一起：原点附近 ×1e-3 的块松到 1e-6·L，
-    1e5 处松到 1e-4）。
-
-    **不是**成员谓词：它不判定 x 在不在 E 内（真值由 `polygons_overlap` 给），也不给出凹块的穿透深度；
-    凹块的成员判定仍待入口块全局构造（M3）。与分离侧的距离完备性互补：后者检验 E 外一点的最近 ∂E 点，
-    这里检验 E 内一点沿随机方向的首个 ∂E 点。
-    零维 VV 盖在一般方向的出口上不起作用（出口几乎必在某段的相对内部），所以丢 VV 盖这里不会红——
-    那颗牙在距离完备性那边（角对角实现的最短距离）。
+    Membership, event times and interval classification use g0_oracle only;
+    no production geometric primitive is shared. Only truly separated/touching
+    samples are outside the strict-overlap theorem. Every interior sample is
+    checked. The relative/roundoff allowance audits float witness construction.
     """
     if len(directions) != len(translations):
         raise ValueError(f"need one direction per translation: {len(directions)} != {len(translations)}")
@@ -355,8 +252,8 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
     L = char_length(A, B)
     for x, u in zip(translations, directions):
         rep.draws += 1
-        At = translate(A, x)
-        brute = polygons_overlap(At, B, 1e-12 * L)
+        At = independent.translate(A, x)
+        brute = independent.overlap(At, B)
         if brute == -1:
             rep.separated += 1
             continue
@@ -364,7 +261,7 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
             rep.touching += 1
             continue
         t = brute_ray_exit(At, B, u)
-        Az = translate(At, (t * u[0], t * u[1]))
+        Az = independent.translate(At, (t * Fraction(u[0]), t * Fraction(u[1])))
         covs = enumerate_covers(Az, B, window=inf)
         got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
                    for c in covs if c.point_a is not None and c.point_b is not None), default=inf)

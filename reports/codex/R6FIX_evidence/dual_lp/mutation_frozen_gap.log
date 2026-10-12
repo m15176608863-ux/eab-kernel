@@ -1,0 +1,19 @@
+INTERNAL MUTATION frozen_gap: reinstated pre-fix arithmetic / removed guard or certificate fields
+F
+================================== FAILURES ===================================
+__________ test_frozen_gap_does_not_overflow_cancelling_dot_products __________
+
+    def test_frozen_gap_does_not_overflow_cancelling_dot_products():
+        u = 1e308
+        A = Polyhedron([(u, u, 1.0)], [])
+        B = Polyhedron([(-u, -u, 0.0)], [])
+        n = (0.6, -0.6, math.sqrt(0.28))
+>       assert frozen_gap(A, B, ("VV3", ("V", 0), ("V", 0)), (0.0, 0.0, 0.0), n) == n[2]
+E       AssertionError: assert nan == 0.5291502622129182
+E        +  where nan = frozen_gap(Polyhedron(verts=[(1e+308, 1e+308, 1.0)], faces=[]), Polyhedron(verts=[(-1e+308, -1e+308, 0.0)], faces=[]), ('VV3', ('V', 0), ('V', 0)), (0.0, 0.0, 0.0), (0.6, -0.6, 0.5291502622129182))
+
+tests\test_r6fix_frozen_construction.py:56: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_frozen_construction.py::test_frozen_gap_does_not_overflow_cancelling_dot_products
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.05s

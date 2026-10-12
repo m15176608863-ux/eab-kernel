@@ -4,6 +4,8 @@ Only data are read from bodies. No production geometry, cover or interlock
 function is imported. Rational cyclic Newell/Gram predicates come from the
 independent test oracle. The still-legacy escape resolution policy is evaluated
 explicitly, rather than inferred from the production candidate/tied outputs.
+Affine motion preserves each supplied scalar as a rational before addition,
+matching the input contract without calling any production translation helper.
 """
 import math
 from functools import lru_cache
@@ -25,8 +27,9 @@ def norm(v):
 
 
 def move(v, offset):
-    # This is the caller's rounded translation, not an exact ideal motion.
-    return tuple(tuple(p[k]+offset[k] for k in range(3)) for p in v)
+    # R6 nominal reports now use the exact affine supplied-data model too.
+    # Float-adding here would silently change edge directions before the oracle.
+    return tuple(tuple(F(p[k])+F(offset[k]) for k in range(3)) for p in v)
 
 
 def face_band(m, fi, p, extent):

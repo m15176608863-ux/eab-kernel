@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_r6fix_construction.py",
+    "-k",
+    "mixed_scalar",
+    "--basetemp=reports/codex/R6FIX_evidence/tmp/mixed_scalar_pre"
+  ],
+  "cwd": "D:\\eab-wt\\cx-e2",
+  "exit_code": 1,
+  "elapsed_seconds": 0.5179327000078047,
+  "last_line": "1 failed, 23 deselected in 0.11s"
+}

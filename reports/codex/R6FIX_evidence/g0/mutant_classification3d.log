@@ -1,0 +1,23 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__________________ test_g6f04_3d_strict_micro_gap_is_checked __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000046E7C20>
+
+    def test_g6f04_3d_strict_micro_gap_is_checked(monkeypatch):
+        """Oracle: independent rational interval gap, exact 2^-44."""
+        B=Polyhedron(VERTS,FACES)
+        A=Polyhedron([(x+1+2.**-44,y,z) for x,y,z in VERTS],FACES)
+        assert min(F(v[0]) for v in A.verts)-1 == F(1,2**44)
+        monkeypatch.setattr(c3,'_qvertex_contains',lambda *a,**k:-1)
+        monkeypatch.setattr(c3,'_qedge_contains',lambda *a,**k:-1)
+        rep=g03.g0_distance_completeness3(A,B,radius=0,samples=1)
+>       assert rep.samples == 1, ('strict sample was skipped',rep)
+E       AssertionError: ('strict sample was skipped', DistanceReport3(samples=0, skipped_intersecting=1, worst_abs_error=0.0, failures=[]))
+E       assert 0 == 1
+E        +  where 0 = DistanceReport3(samples=0, skipped_intersecting=1, worst_abs_error=0.0, failures=[]).samples
+
+tests\test_r6fix_g0.py:39: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_g0.py::test_g6f04_3d_strict_micro_gap_is_checked - As...
+1 failed, 69 deselected in 0.14s

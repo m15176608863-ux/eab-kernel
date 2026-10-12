@@ -142,7 +142,13 @@ def test_first_entrance_agrees_with_the_predicate_only_oracle_on_random_convex_p
         return
     assert e.kind == "entrance", (bt, e.kind)
     assert e.t == pytest.approx(bt, abs=5e-9), (e.t, bt, e.label)
-    assert polygons_overlap(translate(A, e.x), B) >= 0 and abs(e.gap) <= 1e-9
+    from fractions import Fraction as F
+    assert e.t_exact is not None
+    exact_x=tuple(F(x0[i])+e.t_exact*F(d[i]) for i in range(2))
+    assert _independent_overlap(A,B,exact_x)==0
+    rounded=translate(A,e.x)
+    assert polygons_overlap(rounded,B)==_independent_overlap(rounded,B)
+    assert abs(e.gap) <= 1e-9
     assert e.normal[0] * d[0] + e.normal[1] * d[1] < 0.0
 
 

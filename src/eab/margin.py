@@ -73,11 +73,11 @@ import sys
 import math
 from fractions import Fraction
 from functools import lru_cache
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 
 from .kernel3d import exact_geom as _exact
 from .dual import Number
-from .kernel3d.covers3 import closest_point_of_convex_hull_to_origin, enumerate_covers3
+from .kernel3d.covers3 import Cover3, _qclosest_hull, enumerate_covers3
 from .kernel3d.frozen import frozen_gap, frozen_normal
 from .kernel3d.geom3 import (Polyhedron, Vec3, add, brute_feature_distance, convex_hull_3d, norm,
                              polyhedra_overlap, sub, unit)
@@ -144,8 +144,14 @@ def cover_witness(c) -> tuple[float, Vec3 | None] | None:
     return (d, unit(v) if d > 0.0 else None)
 
 
-@lru_cache(maxsize=1024)
 def _surface_view(vertices, faces):
+    """Fresh mutable view over an immutable, content-keyed cache payload."""
+    vertices, faces, labels = _surface_payload(vertices, faces)
+    return Polyhedron(list(vertices), list(faces)), labels
+
+
+@lru_cache(maxsize=1024)
+def _surface_payload(vertices, faces):
     """Only folded rings are expanded; exact planar source labels are retained."""
     points = tuple(map(_exact.vector, vertices))
     folded = set()
@@ -155,7 +161,7 @@ def _surface_view(vertices, faces):
         if any(_exact.dot(n, _exact.sub(q, p[0])) for q in p[1:]):
             folded.add(fi)
     if not folded:
-        return Polyhedron(vertices, faces), tuple(("face", fi) for fi in range(len(faces)))
+        return vertices, faces, tuple(("face", fi) for fi in range(len(faces)))
     triangles = _exact.triangulate(vertices, faces)
     out, labels = [], []
     for fi, face in enumerate(faces):
@@ -167,7 +173,7 @@ def _surface_view(vertices, faces):
                 if source == fi:
                     out.append(tri)
                     labels.append(("face", fi, "triangle", *tri))
-    return Polyhedron(vertices, out), tuple(labels)
+    return vertices, tuple(out), tuple(labels)
 
 
 def _witnesses(A: Polyhedron, B: Polyhedron, tol: float, *, exact_surface=False) -> list[tuple]:
@@ -255,7 +261,7 @@ def _surface_feature_squared(A, B, label):
 
 def _repair_folded_construction(A, B, c, w, n, squared, rounding):
     """Replace an invalid folded-ring plane witness, not a rounding-level report."""
-    target = _exact.sqrt_rational(squared)
+    target = _exact.sqrt_rational(squared, allow_underflow=True)
     if abs(w-target) <= 4*rounding or c.kind not in ("VF", "FV"):
         return w, n
     from .kernel3d.covers3 import _qclosest_triangle
@@ -322,7 +328,7 @@ def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None,
     dmin = min((w for _, w, _, _ in wits), default=float("inf"))
     view_a, _ = _surface_view(tuple(A.verts), tuple(A.faces))
     view_b, _ = _surface_view(tuple(B.verts), tuple(B.faces))
-    truth = brute_feature_distance(view_a, view_b)
+    truth = brute_feature_distance(view_a, view_b, allow_underflow=True)
     if abs(dmin - truth) > 4.0 * rnd:
         raise RuntimeError(f"margin self-check failed: the covers give distance {dmin!r} but the nearest feature pair "
                            f"is {truth!r} apart (rounding {rnd:.3g}); the cover enumeration "
@@ -341,18 +347,25 @@ def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None,
 
 def _resolved(A, B, tol, geom_tol, contact_window):
     """Content-keyed equivalent reuse; no mutable object identity is cached."""
-    return _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+    ctol, rnd, wits, contact, minimum2 = _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
                             tol, geom_tol, contact_window, _resolve, enumerate_covers3,
                             polyhedra_overlap, brute_feature_distance, _witnesses,
                             _penetration_within_window, cover_witness)
+    fresh = None if wits is None else [(Cover3(*values), w, n, d2) for values, w, n, d2 in wits]
+    return ctol, rnd, fresh, contact, minimum2
 
 
 @lru_cache(maxsize=1024)
 def _resolved_cached(av, af, bv, bf, tol, geom_tol, contact_window,
                      implementation, covers, predicate, distance, witnesses, window_test, construction):
-    # The implementation pointers are key material for deliberate fault-injection
-    # tests. Values returned here are internal; public contact records are fresh.
-    return implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+    # Implementation pointers remain key material for deliberate fault injection.
+    # Cache only immutable data; even internal callers cannot corrupt later reads
+    # by editing their returned covers. Gate: test_margin_internal_cached_records_are_isolated.
+    ctol, rnd, wits, contact, minimum2 = implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+    names = tuple(field.name for field in fields(Cover3))
+    payload = None if wits is None else tuple((tuple(getattr(c, name) for name in names), w, n, d2)
+                                           for c, w, n, d2 in wits)
+    return ctol, rnd, payload, contact, minimum2
 
 
 def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: float | None = None,
@@ -391,6 +404,7 @@ class MarginContact:
     point_a: Vec3 | None     # 贯入哨兵为 None
     point_b: Vec3 | None
     _exact_closed: bool | None = None
+    exact_distance_squared: Fraction | None = None  # certificate even below the display range
 
     @property
     def closed(self) -> bool:
@@ -420,7 +434,7 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
         if contact and (d2 <= ctol*ctol or d2 == nearest2):
             w, n, d2 = 0.0, None, Fraction(0)
         elif contact_window is None or not ctol:
-            w = _exact.sqrt_rational(d2)
+            w = _exact.sqrt_rational(d2, allow_underflow=True)
         if threshold < 0 or d2 > threshold*threshold:
             continue
         gap = w - delta
@@ -429,7 +443,7 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
             if denominator:
                 gap = float((d2-Fraction(delta)**2)/denominator)
         out.append(MarginContact(c.label(), w, gap, n, c.point_a, c.point_b,
-                                 delta >= 0 and d2 <= Fraction(delta)**2))
+                                 delta >= 0 and d2 <= Fraction(delta)**2, d2))
         ranked.append((d2, out[-1]))
     if contact_window is None or not ctol:
         return [m for _, m in sorted(ranked, key=lambda item: item[0])]
@@ -487,22 +501,41 @@ def entrance_block_convex(A: Polyhedron, B: Polyhedron) -> Polyhedron:
     return convex_hull_3d(pts)
 
 
-def nearest_point_on_convex_entrance(E: Polyhedron, x: Vec3) -> Vec3:
-    """凸入口块上离构型点 x 最近的点。"""
-    return add(x, closest_point_of_convex_hull_to_origin([sub(e, x) for e in E.verts]))
+def nearest_point_on_convex_entrance(E: Polyhedron, x: Vec3, *, exact: bool = False) -> Vec3:
+    """Nearest point on conv(E.verts); exact=True returns the rational witness.
+
+    The default is a rounded display point, which may equal x at engineering
+    coordinates even when the exact distance is nonzero. Distance/normal must
+    use the exact witness, never subtract the rounded global display point.
+    Gate: test_r6fix_construction::test_g6f08_distance_and_normal_use_exact_relative_projection.
+    """
+    X = _exact.vector(x)
+    displacement = _qclosest_hull(tuple(_exact.sub(_exact.vector(e), X) for e in E.verts))
+    point = _exact.add(X, displacement)
+    return point if exact else tuple(map(float, point))
 
 
 def distance_to_convex_entrance(E: Polyhedron, x: Vec3) -> float:
-    return norm(sub(nearest_point_on_convex_entrance(E, x), x))
+    """Distance constructed from the exact relative projection, rounded once."""
+    displacement = _exact.sub(nearest_point_on_convex_entrance(E, x, exact=True), _exact.vector(x))
+    return _exact.sqrt_rational(_exact.dot(displacement, displacement))
 
 
 def inflated_normal(E: Polyhedron, x: Vec3) -> Vec3 | None:
-    """∂E_δ 上的外法向：n(x) = unit(x − proj_E(x))。x 在 E 内则为 None（无定义）。
+    """Outward unit(x-proj_E(x)); None only for an exact zero displacement.
 
-    **单值**，且 Lipschitz（常数 ≤ 2/δ）——这就是球膨胀的 C^{1,1} 正则化内容。
+    Difference coordinates exactly, then scale before normalization. Global
+    display rounding cannot erase this vector or change its sign. The normal
+    is single-valued and Lipschitz on dist(x,E)>=delta>0; see test_margin's gates.
+    Gate: test_r6fix_construction::test_g6f08_distance_and_normal_use_exact_relative_projection.
     """
-    v = sub(x, nearest_point_on_convex_entrance(E, x))
-    return unit(v) if norm(v) > 0.0 else None
+    v = _exact.sub(_exact.vector(x), nearest_point_on_convex_entrance(E, x, exact=True))
+    scale = max(map(abs, v))
+    if not scale:
+        return None
+    scaled = tuple(float(c/scale) for c in v)
+    length = math.hypot(*scaled)
+    return tuple(c/length for c in scaled)
 
 
 # ------------------------------------------------------------------ 可微路径

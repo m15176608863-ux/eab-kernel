@@ -1,5 +1,6 @@
 """L2 裕度层的门：四条定理各有一道，外加牙。"""
 
+from fractions import Fraction
 import functools
 import math
 import random
@@ -58,7 +59,7 @@ def test_theorem_two_gate_has_teeth_shrinking_the_nearest_point_is_caught(monkey
     import eab.margin as M
     true_nearest = M.nearest_point_on_convex_entrance
     monkeypatch.setattr(M, "nearest_point_on_convex_entrance",
-                        lambda E, x: tuple(0.99 * c for c in true_nearest(E, x)))
+                        lambda E, x, **kwargs: tuple(Fraction(99, 100) * c for c in true_nearest(E, x, **kwargs)))
     A, B = _small_convex_pair()
     E = entrance_block_convex(A, B)
     rng = random.Random(0)

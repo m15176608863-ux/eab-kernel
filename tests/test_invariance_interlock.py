@@ -275,6 +275,23 @@ def test_independent_escape_candidate_gate_catches_a_dropped_exact_edge_cover(mo
     assert expected-actual == {label} and not actual-expected
 
 
+def test_independent_escape_oracle_translation_preserves_exact_affine_data():
+    """Oracle affine input must not round before its independent Newell/Gram work."""
+    from fractions import Fraction as F
+    vertices = ((2.**-40, 0., 0.), (0., 2.**-40, 0.))
+    offset = (1e8, -1e8, 0.)
+    expected = tuple(tuple(F(p[k])+F(offset[k]) for k in range(3)) for p in vertices)
+    assert independent_escape.move(vertices, offset) == expected, 'oracle-exact-affine-input'
+
+
+def test_independent_escape_oracle_float_translation_mutation_is_caught(monkeypatch):
+    def rounded_move(vertices, offset):
+        return tuple(tuple(p[k]+offset[k] for k in range(3)) for p in vertices)
+    monkeypatch.setattr(independent_escape, 'move', rounded_move)
+    with pytest.raises(AssertionError, match='oracle-exact-affine-input'):
+        test_independent_escape_oracle_translation_preserves_exact_affine_data()
+
+
 @pytest.mark.parametrize("rot,t,s", [("I", 0.0, 1.0), ("z0.7", 1e5, 1.0), ("I", 1e5, 1e3),
                                      ("z0.7", 1e5, 1e3), ("z0.7", 1e3, 1e-3)])
 def test_brute_oracle_is_exact_zero_at_rest_and_scales(rot, t, s):

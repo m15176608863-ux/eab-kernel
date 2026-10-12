@@ -21,7 +21,7 @@ class SurfaceEvent:
 def translate_exact(P, offset):
     """Translate the exact supplied coordinate values, without float subtraction."""
     q=tuple(F(x) for x in offset)
-    return Polyhedron([tuple(F(x)+d for x,d in zip(p,q)) for p in P.verts], P.faces)
+    return Polyhedron([tuple(F(x)+d for x,d in zip(p,q)) for p in P.verts], list(P.faces))
 
 
 def _descriptor(vertices, faces, fi, tri):

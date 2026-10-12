@@ -3,8 +3,8 @@
 牙：cone_tol 退回严格 0 时 legacy-only 必须 > 0（证明这道门真的在测法锥容差这件事）。
 
 G0 于 2026-09-24 重做（审查盲区 1）：旧版用 sign(min gap) 当凹块成员谓词，这条规则**两个方向都是假的**
-（分离判相交：细臂 L 块；相交判分离：槽角楔块——两条反例都钉在本文件末尾）。现在真值一律暴力
-`polygons_overlap`；盖侧检验定理"∂E ⊆ ∪ 有效盖线段"的两面：分离样本上的距离完备性、相交样本上的出口完备性。
+（分离判相交：细臂 L 块；相交判分离：槽角楔块——两条反例都钉在本文件末尾）。现行 G0 真值来自独立
+整数/有理坐标 oracle；盖侧检验定理"∂E ⊆ ∪ 有效盖线段"的两面：分离样本上的距离完备性、相交样本上的出口完备性。
 凹块的成员谓词本身仍无门（要等入口块全局构造，M3）。
 """
 
@@ -155,6 +155,30 @@ def _drop_ve_subset(monkeypatch):
                         None if ia % 7 == 3 else orig(A, ia, B, jb, tol, cone_tol))
 
 
+def _rounded_distance_audit(pairs):
+    """原 21×60 网格的逐顶点 float 平移像，再按这组实际数据作精确距离审计。
+
+    不用另一组有理仿射数据冒充旧输入，也不恢复旧浮点 oracle：先形成旧坐标像，
+    再让当前独立 G0 oracle 在零追加平移下检验。生产盖内的变异仍真实生效。
+    """
+    from eab.kernel2d.g0 import g0_distance_completeness
+    from eab.kernel2d.geom import translate
+    blocks, _ = bb52_g0.load_blocks(1)
+    out = dict(draws=0, samples=0, agree=0, disagree=[])
+    for bi, bj, xs in bb52_g0.g0_draws(pairs, 60, 0):
+        A, B = blocks[bi]["poly"], blocks[bj]["poly"]
+        for x in xs:
+            rounded = translate(A, x)
+            rep = g0_distance_completeness(rounded, B, [(0, 0)], tol=bb52_g0.TOL, atol=1e-9)
+            out["draws"] += rep.draws
+            out["samples"] += rep.samples
+            out["agree"] += rep.samples - len(rep.failures)
+            for _, got, truth, arg in rep.failures:
+                reason = bb52_g0.classify_completeness_failure(rounded, B, arg)
+                out["disagree"].append((bi, bj, x, got, truth, arg, reason))
+    return out
+
+
 @pytest.mark.parametrize("mutate,distance_gate_red,old_vote", [
     (_drop_cone_boundary, True, (640, 630)),
     (_drop_ev, True, (897, 892)),
@@ -163,18 +187,33 @@ def _drop_ve_subset(monkeypatch):
 def test_g0_exit_completeness_has_teeth(monkeypatch, mutate, distance_gate_red, old_vote):
     """出口完备性要有牙：三种盖枚举缺口都必须让相交样本上的门红，且归因为"盖漏枚举"。
 
-    drop_VE_subset 在旧噪声枚举下分离侧无感（603/603）；E3 精确枚举已抓到19条（584/603）。
-    旧投票仍无感（1186/1186）。出口缺盖归因继续保留；分离侧新增固定计数和逐条缺盖归因。
+    drop_VE_subset 的旧 float 坐标像仍有19条真实距离缺盖（584/603）；精确有理仿射像
+    则保有等价 EV 见证（603/603）。两套输入都按精确 oracle 检验，原1260格全部保留。
+    旧投票仍无感（1186/1186）。原出口守护、旧像19条缺盖及其归因均不得撤掉。
     """
+    if mutate is _drop_ve_subset:
+        # 控制组排除“oracle 自己错19条，却被当作抓住变异”的假牙。
+        pairs = bb52_g0.analyze(samples_per_pair=0)["g0_pairs"]
+        control = _rounded_distance_audit(pairs)
+        assert (control["draws"], control["agree"], control["samples"]) == (1260, 603, 603)
+        assert control["disagree"] == []
     mutate(monkeypatch)
     r = bb52_g0.analyze(samples_per_pair=60, seed=0)
     assert r["g0_exit_samples"] > 0
     assert r["g0_exit_agree"] < r["g0_exit_samples"]
     assert all(d[-1].startswith("盖漏枚举") for d in r["g0_exit_disagree"]), r["g0_exit_disagree"][:2]
-    assert (r["g0_agree"] < r["g0_samples"]) == distance_gate_red
     if mutate is _drop_ve_subset:
-        assert (r["g0_agree"], r["g0_samples"]) == (584, 603)
-        assert all(d[-1].startswith("盖漏枚举") for d in r["g0_disagree"]), r["g0_disagree"][:2]
+        assert (r["g0_agree"], r["g0_samples"]) == (603, 603)
+        assert r["g0_disagree"] == []
+        rounded = _rounded_distance_audit(r["g0_pairs"])
+        assert rounded["draws"] == r["g0_draws"] == 1260
+        assert (rounded["agree"] < rounded["samples"]) == distance_gate_red
+        assert (rounded["agree"], rounded["samples"]) == (584, 603)
+        assert len(rounded["disagree"]) == 19
+        assert all(d[3] > d[4] > 0 and d[-1].startswith("盖漏枚举")
+                   for d in rounded["disagree"]), rounded["disagree"][:2]
+    else:
+        assert (r["g0_agree"] < r["g0_samples"]) == distance_gate_red
     v = _retired_vote(r)
     assert (v["total"], v["agree"]) == old_vote
 

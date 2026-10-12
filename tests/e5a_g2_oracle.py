@@ -3,13 +3,15 @@
 Hull faces are found by exhaustive rational support triples (not incremental
 hull construction). Local labels use e5a_cover_oracle's independent Newell,
 Gram and Gordan-ray formulas. Float normals/gaps are construction outputs;
-their documented arithmetic is reproduced only for the adapter's float grouping.
+gaps are independently rounded from rational squared distance with Decimal,
+not a production construction helper or a dot product of rounded vectors.
 The enumeration window itself compares exact rational squared feature distance.
 """
 from functools import lru_cache
 from itertools import combinations
 import math
 from fractions import Fraction
+from decimal import Decimal, localcontext
 
 from e5a_cover_oracle import q, sub, add, scale, dot, cross, model, arc, cover_labels
 
@@ -46,6 +48,18 @@ def _unit(n):
     return tuple(x/length for x in v)
 
 
+def _distance_display(squared):
+    """Independent high-precision root; only the final display is binary64.
+
+    Precision follows the rational input bit lengths, including subnormals and
+    near-cancelling engineering coordinates. No eab scalar helper is called.
+    """
+    with localcontext() as context:
+        context.prec = max(100, (squared.numerator.bit_length()+squared.denominator.bit_length()+2200)*302//1000+32)
+        value = Decimal(squared.numerator)/Decimal(squared.denominator)
+        return float(value.sqrt())
+
+
 def construction(A, B, label, tol, *, distance_squared=False):
     kind, fa, fb = label
     a = model(tuple(A.verts), tuple(A.faces))
@@ -77,14 +91,13 @@ def construction(A, B, label, tol, *, distance_squared=False):
         difference = n = sub(a[0][fa[1]], b[0][fb[1]])
         if not any(n):
             return Fraction(0) if distance_squared else (0., None)
+    numerator = dot(n, difference)
+    squared = numerator**2 / dot(n, n)
     if distance_squared:
-        return dot(n, difference)**2 / dot(n, n)
+        return squared
     normal = _unit(n)
-    v = tuple(map(float, difference))
-    if kind in ("VE3", "VV3"):
-        gap = math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2])
-    else:
-        gap = normal[0]*v[0]+normal[1]*v[1]+normal[2]*v[2]
+    magnitude = _distance_display(squared)
+    gap = -magnitude if numerator < 0 else magnitude
     return gap, normal
 
 

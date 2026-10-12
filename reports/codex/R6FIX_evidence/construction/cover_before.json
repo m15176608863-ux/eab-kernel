@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_r6fix_construction.py",
+    "-k",
+    "cover_construction_exposes or face_area_rounds",
+    "--basetemp=reports/codex/R6FIX_evidence/tmp/cover_before"
+  ],
+  "cwd": "D:\\eab-wt\\cx-e2",
+  "exit_code": 1,
+  "elapsed_seconds": 1.0520271999994293,
+  "last_line": "4 failed, 1 passed, 26 deselected in 0.33s"
+}

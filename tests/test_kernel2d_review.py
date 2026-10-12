@@ -90,6 +90,7 @@ def test_r7_third_vote_hull_vertices_match_and_catch_sign_flip(monkeypatch):
     # 原来的反法向缺陷现在只影响构造；以独立公式看护，不能要求精确谓词受它污染。
     x = (2.0, -3.0)
     expected = []
+    expected_normals = []
     for label in cv.convex_entrance_block(A, B).facets:
         kind, ai, bj = label
         assert kind in ("VE", "EV")       # 随机一般位置，无 FF
@@ -102,9 +103,21 @@ def test_r7_third_vote_hull_vertices_match_and_catch_sign_flip(monkeypatch):
         want = nx * (x[0] - px) + ny * (x[1] - py)
         assert cv.facet_gap(A, B, label, x) == pytest.approx(want, abs=1e-14)
         expected.append((label, want))
+        expected_normals.append((label, (nx, ny)))
     orig = cv.outward_normal
     with monkeypatch.context() as m:
         m.setattr(cv, "outward_normal", lambda poly, i: tuple(-v for v in orig(poly, i)))
+        assert all(cv._facet_normal_own(A, B, lab)[0] == pytest.approx(tuple(-v for v in want), abs=1e-14)
+                   for lab, want in expected_normals)
+        # R6: exact gap construction no longer consumes a rounded normal.
+        assert all(cv.facet_gap(A, B, lab, x) == pytest.approx(want, abs=1e-14) for lab, want in expected)
+    source = inspect.getsource(cv.facet_gap)
+    step = "numerator = direction[1]*v[0]-direction[0]*v[1]"
+    assert source.count(step) == 1
+    scope = dict(vars(cv))
+    exec(source.replace(step, "numerator = -(direction[1]*v[0]-direction[0]*v[1])"), scope)
+    with monkeypatch.context() as m:
+        m.setattr(cv, "facet_gap", scope["facet_gap"])
         assert all(cv.facet_gap(A, B, lab, x) == pytest.approx(-want, abs=1e-14) for lab, want in expected)
         assert any(abs(cv.facet_gap(A, B, lab, x) - want) > 1.0 for lab, want in expected)
 

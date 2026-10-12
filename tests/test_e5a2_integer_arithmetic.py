@@ -146,7 +146,12 @@ def test_integer_sat_rows_equal_original_fraction_for_random_boundary_engineerin
 
 
 def _eager_ee(A, ea, B, eb, tol=0., extent_tol=0.):
-    """Old eager evaluation order, using pure Fraction dot/cross expressions."""
+    """Eager Fraction order; exact gap rounded by an independent Decimal oracle.
+
+    The parameter/extent/feature comparison is unchanged. New exact gap fields
+    are checked too; no production gap/root construction supplies the oracle.
+    """
+    from decimal import Decimal, localcontext
     c = covers3
     pa0, pb0 = c._qvector(A.verts[ea[0]]), c._qvector(B.verts[eb[0]])
     dA, dB = c._qedge(A, ea), c._qedge(B, eb)
@@ -163,7 +168,12 @@ def _eager_ee(A, ea, B, eb, tol=0., extent_tol=0.):
             continue
         qa, qb = c.add(pa0, c.mul(dA, s)), c.add(pb0, c.mul(dB, t))
         unit_normal = c._qunit(candidate)
-        gap = _dot(unit_normal, c._float_vector(c.sub(qa, qb)))
+        numerator = _dot(candidate, c.sub(qa, qb))
+        gap2 = numerator*numerator/_dot(candidate, candidate)
+        sign = (numerator > 0)-(numerator < 0)
+        with localcontext() as context:
+            context.prec = 100
+            gap = sign*float((Decimal(gap2.numerator)/Decimal(gap2.denominator)).sqrt())
         inside = c._qparameter_in_extent(s, dA, extent_tol) and c._qparameter_in_extent(t, dB, extent_tol)
         if not 0 <= s <= 1:
             qa = c.add(pa0, c.mul(dA, c._qclamp(s)))
@@ -173,7 +183,7 @@ def _eager_ee(A, ea, B, eb, tol=0., extent_tol=0.):
             qa = c.add(pa0, c.mul(dA, c._qclamp(_dot(c.sub(qb, pa0), dA)/_dot(dA, dA))))
         return c.Cover3('EE', ('edge', *ea), ('edge', *eb), unit_normal, gap,
                         c._float_vector(qa), c._float_vector(qb), (float(s), float(t)),
-                        None, sb == 1 and sa == 1, inside)
+                        None, sb == 1 and sa == 1, inside, gap2, sign)
     return None
 
 

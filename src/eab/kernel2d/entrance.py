@@ -26,7 +26,7 @@ from .covers import _facet_normal_own, enumerate_covers, facet_gap
 from .exact import (convexity_violation, entrance_block_exact, membership_exact,
                     polygons_overlap_exact, ve_side_exact, ev_side_exact)
 from .geom import Point, Poly, add, coord_scale, dot, edge, norm, round_floor, sub
-from math import sqrt
+from ..construction import sqrt_rational
 
 
 @dataclass(slots=True)
@@ -53,22 +53,33 @@ def _facet_normal(A: Poly, B: Poly, label: tuple) -> Point:
 def _facet_points(A: Poly, B: Poly, label: tuple, x: Point) -> tuple[Point, Point]:
     """首入位形下的接触点对（A 侧、B 侧）。VE：A 的顶点与它在 B 边上的投影；EV：B 的顶点与它在 A 边上的投影；FF：两条边的起点。"""
     kind, ai, bj = label
+    A, B, x = [tuple(map(Fraction, p)) for p in A], [tuple(map(Fraction, p)) for p in B], tuple(map(Fraction, x))
     if kind == "VE":
         a = add(A[ai], x)
         b0, b1 = edge(B, bj)
         e = sub(b1, b0)
-        s = dot(sub(a, b0), e) / dot(e, e)
-        s = min(max(s, 0.0), 1.0)
-        return a, add(b0, (e[0] * s, e[1] * s))
-    if kind == "EV":
+        parameter = min(max(dot(sub(a, b0), e) / dot(e, e), 0), 1)
+        pa, pb = a, add(b0, (e[0]*parameter, e[1]*parameter))
+    elif kind == "EV":
         b = B[bj]
         a0, a1 = edge(A, ai)
         a0, a1 = add(a0, x), add(a1, x)
         e = sub(a1, a0)
-        s = dot(sub(b, a0), e) / dot(e, e)
-        s = min(max(s, 0.0), 1.0)
-        return add(a0, (e[0] * s, e[1] * s)), b
-    return add(edge(A, ai)[0], x), edge(B, bj)[0]
+        parameter = min(max(dot(sub(b, a0), e) / dot(e, e), 0), 1)
+        pa, pb = add(a0, (e[0]*parameter, e[1]*parameter)), b
+    else:
+        # Parallel face contact: report an actual common point of the closed
+        # segments, not the unrelated starting vertices of opposite rings.
+        a0, a1 = (add(p, x) for p in edge(A, ai))
+        b0, b1 = edge(B, bj)
+        e = sub(b1, b0)
+        den = dot(e, e)
+        low = max(0, min(dot(sub(a0, b0), e), dot(sub(a1, b0), e))/den)
+        high = min(1, max(dot(sub(a0, b0), e), dot(sub(a1, b0), e))/den)
+        if low > high:
+            raise ArithmeticError("convex entrance face witness has no segment overlap")
+        pa = pb = add(b0, (low*e[0], low*e[1]))
+    return tuple(map(float, pa)), tuple(map(float, pb))
 
 
 def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> float:
@@ -149,10 +160,11 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
         tied.insert(0, fbest.label)
     tied.sort(key=lambda lab: 0 if lab == fbest.label else 1)
     lab = fbest.label
-    x = (float(X[0] + D[0] * t_in), float(X[1] + D[1] * t_in))
-    pa, pb = _facet_points(A, B, lab, x)
+    exact_x = (X[0] + D[0] * t_in, X[1] + D[1] * t_in)
+    x = tuple(map(float, exact_x))
+    pa, pb = _facet_points(A, B, lab, exact_x)
     return Entrance2("entrance", float(t_in), x, lab, _facet_normal(A, B, lab), pa, pb,
-                     facet_gap(A, B, lab, x), tuple(tied), len(enter), tuple(near), t_in)
+                     facet_gap(A, B, lab, exact_x), tuple(tied), len(enter), tuple(near), t_in)
 
 
 def _frpoint(p):
@@ -223,7 +235,7 @@ def _contact_report(A, B, label, X):
         a0, a1 = _frpoint(A[ai]), _frpoint(A[(ai + 1) % len(A)])
         pa = (a0[0] + X[0] + parameter * (a1[0] - a0[0]), a0[1] + X[1] + parameter * (a1[1] - a0[1]))
         pb = _frpoint(B[bj])
-    gap = sqrt(float(g * g / length2)) * ((g > 0) - (g < 0))
+    gap = sqrt_rational(g * g / length2) * ((g > 0) - (g < 0))
     return _facet_normal(A, B, label), tuple(map(float, pa)), tuple(map(float, pb)), gap
 
 

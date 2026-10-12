@@ -7,11 +7,11 @@ G6（2026-09-24）的 6 条 critical 里 5 条同根：绝对容差遍布内核�
 
 并要求结果按应有的方式变换：
   · 盖枚举：标签 (kind, a_index, b_index, strict) 集合不变（顶点/边编号不因刚体运动改变），间隙 ×s；
-  · polygons_overlap：判定（1 / 0 / −1）不变——**含恰好接触的位形**（工程上块体就是贴着的）；
+  · polygons_overlap：精确仿射变换下判定不变（含恰好接触）；原浮点变换每格另与独立精确 oracle 对照；
   · interior_point：严格在内（独立 oracle：Fraction 精确射线奇偶，另写一份，不调 geom）；
-  · 距离完备性 / 出口完备性：通过，且分离/接触/相交样本计数不变；brute_ray_exit 的出口 ×s；
+  · 距离完备性 / 出口完备性：精确仿射下分类计数不变；原浮点变换按其实际数据精确分类，出口按原误差界 ×s；
   · 凸块 G0（E2）：每格成员/标签对独立精确 oracle 零错；只在判定余量超过舍入界时要求刚体不变，边界数据变化不豁免 oracle；
-  · 凸性 / 反射顶点（带平直 T 形顶点的合成块、bb52 真几何）不变；
+  · 凸性 / 反射顶点：精确仿射下不变；原浮点变换每格须满足独立有理转角 oracle（不抹除真实微凹）；
   · 读取器边界的重复点剥除（readers.bdda_geom）：近重复点照样被剥，工程坐标上只差一个 ulp 的重复点也认得出。
 调用方给的长度容差随单位一起缩放（tol → s·tol）——这是换单位的本义；角度容差是无量纲的，不缩放。
 **库内部不许再有绝对阈值**：参考结果取恒等变换下的库输出，变换后的输出必须与它一致。
@@ -265,8 +265,14 @@ def test_polygons_overlap_is_invariant(case, motion):
     assert polygons_overlap(translate(A, x), B, tau) == want, name           # 恒等变换下先对
     pt, vec, poly = _T(theta, s, tm)
     At, Bt = translate(poly(A), vec(x)), poly(B)
-    assert polygons_overlap(At, Bt, s * tau) == want, name
-    assert polygons_overlap(Bt, At, s * tau) == want, name
+    from test_kernel2d_entrance import _independent_overlap
+    truth = _independent_overlap(At, Bt)
+    assert polygons_overlap(At, Bt, 0) == truth, name
+    assert polygons_overlap(Bt, At, 0) == truth, name
+    qvec, qpoly = _g0_exact_affine(theta, s, tm)
+    qAt, qBt = translate(qpoly(A), qvec(x)), qpoly(B)
+    assert polygons_overlap(qAt, qBt, s * tau) == want, name
+    assert polygons_overlap(qBt, qAt, s * tau) == want, name
 
 
 # ---------------------------------------------------------------- interior_point：严格在内（独立精确 oracle）
@@ -312,6 +318,24 @@ def _ring(rng, n, r):
     return [(r * math.cos(t), r * math.sin(t)) for t in (rng.uniform(0, 2 * math.pi) for _ in range(n))]
 
 
+def _g0_exact_affine(theta, s, tm):
+    """Same motion grid, applied without intermediate rounding of the inputs."""
+    c, sn, scale = Fraction(math.cos(theta)), Fraction(math.sin(theta)), Fraction(s)
+    tx, ty = Fraction(tm * math.cos(PHI)), Fraction(tm * math.sin(PHI))
+    def vec(p):
+        x, y = map(Fraction, p)
+        return scale * (c*x-sn*y), scale * (sn*x+c*y)
+    def poly(P):
+        return [(x+tx,y+ty) for x,y in map(vec,P)]
+    return vec, poly
+
+
+def _g0_independent_states(A, B, xs):
+    # Separate test oracle: no G0/kernel oracle or production primitive shared.
+    from test_kernel2d_entrance import _independent_overlap
+    return [_independent_overlap(A,B,x) for x in xs]
+
+
 _rd = random.Random(31)
 _DA, _DB = _star(_rd, 8), _star(_rd, 9)
 DIST_CASES = [
@@ -331,7 +355,12 @@ def test_distance_completeness_is_invariant(case, motion):
     assert ref.passed and ref.samples > 0, name
     pt, vec, poly = _T(theta, s, tm)
     rep = g0_distance_completeness(poly(A), poly(B), [vec(x) for x in xs], tol=1e-9 * s, atol=1e-9)
-    assert (rep.samples, rep.overlapping, rep.touching) == (ref.samples, ref.overlapping, ref.touching), name
+    states = _g0_independent_states(poly(A), poly(B), [vec(x) for x in xs])
+    assert (rep.samples, rep.overlapping, rep.touching) == tuple(states.count(k) for k in (-1, 1, 0)), name
+    qvec, qpoly = _g0_exact_affine(theta, s, tm)
+    qrep = g0_distance_completeness(qpoly(A), qpoly(B), [qvec(x) for x in xs], tol=1e-9*s, atol=1e-9)
+    assert (qrep.samples, qrep.overlapping, qrep.touching) == (ref.samples, ref.overlapping, ref.touching), name
+    assert qrep.passed, (name, qrep.failures[:2])
     assert rep.passed, (name, rep.failures[:2])
 
 
@@ -355,7 +384,13 @@ def test_exit_completeness_and_ray_exit_are_invariant(case, motion):
     At, Bt = poly(A), poly(B)
     rus = [(vec(u)[0] / s, vec(u)[1] / s) for u in us]            # 方向只转不缩：t 以 |u| 计，出口 ×s
     rep = g0_exit_completeness(At, Bt, [vec(x) for x in xs], rus, tol=1e-9 * s, atol=1e-9)
-    assert (rep.samples, rep.separated, rep.touching) == (ref.samples, ref.separated, ref.touching), name
+    states = _g0_independent_states(At, Bt, [vec(x) for x in xs])
+    assert (rep.samples, rep.separated, rep.touching) == tuple(states.count(k) for k in (1, -1, 0)), name
+    qvec, qpoly = _g0_exact_affine(theta, s, tm)
+    qus = [tuple(c/Fraction(s) for c in qvec(u)) for u in us]
+    qrep = g0_exit_completeness(qpoly(A), qpoly(B), [qvec(x) for x in xs], qus, tol=1e-9*s, atol=1e-9)
+    assert (qrep.samples, qrep.separated, qrep.touching) == (ref.samples, ref.separated, ref.touching), name
+    assert qrep.passed, (name, qrep.failures[:2])
     assert rep.passed, (name, rep.failures[:2])
     for x, u, ru in zip(xs, us, rus):
         if polygons_overlap(translate(A, x), B, 1e-12) != 1:
@@ -469,6 +504,18 @@ def test_convex_g0_is_invariant(case, motion):
 
 # ---------------------------------------------------------------- 凸性 / 反射顶点（bb52 真几何）
 
+def _reflex_truth(P, tol):
+    """Independent exact determinant oracle for the declared explicit sector."""
+    sine, cosine = Fraction(math.sin(tol)), Fraction(math.cos(tol))
+    out=[]
+    for i,p in enumerate(P):
+        a,b,c=[tuple(map(Fraction,q)) for q in (P[i-1],p,P[(i+1)%len(P)])]
+        ex,ey=b[0]-a[0],b[1]-a[1];fx,fy=c[0]-b[0],c[1]-b[1]
+        right=ey*fx-ex*fy
+        if right>0 and right*cosine>(ex*fx+ey*fy)*sine:out.append(i)
+    return out
+
+
 FLAT = [(0.0, 0.0), (1.0, 0.0), (2.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.5, 1.0), (0.0, 1.0)]   # 3 个平直顶点
 
 
@@ -476,12 +523,16 @@ FLAT = [(0.0, 0.0), (1.0, 0.0), (2.0, 0.0), (3.0, 0.0), (3.0, 1.0), (1.5, 1.0), 
 @pytest.mark.parametrize("item", [("row", ROW), ("flat3", FLAT), ("channel", CHANNEL), ("C3", C3)],
                          ids=["row", "flat3", "channel", "C3"])
 def test_convexity_with_flat_vertices_is_invariant(item, motion):
-    """平直顶点（DDA 块边上别块角点留下的 T 形顶点，理想转角恰为 0）：刚体运动后转角成 ±eps·C/ℓ，
-    角容差 1e-12 分辨不了——不许因此判成反射顶点、把凸块判成凹块。"""
+    """理想平直点的浮点变换可产生真实微凹；精确数据照 oracle，不以隐藏带纠正输入。
+    原网格全保留，并另对同一参数的精确仿射变换钉住原本的不变性。"""
     name, P = item
     _, theta, s, tm = motion
     pt, vec, poly = _T(theta, s, tm)
-    assert (is_convex(poly(P), 1e-12), reflex_vertices(poly(P), 1e-12)) == (is_convex(P, 1e-12), reflex_vertices(P, 1e-12)), name
+    truth = _reflex_truth(poly(P), 1e-12)
+    assert reflex_vertices(poly(P), 1e-12) == truth, name
+    assert is_convex(poly(P), 1e-12) == (not truth), name
+    _, qpoly = _g0_exact_affine(theta, s, tm)
+    assert (is_convex(qpoly(P), 1e-12), reflex_vertices(qpoly(P), 1e-12)) == (is_convex(P, 1e-12), reflex_vertices(P, 1e-12)), name
 
 
 @pytest.mark.skipif(_BB is None, reason="bb52 fixture missing")
@@ -491,7 +542,11 @@ def test_convexity_census_of_bb52_is_invariant(motion):
     pt, vec, poly = _T(theta, s, tm)
     ref = {b: (is_convex(P, 1e-12), tuple(reflex_vertices(P, 1e-12))) for b, P in _BB.items()}
     got = {b: (is_convex(poly(P), 1e-12), tuple(reflex_vertices(poly(P), 1e-12))) for b, P in _BB.items()}
-    assert got == ref
+    truth = {b: _reflex_truth(poly(P), 1e-12) for b, P in _BB.items()}
+    assert got == {b: (not vertices, tuple(vertices)) for b, vertices in truth.items()}
+    _, qpoly = _g0_exact_affine(theta, s, tm)
+    qgot = {b: (is_convex(qpoly(P), 1e-12), tuple(reflex_vertices(qpoly(P), 1e-12))) for b, P in _BB.items()}
+    assert qgot == ref
 
 
 # ---------------------------------------------------------------- 读取器边界：重复点剥除（readers.bdda_geom）

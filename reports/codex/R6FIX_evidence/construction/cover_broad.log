@@ -1,0 +1,674 @@
+........................................................................ [ 22%]
+......................F.F......F.F......F.F............................. [ 45%]
+........................................................................ [ 68%]
+........................................................................ [ 91%]
+............................                                             [100%]
+================================== FAILURES ===================================
+_ test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_locked-s1000_t0] _
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R6FIX_evidence/tmp/cover_broad/test_g2_gate_is_invariant_unde6')
+path = WindowsPath('D:/eab-wt/cx-e2/fixtures/bdda3d/cb2_locked.json')
+s = 1000.0, tm = 0.0
+
+    @pytest.mark.parametrize("s,tm", G2_MOTIONS)
+    @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+    def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
+        """原 27 格全保留；每格逐字段核验给定舍入坐标，不把微折面当理想平面。
+    
+        oracle 用全三元组有理支持面、独立 Gram 参数/法锥和 Gordan 极射线，
+        不与被测凸包/盖/adapter 共用几何原语。基准 legacy 同构门仍完整执行。
+        运动后真实产生的 facet/strict/EE/不支持的 legacy 三角均必须完整入账；
+        不允许用噪声带吞掉差异来保持理想的固定计数。
+        """
+        from e5a_g2_oracle import assert_comparison
+        from g2_bdda3d import load_case_full
+        _assert_g2_gate(compare(path))
+        d = json.loads(path.read_text(encoding="utf-8"))
+        _moved(d, s, tm)
+        p = tmp_path / f"{path.stem}_moved.json"
+        p.write_text(json.dumps(d), encoding="utf-8")
+        res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+        loaded = load_case_full(p, tol=1e-9 * s)
+        assert loaded["entrances"] == json.loads(path.read_text(encoding="utf-8"))["entrances"]
+>       assert_comparison(res, loaded, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+
+tests\test_g2_bdda3d.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'case': 'cb2_locked', 'rows': [{'band': [('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edg...it': 1000.0, 'enumerated_window': 1000.0, 'legacy': [(2, 0, 10), (2, 1, 10), (2, 2, 10), (2, 3, 10)], ...}], 'step': 0}
+loaded = {'aliases': {1: {}, 2: {}}, 'blocks': {1: Polyhedron(verts=[(-2705.663205434111, -560.1659401481429, 1168.589208515103...': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}], ...}
+
+    def assert_comparison(result, loaded, *, window, band, tol):
+        """Check every row field, including actual exact-input disagreements."""
+        blocks, entrances = loaded["blocks"], loaded["entrances"]
+        for P in blocks.values():
+            assert_exact_hull(P)
+        expected_rows = {}
+        legacy_pairs = {(e["bi"], e["bj"]) for e in entrances}
+        for lo, hi in combinations(sorted(blocks), 2):
+            pair = next((p for p in legacy_pairs if set(p) == {lo, hi}), (hi, lo))
+            bi, bj = pair
+            A, B = blocks[bi], blocks[bj]
+            all_covers = []
+            for label, strict in cover_labels(A, B, tol):
+                gap, normal = construction(A, B, label, tol)
+                if construction(A, B, label, tol, distance_squared=True) <= Fraction(max(window, band))**2:
+                    all_covers.append((label, strict, gap, normal))
+            if not all_covers and pair not in legacy_pairs:
+                continue
+            legacy, detail, violations = set(), [], []
+            for e in entrances:
+                if (e["bi"], e["bj"]) != pair:
+                    continue
+                assert e["etype"] == "np"
+                refs = [(int(block), loaded["aliases"][int(block)].get(int(index), int(index)))
+                        for block, index in e["refs"]]
+                vb, vi = refs[0]
+                hb = refs[1][0]
+                tri = tuple(i for _, i in refs[1:])
+                gi = next((k for k, f in enumerate(blocks[hb].faces) if set(tri) <= set(f)), None)
+                if gi is None:
+                    n = len(blocks[hb].verts)
+                    x, y, z = sorted(tri)
+                    gi = -1-x*n*n-y*n-z
+                    violations.append(("legacy triangle not on exact hull face", hb, tri))
+                legacy.add((vb, vi, gi))
+                detail.append((vb, vi, tri, gi))
+            mine, mine_detail, band_covers, penetration = set(), [], [], []
+            count = reconciled = 0
+            for (kind, fa, fb), strict, gap, normal in all_covers:
+                record = (kind, fa, fb, round(gap, 12))
+                if window < abs(gap) <= band:
+                    band_covers.append(record)
+                    if gap < -window:
+                        penetration.append(record)
+                if abs(gap) > window:
+                    continue
+                count += 1
+                if kind in ("VF", "FV"):
+                    key = (bi, fa[1], fb[1]) if kind == "VF" else (bj, fb[1], fa[1])
+                    mine.add(key)
+                    reconciled += 1
+                    mine_detail.append((kind, key, round(gap, 12), tuple(round(x, 12) for x in normal), strict))
+                else:
+                    mine_detail.append((*record, strict))
+                    violations.append(("kernel cover kind not reconciled by this gate", *record))
+            if reconciled != len(mine):
+                violations.append(("kernel VF/FV covers collapse onto fewer keys", reconciled, len(mine)))
+            expected_rows[pair] = dict(pair=pair, legacy=sorted(legacy), mine=sorted(mine),
+                legacy_only=sorted(legacy-mine), mine_only=sorted(mine-legacy), legacy_detail=detail,
+                mine_detail=mine_detail, n_covers=count, violations=violations, window=window,
+                band=sorted(band_covers), penetration=sorted(penetration), band_limit=band,
+                enumerated_window=max(window, band))
+        assert result["case"] == loaded["case"] and result["step"] == loaded["step"]
+        actual_rows = {tuple(r["pair"]): r for r in result["rows"]}
+        assert len(actual_rows) == len(result["rows"])
+        assert actual_rows.keys() == expected_rows.keys()
+        for pair, expected in expected_rows.items():
+            actual = dict(actual_rows[pair])
+            for key in ("mine_detail", "violations"):
+                actual[key] = sorted(actual[key], key=repr)
+                expected[key] = sorted(expected[key], key=repr)
+>           assert actual == expected, (pair, {k: (actual[k], expected[k]) for k in expected if actual[k] != expected[k]})
+                   ^^^^^^^^^^^^^^^^^^
+E           AssertionError: ((2, 1), {'band': ([('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 1, 4), ('edge', 4, 5), -1000.0), ('EE', ('edge', 2, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 3, 6), ('edge', 6, 7), -1000.0), ('VE3', ('vertex', 1), ('edge', 1, 3), 1000.0), ('VE3', ('vertex', 3), ('edge', 1, 3), 1000.0)], [('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 1, 4), ('edge', 4, 5), -1000.0), ('EE', ('edge', 2, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 3, 6), ('edge', 6, 7), -1000.0), ('VE3', ('vertex', 1), ('edge', 1, 3), 1000.0)])})
+
+tests\e5a_g2_oracle.py:162: AssertionError
+_ test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_locked-s1000_t100000] _
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R6FIX_evidence/tmp/cover_broad/test_g2_gate_is_invariant_unde8')
+path = WindowsPath('D:/eab-wt/cx-e2/fixtures/bdda3d/cb2_locked.json')
+s = 1000.0, tm = 100000.0
+
+    @pytest.mark.parametrize("s,tm", G2_MOTIONS)
+    @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+    def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
+        """原 27 格全保留；每格逐字段核验给定舍入坐标，不把微折面当理想平面。
+    
+        oracle 用全三元组有理支持面、独立 Gram 参数/法锥和 Gordan 极射线，
+        不与被测凸包/盖/adapter 共用几何原语。基准 legacy 同构门仍完整执行。
+        运动后真实产生的 facet/strict/EE/不支持的 legacy 三角均必须完整入账；
+        不允许用噪声带吞掉差异来保持理想的固定计数。
+        """
+        from e5a_g2_oracle import assert_comparison
+        from g2_bdda3d import load_case_full
+        _assert_g2_gate(compare(path))
+        d = json.loads(path.read_text(encoding="utf-8"))
+        _moved(d, s, tm)
+        p = tmp_path / f"{path.stem}_moved.json"
+        p.write_text(json.dumps(d), encoding="utf-8")
+        res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+        loaded = load_case_full(p, tol=1e-9 * s)
+        assert loaded["entrances"] == json.loads(path.read_text(encoding="utf-8"))["entrances"]
+>       assert_comparison(res, loaded, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+
+tests\test_g2_bdda3d.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'case': 'cb2_locked', 'rows': [{'band': [('EE', ('edge', 0, 7), ('edge', 4, 7), -1000.0), ('EE', ('edge', 2, 5), ('ed..._limit': 1000.0, 'enumerated_window': 1000.0, 'legacy': [(2, 0, 9), (2, 1, 8), (2, 2, 8), (2, 3, 9)], ...}], 'step': 0}
+loaded = {'aliases': {1: {}, 2: {}}, 'blocks': {1: Polyhedron(verts=[(58441.807921196196, 78481.96320394902, -2482.245652962194...': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}], ...}
+
+    def assert_comparison(result, loaded, *, window, band, tol):
+        """Check every row field, including actual exact-input disagreements."""
+        blocks, entrances = loaded["blocks"], loaded["entrances"]
+        for P in blocks.values():
+            assert_exact_hull(P)
+        expected_rows = {}
+        legacy_pairs = {(e["bi"], e["bj"]) for e in entrances}
+        for lo, hi in combinations(sorted(blocks), 2):
+            pair = next((p for p in legacy_pairs if set(p) == {lo, hi}), (hi, lo))
+            bi, bj = pair
+            A, B = blocks[bi], blocks[bj]
+            all_covers = []
+            for label, strict in cover_labels(A, B, tol):
+                gap, normal = construction(A, B, label, tol)
+                if construction(A, B, label, tol, distance_squared=True) <= Fraction(max(window, band))**2:
+                    all_covers.append((label, strict, gap, normal))
+            if not all_covers and pair not in legacy_pairs:
+                continue
+            legacy, detail, violations = set(), [], []
+            for e in entrances:
+                if (e["bi"], e["bj"]) != pair:
+                    continue
+                assert e["etype"] == "np"
+                refs = [(int(block), loaded["aliases"][int(block)].get(int(index), int(index)))
+                        for block, index in e["refs"]]
+                vb, vi = refs[0]
+                hb = refs[1][0]
+                tri = tuple(i for _, i in refs[1:])
+                gi = next((k for k, f in enumerate(blocks[hb].faces) if set(tri) <= set(f)), None)
+                if gi is None:
+                    n = len(blocks[hb].verts)
+                    x, y, z = sorted(tri)
+                    gi = -1-x*n*n-y*n-z
+                    violations.append(("legacy triangle not on exact hull face", hb, tri))
+                legacy.add((vb, vi, gi))
+                detail.append((vb, vi, tri, gi))
+            mine, mine_detail, band_covers, penetration = set(), [], [], []
+            count = reconciled = 0
+            for (kind, fa, fb), strict, gap, normal in all_covers:
+                record = (kind, fa, fb, round(gap, 12))
+                if window < abs(gap) <= band:
+                    band_covers.append(record)
+                    if gap < -window:
+                        penetration.append(record)
+                if abs(gap) > window:
+                    continue
+                count += 1
+                if kind in ("VF", "FV"):
+                    key = (bi, fa[1], fb[1]) if kind == "VF" else (bj, fb[1], fa[1])
+                    mine.add(key)
+                    reconciled += 1
+                    mine_detail.append((kind, key, round(gap, 12), tuple(round(x, 12) for x in normal), strict))
+                else:
+                    mine_detail.append((*record, strict))
+                    violations.append(("kernel cover kind not reconciled by this gate", *record))
+            if reconciled != len(mine):
+                violations.append(("kernel VF/FV covers collapse onto fewer keys", reconciled, len(mine)))
+            expected_rows[pair] = dict(pair=pair, legacy=sorted(legacy), mine=sorted(mine),
+                legacy_only=sorted(legacy-mine), mine_only=sorted(mine-legacy), legacy_detail=detail,
+                mine_detail=mine_detail, n_covers=count, violations=violations, window=window,
+                band=sorted(band_covers), penetration=sorted(penetration), band_limit=band,
+                enumerated_window=max(window, band))
+        assert result["case"] == loaded["case"] and result["step"] == loaded["step"]
+        actual_rows = {tuple(r["pair"]): r for r in result["rows"]}
+        assert len(actual_rows) == len(result["rows"])
+        assert actual_rows.keys() == expected_rows.keys()
+        for pair, expected in expected_rows.items():
+            actual = dict(actual_rows[pair])
+            for key in ("mine_detail", "violations"):
+                actual[key] = sorted(actual[key], key=repr)
+                expected[key] = sorted(expected[key], key=repr)
+>           assert actual == expected, (pair, {k: (actual[k], expected[k]) for k in expected if actual[k] != expected[k]})
+                   ^^^^^^^^^^^^^^^^^^
+E           AssertionError: ((2, 1), {'mine_detail': ([('EE', ('edge', 0, 1), ('edge', 4, 6), 0.0, False), ('EE', ('edge', 2, 3), ('edge', 4, 6), -0.0, False), ('VF', (2, 0, 9), 0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 1, 8), 3e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 2, 8), -0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 3, 9), -3e-12, (0.706565159136, -0.37275717154, 0.601512898416), True)], [('EE', ('edge', 0, 1), ('edge', 4, 6), 0.0, False), ('EE', ('edge', 2, 3), ('edge', 4, 6), -0.0, False), ('VF', (2, 0, 9), 0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 1, 8), 2e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 2, 8), -1e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 3, 9), -3e-12, (0.706565159136, -0.37275717154, 0.601512898416), True)])})
+
+tests\e5a_g2_oracle.py:162: AssertionError
+_ test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_sliding-s1000_t0] _
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R6FIX_evidence/tmp/cover_broad/test_g2_gate_is_invariant_unde15')
+path = WindowsPath('D:/eab-wt/cx-e2/fixtures/bdda3d/cb2_sliding.json')
+s = 1000.0, tm = 0.0
+
+    @pytest.mark.parametrize("s,tm", G2_MOTIONS)
+    @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+    def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
+        """原 27 格全保留；每格逐字段核验给定舍入坐标，不把微折面当理想平面。
+    
+        oracle 用全三元组有理支持面、独立 Gram 参数/法锥和 Gordan 极射线，
+        不与被测凸包/盖/adapter 共用几何原语。基准 legacy 同构门仍完整执行。
+        运动后真实产生的 facet/strict/EE/不支持的 legacy 三角均必须完整入账；
+        不允许用噪声带吞掉差异来保持理想的固定计数。
+        """
+        from e5a_g2_oracle import assert_comparison
+        from g2_bdda3d import load_case_full
+        _assert_g2_gate(compare(path))
+        d = json.loads(path.read_text(encoding="utf-8"))
+        _moved(d, s, tm)
+        p = tmp_path / f"{path.stem}_moved.json"
+        p.write_text(json.dumps(d), encoding="utf-8")
+        res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+        loaded = load_case_full(p, tol=1e-9 * s)
+        assert loaded["entrances"] == json.loads(path.read_text(encoding="utf-8"))["entrances"]
+>       assert_comparison(res, loaded, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+
+tests\test_g2_bdda3d.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'case': 'cb2_sliding', 'rows': [{'band': [('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('ed...it': 1000.0, 'enumerated_window': 1000.0, 'legacy': [(2, 0, 10), (2, 1, 10), (2, 2, 10), (2, 3, 10)], ...}], 'step': 0}
+loaded = {'aliases': {1: {}, 2: {}}, 'blocks': {1: Polyhedron(verts=[(-2705.663205434111, -560.1659401481429, 1168.589208515103...': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}], ...}
+
+    def assert_comparison(result, loaded, *, window, band, tol):
+        """Check every row field, including actual exact-input disagreements."""
+        blocks, entrances = loaded["blocks"], loaded["entrances"]
+        for P in blocks.values():
+            assert_exact_hull(P)
+        expected_rows = {}
+        legacy_pairs = {(e["bi"], e["bj"]) for e in entrances}
+        for lo, hi in combinations(sorted(blocks), 2):
+            pair = next((p for p in legacy_pairs if set(p) == {lo, hi}), (hi, lo))
+            bi, bj = pair
+            A, B = blocks[bi], blocks[bj]
+            all_covers = []
+            for label, strict in cover_labels(A, B, tol):
+                gap, normal = construction(A, B, label, tol)
+                if construction(A, B, label, tol, distance_squared=True) <= Fraction(max(window, band))**2:
+                    all_covers.append((label, strict, gap, normal))
+            if not all_covers and pair not in legacy_pairs:
+                continue
+            legacy, detail, violations = set(), [], []
+            for e in entrances:
+                if (e["bi"], e["bj"]) != pair:
+                    continue
+                assert e["etype"] == "np"
+                refs = [(int(block), loaded["aliases"][int(block)].get(int(index), int(index)))
+                        for block, index in e["refs"]]
+                vb, vi = refs[0]
+                hb = refs[1][0]
+                tri = tuple(i for _, i in refs[1:])
+                gi = next((k for k, f in enumerate(blocks[hb].faces) if set(tri) <= set(f)), None)
+                if gi is None:
+                    n = len(blocks[hb].verts)
+                    x, y, z = sorted(tri)
+                    gi = -1-x*n*n-y*n-z
+                    violations.append(("legacy triangle not on exact hull face", hb, tri))
+                legacy.add((vb, vi, gi))
+                detail.append((vb, vi, tri, gi))
+            mine, mine_detail, band_covers, penetration = set(), [], [], []
+            count = reconciled = 0
+            for (kind, fa, fb), strict, gap, normal in all_covers:
+                record = (kind, fa, fb, round(gap, 12))
+                if window < abs(gap) <= band:
+                    band_covers.append(record)
+                    if gap < -window:
+                        penetration.append(record)
+                if abs(gap) > window:
+                    continue
+                count += 1
+                if kind in ("VF", "FV"):
+                    key = (bi, fa[1], fb[1]) if kind == "VF" else (bj, fb[1], fa[1])
+                    mine.add(key)
+                    reconciled += 1
+                    mine_detail.append((kind, key, round(gap, 12), tuple(round(x, 12) for x in normal), strict))
+                else:
+                    mine_detail.append((*record, strict))
+                    violations.append(("kernel cover kind not reconciled by this gate", *record))
+            if reconciled != len(mine):
+                violations.append(("kernel VF/FV covers collapse onto fewer keys", reconciled, len(mine)))
+            expected_rows[pair] = dict(pair=pair, legacy=sorted(legacy), mine=sorted(mine),
+                legacy_only=sorted(legacy-mine), mine_only=sorted(mine-legacy), legacy_detail=detail,
+                mine_detail=mine_detail, n_covers=count, violations=violations, window=window,
+                band=sorted(band_covers), penetration=sorted(penetration), band_limit=band,
+                enumerated_window=max(window, band))
+        assert result["case"] == loaded["case"] and result["step"] == loaded["step"]
+        actual_rows = {tuple(r["pair"]): r for r in result["rows"]}
+        assert len(actual_rows) == len(result["rows"])
+        assert actual_rows.keys() == expected_rows.keys()
+        for pair, expected in expected_rows.items():
+            actual = dict(actual_rows[pair])
+            for key in ("mine_detail", "violations"):
+                actual[key] = sorted(actual[key], key=repr)
+                expected[key] = sorted(expected[key], key=repr)
+>           assert actual == expected, (pair, {k: (actual[k], expected[k]) for k in expected if actual[k] != expected[k]})
+                   ^^^^^^^^^^^^^^^^^^
+E           AssertionError: ((2, 1), {'band': ([('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 1, 4), ('edge', 4, 5), -1000.0), ('EE', ('edge', 2, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 3, 6), ('edge', 6, 7), -1000.0), ('VE3', ('vertex', 1), ('edge', 1, 3), 1000.0), ('VE3', ('vertex', 3), ('edge', 1, 3), 1000.0)], [('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 1, 4), ('edge', 4, 5), -1000.0), ('EE', ('edge', 2, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 3, 6), ('edge', 6, 7), -1000.0), ('VE3', ('vertex', 1), ('edge', 1, 3), 1000.0)])})
+
+tests\e5a_g2_oracle.py:162: AssertionError
+_ test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_sliding-s1000_t100000] _
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R6FIX_evidence/tmp/cover_broad/test_g2_gate_is_invariant_unde17')
+path = WindowsPath('D:/eab-wt/cx-e2/fixtures/bdda3d/cb2_sliding.json')
+s = 1000.0, tm = 100000.0
+
+    @pytest.mark.parametrize("s,tm", G2_MOTIONS)
+    @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+    def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
+        """原 27 格全保留；每格逐字段核验给定舍入坐标，不把微折面当理想平面。
+    
+        oracle 用全三元组有理支持面、独立 Gram 参数/法锥和 Gordan 极射线，
+        不与被测凸包/盖/adapter 共用几何原语。基准 legacy 同构门仍完整执行。
+        运动后真实产生的 facet/strict/EE/不支持的 legacy 三角均必须完整入账；
+        不允许用噪声带吞掉差异来保持理想的固定计数。
+        """
+        from e5a_g2_oracle import assert_comparison
+        from g2_bdda3d import load_case_full
+        _assert_g2_gate(compare(path))
+        d = json.loads(path.read_text(encoding="utf-8"))
+        _moved(d, s, tm)
+        p = tmp_path / f"{path.stem}_moved.json"
+        p.write_text(json.dumps(d), encoding="utf-8")
+        res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+        loaded = load_case_full(p, tol=1e-9 * s)
+        assert loaded["entrances"] == json.loads(path.read_text(encoding="utf-8"))["entrances"]
+>       assert_comparison(res, loaded, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+
+tests\test_g2_bdda3d.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'case': 'cb2_sliding', 'rows': [{'band': [('EE', ('edge', 0, 7), ('edge', 4, 7), -1000.0), ('EE', ('edge', 2, 5), ('e..._limit': 1000.0, 'enumerated_window': 1000.0, 'legacy': [(2, 0, 9), (2, 1, 8), (2, 2, 8), (2, 3, 9)], ...}], 'step': 0}
+loaded = {'aliases': {1: {}, 2: {}}, 'blocks': {1: Polyhedron(verts=[(58441.807921196196, 78481.96320394902, -2482.245652962194...': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 0.0, ...}], ...}
+
+    def assert_comparison(result, loaded, *, window, band, tol):
+        """Check every row field, including actual exact-input disagreements."""
+        blocks, entrances = loaded["blocks"], loaded["entrances"]
+        for P in blocks.values():
+            assert_exact_hull(P)
+        expected_rows = {}
+        legacy_pairs = {(e["bi"], e["bj"]) for e in entrances}
+        for lo, hi in combinations(sorted(blocks), 2):
+            pair = next((p for p in legacy_pairs if set(p) == {lo, hi}), (hi, lo))
+            bi, bj = pair
+            A, B = blocks[bi], blocks[bj]
+            all_covers = []
+            for label, strict in cover_labels(A, B, tol):
+                gap, normal = construction(A, B, label, tol)
+                if construction(A, B, label, tol, distance_squared=True) <= Fraction(max(window, band))**2:
+                    all_covers.append((label, strict, gap, normal))
+            if not all_covers and pair not in legacy_pairs:
+                continue
+            legacy, detail, violations = set(), [], []
+            for e in entrances:
+                if (e["bi"], e["bj"]) != pair:
+                    continue
+                assert e["etype"] == "np"
+                refs = [(int(block), loaded["aliases"][int(block)].get(int(index), int(index)))
+                        for block, index in e["refs"]]
+                vb, vi = refs[0]
+                hb = refs[1][0]
+                tri = tuple(i for _, i in refs[1:])
+                gi = next((k for k, f in enumerate(blocks[hb].faces) if set(tri) <= set(f)), None)
+                if gi is None:
+                    n = len(blocks[hb].verts)
+                    x, y, z = sorted(tri)
+                    gi = -1-x*n*n-y*n-z
+                    violations.append(("legacy triangle not on exact hull face", hb, tri))
+                legacy.add((vb, vi, gi))
+                detail.append((vb, vi, tri, gi))
+            mine, mine_detail, band_covers, penetration = set(), [], [], []
+            count = reconciled = 0
+            for (kind, fa, fb), strict, gap, normal in all_covers:
+                record = (kind, fa, fb, round(gap, 12))
+                if window < abs(gap) <= band:
+                    band_covers.append(record)
+                    if gap < -window:
+                        penetration.append(record)
+                if abs(gap) > window:
+                    continue
+                count += 1
+                if kind in ("VF", "FV"):
+                    key = (bi, fa[1], fb[1]) if kind == "VF" else (bj, fb[1], fa[1])
+                    mine.add(key)
+                    reconciled += 1
+                    mine_detail.append((kind, key, round(gap, 12), tuple(round(x, 12) for x in normal), strict))
+                else:
+                    mine_detail.append((*record, strict))
+                    violations.append(("kernel cover kind not reconciled by this gate", *record))
+            if reconciled != len(mine):
+                violations.append(("kernel VF/FV covers collapse onto fewer keys", reconciled, len(mine)))
+            expected_rows[pair] = dict(pair=pair, legacy=sorted(legacy), mine=sorted(mine),
+                legacy_only=sorted(legacy-mine), mine_only=sorted(mine-legacy), legacy_detail=detail,
+                mine_detail=mine_detail, n_covers=count, violations=violations, window=window,
+                band=sorted(band_covers), penetration=sorted(penetration), band_limit=band,
+                enumerated_window=max(window, band))
+        assert result["case"] == loaded["case"] and result["step"] == loaded["step"]
+        actual_rows = {tuple(r["pair"]): r for r in result["rows"]}
+        assert len(actual_rows) == len(result["rows"])
+        assert actual_rows.keys() == expected_rows.keys()
+        for pair, expected in expected_rows.items():
+            actual = dict(actual_rows[pair])
+            for key in ("mine_detail", "violations"):
+                actual[key] = sorted(actual[key], key=repr)
+                expected[key] = sorted(expected[key], key=repr)
+>           assert actual == expected, (pair, {k: (actual[k], expected[k]) for k in expected if actual[k] != expected[k]})
+                   ^^^^^^^^^^^^^^^^^^
+E           AssertionError: ((2, 1), {'mine_detail': ([('EE', ('edge', 0, 1), ('edge', 4, 6), 0.0, False), ('EE', ('edge', 2, 3), ('edge', 4, 6), -0.0, False), ('VF', (2, 0, 9), 0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 1, 8), 3e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 2, 8), -0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 3, 9), -3e-12, (0.706565159136, -0.37275717154, 0.601512898416), True)], [('EE', ('edge', 0, 1), ('edge', 4, 6), 0.0, False), ('EE', ('edge', 2, 3), ('edge', 4, 6), -0.0, False), ('VF', (2, 0, 9), 0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 1, 8), 2e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 2, 8), -1e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 3, 9), -3e-12, (0.706565159136, -0.37275717154, 0.601512898416), True)])})
+
+tests\e5a_g2_oracle.py:162: AssertionError
+__ test_g2_gate_is_invariant_under_rigid_motion_and_units[cb_bond-s1000_t0] ___
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R6FIX_evidence/tmp/cover_broad/test_g2_gate_is_invariant_unde24')
+path = WindowsPath('D:/eab-wt/cx-e2/fixtures/bdda3d/cb_bond.json'), s = 1000.0
+tm = 0.0
+
+    @pytest.mark.parametrize("s,tm", G2_MOTIONS)
+    @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+    def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
+        """原 27 格全保留；每格逐字段核验给定舍入坐标，不把微折面当理想平面。
+    
+        oracle 用全三元组有理支持面、独立 Gram 参数/法锥和 Gordan 极射线，
+        不与被测凸包/盖/adapter 共用几何原语。基准 legacy 同构门仍完整执行。
+        运动后真实产生的 facet/strict/EE/不支持的 legacy 三角均必须完整入账；
+        不允许用噪声带吞掉差异来保持理想的固定计数。
+        """
+        from e5a_g2_oracle import assert_comparison
+        from g2_bdda3d import load_case_full
+        _assert_g2_gate(compare(path))
+        d = json.loads(path.read_text(encoding="utf-8"))
+        _moved(d, s, tm)
+        p = tmp_path / f"{path.stem}_moved.json"
+        p.write_text(json.dumps(d), encoding="utf-8")
+        res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+        loaded = load_case_full(p, tol=1e-9 * s)
+        assert loaded["entrances"] == json.loads(path.read_text(encoding="utf-8"))["entrances"]
+>       assert_comparison(res, loaded, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+
+tests\test_g2_bdda3d.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'case': 'cb_bond', 'rows': [{'band': [('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edge',...it': 1000.0, 'enumerated_window': 1000.0, 'legacy': [(2, 0, 10), (2, 1, 10), (2, 2, 10), (2, 3, 10)], ...}], 'step': 0}
+loaded = {'aliases': {1: {}, 2: {}}, 'blocks': {1: Polyhedron(verts=[(-2705.663205434111, -560.1659401481429, 1168.589208515103...20.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 20.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 20.0, ...}], ...}
+
+    def assert_comparison(result, loaded, *, window, band, tol):
+        """Check every row field, including actual exact-input disagreements."""
+        blocks, entrances = loaded["blocks"], loaded["entrances"]
+        for P in blocks.values():
+            assert_exact_hull(P)
+        expected_rows = {}
+        legacy_pairs = {(e["bi"], e["bj"]) for e in entrances}
+        for lo, hi in combinations(sorted(blocks), 2):
+            pair = next((p for p in legacy_pairs if set(p) == {lo, hi}), (hi, lo))
+            bi, bj = pair
+            A, B = blocks[bi], blocks[bj]
+            all_covers = []
+            for label, strict in cover_labels(A, B, tol):
+                gap, normal = construction(A, B, label, tol)
+                if construction(A, B, label, tol, distance_squared=True) <= Fraction(max(window, band))**2:
+                    all_covers.append((label, strict, gap, normal))
+            if not all_covers and pair not in legacy_pairs:
+                continue
+            legacy, detail, violations = set(), [], []
+            for e in entrances:
+                if (e["bi"], e["bj"]) != pair:
+                    continue
+                assert e["etype"] == "np"
+                refs = [(int(block), loaded["aliases"][int(block)].get(int(index), int(index)))
+                        for block, index in e["refs"]]
+                vb, vi = refs[0]
+                hb = refs[1][0]
+                tri = tuple(i for _, i in refs[1:])
+                gi = next((k for k, f in enumerate(blocks[hb].faces) if set(tri) <= set(f)), None)
+                if gi is None:
+                    n = len(blocks[hb].verts)
+                    x, y, z = sorted(tri)
+                    gi = -1-x*n*n-y*n-z
+                    violations.append(("legacy triangle not on exact hull face", hb, tri))
+                legacy.add((vb, vi, gi))
+                detail.append((vb, vi, tri, gi))
+            mine, mine_detail, band_covers, penetration = set(), [], [], []
+            count = reconciled = 0
+            for (kind, fa, fb), strict, gap, normal in all_covers:
+                record = (kind, fa, fb, round(gap, 12))
+                if window < abs(gap) <= band:
+                    band_covers.append(record)
+                    if gap < -window:
+                        penetration.append(record)
+                if abs(gap) > window:
+                    continue
+                count += 1
+                if kind in ("VF", "FV"):
+                    key = (bi, fa[1], fb[1]) if kind == "VF" else (bj, fb[1], fa[1])
+                    mine.add(key)
+                    reconciled += 1
+                    mine_detail.append((kind, key, round(gap, 12), tuple(round(x, 12) for x in normal), strict))
+                else:
+                    mine_detail.append((*record, strict))
+                    violations.append(("kernel cover kind not reconciled by this gate", *record))
+            if reconciled != len(mine):
+                violations.append(("kernel VF/FV covers collapse onto fewer keys", reconciled, len(mine)))
+            expected_rows[pair] = dict(pair=pair, legacy=sorted(legacy), mine=sorted(mine),
+                legacy_only=sorted(legacy-mine), mine_only=sorted(mine-legacy), legacy_detail=detail,
+                mine_detail=mine_detail, n_covers=count, violations=violations, window=window,
+                band=sorted(band_covers), penetration=sorted(penetration), band_limit=band,
+                enumerated_window=max(window, band))
+        assert result["case"] == loaded["case"] and result["step"] == loaded["step"]
+        actual_rows = {tuple(r["pair"]): r for r in result["rows"]}
+        assert len(actual_rows) == len(result["rows"])
+        assert actual_rows.keys() == expected_rows.keys()
+        for pair, expected in expected_rows.items():
+            actual = dict(actual_rows[pair])
+            for key in ("mine_detail", "violations"):
+                actual[key] = sorted(actual[key], key=repr)
+                expected[key] = sorted(expected[key], key=repr)
+>           assert actual == expected, (pair, {k: (actual[k], expected[k]) for k in expected if actual[k] != expected[k]})
+                   ^^^^^^^^^^^^^^^^^^
+E           AssertionError: ((2, 1), {'band': ([('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 1, 4), ('edge', 4, 5), -1000.0), ('EE', ('edge', 2, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 3, 6), ('edge', 6, 7), -1000.0), ('VE3', ('vertex', 1), ('edge', 1, 3), 1000.0), ('VE3', ('vertex', 3), ('edge', 1, 3), 1000.0)], [('EE', ('edge', 0, 1), ('edge', 1, 3), 1000.0), ('EE', ('edge', 0, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 1, 4), ('edge', 4, 5), -1000.0), ('EE', ('edge', 2, 3), ('edge', 1, 3), 1000.0), ('EE', ('edge', 3, 6), ('edge', 6, 7), -1000.0), ('VE3', ('vertex', 1), ('edge', 1, 3), 1000.0)])})
+
+tests\e5a_g2_oracle.py:162: AssertionError
+_ test_g2_gate_is_invariant_under_rigid_motion_and_units[cb_bond-s1000_t100000] _
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R6FIX_evidence/tmp/cover_broad/test_g2_gate_is_invariant_unde26')
+path = WindowsPath('D:/eab-wt/cx-e2/fixtures/bdda3d/cb_bond.json'), s = 1000.0
+tm = 100000.0
+
+    @pytest.mark.parametrize("s,tm", G2_MOTIONS)
+    @pytest.mark.parametrize("path", CASES, ids=lambda p: p.stem)
+    def test_g2_gate_is_invariant_under_rigid_motion_and_units(tmp_path, path, s, tm):
+        """原 27 格全保留；每格逐字段核验给定舍入坐标，不把微折面当理想平面。
+    
+        oracle 用全三元组有理支持面、独立 Gram 参数/法锥和 Gordan 极射线，
+        不与被测凸包/盖/adapter 共用几何原语。基准 legacy 同构门仍完整执行。
+        运动后真实产生的 facet/strict/EE/不支持的 legacy 三角均必须完整入账；
+        不允许用噪声带吞掉差异来保持理想的固定计数。
+        """
+        from e5a_g2_oracle import assert_comparison
+        from g2_bdda3d import load_case_full
+        _assert_g2_gate(compare(path))
+        d = json.loads(path.read_text(encoding="utf-8"))
+        _moved(d, s, tm)
+        p = tmp_path / f"{path.stem}_moved.json"
+        p.write_text(json.dumps(d), encoding="utf-8")
+        res = compare(p, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+        loaded = load_case_full(p, tol=1e-9 * s)
+        assert loaded["entrances"] == json.loads(path.read_text(encoding="utf-8"))["entrances"]
+>       assert_comparison(res, loaded, window=G2_WINDOW * s, band=G2_BAND * s, tol=1e-9 * s)
+
+tests\test_g2_bdda3d.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = {'case': 'cb_bond', 'rows': [{'band': [('EE', ('edge', 0, 7), ('edge', 4, 7), -1000.0), ('EE', ('edge', 2, 5), ('edge'..._limit': 1000.0, 'enumerated_window': 1000.0, 'legacy': [(2, 0, 9), (2, 1, 8), (2, 2, 8), (2, 3, 9)], ...}], 'step': 0}
+loaded = {'aliases': {1: {}, 2: {}}, 'blocks': {1: Polyhedron(verts=[(58441.807921196196, 78481.96320394902, -2482.245652962194...20.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 20.0, ...}, {'area': 1.0, 'bi': 2, 'bj': 1, 'coh': 20.0, ...}], ...}
+
+    def assert_comparison(result, loaded, *, window, band, tol):
+        """Check every row field, including actual exact-input disagreements."""
+        blocks, entrances = loaded["blocks"], loaded["entrances"]
+        for P in blocks.values():
+            assert_exact_hull(P)
+        expected_rows = {}
+        legacy_pairs = {(e["bi"], e["bj"]) for e in entrances}
+        for lo, hi in combinations(sorted(blocks), 2):
+            pair = next((p for p in legacy_pairs if set(p) == {lo, hi}), (hi, lo))
+            bi, bj = pair
+            A, B = blocks[bi], blocks[bj]
+            all_covers = []
+            for label, strict in cover_labels(A, B, tol):
+                gap, normal = construction(A, B, label, tol)
+                if construction(A, B, label, tol, distance_squared=True) <= Fraction(max(window, band))**2:
+                    all_covers.append((label, strict, gap, normal))
+            if not all_covers and pair not in legacy_pairs:
+                continue
+            legacy, detail, violations = set(), [], []
+            for e in entrances:
+                if (e["bi"], e["bj"]) != pair:
+                    continue
+                assert e["etype"] == "np"
+                refs = [(int(block), loaded["aliases"][int(block)].get(int(index), int(index)))
+                        for block, index in e["refs"]]
+                vb, vi = refs[0]
+                hb = refs[1][0]
+                tri = tuple(i for _, i in refs[1:])
+                gi = next((k for k, f in enumerate(blocks[hb].faces) if set(tri) <= set(f)), None)
+                if gi is None:
+                    n = len(blocks[hb].verts)
+                    x, y, z = sorted(tri)
+                    gi = -1-x*n*n-y*n-z
+                    violations.append(("legacy triangle not on exact hull face", hb, tri))
+                legacy.add((vb, vi, gi))
+                detail.append((vb, vi, tri, gi))
+            mine, mine_detail, band_covers, penetration = set(), [], [], []
+            count = reconciled = 0
+            for (kind, fa, fb), strict, gap, normal in all_covers:
+                record = (kind, fa, fb, round(gap, 12))
+                if window < abs(gap) <= band:
+                    band_covers.append(record)
+                    if gap < -window:
+                        penetration.append(record)
+                if abs(gap) > window:
+                    continue
+                count += 1
+                if kind in ("VF", "FV"):
+                    key = (bi, fa[1], fb[1]) if kind == "VF" else (bj, fb[1], fa[1])
+                    mine.add(key)
+                    reconciled += 1
+                    mine_detail.append((kind, key, round(gap, 12), tuple(round(x, 12) for x in normal), strict))
+                else:
+                    mine_detail.append((*record, strict))
+                    violations.append(("kernel cover kind not reconciled by this gate", *record))
+            if reconciled != len(mine):
+                violations.append(("kernel VF/FV covers collapse onto fewer keys", reconciled, len(mine)))
+            expected_rows[pair] = dict(pair=pair, legacy=sorted(legacy), mine=sorted(mine),
+                legacy_only=sorted(legacy-mine), mine_only=sorted(mine-legacy), legacy_detail=detail,
+                mine_detail=mine_detail, n_covers=count, violations=violations, window=window,
+                band=sorted(band_covers), penetration=sorted(penetration), band_limit=band,
+                enumerated_window=max(window, band))
+        assert result["case"] == loaded["case"] and result["step"] == loaded["step"]
+        actual_rows = {tuple(r["pair"]): r for r in result["rows"]}
+        assert len(actual_rows) == len(result["rows"])
+        assert actual_rows.keys() == expected_rows.keys()
+        for pair, expected in expected_rows.items():
+            actual = dict(actual_rows[pair])
+            for key in ("mine_detail", "violations"):
+                actual[key] = sorted(actual[key], key=repr)
+                expected[key] = sorted(expected[key], key=repr)
+>           assert actual == expected, (pair, {k: (actual[k], expected[k]) for k in expected if actual[k] != expected[k]})
+                   ^^^^^^^^^^^^^^^^^^
+E           AssertionError: ((2, 1), {'mine_detail': ([('EE', ('edge', 0, 1), ('edge', 4, 6), 0.0, False), ('EE', ('edge', 2, 3), ('edge', 4, 6), -0.0, False), ('VF', (2, 0, 9), 0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 1, 8), 3e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 2, 8), -0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 3, 9), -3e-12, (0.706565159136, -0.37275717154, 0.601512898416), True)], [('EE', ('edge', 0, 1), ('edge', 4, 6), 0.0, False), ('EE', ('edge', 2, 3), ('edge', 4, 6), -0.0, False), ('VF', (2, 0, 9), 0.0, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 1, 8), 2e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 2, 8), -1e-12, (0.706565159136, -0.37275717154, 0.601512898416), False), ('VF', (2, 3, 9), -3e-12, (0.706565159136, -0.37275717154, 0.601512898416), True)])})
+
+tests\e5a_g2_oracle.py:162: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_locked-s1000_t0]
+FAILED tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_locked-s1000_t100000]
+FAILED tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_sliding-s1000_t0]
+FAILED tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units[cb2_sliding-s1000_t100000]
+FAILED tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units[cb_bond-s1000_t0]
+FAILED tests/test_g2_bdda3d.py::test_g2_gate_is_invariant_under_rigid_motion_and_units[cb_bond-s1000_t100000]
+6 failed, 310 passed in 10.44s

@@ -1,0 +1,26 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________ test_g6f10_canon_definition_matches_exact_difference_contract ________
+
+    def test_g6f10_canon_definition_matches_exact_difference_contract():
+>       _assert_current_margin_description((Path(__file__).parents[1]/"docs/canon_map.md").read_text(encoding="utf-8"))
+
+tests\test_r6fix_construction.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+doc = '# 正本 ↔ 代码映射表（2026-09-24，M0 文档收尾）\n\n> **WO-R6FIX（2026-10-12，修复留树，待独立复核）**：第六轮确认 12 条（1 critical / 7 major / 4 minor），...codex/E5a2_report.md` 为准；竖墙证书见 `reports/codex/E5a2_evidence/a1/walls_handoff.md`。没有宣称全套≤900秒、正式G6、新worktree或全链精确化通过。\n'
+
+    def _assert_current_margin_description(doc):
+        line = next(line for line in doc.splitlines() if line.startswith("| **1** 定义"))
+>       assert "仍先浮点构造" not in line, "stale pre-rounded margin difference claim"
+E       AssertionError: stale pre-rounded margin difference claim
+E       assert '仍先浮点构造' not in '| **1** 定义 ...没有全局 E，M3） |'
+E         
+E         '仍先浮点构造' is contained here:
+E           k_convex` 仍先浮点构造 b−a，保存精确差点后构造凸包（E5b）；门 `test_margin_exact.py::test_entrance_block_forms_differences_before_any_float_rounding` | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**；E2 新路径待 G6。凹：**未实现**（没有全局 E，M3） |
+E         ?           ++++++
+
+tests\test_r6fix_construction.py:52: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r6fix_construction.py::test_g6f10_canon_definition_matches_exact_difference_contract
+1 failed in 0.11s

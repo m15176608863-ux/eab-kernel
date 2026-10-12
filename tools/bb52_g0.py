@@ -7,7 +7,7 @@ legacy 接触来自 bdda_debug_contacts.csv（mtype 0 = v-e：p1 顶点、p3->p2
 
 `analyze()` 返回数字供 tests/test_bb52_g1.py 钉门；`main()` 打印明细。
 
-G0 口径（2026-09-24 改）：真值一律暴力 `polygons_overlap`；盖侧被检验的是定理"∂E ⊆ ∪ 有效盖线段"
+G0 口径（R6FIX 更新）：真值来自独立整数/有理坐标 oracle；盖侧被检验的是定理"∂E ⊆ ∪ 有效盖线段"
 的两面——分离样本上的**距离完备性**（有效盖见证距离的最小值 == 暴力特征距离，与三维
 `g0_distance_completeness3` 同构），相交样本上的**出口完备性**（沿随机方向首次离开 E 的 ∂E 点处必有有效盖
 作见证，`g0_exit_completeness`）。两者都不是凹块成员谓词（M3）。
@@ -218,7 +218,7 @@ def analyze(*, samples_per_pair: int = 60, seed: int = 0, cone_tol: float = CONE
         "vb_legacy_only": sorted(leg_vb - eab_vb), "vb_eab_only": len(extra_vb), "vb_eab_only_mirror": mirror,
         "vb_eab_only_non_mirror": non_mirror,
         "vv_legacy": [sorted(k) for k in leg_vv], "vv_eab_active": len(eab_vv),
-        # G0：命题 = 距离完备性（分离样本上 min 见证距离 == 暴力特征距离）；真值 = polygons_overlap。
+        # G0：命题 = 距离完备性；有理仿射输入上的独立精确成员及全特征距离 oracle。
         "g0_proposition": "distance_completeness", "g0_pairs": pairs,
         "g0_draws": g0["draws"], "g0_brute_overlap": g0["overlap"], "g0_brute_touch": g0["touch"],
         "g0_samples": g0["separated"], "g0_agree": g0["agree"], "g0_worst_abs_error": g0["worst"],

@@ -1,0 +1,399 @@
+{
+  "work_order": "WO-G6F",
+  "language": "zh-CN",
+  "reviewed_head": "2f6c51811edba364e846923da04c45c901a9af8c",
+  "confirmed_counts": {
+    "critical": 1,
+    "major": 7,
+    "minor": 4
+  },
+  "m0_can_exit": false,
+  "full_suite": {
+    "command": "\"C:\\Program Files\\Python312\\python.exe\" -X utf8 -m pytest -q -p no:cacheprovider tests --basetemp=D:\\eab-wt\\g6f\\review\\tmp_full_suite_resume",
+    "exit_code": 0,
+    "elapsed_seconds": 883.742194890976,
+    "head": "2f6c51811edba364e846923da04c45c901a9af8c",
+    "tracked_baseline_unchanged_at_start": true,
+    "summary": "8582 passed in 876.70s (0:14:36)"
+  },
+  "integrity": {
+    "head": "2f6c51811edba364e846923da04c45c901a9af8c",
+    "baseline_file_count": 1482,
+    "sha256_changed": [],
+    "git_status_short": "?? review/\n",
+    "time_utc": "2026-10-12T00:51:25.089507+00:00",
+    "tracked_files_unchanged": true
+  },
+  "findings": [
+    {
+      "severity": "critical",
+      "file:line": "src/eab/kernel3d/geom3.py:1118-1120",
+      "summary": "可变 canonical convex view 以别名泄漏缓存；只改返回视图，未改变源数据却使源的精确成员与相交静默答错。",
+      "failure_scenario": "P 为 [-1,1]^3 的合法朝外三角表面，H=exact_convex_view(P)，H is not P。将 H.verts 原地平移 +100，P 的 verts/faces 原字节内容不变。精确源成员由 1 变 -1，P 与内含半边长0.5盒的 exact_convex_overlap 报 -1；独立区间积真值均为1，新建等效源对象也仍答1。两表面在编辑前后均合法；不是修改源模型后的预期变化。",
+      "how_to_reproduce": "cd D:/eab-wt/g6f; $env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/solid_convex_cache_alias.py",
+      "repro_path": "review/repro/solid_convex_cache_alias.py",
+      "log_path": "review/logs/solid_convex_cache_alias.log",
+      "suggested_fix": "将缓存 canonical payload 设为不可变、返回隔离副本，或在源取回缓存时同时核验缓存产物内容签名；增加改返回视图但源不变的成员与相交回归及牙。",
+      "verified_output": "view is source False\n\nbefore point state 1\n\nsource still origin-centred -1.0 1.0\n\nafter returned-view mutation state -1\n\nfresh equivalent source state 1\n\nsource exact general surface state 1\n\ncached source exact convex overlap with contained small box -1\n\nCONFIRMED valid-source unchanged; independent box oracle inside=1 overlap=1; cached results=-1/-1\n\n",
+      "source_id": "G6F-3D-01",
+      "repro_paths": [
+        "review/repro/solid_convex_cache_alias.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-01"
+    },
+    {
+      "severity": "major",
+      "file:line": "src/eab/kernel3d/geom3.py:1125-1129",
+      "summary": "凸视图保号捷径只比面顶点集合，不校验面绕向，违背显式凸 API 与面提示无关的 conv(vertices) 契约。",
+      "failure_scenario": "P 顶点恰为 [-1,1]^3 八角点，仅将 top 面提示反绕；Q 为原点半边长1/2盒。explicit-convex API 保留 P is exact_convex_view(P)，exact_point_in_convex_polyhedron(0,P)=-1，membership_convex3(Q,P,0)=-1；独立顶点凸包真值均1；同一八顶点用空 faces 提示时两者都答1。一般 surface API 不在复现中调用，反绕面提示不满足一般 surface 朝外前提，但本发现针对明确只按顶点凸包、面为提示的显式凸契约（geom3.py:1155、1170，exact_3d_design §1）。",
+      "how_to_reproduce": "cd D:/eab-wt/g6f; $env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/solid_convex_face_hint.py",
+      "repro_path": "review/repro/solid_convex_face_hint.py",
+      "log_path": "review/logs/solid_convex_face_hint.log",
+      "suggested_fix": "保号捷径仍应使用已生成 canonical outward supporting ring，或精确核验源面平面、简单环、支撑面及朝外绕向后才能复用；面提示不得改变顶点集凸模型的答案。",
+      "verified_output": "vertex-set oracle: origin inside hull = True\n\ncanonical view retained malformed source hint = True\n\nexact_point_in_convex_polyhedron(origin) = -1\n\nexact_convex_overlap(contained Q,P) = 1\n\nmembership_convex3(Q,P,0) = -1\n\nsame vertices, empty source hints: convex point = 1 E member = 1\n\nCONFIRMED explicit conv(vertices) contract violated by face-hint-only change; no general surface API called\n\n",
+      "source_id": "G6F-3D-02",
+      "repro_paths": [
+        "review/repro/solid_convex_face_hint.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-02"
+    },
+    {
+      "severity": "major",
+      "file:line": "src/eab/kernel3d/geom3.py:430-443",
+      "summary": "is_convex/reflex_edges 即使调用方 tol=0 仍以隐式二面角噪声带吞掉真实凹棱，返回错误的几何谓词结果。",
+      "failure_scenario": "朝外闭合嵌入棱柱的 x-z 截面为 (0,0),(2,0),(2,1),(1,1-eps),(0,1)，y∈[-1,1]。取 eps=2^-50（原点，所有坐标为可精确表达binary64），或 eps=2^-24 且 x 平移1e8（Fraction保持原数）。两 roof 峰中点高1，而精确屋顶中点高1-eps，严格在实体外，故实体非凸且有凹棱。当前 is_convex(tol=0)=True、reflex_edges(tol=0)=[]；manifold_issues=[]。docstring 已说明内部加noise，但它不是调用方显式窗，也没有精确分类兜底。本发现不声称默认 surface_overlap 或 E5b 精确求解走该路径，检索 src 中无生产调用。",
+      "how_to_reproduce": "cd D:/eab-wt/g6f; $env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/solid_hidden_convexity.py",
+      "repro_path": "review/repro/solid_hidden_convexity.py",
+      "log_path": "review/logs/solid_hidden_convexity.log",
+      "suggested_fix": "按未归一化原数据有理二面角符号/全支撑平面分类；显式 tol 正窗若保留应另报近边界，而不能在 tol=0 把真实凹答为凸；加入binary64微凹及工程坐标元门。",
+      "verified_output": "epsilon 1/1125899906842624 translation 0\n\nindependent concavity determinant -1/562949953421312\n\nroof at peak midpoint 1125899906842623/1125899906842624 midpoint height 1\n\nis_convex(tol=0) True\n\nreflex_edges(tol=0) []\n\nmin_dihedral_turn -1.7763568394002505e-15\n\nmanifold_issues []\n\nCONFIRMED exact midpoint concavity witness; API returned convex/no reflex\n\nepsilon 1/16777216 translation 100000000\n\nindependent concavity determinant -1/8388608\n\nroof at peak midpoint 16777215/16777216 midpoint height 1\n\nis_convex(tol=0) True\n\nreflex_edges(tol=0) []\n\nmin_dihedral_turn -1.192092895507811e-07\n\nmanifold_issues []\n\nCONFIRMED exact midpoint concavity witness; API returned convex/no reflex\n\nbinary64-only valid input: True is_convex(tol=0) True reflex_edges(tol=0) []\n\n",
+      "source_id": "G6F-3D-03",
+      "repro_paths": [
+        "review/repro/solid_hidden_convexity.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-03"
+    },
+    {
+      "severity": "major",
+      "file:line": "src/eab/kernel2d/g0.py:239-245; src/eab/kernel2d/g0.py:359-365; src/eab/kernel3d/g03.py:203-205",
+      "conclusion": "二维与三维非凸完备性 G0 仍以隐式噪声预筛跳过严格样本，真实枚举路径全毁仍可报通过。",
+      "failure_scenario": "单位方块或方盒间严格正间隙为 2^-44；二维另用严格微贯入 2^-44。独立 Fraction 区间 oracle 给出 -1 或 1，但 G0 的 1e-12*L 带将样本判成 0 并跳过。内核法锥判据置为 -1 使完整盖集为空，报告仍 passed=true、samples=0。",
+      "how_to_reproduce": "在 D:/eab-wt/g6f 运行 python -X utf8 review/repro/geom2_confirmed.py，查看 G2D-01；再运行 python -X utf8 review/repro/geom3_g0_skip.py。",
+      "repro_paths": [
+        "review/repro/geom2_confirmed.py",
+        "review/repro/geom3_g0_skip.py"
+      ],
+      "suggested_fix": "完备性门先以独立精确成员 oracle 分配严格分离、内部和边界样本，不以隐式带宽跳过严格样本；每个看护格明确检查实际样本数量，并加入二维与三维微间隙、微贯入的真实内部缺陷注入门。浮点见证误差只用于构造审核。",
+      "verified_output": {
+        "2d": {
+          "gap": 5.684341886080802e-14,
+          "exact_states": [
+            -1,
+            1
+          ],
+          "distance": {
+            "passed": true,
+            "samples": 0,
+            "touching": 1
+          },
+          "exit": {
+            "passed": true,
+            "samples": 0,
+            "touching": 1
+          }
+        },
+        "3d": {
+          "true_gap": "1/17592186044416",
+          "exact_state": -1,
+          "baseline": {
+            "passed": true,
+            "samples": 0,
+            "skipped_intersecting": 1
+          },
+          "internal_mutant": {
+            "covers": 0,
+            "passed": true,
+            "samples": 0,
+            "skipped_intersecting": 1
+          }
+        }
+      },
+      "prior_run_origin": "二维缺陷在上一次运行已复现，本次沿用后独立自重放；三维补证本次新增。",
+      "verification_logs": [
+        "review/logs/geom2_confirmed.log",
+        "review/logs/geom3_g0_skip.log"
+      ],
+      "counting_note": "两维同型预筛根因去重一项；不把凸 G0 三票的零跳样声称说成直接错误。",
+      "source_id": "G6F-G2D-01",
+      "summary": "二维与三维非凸完备性 G0 仍以隐式噪声预筛跳过严格样本，真实枚举路径全毁仍可报通过。",
+      "status": "confirmed",
+      "id": "G6F-04"
+    },
+    {
+      "severity": "major",
+      "file:line": "src/eab/kernel2d/g0.py:310-311; src/eab/kernel2d/g0.py:163-166",
+      "conclusion": "非凸 G0 的浮点出口与距离 oracle 会给错误真值：微贯入报零出口，极小可表达线段距离因平方下溢高估，并令正确内核假红。",
+      "failure_scenario": "单位方块 A 沿 x 移动 1-2^-39，B 为单位方块，u=(1,0)：初态满足 polygons_overlap==1，真首次出口为 2^-39=1/549755813888，brute_ray_exit 返回 0，且返回位形仍严格内部相交。另取边长 s=2^-600 的方块，A 相对 B 错位 (1.5*s,.5*s)，真距离为 s/2=1.204959932551442e-181，brute_polygon_distance 返回 1.7040706787304193e-181，正确盖距离被 G0 判失败。",
+      "how_to_reproduce": "在 D:/eab-wt/g6f 运行 python -X utf8 review/repro/geom2_confirmed.py，查看 G2D-02 与 G2D-03。",
+      "repro_paths": [
+        "review/repro/geom2_confirmed.py"
+      ],
+      "suggested_fix": "出口 oracle 按独立 Fraction 事件和精确状态求首边界，不在区间中点加噪声带。距离 oracle 采用独立精确点到闭线段平方距，再作稳健开方，或者先缩放避免平方下溢；加入极端单位尺度和微贯入自校验。不能把正确内核假红当作抓住生产缺陷。",
+      "verified_output": {
+        "first_exit": {
+          "true": "1/549755813888",
+          "true_float": 1.8189894035458565e-12,
+          "got": 0.0,
+          "initial_state": 1,
+          "state_at_got": 1
+        },
+        "distance_underflow": {
+          "scale": 2.409919865102884e-181,
+          "true": 1.204959932551442e-181,
+          "got": 1.7040706787304193e-181,
+          "gate_false_red": true,
+          "correct_cover": 1.204959932551442e-181
+        }
+      },
+      "prior_run_origin": "首出口缺陷在上一次运行已复现，本次自重放；距离下溢本次新增。",
+      "verification_logs": [
+        "review/logs/geom2_confirmed.log"
+      ],
+      "counting_note": "同一 G0 oracle 可信性项列两种独立错误机制，不另计两项；不是一般凸生产成员或时刻静默答反。",
+      "source_id": "G6F-G2D-02",
+      "summary": "非凸 G0 的浮点出口与距离 oracle 会给错误真值：微贯入报零出口，极小可表达线段距离因平方下溢高估，并令正确内核假红。",
+      "status": "confirmed",
+      "id": "G6F-05"
+    },
+    {
+      "severity": "major",
+      "file:line": "src/eab/kernel2d/entrance.py:226",
+      "conclusion": "二维精确最短出口的 gap 构造先把有理平方转为 float，微尺寸下把可表达的非零侵入间隙静默变成 -0.0。",
+      "failure_scenario": "A=B 为边长 s=2^-600 的方块，x0=(s/2,0)。shortest_exit 正确选择 exit 与右边标签，却报告 gap=-0.0；精确几何 gap=-s/2=-1.204959932551442e-181，可以作为 binary64 非零数表示。错误源于中间平方转 float 下溢，而非输出本身不可表达。",
+      "how_to_reproduce": "在 D:/eab-wt/g6f 运行 python -X utf8 review/repro/geom2_confirmed.py，查看 G2D-04。",
+      "repro_paths": [
+        "review/repro/geom2_confirmed.py"
+      ],
+      "suggested_fix": "采用指数拆分或缩放后开方的稳健有理量构造，不要先将微小平方直接转成 float；加入 tiny scale 下真 gap 与浮点输出的非零、相对误差门，同时保留 kind 与 label 的精确门。",
+      "verified_output": {
+        "scale": 2.409919865102884e-181,
+        "true_gap": -1.204959932551442e-181,
+        "got_gap": -0.0,
+        "kind": "exit",
+        "label": [
+          "VE",
+          0,
+          1
+        ]
+      },
+      "prior_run_origin": "本次新增并自复现。",
+      "verification_logs": [
+        "review/logs/geom2_confirmed.log"
+      ],
+      "counting_note": "计算结果错误但仅极端单位构造量，按工单窄范围错误归 major，不归 critical；不声称标签或状态错。",
+      "source_id": "G6F-G2D-03",
+      "summary": "二维精确最短出口的 gap 构造先把有理平方转为 float，微尺寸下把可表达的非零侵入间隙静默变成 -0.0。",
+      "status": "confirmed",
+      "id": "G6F-06"
+    },
+    {
+      "severity": "major",
+      "file": "src/eab/dual.py",
+      "line": 85,
+      "location": "src/eab/dual.py:85",
+      "summary": "Dual 除法和 atan2 在中间平方/乘积溢出或下溢时给出错误导数，即使输入与正确答案全部有限。",
+      "failure_scenario": "Dual(1e200,(1e200,))/1e200 应为值1、导数1，实得导数inf；尺度1e-200实得0而非1。atan2(Dual(1e200,(0,)),Dual(1e200,(1,))) 导数应为-5e-201，实得-0.0；1e-200版反而ZeroDivisionError。窄极端尺度范围，故major，不将普通算术误差冒充核心精确谓词错。",
+      "how_to_reproduce": "在 D:/eab-wt/g6f 运行：$env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/root_dual_scaling.py",
+      "repro_script": "review/repro/root_dual_scaling.py",
+      "suggested_fix": "采用尺度规整的商/atan2导数表达式，避免先形成a*ov、x²+y²；若无法得到可信有限输出则响亮失败；补单位缩放与指数跨度门。",
+      "verified_output": "atan2 scale=1.0 primal=0.7853981633974483 derivative=-0.5 expected=-0.5 equal=True\n\natan2 scale=1e+200 primal=0.7853981633974483 derivative=-0.0 expected=-5e-201 equal=False\n\natan2 scale=1e-200 exception=ZeroDivisionError: float division by zero expected=-5e+199\n\ndivision=Dual(1.0, (inf,)) expected=Dual(1.0,(1.0,))\n\ndivision_small=Dual(1.0, (0.0,)) expected=Dual(1.0,(1.0,))\n\nzero_power_0.0=ZeroDivisionError: 0.0 cannot be raised to a negative power\n\nzero_power_1.0=Dual(0.0, (1.0,))\n\nzero_power_2.0=Dual(0.0, (0.0,))\n\n",
+      "evidence_log": "review/logs/root_dual_scaling_resume.log",
+      "origin": "中断前已有脚本/初步输出，本次自行重跑确认",
+      "source_id": "root_dual_extreme",
+      "file:line": "src/eab/dual.py:85",
+      "repro_paths": [
+        "review/repro/root_dual_scaling.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-07"
+    },
+    {
+      "severity": "major",
+      "file": "src/eab/margin.py",
+      "line": 491,
+      "location": "src/eab/margin.py:491",
+      "summary": "凸入口块距离与法向辅助 API 先舍入全局投影再相减，工程坐标下将可表达真实正距离答成 0、外法向答成 None。",
+      "failure_scenario": "精确盒 E=[T+s,T+3s]×[-s,s]^2，s=1e-9、T=1e8，点 x=(T,0,0)。独立区间积距离 s、投影 (T+s,0,0)、法向 (-1,0,0)；实际 distance=0、normal=None。相同模型移回原点时全部正确；这里 Fraction 保存合法微尺寸，并非 float 输入已塌缩。默认 body_distance 状态不受本脚本直接影响，缺陷在公开辅助 API 和所谓凸距离独立 oracle。",
+      "how_to_reproduce": "在 D:/eab-wt/g6f 运行：$env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/root_margin_projection.py",
+      "repro_script": "review/repro/root_margin_projection.py",
+      "suggested_fix": "保留相对投影向量的精确数据，直接由其平方范数计算距离/法向，不从舍入的全局投影坐标反减；公开点输出若是 float 视图，需另给精确点见证或声明表示界限；补单位和大平移门。",
+      "verified_output": "[\n\n  {\n\n    \"translation\": \"0\",\n\n    \"expected_distance\": 1e-09,\n\n    \"reported_distance\": 1e-09,\n\n    \"expected_projection\": [\n\n      \"1/1000000000\",\n\n      \"0\",\n\n      \"0\"\n\n    ],\n\n    \"reported_projection\": [\n\n      1e-09,\n\n      0.0,\n\n      0.0\n\n    ],\n\n    \"expected_normal\": [\n\n      -1,\n\n      0,\n\n      0\n\n    ],\n\n    \"reported_normal\": [\n\n      -1.0,\n\n      0.0,\n\n      0.0\n\n    ],\n\n    \"exact_state\": -1\n\n  },\n\n  {\n\n    \"translation\": \"1000\",\n\n    \"expected_distance\": 1e-09,\n\n    \"reported_distance\": 9.999894245993346e-10,\n\n    \"expected_projection\": [\n\n      \"1000000000001/1000000000\",\n\n      \"0\",\n\n      \"0\"\n\n    ],\n\n    \"reported_projection\": [\n\n      1000.000000001,\n\n      0.0,\n\n      0.0\n\n    ],\n\n    \"expected_normal\": [\n\n      -1,\n\n      0,\n\n      0\n\n    ],\n\n    \"reported_normal\": [\n\n      -1.0,\n\n      0.0,\n\n      0.0\n\n    ],\n\n    \"exact_state\": -1\n\n  },\n\n  {\n\n    \"translation\": \"100000000\",\n\n    \"expected_distance\": 1e-09,\n\n    \"reported_distance\": 0.0,\n\n    \"expected_projection\": [\n\n      \"100000000000000001/1000000000\",\n\n      \"0\",\n\n      \"0\"\n\n    ],\n\n    \"reported_projection\": [\n\n      100000000.0,\n\n      0.0,\n\n      0.0\n\n    ],\n\n    \"expected_normal\": [\n\n      -1,\n\n      0,\n\n      0\n\n    ],\n\n    \"reported_normal\": null,\n\n    \"exact_state\": -1\n\n  }\n\n]\n\n",
+      "evidence_log": "review/logs/root_margin_projection.log",
+      "origin": "本次新增独立区间积反例并自行运行确认，不是上次沿用结论",
+      "source_id": "root_margin_projection",
+      "file:line": "src/eab/margin.py:491",
+      "repro_paths": [
+        "review/repro/root_margin_projection.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-08"
+    },
+    {
+      "severity": "minor",
+      "file:line": "src/eab/kernel3d/interlock.py:175-181; src/eab/kernel3d/geom3.py:380-381",
+      "summary": "精确逃逸前置 nominal 浮点平移拒绝合法 Fraction 微尺度输入；等值零偏移仅 int→float 就造成零长棱错误。",
+      "failure_scenario": "两个合法精确盒为原点盒 A 与 z=3/4 盒 B，半边长各1/2；统一scale=1e-9、坐标origin=1e8，以Fraction保存。独立区间积最早竖向脱离根为7/4000000000。offset=(0,0,0)返回该精确根；完全等值的offset=(0.,0.,0.)使 nominal At=A.translated(offset) 将微特征舍成相同float，抛ValueError zero-length edge，精确求解器未运行。没有静默返回错误根，因此按minor计。",
+      "how_to_reproduce": "cd D:/eab-wt/g6f; $env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/geom3_nominal_translation_loss.py",
+      "repro_path": "review/repro/geom3_nominal_translation_loss.py",
+      "log_path": "review/logs/geom3_nominal_translation_loss.log",
+      "suggested_fix": "nominal 报告构造须保留非Dual原坐标精确仿射值，或让显示候选构造失败不会阻断权威精确求解；增加等值标量类型与混合尺度门。",
+      "verified_output": "independent exact product-interval earliest root 7/4000000000\noffset integer zero exact_height 7/4000000000\nequivalent offset float zero rejected: ValueError zero-length edge (0, 1) (consecutive duplicate vertex)\nCONFIRMED nominal-report float translation fails before exact authoritative solver\n",
+      "source_id": "G6F-3D-04",
+      "repro_paths": [
+        "review/repro/geom3_nominal_translation_loss.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-09"
+    },
+    {
+      "severity": "minor",
+      "file_line": "docs/canon_map.md:55",
+      "file": "docs/canon_map.md",
+      "line": 55,
+      "summary": "canon_map仍称入口块先浮点差点，实际E5b已先有理化再相减，代码描述过时。",
+      "failure_scenario": "A=box(center=(1,0,0),half=(.5,.5,.5)), B=box(center=(1e16,0,0),half=(4,.5,.5)); 文档称差点先舍入，实际最小x为正确Fraction(19999999999999989,2)，而float差点是9999999999999994。",
+      "how_to_reproduce": "python -X utf8 review/repro/gates_docs_stale_margin_claim.py",
+      "repro_path": "review/repro/gates_docs_stale_margin_claim.py",
+      "suggested_fix": "更新canon_map命题1当前代码列为先有理化后作差，指向test_entrance_block_forms_differences_before_any_float_rounding；不修实现。",
+      "verified_output": {
+        "doc_line": 55,
+        "doc_claim": "margin.entrance_block_convex 仍先浮点构造 b−a",
+        "exact_min_x": "19999999999999989/2",
+        "rounded_difference_min_x": "9999999999999994",
+        "actual_min_x": "19999999999999989/2",
+        "code_actually_preserves_exact_input_difference": true
+      },
+      "verified_log": "review/logs/gates_docs_stale_margin_claim.log",
+      "status": "confirmed",
+      "source_id": "GD-01",
+      "file:line": "docs/canon_map.md:55",
+      "repro_paths": [
+        "review/repro/gates_docs_stale_margin_claim.py"
+      ],
+      "id": "G6F-10"
+    },
+    {
+      "severity": "minor",
+      "file": "src/eab/dual.py",
+      "line": 107,
+      "location": "src/eab/dual.py:107",
+      "summary": "Dual ** 0 在零底数上错误抛出 ZeroDivisionError，而该运算是常数1、导数0。",
+      "failure_scenario": "Dual(0.,(1.,)) ** 0. 求 c=p*v**(p-1) 时先计算0**-1抛错；同API对非零底数正确返回Dual(1,(0,))。",
+      "how_to_reproduce": "在 D:/eab-wt/g6f 运行：$env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/root_boundary_contracts.py",
+      "repro_script": "review/repro/root_boundary_contracts.py",
+      "suggested_fix": "p==0作为恒等常数幂处理，返回同宽全零导数；增加零底数/零指数闭式边界门。",
+      "verified_output": "min status= optimal x= [0.0, 0.0] y= [] exact_x= None exact_y= None\n\nmax status= optimal x= [0.0, 0.0] y= [] exact_x= None exact_y= None\n\none-row reference exact_x= (Fraction(0, 1),) exact_y= (Fraction(1, 1),)\n\npow0 0.0 ZeroDivisionError 0.0 cannot be raised to a negative power\n\npow0 2.0 Dual(1.0, (0.0,))\n\npython_float_zero_power= 1.0\n\n",
+      "evidence_log": "review/logs/root_boundary_contracts.log",
+      "origin": "中断前已有脚本/初步输出，本次自行重跑确认",
+      "source_id": "root_dual_power_zero",
+      "file:line": "src/eab/dual.py:107",
+      "repro_paths": [
+        "review/repro/root_boundary_contracts.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-11"
+    },
+    {
+      "severity": "minor",
+      "file": "src/eab/lp.py",
+      "line": 412,
+      "location": "src/eab/lp.py:412",
+      "summary": "零约束 OPTIMAL LP 快路遗漏 exact_x/exact_y，与一般最优结果精确见证接口不一致。",
+      "failure_scenario": "solve([],[],[0.,1.])及maximize([],[],[0.,-1.])状态/浮点答案正确，但exact_x=None、exact_y=None；应至少输出(Fraction(0),Fraction(0))与空tuple。一行参考LP正常携带见证。该项不是错误最优值。",
+      "how_to_reproduce": "在 D:/eab-wt/g6f 运行：$env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/root_boundary_contracts.py",
+      "repro_script": "review/repro/root_boundary_contracts.py",
+      "suggested_fix": "在m==0的optimal分支填零原始有理向量和空对偶向量，补所有optimal分支字段契约门。",
+      "verified_output": "min status= optimal x= [0.0, 0.0] y= [] exact_x= None exact_y= None\n\nmax status= optimal x= [0.0, 0.0] y= [] exact_x= None exact_y= None\n\none-row reference exact_x= (Fraction(0, 1),) exact_y= (Fraction(1, 1),)\n\npow0 0.0 ZeroDivisionError 0.0 cannot be raised to a negative power\n\npow0 2.0 Dual(1.0, (0.0,))\n\npython_float_zero_power= 1.0\n\n",
+      "evidence_log": "review/logs/root_boundary_contracts.log",
+      "origin": "中断前已有脚本/初步输出，本次自行重跑确认",
+      "source_id": "root_lp_zero_witness",
+      "file:line": "src/eab/lp.py:412",
+      "repro_paths": [
+        "review/repro/root_boundary_contracts.py"
+      ],
+      "status": "confirmed",
+      "id": "G6F-12"
+    }
+  ],
+  "replay_unique_raw_count": 26,
+  "replay_raw_ids": [
+    2,
+    3,
+    7,
+    9,
+    11,
+    20,
+    21,
+    22,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    34,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "replay_index": "review/notes/g6e_replay_index.json",
+  "limitations": [
+    "静态分支库存不等于全部分支的独立动态证明",
+    "107个旧改动函数未全部逐断言人工深审，仅4种新增隔离源码变异",
+    "正本00部分章节未逐行精读；没有外部论文/学术优先性核证",
+    "一般凹表面独立oracle主要覆盖矩形并/认证星核类，非任意嵌入表面穷举"
+  ],
+  "source_files": [
+    "src/eab/__init__.py",
+    "src/eab/contact_record.py",
+    "src/eab/dual.py",
+    "src/eab/kernel2d/__init__.py",
+    "src/eab/kernel2d/covers.py",
+    "src/eab/kernel2d/entrance.py",
+    "src/eab/kernel2d/exact.py",
+    "src/eab/kernel2d/g0.py",
+    "src/eab/kernel2d/geom.py",
+    "src/eab/kernel3d/__init__.py",
+    "src/eab/kernel3d/covers3.py",
+    "src/eab/kernel3d/entrance3.py",
+    "src/eab/kernel3d/exact_geom.py",
+    "src/eab/kernel3d/exact_sweep.py",
+    "src/eab/kernel3d/frozen.py",
+    "src/eab/kernel3d/g03.py",
+    "src/eab/kernel3d/g03_exact.py",
+    "src/eab/kernel3d/geom3.py",
+    "src/eab/kernel3d/interlock.py",
+    "src/eab/limit.py",
+    "src/eab/limit_multi.py",
+    "src/eab/lp.py",
+    "src/eab/margin.py",
+    "src/eab/predicates.py",
+    "src/eab/rational3.py",
+    "src/eab/readers/__init__.py",
+    "src/eab/readers/bdda3d.py",
+    "src/eab/readers/bdda_df.py",
+    "src/eab/readers/bdda_geom.py",
+    "src/eab/readers/tf_probe.py"
+  ]
+}

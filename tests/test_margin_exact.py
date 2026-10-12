@@ -146,6 +146,7 @@ def test_closed_is_exact_when_the_display_gap_underflows_to_zero():
     first = contacts[0]
     assert first.distance == first.margin_gap == 0
     assert not first.closed
+    assert first.exact_distance_squared == gap*gap > 0
 
 
 def test_explicit_local_shell_window_does_not_require_global_rigid_escape():

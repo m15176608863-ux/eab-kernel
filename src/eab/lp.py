@@ -407,7 +407,8 @@ def solve(A: list[list[float]], b: list[float], c: list[float], *,
         if neg:
             ray = [1.0 if j == neg[0] else 0.0 for j in range(n)]
             return LPResult(UNBOUNDED, [0.0] * n, float("-inf"), [], 0, [], ray)
-        return LPResult(OPTIMAL, [0.0] * n, 0.0, [], 0, [])
+        return LPResult(OPTIMAL, [0.0] * n, 0.0, [], 0, [],
+                        exact_x=(Fraction(0),) * n, exact_y=())
     X = _Exact(A, b, c, exact)
     try:
         cand = _float_solve(A, b, c, tol=tol, max_iter=max_iter, flip=X.flip)

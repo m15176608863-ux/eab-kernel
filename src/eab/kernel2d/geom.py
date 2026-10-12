@@ -1,12 +1,9 @@
-"""二维几何原语。纯 Python，零依赖。所有多边形以顶点列表表示，内部统一为逆时针（CCW）。
+"""2D coordinate geometry; predicates are exact on supplied coordinates.
 
-约定：CCW 多边形边 p->q 的外法向 = 右法向 (dy, -dx)/|e|。
-E2/E3 的生产分支（covers / entrance）使用 exact 的 Fraction 谓词；本模块的 orient2d 与 convex_hull 也对给定数据精确。
-浮点法向、点积、投影、面积等仅作构造；可分辨性不是对给定浮点数据的判定不确定性。
-
-兼容的旧浮点对照/统计辅助（is_convex / reflex_vertices / point_in_polygon / polygons_overlap）仍保留历史噪声带
-max(tol, ROUND_C·eps·C)，不能作为生产精确答案，也不能把该地板称作调用方域窗口。angle_floor/turn_floor 仍服务
-旧凸性统计，round_floor 仍服务可分辨性报告与旧对照；不是 E3 无调用死代码。移除这些旧对照 API 不在本单范围。
+CCW edge normals point right. Zero-tolerance convexity, reflex turns, membership
+and overlap have no implicit noise band. Positive angular/length tolerances are
+explicit caller windows, never inflated by coordinate magnitude. Reporting-only
+angle_floor/turn_floor/round_floor remain available, not predicate truth.
 """
 
 from __future__ import annotations
@@ -74,18 +71,26 @@ def unit(a: Point) -> Point:
     return (a[0] / n, a[1] / n)
 
 
+def _area2_exact(poly):
+    P=[tuple(map(Fraction,p)) for p in poly];o=P[0]
+    return sum(((a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])
+                for a,b in zip(P,P[1:]+P[:1])),Fraction(0))
+
+
+def _display_fraction(value):
+    out=float(value)
+    if value and out==0:raise ArithmeticError('nonzero geometry construction below binary64 output range')
+    return out
+
+
 def signed_area(poly: Poly) -> float:
-    """相对 poly[0] 累加，避免远离原点的小多边形灾难性抵消（审查 r5c：1e-4 尺寸放在 1e4 处面积误差 100%）。"""
-    s = 0.0
-    n = len(poly)
-    o = poly[0]
-    for i in range(n):
-        s += cross(sub(poly[i], o), sub(poly[(i + 1) % n], o))
-    return 0.5 * s
+    """Exact shoelace followed by one checked float construction (not a sign oracle)."""
+    return _display_fraction(_area2_exact(poly)/2)
 
 
 def is_ccw(poly: Poly) -> bool:
-    return signed_area(poly) > 0.0
+    """Exact area sign, even when its float magnitude cannot be represented."""
+    return _area2_exact(poly)>0
 
 
 def ensure_ccw(poly: Poly) -> tuple[Poly, bool]:
@@ -106,12 +111,16 @@ def outward_normal(poly: Poly, i: int) -> Point:
     零长边（连续重复顶点）没有法向：抛 ValueError('zero-length edge ...')，而不是 unit() 的
     ZeroDivisionError（审查 C19）。输入归一化在读取器边界做（readers.bdda_geom.strip_duplicate_vertices）。
     """
+    from ..construction import sqrt_rational
     p, q = edge(poly, i)
-    e = sub(q, p)
-    if e[0] == 0.0 and e[1] == 0.0:
+    ex,ey=(Fraction(q[k])-Fraction(p[k]) for k in (0,1))
+    square=ex*ex+ey*ey
+    if not square:
         raise ValueError(f"zero-length edge {i % len(poly)} (consecutive duplicate vertex at {p}); "
                          f"strip duplicates at the reader boundary")
-    return unit((e[1], -e[0]))
+    def component(value):
+        return (1 if value>0 else -1)*sqrt_rational(value*value/square) if value else 0.0
+    return component(ey),component(-ex)
 
 
 def zero_length_edges(poly: Poly) -> list[int]:
@@ -141,8 +150,11 @@ def turn_angle(poly: Poly, i: int) -> float:
 
 
 def turn_floor(poly: Poly, i: int) -> float:
-    """顶点 i 转角的舍入下限 c·eps·C/ℓ：C 取三个顶点的坐标量级，ℓ 取两条邻边的较短者（纪律 F）。
-    平直顶点（理想转角 0）经旋转/平移/换单位后转角成 ±eps·C/ℓ 量级，不许因此翻成"反射"。"""
+    """Reporting-only angular roundoff estimate, never used to change a predicate.
+
+    A rounded motion may change the supplied coordinates and hence a true turn;
+    this estimate describes that representation effect, not geometric truth.
+    """
     n = len(poly)
     a, b, c = poly[(i - 1) % n], poly[i % n], poly[(i + 1) % n]
     C = max(abs(a[0]), abs(a[1]), abs(b[0]), abs(b[1]), abs(c[0]), abs(c[1]))
@@ -150,18 +162,31 @@ def turn_floor(poly: Poly, i: int) -> float:
 
 
 def is_convex(poly: Poly, tol: float = 0.0) -> bool:
-    """tol 为角容差（弧度，无量纲），再抬到每个顶点的舍入下限 turn_floor；
-    与 covers._edge_angle 同一口径（审查 r4c：未归一化叉积与角度序错配）。"""
+    """CCW convexity; only the explicit angular window tol may suppress a turn."""
     return not reflex_vertices(poly, tol)
 
 
 def reflex_vertices(poly: Poly, tol: float = 0.0) -> list[int]:
-    """转角 < −max(tol, turn_floor) 的顶点（舍入下限只在转角为负时才需要算）。"""
-    out = []
-    for i in range(len(poly)):
-        ta = turn_angle(poly, i)
-        if ta < 0.0 and ta < -max(tol, turn_floor(poly, i)):
-            out.append(i)
+    """Exact right turns at tol=0; no coordinate-dependent hidden angle floor.
+
+    Positive tol is an explicit angular sector whose sin/cos construction is
+    rounded once, then compared by exact rational determinant.
+    """
+    from math import cos, sin, pi
+    if tol < 0:raise ValueError('tol must be nonnegative')
+    if tol >= pi:return []
+    cosine, sine = Fraction(cos(tol)), Fraction(sin(tol))
+    out=[]
+    for i,b in enumerate(poly):
+        a,c=poly[i-1],poly[(i+1)%len(poly)]
+        if orient2d(a,b,c)>=0:continue
+        if tol==0:
+            out.append(i);continue
+        u=tuple(Fraction(b[k])-Fraction(a[k]) for k in (0,1))
+        v=tuple(Fraction(c[k])-Fraction(b[k]) for k in (0,1))
+        determinant=u[0]*v[1]-u[1]*v[0]
+        scalar=u[0]*v[0]+u[1]*v[1]
+        if -cosine*determinant-sine*scalar>0:out.append(i)
     return out
 
 
@@ -171,69 +196,53 @@ def point_side(p: Point, a: Point, b: Point) -> float:
 
 
 def point_in_polygon(pt: Point, poly: Poly, tol: float = 0.0) -> int:
-    """1 严格内部 / 0 在边界（容差 tol，抬到舍入下限 c·eps·C）/ -1 外部。绕数法，多边形任意朝向。"""
-    return _point_in_polygon(pt, poly, max(tol, round_floor(max(coord_scale(poly), abs(pt[0]), abs(pt[1])))))
+    """Exact winding; explicit tol is a closed-segment distance window only."""
+    if tol < 0:raise ValueError('tol must be nonnegative')
+    return _point_in_polygon(pt, poly, tol)
 
 
 def _point_in_polygon(pt: Point, poly: Poly, tol: float) -> int:
-    """同 point_in_polygon，但 tol 已由调用方抬过舍入下限（polygons_overlap 的内层循环用，省去逐点重算 C）。"""
-    n = len(poly)
-    # 边界检测
-    for i in range(n):
-        a, b = poly[i], poly[(i + 1) % n]
-        e = sub(b, a)
-        le = norm(e)
-        if le == 0.0:
-            continue
-        d = abs(point_side(pt, a, b)) / le
-        if d <= tol:
-            t = dot(sub(pt, a), e) / (le * le)
-            if -tol / le <= t <= 1.0 + tol / le:
-                return 0
-    wn = 0
-    for i in range(n):
-        a, b = poly[i], poly[(i + 1) % n]
-        if a[1] <= pt[1]:
-            if b[1] > pt[1] and point_side(pt, a, b) > 0:
-                wn += 1
-        else:
-            if b[1] <= pt[1] and point_side(pt, a, b) < 0:
-                wn -= 1
-    return 1 if wn != 0 else -1
+    p=tuple(map(Fraction,pt));P=[tuple(map(Fraction,a)) for a in poly]
+    window=Fraction(tol)**2
+    winding=0
+    for a,b in zip(P,P[1:]+P[:1]):
+        ex,ey=b[0]-a[0],b[1]-a[1];wx,wy=p[0]-a[0],p[1]-a[1]
+        length=ex*ex+ey*ey;projection=wx*ex+wy*ey;side=ex*wy-ey*wx
+        if length:
+            if projection<=0:near=wx*wx+wy*wy<=window
+            elif projection>=length:near=(p[0]-b[0])**2+(p[1]-b[1])**2<=window
+            else:near=side*side<=window*length
+            if near:return 0
+        if a[1]<=p[1]<b[1] and side>0:winding+=1
+        elif b[1]<=p[1]<a[1] and side<0:winding-=1
+    return 1 if winding else -1
 
 
 def segments_properly_cross(p1: Point, p2: Point, q1: Point, q2: Point, tol: float = 0.0) -> bool:
-    """两线段在各自内部相交（不含端点触碰、不含共线重叠）。tol 为长度容差，抬到舍入下限 c·eps·C。"""
-    tol = eff_tol(tol, (p1, p2, q1, q2))
-    d1 = point_side(q1, p1, p2)
-    d2 = point_side(q2, p1, p2)
-    d3 = point_side(p1, q1, q2)
-    d4 = point_side(p2, q1, q2)
-    lp = norm(sub(p2, p1))
-    lq = norm(sub(q2, q1))
-    if lp == 0.0 or lq == 0.0:
-        return False
-    # 用距离量纲比较
-    d1, d2 = d1 / lp, d2 / lp
-    d3, d4 = d3 / lq, d4 / lq
-    return ((d1 > tol and d2 < -tol) or (d1 < -tol and d2 > tol)) and \
-           ((d3 > tol and d4 < -tol) or (d3 < -tol and d4 > tol))
+    """Exact proper crossing; positive tol requires all endpoint heights > tol."""
+    if tol < 0:raise ValueError('tol must be nonnegative')
+    if tol==0:
+        return orient2d(p1,p2,q1)*orient2d(p1,p2,q2)<0 and orient2d(q1,q2,p1)*orient2d(q1,q2,p2)<0
+    p1,p2,q1,q2=[tuple(map(Fraction,p)) for p in (p1,p2,q1,q2)]
+    window=Fraction(tol)**2
+    for a,b,c,d in ((p1,p2,q1,q2),(q1,q2,p1,p2)):
+        ex,ey=b[0]-a[0],b[1]-a[1];length=ex*ex+ey*ey
+        v=ex*(c[1]-a[1])-ey*(c[0]-a[0]);w=ex*(d[1]-a[1])-ey*(d[0]-a[0])
+        if v*w>=0 or v*v<=window*length or w*w<=window*length:return False
+    return True
 
 
 def centroid(poly: Poly) -> Point:
-    """面积形心（相对 poly[0] 计算防抵消）。注意：凹多边形的形心可能在多边形外——不能当内点用。"""
-    a = signed_area(poly)
-    n = len(poly)
-    if a == 0.0:
-        return (sum(p[0] for p in poly) / n, sum(p[1] for p in poly) / n)
-    o = poly[0]
-    cx = cy = 0.0
-    for i in range(n):
-        p, q = sub(poly[i], o), sub(poly[(i + 1) % n], o)
-        w = cross(p, q)
-        cx += (p[0] + q[0]) * w
-        cy += (p[1] + q[1]) * w
-    return (o[0] + cx / (6.0 * a), o[1] + cy / (6.0 * a))
+    """Rational area moments, divided before rounding the final centroid."""
+    P=[tuple(map(Fraction,p)) for p in poly];o=P[0]
+    relative=[(x-o[0],y-o[1]) for x,y in P]
+    area2=Fraction(0);cx=cy=Fraction(0)
+    for a,b in zip(relative,relative[1:]+relative[:1]):
+        w=a[0]*b[1]-a[1]*b[0]
+        area2+=w;cx+=(a[0]+b[0])*w;cy+=(a[1]+b[1])*w
+    if not area2:
+        return tuple(_display_fraction(sum(p[k] for p in P)/len(P)) for k in (0,1))
+    return _display_fraction(o[0]+cx/(3*area2)),_display_fraction(o[1]+cy/(3*area2))
 
 
 def orient2d(a: Point, b: Point, c: Point) -> int:
@@ -271,6 +280,7 @@ def interior_point(poly: Poly) -> Point:
     旧规则取"离 v 最远"的顶点（G6 major 12），vx 可以穿过缺口：V 形缺口六边形上返回体外点，2-opt 随机简单
     多边形 0.1–0.25% 失败。门：tests/test_kernel2d_review.py::test_g6_12_*（独立 oracle：Fraction 射线奇偶）。
     """
+    poly = [tuple(map(Fraction, p)) for p in poly]
     n = len(poly)
     iv = min(range(n), key=lambda i: (poly[i][0], poly[i][1]))
     p, v, q = poly[(iv - 1) % n], poly[iv], poly[(iv + 1) % n]
@@ -280,7 +290,7 @@ def interior_point(poly: Poly) -> Point:
         return all(t * turn >= 0 for t in (orient2d(p, v, x), orient2d(v, q, x), orient2d(q, p, x)))
 
     best = None
-    best_d = -1.0
+    best_d = Fraction(-1)
     for k in range(n):
         if k in (iv, (iv - 1) % n, (iv + 1) % n):
             continue
@@ -290,8 +300,8 @@ def interior_point(poly: Poly) -> Point:
             if d > best_d:
                 best, best_d = x, d
     if best is None:
-        return ((p[0] + v[0] + q[0]) / 3.0, (p[1] + v[1] + q[1]) / 3.0)
-    return ((v[0] + best[0]) * 0.5, (v[1] + best[1]) * 0.5)
+        return ((p[0] + v[0] + q[0]) / 3, (p[1] + v[1] + q[1]) / 3)
+    return ((v[0] + best[0]) / 2, (v[1] + best[1]) / 2)
 
 
 def triangulate(poly: Poly) -> list[tuple[int, int, int]]:
@@ -348,15 +358,16 @@ def _tri_axes(T) -> list[Point]:
 
 
 def _triangles_overlap(T, U, tol: float, o: Point) -> bool:
-    """两三角形内部相交且深于 tol：分离轴定理——6 条边法向上投影区间的重叠长度都 > tol。
-    坐标先减局部原点 o（两三角都在 o 附近，减法近乎精确），投影误差不随坐标量级放大。"""
-    Tl = [sub(p, o) for p in T]
-    Ul = [sub(p, o) for p in U]
-    for n in _tri_axes(Tl) + _tri_axes(Ul):
-        a = [dot(n, p) for p in Tl]
-        b = [dot(n, p) for p in Ul]
-        if min(max(a), max(b)) - max(min(a), min(b)) <= tol:
-            return False
+    """Triangle SAT with exact signed projection gaps and explicit length tol."""
+    T,U=[tuple(map(Fraction,p)) for p in T],[tuple(map(Fraction,p)) for p in U]
+    window=Fraction(tol)**2
+    for P in (T,U):
+        for a,b in zip(P,P[1:]+P[:1]):
+            nx,ny=b[1]-a[1],a[0]-b[0];length=nx*nx+ny*ny
+            if not length:continue
+            t=[nx*p[0]+ny*p[1] for p in T];u=[nx*p[0]+ny*p[1] for p in U]
+            overlap=min(max(t),max(u))-max(min(t),min(u))
+            if overlap<=0 or overlap*overlap<=window*length:return False
     return True
 
 
@@ -380,20 +391,16 @@ def _interiors_overlap(A: Poly, B: Poly, tol: float) -> bool:
 
 
 def polygons_overlap(A: Poly, B: Poly, tol: float = 0.0) -> int:
-    """暴力谓词：1 内部相交 / 0 仅边界接触（间隙或侵入 ≤ tol）/ -1 分离。任意简单多边形、任意朝向。
+    """Simple-polygon overlap: exact at tol=0, explicit distance window otherwise.
 
-    tol 为长度容差，抬到舍入下限 c·eps·C（纪律 F：工程坐标上贴合的块体仍判 0，不因舍入翻成 ±1）。
-      1. 包围盒相离 > tol → −1；
-      2. 任一顶点严格在对方内部（离对方边界 > tol）→ 1；任一对边真横截相交（两端各离对方直线 > tol）→ 1；
-      3. 没有任何顶点落在对方的边界带内 → 两条边界不相交、也互不包含（包含必有顶点严格在内）→ −1；
-      4. 否则（有接触而快路没找到相交证人：共线重合的臂、全等、贴合嵌入）：两份**精确耳切**逐对三角形做
-         分离轴检验，任一对内部相交深于 tol → 1，否则 0。
-    旧版第 4 步是"边中点 / 单个保证内点严格在对方内部"，不完备（G6 major 12：C 形与其平移 (0,−2) 臂重合面积 3
-    判 0；interior_point 本身还会落到体外，把悬在缺口里的方块判 1）。
-    门：tests/test_kernel2d_review.py::test_g6_12_*（独立 oracle：Fraction 耳切 + Sutherland–Hodgman 精确面积）、
-    tests/test_invariance_2d.py::test_polygons_overlap_is_invariant。
+    No roundoff/coordinate floor is added. A positive tol deliberately reports
+    near-contact instead of strict overlap/separation; all its comparisons use
+    rational projections and squared distances on the supplied coordinates.
     """
-    t = eff_tol(tol, A, B)
+    if tol < 0:raise ValueError('tol must be nonnegative')
+    t=Fraction(tol)
+    A=[tuple(map(Fraction,p)) for p in A]
+    B=[tuple(map(Fraction,p)) for p in B]
     ax0, ax1 = min(p[0] for p in A), max(p[0] for p in A)
     ay0, ay1 = min(p[1] for p in A), max(p[1] for p in A)
     bx0, bx1 = min(p[0] for p in B), max(p[0] for p in B)
@@ -403,7 +410,7 @@ def polygons_overlap(A: Poly, B: Poly, tol: float = 0.0) -> int:
     touching = False
     for P, Q in ((A, B), (B, A)):
         for p in P:
-            s = _point_in_polygon(p, Q, t)          # t 已含 A、B 两者坐标量级的舍入下限
+            s = _point_in_polygon(p, Q, t)
             if s == 1:
                 return 1
             if s == 0:

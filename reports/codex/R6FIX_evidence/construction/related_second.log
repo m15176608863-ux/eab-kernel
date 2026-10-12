@@ -1,0 +1,79 @@
+.........................F.............................................. [ 33%]
+........................................................................ [ 67%]
+.....................................................................    [100%]
+================================== FAILURES ===================================
+________ test_closed_is_exact_when_the_display_gap_underflows_to_zero _________
+
+    def test_closed_is_exact_when_the_display_gap_underflows_to_zero():
+        # Both bodies have macroscopic size; only their exact rational separation
+        # is below binary64. No geometry predicate may read the rounded display.
+        gap = F(1, 2**1075)
+        A = box((0, 0, F(1)+gap), (F(1, 2),)*3)
+        B = box(half=(F(1, 2),)*3)
+        assert _signed_gap(A, B) == gap > 0
+>       assert M.inflated_membership(A, B, delta=0) == M.OUTSIDE
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_margin_exact.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\margin.py:472: in inflated_membership
+    ctol, _, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:350: in _resolved
+    ctol, rnd, wits, contact, minimum2 = _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+src\eab\margin.py:364: in _resolved_cached
+    ctol, rnd, wits, contact, minimum2 = implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:331: in _resolve
+    truth = brute_feature_distance(view_a, view_b)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\geom3.py:859: in brute_feature_distance
+    best = min(best, _seg_seg_distance(A.verts[ea[0]], A.verts[ea[1]],
+src\eab\kernel3d\geom3.py:804: in _seg_seg_distance
+    return _eg.sqrt_rational(_eg.segment_distance_squared(p1, p2, q1, q2))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(1, 1638666885755069285807049153921723645757142657034732574792025535080431162124979748570438405962811689179080...1279237915672326525727558230210998031336785433168974643348984874024785785179575028648323183890102410274348650540826624)
+
+    def sqrt_rational(value, *, allow_underflow=False):
+        """Correctly round an exact nonnegative square without rounding it first.
+    
+        Power-of-two scaling supplies a candidate, then exact adjacent midpoints
+        choose round-to-nearest, ties-to-even. A nonzero result outside the finite
+        nonzero binary64 range raises rather than silently returning zero/infinity.
+        allow_underflow is only for displays accompanied by an exact certificate.
+        Gate: test_r6fix_construction::test_rational_sqrt_rounds_only_the_final_root.
+        """
+        value = Fraction(value)
+        if value < 0:
+            raise ValueError("square root of negative rational")
+        if not value:
+            return 0.0
+        exponent = (value.numerator.bit_length()-value.denominator.bit_length())//2
+        scaled = value / (Fraction(2)**(2*exponent))
+        candidate = math.ldexp(math.sqrt(float(scaled)), exponent)
+        if not math.isfinite(candidate):
+            raise OverflowError("exact root is outside finite binary64 range")
+        # Bracket the root by adjacent floats; the scaled candidate is within a
+        # couple of ulps, including gradual underflow at the final conversion.
+        while Fraction(candidate)**2 > value:
+            candidate = math.nextafter(candidate, -math.inf)
+        upper = math.nextafter(candidate, math.inf)
+        while math.isfinite(upper) and Fraction(upper)**2 <= value:
+            candidate, upper = upper, math.nextafter(upper, math.inf)
+        if not math.isfinite(upper):
+            if Fraction(candidate)**2 == value:
+                return candidate
+            raise OverflowError("exact root exceeds largest finite binary64")
+        midpoint2 = ((Fraction(candidate)+Fraction(upper))/2)**2
+        even = not (struct.unpack(">Q", struct.pack(">d", candidate))[0] & 1)
+        result = candidate if value < midpoint2 or (value == midpoint2 and even) else upper
+        if result == 0 and not allow_underflow:
+>           raise ArithmeticError("nonzero exact root is below binary64 output range")
+E           ArithmeticError: nonzero exact root is below binary64 output range
+
+src\eab\construction.py:41: ArithmeticError
+=========================== short test summary info ===========================
+FAILED tests/test_margin_exact.py::test_closed_is_exact_when_the_display_gap_underflows_to_zero
+1 failed, 212 passed in 9.41s

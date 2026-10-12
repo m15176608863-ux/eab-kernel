@@ -109,6 +109,8 @@ def test_enumeration_window_does_not_read_a_gap_rounded_to_zero():
     full = C.enumerate_covers3(A, B, window=math.inf)
     assert {c.kind for c in full} == {"VV3"}
     assert all(c.gap == 0 and _distance2_oracle(A, B, c.label()) > 0 for c in full)
+    assert all(c.exact_gap_squared == _distance2_oracle(A, B, c.label())
+               and c.exact_gap_sign == 1 for c in full)
     assert C.enumerate_covers3(A, B, window=0) == [], "a rounded zero gap must not admit a separated cover"
 
 
