@@ -1,5 +1,7 @@
 # 换路：精确谓词、浮点只做构造（2026-10-10，G6 第五轮之后）
 
+> **WO-R11FIX（2026-10-12，工作树修复，待独立复审）**：输入实际为 G6K-K01、K02 两条 major；本轮修复与全部验证证据以 [R11FIX 报告](../reports/codex/R11FIX_report.md) 与 [本树设计同步](r11fix_design_sync.md) 为准。静态构造门合流 callable/绑定/舍入来源；数值谓词不得把任意精确输入的转换误差忽略。M0 已按所有者决定退出，独立正确性复审并行继续；本单不变更该决定、不宣称独立 G6 通过、不回写外部只读正本，保留 M4a 门。
+
 > **WO-R10FIX（2026-10-12，未提交、待独立 G6）**：G6J-J01～J05 的修复、同类扫描及验证见 [R10FIX 报告](../reports/codex/R10FIX_report.md) 与 [设计同步](r10fix_design_sync.md)。本树结果不构成 M0 退出；外部设计正本保持只读。
 
 > **WO-R8FIX（2026-10-12，修复留树，待独立 G6）**：本轮 G6H 确认 6 条 major；逐条红绿、内部变异、旧门对照、同类扫描和全套实测见 [R8FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R8FIX_report.md)。当前合同补充见 [R8FIX 设计同步](file:///D:/eab-wt/cx-e2/docs/r8fix_design_sync.md)。本树同步不等于只读外部正本已回写；M0 退出状态不升级。

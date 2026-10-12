@@ -1,0 +1,40 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_ test_k01_annotation_expressions_are_still_scanned[def inner(x: norm_rational(vector_rational(q))):\n        return x] _
+
+body = 'def inner(x: norm_rational(vector_rational(q))):\n        return x'
+
+    @pytest.mark.parametrize("body", [
+        "def inner(x: norm_rational(vector_rational(q))):\n        return x",
+        "x: norm_rational(vector_rational(q)) = 0",
+    ])
+    def test_k01_annotation_expressions_are_still_scanned(body):
+        source = "def bad(q):\n    " + body + "\n"
+        issues = gate.scan_text(source)
+>       assert any(row[1] == 2 and row[3] == "rounded-vector" for row in issues), issues
+E       AssertionError: []
+E       assert False
+E        +  where False = any(<generator object test_k01_annotation_expressions_are_still_scanned.<locals>.<genexpr> at 0x0000000004846CF0>)
+
+tests\test_r11fix_static_flow.py:258: AssertionError
+_ test_k01_annotation_expressions_are_still_scanned[x: norm_rational(vector_rational(q)) = 0] _
+
+body = 'x: norm_rational(vector_rational(q)) = 0'
+
+    @pytest.mark.parametrize("body", [
+        "def inner(x: norm_rational(vector_rational(q))):\n        return x",
+        "x: norm_rational(vector_rational(q)) = 0",
+    ])
+    def test_k01_annotation_expressions_are_still_scanned(body):
+        source = "def bad(q):\n    " + body + "\n"
+        issues = gate.scan_text(source)
+>       assert any(row[1] == 2 and row[3] == "rounded-vector" for row in issues), issues
+E       AssertionError: []
+E       assert False
+E        +  where False = any(<generator object test_k01_annotation_expressions_are_still_scanned.<locals>.<genexpr> at 0x0000000004908450>)
+
+tests\test_r11fix_static_flow.py:258: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r11fix_static_flow.py::test_k01_annotation_expressions_are_still_scanned[def inner(x: norm_rational(vector_rational(q))):\n        return x]
+FAILED tests/test_r11fix_static_flow.py::test_k01_annotation_expressions_are_still_scanned[x: norm_rational(vector_rational(q)) = 0]
+2 failed, 76 deselected in 0.08s

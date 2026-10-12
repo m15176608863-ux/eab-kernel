@@ -1,0 +1,1290 @@
+FFFFFFFFFFFFFFFF.FFFFFFF.FFFFF.FFFFFF..F.FFFF...F.FFF.FFFFFFFFFFFFF..F.F [ 94%]
+F...                                                                     [100%]
+================================== FAILURES ===================================
+_ test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected[for _ in ():] _
+
+loop = 'for _ in ():'
+
+    @pytest.mark.parametrize("loop", LOOPS)
+    def test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected(loop):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        original, body, _ = _cone_implant(loop)
+        namespace = dict(vars(covers))
+        function_source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(function_source.replace(original, body), "<k01 actual cone implant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        q = Fraction(1, 2**1074)
+        assert Fraction(u) == q
+        rows = ((-Fraction(1), Fraction(1), -q), (-q, -Fraction(1), Fraction(1)),
+                (Fraction(1), -q, -Fraction(1)))
+        projection = (-q / 3,) * 3
+        assert projection == tuple(sum(row[i] for row in rows) / 3 for i in range(3))
+        squared = sum(x*x for x in projection)
+        assert all(sum(x*y for x, y in zip(projection, row)) == squared for row in rows)
+        assert (q/2)**2 < squared < (3*q/2)**2
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+>       _assert_cone_rejected(gate.scan_text, loop)
+
+tests\test_r11fix_static_flow.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+scan = <function scan_text at 0x00000000029D98A0>, loop = 'for _ in ():'
+
+    def _assert_cone_rejected(scan, loop):
+        _, _, source = _cone_implant(loop)
+        issues = scan(source, "src/eab/kernel3d/covers3.py")
+>       assert any(row[2:4] == ("cone_intersection_margin", "rounded-vector") for row in issues), (
+            "K01 real cone rounded-vector assertion", loop, issues)
+E       AssertionError: ('K01 real cone rounded-vector assertion', 'for _ in ():', [])
+E       assert False
+E        +  where False = any(<generator object _assert_cone_rejected.<locals>.<genexpr> at 0x00000000049E86C0>)
+
+tests\test_r11fix_static_flow.py:35: AssertionError
+_ test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected[for _ in range(0):] _
+
+loop = 'for _ in range(0):'
+
+    @pytest.mark.parametrize("loop", LOOPS)
+    def test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected(loop):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        original, body, _ = _cone_implant(loop)
+        namespace = dict(vars(covers))
+        function_source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(function_source.replace(original, body), "<k01 actual cone implant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        q = Fraction(1, 2**1074)
+        assert Fraction(u) == q
+        rows = ((-Fraction(1), Fraction(1), -q), (-q, -Fraction(1), Fraction(1)),
+                (Fraction(1), -q, -Fraction(1)))
+        projection = (-q / 3,) * 3
+        assert projection == tuple(sum(row[i] for row in rows) / 3 for i in range(3))
+        squared = sum(x*x for x in projection)
+        assert all(sum(x*y for x, y in zip(projection, row)) == squared for row in rows)
+        assert (q/2)**2 < squared < (3*q/2)**2
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+>       _assert_cone_rejected(gate.scan_text, loop)
+
+tests\test_r11fix_static_flow.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+scan = <function scan_text at 0x00000000029D98A0>, loop = 'for _ in range(0):'
+
+    def _assert_cone_rejected(scan, loop):
+        _, _, source = _cone_implant(loop)
+        issues = scan(source, "src/eab/kernel3d/covers3.py")
+>       assert any(row[2:4] == ("cone_intersection_margin", "rounded-vector") for row in issues), (
+            "K01 real cone rounded-vector assertion", loop, issues)
+E       AssertionError: ('K01 real cone rounded-vector assertion', 'for _ in range(0):', [])
+E       assert False
+E        +  where False = any(<generator object _assert_cone_rejected.<locals>.<genexpr> at 0x000000000495D080>)
+
+tests\test_r11fix_static_flow.py:35: AssertionError
+_ test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected[while False:] _
+
+loop = 'while False:'
+
+    @pytest.mark.parametrize("loop", LOOPS)
+    def test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected(loop):
+        import eab.kernel3d.covers3 as covers
+        from eab.kernel3d.geom3 import tetra
+    
+        original, body, _ = _cone_implant(loop)
+        namespace = dict(vars(covers))
+        function_source = inspect.getsource(covers.cone_intersection_margin)
+        exec(compile(function_source.replace(original, body), "<k01 actual cone implant>", "exec"), namespace)
+        u = math.ulp(0.0)
+        q = Fraction(1, 2**1074)
+        assert Fraction(u) == q
+        rows = ((-Fraction(1), Fraction(1), -q), (-q, -Fraction(1), Fraction(1)),
+                (Fraction(1), -q, -Fraction(1)))
+        projection = (-q / 3,) * 3
+        assert projection == tuple(sum(row[i] for row in rows) / 3 for i in range(3))
+        squared = sum(x*x for x in projection)
+        assert all(sum(x*y for x, y in zip(projection, row)) == squared for row in rows)
+        assert (q/2)**2 < squared < (3*q/2)**2
+        shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+        assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+        assert namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0] == 0
+>       _assert_cone_rejected(gate.scan_text, loop)
+
+tests\test_r11fix_static_flow.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+scan = <function scan_text at 0x00000000029D98A0>, loop = 'while False:'
+
+    def _assert_cone_rejected(scan, loop):
+        _, _, source = _cone_implant(loop)
+        issues = scan(source, "src/eab/kernel3d/covers3.py")
+>       assert any(row[2:4] == ("cone_intersection_margin", "rounded-vector") for row in issues), (
+            "K01 real cone rounded-vector assertion", loop, issues)
+E       AssertionError: ('K01 real cone rounded-vector assertion', 'while False:', [])
+E       assert False
+E        +  where False = any(<generator object _assert_cone_rejected.<locals>.<genexpr> at 0x0000000004A213C0>)
+
+tests\test_r11fix_static_flow.py:35: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_for] _
+
+label = 'zero_for', body = 'for _ in ():\n        root = abs'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('zero_for', 5, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             for _ in ():
+E                 root = abs
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049ED9A0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_while] _
+
+label = 'zero_while', body = 'while False:\n        root = abs'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('zero_while', 5, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             while False:
+E                 root = abs
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000048D7300>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_comp] _
+
+label = 'zero_comp', body = '[(root := abs) for _ in ()]'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('zero_comp', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             [(root := abs) for _ in ()]
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EE7A0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_setcomp] _
+
+label = 'zero_setcomp', body = '{(root := abs) for _ in ()}'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('zero_setcomp', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             {(root := abs) for _ in ()}
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049ED000>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_dictcomp] _
+
+label = 'zero_dictcomp', body = '{_: (root := abs) for _ in ()}'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('zero_dictcomp', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             {_: (root := abs) for _ in ()}
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049ECBA0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[lazy_generator] _
+
+label = 'lazy_generator', body = '((root := abs) for _ in ())'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('lazy_generator', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             ((root := abs) for _ in ())
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049ECF20>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[comp_filter] _
+
+label = 'comp_filter', body = '[(root := abs) for _ in [1] if False]'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('comp_filter', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             [(root := abs) for _ in [1] if False]
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EF300>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[nested_comp] _
+
+label = 'nested_comp', body = '[(root := abs) for _ in [1] for j in ()]'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('nested_comp', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             [(root := abs) for _ in [1] for j in ()]
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EFA00>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[short_and] _
+
+label = 'short_and', body = 'False and (root := abs)'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('short_and', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             False and (root := abs)
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2C200>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[short_or] _
+
+label = 'short_or', body = 'True or (root := abs)'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('short_or', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             True or (root := abs)
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2C9E0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[compare_chain] _
+
+label = 'compare_chain', body = '0 > 1 > (root := abs)'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('compare_chain', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             0 > 1 > (root := abs)
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2D000>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[ifexp_body] _
+
+label = 'ifexp_body', body = '(root := abs) if False else 0'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('ifexp_body', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             (root := abs) if False else 0
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2D700>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[ifexp_else] _
+
+label = 'ifexp_else', body = '0 if True else (root := abs)'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('ifexp_else', 4, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             0 if True else (root := abs)
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2DE00>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_break] _
+
+label = 'loop_break', body = 'for _ in [1]:\n        break\n        root = abs'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('loop_break', 6, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             for _ in [1]:
+E                 break
+E                 root = abs
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EFD80>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_continue] _
+
+label = 'loop_continue'
+body = 'for _ in [1]:\n        continue\n        root = abs'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('loop_continue', 6, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             for _ in [1]:
+E                 continue
+E                 root = abs
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EF060>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_else] _
+
+label = 'loop_else'
+body = 'for _ in [1]:\n        break\n    else:\n        root = abs'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('loop_else', 7, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             for _ in [1]:
+E                 break
+E             else:
+E                 root = abs
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EEDC0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[while_else] _
+
+label = 'while_else'
+body = 'while flag:\n        break\n    else:\n        root = abs'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('while_else', 7, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             while flag:
+E                 break
+E             else:
+E                 root = abs
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EDD20>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[try_exception_prefix] _
+
+label = 'try_exception_prefix'
+body = 'try:\n        risky()\n        root = abs\n    except ValueError:\n        return root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('try_exception_prefix', 7, [('src/eab/k01_injected.py', 8, 'bad', 'rounded-vector', 'root(vector_rational(q))')], 'de...   root = abs
+E             except ValueError:
+E                 return root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x000000000493BA00>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[try_raise_prefix] _
+
+label = 'try_raise_prefix'
+body = 'try:\n        raise ValueError()\n        root = abs\n    except ValueError:\n        return root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('try_raise_prefix', 7, [('src/eab/k01_injected.py', 8, 'bad', 'rounded-vector', 'root(vector_rational(q))')], 'def ba...   root = abs
+E             except ValueError:
+E                 return root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049ED1C0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[finally_prefix] _
+
+label = 'finally_prefix'
+body = 'try:\n        raise ValueError()\n        root = abs\n    finally:\n        return root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('finally_prefix', 7, [('src/eab/k01_injected.py', 8, 'bad', 'rounded-vector', 'root(vector_rational(q))')], 'def bad(...r()
+E                 root = abs
+E             finally:
+E                 return root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000048D49E0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[try_handler_independence] _
+
+label = 'try_handler_independence'
+body = 'try:\n        risky()\n    except ValueError:\n        root = abs\n    except RuntimeError:\n        return root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('try_handler_independence', 8, [('src/eab/k01_injected.py', 9, 'bad', 'rounded-vector', 'root(vector_rational(q))')],... root = abs
+E             except RuntimeError:
+E                 return root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2E5E0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[trystar_handler_independence] _
+
+label = 'trystar_handler_independence'
+body = 'try:\n        risky()\n    except* ValueError:\n        root = abs\n    except* RuntimeError:\n        root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('trystar_handler_independence', 8, [('src/eab/k01_injected.py', 9, 'bad', 'rounded-vector', 'root(vector_rational(q))...       root = abs
+E             except* RuntimeError:
+E                 root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2E880>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[match_case_independence] _
+
+label = 'match_case_independence'
+body = 'match flag:\n        case 1:\n            root = abs\n        case 2:\n            return root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('match_case_independence', 7, [('src/eab/k01_injected.py', 8, 'bad', 'rounded-vector', 'root(vector_rational(q))')], ...      root = abs
+E                 case 2:
+E                     return root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2D540>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[match_guard] _
+
+label = 'match_guard'
+body = 'match flag:\n        case 1 if (root := abs):\n            pass\n        case 2:\n            return root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('match_guard', 7, [('src/eab/k01_injected.py', 8, 'bad', 'rounded-vector', 'root(vector_rational(q))')], 'def bad(q, ...            pass
+E                 case 2:
+E                     return root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2C740>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[container_snapshot] _
+
+label = 'container_snapshot'
+body = 'box = [root]\n    root = abs\n    return box[0](vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('container_snapshot', 5, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             box = [root]
+E             root = abs
+E             return box[0](vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004A2CBA0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[attribute_snapshot] _
+
+label = 'attribute_snapshot'
+body = 'holder.root = root\n    root = abs\n    return holder.root(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('attribute_snapshot', 5, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             holder.root = root
+E             root = abs
+E             return holder.root(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x00000000049EE960>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[branch_snapshot] _
+
+label = 'branch_snapshot'
+body = 'box = [root]\n    if flag:\n        root = abs\n    else:\n        root = sum\n    return box[0](vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('branch_snapshot', 8, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             box = [root]
+E             if flag:
+E              ...ot = abs
+E             else:
+E                 root = sum
+E             return box[0](vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004889000>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_carried_callable] _
+
+label = 'loop_carried_callable'
+body = 'root = abs\n    saved = abs\n    for _ in range(3):\n        saved(vector_rational(q))\n        saved = root\n        root = norm_rational'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('loop_carried_callable', 6, [('src/eab/k01_injected.py', 9, 'bad', 'rounded-vector', 'root(vector_rational(q))')], 'd... saved(vector_rational(q))
+E                 saved = root
+E                 root = norm_rational
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x0000000004889A80>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_carried_container] _
+
+label = 'loop_carried_container'
+body = 'root = abs\n    box = [abs]\n    for _ in range(3):\n        box[0](vector_rational(q))\n        box = [root]\n        root = norm_rational'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('loop_carried_container', 6, [('src/eab/k01_injected.py', 9, 'bad', 'rounded-vector', 'root(vector_rational(q))')], '...box[0](vector_rational(q))
+E                 box = [root]
+E                 root = norm_rational
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x000000000488A180>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[comp_carried_callable] _
+
+label = 'comp_carried_callable'
+body = 'root = abs\n    saved = abs\n    [(saved(vector_rational(q)), (saved := root), (root := norm_rational)) for _ in range(3)]'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('comp_carried_callable', 5, [('src/eab/k01_injected.py', 6, 'bad', 'rounded-vector', 'root(vector_rational(q))')], 'd...tor_rational(q)), (saved := root), (root := norm_rational)) for _ in range(3)]
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x000000000488A960>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[for_target_zero] _
+
+label = 'for_target_zero', body = 'for root in ():\n        pass'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('for_target_zero', 5, [], 'def bad(q, flag, holder):
+E             root = norm_rational
+E             for root in ():
+E                 pass
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x000000000488AEA0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[match_binding] _
+
+label = 'match_binding'
+body = 'match root:\n        case saved:\n            return saved(vector_rational(q))'
+
+    @pytest.mark.parametrize("label,body", FLOW_CASES, ids=[row[0] for row in FLOW_CASES])
+    def test_k01_all_control_flow_paths_keep_callable_and_binding_provenance(label, body):
+        source = ("def bad(q, flag, holder):\n    root = norm_rational\n    " + body
+                  + "\n    return root(vector_rational(q))\n")
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues, source)
+E       AssertionError: ('match_binding', 5, [('src/eab/k01_injected.py', 6, 'bad', 'rounded-vector', 'root(vector_rational(q))')], 'def bad(q...match root:
+E                 case saved:
+E                     return saved(vector_rational(q))
+E             return root(vector_rational(q))
+E         ')
+E       assert False
+E        +  where False = any(<generator object test_k01_all_control_flow_paths_keep_callable_and_binding_provenance.<locals>.<genexpr> at 0x000000000488B3E0>)
+
+tests\test_r11fix_static_flow.py:112: AssertionError
+_ test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[x = scalar_rational(q)\n    [(x := q) for _ in ()]\n    return sqrt_rational(x)] _
+
+body = 'x = scalar_rational(q)\n    [(x := q) for _ in ()]\n    return sqrt_rational(x)'
+
+    @pytest.mark.parametrize("body", [
+        "x = scalar_rational(q)\n    [(x := q) for _ in ()]\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    False and (x := q)\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    (x := q) if False else 0\n    return sqrt_rational(x)",
+        "box = []\n    alias = box\n    for _ in ():\n        alias = []\n    alias.append(scalar_rational(q))\n    return sqrt_rational(box[0])",
+    ])
+    def test_k01_rounded_values_and_mutable_aliases_join_with_callable_state(body):
+        issues = gate.scan_text("def bad(q):\n    " + body + "\n")
+>       assert any(row[2:4] == ("bad", "rounded-root") for row in issues), (body, issues)
+E       AssertionError: ('x = scalar_rational(q)
+E             [(x := q) for _ in ()]
+E             return sqrt_rational(x)', [])
+E       assert False
+E        +  where False = any(<generator object test_k01_rounded_values_and_mutable_aliases_join_with_callable_state.<locals>.<genexpr> at 0x0000000004892190>)
+
+tests\test_r11fix_static_flow.py:123: AssertionError
+_ test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[x = scalar_rational(q)\n    False and (x := q)\n    return sqrt_rational(x)] _
+
+body = 'x = scalar_rational(q)\n    False and (x := q)\n    return sqrt_rational(x)'
+
+    @pytest.mark.parametrize("body", [
+        "x = scalar_rational(q)\n    [(x := q) for _ in ()]\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    False and (x := q)\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    (x := q) if False else 0\n    return sqrt_rational(x)",
+        "box = []\n    alias = box\n    for _ in ():\n        alias = []\n    alias.append(scalar_rational(q))\n    return sqrt_rational(box[0])",
+    ])
+    def test_k01_rounded_values_and_mutable_aliases_join_with_callable_state(body):
+        issues = gate.scan_text("def bad(q):\n    " + body + "\n")
+>       assert any(row[2:4] == ("bad", "rounded-root") for row in issues), (body, issues)
+E       AssertionError: ('x = scalar_rational(q)
+E             False and (x := q)
+E             return sqrt_rational(x)', [])
+E       assert False
+E        +  where False = any(<generator object test_k01_rounded_values_and_mutable_aliases_join_with_callable_state.<locals>.<genexpr> at 0x0000000004B1DFF0>)
+
+tests\test_r11fix_static_flow.py:123: AssertionError
+_ test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[x = scalar_rational(q)\n    (x := q) if False else 0\n    return sqrt_rational(x)] _
+
+body = 'x = scalar_rational(q)\n    (x := q) if False else 0\n    return sqrt_rational(x)'
+
+    @pytest.mark.parametrize("body", [
+        "x = scalar_rational(q)\n    [(x := q) for _ in ()]\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    False and (x := q)\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    (x := q) if False else 0\n    return sqrt_rational(x)",
+        "box = []\n    alias = box\n    for _ in ():\n        alias = []\n    alias.append(scalar_rational(q))\n    return sqrt_rational(box[0])",
+    ])
+    def test_k01_rounded_values_and_mutable_aliases_join_with_callable_state(body):
+        issues = gate.scan_text("def bad(q):\n    " + body + "\n")
+>       assert any(row[2:4] == ("bad", "rounded-root") for row in issues), (body, issues)
+E       AssertionError: ('x = scalar_rational(q)
+E             (x := q) if False else 0
+E             return sqrt_rational(x)', [])
+E       assert False
+E        +  where False = any(<generator object test_k01_rounded_values_and_mutable_aliases_join_with_callable_state.<locals>.<genexpr> at 0x00000000046305F0>)
+
+tests\test_r11fix_static_flow.py:123: AssertionError
+_ test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[box = []\n    alias = box\n    for _ in ():\n        alias = []\n    alias.append(scalar_rational(q))\n    return sqrt_rational(box[0])] _
+
+body = 'box = []\n    alias = box\n    for _ in ():\n        alias = []\n    alias.append(scalar_rational(q))\n    return sqrt_rational(box[0])'
+
+    @pytest.mark.parametrize("body", [
+        "x = scalar_rational(q)\n    [(x := q) for _ in ()]\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    False and (x := q)\n    return sqrt_rational(x)",
+        "x = scalar_rational(q)\n    (x := q) if False else 0\n    return sqrt_rational(x)",
+        "box = []\n    alias = box\n    for _ in ():\n        alias = []\n    alias.append(scalar_rational(q))\n    return sqrt_rational(box[0])",
+    ])
+    def test_k01_rounded_values_and_mutable_aliases_join_with_callable_state(body):
+        issues = gate.scan_text("def bad(q):\n    " + body + "\n")
+>       assert any(row[2:4] == ("bad", "rounded-root") for row in issues), (body, issues)
+E       AssertionError: ('box = []
+E             alias = box
+E             for _ in ():
+E                 alias = []
+E             alias.append(scalar_rational(q))
+E             return sqrt_rational(box[0])', [])
+E       assert False
+E        +  where False = any(<generator object test_k01_rounded_values_and_mutable_aliases_join_with_callable_state.<locals>.<genexpr> at 0x0000000004A21220>)
+
+tests\test_r11fix_static_flow.py:123: AssertionError
+_ test_k01_unrounded_or_definitely_overwritten_paths_remain_allowed[root = norm_rational\n    try:\n        risky()\n    finally:\n        root = abs\n    return root(vector_rational(q))] _
+
+body = 'root = norm_rational\n    try:\n        risky()\n    finally:\n        root = abs\n    return root(vector_rational(q))'
+
+    @pytest.mark.parametrize("body", [
+        "root = norm_rational\n    root = abs\n    return root(vector_rational(q))",
+        "root = norm_rational\n    if flag:\n        root = abs\n    else:\n        root = sum\n    return root(vector_rational(q))",
+        "root = norm_rational\n    [root for root in [abs]]\n    return root(q)",
+        "root = norm_rational\n    try:\n        risky()\n    finally:\n        root = abs\n    return root(vector_rational(q))",
+        "v = []\n    alias = v\n    alias = []\n    alias.append(scalar_rational(q))\n    return norm_rational(v)",
+    ])
+    def test_k01_unrounded_or_definitely_overwritten_paths_remain_allowed(body):
+>       assert gate.scan_text("def good(q, flag):\n    " + body + "\n") == []
+E       AssertionError: assert [('<injected>...ational(q))')] == []
+E         
+E         Left contains one more item: ('<injected>', 7, 'good', 'rounded-vector', 'root(vector_rational(q))')
+E         Use -v to get more diff
+
+tests\test_r11fix_static_flow.py:134: AssertionError
+__ test_k01_extended_scoped_bindings_and_deferred_generators[scoped_import] ___
+
+label = 'scoped_import'
+source = 'from eab.construction import norm_rational as build\ndef bad(q):\n    return build(vector_rational(q))\ndef safe():\n    from builtins import abs as build\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('scoped_import', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494E180>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[suppressed_exception] _
+
+label = 'suppressed_exception'
+source = 'def bad(q):\n    root = norm_rational\n    with suppress(ValueError):\n        raise ValueError()\n        root = abs\n    return root(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('suppressed_exception', 6, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000488BCA0>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[async_suppressed_exception] _
+
+label = 'async_suppressed_exception'
+source = 'async def bad(q):\n    root = norm_rational\n    async with suppressor():\n        raise ValueError()\n        root = abs\n    return root(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('async_suppressed_exception', 6, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000488B300>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[lambda_kwonly_default] _
+
+label = 'lambda_kwonly_default'
+source = 'def bad(q):\n    f = lambda *, root=norm_rational: root(vector_rational(q))\n    return f()\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('lambda_kwonly_default', 2, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000488ADC0>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[lambda_posonly_default] _
+
+label = 'lambda_posonly_default'
+source = 'def bad(q):\n    f = lambda root=norm_rational, /: root(vector_rational(q))\n    return f()\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('lambda_posonly_default', 2, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x0000000004888C80>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[partial_bound_argument] _
+
+label = 'partial_bound_argument'
+source = 'from functools import partial\ndef bad(q):\n    root = partial(norm_rational, vector_rational(q))\n    return root()\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('partial_bound_argument', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x0000000004889B60>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_next_export] _
+
+label = 'generator_next_export'
+source = 'def bad(q):\n    root = abs\n    gen = ((root := norm_rational) for _ in [0])\n    root = abs\n    next(gen)\n    return root(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_next_export', 6, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x0000000004889000>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_next_callable] _
+
+label = 'generator_next_callable'
+source = 'def bad(q):\n    root = abs\n    gen = (root for _ in [0])\n    root = norm_rational\n    saved = next(gen)\n    return saved(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_next_callable', 6, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494D8C0>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_late_call] _
+
+label = 'generator_late_call'
+source = 'def bad(q):\n    root = abs\n    gen = (root(vector_rational(q)) for _ in [0])\n    root = norm_rational\n    return tuple(gen)\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_late_call', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494F060>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_late_rounded] _
+
+label = 'generator_late_rounded'
+source = 'def bad(q):\n    vals = q\n    gen = (norm_rational(vals) for _ in [0])\n    vals = vector_rational(q)\n    return tuple(gen)\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_late_rounded', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494D540>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_for_callable] _
+
+label = 'generator_for_callable'
+source = 'def bad(q):\n    root = abs\n    gen = (root for _ in [0])\n    root = norm_rational\n    for saved in gen:\n        return saved(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_for_callable', 6, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494C900>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_starred] _
+
+label = 'generator_starred'
+source = 'def bad(q):\n    root = abs\n    gen = (root(vector_rational(q)) for _ in [0])\n    root = norm_rational\n    return [*gen]\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_starred', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494D2A0>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_unknown_consumer] _
+
+label = 'generator_unknown_consumer'
+source = 'def bad(q):\n    root = abs\n    gen = (root(vector_rational(q)) for _ in [0])\n    root = norm_rational\n    return consumer(gen)\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_unknown_consumer', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494F760>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_method_next] _
+
+label = 'generator_method_next'
+source = 'def bad(q):\n    root = abs\n    gen = (root for _ in [0])\n    root = norm_rational\n    saved = gen.__next__()\n    return saved(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_method_next', 6, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494F680>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_extended_scoped_bindings_and_deferred_generators[generator_map_chain] _
+
+label = 'generator_map_chain'
+source = 'def bad(q):\n    root = abs\n    gen = (root(vector_rational(q)) for _ in [0])\n    mapped = map(abs, gen)\n    root = norm_rational\n    return list(mapped)\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('generator_map_chain', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494CBA0>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+__ test_k01_extended_scoped_bindings_and_deferred_generators[async_for_zero] __
+
+label = 'async_for_zero'
+source = 'async def bad(q):\n    root = norm_rational\n    async for _ in stream:\n        root = abs\n    return root(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", EXTRA_CASES, ids=[row[0] for row in EXTRA_CASES])
+    def test_k01_extended_scoped_bindings_and_deferred_generators(label, source):
+        issues = gate.scan_text(source, "src/eab/k01_injected.py")
+        target_line = (next(i for i, line in enumerate(source.splitlines(), 1) if "norm_rational(vals)" in line)
+                       if label == "generator_late_rounded" else
+                       next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line))
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('async_for_zero', 5, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_extended_scoped_bindings_and_deferred_generators.<locals>.<genexpr> at 0x000000000494C900>)
+
+tests\test_r11fix_static_flow.py:164: AssertionError
+_ test_k01_assert_and_literal_assignment_evaluation_order[assert_success_skips_message] _
+
+label = 'assert_success_skips_message'
+source = 'def bad(q):\n    root = norm_rational\n    assert True, (root := abs)\n    return root(vector_rational(q))\n'
+
+    @pytest.mark.parametrize("label,source", LAST_CFG_CASES, ids=[row[0] for row in LAST_CFG_CASES])
+    def test_k01_assert_and_literal_assignment_evaluation_order(label, source):
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+        issues = gate.scan_text(source)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('assert_success_skips_message', 4, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_assert_and_literal_assignment_evaluation_order.<locals>.<genexpr> at 0x000000000494E420>)
+
+tests\test_r11fix_static_flow.py:248: AssertionError
+_ test_k01_assert_and_literal_assignment_evaluation_order[dict_interleaved_values] _
+
+label = 'dict_interleaved_values'
+source = "def bad(q):\n    root = norm_rational\n    d = {'x': root(vector_rational(q)), (root := abs): 1}\n    return d\n"
+
+    @pytest.mark.parametrize("label,source", LAST_CFG_CASES, ids=[row[0] for row in LAST_CFG_CASES])
+    def test_k01_assert_and_literal_assignment_evaluation_order(label, source):
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+        issues = gate.scan_text(source)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('dict_interleaved_values', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_assert_and_literal_assignment_evaluation_order.<locals>.<genexpr> at 0x000000000494C120>)
+
+tests\test_r11fix_static_flow.py:248: AssertionError
+_ test_k01_assert_and_literal_assignment_evaluation_order[dict_unpack_order] __
+
+label = 'dict_unpack_order'
+source = "def bad(q):\n    root = norm_rational\n    d = {**{'x': root(vector_rational(q))}, (root := abs): 1}\n    return d\n"
+
+    @pytest.mark.parametrize("label,source", LAST_CFG_CASES, ids=[row[0] for row in LAST_CFG_CASES])
+    def test_k01_assert_and_literal_assignment_evaluation_order(label, source):
+        target_line = next(i for i, line in enumerate(source.splitlines(), 1) if "vector_rational(q)" in line)
+        issues = gate.scan_text(source)
+>       assert any(row[1:4] == (target_line, "bad", "rounded-vector") for row in issues), (label, target_line, issues)
+E       AssertionError: ('dict_unpack_order', 3, [])
+E       assert False
+E        +  where False = any(<generator object test_k01_assert_and_literal_assignment_evaluation_order.<locals>.<genexpr> at 0x000000000494DD20>)
+
+tests\test_r11fix_static_flow.py:248: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r11fix_static_flow.py::test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected[for _ in ():]
+FAILED tests/test_r11fix_static_flow.py::test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected[for _ in range(0):]
+FAILED tests/test_r11fix_static_flow.py::test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected[while False:]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_for]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_while]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_comp]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_setcomp]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[zero_dictcomp]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[lazy_generator]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[comp_filter]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[nested_comp]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[short_and]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[short_or]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[compare_chain]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[ifexp_body]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[ifexp_else]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_break]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_continue]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_else]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[while_else]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[try_exception_prefix]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[try_raise_prefix]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[finally_prefix]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[try_handler_independence]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[trystar_handler_independence]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[match_case_independence]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[match_guard]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[container_snapshot]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[attribute_snapshot]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[branch_snapshot]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_carried_callable]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[loop_carried_container]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[comp_carried_callable]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[for_target_zero]
+FAILED tests/test_r11fix_static_flow.py::test_k01_all_control_flow_paths_keep_callable_and_binding_provenance[match_binding]
+FAILED tests/test_r11fix_static_flow.py::test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[x = scalar_rational(q)\n    [(x := q) for _ in ()]\n    return sqrt_rational(x)]
+FAILED tests/test_r11fix_static_flow.py::test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[x = scalar_rational(q)\n    False and (x := q)\n    return sqrt_rational(x)]
+FAILED tests/test_r11fix_static_flow.py::test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[x = scalar_rational(q)\n    (x := q) if False else 0\n    return sqrt_rational(x)]
+FAILED tests/test_r11fix_static_flow.py::test_k01_rounded_values_and_mutable_aliases_join_with_callable_state[box = []\n    alias = box\n    for _ in ():\n        alias = []\n    alias.append(scalar_rational(q))\n    return sqrt_rational(box[0])]
+FAILED tests/test_r11fix_static_flow.py::test_k01_unrounded_or_definitely_overwritten_paths_remain_allowed[root = norm_rational\n    try:\n        risky()\n    finally:\n        root = abs\n    return root(vector_rational(q))]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[scoped_import]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[suppressed_exception]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[async_suppressed_exception]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[lambda_kwonly_default]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[lambda_posonly_default]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[partial_bound_argument]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_next_export]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_next_callable]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_late_call]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_late_rounded]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_for_callable]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_starred]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_unknown_consumer]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_method_next]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[generator_map_chain]
+FAILED tests/test_r11fix_static_flow.py::test_k01_extended_scoped_bindings_and_deferred_generators[async_for_zero]
+FAILED tests/test_r11fix_static_flow.py::test_k01_assert_and_literal_assignment_evaluation_order[assert_success_skips_message]
+FAILED tests/test_r11fix_static_flow.py::test_k01_assert_and_literal_assignment_evaluation_order[dict_interleaved_values]
+FAILED tests/test_r11fix_static_flow.py::test_k01_assert_and_literal_assignment_evaluation_order[dict_unpack_order]
+59 failed, 17 passed, 2 deselected in 0.41s

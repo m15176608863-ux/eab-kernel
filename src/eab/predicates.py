@@ -46,6 +46,8 @@ def cross2_sign(a, b) -> int:
         numerator = (a[0].numerator * b[1].numerator * a[1].denominator * b[0].denominator
                      - a[1].numerator * b[0].numerator * a[0].denominator * b[1].denominator)
         return _sign(numerator)
+    if any(type(v) is not float for v in (*a, *b)):
+        return _sign(Fraction(a[0]) * Fraction(b[1]) - Fraction(a[1]) * Fraction(b[0]))
     ax, ay, bx, by = map(_float_value, (a[0], a[1], b[0], b[1]))
     p, q = ax * by, ay * bx
     d = p - q
@@ -62,6 +64,8 @@ def dot2_sign(a, b) -> int:
         numerator = (a[0].numerator * b[0].numerator * a[1].denominator * b[1].denominator
                      + a[1].numerator * b[1].numerator * a[0].denominator * b[0].denominator)
         return _sign(numerator)
+    if any(type(v) is not float for v in (*a, *b)):
+        return _sign(Fraction(a[0]) * Fraction(b[0]) + Fraction(a[1]) * Fraction(b[1]))
     ax, ay, bx, by = map(_float_value, (a[0], a[1], b[0], b[1]))
     p, q = ax * bx, ay * by
     d = p + q
@@ -97,7 +101,12 @@ def orient3d(a, b, c, p) -> int:
     pairwise M products in the absolute term cover a tiny conversion error
     amplified by two large factors.  This less sharp filter is still exact.
     """
-    exact_inputs = any(not isinstance(v, float) for q in (a, b, c, p) for v in q)
+    # The converted-input bound below is certified for ordinary Fraction/float
+    # conversions; arbitrary integers and other numeric types stay exact.
+    # Gate: test_r11fix_numeric_types.py::test_orient3d_all_review_mixed_type_lifts_match_independent_determinants.
+    if any(type(v) not in (float, Fraction) for q in (a, b, c, p) for v in q):
+        return orient3d_fraction(a, b, c, p)
+    exact_inputs = any(type(v) is not float for q in (a, b, c, p) for v in q)
     if exact_inputs:
         af, bf, cf, pf = (tuple(_float_value(v) for v in q) for q in (a, b, c, p))
     else:

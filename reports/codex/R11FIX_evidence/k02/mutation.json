@@ -1,0 +1,31 @@
+{
+  "mode": "mutation",
+  "injection": "replace production orient2d type guard in memory",
+  "source_files_written": false,
+  "semantic_failures": [
+    {
+      "test": "test_mixed_integer_orientation_keeps_exact_negative_sign",
+      "caught": true,
+      "assertion": "mixed input must preserve the exact negative determinant",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R11FIX_evidence\\k02\\run_evidence.py\", line 42, in main\n    tests[test]()\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r11fix_numeric_types.py\", line 52, in test_mixed_integer_orientation_keeps_exact_negative_sign\n    assert g2.orient2d(*points) == -1, 'mixed input must preserve the exact negative determinant'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: mixed input must preserve the exact negative determinant\n"
+    },
+    {
+      "test": "test_mixed_integer_orientation_keeps_exact_zero",
+      "caught": true,
+      "assertion": "mixed input must preserve exact collinearity",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R11FIX_evidence\\k02\\run_evidence.py\", line 42, in main\n    tests[test]()\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r11fix_numeric_types.py\", line 59, in test_mixed_integer_orientation_keeps_exact_zero\n    assert g2.orient2d(*points) == 0, 'mixed input must preserve exact collinearity'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: mixed input must preserve exact collinearity\n"
+    },
+    {
+      "test": "test_all_3072_review_integer_float_orientations_have_exact_signs",
+      "caught": true,
+      "assertion": "{'wrong': 102, 'sign_reversals': 82, 'exact_zero_errors': 20, 'first': [(((9007199254740993, 1.0), (9007199254740994, 2.0), (9007199254740992.0, 0.0)), 0, -1), (((9007199254740994, 7.0), (9007199254740995, 11.0), (9007199254740992.0, 0.0)), 1, -1), (((9007199254740995, 3.0), (9007199254740996, 4.0), (9007199254740992.0, 0.0)), 0, 1)]}",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R11FIX_evidence\\k02\\run_evidence.py\", line 42, in main\n    tests[test]()\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r11fix_numeric_types.py\", line 69, in test_all_3072_review_integer_float_orientations_have_exact_signs\n    assert not wrong, {'wrong': len(wrong), 'sign_reversals': sum(w != 0 for _, w, _ in wrong),\n           ^^^^^^^^^\nAssertionError: {'wrong': 102, 'sign_reversals': 82, 'exact_zero_errors': 20, 'first': [(((9007199254740993, 1.0), (9007199254740994, 2.0), (9007199254740992.0, 0.0)), 0, -1), (((9007199254740994, 7.0), (9007199254740995, 11.0), (9007199254740992.0, 0.0)), 1, -1), (((9007199254740995, 3.0), (9007199254740996, 4.0), (9007199254740992.0, 0.0)), 0, 1)]}\n"
+    },
+    {
+      "test": "test_mixed_nondegenerate_triangle_is_not_silently_triangulated_to_empty",
+      "caught": true,
+      "assertion": "a nonzero-area triangle must survive the actual ear-cut path",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R11FIX_evidence\\k02\\run_evidence.py\", line 42, in main\n    tests[test]()\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r11fix_numeric_types.py\", line 78, in test_mixed_nondegenerate_triangle_is_not_silently_triangulated_to_empty\n    assert triangles == [(0, 1, 2)], 'a nonzero-area triangle must survive the actual ear-cut path'\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: a nonzero-area triangle must survive the actual ear-cut path\n"
+    }
+  ]
+}

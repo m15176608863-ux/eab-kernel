@@ -1,0 +1,224 @@
+{
+  "elapsed_seconds": 0.0027898999978788197,
+  "count": 15,
+  "missed": 1,
+  "results": [
+    {
+      "case": "container_callable_rebinding",
+      "source": "def bad(p):\n    root=norm_rational\n    box=[root]\n    root=abs\n    return box[0](vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          5,
+          "bad",
+          "rounded-vector",
+          "box[0](vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "zero_short_circuit",
+      "source": "def bad(p):\n    root=norm_rational\n    False and (root:=abs)\n    return root(vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          4,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "zero_if_expression",
+      "source": "def bad(p):\n    root=norm_rational\n    (root:=abs) if False else 0\n    return root(vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          4,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "exception_handler_alias",
+      "source": "def bad(p):\n    root=norm_rational\n    try:\n        raise ValueError()\n        root=abs\n    except ValueError:\n        return root(vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          7,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "finally_alias",
+      "source": "def bad(p):\n    root=norm_rational\n    try:\n        raise ValueError()\n        root=abs\n    finally:\n        return root(vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          7,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "match_independent_case",
+      "source": "def bad(p):\n    root=norm_rational\n    match 2:\n        case 1:\n            root=abs\n        case 2:\n            return root(vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          7,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "loop_exit_binding",
+      "source": "def bad(p):\n    root=norm_rational\n    for _ in range(1):\n        break\n        root=abs\n    return root(vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          6,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "zero_comprehension_alias",
+      "source": "def bad(p):\n    root=norm_rational\n    [(root:=abs) for _ in ()]\n    return root(vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          4,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "walrus_call_evaluation",
+      "source": "def bad(p):\n    root=norm_rational\n    return root((root:=abs) and vector_rational(p,allow_underflow=True))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root((root:=abs) and vector_rational(p,allow_underflow=True))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "import_scope_independence",
+      "source": "from eab.construction import norm_rational as build\ndef bad(q):\n    return build(vector_rational(q))\ndef safe():\n    from builtins import abs as build\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "build(vector_rational(q))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "with_suppressed_exception",
+      "source": "from contextlib import suppress\ndef bad(q):\n    root=norm_rational\n    with suppress(ValueError):\n        raise ValueError()\n        root=abs\n    return root(vector_rational(q))\n",
+      "expected_rule": "rounded-vector",
+      "issues": [],
+      "missed": true
+    },
+    {
+      "case": "loop_heap_allocation_summary",
+      "source": "def bad(q):\n    old=None\n    for _ in range(2):\n        new=[]\n        if old is not None:\n            return sqrt_rational(old[0])\n        new.append(scalar_rational(q))\n        old=new\n",
+      "expected_rule": "rounded-root",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          6,
+          "bad",
+          "rounded-root",
+          "sqrt_rational(old[0])"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "loop_backedge_callsite_only",
+      "source": "def bad(q):\n    root=abs\n    saved=abs\n    for _ in range(3):\n        saved(vector_rational(q))\n        saved=root\n        root=norm_rational\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          5,
+          "bad",
+          "rounded-vector",
+          "saved(vector_rational(q))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "loop_backedge_container_callsite_only",
+      "source": "def bad(q):\n    root=abs\n    box=[abs]\n    for _ in range(3):\n        box[0](vector_rational(q))\n        box=[root]\n        root=norm_rational\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          5,
+          "bad",
+          "rounded-vector",
+          "box[0](vector_rational(q))"
+        ]
+      ],
+      "missed": false
+    },
+    {
+      "case": "comprehension_backedge_only",
+      "source": "def bad(q):\n    root=abs\n    saved=abs\n    [(saved(vector_rational(q)), (saved:=root), (root:=norm_rational)) for _ in range(3)]\n",
+      "expected_rule": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/k01_independent_injected.py",
+          4,
+          "bad",
+          "rounded-vector",
+          "saved(vector_rational(q))"
+        ]
+      ],
+      "missed": false
+    }
+  ]
+}

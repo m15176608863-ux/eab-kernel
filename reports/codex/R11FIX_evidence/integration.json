@@ -1,0 +1,31 @@
+{
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_doc_pointers.py",
+    "tests/test_filtered_predicates.py",
+    "tests/test_fixture_provenance.py",
+    "tests/test_m4_bdda_adapter.py",
+    "tests/test_m4_bdda_shadow.py",
+    "tests/test_m4_bdda_vv_reader.py",
+    "tests/test_provenance_inputs.py",
+    "tests/test_r10_cone_contract.py",
+    "tests/test_r10_dual_construction.py",
+    "tests/test_r10_initial_boundary.py",
+    "tests/test_r10_resolution.py",
+    "tests/test_r10_static_construction.py",
+    "tests/test_r11fix_numeric_types.py",
+    "tests/test_r11fix_static_flow.py",
+    "tests/test_r9fix_construction_static.py",
+    "--basetemp=reports/codex/R11FIX_evidence/tmp/integration"
+  ],
+  "exit_code": 0,
+  "seconds": 23.79115710000042,
+  "last_line": "662 passed in 23.23s"
+}

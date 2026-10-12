@@ -1,0 +1,57 @@
+{
+  "counts": {
+    "cross2": 2800,
+    "dot2": 2800,
+    "orient2d": 448,
+    "orient3d": 448,
+    "interval": 9,
+    "polygon_locate": 2520,
+    "reduced_sign": 1000
+  },
+  "failures": [
+    {
+      "kind": "orient2d",
+      "input": "((9007199254740995, 3.0), (9007199254740996, 4.0), (9007199254740992.0, 0.0))",
+      "got": 1,
+      "expected": 0
+    },
+    {
+      "kind": "orient2d",
+      "input": "((9007199254740995, 3.0), (9007199254740997, 4.0), (9007199254740992.0, 0.0))",
+      "got": 1,
+      "expected": -1
+    },
+    {
+      "kind": "orient2d",
+      "input": "((9007199254740997, 3.0), (9007199254740998, 4.0), (9007199254740992.0, 0.0))",
+      "got": -1,
+      "expected": 1
+    },
+    {
+      "kind": "orient2d",
+      "input": "((18014398509481987, 3.0), (18014398509481988, 4.0), (1.8014398509481984e+16, 0.0))",
+      "got": 1,
+      "expected": 0
+    },
+    {
+      "kind": "orient2d",
+      "input": "((18014398509481987, 3.0), (18014398509481989, 4.0), (1.8014398509481984e+16, 0.0))",
+      "got": 1,
+      "expected": -1
+    },
+    {
+      "kind": "orient2d",
+      "input": "((18014398509481989, 3.0), (18014398509481990, 4.0), (1.8014398509481984e+16, 0.0))",
+      "got": -1,
+      "expected": 1
+    },
+    {
+      "kind": "orient2d",
+      "input": "((18014398509481990, 3.0), (18014398509481992, 4.0), (1.8014398509481984e+16, 0.0))",
+      "got": 1,
+      "expected": 0
+    }
+  ],
+  "elapsed_seconds": 0.3525655999837909,
+  "oracle": "independent Fraction determinant, bilinear expression, squared distance/winding and reduced cost; interval enclosure directly compared to exact supplied scalar"
+}

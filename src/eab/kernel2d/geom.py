@@ -276,7 +276,10 @@ def orient2d(a: Point, b: Point, c: Point) -> int:
     误差界 = Shewchuk 的相对项 (3u + 16u²)(|detleft| + |detright|) + 绝对项 2⁻¹⁰⁷³：相对项假设不下溢，乘积落进
     次正规区时舍入误差是绝对的（每个乘积至多 2⁻¹⁰⁷⁵），坐标差 ~1e-154 以下时只靠相对项会把错号当真（G6 第二轮 minor：
     两个 −3.46e-309 的乘积之差给出 +5e-324，精确值为负）。乘积上溢时界为 inf，照样退到 Fraction。"""
-    if any(isinstance(v, Fraction) for p in (a, b, c) for v in p):
+    # Only ordinary binary64 inputs satisfy this unconverted-input error bound.
+    # Mixed int/float subtraction would round large integers before the filter.
+    # Gate: test_r11fix_numeric_types.py::test_all_3072_review_integer_float_orientations_have_exact_signs.
+    if any(type(v) is not float for p in (a, b, c) for v in p):
         ax, ay, bx, by, cx, cy = (Fraction(v) for p in (a, b, c) for v in p)
         det = (ax - cx) * (by - cy) - (ay - cy) * (bx - cx)
         return (det > 0) - (det < 0)

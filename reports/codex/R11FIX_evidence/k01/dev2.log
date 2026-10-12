@@ -1,0 +1,28 @@
+........................................................................ [ 51%]
+...........................................F........................     [100%]
+================================== FAILURES ===================================
+_____ test_all_source_and_test_oracles_use_reviewed_construction_boundary _____
+
+    def test_all_source_and_test_oracles_use_reviewed_construction_boundary():
+        issues = gate.scan_repository()
+>       assert not issues, "unsafe exact construction:\n" + "\n".join(map(str, issues))
+E       AssertionError: unsafe exact construction:
+E         ('tests/test_e5a2_bilinear_integer.py', 31, 'operand_pairs', 'direct-float', "float.fromhex('0x1.fffffffffffffp+1023')")
+E         ('tests/test_e5a2_integer_arithmetic.py', 43, '_cases', 'direct-float', "float.fromhex('0x1.fffffffffffffp+1023')")
+E         ('tests/test_r10_dual_construction.py', 115, 'test_r10_half_integer_power_derivative_keeps_exact_subnormal_ties', 'direct-float', 'float.fromhex(seed_hex)')
+E         ('tests/test_r6fix_construction.py', 82, 'test_rational_sqrt_rounds_only_the_final_root', 'direct-float', "float.fromhex('0x1.fffffffffffffp1023')")
+E         ('tests/test_r6fix_construction.py', 83, 'test_rational_sqrt_rounds_only_the_final_root', 'rounded-root', 'sqrt_rational(s*s)')
+E         ('tests/test_r6fix_construction.py', 160, 'test_unrepresentable_geometric_norm_fails_loudly', 'direct-float', "float.fromhex('0x1.fffffffffffffp1023')")
+E         ('tests/test_r6fix_construction.py', 160, 'test_unrepresentable_geometric_norm_fails_loudly', 'rounded-vector', "norm((float.fromhex('0x1.fffffffffffffp1023'),)*3)")
+E         ('tests/test_r6fix_construction.py', 165, 'test_unit_vector_is_constructed_even_when_unscaled_norm_overflows', 'direct-float', "float.fromhex('0x1.fffffffffffffp1023')")
+E         ('tests/test_r6fix_construction.py', 166, 'test_unit_vector_is_constructed_even_when_unscaled_norm_overflows', 'rounded-vector', 'unit((largest, largest, largest))')
+E         ('tests/test_r6fix_construction.py', 182, 'test_cover_construction_exposes_exact_nonzero_gap_and_area', 'direct-float', "float.fromhex('0x0.0000000000001p-1022')")
+E         ('tests/test_r7fix_geom3.py', 199, 'test_r7fix_metrics_cannot_create_infinite_acceptance_scale_from_finite_coordinates', 'direct-float', "float.fromhex('0x1.fffffffffffffp+1023')")
+E         ('tests/test_r9fix_construction_helpers.py', 84, 'test_r9_reference_scalar_identity_fast_path_accepts_only_finite_binary64', 'direct-float', "float.fromhex('0x1.fffffffffffffp1023')")
+E         ('tests/test_r9fix_oracle_candidate.py', 34, 'test_r9_oracle_candidate_respects_each_exact_midpoint_cell', 'direct-float', "float.fromhex('0x1.fffffffffffffp1023')")
+E       assert not [('tests/test_e5a2_bilinear_integer.py', 31, 'operand_pairs', 'direct-float', "float.fromhex('0x1.fffffffffffffp+1023'...0, 'test_unrepresentable_geometric_norm_fails_loudly', 'direct-float', "float.fromhex('0x1.fffffffffffffp1023')"), ...]
+
+tests\test_r9fix_construction_static.py:15: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r9fix_construction_static.py::test_all_source_and_test_oracles_use_reviewed_construction_boundary
+1 failed, 139 passed in 8.38s

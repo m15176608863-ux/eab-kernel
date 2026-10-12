@@ -1,0 +1,236 @@
+{
+  "count": 18,
+  "failed": 0,
+  "results": [
+    {
+      "consumer": "return tuple(g)",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return tuple(g)\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return [*g]",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return [*g]\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return unknown(g)",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return unknown(g)\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return next(g)",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return next(g)\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return g.__next__()",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return g.__next__()\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "for _ in g:\n        pass",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    for _ in g:\n        pass\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return list(map(abs,g))",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return list(map(abs,g))\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return tuple(x for x in g)",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return tuple(x for x in g)\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return 0 in g",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return 0 in g\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return sum(g)",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return sum(g)\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return any(g)",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return any(g)\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "h=[g]\n    return next(h[0])",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    h=[g]\n    return next(h[0])\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "return unknown(*g)",
+      "source": "def bad(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    return unknown(*g)\n",
+      "expect": "rounded-vector",
+      "issues": [
+        [
+          "src/eab/generator_consumer.py",
+          3,
+          "bad",
+          "rounded-vector",
+          "root(vector_rational(q))"
+        ]
+      ],
+      "passed": true
+    },
+    {
+      "consumer": "container_is_not_consumption",
+      "source": "def good(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    root=norm_rational\n    h=[g]\n    return tuple(h)\n",
+      "expect": "none",
+      "issues": [],
+      "passed": true
+    },
+    {
+      "consumer": "exhausted_tuple_is_not_reexecution",
+      "source": "def good(q):\n    root=sum\n    g=(root(vector_rational(q)) for _ in (1,))\n    result=tuple(g)\n    root=norm_rational\n    return tuple(result)\n",
+      "expect": "none",
+      "issues": [],
+      "passed": true
+    },
+    {
+      "consumer": "captured_iterable_binding_is_stable",
+      "source": "def good(q):\n    root=sum\n    g=(saved for saved in [root])\n    root=norm_rational\n    saved=next(g)\n    return saved(vector_rational(q))\n",
+      "expect": "none",
+      "issues": [],
+      "passed": true
+    },
+    {
+      "consumer": "ordinary_alias_strong_rebinding",
+      "source": "def good(q):\n    root=norm_rational\n    root=sum\n    return root(vector_rational(q))\n",
+      "expect": "none",
+      "issues": [],
+      "passed": true
+    },
+    {
+      "consumer": "comprehension_scope_is_private",
+      "source": "def good(q):\n    root=norm_rational\n    [root for root in [sum]]\n    return root(q)\n",
+      "expect": "none",
+      "issues": [],
+      "passed": true
+    }
+  ]
+}

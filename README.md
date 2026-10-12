@@ -1,5 +1,7 @@
 # eab-kernel
 
+> **WO-R11FIX（2026-10-12，工作树修复，待独立复审）**：输入实际为 G6K-K01、K02 两条 major；本轮修复与全部验证证据以 [R11FIX 报告](reports/codex/R11FIX_report.md) 与 [本树设计同步](docs/r11fix_design_sync.md) 为准。静态构造门合流 callable/绑定/舍入来源；数值谓词不得把任意精确输入的转换误差忽略。M0 已按所有者决定退出，独立正确性复审并行继续；本单不变更该决定、不宣称独立 G6 通过、不回写外部只读正本，保留 M4a 门。
+
 > **WO-M4a / M0 所有者决定（决定日期 2026-10-12；工单原误写 10-17，已订正）**：M0 按“连续四轮独立复审无 critical”口径退出，转入 M4。第六至十轮 critical/major/minor 分别为 **1/7/4、0/9/2、0/6/0、0/4/2、0/4/1**；剩余 major 在独立复审线上继续修。本单不重新核验这些轮次、不触碰 `cx-e2`/`g6*`。这是所有者调整的 M0 退出口径，不等于原 G6 的 0 critical / 0 major；下面保留历史状态。M4a 只做离线影子数据与接缝核验，不修改 b-DDA。结果见 [M4a 报告](file:///D:/eab-wt/cx-m4/reports/codex/M4a_report.md)。
 
 > **M4a 实测（2026-10-12）**：15 输入配对 × 3 步、45 帧离线影子；未知分类 0，三处必需内部变异均被目标断言捕获；全套 `10923 passed in 1191.84s (0:19:51)`。门为 `tests/test_m4_bdda_shadow.py`，VV 读取身份修复由 `tests/test_m4_bdda_vv_reader.py` 看护。使用显式域窗口内的静态局部盖，不是本步真实运动首入，不是力学轨迹等价；`BDDA_DETECT` 只提案、未改姊妹，也未执行新鲜 worktree/独立 G6。差异见 [台账](file:///D:/eab-wt/cx-m4/docs/m4_difference_ledger.md)。

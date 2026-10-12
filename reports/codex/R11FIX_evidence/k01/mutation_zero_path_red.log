@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R11FIX_evidence\k01\run_mutation.py", line 12, in <module>
+    tests._assert_cone_rejected(scan, tests.LOOPS[0])
+  File "D:\eab-wt\cx-e2\tests\test_r11fix_static_flow.py", line 35, in _assert_cone_rejected
+    assert any(row[2:4] == ("cone_intersection_margin", "rounded-vector") for row in issues), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('K01 real cone rounded-vector assertion', 'for _ in ():', [])

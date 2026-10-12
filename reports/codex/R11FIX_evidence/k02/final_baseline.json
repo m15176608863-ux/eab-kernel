@@ -1,0 +1,27 @@
+{
+  "mode": "baseline",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "D:\\eab-wt\\cx-e2\\tests\\test_r11fix_numeric_types.py",
+    "-o",
+    "pythonpath=D:/eab-wt/cx-e2/reports/codex/R11FIX_evidence/baseline/src",
+    "--basetemp=D:\\eab-wt\\cx-e2\\reports\\codex\\R11FIX_evidence\\tmp\\k02_final_baseline",
+    "-k",
+    "not kills_reinstated"
+  ],
+  "pytest_returncode": 1,
+  "seconds": 1.0752441000076942,
+  "last_line": "6 failed, 39 passed, 1 deselected in 0.69s",
+  "test_sha256": "696b526eaf0552249227f69ddb8b8b75132f14d0d170a9609dc4f3942a239525",
+  "source_sha256": {
+    "eab\\kernel2d\\geom.py": "d55d8c4fc1c2ee566a14fc67fae93a68dd9c51909e2cf0666d67bad4b7f7282d",
+    "eab\\predicates.py": "0a4ce87a3efde3822731e09fe2224c8ebafe5d948576b8b0a719619bd5c98f9b"
+  }
+}

@@ -1,0 +1,130 @@
+FFFF................FF.......................                            [100%]
+================================== FAILURES ===================================
+__________ test_mixed_integer_orientation_keeps_exact_negative_sign ___________
+
+    def test_mixed_integer_orientation_keeps_exact_negative_sign():
+        n = 2**53
+        points = ((n + 3, 3.), (n + 5, 4.), (2.**53, 0.))
+        assert _area2(*points) == -3
+>       assert g2.orient2d(*points) == -1, 'mixed input must preserve the exact negative determinant'
+E       AssertionError: mixed input must preserve the exact negative determinant
+E       assert 1 == -1
+E        +  where 1 = <function orient2d at 0x00000000046820C0>(*((9007199254740995, 3.0), (9007199254740997, 4.0), (9007199254740992.0, 0.0)))
+E        +    where <function orient2d at 0x00000000046820C0> = g2.orient2d
+
+tests\test_r11fix_numeric_types.py:52: AssertionError
+_______________ test_mixed_integer_orientation_keeps_exact_zero _______________
+
+    def test_mixed_integer_orientation_keeps_exact_zero():
+        n = 2**53
+        points = ((n + 3, 3.), (n + 4, 4.), (2.**53, 0.))
+        assert _area2(*points) == 0
+>       assert g2.orient2d(*points) == 0, 'mixed input must preserve exact collinearity'
+E       AssertionError: mixed input must preserve exact collinearity
+E       assert 1 == 0
+E        +  where 1 = <function orient2d at 0x00000000046820C0>(*((9007199254740995, 3.0), (9007199254740996, 4.0), (9007199254740992.0, 0.0)))
+E        +    where <function orient2d at 0x00000000046820C0> = g2.orient2d
+
+tests\test_r11fix_numeric_types.py:59: AssertionError
+______ test_all_3072_review_integer_float_orientations_have_exact_signs _______
+
+    def test_all_3072_review_integer_float_orientations_have_exact_signs():
+        cases = list(_review_cases())
+        assert len(cases) == 3072
+        truths = [_sign(_area2(*points)) for points in cases]
+        assert set(truths) == {-1, 0, 1}
+        wrong = [(points, want, g2.orient2d(*points)) for points, want in zip(cases, truths)
+                 if g2.orient2d(*points) != want]
+>       assert not wrong, {'wrong': len(wrong), 'sign_reversals': sum(w != 0 for _, w, _ in wrong),
+                           'exact_zero_errors': sum(w == 0 for _, w, _ in wrong), 'first': wrong[:3]}
+E       AssertionError: {'exact_zero_errors': 20, 'first': [(((9007199254740993, 1.0), (9007199254740994, 2.0), (9007199254740992.0, 0.0)), 0,...007199254740995, 3.0), (9007199254740996, 4.0), (9007199254740992.0, 0.0)), 0, 1)], 'sign_reversals': 82, 'wrong': 102}
+E       assert not [(((9007199254740993, 1.0), (9007199254740994, 2.0), (9007199254740992.0, 0.0)), 0, -1), (((9007199254740994, 7.0), (9...254740992.0, 0.0)), -1, 1), (((9007199254740995, 1.0), (9007199254740998, 2.0), (9007199254740992.0, 0.0)), 0, 1), ...]
+
+tests\test_r11fix_numeric_types.py:69: AssertionError
+___ test_mixed_nondegenerate_triangle_is_not_silently_triangulated_to_empty ___
+
+    def test_mixed_nondegenerate_triangle_is_not_silently_triangulated_to_empty():
+        n = 2**53
+        polygon = [(n + 2, 7.), (n + 3, 11.), (2.**53, 0.)]
+        assert _area2(*polygon) == 1
+        triangles = g2.triangulate(polygon)
+>       assert triangles == [(0, 1, 2)], 'a nonzero-area triangle must survive the actual ear-cut path'
+E       AssertionError: a nonzero-area triangle must survive the actual ear-cut path
+E       assert [] == [(0, 1, 2)]
+E         
+E         Right contains one more item: (0, 1, 2)
+E         Use -v to get more diff
+
+tests\test_r11fix_numeric_types.py:78: AssertionError
+_ test_mixed_integer_float_subtraction_does_not_require_binary64_range[1024] __
+
+exponent = 1024
+
+    @pytest.mark.parametrize('exponent', [1024, 4096])
+    def test_mixed_integer_float_subtraction_does_not_require_binary64_range(exponent):
+        points = ((2**exponent, 1.), (0., 2.), (1., 0.))
+>       assert g2.orient2d(*points) == _sign(_area2(*points))
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r11fix_numeric_types.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = (179769313486231590...5356329624224137216, 1.0), b = (0.0, 2.0)
+c = (1.0, 0.0)
+
+    def orient2d(a: Point, b: Point, c: Point) -> int:
+        """cross(b − a, c − a) 的**精确**符号（+1 左转 / 0 共线 / −1 右转）：浮点快路 + Shewchuk 误差界过滤，
+        界内退到 Fraction 精确算术。浮点输入本身就是精确有理数，所以结果对这组浮点坐标是精确的。
+    
+        误差界 = Shewchuk 的相对项 (3u + 16u²)(|detleft| + |detright|) + 绝对项 2⁻¹⁰⁷³：相对项假设不下溢，乘积落进
+        次正规区时舍入误差是绝对的（每个乘积至多 2⁻¹⁰⁷⁵），坐标差 ~1e-154 以下时只靠相对项会把错号当真（G6 第二轮 minor：
+        两个 −3.46e-309 的乘积之差给出 +5e-324，精确值为负）。乘积上溢时界为 inf，照样退到 Fraction。"""
+        if any(isinstance(v, Fraction) for p in (a, b, c) for v in p):
+            ax, ay, bx, by, cx, cy = (Fraction(v) for p in (a, b, c) for v in p)
+            det = (ax - cx) * (by - cy) - (ay - cy) * (bx - cx)
+            return (det > 0) - (det < 0)
+>       detleft = (a[0] - c[0]) * (b[1] - c[1])
+                   ^^^^^^^^^^^
+E       OverflowError: int too large to convert to float
+
+reports\codex\R11FIX_evidence\baseline\src\eab\kernel2d\geom.py:283: OverflowError
+_ test_mixed_integer_float_subtraction_does_not_require_binary64_range[4096] __
+
+exponent = 4096
+
+    @pytest.mark.parametrize('exponent', [1024, 4096])
+    def test_mixed_integer_float_subtraction_does_not_require_binary64_range(exponent):
+        points = ((2**exponent, 1.), (0., 2.), (1., 0.))
+>       assert g2.orient2d(*points) == _sign(_area2(*points))
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r11fix_numeric_types.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = (104438888141315250...4708340403154190336, 1.0), b = (0.0, 2.0)
+c = (1.0, 0.0)
+
+    def orient2d(a: Point, b: Point, c: Point) -> int:
+        """cross(b − a, c − a) 的**精确**符号（+1 左转 / 0 共线 / −1 右转）：浮点快路 + Shewchuk 误差界过滤，
+        界内退到 Fraction 精确算术。浮点输入本身就是精确有理数，所以结果对这组浮点坐标是精确的。
+    
+        误差界 = Shewchuk 的相对项 (3u + 16u²)(|detleft| + |detright|) + 绝对项 2⁻¹⁰⁷³：相对项假设不下溢，乘积落进
+        次正规区时舍入误差是绝对的（每个乘积至多 2⁻¹⁰⁷⁵），坐标差 ~1e-154 以下时只靠相对项会把错号当真（G6 第二轮 minor：
+        两个 −3.46e-309 的乘积之差给出 +5e-324，精确值为负）。乘积上溢时界为 inf，照样退到 Fraction。"""
+        if any(isinstance(v, Fraction) for p in (a, b, c) for v in p):
+            ax, ay, bx, by, cx, cy = (Fraction(v) for p in (a, b, c) for v in p)
+            det = (ax - cx) * (by - cy) - (ay - cy) * (bx - cx)
+            return (det > 0) - (det < 0)
+>       detleft = (a[0] - c[0]) * (b[1] - c[1])
+                   ^^^^^^^^^^^
+E       OverflowError: int too large to convert to float
+
+reports\codex\R11FIX_evidence\baseline\src\eab\kernel2d\geom.py:283: OverflowError
+=========================== short test summary info ===========================
+FAILED tests/test_r11fix_numeric_types.py::test_mixed_integer_orientation_keeps_exact_negative_sign
+FAILED tests/test_r11fix_numeric_types.py::test_mixed_integer_orientation_keeps_exact_zero
+FAILED tests/test_r11fix_numeric_types.py::test_all_3072_review_integer_float_orientations_have_exact_signs
+FAILED tests/test_r11fix_numeric_types.py::test_mixed_nondegenerate_triangle_is_not_silently_triangulated_to_empty
+FAILED tests/test_r11fix_numeric_types.py::test_mixed_integer_float_subtraction_does_not_require_binary64_range[1024]
+FAILED tests/test_r11fix_numeric_types.py::test_mixed_integer_float_subtraction_does_not_require_binary64_range[4096]
+6 failed, 39 passed, 1 deselected in 0.69s
