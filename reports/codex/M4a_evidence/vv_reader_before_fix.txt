@@ -1,0 +1,28 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____ test_bb52_vv_reader_uses_shared_corner_not_reference_edge_endpoint ______
+
+    def test_bb52_vv_reader_uses_shared_corner_not_reference_edge_endpoint():
+>       _bb52_gate()
+
+tests\test_m4_bdda_vv_reader.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _bb52_gate():
+        rows = [r for r in bdda_df.load_records(FIX / "bb52_N3") if r.cover == CoverType.VV]
+        assert len(rows) == 3
+        for r in rows:
+>           assert {r.feature_a.index, r.feature_b.index} == {125, 171}, "VV_CORNER_IDENTITY"
+E           AssertionError: VV_CORNER_IDENTITY
+E           assert {126, 171} == {125, 171}
+E             
+E             Extra items in the left set:
+E             126
+E             Extra items in the right set:
+E             125
+E             Use -v to get more diff
+
+tests\test_m4_bdda_vv_reader.py:26: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_m4_bdda_vv_reader.py::test_bb52_vv_reader_uses_shared_corner_not_reference_edge_endpoint
+1 failed in 0.08s

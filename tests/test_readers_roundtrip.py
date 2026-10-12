@@ -42,6 +42,30 @@ def _assert_step_keys_unique(records):
         seen[key] = r.contact_index
 
 
+_M4_DUPLICATE_CONTACTS = {
+    "bbv01_N3": [(1, (53, 54)), (1, (104, 107)), (1, (129, 130))],
+    "bbv01_dbv01a_N3": [(1, (53, 54)), (1, (127, 128))],
+    "bbv02_N3": [(1, (1, 2)), (1, (61, 62))],
+    "bbv02_dbv02a_N3": [(1, (1, 2)), (1, (61, 62))],
+}
+
+
+def _primary_unique_records(records, expected_duplicates=()):
+    """M4 原始重复不删行：仅 9 个钉死组允许主键相同，未知重复必红。"""
+    groups = {}
+    for r in records:
+        groups.setdefault((r.step, r.canonical_key()), []).append(r)
+    duplicates = sorted((step, tuple(r.contact_index for r in rs))
+                        for (step, _), rs in groups.items() if len(rs) > 1)
+    assert duplicates == list(expected_duplicates), ("unexpected primary duplicates", duplicates)
+    for rs in groups.values():
+        if len(rs) < 2:
+            continue
+        # 只接纳原始主三点相同而第二参考不同的这批表示，不豁免 alias 撞键。
+        assert len({tuple(r.extra[k] for k in ("raw_p1", "raw_p2", "p3")) for r in rs}) == 1
+        assert len({tuple(r.extra[k] for k in ("m4", "m5", "m6")) for r in rs}) == len(rs)
+    return [rs[0] for rs in groups.values()]
+
 @pytest.mark.parametrize("case_dir", sorted((FIX / "bdda_df").glob("*")) if (FIX / "bdda_df").exists() else [])
 def test_bdda_df_fixture(case_dir):
     recs = bdda_df.load_records(case_dir)
@@ -57,7 +81,7 @@ def test_bdda_df_fixture(case_dir):
     if (case_dir / "bdda_debug_verts.csv").exists():
         assert len(resolved) == len(recs)
     assert all(r.extra.get("_blocks_unknown") for r in recs if r not in resolved)
-    _assert_step_keys_unique(resolved)
+    _assert_step_keys_unique(_primary_unique_records(resolved, _M4_DUPLICATE_CONTACTS.get(case_dir.name, ())))
 
 
 @pytest.mark.parametrize("probe", sorted((FIX / "tf").glob("*/retry_contact_pair_probe.tsv")) if (FIX / "tf").exists() else [])
@@ -114,6 +138,7 @@ def test_reader_key_gate_has_teeth_where_the_retired_assert_had_none(monkeypatch
     而现在的门（块序交换不变 + 逐步键唯一）必红。"""
     import eab.contact_record as cr
     recs = bdda3d.load_records(src) if src.suffix == ".json" else bdda_df.load_records(src)
+    recs = _primary_unique_records(recs, _M4_DUPLICATE_CONTACTS.get(src.name, ()))
     monkeypatch.setattr(cr.ContactRecord, "canonical_key", mut(cr.ContactRecord.canonical_key))
     keys = [r.canonical_key() for r in recs]
     assert len(keys) == len(recs)                              # 旧断言：退化下照样绿
@@ -138,7 +163,8 @@ def _raw_contacts(case_dir):
     for ln in lines[1:]:
         d = dict(zip(head, ln.split(",")))
         out[(int(d["step"]), int(d["contact"]))] = {"p1": int(d["p1"]), "p2": int(d["p2"]), "p3": int(scalar_exact(d["p3"])),
-                                                     "mtype": int(scalar_exact(d["mtype"]))}
+                                                     "mtype": int(scalar_exact(d["mtype"])),
+                                                     **{k: int(scalar_exact(d[k])) for k in ("m4", "m5", "m6")}}
     return out
 
 
@@ -166,7 +192,7 @@ def test_bdda_df_feature_ids_are_in_the_loaded_polygon(case_dir):
 def test_bdda_df_feature_b_follows_the_kernel_naming(case_dir):
     """G6 第二轮 minor：feature_b 曾一律是 Feature(块, 'edge', p2)——p2 是 legacy 边 p3→p2 的**终点**，内核与 bb52_g0
     都以起点命名边；v-v 记录（mtype 1）的 B 特征还被标成 edge。现在：v-e 记录的 feature_b 是边 {p2, p3} 在载入后
-    CCW 多边形里的起点（它在环上的后继就是另一端点），v-v 记录是顶点 p2。"""
+    CCW 多边形里的起点（它在环上的后继就是另一端点），v-v 记录是双参考共享的真实顶点，不是固定 p2。"""
     from eab.kernel2d.geom import signed_area
     from eab.readers.bdda_geom import load_step_geometries
     recs = bdda_df.load_records(case_dir)
@@ -179,7 +205,11 @@ def test_bdda_df_feature_b_follows_the_kernel_naming(case_dir):
         assert signed_area(g.poly) > 0.0
         kinds[want["mtype"]] += 1
         if want["mtype"] == 1:
-            assert (r.feature_b.kind, r.feature_b.index) == ("vertex", sg.canon(want["p2"])), r
+            shared = ({sg.canon(want[k]) for k in ("p1", "p2", "p3")}
+                      & {sg.canon(want[k]) for k in ("m4", "m5", "m6")})
+            candidates = shared & set(g.vidx)
+            assert len(candidates) == 1
+            assert (r.feature_b.kind, r.feature_b.index) == ("vertex", candidates.pop()), r
             continue
         assert r.feature_b.kind == "edge" and "_edge_not_adjacent" not in r.extra, r
         i = g.vidx.index(r.feature_b.index)

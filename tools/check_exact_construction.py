@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # (relative path, qualified function, rule) -> individual auditable rationale.
 EXCEPTIONS = {
+    ("src/eab/adapters/bdda2d.py", "load_window", "direct-float"):
+        "Legacy detparams CSV string parsing at the explicit L5 input boundary; not a derived exact construction.",
     ("src/eab/construction.py", "normalized_difference_rational", "subtract-rounded"):
         "Untrusted initial candidate only; exact algebraic comparisons bracket it and certify the final midpoint or perform full bit search.",
     ("src/eab/margin.py", "_resolve", "subtract-rounded"):

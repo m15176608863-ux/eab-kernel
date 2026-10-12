@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m4_verify_evidence.py", line 69, in verify
+    gate._gate_case("bb52_N3")
+  File "D:\eab-wt\cx-m4\tests\test_m4_bdda_shadow.py", line 57, in _gate_case
+    _assert_baseline(case, actual)
+  File "D:\eab-wt\cx-m4\tests\test_m4_bdda_shadow.py", line 64, in _assert_baseline
+    shadow.assert_classified(actual)
+  File "D:\eab-wt\cx-m4\tools\m4_bdda_shadow.py", line 278, in assert_classified
+    assert not bad, ("unclassified differences", bad)
+           ^^^^^^^
+AssertionError: ('unclassified differences', [(1, 'UNCLASSIFIED_EAB_MISSING_VALID_COVER', 11), (2, 'UNCLASSIFIED_EAB_MISSING_VALID_COVER', 19), (3, 'UNCLASSIFIED_EAB_MISSING_VALID_COVER', 20)])

@@ -20,7 +20,10 @@
 feature_b 的命名（G6 第二轮 minor）：与内核同一约定——边以载入后 CCW 多边形里的**起点**命名（kernel2d.geom.edge(P, i)
 = (P[i], P[i+1])，tools/bb52_g0.py 同）。legacy 的边是 p2–p3，全部夹具里 p3 都是 p2 的 CCW 前驱，边的起点是 p3；
 读取器不假设这一点，有 verts.csv 时按载入多边形的邻接定起点，两者不相邻时退回 p2 并记 extra['_edge_not_adjacent']；
-缺 verts.csv 时按实测约定取 p3。mtype 1（v-v）的 B 特征是**顶点** p2，不是边（旧版一律写成 edge p2）。
+缺 verts.csv 时按实测约定取 p3。mtype 1（v-v）的两个真顶点是两组三点参考的共享顶点，
+不是固定 p1/p2（M4a 查明旧映射把参考边另一端误当接触顶点）。先规范化 alias 再取交集，
+必须恰有两个点且跨两块、包含主参考 p1；另一点才是 B 特征。异常引用显式报错，不猜 p2。
+门：tests/test_m4_bdda_vv_reader.py（四种参考分支、半交换、alias、真实夹具与原缺陷注入）。
 
 状态字段只来自 df22（G6 第二轮 minor）：某 (step, contact) 没有 df22 行时 mode = UNKNOWN、raw_mode/gap/shear 留空，
 contacts.csv 的转移态只进 mode_init / gap_ref / slip_ref——旧版把转移态抄进状态字段，studio/sensor 第 2 步
@@ -132,6 +135,30 @@ def _edge_start(sg, block: int, p2: int, p3: float | None, extra: dict) -> int:
     return a
 
 
+def _vv_opposite_vertex(c: dict, sg, block_a: int, block_b: int) -> int:
+    """Recover the opposite corner from df05's two reference triples.
+
+    df05's final half-swap can put the corner at either p2 or p3. The
+    intersection is unchanged by that swap. Geometry, when present, verifies
+    block incidence; no distance tolerance or nearest-point guess is used.
+    """
+    canon = sg.canon if sg is not None else (lambda v: v)
+    names = ("p1", "p2", "p3", "m4", "m5", "m6")
+    if any(k not in c or c[k] <= 0 or int(c[k]) != c[k] for k in names):
+        raise ValueError("VV reference requires six positive vertex ids")
+    p1, p2, p3, q1, q2, q3 = (canon(int(c[k])) for k in names)
+    shared = {p1, p2, p3} & {q1, q2, q3}
+    if len(shared) != 2 or p1 not in shared:
+        raise ValueError(f"VV reference has ambiguous shared corners: {sorted(shared)}")
+    other, = shared - {p1}
+    if sg is not None:
+        blocks = sg.vertex_block()
+        if (block_a == block_b or blocks.get(p1) != block_a
+                or blocks.get(other) != block_b):
+            raise ValueError("VV reference corners do not belong to the two contact blocks")
+    return other
+
+
 def load_records(dump_dir: Path) -> list[ContactRecord]:
     """合并 contacts + df18 (+ df22 末次判定) 为 ContactRecord 列表，按 (step, contact) 排序。
 
@@ -204,7 +231,7 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
         fb = None
         if "p2" in c and block_b >= 0:
             if cover == CoverType.VV:
-                fb = Feature(block_b, "vertex", canon(int(c["p2"])))
+                fb = Feature(block_b, "vertex", _vv_opposite_vertex(c, sg, block_a, block_b))
             else:
                 fb = Feature(block_b, "edge", _edge_start(sg, block_b, int(c["p2"]), c.get("p3"), extra))
 
