@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction
+from math import inf, nextafter
 
 from .covers import _facet_normal_own, enumerate_covers, facet_gap
 from .exact import (convexity_violation, entrance_block_exact, membership_exact,
@@ -82,8 +83,17 @@ def _facet_points(A: Poly, B: Poly, label: tuple, x: Point) -> tuple[Point, Poin
     return tuple(map(float, pa)), tuple(map(float, pb))
 
 
-def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> float:
-    return round_floor(max(coord_scale(B), coord_scale(A) + max(abs(x0[0]), abs(x0[1])) + norm(d)))
+def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> Fraction:
+    # This is an internal conservative reporting bound, not a float output.
+    # Scale before any construction, retain the rational sum, and round the
+    # sole radical outward. Its exact square certifies the chosen upper bound.
+    factor = Fraction(64)*Fraction(2)**-52
+    base = factor*(Fraction(coord_scale(A))+max(abs(Fraction(v)) for v in x0))
+    square = factor*factor*sum(Fraction(v)**2 for v in d)
+    root = sqrt_rational(square, allow_underflow=True)
+    if Fraction(root)**2 < square:
+        root = nextafter(root, inf)
+    return max(factor*Fraction(coord_scale(B)), base+Fraction(root))
 
 
 def first_entrance(A: Poly, B: Poly, x0: Point, d: Point, *, tol: float = 0.0, t_max: float = float("inf")) -> Entrance2:
@@ -141,7 +151,7 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
         fbest = best[2]
     else:
         return none()
-    band2 = Fraction(ctol + r) ** 2
+    band2 = (Fraction(ctol) + r) ** 2
     near = []
     tied = []
     for t, slope, f in enter:
@@ -277,7 +287,7 @@ def _first_entrance_concave(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, 
                 raise RuntimeError(f"first_entrance: bodies already touch at t = {tp!r} < candidate {t!r} ({label}); "
                                    "the cover candidate set missed an earlier entrance")
         tied, near = [], []
-        band2 = Fraction(ctol + r) ** 2
+        band2 = (Fraction(ctol) + r) ** 2
         for t2, _, label2 in raw:
             g2, _, p2, l2, _ = _feature_data(A, B, label2, x)
             if 0 <= p2 <= l2:
@@ -311,7 +321,7 @@ def shortest_exit(A: Poly, B: Poly, x0: Point, *, tol: float = 0.0) -> Entrance2
     best_distance, label = min(candidates, key=lambda q: q[0])
     tied = tuple(lab for distance, lab in candidates if distance == best_distance)
     # sqrt(distance)-sqrt(best) <= band：平方化后的精确有理数比较，不让报告反馈选择。
-    band2 = Fraction(tol + _floor(A, B, x0, (0., 0.))) ** 2
+    band2 = (Fraction(tol) + _floor(A, B, x0, (0., 0.))) ** 2
     near = tuple(lab for distance, lab in candidates
                  if distance - best_distance - band2 <= 0 or
                  (distance - best_distance - band2) ** 2 <= 4 * band2 * best_distance)

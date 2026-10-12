@@ -6,6 +6,7 @@ projections/events. Only final distance display uses Decimal square root.
 from decimal import Decimal, localcontext
 from fractions import Fraction as F
 from math import lcm
+from functools import cmp_to_key
 
 
 def sqrt_display(q):
@@ -112,8 +113,59 @@ def distance(A,B):
     return sqrt_display(best),arg
 
 
+
+def boundary_has_exterior(A, B):
+    """Exact local complement certificate, independent of production primitives.
+
+    Vertex/supporting-edge lines partition translation space into cells where
+    intersection is constant. At a contact event, inspect one rational point in
+    every open angular sector of its incident lines. The step is smaller than
+    every nonincident line crossing. An exterior sector means true boundary E;
+    a tight-fit seam with no exterior sector is interior E, not an exit.
+    """
+    lines = set()
+    rays = set()
+    for P, Q, sign in ((A, B, 1), (B, A, -1)):
+        for p in P:
+            for a, b in zip(Q, Q[1:]+Q[:1]):
+                ex, ey = b[0]-a[0], b[1]-a[1]
+                if ex == ey == 0:
+                    continue
+                h = turn(a, b, p)
+                lines.add((sign*-ey, sign*ex, h))
+                if h == 0:
+                    length = abs(ex)+abs(ey)
+                    ray = (ex/length, ey/length)
+                    rays.update((ray, (-ray[0], -ray[1])))
+    def half(v):
+        return 0 if v[1] > 0 or (v[1] == 0 and v[0] > 0) else 1
+    def compare(u, v):
+        if half(u) != half(v):
+            return half(u)-half(v)
+        determinant = u[0]*v[1]-u[1]*v[0]
+        return -1 if determinant > 0 else (1 if determinant < 0 else 0)
+    ordered = sorted(rays, key=cmp_to_key(compare))
+    for a, b in zip(ordered, ordered[1:]+ordered[:1]):
+        dx, dy = a[0]+b[0], a[1]+b[1]
+        if dx == dy == 0:
+            dx, dy = -a[1], a[0]
+        step = F(1)
+        for nx, ny, h in lines:
+            slope = nx*dx+ny*dy
+            if h and slope:
+                step = min(step, abs(h/slope)/2)
+        if overlap(translate(A, (step*dx, step*dy)), B) == -1:
+            return True
+    return False
+
+
 def ray_exit(A,B,u):
-    """First exact boundary event, with exact interval membership and no band."""
+    """First exit from topological int E, including isolated boundary events.
+
+    Strict body overlap implies int E, but the converse fails at tight-fit
+    seams. Non-overlap events/intervals therefore require a local exterior
+    sector certificate; merely inspecting adjacent ray intervals is unsound.
+    """
     A,B=points(A),points(B);ux,uy=map(F,u)
     uu=ux*ux+uy*uy
     if not uu:raise ValueError('brute_ray_exit: direction u must be non-zero')
@@ -137,6 +189,12 @@ def ray_exit(A,B,u):
     lo=F(0)
     for hi in sorted({t for t in hits if t<end})+[end]:
         mid=(lo+hi)/2
-        if overlap(translate(A,(mid*ux,mid*uy)),B)!=1:return lo
+        Am = translate(A, (mid*ux, mid*uy))
+        state = overlap(Am, B)
+        if state == -1 or (state == 0 and boundary_has_exterior(Am, B)):
+            return lo
+        Ah = translate(A, (hi*ux, hi*uy))
+        if overlap(Ah, B) == 0 and boundary_has_exterior(Ah, B):
+            return hi
         lo=hi
     return end

@@ -1,0 +1,869 @@
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 50%]
+........................................................................ [ 51%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+......................................................................F. [ 76%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+..........................F............................................. [ 81%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+.....................................FF.FFF...FF.FFF.................... [ 97%]
+..............................................FF.FF....FF............... [ 98%]
+........................................................................ [ 99%]
+.......................................................                  [100%]
+================================== FAILURES ===================================
+___________________ test_guard_is_not_a_vertex_inside_check ___________________
+[gw0] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000F3327B0>
+
+    def test_guard_is_not_a_vertex_inside_check(monkeypatch):
+        """牙（穿过被测路径）：把 margin 里的贯入守卫换成"A 的某顶点在 B 内"检查（G6 的变异原样），
+        交叉方条必须红——它给出间距 0.05、EE 标签、margin_contacts []（fail-unsafe）；
+        而"顶点在体内"那一类旧输入在同一变异下照绿（这正是旧门无牙的原因）。"""
+        import eab.margin as M
+        from eab.kernel3d.geom3 import point_in_polyhedron
+    
+        def vertex_inside_guard(A, B, tol=0.0):
+            st = [point_in_polyhedron(v, B, tol) for v in A.verts]
+            return 1 if 1 in st else (0 if 0 in st else -1)
+    
+        monkeypatch.setattr(M, "polyhedra_overlap", vertex_inside_guard)
+        A, B, _ = _crossbars_case()
+>       d, lab = body_distance(A, B)
+                 ^^^^^^^^^^^^^^^^^^^
+
+tests\test_margin_penetration.py:207: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\margin.py:393: in body_distance
+    ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:361: in _resolved
+    ctol, rnd, wits, contact, minimum2 = _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+src\eab\margin.py:375: in _resolved_cached
+    ctol, rnd, wits, contact, minimum2 = implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = Polyhedron(verts=((-2.0, -0.2, 0.35), (2.0, -0.2, 0.35), (2.0, 0.2, 0.35), (-2.0, 0.2, 0.35), (-2.0, -0.2, 0.55), (2.0... 0.55), (-2.0, 0.2, 0.55)), faces=((0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)))
+B = Polyhedron(verts=((-0.2, -2.0, -0.4), (0.2, -2.0, -0.4), (0.2, 2.0, -0.4), (-0.2, 2.0, -0.4), (-0.2, -2.0, 0.4), (0.2,...0, 0.4), (-0.2, 2.0, 0.4)), faces=((0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)))
+tol = 1e-09, geom_tol = None, contact_window = None
+
+    def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None,
+                 contact_window: float | None = None):
+        """Exact relation/threshold decisions; floats are only witness constructions.
+    
+        geom_tol remains a compatibility argument. The legacy resolution is never
+        inferred: the caller must pass contact_window=contact_resolution(A, B).
+        The final self-check bounds construction error, not a geometric branch.
+        """
+        ctol = _contact_window(contact_window)
+        state = polyhedra_overlap(A, B, 0)
+        if state == 1 and not _penetration_within_window(A, B, ctol):
+            return ctol, 0.0, None, True, Fraction(0)
+        wits = []
+        rnd = rounding_floor(A, B)
+        for c, w, n in _witnesses(A, B, tol, exact_surface=contact_window is None or not ctol):
+            d2 = _surface_feature_squared(A, B, c.label())
+            w, n = _repair_folded_construction(A, B, c, w, n, d2, rnd)
+            wits.append((c, w, n, d2))
+        rnd = rounding_floor(A, B)
+        if state >= 0:
+            return ctol, rnd, wits, True, Fraction(0)
+        dmin = min((w for _, w, _, _ in wits), default=float("inf"))
+        view_a, _ = _surface_view(tuple(A.verts), tuple(A.faces))
+        view_b, _ = _surface_view(tuple(B.verts), tuple(B.faces))
+        truth = brute_feature_distance(view_a, view_b, allow_underflow=True)
+        if abs(dmin - truth) > 4.0 * rnd:
+>           raise RuntimeError(f"margin self-check failed: the covers give distance {dmin!r} but the nearest feature pair "
+                               f"is {truth!r} apart (rounding {rnd:.3g}); the cover enumeration "
+                               + ("missed the nearest pair" if dmin > truth else "returned witnesses off the bodies"))
+E           RuntimeError: margin self-check failed: the covers give distance 0.050000000000000044 but the nearest feature pair is 0.0 apart (rounding 5.72e-14); the cover enumeration missed the nearest pair
+
+src\eab\margin.py:344: RuntimeError
+___________________ test_g6f06_gap_magnitude_gate_has_teeth ___________________
+[gw2] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000E19CBF0>
+
+    def test_g6f06_gap_magnitude_gate_has_teeth(monkeypatch):
+        import eab.kernel2d.entrance as E
+        monkeypatch.setattr(E, "sqrt_rational", lambda value: math.sqrt(float(value)))
+        with pytest.raises(AssertionError, match="representable signed gap") as caught:
+>           test_g6f06_exit_gap_preserves_representable_nonzero_magnitude(-600)
+
+tests\test_r6fix_construction.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_r6fix_construction.py:24: in test_g6f06_exit_gap_preserves_representable_nonzero_magnitude
+    r = shortest_exit(_square(s), _square(s), (s/2, 0))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel2d\entrance.py:324: in shortest_exit
+    band2 = (Fraction(tol) + _floor(A, B, x0, (0., 0.))) ** 2
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = [(0, 0), (2.409919865102884e-181, 0), (2.409919865102884e-181, 2.409919865102884e-181), (0, 2.409919865102884e-181)]
+B = [(0, 0), (2.409919865102884e-181, 0), (2.409919865102884e-181, 2.409919865102884e-181), (0, 2.409919865102884e-181)]
+x0 = (1.204959932551442e-181, 0), d = (0.0, 0.0)
+
+    def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> Fraction:
+        # This is an internal conservative reporting bound, not a float output.
+        # Scale before any construction, retain the rational sum, and round the
+        # sole radical outward. Its exact square certifies the chosen upper bound.
+        factor = Fraction(64)*Fraction(2)**-52
+        base = factor*(Fraction(coord_scale(A))+max(abs(Fraction(v)) for v in x0))
+        square = factor*factor*sum(Fraction(v)**2 for v in d)
+>       root = sqrt_rational(square, allow_underflow=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: test_g6f06_gap_magnitude_gate_has_teeth.<locals>.<lambda>() got an unexpected keyword argument 'allow_underflow'
+
+src\eab\kernel2d\entrance.py:93: TypeError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-1000.0-0.001] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q4', t = 1000.0, s = 0.001
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-1000.0-0.001]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 2.229737661868514e-14 <= (4 * 5.421010862427522e-20)
+E            +  where 2.229737661868514e-14 = abs((0.00044200000000164843 - 0.00044199999997935105))
+E            +    where 0.00044200000000164843 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=0.00044200000000164843, margin_gap=-0.000220999999998... Fraction(31809694444201842318415376135192580563979412093585, 109187783993883028637367311731697328087615245807255552))).distance
+E            +  and   5.421010862427522e-20 = <built-in function ulp>(0.00044199999997935105)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+__ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-1000.0-1.0] __
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q4', t = 1000.0, s = 1.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-1000.0-1.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 3.2529534621517087e-14 <= (4 * 5.551115123125783e-17)
+E            +  where 3.2529534621517087e-14 = abs((0.44199999999998213 - 0.4419999999999496))
+E            +    where 0.44199999999998213 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=0.44199999999998213, margin_gap=-0.2210000000000178, ...9445037824469962884950369612851388628671501644725, 54593892000979685479214567440455618390180849410425660445302980608))).distance
+E            +  and   5.551115123125783e-17 = <built-in function ulp>(0.4419999999999496)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-0.001] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q4', t = 100000.0, s = 0.001
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-0.001]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 8.7021714703997e-13 <= (4 * 5.421010862427522e-20)
+E            +  where 8.7021714703997e-13 = abs((0.0004420000011111417 - 0.0004420000019813588))
+E            +    where 0.0004420000011111417 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=0.0004420000011111417, margin_gap=-0.0002209999988888...58571178359454171136), Fraction(462891974417664965416498747684405965381, 1588891379648956482403144821397294931771392))).distance
+E            +  and   5.421010862427522e-20 = <built-in function ulp>(0.0004420000019813588)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-1.0] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q4', t = 100000.0, s = 1.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-1.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 5.077049891610841e-13 <= (4 * 5.551115123125783e-17)
+E            +  where 5.077049891610841e-13 = abs((0.44200000000097855 - 0.44200000000148626))
+E            +    where 0.44200000000097855 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=0.44200000000097855, margin_gap=-0.22099999999902137,...on(3703135816121981295515057159826344075042156112012167619, 12711131014318853381993129445779853119635127814905135104))).distance
+E            +  and   5.551115123125783e-17 = <built-in function ulp>(0.44200000000148626)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-1000.0] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q4', t = 100000.0, s = 1000.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-1000.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 1.3073986337985843e-12 <= (4 * 5.684341886080802e-14)
+E            +  where 1.3073986337985843e-12 = abs((441.99999999999795 - 441.99999999999926))
+E            +    where 441.99999999999795 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=441.99999999999795, margin_gap=-221.00000000000193, n...787879732603025997498790192177278433975625181961, 397222844192435634833680444016897126461494522368473512926557241344))).distance
+E            +  and   5.684341886080802e-14 = <built-in function ulp>(441.99999999999926)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-1000.0-0.001] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q6', t = 1000.0, s = 0.001
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-1000.0-0.001]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 3.19956192616766e-14 <= (4 * 5.421010862427522e-20)
+E            +  where 3.19956192616766e-14 = abs((0.00044199999996988597 - 0.00044199999993789035))
+E            +    where 0.00044199999996988597 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=0.00044199999996988597, margin_gap=-0.000221000000030...020928), Fraction(3630795283830834596502286096918528503487298575, 64954065434855579009503533632713217508065476083712))).distance
+E            +  and   5.421010862427522e-20 = <built-in function ulp>(0.00044199999993789035)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+__ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-1000.0-1.0] __
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q6', t = 1000.0, s = 1.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-1000.0-1.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 3.352873534367973e-14 <= (4 * 5.551115123125783e-17)
+E            +  where 3.352873534367973e-14 = abs((0.44200000000001344 - 0.44200000000004697))
+E            +    where 0.44200000000001344 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=0.44200000000001344, margin_gap=-0.22099999999998649,...53085623530933271174405906693857984272595401683695, 3412118250061055019882559147615174748270108105419710334131765248))).distance
+E            +  and   5.551115123125783e-17 = <built-in function ulp>(0.44200000000004697)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-0.001] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q6', t = 100000.0, s = 0.001
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-0.001]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 1.071019954581448e-12 <= (4 * 5.421010862427522e-20)
+E            +  where 1.071019954581448e-12 = abs((0.00044200000043397307 - 0.0004419999993629531))
+E            +    where 0.00044200000043397307 = MarginContact(label=('VF', ('vertex', 2), ('face', 3)), distance=0.00044200000043397307, margin_gap=-0.000220999999566...207659681749290450944), Fraction(88815671334293594577431924062966758525, 1588891376918844376630415319363498580901888))).distance
+E            +  and   5.421010862427522e-20 = <built-in function ulp>(0.0004419999993629531)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-1.0] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q6', t = 100000.0, s = 1.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-1.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 1.4513390489412359e-12 <= (4 * 5.551115123125783e-17)
+E            +  where 1.4513390489412359e-12 = abs((0.4419999999989102 - 0.44200000000036155))
+E            +    where 0.4419999999989102 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=0.4419999999989102, margin_gap=-0.2210000000010897, n...action(44407838646687733790985724560914522636805316700293109, 794445688382992909586585818700058844701586407764787200))).distance
+E            +  and   5.551115123125783e-17 = <built-in function ulp>(0.44200000000036155)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-1000.0] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'sep_vf', rot = 'q6', t = 100000.0, s = 1000.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-1000.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 1.8758328224066645e-12 <= (4 * 5.684341886080802e-14)
+E            +  where 1.8758328224066645e-12 = abs((441.99999999999807 - 441.99999999999994))
+E            +    where 441.99999999999807 = MarginContact(label=('VF', ('vertex', 0), ('face', 3)), distance=441.99999999999807, margin_gap=-221.00000000000182, n...6969435435017007245603761114052246023206529145, 12711131014157763277871794358619984612848266937818448785515787321344))).distance
+E            +  and   5.684341886080802e-14 = <built-in function ulp>(441.99999999999994)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-1000.0-0.001] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'ilock_sep', rot = 'q4', t = 1000.0, s = 0.001
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-1000.0-0.001]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 5.832357166668523e-14 <= (4 * 2.710505431213761e-20)
+E            +  where 5.832357166668523e-14 = abs((0.00016914100198509835 - 0.00016914100204342192))
+E            +    where 0.00016914100198509835 = MarginContact(label=('VF', ('vertex', 11), ('face', 2)), distance=0.00016914100198509835, margin_gap=-8.45705009564321...Fraction(-21243808194077000174463561471617538020880280760129, 150352976378763422124758293150448512753848434653396992))).distance
+E            +  and   2.710505431213761e-20 = <built-in function ulp>(0.00016914100204342192)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-1000.0-1.0] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'ilock_sep', rot = 'q4', t = 1000.0, s = 1.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-1000.0-1.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 2.040034807748725e-14 <= (4 * 2.7755575615628914e-17)
+E            +  where 2.040034807748725e-14 = abs((0.16914100196100104 - 0.16914100196098064))
+E            +    where 0.16914100196100104 = MarginContact(label=('VF', ('vertex', 11), ('face', 2)), distance=0.16914100196100104, margin_gap=-0.08457050098052946...516425808285578982453411822846714863347916582281697, 293658157004764913133978209556274261057832275308800511167168512))).distance
+E            +  and   2.7755575615628914e-17 = <built-in function ulp>(0.16914100196098064)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-100000.0-0.001] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'ilock_sep', rot = 'q4', t = 100000.0, s = 0.001
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-100000.0-0.001]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 2.757142902659257e-12 <= (4 * 2.710505431213761e-20)
+E            +  where 2.757142902659257e-12 = abs((0.00016914099786349113 - 0.00016914100062063404))
+E            +    where 0.00016914099786349113 = MarginContact(label=('VF', ('vertex', 11), ('face', 2)), distance=0.00016914099786349113, margin_gap=-8.45705050780393...73442304345809879040), Fraction(-123655237466306160924087984322012383483, 875169518786199450983027344230434580987904))).distance
+E            +  and   2.710505431213761e-20 = <built-in function ulp>(0.00016914100062063404)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-100000.0-1.0] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'ilock_sep', rot = 'q4', t = 100000.0, s = 1.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-100000.0-1.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 2.8476665470122953e-12 <= (4 * 2.7755575615628914e-17)
+E            +  where 2.8476665470122953e-12 = abs((0.16914100195926587 - 0.16914100196211354))
+E            +    where 0.16914100195926587 = MarginContact(label=('VF', ('vertex', 11), ('face', 2)), distance=0.16914100195926587, margin_gap=-0.08457050098226462...ction(-49462095349276302345435338632330789037711544709813723, 350067802676131939546580652993503856051408175047376896))).distance
+E            +  and   2.7755575615628914e-17 = <built-in function ulp>(0.16914100196211354)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q6-1000.0-0.001] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'ilock_sep', rot = 'q6', t = 1000.0, s = 0.001
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q6-1000.0-0.001]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 6.392163274387963e-14 <= (4 * 2.710505431213761e-20)
+E            +  where 6.392163274387963e-14 = abs((0.00016914100190645236 - 0.00016914100184253072))
+E            +    where 0.00016914100190645236 = MarginContact(label=('VF', ('vertex', 11), ('face', 2)), distance=0.00016914100190645236, margin_gap=-8.45705010350781..., Fraction(-4879994669941052398380623833327266724314346300005, 37588244102422398153446937055181171055437550387724288))).distance
+E            +  and   2.710505431213761e-20 = <built-in function ulp>(0.00016914100184253072)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+_ test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q6-1000.0-1.0] _
+[gw3] win32 -- Python 3.12.10 C:\Program Files\Python312\python.exe
+
+name = 'ilock_sep', rot = 'q6', t = 1000.0, s = 1.0
+request = <FixtureRequest for <Function test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q6-1000.0-1.0]>>
+
+    @pytest.mark.parametrize("s", SS)
+    @pytest.mark.parametrize("t", TS)
+    @pytest.mark.parametrize("rot", list(ROT_3))
+    @pytest.mark.parametrize("name", [n for n, (k, _) in MARGIN_CASES.items() if k == "sep"])
+    def test_margin_labels_are_identical_under_rigid_motion(name, rot, t, s, request):
+        """每个原运动格核独立完整盖集合、距离与枚举序裁决；不混用运动前后的精确法锥标签。
+    
+        非舍入理想几何的标签稳定性不能覆盖给定坐标的真实分支；原 identity 基准仍单独核对。
+        oracle 用循环 Newell/Gram/极射线枚举和独立见证，不调用 margin/cover 函数。
+        """
+        reason = _LABEL_XFAIL.get((name, rot, t, s))
+        if reason:
+            pass  # 2026-09-27 合并：m2-geom 已修（XPASS(strict)），xfail 摘除
+        _, A0, B0, d0, lab0, _ = _margin_ref(name)
+        R = ROT_3[rot]
+        A, B = _rigid(A0, R, t, s), _rigid(B0, R, t, s)
+        delta=1.5*s*d0
+        expected=independent_covers.margin_selection(A,B,delta)
+        actual=margin_contacts(A,B,delta=delta)
+        assert {m.label for m in actual} == set(expected)
+        assert len(actual) == len(expected)
+        for item in actual:
+>           assert abs(item.distance-expected[item.label]) <= 4*math.ulp(expected[item.label])
+E           AssertionError: assert 1.9761969838327786e-14 <= (4 * 2.7755575615628914e-17)
+E            +  where 1.9761969838327786e-14 = abs((0.16914100196110196 - 0.16914100196112172))
+E            +    where 0.16914100196110196 = MarginContact(label=('VF', ('vertex', 11), ('face', 2)), distance=0.16914100196110196, margin_gap=-0.08457050098042854...763706583265570864510702277530134933392774586927495, 309368264169617087084415595115714166570582180924391013948063744))).distance
+E            +  and   2.7755575615628914e-17 = <built-in function ulp>(0.16914100196112172)
+E            +    where <built-in function ulp> = math.ulp
+
+tests\test_invariance_interlock.py:569: AssertionError
+============================ slowest 25 durations =============================
+67.72s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[drop_VE_subset]
+52.63s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[no_EV_covers]
+34.34s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[strict_cone_only]
+33.63s call     tests/test_bb52_g1.py::test_g0_exit_completeness_is_blind_to_vv_by_construction
+31.69s setup    tests/test_bb52_g1.py::test_geometry_reconstruction
+25.49s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[no_VV_covers]
+25.43s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_convex_400
+22.12s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[0.001]
+20.04s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1000.0]
+18.91s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1.0]
+16.33s call     tests/test_bb52_g1.py::test_g0_rerun_replays_the_original_1186_translations
+16.29s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase0]
+15.74s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[strict_cone_only]
+14.28s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[1000.0-4]
+13.57s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[100000.0-4]
+13.51s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0]
+12.47s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[10000.0-1]
+11.13s call     tests/test_kernel2d_predicates.py::test_hull_of_a_rotated_collinear_strip_matches_exact_support
+11.02s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw1-8]
+10.28s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[0.001-0.0]
+9.87s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1000.0-100000.0]
+9.62s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[0]
+9.50s call     tests/test_invariance_interlock.py::test_dilatancy_profile_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1.0]
+8.79s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw0-1]
+8.63s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_scaled[0.001]
+=========================== short test summary info ===========================
+FAILED tests/test_margin_penetration.py::test_guard_is_not_a_vertex_inside_check
+FAILED tests/test_r6fix_construction.py::test_g6f06_gap_magnitude_gate_has_teeth
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-1000.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-1000.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q4-100000.0-1000.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-1000.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-1000.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[sep_vf-q6-100000.0-1000.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-1000.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-1000.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-100000.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q4-100000.0-1.0]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q6-1000.0-0.001]
+FAILED tests/test_invariance_interlock.py::test_margin_labels_are_identical_under_rigid_motion[ilock_sep-q6-1000.0-1.0]
+18 failed, 9829 passed in 445.65s (0:07:25)

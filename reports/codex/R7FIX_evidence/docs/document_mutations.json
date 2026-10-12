@@ -1,0 +1,68 @@
+[
+  {
+    "finding": "G6G-09",
+    "path": "docs/exact_3d_design.md",
+    "node": "tests/test_r7fix_docs.py::test_g6g09_window_documents_distinguish_closed_separation_infimum[docs/exact_3d_design.md]",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_r7fix_docs.py::test_g6g09_window_documents_distinguish_closed_separation_infimum[docs/exact_3d_design.md]",
+      "--basetemp=reports/codex/R7FIX_evidence/tmp/docs_mutation_G6G-09"
+    ],
+    "exit_code": 1,
+    "targeted_assertion": "axis acceptance does not bound",
+    "last_line": "1 failed in 0.12s",
+    "restored": true,
+    "restored_sha256": "ffcbf3e77d530edd963be0f4cd377df70facc72e541f73802bc0e6b23f53f27b"
+  },
+  {
+    "finding": "G6G-10",
+    "path": "README.md",
+    "node": "tests/test_r7fix_docs.py::test_g6g10_readme_oracle_and_canon_status_are_current",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_r7fix_docs.py::test_g6g10_readme_oracle_and_canon_status_are_current",
+      "--basetemp=reports/codex/R7FIX_evidence/tmp/docs_mutation_G6G-10"
+    ],
+    "exit_code": 1,
+    "targeted_assertion": "stale production oracle",
+    "last_line": "1 failed in 0.14s",
+    "restored": true,
+    "restored_sha256": "739cb4b9c1ecdb9faf93d9da3ae57a01609c0123e4d56eba473216df72c06495"
+  },
+  {
+    "finding": "G6G-11",
+    "path": "docs/canon_map.md",
+    "node": "tests/test_r7fix_docs.py::test_g6g11_priority_claim_is_withdrawn_instead_of_narrowed",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_r7fix_docs.py::test_g6g11_priority_claim_is_withdrawn_instead_of_narrowed",
+      "--basetemp=reports/codex/R7FIX_evidence/tmp/docs_mutation_G6G-11"
+    ],
+    "exit_code": 1,
+    "targeted_assertion": "narrowing priority",
+    "last_line": "1 failed in 0.13s",
+    "restored": true,
+    "restored_sha256": "52726818aed97a4cdda5f97cd06dac4c6f25ba2ae5d0d82230c50e154b5defcb"
+  }
+]

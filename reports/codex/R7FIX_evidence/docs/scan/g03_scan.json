@@ -1,0 +1,45 @@
+[
+  {
+    "check": "G6G-04 folded source rings",
+    "result": 2.0,
+    "internal_ridges_present": true
+  },
+  {
+    "check": "all candidates deleted",
+    "atol": "1e-09",
+    "passed": false,
+    "samples": 1,
+    "worst_abs_error": "inf",
+    "failures": 1
+  },
+  {
+    "check": "all candidates deleted",
+    "atol": "nan",
+    "passed": true,
+    "samples": 1,
+    "worst_abs_error": "inf",
+    "failures": 0
+  },
+  {
+    "check": "all candidates deleted",
+    "atol": "inf",
+    "passed": true,
+    "samples": 1,
+    "worst_abs_error": "inf",
+    "failures": 0
+  },
+  {
+    "check": "all candidates deleted",
+    "atol": "1e+308",
+    "passed": true,
+    "samples": 1,
+    "worst_abs_error": "inf",
+    "failures": 0
+  },
+  {
+    "check": "finite input AABB subtraction overflow",
+    "initial_metrics": "(1.7976931348623157e+308, inf, 2.0)",
+    "fail_loud": "OverflowError",
+    "message": "math range error"
+  }
+]

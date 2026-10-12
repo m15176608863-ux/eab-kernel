@@ -50,8 +50,9 @@
 调用方可以显式给 `contact_window=w`（局部贯入厚度窗口，参数名为兼容保留；不是整体最短
 分离平移的欧氏贯入深度 PD）。分离侧精确距离 ≤ w 报距离零与相触；贯入侧必须有
 精确证书证明窗口可接受：`exact_sweep.contact_models` 的六个 ±w 坐标轴平移，或经验证
-星核的内核收缩证明贯入仅落在厚度 ≤ w 的表面壳层；原几何模型也保留。前者是全局平移
-深度的有限充分证书，后者是局部接触厚度上界。有限证书不是完整欧氏距离偏置，不把证书
+星核的内核收缩证明贯入仅落在厚度 ≤ w 的表面壳层；原几何模型也保留。前者只证明内部
+不相交距离的下确界 rho ≤ w，不证明闭集完全分离 PD_closed ≤ w（紧贴封闭空腔反例）；
+后者是局部接触厚度上界。有限证书不是完整欧氏距离偏置，不把证书
 失败说成 PD > w；无证书时保持 PENETRATING。六轴证书及 L1 半径构造依赖坐标系，可能漏掉
 长度 ≤ w 的斜向脱离，不保证旋转不变性。互锁在完全相同的有限模型集上求最早根。
 独立可靠性与限制反例门：`tests/test_perf_contact_window.py`。
@@ -99,7 +100,7 @@ def characteristic_length(*bodies: Polyhedron) -> float:
     out = float("inf")
     for P in bodies:
         v0 = P.verts[0]
-        out = min(out, max(norm(sub(v, v0)) for v in P.verts))
+        out = min(out, max(norm(_exact.sub(_exact.vector(v), _exact.vector(v0))) for v in P.verts))
     return out
 
 
@@ -141,7 +142,14 @@ def cover_witness(c) -> tuple[float, Vec3 | None] | None:
         return None
     v = sub(c.point_a, c.point_b)
     d = norm(v)
-    return (d, unit(v) if d > 0.0 else None)
+    if c.in_extent and c.exact_gap_sign is not None and c.normal is not None:
+        # For an in-extent cover, its exact signed gap orients the exact-source
+        # normal from B to A. Global display points can coincide or rotate this
+        # vector after rounding; they remain only a construction self-check.
+        n = tuple(c.exact_gap_sign*x for x in c.normal) if c.exact_gap_sign else None
+    else:
+        n = unit(v) if d > 0.0 else None
+    return d, n
 
 
 def _surface_view(vertices, faces):
@@ -262,7 +270,7 @@ def _surface_feature_squared(A, B, label):
 def _repair_folded_construction(A, B, c, w, n, squared, rounding):
     """Replace an invalid folded-ring plane witness, not a rounding-level report."""
     target = _exact.sqrt_rational(squared, allow_underflow=True)
-    if abs(w-target) <= 4*rounding or c.kind not in ("VF", "FV"):
+    if c.kind not in ("VF", "FV"):
         return w, n
     from .kernel3d.covers3 import _qclosest_triangle
     X, Y, fa, fb = (A, B, c.a_feature, c.b_feature) if c.kind == "VF" else (B, A, c.b_feature, c.a_feature)
@@ -282,8 +290,10 @@ def _repair_folded_construction(A, B, c, w, n, squared, rounding):
         a, b = b, a
     c.point_a, c.point_b = a, b
     direction = _exact.mul(delta, -1 if c.kind == "VF" else 1)
+    c.exact_normal_direction = direction
+    c.exact_gap_sign = 1 if any(direction) else 0
     scale = max(map(abs, direction))
-    n = unit(tuple(float(x/scale) for x in direction)) if scale else None
+    n = unit(direction, allow_underflow=True) if scale else None
     return target, n
 
 def _penetration_within_window(A, B, window):
@@ -291,9 +301,10 @@ def _penetration_within_window(A, B, window):
 
     See exact_sweep.contact_models: original solids, six exact axis shifts of
     length window, and either body's certified inner star core. Any model's
-    nonpenetration is sufficient. An axis certificate proves PD <= window; a
-    core certificate bounds local radial shell thickness only. Failure does not
-    prove PD > window. Coordinate dependence and missed oblique exits are
+    nonpenetration is sufficient. An axis certificate proves only the infimum
+    rho for disjoint interiors <= window, not closed-set separation PD_closed
+    <= window (a tight enclosed cavity disproves that). A core certificate
+    bounds local radial shell thickness only. Failure does not prove PD > window. Coordinate dependence and missed oblique exits are
     intentional limitations, not rotation-invariant PD decisions.
     interlock solves the first accepted height over this very same model set.
     """
@@ -405,6 +416,7 @@ class MarginContact:
     point_b: Vec3 | None
     _exact_closed: bool | None = None
     exact_distance_squared: Fraction | None = None  # certificate even below the display range
+    exact_normal_direction: tuple[Fraction, ...] | None = None  # B-to-A unnormalised certificate
 
     @property
     def closed(self) -> bool:
@@ -442,8 +454,11 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
             denominator = Fraction(w)+Fraction(delta)
             if denominator:
                 gap = float((d2-Fraction(delta)**2)/denominator)
+        direction = c.exact_normal_direction
+        direction = (tuple(c.exact_gap_sign*x for x in direction)
+                     if direction is not None and n is not None else None)
         out.append(MarginContact(c.label(), w, gap, n, c.point_a, c.point_b,
-                                 delta >= 0 and d2 <= Fraction(delta)**2, d2))
+                                 delta >= 0 and d2 <= Fraction(delta)**2, d2, direction))
         ranked.append((d2, out[-1]))
     if contact_window is None or not ctol:
         return [m for _, m in sorted(ranked, key=lambda item: item[0])]
@@ -466,8 +481,9 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
 
     atol=None means zero (no implicit rounding floor). contact_window changes
     only contact reporting by the local penetration-thickness policy (not PD).
-    Axis acceptance certifies PD <= w; shell acceptance certifies only a local
-    radial thickness <= w. Rejection does not certify PD > w.
+    Axis acceptance certifies only disjoint-interior infimum rho <= w, not
+    closed-set separation PD_closed <= w; shell acceptance certifies only a
+    local radial thickness <= w. Rejection does not certify PD > w.
     """
     ctol, _, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:
@@ -533,9 +549,7 @@ def inflated_normal(E: Polyhedron, x: Vec3) -> Vec3 | None:
     scale = max(map(abs, v))
     if not scale:
         return None
-    scaled = tuple(float(c/scale) for c in v)
-    length = math.hypot(*scaled)
-    return tuple(c/length for c in scaled)
+    return unit(v)
 
 
 # ------------------------------------------------------------------ 可微路径

@@ -10,8 +10,8 @@
 from __future__ import annotations
 
 from fractions import Fraction
-from math import hypot
 
+from ..construction import sqrt_rational
 from ..dual import Dual, Number, val, _derivative_float
 from .covers3 import _oriented_ee_normal
 from .geom3 import Polyhedron, cross, dot, sub, add, exact_edge_vector, exact_surface
@@ -30,20 +30,23 @@ def _exact_jet_points(points):
 
 def _unit_jet(n, derivatives, sign=1.0):
     """Exact polynomial value/derivative; sqrt and output conversion only float."""
-    scale = max(map(abs, n))
-    if not scale:
+    nn = dot(n, n)
+    if not nn:
         raise ZeroDivisionError("zero normal in frozen geometry")
-    length = hypot(*(float(c / scale) for c in n))
-    value = [sign * float(c / scale) / length for c in n]
-    if any(c and v == 0.0 for c, v in zip(n, value)):
-        raise FloatingPointError("nonzero frozen normal component is below the binary64 range")
+
+    def normalized(c):
+        c = Fraction(sign) * c
+        magnitude = sqrt_rational(c * c / nn)
+        return -magnitude if c < 0 else magnitude
+
+    # Do not round a scaled component or sqrt(nn) before the final quotient:
+    # either intermediate can cross a subnormal output midpoint (R7 scan).
+    value = [normalized(c) for c in n]
     if not derivatives:
         return tuple(value)
-    nn = dot(n, n)
     result = []
     for i in range(3):
-        channels = tuple(_derivative_float(Fraction(sign) * (dn[i] - n[i] * dot(n, dn) / nn)
-                                           / (scale * Fraction(length)))
+        channels = tuple(normalized(dn[i] - n[i] * dot(n, dn) / nn)
                          for dn in derivatives)
         result.append(Dual(value[i], channels))
     return tuple(result)

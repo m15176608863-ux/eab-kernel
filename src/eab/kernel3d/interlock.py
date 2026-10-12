@@ -87,17 +87,14 @@ def _normal_noise(A: Polyhedron, B: Polyhedron, cover) -> float:
         return A.face_noise(af[1])
     if kind == "EE":
         ea, eb = (af[1], af[2]), (bf[1], bf[2])
-        sine = norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
+        # A nonzero rounded unit-vector cross is not a certificate either:
+        # cancellation can distort it, not only erase it. Form the exact edge
+        # polynomial first and round only its final dimensionless sine.
+        a, b = exact_edge_vector(A, ea), exact_edge_vector(B, eb)
+        n = cross(a, b)
+        sine = sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))
         if sine == 0.0:
-            # E5a exact cones can retain a nonparallel pair whose rounded unit
-            # vectors coincide. Preserve this legacy *resolution report* using
-            # raw exact edges, rather than divide by the rounded zero. The
-            # exact escape topology is handled separately by surface_events.
-            a, b = exact_edge_vector(A, ea), exact_edge_vector(B, eb)
-            n = cross(a, b)
-            sine = sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))
-            if sine == 0.0:
-                return float("inf")  # below the representable angular range
+            return float("inf")  # exactly parallel raw edges
         return (A.edge_noise(ea) + B.edge_noise(eb)) / sine
     return 0.0
 

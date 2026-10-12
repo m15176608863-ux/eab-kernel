@@ -183,7 +183,7 @@ def _eager_ee(A, ea, B, eb, tol=0., extent_tol=0.):
             qa = c.add(pa0, c.mul(dA, c._qclamp(_dot(c.sub(qb, pa0), dA)/_dot(dA, dA))))
         return c.Cover3('EE', ('edge', *ea), ('edge', *eb), unit_normal, gap,
                         c._float_vector(qa), c._float_vector(qb), (float(s), float(t)),
-                        None, sb == 1 and sa == 1, inside, gap2, sign)
+                        None, sb == 1 and sa == 1, inside, gap2, sign, None, candidate)
     return None
 
 
@@ -200,7 +200,11 @@ def test_deferred_edge_parameters_preserve_every_eager_fraction_cover(scale, off
     for ea in a.edges():
         for eb in b.edges():
             for tol in (0., 1e-7):
-                assert covers3.ee_cover(a, ea, b, eb, tol) == _eager_ee(a, ea, b, eb, tol), (ea, eb, tol)
+                actual, expected = covers3.ee_cover(a, ea, b, eb, tol), _eager_ee(a, ea, b, eb, tol)
+                assert actual == expected, (ea, eb, tol)
+                if actual is not None:
+                    assert actual.exact_normal_direction == expected.exact_normal_direction
+                    assert any(actual.exact_normal_direction), 'nonzero-exact-normal-certificate'
 
 
 def _fraction_membership(a, b, point, tol):

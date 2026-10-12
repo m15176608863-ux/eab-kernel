@@ -90,12 +90,9 @@ def _float_vector(v):
     return tuple(float(x) for x in v)
 
 
-def _qunit(v):
-    """Construction only: scale first to avoid under/overflow."""
-    scale = max(abs(x) for x in v)
-    if not scale:
-        raise ZeroDivisionError("unit of zero vector")
-    return unit(tuple(float(x / scale) for x in v))
+def _qunit(v, *, allow_underflow=False):
+    """Final normalized components from the exact vector, never rounded first."""
+    return unit(v, allow_underflow=allow_underflow)
 
 
 def _outside_dot_band(value, a, b, tol):
@@ -244,6 +241,7 @@ class Cover3:
     exact_gap_squared: Fraction | None = None
     exact_gap_sign: int | None = None
     exact_area_squared: Fraction | None = None
+    exact_normal_direction: tuple[Fraction, ...] | None = None  # unnormalised display certificate
 
     def label(self) -> tuple:
         return (self.kind, self.a_feature, self.b_feature)
@@ -461,9 +459,9 @@ def vf_cover(A: Polyhedron, ia: int, B: Polyhedron, fb: int, tol: float = 0.0, e
     wit, inside = _face_witness(proj, g, B, fb, extent_tol)
     numerator = dot(n, sub(_qvector(a), _qvector(B.verts[B.faces[fb][0]])))
     nn = dot(n, n)
-    return Cover3("VF", ("vertex", ia), ("face", fb), _qunit(n), g, a, wit, (),
+    return Cover3("VF", ("vertex", ia), ("face", fb), _qunit(n, allow_underflow=True), g, a, wit, (),
                   sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,
-                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4)
+                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4, n)
 
 
 def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, extent_tol: float = 0.0) -> Cover3 | None:
@@ -477,9 +475,9 @@ def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, e
     wit, inside = _face_witness(proj, g, A, fa, extent_tol)
     numerator = dot(n, sub(_qvector(b), _qvector(A.verts[A.faces[fa][0]])))
     nn = dot(n, n)
-    return Cover3("FV", ("face", fa), ("vertex", ib), neg(_qunit(n)), g, wit, b, (),
+    return Cover3("FV", ("face", fa), ("vertex", ib), neg(_qunit(n, allow_underflow=True)), g, wit, b, (),
                   sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,
-                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4)
+                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4, neg(n))
 
 
 def _qclosest_params(p1, d1, p2, d2):
@@ -534,7 +532,7 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         # All classifications use the rational parameters. Output points are
         # consistently constructed from one exact witness pair, then rounded.
         qa, qb = add(pa0, mul(dA, s)), add(pb0, mul(dB, t))
-        unit_normal = _qunit(candidate)
+        unit_normal = _qunit(candidate, allow_underflow=True)
         numerator, nn = dot(candidate, sub(qa, qb)), dot(candidate, candidate)
         gap = _signed_gap(numerator, nn)
         inside = (_qparameter_in_extent(s, dA, extent_tol)
@@ -548,7 +546,7 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
         return Cover3("EE", ("edge", *ea), ("edge", *eb), unit_normal, gap,
                       _float_vector(qa), _float_vector(qb), (float(s), float(t)), None,
                       sb == 1 and sa == 1, inside,
-                      numerator*numerator/nn, (numerator > 0)-(numerator < 0))
+                      numerator*numerator/nn, (numerator > 0)-(numerator < 0), None, candidate)
     return None
 
 
@@ -569,9 +567,9 @@ def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: f
     if sb < 0 or sa < 0:
         return None
     vv = dot(v, v)
-    return Cover3("VE3", ("vertex", ia), ("edge", *eb), _qunit(v), sqrt_rational(vv, allow_underflow=True),
+    return Cover3("VE3", ("vertex", ia), ("edge", *eb), _qunit(v, allow_underflow=True), sqrt_rational(vv, allow_underflow=True),
                   A.verts[ia], _float_vector(add(p0, mul(d, _qclamp(s)))), (float(s),), None,
-                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1)
+                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1, None, v)
 
 
 def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: float = 0.0,
@@ -582,7 +580,8 @@ def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: f
         return None
     return Cover3("EV3", ("edge", *ea), ("vertex", ib), neg(c.normal), c.gap,
                   c.point_b, c.point_a, c.params, None, c.strict, c.in_extent,
-                  c.exact_gap_squared, c.exact_gap_sign)
+                  c.exact_gap_squared, c.exact_gap_sign, None,
+                  neg(c.exact_normal_direction) if c.exact_normal_direction is not None else None)
 
 
 def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
@@ -595,8 +594,8 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) 
         return Cover3("VV3", ("vertex", ia), ("vertex", ib), None, 0.0, a, b, (), None, True, True, Fraction(0), 0)
     active = (_qvertex_contains(B, ib, v, tol) >= 0 and _qvertex_contains(A, ia, neg(v), tol) >= 0)
     vv = dot(v, v)
-    return Cover3("VV3", ("vertex", ia), ("vertex", ib), _qunit(v), sqrt_rational(vv, allow_underflow=True),
-                  a, b, (), None, True, active, vv, 1)
+    return Cover3("VV3", ("vertex", ia), ("vertex", ib), _qunit(v, allow_underflow=True), sqrt_rational(vv, allow_underflow=True),
+                  a, b, (), None, True, active, vv, 1, None, v)
 
 
 # Enumeration
@@ -768,8 +767,8 @@ def facet_normal3(A: Polyhedron, B: Polyhedron, label: tuple) -> Vec3:
 def facet_gap3(A: Polyhedron, B: Polyhedron, label: tuple, x: Vec3) -> float:
     """Float signed distance construction; never reused for classification."""
     n, p = facet_plane3(A, B, label)
-    return float(dot(n, sub(_qvector(x), p)) / max(abs(t) for t in n)) / norm(
-        tuple(float(t / max(abs(v) for v in n)) for t in n))
+    numerator = dot(n, sub(_qvector(x), p))
+    return (-1 if numerator < 0 else 1) * sqrt_rational(numerator*numerator / dot(n, n))
 
 
 @lru_cache(maxsize=128)
@@ -818,8 +817,8 @@ def support_gaps3(A: Polyhedron, B: Polyhedron, x: Vec3) -> list[float]:
     point = _qvector(x)
     out = []
     for n, p in _planes(A, B, ()):
-        scale = max(abs(v) for v in n)
-        out.append(float(dot(n, sub(point, p)) / scale) / norm(tuple(float(v / scale) for v in n)))
+        numerator = dot(n, sub(point, p))
+        out.append((-1 if numerator < 0 else 1) * sqrt_rational(numerator*numerator / dot(n, n)))
     return out
 
 

@@ -158,7 +158,11 @@ def contact_models(A,B,window):
 
     A nonnegative explicit window is a reporting policy, never a hidden tolerance.
     For overlapping inputs, a nonpenetrating +/-window coordinate-axis translation
-    proves rigid-body Euclidean penetration depth PD <= window. A nonpenetrating
+    proves rho <= window, where rho is the infimum of translation lengths that
+    make the interiors disjoint. It does not prove PD_closed <= window:
+    PD_closed is the infimum for disjoint closed sets, as in theory 01, and an
+    exactly fitting closed cavity separates the two quantities (R7 cavity gate).
+    A nonpenetrating
     certified star core proves every overlap region lies in that body's radial
     shell, whose Euclidean thickness is <= window; it does not bound whole-body PD.
     The original pair, available star cores and all six translations are ORed by

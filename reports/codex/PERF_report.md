@@ -1,5 +1,7 @@
 # WO-PERF：接触窗口口径定稿与全套提速报告
 
+> **R7FIX 口径订正（2026-10-12）**：正本 01 的 `PD_closed = inf{||d||₂ : (A+d)∩B=∅}` 是闭集完全分离的下确界；窗口六轴只证明 `rho = inf{||d||₂ : int(A+d)∩int(B)=∅} ≤ w`。恰好贴合的封闭空腔有 rho=1/8、PD_closed=19/8，独立门为 `tests/test_r7fix_docs.py::test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed`。下文历史性能数字不重写，运行政策不变；旧泛化为 PD 的结论在此撤回。
+
 ## 结论
 
 全套最后一行：**8582 passed in 865.95s (0:14:25)**；独占进程墙钟 **873.327553 s**。
@@ -24,7 +26,7 @@
 |分支/声称|精确命题|独立门（test_perf_contact_window.py）|
 |---|---|---|
 |分离侧|真实距离平方 ≤w² 才纳入相触报告；沿用原有精确距离门|原 test_margin_exact.py 等门保持不变|
-|六轴相触|存在 d∈{±w e_x,±w e_y,±w e_z} 使两体内部不交，因此 PD≤\|\|d\|\|₂=w|test_each_of_six_axis_certificates_proves_pd_at_most_window（18格）|
+|六轴相触|存在 d∈{±w e_x,±w e_y,±w e_z} 使两体内部不交，因此 rho≤\|\|d\|\|₂=w；一般闭表面不保证 PD_closed≤w，原18格仅为凸盒特例|test_each_of_six_axis_certificates_proves_pd_at_most_window（18格）|
 |薄壳相触|经认证星核 K 与另一体内部不交；原体每处重叠都落在闭径向壳内，各径向段欧氏厚度≤w|test_shell_certificate_contains_every_overlap_region_but_does_not_bound_pd|
 |贯入报告|有限证书未通过，不推出 PD>w|test_shorter_oblique_escape_can_be_missed_so_penetrating_does_not_mean_pd_exceeds_w|
 |六轴坐标依赖/不保旋转|同一精确长盒对旋转前相触、旋转后贯入，真实 PD=9/40<w=1/4|test_six_axis_coordinate_dependence_means_rotation_invariance_is_not_guaranteed|

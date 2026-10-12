@@ -1,0 +1,104 @@
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+____ test_frozen_unit_component_rounds_after_final_normalization[-1-False] ____
+
+with_dual = False, sign = -1
+
+    @pytest.mark.parametrize("with_dual", [False, True])
+    @pytest.mark.parametrize("sign", [-1, 1])
+    def test_frozen_unit_component_rounds_after_final_normalization(with_dual, sign):
+        q = F(math.ulp(0.0))
+        z = sign * 249 * q / 100
+        # Explicit exact norm; the tiny squared component lies between midpoints
+        # for output 2q (not q). No production geometry is used by this oracle.
+        nn = 2 + z*z
+        assert (F(3,2)*q)**2 < z*z/nn < (F(5,2)*q)**2
+        x = Dual(1., (0.,)) if with_dual else 1.
+        A = Polyhedron([(x, 1., z)], [])
+        B = Polyhedron([(0., 0., 0.)], [])
+        n = frozen_normal(A, B, ("VV3", ("V",0), ("V",0)))
+        value = n[2].v if with_dual else n[2]
+>       assert value == sign * float(2*q), "final normalized component was rounded twice"
+E       AssertionError: final normalized component was rounded twice
+E       assert -5e-324 == (-1 * 1e-323)
+E        +  where 1e-323 = float((2 * Fraction(1, 2024022533073106183524953467189173070495566497641421183569013580274303395679953468919603837014371244951870...2745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784)))
+
+tests\test_r7fix_frozen.py:24: AssertionError
+____ test_frozen_unit_component_rounds_after_final_normalization[-1-True] _____
+
+with_dual = True, sign = -1
+
+    @pytest.mark.parametrize("with_dual", [False, True])
+    @pytest.mark.parametrize("sign", [-1, 1])
+    def test_frozen_unit_component_rounds_after_final_normalization(with_dual, sign):
+        q = F(math.ulp(0.0))
+        z = sign * 249 * q / 100
+        # Explicit exact norm; the tiny squared component lies between midpoints
+        # for output 2q (not q). No production geometry is used by this oracle.
+        nn = 2 + z*z
+        assert (F(3,2)*q)**2 < z*z/nn < (F(5,2)*q)**2
+        x = Dual(1., (0.,)) if with_dual else 1.
+        A = Polyhedron([(x, 1., z)], [])
+        B = Polyhedron([(0., 0., 0.)], [])
+        n = frozen_normal(A, B, ("VV3", ("V",0), ("V",0)))
+        value = n[2].v if with_dual else n[2]
+>       assert value == sign * float(2*q), "final normalized component was rounded twice"
+E       AssertionError: final normalized component was rounded twice
+E       assert -5e-324 == (-1 * 1e-323)
+E        +  where 1e-323 = float((2 * Fraction(1, 2024022533073106183524953467189173070495566497641421183569013580274303395679953468919603837014371244951870...2745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784)))
+
+tests\test_r7fix_frozen.py:24: AssertionError
+____ test_frozen_unit_component_rounds_after_final_normalization[1-False] _____
+
+with_dual = False, sign = 1
+
+    @pytest.mark.parametrize("with_dual", [False, True])
+    @pytest.mark.parametrize("sign", [-1, 1])
+    def test_frozen_unit_component_rounds_after_final_normalization(with_dual, sign):
+        q = F(math.ulp(0.0))
+        z = sign * 249 * q / 100
+        # Explicit exact norm; the tiny squared component lies between midpoints
+        # for output 2q (not q). No production geometry is used by this oracle.
+        nn = 2 + z*z
+        assert (F(3,2)*q)**2 < z*z/nn < (F(5,2)*q)**2
+        x = Dual(1., (0.,)) if with_dual else 1.
+        A = Polyhedron([(x, 1., z)], [])
+        B = Polyhedron([(0., 0., 0.)], [])
+        n = frozen_normal(A, B, ("VV3", ("V",0), ("V",0)))
+        value = n[2].v if with_dual else n[2]
+>       assert value == sign * float(2*q), "final normalized component was rounded twice"
+E       AssertionError: final normalized component was rounded twice
+E       assert 5e-324 == (1 * 1e-323)
+E        +  where 1e-323 = float((2 * Fraction(1, 2024022533073106183524953467189173070495566497641421183569013580274303395679953468919603837014371244951870...2745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784)))
+
+tests\test_r7fix_frozen.py:24: AssertionError
+_____ test_frozen_unit_component_rounds_after_final_normalization[1-True] _____
+
+with_dual = True, sign = 1
+
+    @pytest.mark.parametrize("with_dual", [False, True])
+    @pytest.mark.parametrize("sign", [-1, 1])
+    def test_frozen_unit_component_rounds_after_final_normalization(with_dual, sign):
+        q = F(math.ulp(0.0))
+        z = sign * 249 * q / 100
+        # Explicit exact norm; the tiny squared component lies between midpoints
+        # for output 2q (not q). No production geometry is used by this oracle.
+        nn = 2 + z*z
+        assert (F(3,2)*q)**2 < z*z/nn < (F(5,2)*q)**2
+        x = Dual(1., (0.,)) if with_dual else 1.
+        A = Polyhedron([(x, 1., z)], [])
+        B = Polyhedron([(0., 0., 0.)], [])
+        n = frozen_normal(A, B, ("VV3", ("V",0), ("V",0)))
+        value = n[2].v if with_dual else n[2]
+>       assert value == sign * float(2*q), "final normalized component was rounded twice"
+E       AssertionError: final normalized component was rounded twice
+E       assert 5e-324 == (1 * 1e-323)
+E        +  where 1e-323 = float((2 * Fraction(1, 2024022533073106183524953467189173070495566497641421183569013580274303395679953468919603837014371244951870...2745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784)))
+
+tests\test_r7fix_frozen.py:24: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r7fix_frozen.py::test_frozen_unit_component_rounds_after_final_normalization[-1-False]
+FAILED tests/test_r7fix_frozen.py::test_frozen_unit_component_rounds_after_final_normalization[-1-True]
+FAILED tests/test_r7fix_frozen.py::test_frozen_unit_component_rounds_after_final_normalization[1-False]
+FAILED tests/test_r7fix_frozen.py::test_frozen_unit_component_rounds_after_final_normalization[1-True]
+4 failed in 0.08s

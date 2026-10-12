@@ -300,13 +300,42 @@ def witness_distance(A, B, label):
     return math.sqrt(sum(x*x for x in d))
 
 
+def _margin_witness_distance(A, B, label):
+    """Window-mode source labels, but real folded-face distance when nonplanar.
+
+    The separate local-cover witness_distance intentionally remains the Newell
+    descriptor oracle. Margin uses a real surface, not that supporting-plane
+    descriptor. Only test-owned ear clipping and rational point/triangle
+    minimisation participate; no eab primitive is imported.
+    """
+    kind, fa, fb = label
+    if kind not in ("VF", "FV"):
+        return witness_distance(A, B, label)
+    X, Y, vertex, face = ((A, B, fa[1], fb[1]) if kind == "VF"
+                         else (B, A, fb[1], fa[1]))
+    points, rings, normals, _, _ = _model(Y)
+    ring, normal = rings[face], normals[face]
+    origin = points[ring[0]]
+    if not any(dot(normal, sub(points[i], origin)) for i in ring):
+        return witness_distance(A, B, label)
+    from decimal import Decimal, localcontext
+    from e5a2_surface_oracle import _ring_triangles, _point_tri_sq
+    point = q(X.verts[vertex])
+    squared = min(_point_tri_sq(point, triangle) for triangle in _ring_triangles(points, ring))
+    with localcontext() as context:
+        context.prec = 120
+        return float((Decimal(squared.numerator)/Decimal(squared.denominator)).sqrt())
+
+
 def margin_selection(A, B, delta, *, touching=False, tol=1e-9):
     """Independent margin selection for the separated/touching test families.
 
     The pre-existing margin convention is independently evaluated here:
     ctol=max(1e-9*L, 1e-12*AABB_diagonal, 64*eps*max(C,L))
     +64*eps*max(C,L); contact witnesses are clamped to zero; include iff
-    distance<=delta. No margin.py or cover implementation is called.
+    distance<=delta. Nonplanar VF/FV distances use the true triangulated
+    surface, never the source-ring Newell descriptor plane. No margin.py or
+    cover implementation is called. Gate: test_r7fix_margin_oracle.py.
     """
     lengths, diagonals = [], []
     for P in (A, B):
@@ -318,7 +347,7 @@ def margin_selection(A, B, delta, *, touching=False, tol=1e-9):
     coordinate = max(abs(x) for P in (A, B) for v in P.verts for x in v)
     rounding = 64*2.220446049250313e-16*max(coordinate, length)
     ctol = max(1e-9*length, 1e-12*max(diagonals), rounding)+rounding
-    distances = {label: witness_distance(A, B, label) for label, _ in cover_labels(A, B, tol)}
+    distances = {label: _margin_witness_distance(A, B, label) for label, _ in cover_labels(A, B, tol)}
     contact = touching or min(distances.values(), default=float("inf")) <= ctol
     result = {}
     for label, distance in distances.items():

@@ -235,8 +235,7 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
     active = _open_cone(alo, ahi, d) and _open_cone(blo, bhi, d)
     w2 = _angle_window2(tol, cone_tol, rays)
     expanded = w2 > 0 and _cone_accepts(alo, ahi, d, w2) and _cone_accepts(blo, bhi, d, w2)
-    df = (float(d[0]), float(d[1]))
-    return Cover("VV", ia, jb, unit(df), norm(df), None, a, active, a, b, expanded)
+    return Cover("VV", ia, jb, unit(d), norm(d), None, a, active, a, b, expanded)
 
 
 # ---------------------------------------------------------------- 枚举
@@ -256,14 +255,19 @@ def _in_segment_exact(p, a, b, window):
 
 
 def _in_gap_window(c, A, B, window):
+    return _feature_in_gap_window(c.kind, c.a_index, c.b_index, A, B, window)
+
+
+def _feature_in_gap_window(kind, ai, bj, A, B, window):
+    """Exact window check before potentially unrepresentable construction."""
     if window < 0:
         return False
     if window == float("inf"):
         return True
-    if c.kind == "VV":
-        d = _vsub(_fr(A[c.a_index]), _fr(B[c.b_index]))
+    if kind == "VV":
+        d = _vsub(_fr(A[ai]), _fr(B[bj]))
         return dot(d, d) <= Fraction(window) ** 2
-    P, E, i, j = (A, B, c.a_index, c.b_index) if c.kind == "VE" else (B, A, c.b_index, c.a_index)
+    P, E, i, j = (A, B, ai, bj) if kind == "VE" else (B, A, bj, ai)
     g, l2, _ = _line_data(P[i], *edge(E, j))
     return g * g <= Fraction(window) ** 2 * l2
 
@@ -277,20 +281,26 @@ def enumerate_covers(A: Poly, B: Poly, *, window: float, tol: float = 0.0,
     out = []
     for ia in range(len(A)):
         for jb in range(len(B)):
+            if not _feature_in_gap_window("VE", ia, jb, A, B, window):
+                continue
             c = ve_cover(A, ia, B, jb, tol, cone_tol)
-            if c is not None and _in_gap_window(c, A, B, window) and (
+            if c is not None and (
                 not require_in_segment or _in_segment_exact(A[ia], *edge(B, jb), st)):
                 out.append(c)
     for ka in range(len(A)):
         for ib in range(len(B)):
+            if not _feature_in_gap_window("EV", ka, ib, A, B, window):
+                continue
             c = ev_cover(A, ka, B, ib, tol, cone_tol)
-            if c is not None and _in_gap_window(c, A, B, window) and (
+            if c is not None and (
                 not require_in_segment or _in_segment_exact(B[ib], *edge(A, ka), st)):
                 out.append(c)
     for ia in range(len(A)):
         for jb in range(len(B)):
+            if not _feature_in_gap_window("VV", ia, jb, A, B, window):
+                continue
             c = vv_cover(A, ia, B, jb, tol, cone_tol)
-            if c is not None and (c.strict or c.window_active) and _in_gap_window(c, A, B, window):
+            if c is not None and (c.strict or c.window_active):
                 out.append(c)
     return out
 
@@ -357,7 +367,8 @@ def _facet_normal_own(A: Poly, B: Poly, label: tuple[str, int, int]) -> tuple[Po
         return neg(outward_normal(A, ai)), sub(B[bj], edge(A, ai)[0])
     b0, b1 = edge(B, bj)
     a0, a1 = edge(A, ai)
-    n = outward_normal(B, bj) if norm(sub(b1, b0)) >= norm(sub(a1, a0)) else neg(outward_normal(A, ai))
+    da, db = _vsub(_fr(a1), _fr(a0)), _vsub(_fr(b1), _fr(b0))
+    n = outward_normal(B, bj) if dot(db, db) >= dot(da, da) else neg(outward_normal(A, ai))
     return n, sub(b0, a0)
 
 

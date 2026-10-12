@@ -92,7 +92,7 @@ def test_rational_sqrt_rounds_only_the_final_root():
 
 def test_g6f06_gap_magnitude_gate_has_teeth(monkeypatch):
     import eab.kernel2d.entrance as E
-    monkeypatch.setattr(E, "sqrt_rational", lambda value: math.sqrt(float(value)))
+    monkeypatch.setattr(E, "sqrt_rational", lambda value, **kwargs: math.sqrt(float(value)))
     with pytest.raises(AssertionError, match="representable signed gap") as caught:
         test_g6f06_exit_gap_preserves_representable_nonzero_magnitude(-600)
     print("G6F-06 mutant:", caught.value)

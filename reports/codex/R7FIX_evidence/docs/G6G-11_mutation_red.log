@@ -1,0 +1,26 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_________ test_g6g11_priority_claim_is_withdrawn_instead_of_narrowed __________
+
+    def test_g6g11_priority_claim_is_withdrawn_instead_of_narrowed():
+>       _assert_no_priority_advice(_read("docs/canon_map.md"))
+
+tests\test_r7fix_docs.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+canon = '# 正本 ↔ 代码映射表（2026-09-24，M0 文档收尾）\n\n> **WO-R6FIX（2026-10-12，修复留树，待独立复核）**：第六轮确认 12 条（1 critical / 7 major / 4 minor），...codex/E5a2_report.md` 为准；竖墙证书见 `reports/codex/E5a2_evidence/a1/walls_handoff.md`。没有宣称全套≤900秒、正式G6、新worktree或全链精确化通过。\n'
+
+    def _assert_no_priority_advice(canon):
+        row = next(line for line in canon.splitlines() if line.startswith('| 07 第 33 行'))
+>       assert "对外须限定为" not in row, "G6G-11: narrowing priority to DDA is still a false claim"
+E       AssertionError: G6G-11: narrowing priority to DDA is still a false claim
+E       assert '对外须限定为' not in '| 07 第 33 行...为准，不声称已改正本 |'
+E         
+E         '对外须限定为' is contained here:
+E           撤回优先性主张**：对外须限定为"DDA 圈内 / 本课题组代码里第一份"；改称“E(A,B) 理论的一份独立实现，以及姊妹三线的独立对账通道”；不能通过限定为 DDA 圈内或本课题组来保留优先性。只读正本 00 已列 Zheng/Jiao et al. 2016、Zhao et al. 2020、Feng & Tan 2020、Ni et al. 2020 等实现谱系，AGENTS 09-24 订正同样明确。07 正本按工单只读，此处登记矛盾并以本树订正为准，不声称已改正本 |
+E         ?           ++++++
+
+tests\test_r7fix_docs.py:101: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r7fix_docs.py::test_g6g11_priority_claim_is_withdrawn_instead_of_narrowed
+1 failed in 0.13s

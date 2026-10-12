@@ -1,0 +1,22 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________ test_frozen_unit_derivative_rounds_after_exact_normalization _________
+
+    def test_frozen_unit_derivative_rounds_after_exact_normalization():
+        q = F(math.ulp(0.0))
+        t = F(3,2) * q * F(math.sqrt(3))
+        assert (q/2)**2 < t*t/3 < (F(3,2)*q)**2
+        A = Polyhedron([(Dual(1., (t,)), Dual(1., (-t/2,)), Dual(1., (-t/2,)))], [])
+        B = Polyhedron([(0., 0., 0.)], [])
+        n = frozen_normal(A, B, ("VV3", ("V",0), ("V",0)))
+>       assert n[0].e == (float(q),), "rounded norm changed derivative midpoint decision"
+E       AssertionError: rounded norm changed derivative midpoint decision
+E       assert (1e-323,) == (5e-324,)
+E         
+E         At index 0 diff: 1e-323 != 5e-324
+E         Use -v to get more diff
+
+tests\test_r7fix_frozen.py:34: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r7fix_frozen.py::test_frozen_unit_derivative_rounds_after_exact_normalization
+1 failed in 0.07s

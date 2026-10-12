@@ -9,6 +9,7 @@ changes an answer. The compatibility counters for exemptions are always zero.
 from __future__ import annotations
 
 import random
+import math
 from dataclasses import dataclass, field
 from fractions import Fraction
 from functools import lru_cache
@@ -173,6 +174,8 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
     Only float witness construction is audited with the relative allowance.
     """
     from .covers3 import enumerate_covers3
+    if not math.isfinite(atol) or atol < 0:
+        raise ValueError("atol must be finite and nonnegative")
     rng = random.Random(seed)
     rep = DistanceReport3()
     L = max(A.metrics()[1], B.metrics()[1])
@@ -197,6 +200,14 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
         rep.samples += 1
         err = abs(got - truth)
         rep.worst_abs_error = max(rep.worst_abs_error, err)
-        if err > atol * max(L, truth) + noise_floor(max(At.metrics()[0], B.metrics()[0])):
+        # A missing/nonfinite construction is a failure independently of the
+        # tolerance; inf > inf and NaN > bound must never make this gate green.
+        # Keep the acceptance expression rational as well: large finite atol
+        # need not become an infinite floating threshold (R7 same-family scan).
+        failed = not cand or not all(math.isfinite(v) for v in (*cand, truth, err))
+        if not failed:
+            rounding = noise_floor(max(At.metrics()[0], B.metrics()[0]))
+            failed = Fraction(err) > Fraction(atol)*max(Fraction(L), Fraction(truth)) + Fraction(rounding)
+        if failed:
             rep.failures.append((x, got, truth))
     return rep

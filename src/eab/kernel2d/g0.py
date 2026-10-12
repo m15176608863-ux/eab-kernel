@@ -44,13 +44,44 @@ def _bbox(P: Poly) -> tuple[float, float, float, float]:
     return min(xs), max(xs), min(ys), max(ys)
 
 
+def _char_length_squared(*polys):
+    """Exact squared diameter: a large finite input must not create inf tolerance."""
+    return max(((Fraction(x1)-Fraction(x0))**2+(Fraction(y1)-Fraction(y0))**2
+                for x0, x1, y0, y1 in map(_bbox, polys)), default=Fraction(0))
+
+
 def char_length(*polys: Poly) -> float:
-    """特征长度 L：各多边形包围盒对角线的最大者。随单位缩放、对平移不变（纪律 F 的相对容差以它为尺）。"""
-    out = 0.0
-    for P in polys:
-        x0, x1, y0, y1 = _bbox(P)
-        out = max(out, math.hypot(x1 - x0, y1 - y0))
-    return out
+    """Checked display of maximal bbox diagonal; gates use its exact square."""
+    return independent.sqrt_display(_char_length_squared(*polys))
+
+
+def _construction_error_exceeds(error, length2, truth, atol, *polys):
+    """Finite errors only; compare the exact bound without constructing sqrt(L²).
+
+    error > atol*max(L,truth)+64*eps*C is squared after removing the exact
+    roundoff term. Neither a huge diameter nor a tiny coefficient can overflow
+    or silently underflow the acceptance threshold.
+    """
+    if not math.isfinite(error) or not math.isfinite(truth):
+        return True
+    if not math.isfinite(atol) or atol < 0:
+        raise ValueError("atol must be finite and nonnegative")
+    scale = max((abs(Fraction(v)) for P in polys for p in P for v in p), default=Fraction(0))
+    excess = Fraction(error)-Fraction(64*math.ulp(1.0))*scale
+    return excess > 0 and excess*excess > Fraction(atol)**2*max(length2, Fraction(truth)**2)
+
+
+def _minimum_witness_distance(covs):
+    """No nonfinite candidate can hide behind a finite minimum."""
+    distances = []
+    for c in covs:
+        if c.point_a is None or c.point_b is None:
+            continue
+        distance = math.hypot(c.point_a[0]-c.point_b[0], c.point_a[1]-c.point_b[1])
+        if not math.isfinite(distance):
+            return math.inf
+        distances.append(distance)
+    return min(distances, default=math.inf)
 
 
 def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: float = 0.25) -> list[Point]:
@@ -184,7 +215,7 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
     """
     rep = DistanceReport()
     inf = float("inf")
-    L = char_length(A, B)
+    L2 = _char_length_squared(A, B)
     for x in translations:
         rep.draws += 1
         At = independent.translate(A, x)
@@ -196,13 +227,15 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
             rep.touching += 1
             continue
         truth, arg = brute_polygon_distance(At, B)
-        covs = enumerate_covers(At, B, window=inf)
-        got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
-                   for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
+        # Search only the independently certified nearest-distance window. The
+        # outward-rounded bound includes the exact root and avoids constructing
+        # unrelated distances beyond binary64 range.
+        covs = enumerate_covers(At, B, window=math.nextafter(truth, inf))
+        got = _minimum_witness_distance(covs)
         rep.samples += 1
         err = abs(got - truth)
         rep.worst_abs_error = max(rep.worst_abs_error, err)
-        if err > atol * max(L, truth) + round_floor(coord_scale(At, B)):
+        if _construction_error_exceeds(err, L2, truth, atol, At, B):
             rep.failures.append((x, got, truth, arg))
     return rep
 
@@ -213,8 +246,10 @@ def brute_ray_exit(A: Poly, B: Poly, u: Point) -> Fraction:
     """Independent exact first exit parameter from int E along nonzero u.
 
     Every rational vertex-edge event (including collinear endpoints) partitions
-    the ray; independent integer winding checks each interval without a noise
-    band. The Fraction result preserves the exact event for gate construction.
+    the ray; independent integer winding checks intervals and events without a
+    noise band. Local rational line-arrangement sectors distinguish true boundary
+    events from tight-fit seams inside E. The Fraction result preserves the exact
+    event for gate construction.
     No production geometric primitive is shared with the oracle.
     """
     return independent.ray_exit(A, B, u)
@@ -249,7 +284,7 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
         raise ValueError(f"need one direction per translation: {len(directions)} != {len(translations)}")
     rep = ExitReport()
     inf = float("inf")
-    L = char_length(A, B)
+    L2 = _char_length_squared(A, B)
     for x, u in zip(translations, directions):
         rep.draws += 1
         At = independent.translate(A, x)
@@ -262,12 +297,11 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
             continue
         t = brute_ray_exit(At, B, u)
         Az = independent.translate(At, (t * Fraction(u[0]), t * Fraction(u[1])))
-        covs = enumerate_covers(Az, B, window=inf)
-        got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
-                   for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
+        covs = enumerate_covers(Az, B, window=0.0)
+        got = _minimum_witness_distance(covs)
         rep.samples += 1
         rep.worst_witness = max(rep.worst_witness, got)
-        if got > atol * L + round_floor(coord_scale(Az, B)):
+        if _construction_error_exceeds(got, L2, 0.0, atol, Az, B):
             rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))
     return rep
 

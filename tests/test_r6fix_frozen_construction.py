@@ -62,5 +62,14 @@ def test_frozen_unit_jet_divides_before_rounding_an_overflowing_tangent_componen
     B = Polyhedron([(0.0, 0.0, 0.0)], [])
     n = frozen_normal(A, B, ("VV3", ("V", 0), ("V", 0)))
     # dn = (I - nn^T) dp / sqrt(3), n=(1,1,1)/sqrt(3).
-    reference = [float((F(seed) * k / 3) / F(math.sqrt(3))) for k in (4, -2, -2)]
-    assert [c.e[0] for c in n] == reference
+    # The former reference divided by an already rounded sqrt(3), retaining
+    # the very double rounding fixed in R7. Exact midpoint inequalities below
+    # uniquely require the correctly rounded analytic derivative (no tolerance).
+    for c, k in zip(n, (4, -2, -2)):
+        value = c.e[0]
+        assert (value > 0) == (k > 0)
+        magnitude = abs(value)
+        lo = (F(math.nextafter(magnitude, 0.0)) + F(magnitude)) / 2
+        hi = (F(magnitude) + F(math.nextafter(magnitude, math.inf))) / 2
+        exact_square = F(seed)**2 * k*k / 27
+        assert lo*lo < exact_square < hi*hi

@@ -193,8 +193,9 @@ def test_edge_edge_penetration_without_any_vertex_inside_is_constructed():
 
 def test_guard_is_not_a_vertex_inside_check(monkeypatch):
     """牙（穿过被测路径）：把 margin 里的贯入守卫换成"A 的某顶点在 B 内"检查（G6 的变异原样），
-    交叉方条必须红——它给出间距 0.05、EE 标签、margin_contacts []（fail-unsafe）；
-    而"顶点在体内"那一类旧输入在同一变异下照绿（这正是旧门无牙的原因）。"""
+    交叉方条先由完整表面距离自校验响亮拒绝；再移除该自校验的交面特征，
+    保留旧门的全部断言：错误间距 0.05、EE 标签、margin_contacts []（fail-unsafe）。
+    而"顶点在体内"那一类旧输入在同一双变异下照绿。"""
     import eab.margin as M
     from eab.kernel3d.geom3 import point_in_polyhedron
 
@@ -204,12 +205,33 @@ def test_guard_is_not_a_vertex_inside_check(monkeypatch):
 
     monkeypatch.setattr(M, "polyhedra_overlap", vertex_inside_guard)
     A, B, _ = _crossbars_case()
-    d, lab = body_distance(A, B)
-    assert lab[0] == "EE" and d == pytest.approx(0.05, abs=1e-12), (d, lab)       # 变异：把贯入深度当间距
-    assert margin_contacts(A, B, delta=0.05) == []
-    with pytest.raises(AssertionError):
-        test_penetration_is_reported_as_a_violated_margin("crossed bars (edge-edge only)")
-    test_penetration_is_reported_as_a_violated_margin("tetra+box (0,0,0.3)")        # 旧类输入看不见这个变异
+    # R7's complete edge/face distance independently detects the bad guard:
+    # fail closed, rather than requiring the old unsafe positive distance.
+    with pytest.raises(RuntimeError, match=r"margin self-check failed:.*nearest feature pair is 0.0"):
+        body_distance(A, B)
+    with pytest.raises(RuntimeError, match=r"margin self-check failed:.*nearest feature pair is 0.0"):
+        margin_contacts(A, B, delta=0.05)
+    with pytest.raises(RuntimeError, match=r"margin self-check failed:.*nearest feature pair is 0.0"):
+        inflated_membership(A, B, delta=0.05)
+
+    # Retain EVERY original unsafe-output/guard assertion too. Reintroduce the
+    # former missing edge-face feature INSIDE the brute implementation, not by
+    # faking output after enumeration, so the primary guard still needs teeth.
+    import inspect
+    from eab.kernel3d import geom3 as G
+    source = inspect.getsource(G.brute_feature_distance)
+    marker = "if _surfaces_intersect(*triangles):"
+    assert source.count(marker) == 1
+    scope = dict(vars(G))
+    exec(compile(source.replace(marker, "if False:"), __file__, "exec"), scope)
+    with monkeypatch.context() as legacy_brute:
+        legacy_brute.setattr(M, "brute_feature_distance", scope["brute_feature_distance"])
+        d, lab = body_distance(A, B)
+        assert lab[0] == "EE" and d == pytest.approx(0.05, abs=1e-12), (d, lab)       # 变异：把贯入深度当间距
+        assert margin_contacts(A, B, delta=0.05) == []
+        with pytest.raises(AssertionError):
+            test_penetration_is_reported_as_a_violated_margin("crossed bars (edge-edge only)")
+        test_penetration_is_reported_as_a_violated_margin("tetra+box (0,0,0.3)")        # 旧类输入看不见这个变异
 
 
 # ---------------------------------------------------------------- G6 minor[28]：相触分辨率内的结果单调

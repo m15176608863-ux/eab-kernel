@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
 from fractions import Fraction
 from eab import rational3 as _rational3
 from itertools import combinations
+from functools import lru_cache
 import math
 from math import atan2, hypot, sqrt
 from . import exact_geom as _eg
@@ -84,19 +85,37 @@ def norm(a: Vec3) -> float:
     return result
 
 
-def unit(a: Vec3) -> Vec3:
-    scale = max(map(abs, a))
-    if scale == 0:
+def unit(a: Vec3, *, allow_underflow: bool = False) -> Vec3:
+    """Round each exact normalized component once, without a rounded norm.
+
+    allow_underflow is for displays accompanied by the exact direction vector,
+    as carried by Cover3 and MarginContact. Other callers fail loudly.
+    Gate: test_r7fix_unit_retains_extreme_components_before_normalization.
+    """
+    return _unit_cached(tuple(a), allow_underflow)
+
+
+@lru_cache(maxsize=16384)
+def _unit_cached(a, allow_underflow):
+    q = _eg.vector(a)
+    squared = _eg.dot(q, q)
+    if not squared:
         raise ZeroDivisionError("unit of zero vector")
-    scaled = tuple(float(x/scale) for x in a)
-    n = hypot(*scaled)
-    return tuple(x/n for x in scaled)
+    return tuple((-1 if x < 0 else 1) * _eg.sqrt_rational(x*x/squared, allow_underflow=allow_underflow) for x in q)
 
 
 def angle_between(a: Vec3, b: Vec3) -> float:
-    """两向量夹角（弧度，[0, π]）。用 atan2(|a×b|, a·b) 而非 acos，小角与近 π 都稳。"""
-    c = cross(a, b)
-    return atan2(norm(c), dot(a, b))
+    """Angle from exact cross/dot before a common homogeneous rescaling.
+
+    Gate: test_r7fix_angle_between_avoids_intermediate_cross_range_loss.
+    """
+    a, b = _eg.vector(a), _eg.vector(b)
+    c, d = _eg.cross(a, b), _eg.dot(a, b)
+    scale = max(abs(d), *map(abs, c))
+    if not scale:
+        return 0.0
+    sine = _eg.sqrt_rational(_eg.dot(c, c)/(scale*scale), allow_underflow=d <= 0)
+    return atan2(sine, float(d/scale))
 
 
 @dataclass(slots=True)
@@ -141,15 +160,15 @@ class Polyhedron:
         if self._metrics is None:
             C = coord_scale(*self.verts)
             lo, hi = self.aabb()
-            L = norm(sub(hi, lo))
-            ell = min((norm(sub(self.verts[b], self.verts[a])) for a, b in self.edges()), default=0.0)
+            L = norm(_eg.sub(exact_vector(hi), exact_vector(lo)))
+            ell = min((norm(exact_edge_vector(self, (a, b))) for a, b in self.edges()), default=0.0)
             self._metrics = (C, L, ell if ell > 0.0 else (L if L > 0.0 else 1.0))
         return self._metrics
 
     def edge_noise(self, e: tuple[int, int]) -> float:
         """棱 e 的单位方向的舍入噪声 c·eps·C/|e|（弧度）：刚体运动把顶点挪动 ~eps·C，方向随之转这么多。
         只看**这条棱自己**的长度（纪律 F 的逐特征口径）。零长棱为 +inf。"""
-        ell = norm(sub(self.verts[e[1]], self.verts[e[0]]))
+        ell = norm(exact_edge_vector(self, e))
         return noise_floor(self.metrics()[0]) / ell if ell > 0.0 else float("inf")
 
     def face_noise(self, fi: int) -> float:
@@ -185,41 +204,22 @@ class Polyhedron:
         return n
 
     def _newell_normal(self, fi: int) -> Vec3:
-        f = self.faces[fi]
-        n = (0.0, 0.0, 0.0)
-        o = self.verts[f[0]]
-        k = len(f)
-        for i in range(k):
-            p = sub(self.verts[f[i]], o)
-            q = sub(self.verts[f[(i + 1) % k]], o)
-            n = add(n, cross(p, q))
-        if n == (0.0, 0.0, 0.0) or not all(math.isfinite(x) for x in n):
-            # A true but very thin exact facet can cancel to zero in float.
-            # Zero is a topological assertion, not a construction tolerance.
-            try:
-                qn = exact_face_normal(self, fi)
-            except ValueError:
-                raise ValueError(f"face {fi} {f} has zero area (collinear or coincident vertices); "
-                                 f"strip duplicates at the reader boundary") from None
-            scale = max(abs(x) for x in qn)
-            n = tuple(float(x / scale) for x in qn)
-        length = math.hypot(*n)
-        return tuple(x / length for x in n)
+        try:
+            return unit(exact_face_normal(self, fi))
+        except ValueError:
+            raise ValueError(f"face {fi} {self.faces[fi]} has zero area (collinear or coincident vertices); "
+                             f"strip duplicates at the reader boundary") from None
 
     def face_area(self, fi: int) -> float:
-        f = self.faces[fi]
-        o = self.verts[f[0]]
-        n = (0.0, 0.0, 0.0)
-        for i in range(len(f)):
-            n = add(n, cross(sub(self.verts[f[i]], o), sub(self.verts[f[(i + 1) % len(f)]], o)))
-        area2 = math.hypot(*n)
-        if area2 == 0.0 or not math.isfinite(area2):
-            try:
-                qn = exact_face_normal(self, fi)
-            except ValueError:
-                return 0.0
-            return _eg.sqrt_rational(_eg.dot(qn, qn) / 4)
-        return 0.5 * area2
+        """Newell area, with exact final halving before the sole rounding.
+
+        Gate: test_g6g05_face_area_rounds_after_final_halving.
+        """
+        try:
+            n = exact_face_normal(self, fi)
+        except ValueError:
+            return 0.0
+        return _eg.sqrt_rational(_eg.dot(n, n) / 4)
 
     def edges(self) -> list[tuple[int, int]]:
         self._sync_geometry_cache()
@@ -276,7 +276,7 @@ class Polyhedron:
                 if other in seen:
                     continue
                 seen.add(other)
-                d = sub(self.verts[other], self.verts[vi])
+                d = exact_edge_vector(self, (vi, other))
                 if norm(d) > 0.0:
                     out.append(unit(d))
         return out
@@ -294,7 +294,7 @@ class Polyhedron:
             for v, nbrs in cache.items():
                 out = []
                 for w in dict.fromkeys(nbrs):
-                    d = sub(self.verts[w], self.verts[v])
+                    d = exact_edge_vector(self, (v, w))
                     ell = norm(d)
                     if ell > 0.0:
                         out.append((unit(d), fl / ell))
@@ -302,7 +302,7 @@ class Polyhedron:
         return list(cache.get(vi, ()))
 
     def edge_dir(self, e: tuple[int, int]) -> Vec3:
-        d = sub(self.verts[e[1]], self.verts[e[0]])
+        d = exact_edge_vector(self, e)
         if d == (0.0, 0.0, 0.0):
             raise ValueError(f"zero-length edge {e} (consecutive duplicate vertex at {self.verts[e[0]]}); "
                              f"strip duplicates at the reader boundary (readers.bdda_geom.strip_duplicate_vertices)")
@@ -321,41 +321,29 @@ class Polyhedron:
         if len(trav) != 2:
             raise ValueError(f"edge {e} has {len(trav)} incident face traversals, need 2")
         (f1, a1, b1), (f2, _, _) = trav
-        t = unit(sub(self.verts[b1], self.verts[a1]))
+        t = unit(exact_edge_vector(self, (a1, b1)))
         n1, n2 = self.face_normal(f1), self.face_normal(f2)
         return atan2(dot(cross(n1, n2), t), dot(n1, n2))
 
     # ---------------- 体积与内点 ----------------
     def volume(self) -> float:
-        """有符号体积（外看 CCW 的闭合多面体为正）。相对首顶点累加防抵消。"""
-        o = self.verts[0]
-        v = 0.0
-        for fi, f in enumerate(self.faces):
-            a = sub(self.verts[f[0]], o)
-            for i in range(1, len(f) - 1):
-                b = sub(self.verts[f[i]], o)
-                c = sub(self.verts[f[i + 1]], o)
-                v += dot(a, cross(b, c))
-        return v / 6.0
+        """Signed volume of the triangulated surface; round only the final sum.
+
+        Gate: test_g6g08_mass_properties_use_exact_products_before_final_rounding.
+        """
+        volume6, _ = _mass_properties(tuple(self.verts), tuple(self.faces))
+        return _checked_scalar(volume6 / 6)
 
     def centroid(self) -> Vec3:
-        """体心。注意：凹多面体的体心可能在体外，**不可**当内点用。"""
-        o = self.verts[0]
-        vol = 0.0
-        acc = (0.0, 0.0, 0.0)
-        for f in self.faces:
-            a = sub(self.verts[f[0]], o)
-            for i in range(1, len(f) - 1):
-                b = sub(self.verts[f[i]], o)
-                c = sub(self.verts[f[i + 1]], o)
-                w = dot(a, cross(b, c))
-                vol += w
-                acc = add(acc, mul(add(add(a, b), c), w))
-        if vol == 0.0:
-            n = len(self.verts)
-            return (sum(p[0] for p in self.verts) / n, sum(p[1] for p in self.verts) / n,
-                    sum(p[2] for p in self.verts) / n)
-        return add(o, mul(acc, 1.0 / (4.0 * vol)))
+        """Exact first moments, then one final coordinate rounding (not an interior point).
+
+        Gate: test_g6g08_centroid_retains_cancellation_even_when_volume_is_representable.
+        """
+        volume6, moments = _mass_properties(tuple(self.verts), tuple(self.faces))
+        points = tuple(map(exact_vector, self.verts))
+        if not volume6:
+            return tuple(_checked_scalar(sum(p[k] for p in points) / len(points)) for k in range(3))
+        return tuple(_checked_scalar(points[0][k] + moments[k] / (4*volume6)) for k in range(3))
 
     def interior_point(self) -> Vec3:
         """保证在多面体内部的一点：取各面三角形质心沿内法向微退，取第一个通过内点测试者；
@@ -443,7 +431,11 @@ class Polyhedron:
                     issues.append(f"face {fi}: not planar (vertex {i} off by "
                                   f"{dot(n, sub(self.verts[i], o)):.3g})")
                     break
-        v = self.volume()
+        try:
+            v = self.volume()
+        except ValueError as error:
+            issues.append(f"invalid volume surface: {error}")
+            return issues
         if v <= 0.0:
             issues.append(f"signed volume {v:.6g} <= 0 (global orientation is inward)")
         return issues
@@ -810,11 +802,60 @@ def _point_face_distance(p: Vec3, P: Polyhedron, fi: int) -> float | None:
     return _eg.sqrt_rational(g*g / nn)
 
 
+def _checked_scalar(value):
+    """Final rational construction must not silently overflow or erase a nonzero."""
+    result = float(value)
+    if not math.isfinite(result):
+        raise OverflowError("exact construction exceeds finite binary64 range")
+    if value and not result:
+        raise ArithmeticError("nonzero exact construction is below binary64 output range")
+    return result
+
+
+@lru_cache(maxsize=1024)
+def _mass_properties(vertices, faces):
+    """Six times signed volume and its relative first moment, on the actual surface."""
+    points = tuple(map(exact_vector, vertices))
+    origin = points[0]
+    relative = tuple(_eg.sub(p, origin) for p in points)
+    volume6, moments = Fraction(0), (Fraction(0),)*3
+    for _, tri in _eg.triangulate(vertices, faces):
+        a, b, c = (relative[i] for i in tri)
+        weight = _eg.dot(a, _eg.cross(b, c))
+        volume6 += weight
+        moments = _eg.add(moments, _eg.mul(_eg.add(_eg.add(a, b), c), weight))
+    return volume6, moments
+
+
+def _surface_distance_edges(P):
+    """All geometric surface edges, including interior ridges of folded rings.
+
+    Coplanar triangulation diagonals are not geometric ridges and cannot add a
+    smaller minimum than the face projections and boundary edges already tested.
+    Gate: test_g6g04_folded_internal_ridges_attain_slab_distance.
+    """
+    return exact_surface(P).edges()
+
+
+def _surfaces_intersect(triangles_a, triangles_b):
+    """Exact triangle crossings, after exact per-triangle AABB rejection."""
+    bounds = lambda tri: tuple((min(p[k] for p in tri), max(p[k] for p in tri)) for k in range(3))
+    first = tuple((tri, bounds(tri)) for _, tri in triangles_a)
+    second = tuple((tri, bounds(tri)) for _, tri in triangles_b)
+    for a, ba in first:
+        for b, bb in second:
+            if any(ha < lb or hb < la for (la, ha), (lb, hb) in zip(ba, bb)):
+                continue
+            if _eg.triangle_intersection(a, b):
+                return True
+    return False
+
+
 def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: bool = False) -> float:
     """Exact all-feature surface distance, with one final floating construction.
 
-    Triangulated face projections include vertex/edge endpoints; all source
-    edge pairs provide the remaining minima. This is internal corroboration,
+    Triangulated face projections include vertex/edge endpoints; all geometric
+    surface-edge pairs (including folded-ring ridges) provide remaining minima. This is internal corroboration,
     not an independent G0 oracle: it shares exact_geom primitives with production.
     G0 uses the separate g03_surface_oracle. Explicit allow_underflow is only for
     display callers retaining an exact squared-distance certificate.
@@ -822,14 +863,17 @@ def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: boo
     """
     vertices = (tuple(map(exact_vector, A.verts)), tuple(map(exact_vector, B.verts)))
     triangles = (_eg.triangles(A), _eg.triangles(B))
+    if _surfaces_intersect(*triangles):
+        return 0.0
     best = None
     for points, faces in ((vertices[0], triangles[1]), (vertices[1], triangles[0])):
         for p in points:
             for _, tri in faces:
                 value = _eg.point_triangle_distance_squared(p, tri)
                 best = value if best is None else min(best, value)
-    for ea in A.edges():
-        for eb in B.edges():
+    edges_a, edges_b = _surface_distance_edges(A), _surface_distance_edges(B)
+    for ea in edges_a:
+        for eb in edges_b:
             value = _eg.segment_distance_squared(vertices[0][ea[0]], vertices[0][ea[1]],
                                                  vertices[1][eb[0]], vertices[1][eb[1]])
             best = value if best is None else min(best, value)

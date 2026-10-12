@@ -1,0 +1,1771 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 23f0e49..5feb1dc 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -1,12 +1,11 @@
+ # AGENTS.md — eab-kernel 常驻纪律
+ 
+-本仓库是"统一接触内核"（石根华入口块 E(A,B) 理论的一份独立实现，兼姊妹三线里三维接触枚举的第一份独立 oracle）。设计文档正本：`D:\E(A, B)\07 程序设计·统一接触内核方案.md`。
++本仓库是"统一接触内核"（石根华入口块 E(A,B) 理论的一份独立实现，兼姊妹三线里三维接触枚举的一条独立 oracle 通道）。设计文档正本：`D:\E(A, B)\07 程序设计·统一接触内核方案.md`。
+ 
+ > **订正（2026-09-24）**：原文写"E(A,B) 理论的**第一份实现**"，不成立——`D:\E(A, B)\00` §3.3（及第七节"替代入口"第 3 条）
+ > 引的 Zhao et al. 2020（DDA + 4D-LSM 耦合），以及第八节文献清单"圈内实现与批评"里的 Zheng, Jiao et al. 2016
+ > （该表标为"首个三维入口块实现"）、Feng & Tan 2020、Ni et al. 2020 等，都是更早或同期的实现
+-> （`docs/canon_map.md` 第七节第三层已指出）。"第一份独立 oracle"
+-> 只指姊妹三线之间的对账通道（`docs/sibling_observations.md` 2026-09-18 节），不涉及学术优先性。
++> （`docs/canon_map.md` 第七节第三层已指出）。R7FIX 进一步撤掉对账通道的序数性宣传；这里只指姊妹三线之间的独立对账通道，不涉及学术优先性。
+ 
+ ## 1. 红线：第四个独立仓库，姊妹三线只读
+ 
+diff --git a/README.md b/README.md
+index 9d2b018..ff28397 100644
+--- a/README.md
++++ b/README.md
+@@ -3,7 +3,7 @@
+ > **WO-R6FIX（2026-10-12，修复留树，待独立复核）**：第六轮确认 12 条（1 critical / 7 major / 4 minor），原审查见 [G6F 输入](file:///D:/eab-wt/cx-e2/reports/codex/inputs/G6F_report.md)。修复、修前红/修后绿、内部变异、同类扫描和完整测试结果统一见 [R6FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R6FIX_report.md)。本次本树测试不等于独立六路 G6，且按工单禁止创建 worktree；M0 退出状态不升级。
+ 
+ 
+-> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴脱离证书 ⇒ PD ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”；报贯入不推出 PD > w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。对应独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
++> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴非贯入证书 ⇒ rho ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”。这里 `rho = inf{||d||₂ : int(A+d)∩int(B)=∅}`；正本 01 的 `PD_closed = inf{||d||₂ : (A+d)∩B=∅}` 是闭集完全分离的下确界，两者对一般闭表面不相同，六轴不保证 PD_closed≤w；报贯入也不推出 PD_closed>w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。闭合空腔反例门 `test_r7fix_docs.py::test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed` 固定两种口径；其他独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
+ 
+ 
+ > **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的局部贯入厚度报告政策（非 PD）。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
+@@ -99,7 +99,7 @@
+ | 层 | 状态 |
+ |---|---|
+ | L0 | 二维已有精确谓词门（见 E2/E3 报告）。**三维 E5a 部分实现，有门、未过 G6**：输入顶点精确凸包、仅精确共面归并、orient3d 保守过滤；显式 `exact_*` 三角表面成员/交点原语（`test_geom3_e5a.py`、`test_hull_robustness.py`、`test_geom3_merge.py`、`test_filtered_predicates.py`）。**E5a2 已将旧一般三入口接入精确三角化表面路径**（`test_e5a2_surface.py`）：仅对有效、定向朝外、闭合、嵌入的表面；非平面环确定性耳切，不自动凸化。一般重叠用有理平面分区及内部见证，涵盖共面分支；非法/自交表面不在证明范围。一般表面与显式凸包是不同模型，见 `docs/exact_3d_design.md`。实测与未达项见 `reports/codex/E5a2_report.md`，不是 G6 退出 |
+-| L1 二维 | G1 复现 legacy bb52 顶点-边 53/53 ✔（`test_bb52_g1.py::test_g1_tier1_all_legacy_ve_reproduced`）。**E2 凸路径（2026-10-11，已实现并配定向门，待 G6）**：只接受精确凸输入，允许平直顶点，微凹/折回/绕圈/零长边清晰拒收；仅精确平行同向边合并 FF。成员对给定坐标和精确平移判定；显式 `tol` 无舍入地板，凸报告带用精确欧氏边界距离，非凸回退用精确相交加保守四轴边界见证、报告带不保证完备（`test_kernel2d_exact.py`、`test_kernel2d_report_band.py`）。凸 G0 三票零容差、不跳样本，边界探针参与计分；票二对独立全顶点支撑集核对严格/边界标签，票三只数严格凸顶点（`test_kernel2d_g0.py::test_g0_random_convex_pairs`、`test_kernel2d_exact.py::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions`）。**凹块 G0** 仍以暴力 `polygons_overlap` 检验距离/出口完备性，历史 bb52 1260 次平移为 603/603、657/657（`test_bb52_g1.py::test_g0_distance_completeness_real_concave_geometry` / `::test_g0_exit_completeness_real_concave_geometry`）；精确一般多边形相交回退已有闭式门，但**基于盖裁剪的凹块全局 E 仍未实现**（M3）。**E3 二维收尾（WO-E3E4，有定向门、待 G6）**：凸/凹首入初态与判定均对给定数据精确；凹 VE/EV 仿射根、各自时刻段内和前事件漏候选自校验在 Fraction 上完成，t_max 不被容差放宽。`tied_labels` 只报精确同时，接近项另报 `near_labels`；`shortest_exit` 精确比较在程负间隙的平方距离（局部最浅盖，不声称一般凹对全局最小分离；`test_kernel2d_entrance_e3.py`）。局部 VE/EV/VV 默认精确，显式长度/角度域窗口只放宽、不抬舍入地板，严格性与窗口活跃分开（`test_kernel2d_covers_e3.py`）；二维 `convex_hull` 返回精确极点，tol 不再隐式删点。bb52 的 53 条 legacy 窗口盖对账保留；运动首入门对精确微贯入另核局部出口，不把 FIT 内贯入当接触（`test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal`）。旧静态 `first_entrance_for_vertex` 仍不是一般凹块的运动首入。全套、突变、调用点分类见 `reports/codex/E3E4_report.md`，不等于 G6 退出 |
++| L1 二维 | G1 复现 legacy bb52 顶点-边 53/53 ✔（`test_bb52_g1.py::test_g1_tier1_all_legacy_ve_reproduced`）。**E2 凸路径（2026-10-11，已实现并配定向门，待 G6）**：只接受精确凸输入，允许平直顶点，微凹/折回/绕圈/零长边清晰拒收；仅精确平行同向边合并 FF。成员对给定坐标和精确平移判定；显式 `tol` 无舍入地板，凸报告带用精确欧氏边界距离，非凸回退用精确相交加保守四轴边界见证、报告带不保证完备（`test_kernel2d_exact.py`、`test_kernel2d_report_band.py`）。凸 G0 三票零容差、不跳样本，边界探针参与计分；票二对独立全顶点支撑集核对严格/边界标签，票三只数严格凸顶点（`test_kernel2d_g0.py::test_g0_random_convex_pairs`、`test_kernel2d_exact.py::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions`）。**凹块 G0** 使用独立 `kernel2d/g0_oracle.py` 的有理区间裁剪、段距离与事件检查检验距离/出口完备性（不调用生产 `polygons_overlap`），历史 bb52 1260 次平移为 603/603、657/657（`test_bb52_g1.py::test_g0_distance_completeness_real_concave_geometry` / `::test_g0_exit_completeness_real_concave_geometry`）；精确一般多边形相交回退已有闭式门，但**基于盖裁剪的凹块全局 E 仍未实现**（M3）。**E3 二维收尾（WO-E3E4，有定向门、待 G6）**：凸/凹首入初态与判定均对给定数据精确；凹 VE/EV 仿射根、各自时刻段内和前事件漏候选自校验在 Fraction 上完成，t_max 不被容差放宽。`tied_labels` 只报精确同时，接近项另报 `near_labels`；`shortest_exit` 精确比较在程负间隙的平方距离（局部最浅盖，不声称一般凹对全局最小分离；`test_kernel2d_entrance_e3.py`）。局部 VE/EV/VV 默认精确，显式长度/角度域窗口只放宽、不抬舍入地板，严格性与窗口活跃分开（`test_kernel2d_covers_e3.py`）；二维 `convex_hull` 返回精确极点，tol 不再隐式删点。bb52 的 53 条 legacy 窗口盖对账保留；运动首入门对精确微贯入另核局部出口，不把 FIT 内贯入当接触（`test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal`）。旧静态 `first_entrance_for_vertex` 仍不是一般凹块的运动首入。全套、突变、调用点分类见 `reports/codex/E3E4_report.md`，不等于 G6 退出 |
+ | L1 三维 | **E5a 凸路径已有精确门、未过 G6**：凸成员对原始坐标有理 SAT；局部 facet 与独立精确差点凸包标签全量双向核对；票三仅比较极点。G0 强制 E 顶点/棱中点/面重心，零跳样、零 ambiguous/low_e 豁免（`test_g03_e5a.py`、`test_covers3_g0_vote2.py`）。凸模型的标签属于 canonical view，源面非共面时不能直接解释成原 face 编号。E5a2 枚举窗口从原坐标精确比较距离平方，正 tol 凸成员带为完整欧氏边界距离（`test_e5a2_covers.py`），不读构造 gap 作这些分支。一般非平面源环单盖仅为 Newell 向量/首顶点锚平面/源拓扑描述符，不是折面实体完整法锥；反例门固定见证不在折面上、环起点改变描述平面及标签域分离。凹块 G0 仍只有既有分离侧距离完备性。**G2 对 3-b-dda 手写期望清单** ✔（不是对检测器：3-b-dda 的入口是 `cases.py` 手写的 4 个，G6 盲区 1；三维 legacy 检测器至今未对过），范围窄：三个夹具（cb2_locked / cb2_sliding / cb_bond）各 4 个 np 入口 ↔ 4 个 VF 盖（`test_g2_bdda3d.py::test_g2_isomorphism_against_bdda3d`）；只对账 np↔VF/FV，窗口 `G2_WINDOW=1e-6`（原来硬写 1.0）；legacy 的 ee 入口、窗口内的 EE/VE3/EV3/VV3 盖现在会让门变红，**但还没有对账通道**（带内牙 6f157ac 未经独立复核，见状态声明）；只有一种几何（轴对齐方块叠放）；不是凸包角点的输入顶点，重复点登记别名、T 形点直接报错（`::test_g2_duplicate_vertices_are_aliased_and_reconcile` / `::test_g2_non_corner_vertex_is_a_clear_error`）；legacy 侧自 2026-09-24 起受哈希看护（`test_fixture_provenance.py::test_bdda3d_gate_has_teeth`），但姊妹仓库的版本没有记录；入口是算例预置的手写列表，**不是** detect.py 的产出（G6 盲区 1 已核实）。**M2 第一版（2026-10-10，`kernel3d/entrance3.py`，有门·未经复核）**：沿运动方向的三维首入（命题 7：候选集来自 facet 型盖、按给定数据精确谓词裁决（E5b 后继门见开头）、集值点如实报并列集、已侵入取最短出口）与退化族合并（FF / FE，`members` 保留展开视图）；门 `test_entrance3.py`（闭式、24 对随机凸对对不经盖的 oracle、刚体运动 1e3–1e6、漏候选必抛错）、`test_entrance3_concave.py`（台阶 / 微台阶 / V 槽 / 倒方台）、`test_entrance3_g2.py`（三份 bdda3d 夹具上首入 FF 的成员逐条还原 legacy 的 4 个 np 入口）；13 个突变体里 10 个被抓，3 个如实记（"平面已在身后"筛选与"t* 处谓词须相触"核验互为冗余、同时撤回才红；平面簇容差 ×1e6 在当时几何上不改变输出；E5b 已改精确共面并加微台阶牙，历史 13 项不代表现状）。EEP 没有自己的合并规则（由 VF/FV 边界态表达）。**未做**：凹块全局 E 构造（M3） |
+ | L2 | 裕度层四条自拟"定理"：二、四有门 ✔（`test_margin.py`：构型-工作空间距离恒等 `test_config_space_distance_equals_body_distance`、C^{1,1} 正则化的 Lipschitz 双边门 `test_inflated_normal_is_lipschitz` + `test_lipschitz_gate_has_teeth`）；定理一（膨胀恒等式）的门 `test_inflated_membership_tracks_the_margin` 与实现共用同一个 `body_distance`，**不是独立门**；定理三只有前半（margin_gap ≤ 0 即广义接触闭合）有门（`test_margin_contacts_are_generalized_contacts`），后半（KKT 乘子 = 虚拟接触力）无实现无门。审查指出的"贯入时答安全"（fail-unsafe）已修：贯入返回哨兵、裕度判违约（`test_margin_penetration.py`）；这道守卫依赖暴力谓词 `polyhedra_overlap`。**与正本的对照**（审查盲区 4）：`docs/canon_map.md` 已写、与本文同批提交，**未经 G6**。"定理一到四"是本仓库自拟的编号，正本里没有（审查与 canon_map 在这一点上一致）；canon_map（未经 G6）对审查 GAP3 的"自创的定理"一说提出异议，认为内容在正本有出处——这是比审查更强的说法，按规矩**以 G6 结论为准**，此处不采信（已列入路线 M0"G6 通过后待写"）。本行只采纳往弱里改的部分：定理一的门不独立、定理三后半无实现无门 |
+ | L3 | 极限分析（下限 LP + 对偶机构，自带上下限自校验）✔（`test_limit.py::test_lower_and_upper_bounds_coincide`）；Patton 剪胀律 ✔（`test_limit.py::test_interlock_with_friction_reproduces_pattons_law`，含曾被判假不可行的 (0.2, 0.1)、(0.3, 0.1)；全格扫描见 `test_limit_scale.py`）。审查指出的"部分格子静默报 infeasible"已在 M0 修复，M0.2 起 LP 改为**对给定数据精确**（浮点只给候选、有理数核验三种证书；力矩列、荷载平移、黏聚上限精确给出；`test_lp_certificates.py`、`test_limit_scale.py::test_interlock_is_never_falsely_infeasible_on_the_audited_cells`、`test_lp_scale.py`），可分辨性筛查与刀刃输入的诚实边界见 `limit.py` 模块文档，**待 G6 重审**。**E4 自校验（WO-E3E4，有定向门、待 G6）**：静力平衡、对偶间隙、互补与机构容许性在同一精确模型上用有理数核验，tol 不再决定通过；LP 保留精确解见证，浮点视图用于展示。Fraction 的 10⁻³ 至 10⁻¹⁰⁰ 相对 α 错误、低摩擦/低黏聚、远体与细高体注入由 `test_limit_exact_selfcheck.py` 看护；既有反作用和静力手改门保留。多体可分辨性按各体自身接触形心与臂长，不借无关远体扩大尺度。筛查只写 `resolvability` / `resolvability_statuses`，不再用邻域不可行覆盖原问题 status/alpha，也不因邻域敏感抛错；原答案由独立精确 LP 门核对（`test_lp_certificates.py`、`test_limit_multi.py`）。`contact_forces`/`active` 仍是按 tol 截断的展示，静力证书是 lambdas；输入可分辨性仍非误差界，详见模块文档与工单报告。三维摩擦锥用 k 边内接棱锥，误差**不随 k 单调**：本几何在 k 为 4 的倍数时恰有一条锥棱落在滑动方向上所以精确（依赖切向基架），其余 k 上下振荡，承载比的相对短缺 ≤ 1−cos(π/k)（`test_limit.py::test_three_d_cone_linearisation_is_conservative_within_the_inradius_bound` / `::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k`）。接触点取动体一侧 `point_a`，倾覆承载与间隙无关（`test_limit_contacts.py::test_toppling_capacity_is_independent_of_the_gap`）。本构 = 库仑 + 黏聚，可插；关联流动。**多体（M1，2026-10-10）：有门·未经独立复核·待 G6**——`limit_multi.py` 把各体平衡并进同一 LP、接触在两体间成对出现，单体是特例（`test_limit_multi.py`：单体退化与 `limit_load` 相同、两块叠放 min(μW₂, W₂, (W₁+W₂)/h) 逐点相等、成排块传力、三维叠放、注入错解与"忘记反作用"的变异都抛错；`test_limit_arch.py`：五/七块半圆薄拱的 α 与**独立枚举的四铰机构上限**在 1e-9 内相等（五块 480 种铰位里 10 个容许、七块 2240 种里 28 个），低摩擦取滑动机构、更低自重不平衡，厚拱在关联流动下无界——如实报出，不硬凑；`test_limit_flat_arch.py`：刚性竖直台肩之间的三块平拱自锁（μ > 0 报 unbounded、μ = 0 报 infeasible），附不经 LP 的运动学论证——此前 README 把它记在 test_limit_arch.py 名下，那里并没有这道门，G6 第五轮补）。多体下接触力分布不唯一、α 唯一。 |
+diff --git a/docs/canon_map.md b/docs/canon_map.md
+index a9adf68..9972ab6 100644
+--- a/docs/canon_map.md
++++ b/docs/canon_map.md
+@@ -3,7 +3,7 @@
+ > **WO-R6FIX（2026-10-12，修复留树，待独立复核）**：第六轮确认 12 条（1 critical / 7 major / 4 minor），原审查见 [G6F 输入](file:///D:/eab-wt/cx-e2/reports/codex/inputs/G6F_report.md)。修复、修前红/修后绿、内部变异、同类扫描和完整测试结果统一见 [R6FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R6FIX_report.md)。本次本树测试不等于独立六路 G6，且按工单禁止创建 worktree；M0 退出状态不升级。
+ 
+ 
+-> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴脱离证书 ⇒ PD ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”；报贯入不推出 PD > w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。对应独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
++> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴非贯入证书 ⇒ rho ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”。这里 `rho = inf{||d||₂ : int(A+d)∩int(B)=∅}`；正本 01 的 `PD_closed = inf{||d||₂ : (A+d)∩B=∅}` 是闭集完全分离的下确界，两者对一般闭表面不相同，六轴不保证 PD_closed≤w；报贯入也不推出 PD_closed>w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。闭合空腔反例门 `test_r7fix_docs.py::test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed` 固定两种口径；其他独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
+ 
+ 
+ > **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的局部贯入厚度报告政策（非 PD）。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
+@@ -16,7 +16,7 @@
+ - `D:\E(A, B)\00 石根华 E(A,B)·理论内核与向外发展分析.md`（下称 **00**）——谱系与三层诚实分类（§4.6）；
+ - `D:\E(A, B)\07 程序设计·统一接触内核方案.md`（下称 **07**）——设计正本：五层架构、ContactRecord 契约、G0–G5 门体系、Phase 0–5（2026-10-10 第四轮盲区 3 之后补入，见第八节）。
+ 
+-**状态更新（2026-10-10，G6 第五轮之后）**：本表的代码指针一律写成"`file.py:当前定义行 函数名`"，无名的行号 / 区间指针已全部改写（模块文档里的段落按节名指，不写行号），并由 `tests/test_doc_pointers.py` 逐条核"行号 = 该函数当前的定义行"——改代码挪了定义行，门就红在那个指针上，用 `tools/fix_canon_ptrs.py --apply` 重排。此前三次人工校正（第三轮后 34 处、第四轮又 13 处）都在之后的提交里再次过期（第五轮实核 40 处带名指针 29 处不在该行），这是建门的原因；下段"HEAD 094861c / 1209 passed / 尚未经过 G6"是 09-24 写表时的口径，此后 G6 第二轮（09-27，`reports/g6b_20260927.md`）与第三轮（10-10，`reports/g6c_20261010.md`）都读过本表；K4 行与附录 A.9 的 LP 契约数字按 HEAD 复跑订正（见各处 2026-10-10 注）。"正本对代码"（审查 GAP3）三轮都没有一路打开 `D:\E(A, B)` 的三份正本核对——**仍开放**。
++**状态更新（2026-10-10，G6 第五轮之后）**：本表的代码指针一律写成"`file.py:当前定义行 函数名`"，无名的行号 / 区间指针已全部改写（模块文档里的段落按节名指，不写行号），并由 `tests/test_doc_pointers.py` 逐条核"行号 = 该函数当前的定义行"——改代码挪了定义行，门就红在那个指针上，用 `tools/fix_canon_ptrs.py --apply` 重排。此前三次人工校正（第三轮后 34 处、第四轮又 13 处）都在之后的提交里再次过期（第五轮实核 40 处带名指针 29 处不在该行），这是建门的原因；下段"HEAD 094861c / 1209 passed / 尚未经过 G6"是 09-24 写表时的口径，此后 G6 第二轮（09-27，`reports/g6b_20260927.md`）与第三轮（10-10，`reports/g6c_20261010.md`）都读过本表；K4 行与附录 A.9 的 LP 契约数字按 HEAD 复跑订正（见各处 2026-10-10 注）。上述是截至第三轮的历史缺口；第四、第五轮已读取正本并逐条处置 GAP3，详见下段。内容映射的处置不等于剩余实现缺口已补齐，也不升级本轮 M0/G6 退出状态。
+ 
+ 代码口径：`D:\eab-kernel` main，HEAD `094861c`。数字先在 `8376ec2` 上跑出；其后 `094861c` 只改 `src/eab/limit.py` 模块文档一行（诚实条款改指 `test_failure_mode_is_read_off_invariants_of_the_dual_face`），全套仍 `1209 passed`（`python -X utf8 -m pytest -q -p no:cacheprovider`，主工作树与新鲜克隆各跑一遍）。表里每一个"有门"都在 `094861c` 上跑过，命令见第八节。
+ 
+@@ -32,8 +32,8 @@
+    （2026-09-27 订正：原文把 2 也算进"都已实现且有门"，与本文件自己的表矛盾；G6 minor 21 当时用变异确认"让 `local_facets3`
+    在 A 沿 x 平移超过 3 时丢一个标签，全套照绿"——那是 68c311b 之前的状态，在现 HEAD 上同一变异让 2(i) 门与不变性门共 106 条红。
+    2026-10-10 再订正：上一次订正把状态说低了。）
+-2. **命题 4 的"一般位置"前提，代码的处理方式是"不另起退化类型"**：平行贴面、棱平行于面、平行棱-棱都用**非严格**的普通盖来表达，凸成员谓词改用 E 的全部支撑半空间（不再依赖一般位置）。成员、距离、票二、票三在退化输入上都有门。**把一个退化族收成一个盖只做了一半**：三维首入的 `entrance3.merge_degenerate`（M2 第一版）把同一法向、同一平面上的并列盖收成 `("FF", …)` / `("FE", …)` **标签元组**并保留展开成员；但 `Cover3.kind` 注释里的 `FF` / `FE` / `EEP` 与 `contact_record.CoverType` 里的 `FF` / `FE` / `EE_PAR` 仍没有任何构造点（`enumerate_covers3` 不产出、`CoverType.FF/FE/EE_PAR` 全仓零引用），`EEP` 连标签也没有；二维 `FF` 只在凸全局构造 `convex_entrance_block` 里出现（`covers.py:331 convex_entrance_block`（段内）），局部枚举不产出。
+-3. **首入（命题 7）**：二维旧静态 `first_entrance_for_vertex` 对凹块分离时选错边，只保留作参考；二维、三维自 2026-10-10 起均有按运动方向定义的第一版（`kernel2d/entrance.py:89 first_entrance`、`entrance3.py:228 first_entrance3`，有门、未经独立重审，M2）。E2 的二维凸路径进一步精确化选路、初态与 E 的半空间射线裁剪（`test_kernel2d_convex_ray_exact.py`）；E3 凹对用局部盖 + 精确相交裁决，候选仿射根、各自时刻段内和前事件漏候选自检均用 Fraction；已侵入按精确平方距离选局部最浅盖（不等于一般凹对全局最小分离）。并列只取精确同时，接近项另报。bb52 的 53 条 legacy 窗口盖验证保留，精确初态为侵入的格子改核局部出口。门 `test_kernel2d_entrance_e3.py` 与原 bb52 门。
++2. **命题 4 的"一般位置"前提，代码的处理方式是"不另起退化类型"**：平行贴面、棱平行于面、平行棱-棱都用**非严格**的普通盖来表达，凸成员谓词改用 E 的全部支撑半空间（不再依赖一般位置）。成员、距离、票二、票三在退化输入上都有门。**把一个退化族收成一个盖只做了一半**：三维首入的 `entrance3.merge_degenerate`（M2 第一版）把同一法向、同一平面上的并列盖收成 `("FF", …)` / `("FE", …)` **标签元组**并保留展开成员；但 `Cover3.kind` 注释里的 `FF` / `FE` / `EEP` 与 `contact_record.CoverType` 里的 `FF` / `FE` / `EE_PAR` 仍没有任何构造点（`enumerate_covers3` 不产出、`CoverType.FF/FE/EE_PAR` 全仓零引用），`EEP` 连标签也没有；二维 `FF` 只在凸全局构造 `convex_entrance_block` 里出现（`covers.py:341 convex_entrance_block`（段内）），局部枚举不产出。
++3. **首入（命题 7）**：二维旧静态 `first_entrance_for_vertex` 对凹块分离时选错边，只保留作参考；二维、三维自 2026-10-10 起均有按运动方向定义的第一版（`kernel2d/entrance.py:99 first_entrance`、`entrance3.py:228 first_entrance3`，有门、未经独立重审，M2）。E2 的二维凸路径进一步精确化选路、初态与 E 的半空间射线裁剪（`test_kernel2d_convex_ray_exact.py`）；E3 凹对用局部盖 + 精确相交裁决，候选仿射根、各自时刻段内和前事件漏候选自检均用 Fraction；已侵入按精确平方距离选局部最浅盖（不等于一般凹对全局最小分离）。并列只取精确同时，接近项另报。bb52 的 53 条 legacy 窗口盖验证保留，精确初态为侵入的格子改核局部出口。门 `test_kernel2d_entrance_e3.py` 与原 bb52 门。
+ 4. **穿透深度（命题 3(ii)）、碰撞锥（命题 8）没有实现。**
+ 5. **`margin.py` 的"定理一到四"是本仓库自己编的号**，正本里没有这四个编号。但内容上一、二、四在正本都有出处（03 §1.1、01 命题 3(i)、03 §1.3 与 01 命题 6）；定理三的后半句（KKT 乘子 = 虚拟接触力）是 03 §1.2 的主张，代码没实现。真正属于本仓库的只有 Lipschitz 常数 2/δ 这个定量推论，而代码里给的一句理由不够，推导补在第三节。这一条与审查盲区 4（GAP3）"在 03 里没有对应""自创的定理"的说法相反，第三节开头是对审查的订正。
+ 6. **"局部盖不构成凹块的全局判据"这条实测结论，和正本对石根华机器"一般凹 + 可证完备"的定位有张力**：局部盖对凹块只做到"∂E 被盖住"（有门），做不到"盖就是 ∂E"——本表复核时构造了一个严格有效、间隙为 0 的盖恰好落在 int E 里的例子。缺的是 00 §3.3 提到、正本自己标着"未核实"的那一步：**盖之间的裁剪**。01 开头说"凹块情形单独说明"，全文其实没有这段说明。
+@@ -55,21 +55,21 @@
+ 
+ | 命题 | 一句话 | 前提 | 实现 | 看护的测试 | 状态 |
+ |---|---|---|---|---|---|
+-| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:331 convex_entrance_block` 接精确 `kernel2d/exact.py::entrance_block_exact`（Fraction 极角归并，精确平行同向才并 FF，顶点最后转为浮点输出）；三维凸：`g03.py:119 g0_convex3`（段内）先有理化再构造差点，以精确锥交核对极点集；`margin.py:493 entrance_block_convex` 先有理化输入再作 b−a，保存精确差点后构造凸包（E5b）；门 `test_margin_exact.py::test_entrance_block_forms_differences_before_any_float_rounding` | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**；E2 新路径待 G6。凹：**未实现**（没有全局 E，M3） |
+-| **1·注3** 三分判据 | a₀ 在 E 外=分离，在内部=重叠，在边界=恰好接触 | 同上 | `covers.py:407 membership_convex`（E2：tol=0 的分类与平移加法精确，非精确凸输入走 `polygons_overlap_exact`）、`covers3.py:826 membership_convex3`，都返回 −1/1/0 | 二维 `test_kernel2d_exact.py::test_exact_membership_equals_exact_separating_axis_oracle`、`::test_exact_membership_boundary_is_not_the_interior`、`::test_membership_nonexact_convex_input_uses_the_simple_polygon_path`；显式报告带 `test_kernel2d_report_band.py`。三维 `test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x`、`::test_membership_box_vs_box_matches_closed_form`、`::test_membership_tetra_vs_offcenter_box_matches_closed_form` | 凸：**已实现+有门**。二维 G0 不再跳边界带；二维 tol>0 仅为无舍入地板的报告带，凸带为完整欧氏边界距离、非凸带为有精确四轴见证的保守子集。非凸一般相交回退已有门，但**盖裁剪/全局 E 成员判据仍未实现**（M3）。E5a 三维 G0 同样零跳样，边界探针包含全部 E 顶点/棱中点/面重心；E5a2 三维显式正 tol 改为到完整 E 边界的欧氏距离带，外角/外棱不能仅用支撑平面距离判带内（`test_e5a2_covers.py::test_membership_report_band_is_euclidean`） |
+-| **2(i)** 位置无关 | E 只依赖形状与朝向，可以预计算 | 只平移、不转动 | 结构上成立：法锥判据只读方向；`facet_gap`/`facet_gap3` 对平移是仿射的；`g0_convex3` 只算一次 `local_facets3` 给全部样本用（`g03.py:54 _hull_facets`（段内）） | `test_kernel3d_covers.py::test_proposition_2i_position_independence`（+ `::test_position_independence_gate_has_teeth_*` 两条牙）、`test_invariance_geom.py::test_cover_labels_and_strictness_are_invariant` | **已实现+有门**（附录 A.3 的一次性复核已升格为门） |
++| **1** 定义 | E(A,B) = a₀ + B⊕(−A)，正好是"平移后与 B 相交"的全部平移 | 任意紧集；a₀ 任取 | 二维凸：`covers.py:341 convex_entrance_block` 接精确 `kernel2d/exact.py::entrance_block_exact`（Fraction 极角归并，精确平行同向才并 FF，顶点最后转为浮点输出）；三维凸：`g03.py:120 g0_convex3`（段内）先有理化再构造差点，以精确锥交核对极点集；`margin.py:509 entrance_block_convex` 先有理化输入再作 b−a，保存精确差点后构造凸包（E5b）；门 `test_margin_exact.py::test_entrance_block_forms_differences_before_any_float_rounding` | `test_kernel2d_g0.py::test_g0_random_convex_pairs`、`::test_entrance_block_area_is_minkowski_area`、`test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does`、`test_kernel2d_review.py::test_r7_third_vote_hull_vertices_match_and_catch_sign_flip`、`test_kernel3d_covers.py::test_g0_convex3_random_pairs`、`::test_g0_gate_has_teeth_flipped_normals_are_caught` | 凸：**已实现+有门**；E2 新路径待 G6。凹：**未实现**（没有全局 E，M3） |
++| **1·注3** 三分判据 | a₀ 在 E 外=分离，在内部=重叠，在边界=恰好接触 | 同上 | `covers.py:418 membership_convex`（E2：tol=0 的分类与平移加法精确，非精确凸输入走 `polygons_overlap_exact`）、`covers3.py:825 membership_convex3`，都返回 −1/1/0 | 二维 `test_kernel2d_exact.py::test_exact_membership_equals_exact_separating_axis_oracle`、`::test_exact_membership_boundary_is_not_the_interior`、`::test_membership_nonexact_convex_input_uses_the_simple_polygon_path`；显式报告带 `test_kernel2d_report_band.py`。三维 `test_covers3_membership.py::test_membership_tetra_vs_box_sweep_along_x`、`::test_membership_box_vs_box_matches_closed_form`、`::test_membership_tetra_vs_offcenter_box_matches_closed_form` | 凸：**已实现+有门**。二维 G0 不再跳边界带；二维 tol>0 仅为无舍入地板的报告带，凸带为完整欧氏边界距离、非凸带为有精确四轴见证的保守子集。非凸一般相交回退已有门，但**盖裁剪/全局 E 成员判据仍未实现**（M3）。E5a 三维 G0 同样零跳样，边界探针包含全部 E 顶点/棱中点/面重心；E5a2 三维显式正 tol 改为到完整 E 边界的欧氏距离带，外角/外棱不能仅用支撑平面距离判带内（`test_e5a2_covers.py::test_membership_report_band_is_euclidean`） |
++| **2(i)** 位置无关 | E 只依赖形状与朝向，可以预计算 | 只平移、不转动 | 结构上成立：法锥判据只读方向；`facet_gap`/`facet_gap3` 对平移是仿射的；`g0_convex3` 只算一次 `local_facets3` 给全部样本用（`g03.py:55 _hull_facets`（段内）） | `test_kernel3d_covers.py::test_proposition_2i_position_independence`（+ `::test_position_independence_gate_has_teeth_*` 两条牙）、`test_invariance_geom.py::test_cover_labels_and_strictness_are_invariant` | **已实现+有门**（附录 A.3 的一次性复核已升格为门） |
+ | **2(ii)** 凸性传递 | A、B 凸 ⟹ E 凸 | A、B 凸 | 作为前提被使用：二维凸成员由精确 facet 半空间符号判定，不再对浮点 gap 取符号；三维仍是支撑半空间路径 | 间接：票一（成员谓词 vs 独立相交 oracle 逐样本一致） | **已实现，间接有门** |
+ | **2(iii)** 紧性 | 紧+紧 ⟹ E 紧 | 块体有界 | 不需要实现（输入都是有界多面体） | — | 不适用 |
+-| **3(i)** 距离恒等式 | a₀ 到 E 的距离 = 两块的距离 | 无条件 | 凸：`margin.py:518 distance_to_convex_entrance`（显式 E）对 `margin.py:371 body_distance`（盖路径）；这正是 `margin.py` 的"定理二" | `test_margin.py::test_config_space_distance_equals_body_distance`（3 个种子，每种子分离样本 > 40）、牙 `::test_theorem_two_gate_has_teeth_shrinking_the_nearest_point_is_caught` | 凸：**已实现+有门**。凹：没有显式 E，恒等式本身量不了；能量的是"盖给的距离 = 暴力距离"（距离完备性，见第六节） |
++| **3(i)** 距离恒等式 | a₀ 到 E 的距离 = 两块的距离 | 无条件 | 凸：`margin.py:534 distance_to_convex_entrance`（显式 E）对 `margin.py:382 body_distance`（盖路径）；这正是 `margin.py` 的"定理二" | `test_margin.py::test_config_space_distance_equals_body_distance`（3 个种子，每种子分离样本 > 40）、牙 `::test_theorem_two_gate_has_teeth_shrinking_the_nearest_point_is_caught` | 凸：**已实现+有门**。凹：没有显式 E，恒等式本身量不了；能量的是"盖给的距离 = 暴力距离"（距离完备性，见第六节） |
+ | **3(ii)** 穿透深度 | 重叠时，最小分离平移 = a₀ 到 ∂E 的距离 | a₀ ∈ int E | 无。裕度层贯入时只回答"已违约"、不给深度（`margin.py` 模块文档「口径与边界」第二条）；二维出口完备性量的是**沿给定方向**的出口，不是最短出口 | — | **未实现** |
+-| **4** ∂E 的面结构 | 一般位置下，facet 只来自 顶点×面、面×顶点、交叉棱×棱；棱来自 顶点×棱；顶点来自 顶点×顶点 | **一般位置**（无平行面、无棱平行于面）；必须用法锥**相对内部** | 三维：`covers3.py:453 vf_cover`、`:469 fv_cover`、`:513 ee_cover`、`:558 ve3_cover`、`:577 ev3_cover`、`:588 vv3_cover`、`:643 enumerate_covers3`、`:689 local_facets3`；二维：`covers.py:436 local_facets`（E2 精确法锥）与精确 Minkowski 边归并 | 二维 `test_kernel2d_g0.py::test_g0_random_convex_pairs`（一般位置下局部严格 facet 集 = 全局 facet 集 = \|A\|+\|B\|）；退化输入由 `test_kernel2d_exact.py::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions` 核对严格/边界支撑集。三维 `test_covers3_g0_vote2.py`、`test_kernel3d_covers.py::test_facet_count_matches_minkowski_theory_for_boxes`、`::test_crossing_edge_edge_cover`、`::test_wedge_on_wedge_gives_strict_crossing_edge_cover`；票三 `test_covers3_membership.py::test_g0_vote3_counts_only_extreme_points_on_degenerate_input` | 一般位置：**已实现+有门**。退化：**部分**，见第四节 (a)。二维表述**与正本不一致但无害**：正本说二维"顶-顶拆成两个 v-e 判定"，代码另有一个 `VV` 盖（E 的顶点），距离完备性的角对角情形靠它（`test_distance_completeness_has_teeth` 丢 VV 必红） |
++| **4** ∂E 的面结构 | 一般位置下，facet 只来自 顶点×面、面×顶点、交叉棱×棱；棱来自 顶点×棱；顶点来自 顶点×顶点 | **一般位置**（无平行面、无棱平行于面）；必须用法锥**相对内部** | 三维：`covers3.py:451 vf_cover`、`:467 fv_cover`、`:511 ee_cover`、`:556 ve3_cover`、`:575 ev3_cover`、`:587 vv3_cover`、`:642 enumerate_covers3`、`:688 local_facets3`；二维：`covers.py:447 local_facets`（E2 精确法锥）与精确 Minkowski 边归并 | 二维 `test_kernel2d_g0.py::test_g0_random_convex_pairs`（一般位置下局部严格 facet 集 = 全局 facet 集 = \|A\|+\|B\|）；退化输入由 `test_kernel2d_exact.py::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions` 核对严格/边界支撑集。三维 `test_covers3_g0_vote2.py`、`test_kernel3d_covers.py::test_facet_count_matches_minkowski_theory_for_boxes`、`::test_crossing_edge_edge_cover`、`::test_wedge_on_wedge_gives_strict_crossing_edge_cover`；票三 `test_covers3_membership.py::test_g0_vote3_counts_only_extreme_points_on_degenerate_input` | 一般位置：**已实现+有门**。退化：**部分**，见第四节 (a)。二维表述**与正本不一致但无害**：正本说二维"顶-顶拆成两个 v-e 判定"，代码另有一个 `VV` 盖（E 的顶点），距离完备性的角对角情形靠它（`test_distance_completeness_has_teeth` 丢 VV 必红） |
+ | **4·退化** | 平行贴面、棱平行于面各给一个 facet，平行棱-棱给一条棱，要"另行处理" | 一般位置之外 | 见第四节 (a) | 见第四节 (a) | **部分**：正确性有门；退化族未合并成一个盖（M2） |
+-| **5** 有效入口 = 法锥条件 | 严格分离 ⟺ 法锥相对内部相交 ⟺ 该盖是 ∂E 的极大 facet；非严格 ⟺ 闭法锥相交 ⟺ 盖在 ∂E 上但可能是退化盖的一部分 | A、B 凸 | 二维凸：`kernel2d/exact.py::vertex_side_exact`；E3 局部单盖默认也用精确符号，`covers.py:114 normal_cone`、`:128 in_cone` 只接受调用方明示的域窗口，不抬噪声地板。三维 `covers3.py:254 vertex_cone_contains`、`:263 edge_arc_contains`、`:392 cone_relint_direction`（Gordan 判据）、`:413 cones_intersect_relint` | 二维 `test_kernel2d_exact.py::test_flat_vertex_cone_is_one_ray_not_a_line`、`::test_corner_cone_boundary_is_not_strict` 及票二；legacy 窗口 `test_kernel2d_review.py::test_r1_narrow_crevice_is_reflex_even_with_legacy_tolerance`、`test_bb52_g1.py::test_gate_has_teeth_strict_cone_loses_legacy_contacts`。三维 `test_kernel3d_covers.py::test_vertex_cone_of_box_corner`、`::test_edge_arc_of_box_edge`、`::test_tilted_vertex_face_cover_is_strict`、`test_covers3_strict_lowdim.py::test_stacked_boxes_corner_over_edge_is_not_strict`、`::test_generic_vertex_over_edge_is_strict` | 凸：**已实现+有门**。凹：局部单盖精确，显式域窗口只放宽（`test_kernel2d_covers_e3.py`）；正本只对凸陈述，"非严格 ⟺ 在 ∂E 上"对凹块**不成立**（第四节 (d)） |
+-| **6(i)** 外侧光滑 | E 外距离函数可微，梯度 = (x − P_E(x))/d，局部 C^{1,1} | E 闭凸 | `margin.py:524 inflated_normal`（凸，显式 E）；冻结路径对平移 x 的导数（`frozen.py:159 frozen_normal`、`:187 frozen_gap`） | `test_margin.py::test_inflated_normal_is_lipschitz`、牙 `::test_lipschitz_gate_has_teeth`（随机/常向量/径向/局部反号四种错误实现全抓）、`::test_lipschitz_gate_global_pairs_have_their_own_teeth`、`test_frozen_lowdim.py::test_low_dim_frozen_gradient_is_the_inflated_normal_of_the_explicit_entrance_block` | 凸：**已实现+有门** |
++| **5** 有效入口 = 法锥条件 | 严格分离 ⟺ 法锥相对内部相交 ⟺ 该盖是 ∂E 的极大 facet；非严格 ⟺ 闭法锥相交 ⟺ 盖在 ∂E 上但可能是退化盖的一部分 | A、B 凸 | 二维凸：`kernel2d/exact.py::vertex_side_exact`；E3 局部单盖默认也用精确符号，`covers.py:114 normal_cone`、`:128 in_cone` 只接受调用方明示的域窗口，不抬噪声地板。三维 `covers3.py:252 vertex_cone_contains`、`:261 edge_arc_contains`、`:390 cone_relint_direction`（Gordan 判据）、`:411 cones_intersect_relint` | 二维 `test_kernel2d_exact.py::test_flat_vertex_cone_is_one_ray_not_a_line`、`::test_corner_cone_boundary_is_not_strict` 及票二；legacy 窗口 `test_kernel2d_review.py::test_r1_narrow_crevice_is_reflex_even_with_legacy_tolerance`、`test_bb52_g1.py::test_gate_has_teeth_strict_cone_loses_legacy_contacts`。三维 `test_kernel3d_covers.py::test_vertex_cone_of_box_corner`、`::test_edge_arc_of_box_edge`、`::test_tilted_vertex_face_cover_is_strict`、`test_covers3_strict_lowdim.py::test_stacked_boxes_corner_over_edge_is_not_strict`、`::test_generic_vertex_over_edge_is_strict` | 凸：**已实现+有门**。凹：局部单盖精确，显式域窗口只放宽（`test_kernel2d_covers_e3.py`）；正本只对凸陈述，"非严格 ⟺ 在 ∂E 上"对凹块**不成立**（第四节 (d)） |
++| **6(i)** 外侧光滑 | E 外距离函数可微，梯度 = (x − P_E(x))/d，局部 C^{1,1} | E 闭凸 | `margin.py:540 inflated_normal`（凸，显式 E）；冻结路径对平移 x 的导数（`frozen.py:162 frozen_normal`、`:190 frozen_gap`） | `test_margin.py::test_inflated_normal_is_lipschitz`、牙 `::test_lipschitz_gate_has_teeth`（随机/常向量/径向/局部反号四种错误实现全抓）、`::test_lipschitz_gate_global_pairs_have_their_own_teeth`、`test_frozen_lowdim.py::test_low_dim_frozen_gradient_is_the_inflated_normal_of_the_explicit_entrance_block` | 凸：**已实现+有门** |
+ | **6(ii)** 内侧分片线性 | 侵入深度是有限个仿射函数的 min，在脊集上梯度跳 | a₀ ∈ int E，E 凸 | 无（依赖 3(ii)）。**类比**：L5 逃逸高度 h(δ) 也是"有限个盖的零间隙高度里取一个"的分片线性函数，拐点在并列切换处；`tools/tia_sensitivity.py:93 sensitivity_at` 在那里标 `differentiable=False`。方向固定为竖直，不是侵入深度，只是同类结构 | 类比部分：`test_interlock_sensitivity.py::test_phase_derivative_at_phase_zero_is_flagged_on_every_default_row`、`::test_differentiability_flag_agrees_with_one_sided_quotients` | **未实现**（正本意义下）；同类拐点在 L5 已被检测 |
+-| **6(iii)** 边界集值 | ∂E 上法向在 facet 内唯一，在棱、顶点处集值 | E 凸 | 盖带维数标签（`VV`/`VV3` 零维、`VE3`/`EV3` 一维）；重合时法向给 `None`（`covers.py:217 vv_cover` vv_cover、`covers3.py:588 vv3_cover`（段内）） | `test_margin.py::test_inflation_turns_a_set_valued_normal_into_a_single_valued_one`（同一 E 顶点、两个法向；膨胀后单值且 \|n₁−n₂\| = \|x₁−x₂\|/δ 精确） | 凸：**已实现+有门** |
+-| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `entrance.py:89 first_entrance`：E2 凸选路、初态与射线裁剪精确，浮点 gap 只作输出；E3 凹首入和已侵入后的 `shortest_exit` 采用精确有理数选择；后者只是局部最浅盖。旧静态 `covers.py:303 first_entrance_for_vertex` 仅作参考。三维 `entrance3.py:228 first_entrance3` + `shortest_exit3` + `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版） | 二维 `test_kernel2d_convex_ray_exact.py::test_convex_ray_time_matches_independent_fraction_sat`、`::test_convex_ray_decisions_do_not_use_constructed_facet_gaps`、`::test_corner_start_reports_both_exact_active_facets`；既有 `test_kernel2d_entrance.py` 含凹台阶、刚体运动、bb52 53 条 legacy v-e 对账。三维 `test_entrance3.py`、`test_entrance3_concave.py`、`test_entrance3_g2.py` | **二维、三维均有门·未经新一轮 G6**。二维 E3 精确门为 `test_kernel2d_entrance_e3.py`，brute 共用相交谓词仅作佐证，主 oracle 是闭式与测试内联 Fraction SAT；已知"凹 B + 分离选远边"指旧静态函数，不指新版运动首入（第四节 (b)） |
+-| **8** 碰撞锥 / 速度障碍 | CC = 从 a₀ 看 E 的正锥；VO 是它平移到 v_B；推论：盖分解经中心投影给碰撞锥一个"首撞模态"分划 | 匀速相对运动 | 无。沿射线找首个 ∂E 点的计算只以两种特例存在：二维 `g0.py:212 brute_ray_exit`（oracle，不带盖标签）；三维 `interlock.py:205 escape_candidates` / `:263 escape_height_covers`（方向固定 +z，带盖标签） | — | **未实现** |
++| **6(iii)** 边界集值 | ∂E 上法向在 facet 内唯一，在棱、顶点处集值 | E 凸 | 盖带维数标签（`VV`/`VV3` 零维、`VE3`/`EV3` 一维）；重合时法向给 `None`（`covers.py:217 vv_cover` vv_cover、`covers3.py:587 vv3_cover`（段内）） | `test_margin.py::test_inflation_turns_a_set_valued_normal_into_a_single_valued_one`（同一 E 顶点、两个法向；膨胀后单值且 \|n₁−n₂\| = \|x₁−x₂\|/δ 精确） | 凸：**已实现+有门** |
++| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `entrance.py:99 first_entrance`：E2 凸选路、初态与射线裁剪精确，浮点 gap 只作输出；E3 凹首入和已侵入后的 `shortest_exit` 采用精确有理数选择；后者只是局部最浅盖。旧静态 `covers.py:313 first_entrance_for_vertex` 仅作参考。三维 `entrance3.py:228 first_entrance3` + `shortest_exit3` + `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版） | 二维 `test_kernel2d_convex_ray_exact.py::test_convex_ray_time_matches_independent_fraction_sat`、`::test_convex_ray_decisions_do_not_use_constructed_facet_gaps`、`::test_corner_start_reports_both_exact_active_facets`；既有 `test_kernel2d_entrance.py` 含凹台阶、刚体运动、bb52 53 条 legacy v-e 对账。三维 `test_entrance3.py`、`test_entrance3_concave.py`、`test_entrance3_g2.py` | **二维、三维均有门·未经新一轮 G6**。二维 E3 精确门为 `test_kernel2d_entrance_e3.py`，brute 共用相交谓词仅作佐证，主 oracle 是闭式与测试内联 Fraction SAT；已知"凹 B + 分离选远边"指旧静态函数，不指新版运动首入（第四节 (b)） |
++| **8** 碰撞锥 / 速度障碍 | CC = 从 a₀ 看 E 的正锥；VO 是它平移到 v_B；推论：盖分解经中心投影给碰撞锥一个"首撞模态"分划 | 匀速相对运动 | 无。沿射线找首个 ∂E 点的计算只以两种特例存在：二维 `g0.py:245 brute_ray_exit`（oracle，不带盖标签）；三维 `interlock.py:202 escape_candidates` / `:260 escape_height_covers`（方向固定 +z，带盖标签） | — | **未实现** |
+ 
+ ---
+ 
+@@ -77,15 +77,15 @@
+ 
+ | 03 的内容 | 一句话 | 实现 | 看护的测试 | 状态 |
+ |---|---|---|---|---|
+-| **§1.1 膨胀恒等式** | E(A⊕B_δ, B) = E(A,B) ⊕ B_δ：给车加安全距离 = 给入口块做 δ 外平行体 | = `margin.py` 定理一（`margin.py` 模块文档「定理一」）。代码**直接拿它当定义**：`inflated_membership`（`margin.py:453 boundary_band`（段内））比较 `body_distance` 与 δ，从没造过 A⊕B_δ 或 E⊕B_δ 来对照 | `test_margin.py::test_inflated_membership_tracks_the_margin` 查的是推论（违约 ⟺ 落进 E_δ），它和实现用的是同一个 `body_distance`，不独立 | **已实现无（独立）门**。独立检验要造 A⊕B_δ（不是多面体），没做 |
+-| **§1.1 末句 / §1.2 前半** 裕度耗尽 = 广义接触闭合 | margin_gap = d − δ ≤ 0 即闭合 | `margin.py:414 margin_contacts`；贯入时返回已闭合的哨兵（`margin.py:116 effective_geom_tol`（段内）） | `test_margin.py::test_margin_contacts_are_generalized_contacts`、`test_margin_penetration.py` 全部 3 个函数 | **已实现+有门** |
++| **§1.1 膨胀恒等式** | E(A⊕B_δ, B) = E(A,B) ⊕ B_δ：给车加安全距离 = 给入口块做 δ 外平行体 | = `margin.py` 定理一（`margin.py` 模块文档「定理一」）。代码**直接拿它当定义**：`inflated_membership`（`margin.py:468 boundary_band`（段内））比较 `body_distance` 与 δ，从没造过 A⊕B_δ 或 E⊕B_δ 来对照 | `test_margin.py::test_inflated_membership_tracks_the_margin` 查的是推论（违约 ⟺ 落进 E_δ），它和实现用的是同一个 `body_distance`，不独立 | **已实现无（独立）门**。独立检验要造 A⊕B_δ（不是多面体），没做 |
++| **§1.1 末句 / §1.2 前半** 裕度耗尽 = 广义接触闭合 | margin_gap = d − δ ≤ 0 即闭合 | `margin.py:426 margin_contacts`；贯入时返回已闭合的哨兵（`margin.py:117 effective_geom_tol`（段内）） | `test_margin.py::test_margin_contacts_are_generalized_contacts`、`test_margin_penetration.py` 全部 3 个函数 | **已实现+有门** |
+ | **§1.2 后半** KKT 乘子 = 虚拟接触力 | 把"不穿透"换成"不穿透裕度包络"，乘子就是虚拟接触力 | 无。`margin_contacts` 的结果没有接进任何互补/LP 求解；`limit.py` 只吃 `contacts_from_covers` 的物理接触 | — | **未实现**（审查盲区 6 同样指出） |
+ | **§1.2** DDA 开闭迭代 = 互补问题的活动集方法 | 一句可以认领的论断 | 没有形式化。相关的只有 G4 统计实验（`tools/g4_multistep.py`），03 砖一已据此关掉静态几何先验 | `test_g4_multistep.py`（钉数） | **未实现**（论断本身）；03 砖一的 09-18 回写段仍是 82/39/60 的旧口径，09-27 的订正（5/61）只在本仓库（正本只读，未回写） |
+ | **§1.3 C^{1,1} 正则化** | 球膨胀后边界 C^{1,1}、法向处处唯一，接触不确定性消失 | = `margin.py` 定理四；同 01 命题 6(i)(iii) 两行 | 同 01 命题 6(i)、6(iii) 两行 | 凸：**已实现+有门**。"Moreau–Yosida 式"的说法没有门，只是表述 |
+ | **K1** 配对约化 | 两形状的相互作用 → 一点相对 E 的位置 | 成员谓词、盖枚举 | 同命题 1 | 凸：已实现+有门；凹：只有盖枚举 |
+ | **K2** 边界语义化 | ∂E 分成有限个带模态标签的盖，每盖给点、法向、进入量 | `Cover`/`Cover3`（标签、`point_a`/`point_b`、`normal`、`gap`） | 同命题 4、5 | **已实现+有门**（凸完备；凹只到"∂E 被覆盖"） |
+ | **K3** 首入裁决 | 集值点上"谁先被进入"做确定性选择 | 同命题 7 | 同命题 7（二维、三维：并列集按枚举序裁决、如实报 `tied_labels`） | **二维、三维第一版有门·未经 G6** |
+-| **K4** 互补结构 | 约束激活 ⟺ 乘子非零 | L3 极限分析：下限 LP（静力容许）+ 对偶机构，`limit.py:403 limit_load`、`:677 check_duality`（E4：含黏聚耗散的静力、强对偶、互补均用有理数精确核；多体见 `limit_multi.py::check_duality_multi`，门 `test_limit_exact_selfcheck.py`、`test_limit_selfcheck.py`、`test_limit_multi.py`；浮点尺度仅作报告/输入可分辨性筛查，风险由 resolvability/statuses 另报、不改变原问题精确 status/alpha） | `test_limit.py`、`test_limit_duality.py`、`test_end_to_end_cb2.py`（`b26d7f5`，`8376ec2` 返修；均未经独立复核）、`test_lp_fail_loud.py`（"要么答对、要么抛 RuntimeError、绝不静默给错"；`8376ec2`；G6 第二轮 lp-limit 镜头与第三轮 claims-vs-code 镜头读过；HEAD 上 A.9 的 32 格全部答出、0 格抛错，见 A.9 的 2026-10-10 复跑） | **部分**：只有极限状态的互补，没有开闭迭代/活动集求解 |
++| **K4** 互补结构 | 约束激活 ⟺ 乘子非零 | L3 极限分析：下限 LP（静力容许）+ 对偶机构，`limit.py:408 limit_load`、`:686 check_duality`（E4：含黏聚耗散的静力、强对偶、互补均用有理数精确核；多体见 `limit_multi.py::check_duality_multi`，门 `test_limit_exact_selfcheck.py`、`test_limit_selfcheck.py`、`test_limit_multi.py`；浮点尺度仅作报告/输入可分辨性筛查，风险由 resolvability/statuses 另报、不改变原问题精确 status/alpha） | `test_limit.py`、`test_limit_duality.py`、`test_end_to_end_cb2.py`（`b26d7f5`，`8376ec2` 返修；均未经独立复核）、`test_lp_fail_loud.py`（"要么答对、要么抛 RuntimeError、绝不静默给错"；`8376ec2`；G6 第二轮 lp-limit 镜头与第三轮 claims-vs-code 镜头读过；HEAD 上 A.9 的 32 格全部答出、0 格抛错，见 A.9 的 2026-10-10 复跑） | **部分**：只有极限状态的互补，没有开闭迭代/活动集求解 |
+ | **K5** 有限覆盖 + 不等式代数 | 连续几何 → 有限可枚举组合代数 | 有限枚举：是（`enumerate_covers`/`enumerate_covers3` 是有限对的循环）。"角的代数"：无 | 同命题 4 | **部分** |
+ | **砖一** 几何引导活动集 | 盖胞腔结构作为活动集切换的先验 | G4 实验，03 已写入"静态版关闭" | `test_g4_multistep.py` | 已有否定性结果（不是实现） |
+ | **砖二** 首入控制 | 让首次接触落在指定盖上 | 依赖命题 7、8，均未实现 | — | **未实现** |
+@@ -121,7 +121,7 @@
+ **二维**
+ 
+ - **二维凸包（E3）**：`kernel2d/geom.py::convex_hull` 接 `exact.hull_exact`，默认与显式 tol 均不丢真极点，tol 只保留签名兼容，不隐式简化；需简化的调用方应另行处理，不能以简化包作真值。门 `test_kernel2d_covers_e3.py::test_convex_hull_keeps_true_extreme_point_not_transitive_tolerance_pop`，第五轮 geom.py:434 的原构型与修前红断言见工单报告。
+-- **平行边（FF）**：E2 全局凸构造只把**精确平行同向**的两条边合并为 `FF`（`covers.py:331 convex_entrance_block` 接 `kernel2d/exact.py::entrance_block_exact`）。旧“方向可行窗”及链法向已删除；`facet_gap`/首入输出法向取 facet 自己那条边，间隙不参与凸成员或凸首入命中/时刻分支。局部单盖枚举仍不产出 FF；E3 保留明示 legacy 域窗口，不再抬到舍入地板（附录 A.4）。票二不能仅从全局集合删 FF：一边有平直分段、另一边没有时，剩余非 FF 也可能是边界支持分段，须按独立精确支撑集分类（`g0.py:109 g0_convex`）。
++- **平行边（FF）**：E2 全局凸构造只把**精确平行同向**的两条边合并为 `FF`（`covers.py:341 convex_entrance_block` 接 `kernel2d/exact.py::entrance_block_exact`）。旧“方向可行窗”及链法向已删除；`facet_gap`/首入输出法向取 facet 自己那条边，间隙不参与凸成员或凸首入命中/时刻分支。局部单盖枚举仍不产出 FF；E3 保留明示 legacy 域窗口，不再抬到舍入地板（附录 A.4）。票二不能仅从全局集合删 FF：一边有平直分段、另一边没有时，剩余非 FF 也可能是边界支持分段，须按独立精确支撑集分类（`g0.py:140 g0_convex`）。
+   门：`test_kernel2d_exact.py::test_exact_parallel_edges_merge_into_ff_and_nothing_else_does`、`::test_g0_flat_chains_use_exact_support_sets_without_ambiguity_exemptions`、`test_kernel2d_report_band.py::test_tiny_report_tol_never_uses_rounded_facet_gap`、`test_kernel2d_convex_ray_exact.py::test_convex_ray_decisions_do_not_use_constructed_facet_gaps`。
+ - **平直顶点**（转角精确为 0）：凸输入允许，精确法锥是单射线且须核同向，不是整条直线；E 的共线分段不作为严格凸顶点（`test_kernel2d_exact.py::test_flat_vertex_cone_is_one_ray_not_a_line`、`::test_strict_vertices_discard_flat_chain_subdivision_vertices`）。E3 局部 VV 对给定坐标精确判锥交与严格活跃，精确平直点不产 VV；舍入成真小角时按真实数据判，门见 `test_kernel2d_covers_e3.py` 及改写后的 `test_r3_numerically_collinear_vertex_yields_no_vv`。
+ - **非精确凸输入**（含微凹）：全局凸构造不再按“凸包深度 ≤ tol”夹平，任何精确反射均拒收；平直顶点经刚体舍入变成微凹也如实拒收，成员与首入选路改走非凸回退。折回、绕圈与零长边同样清晰报错。门：`test_kernel2d_exact.py::test_rounded_flat_vertex_is_refused_by_the_convex_path`、`::test_convexity_rejection_names_the_first_foldback_and_winding_defect`、`::test_first_entrance_routes_rounded_reflex_input_away_from_the_convex_path`。旧名 `test_kernel2d_review.py::test_hull_defect_threshold_is_pinned_on_an_edge_away_from_the_start` 已改写为 2·tol、0.5·tol 两侧微凹都拒收，不再看护已删除的凸包深度函数。
+@@ -137,25 +137,25 @@
+ - **原语迁移边界**：`exact_point_in_polyhedron` / `exact_segment_crosses_face` / `exact_triangle_intersection` 已有独立门；E5a2 的旧一般 `polyhedra_overlap` / `point_in_polyhedron` / `segment_crosses_face` 已接精确三角表面路径，限有效朝外闭合嵌入表面；一般重叠的平面分区/共面内部有理见证由 `test_e5a2_surface.py` 看护，源码删除共面支路的突变命中目标断言。`_seg_seg_distance` 近平行分支改用精确耦合参数（`test_geom3_e5a.py`）；此前 E5a2 外层只做必要兼容；E5b 后继精确化、实际三角标签与证明范围见本文件开头更新。
+ 
+ - **成员谓词——这就是审查 C5 的来源**（审查报告正文叫 critical C2，`audit_20260921.json` 的 `confirmed[5]`，M0 修复记录记为 C5）。旧 `membership_convex3` 只对严格 facet 取最大间隙；平行面、棱平行于面生成的 facet 都是非严格的，被整个丢掉。后果两个：四面体对单位方块沿 +x 平移，t ≥ 1 全判"相交"（误判）；两个轴对齐方块的严格 facet 集为空，对空集取 max **崩溃**。
+-  E5a：`membership_convex3(tol=0)` 对 canonical convex view 的有理支撑平面取精确符号，绝不读取浮点 gap 作分支；`support_gaps3` 仅作构造输出。此前的构造说明：`support_gaps3`（`covers3.py:815 support_gaps3`）对 A、B 的**每个**面法向取支撑半空间（A 的面外法向 m 对应 E 的 facet 法向 −m，支撑顶点取 argmin_B m·b），再加交叉 EE 标签，取最大值（`covers3.py:815 support_gaps3`（段内））。**不要求一般位置**。
++  E5a：`membership_convex3(tol=0)` 对 canonical convex view 的有理支撑平面取精确符号，绝不读取浮点 gap 作分支；`support_gaps3` 仅作构造输出。此前的构造说明：`support_gaps3`（`covers3.py:814 support_gaps3`）对 A、B 的**每个**面法向取支撑半空间（A 的面外法向 m 对应 E 的 facet 法向 −m，支撑顶点取 argmin_B m·b），再加交叉 EE 标签，取最大值（`covers3.py:814 support_gaps3`（段内））。**不要求一般位置**。
+   门：`test_covers3_membership.py` 全部——四面体扫描含 t = 1.0 与 t = −2.0 两个恰相触的分界点（正确答案是 0，不是"分离"）、偏心非均匀方块、×1e-3/×1e3、`test_membership_axis_aligned_boxes_does_not_crash`、`test_g0_convex3_box_vs_box_runs_and_passes`。
+ - **平行贴面（FF）与棱平行于面（FE）**：不单独成盖，表现为一组非严格的 VF/FV/EE。本表复核：两个等大方块面贴面，窗口 1e-9 内是 **4 个 VF + 4 个 FV + 8 个 EE，全部非严格**（附录 A.2）；bdda3d cb2 那种小块压大块，面内只剩 4 个非严格 VF（`test_stacked_boxes_give_four_vf_covers_like_bdda3d_cb2`）。
+-  `Cover3.kind` 的注释（`covers3.py:228 Cover3`（段内））和 `contact_record.CoverType` 都列了 `FF` / `FE` / `EE_PAR`（或 `EEP`），但这几种**三维**类型在**枚举**里没有任何产出者（二维 `FF` 由凸全局构造产出，见上面二维第一条；三维 `FF` / `FE` 只以标签元组出现在首入的退化合并里，`Cover3` / `CoverType` 的这几个值零构造）：本表复核，四面体/方块、方块/方块、叠放方块三组各 40 次随机平移，枚举出的类型只有 VF、FV、EE、VE3、EV3、VV3（附录 A.2）。
+-- **票二、票三的退化记账**：票二按支撑集的仿射维数把 (1,2)、(2,1)、(2,2) 记作退化 facet（`g03.py:54 _hull_facets`（段内）、`:88 facet_vote3`（段内））；票三只数 conv{b−a} 的**极点**，不数三角网格里落在面内/棱上的点（`g03.py:119 g0_convex3`（段内，票三））。门：`test_vote2_accounts_for_degenerate_facets_tetra_box`、`_box_box`（6 个 facet 全退化，严格集为空，照样通过）、`test_g0_vote3_counts_only_extreme_points_on_degenerate_input`（四面体/方块 E 恰 13 个顶点）。
+-- **平行棱-棱（EEP）**：`ee_cover` 对平行棱返回 None（`covers3.py:513 ee_cover`（段内））；它们的最近对只由**边界态（非严格）的 VE3/EV3** 承载。门：`test_parallel_edge_edge_nearest_pair_ve3_is_boundary_state`、`..._ev3_is_boundary_state`。
+-- **低维盖的 strict**：审查前 `ve3_cover`/`ev3_cover` 把 strict 写死为 True（C10）；现在按两个锥判据如实算（`covers3.py:558 ve3_cover`（段内）、`:577 ev3_cover`（段内））。同时**枚举不按 strict 过滤任何盖**（`covers3.py:643 enumerate_covers3`（段内））：若过滤，平行棱-棱的最近对就丢了，裕度层距离完备性会红。门：`test_distance_completeness_does_not_depend_on_strict`、`test_generic_vertex_over_edge_is_strict`、`test_stacked_boxes_corner_over_edge_is_not_strict`。
+-  顺带一处命名不一致（不影响结果）：三维 `VV3` 的 `strict` 恒为 True（只有两锥相对内部相交时才产出），"是否活跃"放在 `in_extent`（`covers3.py:588 vv3_cover`（段内））；二维 `VV` 却把"是否活跃"放在 `strict` 字段（`covers.py:217 vv_cover`（段内）、`:217 vv_cover`（段内））。
+-- **三角化输入的平面棱**：`edge_arc_contains` 仅对精确平直棱返回 −1（不按噪声压平微二面角）（`covers3.py:263 edge_arc_contains` `edge_arc_contains`），所以三角化的共面面要先 `merge_coplanar`（`geom3.py:974 merge_coplanar`）。归并只并**共棱连通且精确共面**的面，非共面源面不能误并；带洞或 pinch 的区域抛 ValueError，不死循环。门：`test_geom3_merge.py` 全部。
++  `Cover3.kind` 的注释（`covers3.py:225 Cover3`（段内））和 `contact_record.CoverType` 都列了 `FF` / `FE` / `EE_PAR`（或 `EEP`），但这几种**三维**类型在**枚举**里没有任何产出者（二维 `FF` 由凸全局构造产出，见上面二维第一条；三维 `FF` / `FE` 只以标签元组出现在首入的退化合并里，`Cover3` / `CoverType` 的这几个值零构造）：本表复核，四面体/方块、方块/方块、叠放方块三组各 40 次随机平移，枚举出的类型只有 VF、FV、EE、VE3、EV3、VV3（附录 A.2）。
++- **票二、票三的退化记账**：票二按支撑集的仿射维数把 (1,2)、(2,1)、(2,2) 记作退化 facet（`g03.py:55 _hull_facets`（段内）、`:89 facet_vote3`（段内））；票三只数 conv{b−a} 的**极点**，不数三角网格里落在面内/棱上的点（`g03.py:120 g0_convex3`（段内，票三））。门：`test_vote2_accounts_for_degenerate_facets_tetra_box`、`_box_box`（6 个 facet 全退化，严格集为空，照样通过）、`test_g0_vote3_counts_only_extreme_points_on_degenerate_input`（四面体/方块 E 恰 13 个顶点）。
++- **平行棱-棱（EEP）**：`ee_cover` 对平行棱返回 None（`covers3.py:511 ee_cover`（段内））；它们的最近对只由**边界态（非严格）的 VE3/EV3** 承载。门：`test_parallel_edge_edge_nearest_pair_ve3_is_boundary_state`、`..._ev3_is_boundary_state`。
++- **低维盖的 strict**：审查前 `ve3_cover`/`ev3_cover` 把 strict 写死为 True（C10）；现在按两个锥判据如实算（`covers3.py:556 ve3_cover`（段内）、`:575 ev3_cover`（段内））。同时**枚举不按 strict 过滤任何盖**（`covers3.py:642 enumerate_covers3`（段内））：若过滤，平行棱-棱的最近对就丢了，裕度层距离完备性会红。门：`test_distance_completeness_does_not_depend_on_strict`、`test_generic_vertex_over_edge_is_strict`、`test_stacked_boxes_corner_over_edge_is_not_strict`。
++  顺带一处命名不一致（不影响结果）：三维 `VV3` 的 `strict` 恒为 True（只有两锥相对内部相交时才产出），"是否活跃"放在 `in_extent`（`covers3.py:587 vv3_cover`（段内））；二维 `VV` 却把"是否活跃"放在 `strict` 字段（`covers.py:217 vv_cover`（段内）、`:217 vv_cover`（段内））。
++- **三角化输入的平面棱**：`edge_arc_contains` 仅对精确平直棱返回 −1（不按噪声压平微二面角）（`covers3.py:261 edge_arc_contains` `edge_arc_contains`），所以三角化的共面面要先 `merge_coplanar`（`geom3.py:1018 merge_coplanar`）。归并只并**共棱连通且精确共面**的面，非共面源面不能误并；带洞或 pinch 的区域抛 ValueError，不死循环。门：`test_geom3_merge.py` 全部。
+ 
+ **还没做的**：把一个退化族（例如一整块面贴面）收成**一个**带面片几何的盖，同时保留"展开成 4 个 VF"的视图给 DDA——这是 M2。与此相关，G2 对 bdda3d 只对账 np ↔ VF/FV（窗口 1e-6）；ee 入口或窗内的非 VF/FV 盖会让门**红**，而不是被对账（`test_g2_gate_red_on_fabricated_ee_legacy_entrance`、`test_g2_gate_red_on_extra_kernel_ee_cover`）；带内的牙从 `6f157ac` 起穿过枚举器（`test_g2_band_catches_a_real_kernel_defect_through_enumeration`，在内核里注入"顶点法锥恒返回边界"的缺陷，要求门红）。注意这颗牙的来历：g4 组合并（`b1bbd27`）时 C17 第二轮复核的结论是 NO_TEETH，`6f157ac` 才补上；而 `6f157ac` 是合并后直接进 main 的，**没有经过独立验证者复核**，要等 G6。
+ 
+ ### (b) 首入（命题 7）
+ 
+-- **二维现行运动首入**：`entrance.py:89 first_entrance`。E2 凸路径在 Fraction 上裁剪半空间射线：微小非零斜率不夹平，错过 E 或超过 t_max 不由 tol 放行；初始恰相触时 t=0，角点全部精确活动 facet 报入并列集。门 `test_kernel2d_convex_ray_exact.py`。E3 的 tied_labels 仅含精确同时/同距，near_labels 另作可分辨性报告，不反馈选择；输出法向/间隙/接触点仍为浮点构造。凹首入、最浅局部出口与 brute 已精确化（`test_kernel2d_entrance_e3.py`）；brute 有扫描分辨率限制且与生产共用精确相交，不能冒充独立 oracle。
+-- **二维旧静态实现**：`covers.py:303 first_entrance_for_vertex`。对 A 的一个顶点，在 B 的“投影落在边内的有效 VE 盖”里取间隙最大的一个；没有就退到活跃 VV。它不接收运动方向，库内没有调用者，只有测试用它。以下错误说明针对这个参考函数。
++- **二维现行运动首入**：`entrance.py:99 first_entrance`。E2 凸路径在 Fraction 上裁剪半空间射线：微小非零斜率不夹平，错过 E 或超过 t_max 不由 tol 放行；初始恰相触时 t=0，角点全部精确活动 facet 报入并列集。门 `test_kernel2d_convex_ray_exact.py`。E3 的 tied_labels 仅含精确同时/同距，near_labels 另作可分辨性报告，不反馈选择；输出法向/间隙/接触点仍为浮点构造。凹首入、最浅局部出口与 brute 已精确化（`test_kernel2d_entrance_e3.py`）；brute 有扫描分辨率限制且与生产共用精确相交，不能冒充独立 oracle。
++- **二维旧静态实现**：`covers.py:313 first_entrance_for_vertex`。对 A 的一个顶点，在 B 的“投影落在边内的有效 VE 盖”里取间隙最大的一个；没有就退到活跃 VV。它不接收运动方向，库内没有调用者，只有测试用它。以下错误说明针对这个参考函数。
+ - **什么情况下对**：B 凸时，单个顶点已侵入，"最大间隙"就是这个顶点到 B 边界的最短出口——与正本"已侵入取最短出口"在**单个顶点**的意义下一致（不是整个块对的穿透深度）。门只有一条：`test_first_entrance_picks_shallowest_penetration`（凸 B、已侵入、一个例子）。
+-- **凹块分离情形：错**。docstring 自己写着（审查 r8，`covers.py:303 first_entrance_for_vertex` 的 docstring）。本表复核复现（附录 A.1）：细臂 L 块凹槽里放一个三角形顶点 (0.5, 0.3)，两块分离；边内有效 VE 盖有两个——到水平内边间隙 0.2、到竖直内边间隙 0.4。函数选了 **0.4 那条远边**，而最近的正间隙是 0.2。没有门看着这个错误（它是已知错误，不是回归）。
+-- **三维：2026-10-10 起有第一版**（`src/eab/kernel3d/entrance3.py`，M2：沿运动方向的首入、最短出口、FF/FE 退化族合并；凹体上靠谓词裁决、局部规则到不了的位形抛错不静默）。此前零实现：三维里唯一"沿一个方向找第一个 ∂E 点"的计算是 L5 的逃逸高度（`interlock.py:205 escape_candidates`、`:263 escape_height_covers`），方向固定为 +z，而且是"离开"不是"进入"。
++- **凹块分离情形：错**。docstring 自己写着（审查 r8，`covers.py:313 first_entrance_for_vertex` 的 docstring）。本表复核复现（附录 A.1）：细臂 L 块凹槽里放一个三角形顶点 (0.5, 0.3)，两块分离；边内有效 VE 盖有两个——到水平内边间隙 0.2、到竖直内边间隙 0.4。函数选了 **0.4 那条远边**，而最近的正间隙是 0.2。没有门看着这个错误（它是已知错误，不是回归）。
++- **三维：2026-10-10 起有第一版**（`src/eab/kernel3d/entrance3.py`，M2：沿运动方向的首入、最短出口、FF/FE 退化族合并；凹体上靠谓词裁决、局部规则到不了的位形抛错不静默）。此前零实现：三维里唯一"沿一个方向找第一个 ∂E 点"的计算是 L5 的逃逸高度（`interlock.py:202 escape_candidates`、`:260 escape_height_covers`），方向固定为 +z，而且是"离开"不是"进入"。
+ - 三维首入 M2 第一版已落地（有门、未经 G6）；在独立重审之前 README 只记"有门·未经复核"，不打 ✔。
+ 
+ ### (c) `margin.py` 的"定理一到四"
+@@ -193,12 +193,12 @@
+ 
+ ## 六、"代码有、正本无"
+ 
+-1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是本仓库在凹块上**唯一有门的 ∂E 命题**，正本没有。证明草稿在 `g0.py:212 brute_ray_exit`（段内）（出口完备性 docstring）与 `g0.py:175 g0_distance_completeness`（段内）（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:165 g0_distance_completeness3`。门见第四节 (d)。
++1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是本仓库在凹块上**唯一有门的 ∂E 命题**，正本没有。证明草稿在 `g0.py:245 brute_ray_exit`（段内）（出口完备性 docstring）与 `g0.py:206 g0_distance_completeness`（段内）（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:166 g0_distance_completeness3`。门见第四节 (d)。
+ 2. **G0 三票的自证结构**（票一逐样本、票二局部 facet 集 vs 凸包 facet 集、票三 E 顶点 vs conv{b−a} 极点）：是检验方法，不是正本命题。
+ 3. **定理四的常数 2/δ**（第三节）。
+ 4. **贯入哨兵口径**：03 §1.1 说"三分判据、距离恒等式、首入准则全部原样继承"；代码在贯入时不继承距离（贯入时盖的见证距离是一个像深度的正数，不是 0），而是统一回答"已违约"（`margin.py` 模块文档「口径与边界」第二条，门 `test_margin_penetration.py`）。这是对正本的**必要限定**，不是矛盾。
+ 5. **冻结盖可微层**（`frozen.py`、`dual.py`）：00 §6.2 有"片 + 划"的说法，01/03 没有对应命题。低维盖（VE3/EV3/VV3）的冻结法向随平移 x 转动。门：`test_frozen_lowdim.py` 全部。
+-6. **L3 极限分析**（`limit.py:403 limit_load`、`:677 check_duality`）：下限 LP + 对偶机构 + 含黏聚耗散的强对偶。正本 K4 只到"互补结构"，没有极限分析。端到端门 `test_end_to_end_cb2.py`（`b26d7f5`）把 bdda3d 夹具 → 盖 → 接触 → 极限分析接起来，对纸笔闭式：滑动 μW、轴向倾覆 W、对角倾覆 √2·W，含 μ = 1 与 μ = √2 两个分界（对角推门自 `8376ec2` 起把 μ = √2 本身列为一格，此前只用 1.3/1.5 夹住）、几何 ×1e-3/×1e3 与荷载 ×1e-2…×1e4、三种接触点侧。LP 层另有 `test_lp_fail_loud.py`（`8376ec2` 新增）钉住"要么答对、要么抛 RuntimeError、绝不静默给错"的契约（lp_tol None/1e-9/1e-12/1e-14 × 荷载/几何尺度 × k = 5/16；显式传 1e-12/1e-14 时 32 格中 6 格抛 RuntimeError（含黏聚 ×1e4 与一个未放大的块），契约允许；默认容差与 1e-9 下 16 格全部答出——这一点是本表逐格枚举所见，门本身只强制审查那一格（×1e4、k = 16）在默认容差下必须答出，即 `test_default_tolerance_answers_the_audited_case`；枚举脚本见附录 A.9）。**订正（2026-10-10）**：HEAD 上 A.9 实跑 raises 0 / answered 32——M0.2 把 LP 改成"对给定数据精确"之后，紧容差下不再抛错；"32 格中 6 格抛 RuntimeError"是 094861c 口径（G6 第三轮 minor）。
++6. **L3 极限分析**（`limit.py:408 limit_load`、`:686 check_duality`）：下限 LP + 对偶机构 + 含黏聚耗散的强对偶。正本 K4 只到"互补结构"，没有极限分析。端到端门 `test_end_to_end_cb2.py`（`b26d7f5`）把 bdda3d 夹具 → 盖 → 接触 → 极限分析接起来，对纸笔闭式：滑动 μW、轴向倾覆 W、对角倾覆 √2·W，含 μ = 1 与 μ = √2 两个分界（对角推门自 `8376ec2` 起把 μ = √2 本身列为一格，此前只用 1.3/1.5 夹住）、几何 ×1e-3/×1e3 与荷载 ×1e-2…×1e4、三种接触点侧。LP 层另有 `test_lp_fail_loud.py`（`8376ec2` 新增）钉住"要么答对、要么抛 RuntimeError、绝不静默给错"的契约（lp_tol None/1e-9/1e-12/1e-14 × 荷载/几何尺度 × k = 5/16；显式传 1e-12/1e-14 时 32 格中 6 格抛 RuntimeError（含黏聚 ×1e4 与一个未放大的块），契约允许；默认容差与 1e-9 下 16 格全部答出——这一点是本表逐格枚举所见，门本身只强制审查那一格（×1e4、k = 16）在默认容差下必须答出，即 `test_default_tolerance_answers_the_audited_case`；枚举脚本见附录 A.9）。**订正（2026-10-10）**：HEAD 上 A.9 实跑 raises 0 / answered 32——M0.2 把 LP 改成"对给定数据精确"之后，紧容差下不再抛错；"32 格中 6 格抛 RuntimeError"是 094861c 口径（G6 第三轮 minor）。
+    **来历**：`b26d7f5`（端到端门）、`6f157ac`（C17 补牙）、`8376ec2`（端到端门返修与 `test_lp_fail_loud.py`）和 `094861c`（`limit.py` 模块文档的诚实条款跟改：门改指对偶面不变量测试，"是否转动"不再列为一般不变量）都是合并后直接进 main 的，**没有经过独立验证者复核**，要等 G6；本段引用的对偶面不变量测试、μ = √2 格与 `test_lp_fail_loud.py` 都来自 `8376ec2`。写它和复核它时的两个发现：
+    - **对偶机构不唯一，"滑动无转动"不是不变量**：八边形内接锥下，推力恰落在锥棱上时，切向速度可以在 ±π/k 内任取（μ = 0.4、0.95 时求解器返回的偏角是 −22.5°，承载力精确）；而且对偶最优面里还有**带转动**的机构——力矩反号变异下求解器在 μ = 0.4 返回 (1, 0, 0.4, 0.117157, 0, −0.292893)，拿测试里的独立核算 `_power` 在**未变异**的原问题上验：最差接触功率 −1.1e-16、驱动 1、上限 4.0 = α（W = 10），即它同样容许、同样最优（μ = 0.95 同理，上限 9.5 = α）。所以 `b26d7f5` 里 `test_failure_mode_is_read_off_the_dual_mechanism` 滑动格的"无转动"断言依赖单纯形挑哪个顶点，是脆的。`8376ec2` 删掉了它，换成 `test_failure_mode_is_read_off_invariants_of_the_dual_face`：用**不调用 `eab.limit.wrench`** 的独立刚体虚功率核算（测试内的 `_power`），断言返回机构是最优对偶；滑动时"平动 + 关联剪胀"T = (1,0,μ,0,0,0) 也是最优对偶；倾覆时断言 R = (0,0,1,0,1,0)（绕前缘转动）是最优对偶、T 的上限 > α，且返回机构必须带转动（|ω| > 1e-6）；μ = 1 断言两者并列。"任何纯平动上限 ≥ μW > α，所以'带转动'只在倾覆时是真不变量"是测试 docstring 的纸笔论证（a = 3π/2 那条锥棱给出 v_z ≥ μ·v_x），测试只核算了 T 这一个平动。
+    - **中心对称会藏缺陷**：cb2 四个接触点关于原点中心对称，"接触列力矩反号""接触列忘减参考点"两种缺陷在原点取中心时看不见——力矩反号在原点只是把列重排（本表复核：μ = 0.4、1.5 两例，变异前后 32 列排序后完全相同、顺序不同，即同一个 LP）。加了参考点不变性门 `test_capacity_is_independent_of_the_moment_reference_point`。本表复核（附录 A.7，只改 LP 内部的接触列、荷载不动），在 `8376ec2` 上：两种变异都是**只有**该门红（4/6 格，原点取 (0,0,0) 的 2 格照绿，符合预期），本文件其余测试全绿。在 `b26d7f5` 上力矩反号还会多红 2 格——`test_failure_mode_is_read_off_the_dual_mechanism[0.4-False]` 与 `[0.95-False]`，两格都是**滑动格**，挂在上面那条脆的"无转动"断言上。这 2 格是**门的脆性暴露**，不是牙：变异后求解器返回的是原 LP 的另一个最优对偶顶点，不是抓到了缺陷。这也说明 `b26d7f5` 提交说明里"力矩反号变异下其余测试全绿"是错的（提交说明已推送、不改，以 `8376ec2` 的提交说明与本段为订正）。
+@@ -211,7 +211,7 @@
+   - 第 1 条"带语义、可证完备的盖系统"：本仓库给出的是**弱完备**的门（第四节 (d)），强完备（凹块成员判定）缺裁剪，不能主张。
+   - 第 2 条"与开闭迭代衔接"：G4 已给出否定性数据（静态几何先验只抓到 61 个真翻转里的 5 个（09-27 按 df22 终判订正，原 5/82），03 砖一的 09-18 回写段仍是 82/39/60 的旧口径，订正只在本仓库 `reports/g4_multistep_first_datum.md`；正本只读、未回写），不能主张盖系统能预测活动集。
+   - 第 4 条"接触不确定性的消解"= 首入：二维、三维自 2026-10-10 各有按运动方向定义的第一版（`kernel2d/entrance.py`、`kernel3d/entrance3.py`，有门、未经独立重审；三维 EEP 无合并规则、凹体靠谓词裁决），不能主张完整。
+-- **第三层（红线）**：扫了 README、AGENTS、reports、docs 里的优先性措辞。`AGENTS.md:3` 在 HEAD 上原写"石根华入口块 E(A,B) 理论的**第一份实现**"——00 §3.3 引的 Zhao et al. 2020 就是更早的实现，所以这句不成立。本批已改为"一份独立实现"，订正见 `AGENTS.md:5-7`。`docs/sibling_observations.md` 里的"第一份"指姊妹仓库之间的对账通道，不涉及学术优先性，不算越线。
++- **第三层（红线）**：扫了 README、AGENTS、reports、docs 里的优先性措辞。`AGENTS.md:3` 在 HEAD 上原写"石根华入口块 E(A,B) 理论的**第一份实现**"——00 §3.3 引的 Zhao et al. 2020 就是更早的实现，所以这句不成立。本批已改为"一份独立实现"，订正见 `AGENTS.md:5-7`。R7FIX 也撤掉姊妹对账通道的序数性宣传，仅表述为独立对账通道。
+ 
+ ## 八、怎么复核这张表
+ 
+@@ -392,7 +392,7 @@ for k in (5, 16):
+ | §八 风险（tf06 顺序继承、顺序即物理、az=2°、单人带宽、两仓库无远程、bdda3d 第三份本构副本的 o3 / o3t 口径） | "顺序即物理"落实为同构门而非逐字节；其余是姊妹仓库事务 | 3DDA / 3-b-dda 的远程备份状态本仓库不掌握；本仓库自己也无远程（第四轮盲区 1）；第六条（bdda3d 本构副本 o3 vs o3t，统一时必须自报）本仓库还没碰到——M4 之前不涉及 |
+ | §六 Phase 0 的门"读取器往返逐字节" | `tests/test_readers_roundtrip.py` | **判据弱于 07**：做的是 `records_to_json` 往返与确定性，不是对原件逐字节；tf.cpp 三条探针 TSV 只读了 `contact_pair_stage` 与 `retry_contact_pair_probe` 两条，`solver_profile.tsv`（内容哈希列）未读 |
+ | §五 G4 的判据（15 例 m9 轨迹、事先定死的命中率阈值、对比迭代次数） | `tools/g4_multistep.py`、`reports/g4_multistep_first_datum.md` | **判据弱于 07**：只跑了 bb52 / bbF038 / bbW025 三份 dump（bbF038 翻转为 0），没有事先登记阈值，也没量迭代次数；"砖一关闭"是在这个缩水的实验上下的结论 |
+-| 07 第 33 行"它既是 2015 理论的第一份实现" | — | **措辞风险**：在 07 的上下文里指"自家代码里第一份"，单独引出去容易读成全局首次实现，越 00 §4.6 第三层红线（CGAL 早有非凸多面体 Minkowski 和的精确构造）；对外须限定为"DDA 圈内 / 本课题组代码里第一份" |
++| 07 第 33 行旧称“它既是 2015 理论的第一份实现”（此主张不成立） | — | **撤回优先性主张**：改称“E(A,B) 理论的一份独立实现，以及姊妹三线的独立对账通道”；不能通过限定为 DDA 圈内或本课题组来保留优先性。只读正本 00 已列 Zheng/Jiao et al. 2016、Zhao et al. 2020、Feng & Tan 2020、Ni et al. 2020 等实现谱系，AGENTS 09-24 订正同样明确。07 正本按工单只读，此处登记矛盾并以本树订正为准，不声称已改正本 |
+ 
+ 一句话：07 的 Phase 0–2 大体落地但**规模与判据仍有缺口**（读取器 6→3、G2 只对手写清单、G5 未开；E5a 三维 G0 与二维 E2 均已零跳样本，但未普遍构造逐边界点 ±ε 双侧探针，E5a2 已接通有效闭合三角表面的精确实体三态，但一般单盖折面法锥仍有限；E5b 后继精确判据见开头更新；G1 不比锁态、Phase 0 不逐字节），Phase 1 的 G4 go/no-go 在三份 dump 的缩水实验上执行并关闭了砖一，
+ Phase 3/5 未动，Phase 4 走了 07 没规划的极限分析路线。07 的 Phase 1 执行记录与 03 砖一回写一样停在 09-18 的口径。
+diff --git a/docs/exact_3d_design.md b/docs/exact_3d_design.md
+index a7bab70..ad0227b 100644
+--- a/docs/exact_3d_design.md
++++ b/docs/exact_3d_design.md
+@@ -3,7 +3,7 @@
+ > **WO-R6FIX（2026-10-12，修复留树，待独立复核）**：第六轮确认 12 条（1 critical / 7 major / 4 minor），原审查见 [G6F 输入](file:///D:/eab-wt/cx-e2/reports/codex/inputs/G6F_report.md)。修复、修前红/修后绿、内部变异、同类扫描和完整测试结果统一见 [R6FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R6FIX_report.md)。本次本树测试不等于独立六路 G6，且按工单禁止创建 worktree；M0 退出状态不升级。
+ 
+ 
+-> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴脱离证书 ⇒ PD ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”；报贯入不推出 PD > w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。对应独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
++> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴非贯入证书 ⇒ rho ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”。这里 `rho = inf{||d||₂ : int(A+d)∩int(B)=∅}`；正本 01 的 `PD_closed = inf{||d||₂ : (A+d)∩B=∅}` 是闭集完全分离的下确界，两者对一般闭表面不相同，六轴不保证 PD_closed≤w；报贯入也不推出 PD_closed>w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。闭合空腔反例门 `test_r7fix_docs.py::test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed` 固定两种口径；其他独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
+ 
+ 
+ > **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的局部贯入厚度报告政策（非 PD）。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
+@@ -99,10 +99,10 @@ orient3d 用浮点 determinant 和严格误差上界；只有 |det|>bound 才采
+ 
+ ### 2. 显式局部贯入厚度窗口的数学定义与限度（E5 已完成）
+ 
+-`contact_resolution(A,B)` 只提供旧口径数值 `max(effective_geom_tol, 1e-12*max(diag)) + rounding_floor`，调用方必须显式传入 `contact_window=w`。w 有限且非负。分离侧精确表面距离平方 ≤ w² 时按相触报告（距离 0、ON_BOUNDARY、闭合）。贯入侧采用所有者批准的**局部贯入厚度窗口**：六轴刚性脱离充分证书 OR 局部径向薄壳证书。`contact_window` 名称保留兼容，未新增参数或别名；该量不是整体最短分离平移的欧氏贯入深度 PD，也不是其完整子水平集：
++`contact_resolution(A,B)` 只提供旧口径数值 `max(effective_geom_tol, 1e-12*max(diag)) + rounding_floor`，调用方必须显式传入 `contact_window=w`。w 有限且非负。分离侧精确表面距离平方 ≤ w² 时按相触报告（距离 0、ON_BOUNDARY、闭合）。贯入侧采用所有者批准的**局部贯入厚度窗口**：六轴刚性平移后的内部不交充分证书 OR 局部径向薄壳证书。`contact_window` 名称保留兼容，未新增参数或别名；该量不是整体最短分离平移的欧氏贯入深度 PD，也不是其完整子水平集：
+ 
+ 1. 原实体对；
+-2. A 沿每个坐标轴精确平移 +w 或 −w 后的六个实体对：任一不贯入证明存在长度 w 的刚性脱离位移；
++2. A 沿每个坐标轴精确平移 +w 或 −w 后的六个实体对：任一内部不交证明存在长度 w 的非贯入位移，不保证闭集完全分离；
+ 3. A 或 B 各自可认证的星核收缩模型。中心 c 取原顶点精确平均；必须对每个朝外三角面有 `n·(c−p)<0`。令 `R=max_v ||v−c||_1`，`α=min(w/R,1/2)`，内核顶点为 `c+(1−α)(v−c)`。每条被移除的径向壳段长度 ≤ αR ≤ w。内核与另一实体不贯入即证明重叠只在厚度至多 w 的该表面壳内。无星核证书时不启用该项。
+ 
+ `exact_sweep.contact_models` 唯一生成此集合；margin 对集合作精确 OR，interlock 对同一集合的最早根取最小。证书失败只表示未被该窗口接受，**不能声称真欧氏穿透深度 > w**。六方向证书是坐标系相关的有限政策，不宣称它等于旋转不变的完整欧氏偏置；星核壳证书也不等于最短刚体脱离。双侧微量夹持可能需要很大的整块脱离，却仍属于薄局部接触壳；这正是原抖动墙窗口可以回到名义高度的区别。严格物理默认路径不采用任何此政策。
+@@ -111,9 +111,13 @@ orient3d 用浮点 determinant 和严格误差上界；只有 |det|>bound 才采
+ 
+ ### 2a. 可靠性、限制与独立门（WO-PERF 定稿）
+ 
++**正本口径（R7FIX）**：只读正本 01 第 5 行限定紧凸块，第 34 行定义 `PD_closed = inf{||d||₂ : (A+d)∩B=∅}`。这是闭集完全分离的**下确界**，相触处通常并不取到。当前一般闭表面窗口只提供 `rho = inf{||d||₂ : int(A+d)∩int(B)=∅}` 的有限六轴充分证书；一般非凸体可能 `rho < PD_closed`，不能把内部不交或一个贴合姿态视为 E 的外边界。对凸实体，支撑平面可在任意小的进一步平移后严格分离，二者下确界相同；原凸盒门只覆盖这个特例。
++
++**封闭空腔反例**：A 是中心 `(-1/8,0,0)`、半边长 `1/2` 的闭立方体；B 是半边长 2 的闭外立方体减去半边长 `1/2` 的开内立方体。`+1/8 e_x` 后 A 恰好贴合空腔，内部不交，故 `rho=1/8`；相同尺寸不可能严格装进开腔，A 要与闭壳完全相离必须移出外盒，`PD_closed=19/8`，且该值处仍相触，只能作为下确界。默认精确路径仍报贯入，显式 `w=1/8` 仍按既定政策报相触。门：`tests/test_r7fix_docs.py::test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed`。不改薄壳或六轴运行政策，不改只读正本。
++
+ “相触”的可靠性是带分支的精确析取，不能把两分支混为 PD 证书：
+ 
+-- 六轴分支：存在 `d ∈ {±w e_x, ±w e_y, ±w e_z}`，`int(A+d) ∩ int(B)=∅`，因而 `PD ≤ ||d||₂ = w`。对原本分离输入另由真实距离平方 `d² ≤ w²` 接受；这不是贯入分支的结论。
++- 六轴分支：存在 `d ∈ {±w e_x, ±w e_y, ±w e_z}`，`int(A+d) ∩ int(B)=∅`，因而 `rho ≤ ||d||₂ = w`，不能据此推出 `PD_closed ≤ w`。对原本分离输入另由真实距离平方 `d² ≤ w²` 接受；这不是贯入分支的结论。
+ - 薄壳分支：存在经认证的 A 或 B 星核 K，`int(K) ∩ int(other)=∅`；原实体每处严格重叠都在该体的闭径向壳内，任意径向壳段欧氏长度至多 `αR ≤ w`。这不意味着有同一个短平移能同时解除每处接触。
+ - 反向不成立：报 `PENETRATING` 只意味着有限证书未通过，**不推出 PD > w**；默认 `None/0` 则仍是原实体严格精确三态，不走窗口。
+ 
+@@ -121,7 +125,7 @@ orient3d 用浮点 determinant 和严格误差上界；只有 |det|>bound 才采
+ 
+ | 声称 / 不保证项 | 具体位形及独立判据 | 命名门 |
+ | --- | --- | --- |
+-| 六轴成功 ⇒ PD ≤ w，六个方向都保留 | 两等大盒重叠恰好 w，仅一个指定符号轴能分开；18 格含三尺度、非对称平移与工程坐标 1e6；直接测位移平方 = w²，并用盒构型差的最近面算 PD | `test_each_of_six_axis_certificates_proves_pd_at_most_window` |
++| 六轴成功 ⇒ rho ≤ w；凸盒特例另有 PD_closed = rho = w，六个方向都保留 | 两等大盒重叠恰好 w，仅一个指定符号轴能分开；18 格含三尺度、非对称平移与工程坐标 1e6；直接测位移平方 = w²，并用盒构型差的最近面算 PD_closed（下确界，不是闭集相离位移的最小值） | `test_each_of_six_axis_certificates_proves_pd_at_most_window` |
+ | 薄壳成功 ⇒ 每处重叠在 ≤w 径向壳内，但不保证 PD≤w | 半长 `(1,1/16,1/16)` 的键被双壁夹持，w=1/64，两侧重叠 3w/4；独立区间证明两重叠区均避开内核，逐顶点同胚比例和凸范数最大值证明全部径向壳段≤w；禁入平移盒的并覆盖 `[-1,1]^3`，故 PD>1 | `test_shell_certificate_contains_every_overlap_region_but_does_not_bound_pd` |
+ | 六轴坐标依赖；斜向短脱离可能漏 | 半长 `(1,4,4)` 盒沿法向重叠 9/40，w=1/4；绕 z 作有理正交旋转 `(cos,sin)=(3/5,4/5)` 后六轴与双内核全贯入，但独立斜向平移长度 PD=9/40<w 即可接触分离 | `test_shorter_oblique_escape_can_be_missed_so_penetrating_does_not_mean_pd_exceeds_w`；`test_six_axis_coordinate_dependence_means_rotation_invariance_is_not_guaranteed` |
+ | 旋转不变性连薄壳分支也未保证 | 前述双壁键作同一精确旋转；两姿态都不存在轴向短脱离，未旋转只有 core_A 证书通过，旋转后 L1 半径上界变大而全部失败；几何 PD 本身未改变 | `test_local_shell_rotation_invariance_is_not_guaranteed_either` |
+diff --git a/docs/exact_predicates_plan.md b/docs/exact_predicates_plan.md
+index ad5aa01..d71d4e1 100644
+--- a/docs/exact_predicates_plan.md
++++ b/docs/exact_predicates_plan.md
+@@ -3,7 +3,7 @@
+ > **WO-R6FIX（2026-10-12，修复留树，待独立复核）**：第六轮确认 12 条（1 critical / 7 major / 4 minor），原审查见 [G6F 输入](file:///D:/eab-wt/cx-e2/reports/codex/inputs/G6F_report.md)。修复、修前红/修后绿、内部变异、同类扫描和完整测试结果统一见 [R6FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R6FIX_report.md)。本次本树测试不等于独立六路 G6，且按工单禁止创建 worktree；M0 退出状态不升级。
+ 
+ 
+-> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴脱离证书 ⇒ PD ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”；报贯入不推出 PD > w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。对应独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
++> **E5 已完成（窗口为局部贯入厚度口径，WO-PERF 所有者定稿）**：保留兼容参数名 `contact_window`；它不是整体最短分离平移的欧氏贯入深度 PD 阈值。贯入相触报告只承诺“六轴非贯入证书 ⇒ rho ≤ w”或“星核薄壳证书 ⇒ 每个重叠区位于径向厚度 ≤ w 的壳内”。这里 `rho = inf{||d||₂ : int(A+d)∩int(B)=∅}`；正本 01 的 `PD_closed = inf{||d||₂ : (A+d)∩B=∅}` 是闭集完全分离的下确界，两者对一般闭表面不相同，六轴不保证 PD_closed≤w；报贯入也不推出 PD_closed>w。六轴及 L1 壳构造依赖坐标系，斜向短脱离可能漏，不保证旋转不变性。默认精确路径不使用该政策。闭合空腔反例门 `test_r7fix_docs.py::test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed` 固定两种口径；其他独立 oracle、限制反例与内部突变门见 [窗口门](file:///D:/eab-wt/cx-e2/tests/test_perf_contact_window.py)，定稿与性能证据见 [WO-PERF 报告](file:///D:/eab-wt/cx-e2/reports/codex/PERF_report.md)。此“已完成”指工单契约项，不冒充未经执行的独立六路 G6。
+ 
+ 
+ > **WO-E5b（2026-10-12，工作树实现，未经 G6）**：默认按给定数据精确判定，`contact_window=None` 不含隐式 ctol；显式窗口是调用方的局部贯入厚度报告政策（非 PD）。精确运动事件与证明读取 `exact_height` / `exact_offset`（互锁）和 `exact_t` / `surface_label`（首入），不能将浮点显示高度再逐顶点舍入后当作同一证书。当前验收、窗口数学定义、全部原格迁移与残余限制以 [E5b 报告](file:///D:/eab-wt/cx-e2/reports/codex/E5b_report.md) 和 [三维设计](file:///D:/eab-wt/cx-e2/docs/exact_3d_design.md) 的 E5b 节为准。下文 E5a/E5a2 退出段是历史记录，不是 E5b 当前结果。
+diff --git a/docs/sibling_observations.md b/docs/sibling_observations.md
+index cf5ede5..5486ea6 100644
+--- a/docs/sibling_observations.md
++++ b/docs/sibling_observations.md
+@@ -8,7 +8,7 @@
+ - `retry_contact_pair_probe.tsv` **不是完整接触列表**：只在重试事件时写，且只写涉及触发块/顶压板的接触（`pass 0/1` 两遍筛选，`record_limit = 1024`，tf.cpp:10842-10857）。用作 G2 同构门时，比较对象必须限定为同一筛选子集；完整计数走 `contact_pair_stage.tsv`（逐块对的 nn/ne/np/ee 计数）与 `solver_profile.tsv` 的 `content_xor64/sum64/ordered_hash64`。
+ - 探针的 `contact_type` 是 **候选类** `c[i][2]`（0 n-n / 1 n-e / 2 n-p / 3 e-e），不是 tf05 展开后的入口类 `m[j][2]`（只有 2/3）；`contact_entry = m0[i][0]` 才指向当前入口。两者不要混比。
+ - `area` 在 `o[i][3] <= 0` 时被替换为 1.0（tf.cpp:10880），`normal_force = ss·gap·area` 只在 `status_closed` 时非零——读探针时不能把 area=1.0 当真实面积。
+-- 三维接触枚举（tf04/tf05）目前没有任何独立对账通道（refkernel3d 只覆盖 K/F 装配）。eab-kernel Phase 2 将成为第一份。
++- 2026-09-18 时，已检查的三维接触枚举（tf04/tf05）导出尚缺独立对账通道（refkernel3d 只覆盖 K/F 装配）。eab-kernel Phase 2 的目标是补充独立对账通道，不作学术或项目间优先性声称。
+ 
+ ### 导师线 DDA4.x（DDAKernel.cpp 4.5）
+ - `contact_topology_audit_output` 只产出**逐步汇总**（`DDA31::ContactTopologyStepAudit`：接触键 = (vertexId, edgeStartId, edgeEndId)，状态 = `m0[i][2]`，去重/无效计数，跨步差分），写进运行报告 JSON 的 `cross_step_contact_topology_audit` 字段。~~没有逐接触导出~~ **订正（2026-10-10，G6 第五轮 major）**：同一份
+diff --git a/reports/codex/PERF_report.md b/reports/codex/PERF_report.md
+index 0cd14d6..6defffd 100644
+--- a/reports/codex/PERF_report.md
++++ b/reports/codex/PERF_report.md
+@@ -1,5 +1,7 @@
+ # WO-PERF：接触窗口口径定稿与全套提速报告
+ 
++> **R7FIX 口径订正（2026-10-12）**：正本 01 的 `PD_closed = inf{||d||₂ : (A+d)∩B=∅}` 是闭集完全分离的下确界；窗口六轴只证明 `rho = inf{||d||₂ : int(A+d)∩int(B)=∅} ≤ w`。恰好贴合的封闭空腔有 rho=1/8、PD_closed=19/8，独立门为 `tests/test_r7fix_docs.py::test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed`。下文历史性能数字不重写，运行政策不变；旧泛化为 PD 的结论在此撤回。
++
+ ## 结论
+ 
+ 全套最后一行：**8582 passed in 865.95s (0:14:25)**；独占进程墙钟 **873.327553 s**。
+@@ -24,7 +26,7 @@
+ |分支/声称|精确命题|独立门（test_perf_contact_window.py）|
+ |---|---|---|
+ |分离侧|真实距离平方 ≤w² 才纳入相触报告；沿用原有精确距离门|原 test_margin_exact.py 等门保持不变|
+-|六轴相触|存在 d∈{±w e_x,±w e_y,±w e_z} 使两体内部不交，因此 PD≤\|\|d\|\|₂=w|test_each_of_six_axis_certificates_proves_pd_at_most_window（18格）|
++|六轴相触|存在 d∈{±w e_x,±w e_y,±w e_z} 使两体内部不交，因此 rho≤\|\|d\|\|₂=w；一般闭表面不保证 PD_closed≤w，原18格仅为凸盒特例|test_each_of_six_axis_certificates_proves_pd_at_most_window（18格）|
+ |薄壳相触|经认证星核 K 与另一体内部不交；原体每处重叠都落在闭径向壳内，各径向段欧氏厚度≤w|test_shell_certificate_contains_every_overlap_region_but_does_not_bound_pd|
+ |贯入报告|有限证书未通过，不推出 PD>w|test_shorter_oblique_escape_can_be_missed_so_penetrating_does_not_mean_pd_exceeds_w|
+ |六轴坐标依赖/不保旋转|同一精确长盒对旋转前相触、旋转后贯入，真实 PD=9/40<w=1/4|test_six_axis_coordinate_dependence_means_rotation_invariance_is_not_guaranteed|
+diff --git a/src/eab/dual.py b/src/eab/dual.py
+index bad4169..7d56a93 100644
+--- a/src/eab/dual.py
++++ b/src/eab/dual.py
+@@ -103,24 +103,21 @@ class Dual:
+         if self.v < 0.0 and not p.is_integer():
+             raise ValueError(f"Dual ** {p!r}: negative base {self.v!r} has no real power")
+         value = self.v ** p
+-        if p.is_integer() and not _ordinary(self.v, p, *self.e):
++        if p.is_integer():
+             # Integer powers admit an exact derivative even if v**(p-1)
+             # over/underflows before a representable derivative is formed.
+             c = Fraction(p) * Fraction(self.v) ** (int(p) - 1)
+             return Dual(value, tuple(_derivative_float(c * Fraction(a)) for a in self.e))
+-        if not _ordinary(self.v, p, *self.e):
+-            # Noninteger powers need a real-valued construction. Decimal's
+-            # separate exponent retains the coefficient until the final seed
+-            # multiplication, even when both primal power and coefficient
+-            # would underflow as binary64. No branch decision uses this path.
+-            with localcontext() as ctx:
+-                ctx.prec = 80
+-                ctx.traps[Underflow] = True
+-                c = Decimal(p) * ctx.power(Decimal(self.v), Decimal(p) - 1)
+-                return Dual(value, tuple(_derivative_float(Fraction(c * Decimal(a)))
+-                                         for a in self.e))
+-        c = p * (self.v ** (p - 1.0))
+-        return Dual(value, tuple(c * a for a in self.e))
++        # There is no input-only safe exponent box for powers: even inputs
++        # in [2**-200, 2**200] can produce an out-of-range v**(p-1), then
++        # return to range after multiplying a seed. Retain a separate exponent
++        # through the final product for every noninteger power (G6G-07).
++        with localcontext() as ctx:
++            ctx.prec = 80
++            ctx.traps[Underflow] = True
++            c = Decimal(p) * ctx.power(Decimal(self.v), Decimal(p) - 1)
++            return Dual(value, tuple(_derivative_float(Fraction(c * Decimal(a)))
++                                     for a in self.e))
+ 
+     # ---------------- 择支（只看 primal，禁止参与本构） ----------------
+     def __float__(self) -> float:
+diff --git a/src/eab/kernel2d/covers.py b/src/eab/kernel2d/covers.py
+index 6c46456..7711e54 100644
+--- a/src/eab/kernel2d/covers.py
++++ b/src/eab/kernel2d/covers.py
+@@ -235,8 +235,7 @@ def vv_cover(A: Poly, ia: int, B: Poly, jb: int, tol: float = 0.0, cone_tol: flo
+     active = _open_cone(alo, ahi, d) and _open_cone(blo, bhi, d)
+     w2 = _angle_window2(tol, cone_tol, rays)
+     expanded = w2 > 0 and _cone_accepts(alo, ahi, d, w2) and _cone_accepts(blo, bhi, d, w2)
+-    df = (float(d[0]), float(d[1]))
+-    return Cover("VV", ia, jb, unit(df), norm(df), None, a, active, a, b, expanded)
++    return Cover("VV", ia, jb, unit(d), norm(d), None, a, active, a, b, expanded)
+ 
+ 
+ # ---------------------------------------------------------------- 枚举
+@@ -256,14 +255,19 @@ def _in_segment_exact(p, a, b, window):
+ 
+ 
+ def _in_gap_window(c, A, B, window):
++    return _feature_in_gap_window(c.kind, c.a_index, c.b_index, A, B, window)
++
++
++def _feature_in_gap_window(kind, ai, bj, A, B, window):
++    """Exact window check before potentially unrepresentable construction."""
+     if window < 0:
+         return False
+     if window == float("inf"):
+         return True
+-    if c.kind == "VV":
+-        d = _vsub(_fr(A[c.a_index]), _fr(B[c.b_index]))
++    if kind == "VV":
++        d = _vsub(_fr(A[ai]), _fr(B[bj]))
+         return dot(d, d) <= Fraction(window) ** 2
+-    P, E, i, j = (A, B, c.a_index, c.b_index) if c.kind == "VE" else (B, A, c.b_index, c.a_index)
++    P, E, i, j = (A, B, ai, bj) if kind == "VE" else (B, A, bj, ai)
+     g, l2, _ = _line_data(P[i], *edge(E, j))
+     return g * g <= Fraction(window) ** 2 * l2
+ 
+@@ -277,20 +281,26 @@ def enumerate_covers(A: Poly, B: Poly, *, window: float, tol: float = 0.0,
+     out = []
+     for ia in range(len(A)):
+         for jb in range(len(B)):
++            if not _feature_in_gap_window("VE", ia, jb, A, B, window):
++                continue
+             c = ve_cover(A, ia, B, jb, tol, cone_tol)
+-            if c is not None and _in_gap_window(c, A, B, window) and (
++            if c is not None and (
+                 not require_in_segment or _in_segment_exact(A[ia], *edge(B, jb), st)):
+                 out.append(c)
+     for ka in range(len(A)):
+         for ib in range(len(B)):
++            if not _feature_in_gap_window("EV", ka, ib, A, B, window):
++                continue
+             c = ev_cover(A, ka, B, ib, tol, cone_tol)
+-            if c is not None and _in_gap_window(c, A, B, window) and (
++            if c is not None and (
+                 not require_in_segment or _in_segment_exact(B[ib], *edge(A, ka), st)):
+                 out.append(c)
+     for ia in range(len(A)):
+         for jb in range(len(B)):
++            if not _feature_in_gap_window("VV", ia, jb, A, B, window):
++                continue
+             c = vv_cover(A, ia, B, jb, tol, cone_tol)
+-            if c is not None and (c.strict or c.window_active) and _in_gap_window(c, A, B, window):
++            if c is not None and (c.strict or c.window_active):
+                 out.append(c)
+     return out
+ 
+@@ -357,7 +367,8 @@ def _facet_normal_own(A: Poly, B: Poly, label: tuple[str, int, int]) -> tuple[Po
+         return neg(outward_normal(A, ai)), sub(B[bj], edge(A, ai)[0])
+     b0, b1 = edge(B, bj)
+     a0, a1 = edge(A, ai)
+-    n = outward_normal(B, bj) if norm(sub(b1, b0)) >= norm(sub(a1, a0)) else neg(outward_normal(A, ai))
++    da, db = _vsub(_fr(a1), _fr(a0)), _vsub(_fr(b1), _fr(b0))
++    n = outward_normal(B, bj) if dot(db, db) >= dot(da, da) else neg(outward_normal(A, ai))
+     return n, sub(b0, a0)
+ 
+ 
+diff --git a/src/eab/kernel2d/entrance.py b/src/eab/kernel2d/entrance.py
+index e2523ac..43bff2d 100644
+--- a/src/eab/kernel2d/entrance.py
++++ b/src/eab/kernel2d/entrance.py
+@@ -21,6 +21,7 @@ from __future__ import annotations
+ 
+ from dataclasses import dataclass
+ from fractions import Fraction
++from math import inf, nextafter
+ 
+ from .covers import _facet_normal_own, enumerate_covers, facet_gap
+ from .exact import (convexity_violation, entrance_block_exact, membership_exact,
+@@ -82,8 +83,17 @@ def _facet_points(A: Poly, B: Poly, label: tuple, x: Point) -> tuple[Point, Poin
+     return tuple(map(float, pa)), tuple(map(float, pb))
+ 
+ 
+-def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> float:
+-    return round_floor(max(coord_scale(B), coord_scale(A) + max(abs(x0[0]), abs(x0[1])) + norm(d)))
++def _floor(A: Poly, B: Poly, x0: Point, d: Point) -> Fraction:
++    # This is an internal conservative reporting bound, not a float output.
++    # Scale before any construction, retain the rational sum, and round the
++    # sole radical outward. Its exact square certifies the chosen upper bound.
++    factor = Fraction(64)*Fraction(2)**-52
++    base = factor*(Fraction(coord_scale(A))+max(abs(Fraction(v)) for v in x0))
++    square = factor*factor*sum(Fraction(v)**2 for v in d)
++    root = sqrt_rational(square, allow_underflow=True)
++    if Fraction(root)**2 < square:
++        root = nextafter(root, inf)
++    return max(factor*Fraction(coord_scale(B)), base+Fraction(root))
+ 
+ 
+ def first_entrance(A: Poly, B: Poly, x0: Point, d: Point, *, tol: float = 0.0, t_max: float = float("inf")) -> Entrance2:
+@@ -141,7 +151,7 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
+         fbest = best[2]
+     else:
+         return none()
+-    band2 = Fraction(ctol + r) ** 2
++    band2 = (Fraction(ctol) + r) ** 2
+     near = []
+     tied = []
+     for t, slope, f in enter:
+@@ -277,7 +287,7 @@ def _first_entrance_concave(A: Poly, B: Poly, x0: Point, d: Point, ctol: float,
+                 raise RuntimeError(f"first_entrance: bodies already touch at t = {tp!r} < candidate {t!r} ({label}); "
+                                    "the cover candidate set missed an earlier entrance")
+         tied, near = [], []
+-        band2 = Fraction(ctol + r) ** 2
++        band2 = (Fraction(ctol) + r) ** 2
+         for t2, _, label2 in raw:
+             g2, _, p2, l2, _ = _feature_data(A, B, label2, x)
+             if 0 <= p2 <= l2:
+@@ -311,7 +321,7 @@ def shortest_exit(A: Poly, B: Poly, x0: Point, *, tol: float = 0.0) -> Entrance2
+     best_distance, label = min(candidates, key=lambda q: q[0])
+     tied = tuple(lab for distance, lab in candidates if distance == best_distance)
+     # sqrt(distance)-sqrt(best) <= band：平方化后的精确有理数比较，不让报告反馈选择。
+-    band2 = Fraction(tol + _floor(A, B, x0, (0., 0.))) ** 2
++    band2 = (Fraction(tol) + _floor(A, B, x0, (0., 0.))) ** 2
+     near = tuple(lab for distance, lab in candidates
+                  if distance - best_distance - band2 <= 0 or
+                  (distance - best_distance - band2) ** 2 <= 4 * band2 * best_distance)
+diff --git a/src/eab/kernel2d/g0.py b/src/eab/kernel2d/g0.py
+index 3755969..73233a2 100644
+--- a/src/eab/kernel2d/g0.py
++++ b/src/eab/kernel2d/g0.py
+@@ -44,13 +44,44 @@ def _bbox(P: Poly) -> tuple[float, float, float, float]:
+     return min(xs), max(xs), min(ys), max(ys)
+ 
+ 
++def _char_length_squared(*polys):
++    """Exact squared diameter: a large finite input must not create inf tolerance."""
++    return max(((Fraction(x1)-Fraction(x0))**2+(Fraction(y1)-Fraction(y0))**2
++                for x0, x1, y0, y1 in map(_bbox, polys)), default=Fraction(0))
++
++
+ def char_length(*polys: Poly) -> float:
+-    """特征长度 L：各多边形包围盒对角线的最大者。随单位缩放、对平移不变（纪律 F 的相对容差以它为尺）。"""
+-    out = 0.0
+-    for P in polys:
+-        x0, x1, y0, y1 = _bbox(P)
+-        out = max(out, math.hypot(x1 - x0, y1 - y0))
+-    return out
++    """Checked display of maximal bbox diagonal; gates use its exact square."""
++    return independent.sqrt_display(_char_length_squared(*polys))
++
++
++def _construction_error_exceeds(error, length2, truth, atol, *polys):
++    """Finite errors only; compare the exact bound without constructing sqrt(L²).
++
++    error > atol*max(L,truth)+64*eps*C is squared after removing the exact
++    roundoff term. Neither a huge diameter nor a tiny coefficient can overflow
++    or silently underflow the acceptance threshold.
++    """
++    if not math.isfinite(error) or not math.isfinite(truth):
++        return True
++    if not math.isfinite(atol) or atol < 0:
++        raise ValueError("atol must be finite and nonnegative")
++    scale = max((abs(Fraction(v)) for P in polys for p in P for v in p), default=Fraction(0))
++    excess = Fraction(error)-Fraction(64*math.ulp(1.0))*scale
++    return excess > 0 and excess*excess > Fraction(atol)**2*max(length2, Fraction(truth)**2)
++
++
++def _minimum_witness_distance(covs):
++    """No nonfinite candidate can hide behind a finite minimum."""
++    distances = []
++    for c in covs:
++        if c.point_a is None or c.point_b is None:
++            continue
++        distance = math.hypot(c.point_a[0]-c.point_b[0], c.point_a[1]-c.point_b[1])
++        if not math.isfinite(distance):
++            return math.inf
++        distances.append(distance)
++    return min(distances, default=math.inf)
+ 
+ 
+ def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: float = 0.25) -> list[Point]:
+@@ -184,7 +215,7 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
+     """
+     rep = DistanceReport()
+     inf = float("inf")
+-    L = char_length(A, B)
++    L2 = _char_length_squared(A, B)
+     for x in translations:
+         rep.draws += 1
+         At = independent.translate(A, x)
+@@ -196,13 +227,15 @@ def g0_distance_completeness(A: Poly, B: Poly, translations: list[Point], *, tol
+             rep.touching += 1
+             continue
+         truth, arg = brute_polygon_distance(At, B)
+-        covs = enumerate_covers(At, B, window=inf)
+-        got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
+-                   for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
++        # Search only the independently certified nearest-distance window. The
++        # outward-rounded bound includes the exact root and avoids constructing
++        # unrelated distances beyond binary64 range.
++        covs = enumerate_covers(At, B, window=math.nextafter(truth, inf))
++        got = _minimum_witness_distance(covs)
+         rep.samples += 1
+         err = abs(got - truth)
+         rep.worst_abs_error = max(rep.worst_abs_error, err)
+-        if err > atol * max(L, truth) + round_floor(coord_scale(At, B)):
++        if _construction_error_exceeds(err, L2, truth, atol, At, B):
+             rep.failures.append((x, got, truth, arg))
+     return rep
+ 
+@@ -213,8 +246,10 @@ def brute_ray_exit(A: Poly, B: Poly, u: Point) -> Fraction:
+     """Independent exact first exit parameter from int E along nonzero u.
+ 
+     Every rational vertex-edge event (including collinear endpoints) partitions
+-    the ray; independent integer winding checks each interval without a noise
+-    band. The Fraction result preserves the exact event for gate construction.
++    the ray; independent integer winding checks intervals and events without a
++    noise band. Local rational line-arrangement sectors distinguish true boundary
++    events from tight-fit seams inside E. The Fraction result preserves the exact
++    event for gate construction.
+     No production geometric primitive is shared with the oracle.
+     """
+     return independent.ray_exit(A, B, u)
+@@ -249,7 +284,7 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
+         raise ValueError(f"need one direction per translation: {len(directions)} != {len(translations)}")
+     rep = ExitReport()
+     inf = float("inf")
+-    L = char_length(A, B)
++    L2 = _char_length_squared(A, B)
+     for x, u in zip(translations, directions):
+         rep.draws += 1
+         At = independent.translate(A, x)
+@@ -262,12 +297,11 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
+             continue
+         t = brute_ray_exit(At, B, u)
+         Az = independent.translate(At, (t * Fraction(u[0]), t * Fraction(u[1])))
+-        covs = enumerate_covers(Az, B, window=inf)
+-        got = min((math.hypot(c.point_a[0] - c.point_b[0], c.point_a[1] - c.point_b[1])
+-                   for c in covs if c.point_a is not None and c.point_b is not None), default=inf)
++        covs = enumerate_covers(Az, B, window=0.0)
++        got = _minimum_witness_distance(covs)
+         rep.samples += 1
+         rep.worst_witness = max(rep.worst_witness, got)
+-        if got > atol * L + round_floor(coord_scale(Az, B)):
++        if _construction_error_exceeds(got, L2, 0.0, atol, Az, B):
+             rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))
+     return rep
+ 
+diff --git a/src/eab/kernel2d/g0_oracle.py b/src/eab/kernel2d/g0_oracle.py
+index edae1f6..98593b1 100644
+--- a/src/eab/kernel2d/g0_oracle.py
++++ b/src/eab/kernel2d/g0_oracle.py
+@@ -6,6 +6,7 @@ projections/events. Only final distance display uses Decimal square root.
+ from decimal import Decimal, localcontext
+ from fractions import Fraction as F
+ from math import lcm
++from functools import cmp_to_key
+ 
+ 
+ def sqrt_display(q):
+@@ -112,8 +113,59 @@ def distance(A,B):
+     return sqrt_display(best),arg
+ 
+ 
++
++def boundary_has_exterior(A, B):
++    """Exact local complement certificate, independent of production primitives.
++
++    Vertex/supporting-edge lines partition translation space into cells where
++    intersection is constant. At a contact event, inspect one rational point in
++    every open angular sector of its incident lines. The step is smaller than
++    every nonincident line crossing. An exterior sector means true boundary E;
++    a tight-fit seam with no exterior sector is interior E, not an exit.
++    """
++    lines = set()
++    rays = set()
++    for P, Q, sign in ((A, B, 1), (B, A, -1)):
++        for p in P:
++            for a, b in zip(Q, Q[1:]+Q[:1]):
++                ex, ey = b[0]-a[0], b[1]-a[1]
++                if ex == ey == 0:
++                    continue
++                h = turn(a, b, p)
++                lines.add((sign*-ey, sign*ex, h))
++                if h == 0:
++                    length = abs(ex)+abs(ey)
++                    ray = (ex/length, ey/length)
++                    rays.update((ray, (-ray[0], -ray[1])))
++    def half(v):
++        return 0 if v[1] > 0 or (v[1] == 0 and v[0] > 0) else 1
++    def compare(u, v):
++        if half(u) != half(v):
++            return half(u)-half(v)
++        determinant = u[0]*v[1]-u[1]*v[0]
++        return -1 if determinant > 0 else (1 if determinant < 0 else 0)
++    ordered = sorted(rays, key=cmp_to_key(compare))
++    for a, b in zip(ordered, ordered[1:]+ordered[:1]):
++        dx, dy = a[0]+b[0], a[1]+b[1]
++        if dx == dy == 0:
++            dx, dy = -a[1], a[0]
++        step = F(1)
++        for nx, ny, h in lines:
++            slope = nx*dx+ny*dy
++            if h and slope:
++                step = min(step, abs(h/slope)/2)
++        if overlap(translate(A, (step*dx, step*dy)), B) == -1:
++            return True
++    return False
++
++
+ def ray_exit(A,B,u):
+-    """First exact boundary event, with exact interval membership and no band."""
++    """First exit from topological int E, including isolated boundary events.
++
++    Strict body overlap implies int E, but the converse fails at tight-fit
++    seams. Non-overlap events/intervals therefore require a local exterior
++    sector certificate; merely inspecting adjacent ray intervals is unsound.
++    """
+     A,B=points(A),points(B);ux,uy=map(F,u)
+     uu=ux*ux+uy*uy
+     if not uu:raise ValueError('brute_ray_exit: direction u must be non-zero')
+@@ -137,6 +189,12 @@ def ray_exit(A,B,u):
+     lo=F(0)
+     for hi in sorted({t for t in hits if t<end})+[end]:
+         mid=(lo+hi)/2
+-        if overlap(translate(A,(mid*ux,mid*uy)),B)!=1:return lo
++        Am = translate(A, (mid*ux, mid*uy))
++        state = overlap(Am, B)
++        if state == -1 or (state == 0 and boundary_has_exterior(Am, B)):
++            return lo
++        Ah = translate(A, (hi*ux, hi*uy))
++        if overlap(Ah, B) == 0 and boundary_has_exterior(Ah, B):
++            return hi
+         lo=hi
+     return end
+diff --git a/src/eab/kernel2d/geom.py b/src/eab/kernel2d/geom.py
+index b59d65d..35eea55 100644
+--- a/src/eab/kernel2d/geom.py
++++ b/src/eab/kernel2d/geom.py
+@@ -10,9 +10,12 @@ from __future__ import annotations
+ 
+ import sys
+ from fractions import Fraction
++from functools import lru_cache
+ from itertools import chain
+ from math import hypot
+ 
++from ..construction import sqrt_rational
++
+ Point = tuple[float, float]
+ Poly = list[Point]
+ 
+@@ -37,7 +40,7 @@ def eff_tol(tol: float, *groups) -> float:
+ 
+ def angle_floor(C: float, ell: float) -> float:
+     """边长 ℓ、坐标量级 C 下法向/转角的舍入下限 c·eps·C/ℓ（弧度）。ℓ = 0 时为 +inf（零长边另行报错）。"""
+-    return ROUND_C * EPS * C / ell if ell > 0.0 else float("inf")
++    return _display_fraction(Fraction(ROUND_C*EPS)*Fraction(C)/Fraction(ell)) if ell > 0.0 else float("inf")
+ 
+ 
+ def sub(a: Point, b: Point) -> Point:
+@@ -61,14 +64,26 @@ def cross(a: Point, b: Point) -> float:
+ 
+ 
+ def norm(a: Point) -> float:
+-    return hypot(a[0], a[1])
++    """One final checked square root of the exact supplied vector square."""
++    return _norm_exact(*map(Fraction, a))
++
++
++@lru_cache(maxsize=4096)
++def _norm_exact(x, y):
++    return sqrt_rational(x*x+y*y)
+ 
+ 
+ def unit(a: Point) -> Point:
+-    n = norm(a)
+-    if n == 0.0:
++    """Normalize exact component ratios, never divide by the rounded norm."""
++    return _unit_exact(*map(Fraction, a))
++
++
++@lru_cache(maxsize=4096)
++def _unit_exact(x, y):
++    square = x*x+y*y
++    if not square:
+         raise ZeroDivisionError("unit of zero vector")
+-    return (a[0] / n, a[1] / n)
++    return tuple(((v > 0)-(v < 0))*sqrt_rational(v*v/square) for v in (x, y))
+ 
+ 
+ def _area2_exact(poly):
+@@ -118,9 +133,7 @@ def outward_normal(poly: Poly, i: int) -> Point:
+     if not square:
+         raise ValueError(f"zero-length edge {i % len(poly)} (consecutive duplicate vertex at {p}); "
+                          f"strip duplicates at the reader boundary")
+-    def component(value):
+-        return (1 if value>0 else -1)*sqrt_rational(value*value/square) if value else 0.0
+-    return component(ey),component(-ex)
++    return unit((ey, -ex))
+ 
+ 
+ def zero_length_edges(poly: Poly) -> list[int]:
+@@ -132,9 +145,8 @@ def zero_length_edges(poly: Poly) -> list[int]:
+ def vertex_turn(poly: Poly, i: int) -> float:
+     """顶点 i 处 cross(e_{i-1}, e_i)：CCW 多边形 >0 为凸顶点，<0 为凹（反射）顶点。"""
+     n = len(poly)
+-    e_prev = sub(poly[i % n], poly[(i - 1) % n])
+-    e_next = sub(poly[(i + 1) % n], poly[i % n])
+-    return cross(e_prev, e_next)
++    a, b, c = (tuple(map(Fraction, poly[k % n])) for k in (i-1, i, i+1))
++    return _display_fraction(cross(sub(b, a), sub(c, b)))
+ 
+ 
+ def turn_angle(poly: Poly, i: int) -> float:
+@@ -143,10 +155,17 @@ def turn_angle(poly: Poly, i: int) -> float:
+     用 atan2(cross, dot) 而不是 sin：sin 分不清 θ 与 π−θ（审查 r1：178° 窄缝会被 3° 容差放行）。
+     """
+     n = len(poly)
+-    e_prev = sub(poly[i % n], poly[(i - 1) % n])
+-    e_next = sub(poly[(i + 1) % n], poly[i % n])
++    a, b, c = (tuple(map(Fraction, poly[k % n])) for k in (i-1, i, i+1))
++    u, v = sub(b, a), sub(c, b)
++    determinant, scalar = cross(u, v), dot(u, v)
++    scale = max(abs(determinant), abs(scalar))
++    if not scale:
++        raise ValueError("turn angle at zero-length edge")
+     from math import atan2
+-    return atan2(cross(e_prev, e_next), dot(e_prev, e_next))
++    angle = atan2(float(determinant/scale), float(scalar/scale))
++    if determinant and angle == 0:
++        raise ArithmeticError("nonzero turn angle below binary64 output range")
++    return angle
+ 
+ 
+ def turn_floor(poly: Poly, i: int) -> float:
+@@ -157,8 +176,10 @@ def turn_floor(poly: Poly, i: int) -> float:
+     """
+     n = len(poly)
+     a, b, c = poly[(i - 1) % n], poly[i % n], poly[(i + 1) % n]
+-    C = max(abs(a[0]), abs(a[1]), abs(b[0]), abs(b[1]), abs(c[0]), abs(c[1]))
+-    return angle_floor(C, min(hypot(b[0] - a[0], b[1] - a[1]), hypot(c[0] - b[0], c[1] - b[1])))
++    a, b, c = (tuple(map(Fraction, p)) for p in (a, b, c))
++    C = max(abs(v) for p in (a, b, c) for v in p)
++    length2 = min(sum((p[k]-q[k])**2 for k in (0, 1)) for p, q in ((a, b), (b, c)))
++    return sqrt_rational((Fraction(ROUND_C*EPS)*C)**2/length2) if length2 else float("inf")
+ 
+ 
+ def is_convex(poly: Poly, tol: float = 0.0) -> bool:
+diff --git a/src/eab/kernel3d/covers3.py b/src/eab/kernel3d/covers3.py
+index fc93ebd..2ae78db 100644
+--- a/src/eab/kernel3d/covers3.py
++++ b/src/eab/kernel3d/covers3.py
+@@ -90,12 +90,9 @@ def _float_vector(v):
+     return tuple(float(x) for x in v)
+ 
+ 
+-def _qunit(v):
+-    """Construction only: scale first to avoid under/overflow."""
+-    scale = max(abs(x) for x in v)
+-    if not scale:
+-        raise ZeroDivisionError("unit of zero vector")
+-    return unit(tuple(float(x / scale) for x in v))
++def _qunit(v, *, allow_underflow=False):
++    """Final normalized components from the exact vector, never rounded first."""
++    return unit(v, allow_underflow=allow_underflow)
+ 
+ 
+ def _outside_dot_band(value, a, b, tol):
+@@ -244,6 +241,7 @@ class Cover3:
+     exact_gap_squared: Fraction | None = None
+     exact_gap_sign: int | None = None
+     exact_area_squared: Fraction | None = None
++    exact_normal_direction: tuple[Fraction, ...] | None = None  # unnormalised display certificate
+ 
+     def label(self) -> tuple:
+         return (self.kind, self.a_feature, self.b_feature)
+@@ -461,9 +459,9 @@ def vf_cover(A: Polyhedron, ia: int, B: Polyhedron, fb: int, tol: float = 0.0, e
+     wit, inside = _face_witness(proj, g, B, fb, extent_tol)
+     numerator = dot(n, sub(_qvector(a), _qvector(B.verts[B.faces[fb][0]])))
+     nn = dot(n, n)
+-    return Cover3("VF", ("vertex", ia), ("face", fb), _qunit(n), g, a, wit, (),
++    return Cover3("VF", ("vertex", ia), ("face", fb), _qunit(n, allow_underflow=True), g, a, wit, (),
+                   sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,
+-                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4)
++                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4, n)
+ 
+ 
+ def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, extent_tol: float = 0.0) -> Cover3 | None:
+@@ -477,9 +475,9 @@ def fv_cover(A: Polyhedron, fa: int, B: Polyhedron, ib: int, tol: float = 0.0, e
+     wit, inside = _face_witness(proj, g, A, fa, extent_tol)
+     numerator = dot(n, sub(_qvector(b), _qvector(A.verts[A.faces[fa][0]])))
+     nn = dot(n, n)
+-    return Cover3("FV", ("face", fa), ("vertex", ib), neg(_qunit(n)), g, wit, b, (),
++    return Cover3("FV", ("face", fa), ("vertex", ib), neg(_qunit(n, allow_underflow=True)), g, wit, b, (),
+                   sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,
+-                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4)
++                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4, neg(n))
+ 
+ 
+ def _qclosest_params(p1, d1, p2, d2):
+@@ -534,7 +532,7 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
+         # All classifications use the rational parameters. Output points are
+         # consistently constructed from one exact witness pair, then rounded.
+         qa, qb = add(pa0, mul(dA, s)), add(pb0, mul(dB, t))
+-        unit_normal = _qunit(candidate)
++        unit_normal = _qunit(candidate, allow_underflow=True)
+         numerator, nn = dot(candidate, sub(qa, qb)), dot(candidate, candidate)
+         gap = _signed_gap(numerator, nn)
+         inside = (_qparameter_in_extent(s, dA, extent_tol)
+@@ -548,7 +546,7 @@ def ee_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, eb: tuple[int, i
+         return Cover3("EE", ("edge", *ea), ("edge", *eb), unit_normal, gap,
+                       _float_vector(qa), _float_vector(qb), (float(s), float(t)), None,
+                       sb == 1 and sa == 1, inside,
+-                      numerator*numerator/nn, (numerator > 0)-(numerator < 0))
++                      numerator*numerator/nn, (numerator > 0)-(numerator < 0), None, candidate)
+     return None
+ 
+ 
+@@ -569,9 +567,9 @@ def ve3_cover(A: Polyhedron, ia: int, B: Polyhedron, eb: tuple[int, int], tol: f
+     if sb < 0 or sa < 0:
+         return None
+     vv = dot(v, v)
+-    return Cover3("VE3", ("vertex", ia), ("edge", *eb), _qunit(v), sqrt_rational(vv, allow_underflow=True),
++    return Cover3("VE3", ("vertex", ia), ("edge", *eb), _qunit(v, allow_underflow=True), sqrt_rational(vv, allow_underflow=True),
+                   A.verts[ia], _float_vector(add(p0, mul(d, _qclamp(s)))), (float(s),), None,
+-                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1)
++                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1, None, v)
+ 
+ 
+ def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: float = 0.0,
+@@ -582,7 +580,8 @@ def ev3_cover(A: Polyhedron, ea: tuple[int, int], B: Polyhedron, ib: int, tol: f
+         return None
+     return Cover3("EV3", ("edge", *ea), ("vertex", ib), neg(c.normal), c.gap,
+                   c.point_b, c.point_a, c.params, None, c.strict, c.in_extent,
+-                  c.exact_gap_squared, c.exact_gap_sign)
++                  c.exact_gap_squared, c.exact_gap_sign, None,
++                  neg(c.exact_normal_direction) if c.exact_normal_direction is not None else None)
+ 
+ 
+ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0) -> Cover3 | None:
+@@ -595,8 +594,8 @@ def vv3_cover(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: float = 0.0)
+         return Cover3("VV3", ("vertex", ia), ("vertex", ib), None, 0.0, a, b, (), None, True, True, Fraction(0), 0)
+     active = (_qvertex_contains(B, ib, v, tol) >= 0 and _qvertex_contains(A, ia, neg(v), tol) >= 0)
+     vv = dot(v, v)
+-    return Cover3("VV3", ("vertex", ia), ("vertex", ib), _qunit(v), sqrt_rational(vv, allow_underflow=True),
+-                  a, b, (), None, True, active, vv, 1)
++    return Cover3("VV3", ("vertex", ia), ("vertex", ib), _qunit(v, allow_underflow=True), sqrt_rational(vv, allow_underflow=True),
++                  a, b, (), None, True, active, vv, 1, None, v)
+ 
+ 
+ # Enumeration
+@@ -768,8 +767,8 @@ def facet_normal3(A: Polyhedron, B: Polyhedron, label: tuple) -> Vec3:
+ def facet_gap3(A: Polyhedron, B: Polyhedron, label: tuple, x: Vec3) -> float:
+     """Float signed distance construction; never reused for classification."""
+     n, p = facet_plane3(A, B, label)
+-    return float(dot(n, sub(_qvector(x), p)) / max(abs(t) for t in n)) / norm(
+-        tuple(float(t / max(abs(v) for v in n)) for t in n))
++    numerator = dot(n, sub(_qvector(x), p))
++    return (-1 if numerator < 0 else 1) * sqrt_rational(numerator*numerator / dot(n, n))
+ 
+ 
+ @lru_cache(maxsize=128)
+@@ -818,8 +817,8 @@ def support_gaps3(A: Polyhedron, B: Polyhedron, x: Vec3) -> list[float]:
+     point = _qvector(x)
+     out = []
+     for n, p in _planes(A, B, ()):
+-        scale = max(abs(v) for v in n)
+-        out.append(float(dot(n, sub(point, p)) / scale) / norm(tuple(float(v / scale) for v in n)))
++        numerator = dot(n, sub(point, p))
++        out.append((-1 if numerator < 0 else 1) * sqrt_rational(numerator*numerator / dot(n, n)))
+     return out
+ 
+ 
+diff --git a/src/eab/kernel3d/exact_sweep.py b/src/eab/kernel3d/exact_sweep.py
+index d113f8c..887384c 100644
+--- a/src/eab/kernel3d/exact_sweep.py
++++ b/src/eab/kernel3d/exact_sweep.py
+@@ -158,7 +158,11 @@ def contact_models(A,B,window):
+ 
+     A nonnegative explicit window is a reporting policy, never a hidden tolerance.
+     For overlapping inputs, a nonpenetrating +/-window coordinate-axis translation
+-    proves rigid-body Euclidean penetration depth PD <= window. A nonpenetrating
++    proves rho <= window, where rho is the infimum of translation lengths that
++    make the interiors disjoint. It does not prove PD_closed <= window:
++    PD_closed is the infimum for disjoint closed sets, as in theory 01, and an
++    exactly fitting closed cavity separates the two quantities (R7 cavity gate).
++    A nonpenetrating
+     certified star core proves every overlap region lies in that body's radial
+     shell, whose Euclidean thickness is <= window; it does not bound whole-body PD.
+     The original pair, available star cores and all six translations are ORed by
+diff --git a/src/eab/kernel3d/frozen.py b/src/eab/kernel3d/frozen.py
+index f228c9c..9735a5d 100644
+--- a/src/eab/kernel3d/frozen.py
++++ b/src/eab/kernel3d/frozen.py
+@@ -10,8 +10,8 @@
+ from __future__ import annotations
+ 
+ from fractions import Fraction
+-from math import hypot
+ 
++from ..construction import sqrt_rational
+ from ..dual import Dual, Number, val, _derivative_float
+ from .covers3 import _oriented_ee_normal
+ from .geom3 import Polyhedron, cross, dot, sub, add, exact_edge_vector, exact_surface
+@@ -30,20 +30,23 @@ def _exact_jet_points(points):
+ 
+ def _unit_jet(n, derivatives, sign=1.0):
+     """Exact polynomial value/derivative; sqrt and output conversion only float."""
+-    scale = max(map(abs, n))
+-    if not scale:
++    nn = dot(n, n)
++    if not nn:
+         raise ZeroDivisionError("zero normal in frozen geometry")
+-    length = hypot(*(float(c / scale) for c in n))
+-    value = [sign * float(c / scale) / length for c in n]
+-    if any(c and v == 0.0 for c, v in zip(n, value)):
+-        raise FloatingPointError("nonzero frozen normal component is below the binary64 range")
++
++    def normalized(c):
++        c = Fraction(sign) * c
++        magnitude = sqrt_rational(c * c / nn)
++        return -magnitude if c < 0 else magnitude
++
++    # Do not round a scaled component or sqrt(nn) before the final quotient:
++    # either intermediate can cross a subnormal output midpoint (R7 scan).
++    value = [normalized(c) for c in n]
+     if not derivatives:
+         return tuple(value)
+-    nn = dot(n, n)
+     result = []
+     for i in range(3):
+-        channels = tuple(_derivative_float(Fraction(sign) * (dn[i] - n[i] * dot(n, dn) / nn)
+-                                           / (scale * Fraction(length)))
++        channels = tuple(normalized(dn[i] - n[i] * dot(n, dn) / nn)
+                          for dn in derivatives)
+         result.append(Dual(value[i], channels))
+     return tuple(result)
+diff --git a/src/eab/kernel3d/g03.py b/src/eab/kernel3d/g03.py
+index 511768d..bf30ab9 100644
+--- a/src/eab/kernel3d/g03.py
++++ b/src/eab/kernel3d/g03.py
+@@ -9,6 +9,7 @@ changes an answer. The compatibility counters for exemptions are always zero.
+ from __future__ import annotations
+ 
+ import random
++import math
+ from dataclasses import dataclass, field
+ from fractions import Fraction
+ from functools import lru_cache
+@@ -173,6 +174,8 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
+     Only float witness construction is audited with the relative allowance.
+     """
+     from .covers3 import enumerate_covers3
++    if not math.isfinite(atol) or atol < 0:
++        raise ValueError("atol must be finite and nonnegative")
+     rng = random.Random(seed)
+     rep = DistanceReport3()
+     L = max(A.metrics()[1], B.metrics()[1])
+@@ -197,6 +200,14 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
+         rep.samples += 1
+         err = abs(got - truth)
+         rep.worst_abs_error = max(rep.worst_abs_error, err)
+-        if err > atol * max(L, truth) + noise_floor(max(At.metrics()[0], B.metrics()[0])):
++        # A missing/nonfinite construction is a failure independently of the
++        # tolerance; inf > inf and NaN > bound must never make this gate green.
++        # Keep the acceptance expression rational as well: large finite atol
++        # need not become an infinite floating threshold (R7 same-family scan).
++        failed = not cand or not all(math.isfinite(v) for v in (*cand, truth, err))
++        if not failed:
++            rounding = noise_floor(max(At.metrics()[0], B.metrics()[0]))
++            failed = Fraction(err) > Fraction(atol)*max(Fraction(L), Fraction(truth)) + Fraction(rounding)
++        if failed:
+             rep.failures.append((x, got, truth))
+     return rep
+diff --git a/src/eab/kernel3d/geom3.py b/src/eab/kernel3d/geom3.py
+index 304ce8e..b640ef8 100644
+--- a/src/eab/kernel3d/geom3.py
++++ b/src/eab/kernel3d/geom3.py
+@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
+ from fractions import Fraction
+ from eab import rational3 as _rational3
+ from itertools import combinations
++from functools import lru_cache
+ import math
+ from math import atan2, hypot, sqrt
+ from . import exact_geom as _eg
+@@ -84,19 +85,37 @@ def norm(a: Vec3) -> float:
+     return result
+ 
+ 
+-def unit(a: Vec3) -> Vec3:
+-    scale = max(map(abs, a))
+-    if scale == 0:
++def unit(a: Vec3, *, allow_underflow: bool = False) -> Vec3:
++    """Round each exact normalized component once, without a rounded norm.
++
++    allow_underflow is for displays accompanied by the exact direction vector,
++    as carried by Cover3 and MarginContact. Other callers fail loudly.
++    Gate: test_r7fix_unit_retains_extreme_components_before_normalization.
++    """
++    return _unit_cached(tuple(a), allow_underflow)
++
++
++@lru_cache(maxsize=16384)
++def _unit_cached(a, allow_underflow):
++    q = _eg.vector(a)
++    squared = _eg.dot(q, q)
++    if not squared:
+         raise ZeroDivisionError("unit of zero vector")
+-    scaled = tuple(float(x/scale) for x in a)
+-    n = hypot(*scaled)
+-    return tuple(x/n for x in scaled)
++    return tuple((-1 if x < 0 else 1) * _eg.sqrt_rational(x*x/squared, allow_underflow=allow_underflow) for x in q)
+ 
+ 
+ def angle_between(a: Vec3, b: Vec3) -> float:
+-    """两向量夹角（弧度，[0, π]）。用 atan2(|a×b|, a·b) 而非 acos，小角与近 π 都稳。"""
+-    c = cross(a, b)
+-    return atan2(norm(c), dot(a, b))
++    """Angle from exact cross/dot before a common homogeneous rescaling.
++
++    Gate: test_r7fix_angle_between_avoids_intermediate_cross_range_loss.
++    """
++    a, b = _eg.vector(a), _eg.vector(b)
++    c, d = _eg.cross(a, b), _eg.dot(a, b)
++    scale = max(abs(d), *map(abs, c))
++    if not scale:
++        return 0.0
++    sine = _eg.sqrt_rational(_eg.dot(c, c)/(scale*scale), allow_underflow=d <= 0)
++    return atan2(sine, float(d/scale))
+ 
+ 
+ @dataclass(slots=True)
+@@ -141,15 +160,15 @@ class Polyhedron:
+         if self._metrics is None:
+             C = coord_scale(*self.verts)
+             lo, hi = self.aabb()
+-            L = norm(sub(hi, lo))
+-            ell = min((norm(sub(self.verts[b], self.verts[a])) for a, b in self.edges()), default=0.0)
++            L = norm(_eg.sub(exact_vector(hi), exact_vector(lo)))
++            ell = min((norm(exact_edge_vector(self, (a, b))) for a, b in self.edges()), default=0.0)
+             self._metrics = (C, L, ell if ell > 0.0 else (L if L > 0.0 else 1.0))
+         return self._metrics
+ 
+     def edge_noise(self, e: tuple[int, int]) -> float:
+         """棱 e 的单位方向的舍入噪声 c·eps·C/|e|（弧度）：刚体运动把顶点挪动 ~eps·C，方向随之转这么多。
+         只看**这条棱自己**的长度（纪律 F 的逐特征口径）。零长棱为 +inf。"""
+-        ell = norm(sub(self.verts[e[1]], self.verts[e[0]]))
++        ell = norm(exact_edge_vector(self, e))
+         return noise_floor(self.metrics()[0]) / ell if ell > 0.0 else float("inf")
+ 
+     def face_noise(self, fi: int) -> float:
+@@ -185,41 +204,22 @@ class Polyhedron:
+         return n
+ 
+     def _newell_normal(self, fi: int) -> Vec3:
+-        f = self.faces[fi]
+-        n = (0.0, 0.0, 0.0)
+-        o = self.verts[f[0]]
+-        k = len(f)
+-        for i in range(k):
+-            p = sub(self.verts[f[i]], o)
+-            q = sub(self.verts[f[(i + 1) % k]], o)
+-            n = add(n, cross(p, q))
+-        if n == (0.0, 0.0, 0.0) or not all(math.isfinite(x) for x in n):
+-            # A true but very thin exact facet can cancel to zero in float.
+-            # Zero is a topological assertion, not a construction tolerance.
+-            try:
+-                qn = exact_face_normal(self, fi)
+-            except ValueError:
+-                raise ValueError(f"face {fi} {f} has zero area (collinear or coincident vertices); "
+-                                 f"strip duplicates at the reader boundary") from None
+-            scale = max(abs(x) for x in qn)
+-            n = tuple(float(x / scale) for x in qn)
+-        length = math.hypot(*n)
+-        return tuple(x / length for x in n)
++        try:
++            return unit(exact_face_normal(self, fi))
++        except ValueError:
++            raise ValueError(f"face {fi} {self.faces[fi]} has zero area (collinear or coincident vertices); "
++                             f"strip duplicates at the reader boundary") from None
+ 
+     def face_area(self, fi: int) -> float:
+-        f = self.faces[fi]
+-        o = self.verts[f[0]]
+-        n = (0.0, 0.0, 0.0)
+-        for i in range(len(f)):
+-            n = add(n, cross(sub(self.verts[f[i]], o), sub(self.verts[f[(i + 1) % len(f)]], o)))
+-        area2 = math.hypot(*n)
+-        if area2 == 0.0 or not math.isfinite(area2):
+-            try:
+-                qn = exact_face_normal(self, fi)
+-            except ValueError:
+-                return 0.0
+-            return _eg.sqrt_rational(_eg.dot(qn, qn) / 4)
+-        return 0.5 * area2
++        """Newell area, with exact final halving before the sole rounding.
++
++        Gate: test_g6g05_face_area_rounds_after_final_halving.
++        """
++        try:
++            n = exact_face_normal(self, fi)
++        except ValueError:
++            return 0.0
++        return _eg.sqrt_rational(_eg.dot(n, n) / 4)
+ 
+     def edges(self) -> list[tuple[int, int]]:
+         self._sync_geometry_cache()
+@@ -276,7 +276,7 @@ class Polyhedron:
+                 if other in seen:
+                     continue
+                 seen.add(other)
+-                d = sub(self.verts[other], self.verts[vi])
++                d = exact_edge_vector(self, (vi, other))
+                 if norm(d) > 0.0:
+                     out.append(unit(d))
+         return out
+@@ -294,7 +294,7 @@ class Polyhedron:
+             for v, nbrs in cache.items():
+                 out = []
+                 for w in dict.fromkeys(nbrs):
+-                    d = sub(self.verts[w], self.verts[v])
++                    d = exact_edge_vector(self, (v, w))
+                     ell = norm(d)
+                     if ell > 0.0:
+                         out.append((unit(d), fl / ell))
+@@ -302,7 +302,7 @@ class Polyhedron:
+         return list(cache.get(vi, ()))
+ 
+     def edge_dir(self, e: tuple[int, int]) -> Vec3:
+-        d = sub(self.verts[e[1]], self.verts[e[0]])
++        d = exact_edge_vector(self, e)
+         if d == (0.0, 0.0, 0.0):
+             raise ValueError(f"zero-length edge {e} (consecutive duplicate vertex at {self.verts[e[0]]}); "
+                              f"strip duplicates at the reader boundary (readers.bdda_geom.strip_duplicate_vertices)")
+@@ -321,41 +321,29 @@ class Polyhedron:
+         if len(trav) != 2:
+             raise ValueError(f"edge {e} has {len(trav)} incident face traversals, need 2")
+         (f1, a1, b1), (f2, _, _) = trav
+-        t = unit(sub(self.verts[b1], self.verts[a1]))
++        t = unit(exact_edge_vector(self, (a1, b1)))
+         n1, n2 = self.face_normal(f1), self.face_normal(f2)
+         return atan2(dot(cross(n1, n2), t), dot(n1, n2))
+ 
+     # ---------------- 体积与内点 ----------------
+     def volume(self) -> float:
+-        """有符号体积（外看 CCW 的闭合多面体为正）。相对首顶点累加防抵消。"""
+-        o = self.verts[0]
+-        v = 0.0
+-        for fi, f in enumerate(self.faces):
+-            a = sub(self.verts[f[0]], o)
+-            for i in range(1, len(f) - 1):
+-                b = sub(self.verts[f[i]], o)
+-                c = sub(self.verts[f[i + 1]], o)
+-                v += dot(a, cross(b, c))
+-        return v / 6.0
++        """Signed volume of the triangulated surface; round only the final sum.
++
++        Gate: test_g6g08_mass_properties_use_exact_products_before_final_rounding.
++        """
++        volume6, _ = _mass_properties(tuple(self.verts), tuple(self.faces))
++        return _checked_scalar(volume6 / 6)
+ 
+     def centroid(self) -> Vec3:
+-        """体心。注意：凹多面体的体心可能在体外，**不可**当内点用。"""
+-        o = self.verts[0]
+-        vol = 0.0
+-        acc = (0.0, 0.0, 0.0)
+-        for f in self.faces:
+-            a = sub(self.verts[f[0]], o)
+-            for i in range(1, len(f) - 1):
+-                b = sub(self.verts[f[i]], o)
+-                c = sub(self.verts[f[i + 1]], o)
+-                w = dot(a, cross(b, c))
+-                vol += w
+-                acc = add(acc, mul(add(add(a, b), c), w))
+-        if vol == 0.0:
+-            n = len(self.verts)
+-            return (sum(p[0] for p in self.verts) / n, sum(p[1] for p in self.verts) / n,
+-                    sum(p[2] for p in self.verts) / n)
+-        return add(o, mul(acc, 1.0 / (4.0 * vol)))
++        """Exact first moments, then one final coordinate rounding (not an interior point).
++
++        Gate: test_g6g08_centroid_retains_cancellation_even_when_volume_is_representable.
++        """
++        volume6, moments = _mass_properties(tuple(self.verts), tuple(self.faces))
++        points = tuple(map(exact_vector, self.verts))
++        if not volume6:
++            return tuple(_checked_scalar(sum(p[k] for p in points) / len(points)) for k in range(3))
++        return tuple(_checked_scalar(points[0][k] + moments[k] / (4*volume6)) for k in range(3))
+ 
+     def interior_point(self) -> Vec3:
+         """保证在多面体内部的一点：取各面三角形质心沿内法向微退，取第一个通过内点测试者；
+@@ -443,7 +431,11 @@ class Polyhedron:
+                     issues.append(f"face {fi}: not planar (vertex {i} off by "
+                                   f"{dot(n, sub(self.verts[i], o)):.3g})")
+                     break
+-        v = self.volume()
++        try:
++            v = self.volume()
++        except ValueError as error:
++            issues.append(f"invalid volume surface: {error}")
++            return issues
+         if v <= 0.0:
+             issues.append(f"signed volume {v:.6g} <= 0 (global orientation is inward)")
+         return issues
+@@ -810,11 +802,60 @@ def _point_face_distance(p: Vec3, P: Polyhedron, fi: int) -> float | None:
+     return _eg.sqrt_rational(g*g / nn)
+ 
+ 
++def _checked_scalar(value):
++    """Final rational construction must not silently overflow or erase a nonzero."""
++    result = float(value)
++    if not math.isfinite(result):
++        raise OverflowError("exact construction exceeds finite binary64 range")
++    if value and not result:
++        raise ArithmeticError("nonzero exact construction is below binary64 output range")
++    return result
++
++
++@lru_cache(maxsize=1024)
++def _mass_properties(vertices, faces):
++    """Six times signed volume and its relative first moment, on the actual surface."""
++    points = tuple(map(exact_vector, vertices))
++    origin = points[0]
++    relative = tuple(_eg.sub(p, origin) for p in points)
++    volume6, moments = Fraction(0), (Fraction(0),)*3
++    for _, tri in _eg.triangulate(vertices, faces):
++        a, b, c = (relative[i] for i in tri)
++        weight = _eg.dot(a, _eg.cross(b, c))
++        volume6 += weight
++        moments = _eg.add(moments, _eg.mul(_eg.add(_eg.add(a, b), c), weight))
++    return volume6, moments
++
++
++def _surface_distance_edges(P):
++    """All geometric surface edges, including interior ridges of folded rings.
++
++    Coplanar triangulation diagonals are not geometric ridges and cannot add a
++    smaller minimum than the face projections and boundary edges already tested.
++    Gate: test_g6g04_folded_internal_ridges_attain_slab_distance.
++    """
++    return exact_surface(P).edges()
++
++
++def _surfaces_intersect(triangles_a, triangles_b):
++    """Exact triangle crossings, after exact per-triangle AABB rejection."""
++    bounds = lambda tri: tuple((min(p[k] for p in tri), max(p[k] for p in tri)) for k in range(3))
++    first = tuple((tri, bounds(tri)) for _, tri in triangles_a)
++    second = tuple((tri, bounds(tri)) for _, tri in triangles_b)
++    for a, ba in first:
++        for b, bb in second:
++            if any(ha < lb or hb < la for (la, ha), (lb, hb) in zip(ba, bb)):
++                continue
++            if _eg.triangle_intersection(a, b):
++                return True
++    return False
++
++
+ def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: bool = False) -> float:
+     """Exact all-feature surface distance, with one final floating construction.
+ 
+-    Triangulated face projections include vertex/edge endpoints; all source
+-    edge pairs provide the remaining minima. This is internal corroboration,
++    Triangulated face projections include vertex/edge endpoints; all geometric
++    surface-edge pairs (including folded-ring ridges) provide remaining minima. This is internal corroboration,
+     not an independent G0 oracle: it shares exact_geom primitives with production.
+     G0 uses the separate g03_surface_oracle. Explicit allow_underflow is only for
+     display callers retaining an exact squared-distance certificate.
+@@ -822,14 +863,17 @@ def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: boo
+     """
+     vertices = (tuple(map(exact_vector, A.verts)), tuple(map(exact_vector, B.verts)))
+     triangles = (_eg.triangles(A), _eg.triangles(B))
++    if _surfaces_intersect(*triangles):
++        return 0.0
+     best = None
+     for points, faces in ((vertices[0], triangles[1]), (vertices[1], triangles[0])):
+         for p in points:
+             for _, tri in faces:
+                 value = _eg.point_triangle_distance_squared(p, tri)
+                 best = value if best is None else min(best, value)
+-    for ea in A.edges():
+-        for eb in B.edges():
++    edges_a, edges_b = _surface_distance_edges(A), _surface_distance_edges(B)
++    for ea in edges_a:
++        for eb in edges_b:
+             value = _eg.segment_distance_squared(vertices[0][ea[0]], vertices[0][ea[1]],
+                                                  vertices[1][eb[0]], vertices[1][eb[1]])
+             best = value if best is None else min(best, value)
+diff --git a/src/eab/kernel3d/interlock.py b/src/eab/kernel3d/interlock.py
+index df7a786..569fe41 100644
+--- a/src/eab/kernel3d/interlock.py
++++ b/src/eab/kernel3d/interlock.py
+@@ -87,17 +87,14 @@ def _normal_noise(A: Polyhedron, B: Polyhedron, cover) -> float:
+         return A.face_noise(af[1])
+     if kind == "EE":
+         ea, eb = (af[1], af[2]), (bf[1], bf[2])
+-        sine = norm(cross(B.edge_dir(eb), A.edge_dir(ea)))
++        # A nonzero rounded unit-vector cross is not a certificate either:
++        # cancellation can distort it, not only erase it. Form the exact edge
++        # polynomial first and round only its final dimensionless sine.
++        a, b = exact_edge_vector(A, ea), exact_edge_vector(B, eb)
++        n = cross(a, b)
++        sine = sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))
+         if sine == 0.0:
+-            # E5a exact cones can retain a nonparallel pair whose rounded unit
+-            # vectors coincide. Preserve this legacy *resolution report* using
+-            # raw exact edges, rather than divide by the rounded zero. The
+-            # exact escape topology is handled separately by surface_events.
+-            a, b = exact_edge_vector(A, ea), exact_edge_vector(B, eb)
+-            n = cross(a, b)
+-            sine = sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))
+-            if sine == 0.0:
+-                return float("inf")  # below the representable angular range
++            return float("inf")  # exactly parallel raw edges
+         return (A.edge_noise(ea) + B.edge_noise(eb)) / sine
+     return 0.0
+ 
+diff --git a/src/eab/limit.py b/src/eab/limit.py
+index 8080ab9..cdea006 100644
+--- a/src/eab/limit.py
++++ b/src/eab/limit.py
+@@ -101,6 +101,7 @@ from fractions import Fraction
+ from math import cos, pi, sin
+ 
+ from .lp import OPTIMAL, UNBOUNDED, _fl, maximize
++from .construction import sqrt_rational
+ 
+ Vec = tuple[float, ...]
+ 
+@@ -242,8 +243,12 @@ class LimitContact:
+         if not (m > 0.0 and all(math.isfinite(v) for v in self.normal)):   # NaN 在任一分量都拒：max() 对 NaN 的比较恒假
+ 
+             raise ValueError(f"contact normal must be a finite nonzero vector, got {self.normal!r}")
+-        n = sum((v / m) ** 2 for v in self.normal) ** 0.5
+-        self.normal = tuple(v / m / n for v in self.normal)
++        exact = tuple(map(Fraction, self.normal))
++        square = sum(v*v for v in exact)
++        # Model directions are rounded only after the complete normalization.
++        # In particular v/m/n can round a representable subnormal component
++        # twice; no rounded norm or scaled component is an intermediate here.
++        self.normal = tuple((-1 if v < 0 else 1)*sqrt_rational(v*v/square) for v in exact)
+         # G6 第四轮 minor：cohesion / area 为 NaN 或负数曾被 `cohesion > 0 and area > 0` 静默当成"无黏聚"，α 按纯摩擦给出、
+         # 自校验照常通过；mu 为 NaN 只在 Fraction(nan) 处以无关信息报错。非有限输入要在入口响亮失败（与法向同一家族）
+         for name in ("mu", "cohesion", "area"):
+@@ -541,11 +546,15 @@ def mechanism_power(mech: list[float], ct: LimitContact, g: Vec, origin: Vec, di
+ 
+ 
+ def _norm(v) -> float:
+-    """欧氏范数，先按最大分量归一（1e160 量级的力平方不溢出，1e-200 量级的不下溢成 0）。"""
+-    m = max((abs(x) for x in v), default=0.0)
+-    if m == 0.0 or m == float("inf") or m != m:
+-        return m
+-    return m * sum((x / m) ** 2 for x in v) ** 0.5
++    """Checked final root for finite report inputs; explicit infinities stay reports.
++
++    No scaling division is rounded before the final norm. A finite supplied
++    vector whose exact norm is outside binary64 range raises, rather than
++    creating a spurious infinity/zero in the report.
++    """
++    if any(not math.isfinite(x) for x in v):
++        return math.hypot(*v)
++    return sqrt_rational(sum(Fraction(x)**2 for x in v))
+ 
+ 
+ class _ExactFloat(float):
+diff --git a/src/eab/margin.py b/src/eab/margin.py
+index acd3c44..783eba5 100644
+--- a/src/eab/margin.py
++++ b/src/eab/margin.py
+@@ -50,8 +50,9 @@
+ 调用方可以显式给 `contact_window=w`（局部贯入厚度窗口，参数名为兼容保留；不是整体最短
+ 分离平移的欧氏贯入深度 PD）。分离侧精确距离 ≤ w 报距离零与相触；贯入侧必须有
+ 精确证书证明窗口可接受：`exact_sweep.contact_models` 的六个 ±w 坐标轴平移，或经验证
+-星核的内核收缩证明贯入仅落在厚度 ≤ w 的表面壳层；原几何模型也保留。前者是全局平移
+-深度的有限充分证书，后者是局部接触厚度上界。有限证书不是完整欧氏距离偏置，不把证书
++星核的内核收缩证明贯入仅落在厚度 ≤ w 的表面壳层；原几何模型也保留。前者只证明内部
++不相交距离的下确界 rho ≤ w，不证明闭集完全分离 PD_closed ≤ w（紧贴封闭空腔反例）；
++后者是局部接触厚度上界。有限证书不是完整欧氏距离偏置，不把证书
+ 失败说成 PD > w；无证书时保持 PENETRATING。六轴证书及 L1 半径构造依赖坐标系，可能漏掉
+ 长度 ≤ w 的斜向脱离，不保证旋转不变性。互锁在完全相同的有限模型集上求最早根。
+ 独立可靠性与限制反例门：`tests/test_perf_contact_window.py`。
+@@ -99,7 +100,7 @@ def characteristic_length(*bodies: Polyhedron) -> float:
+     out = float("inf")
+     for P in bodies:
+         v0 = P.verts[0]
+-        out = min(out, max(norm(sub(v, v0)) for v in P.verts))
++        out = min(out, max(norm(_exact.sub(_exact.vector(v), _exact.vector(v0))) for v in P.verts))
+     return out
+ 
+ 
+@@ -141,7 +142,14 @@ def cover_witness(c) -> tuple[float, Vec3 | None] | None:
+         return None
+     v = sub(c.point_a, c.point_b)
+     d = norm(v)
+-    return (d, unit(v) if d > 0.0 else None)
++    if c.in_extent and c.exact_gap_sign is not None and c.normal is not None:
++        # For an in-extent cover, its exact signed gap orients the exact-source
++        # normal from B to A. Global display points can coincide or rotate this
++        # vector after rounding; they remain only a construction self-check.
++        n = tuple(c.exact_gap_sign*x for x in c.normal) if c.exact_gap_sign else None
++    else:
++        n = unit(v) if d > 0.0 else None
++    return d, n
+ 
+ 
+ def _surface_view(vertices, faces):
+@@ -262,7 +270,7 @@ def _surface_feature_squared(A, B, label):
+ def _repair_folded_construction(A, B, c, w, n, squared, rounding):
+     """Replace an invalid folded-ring plane witness, not a rounding-level report."""
+     target = _exact.sqrt_rational(squared, allow_underflow=True)
+-    if abs(w-target) <= 4*rounding or c.kind not in ("VF", "FV"):
++    if c.kind not in ("VF", "FV"):
+         return w, n
+     from .kernel3d.covers3 import _qclosest_triangle
+     X, Y, fa, fb = (A, B, c.a_feature, c.b_feature) if c.kind == "VF" else (B, A, c.b_feature, c.a_feature)
+@@ -282,8 +290,10 @@ def _repair_folded_construction(A, B, c, w, n, squared, rounding):
+         a, b = b, a
+     c.point_a, c.point_b = a, b
+     direction = _exact.mul(delta, -1 if c.kind == "VF" else 1)
++    c.exact_normal_direction = direction
++    c.exact_gap_sign = 1 if any(direction) else 0
+     scale = max(map(abs, direction))
+-    n = unit(tuple(float(x/scale) for x in direction)) if scale else None
++    n = unit(direction, allow_underflow=True) if scale else None
+     return target, n
+ 
+ def _penetration_within_window(A, B, window):
+@@ -291,9 +301,10 @@ def _penetration_within_window(A, B, window):
+ 
+     See exact_sweep.contact_models: original solids, six exact axis shifts of
+     length window, and either body's certified inner star core. Any model's
+-    nonpenetration is sufficient. An axis certificate proves PD <= window; a
+-    core certificate bounds local radial shell thickness only. Failure does not
+-    prove PD > window. Coordinate dependence and missed oblique exits are
++    nonpenetration is sufficient. An axis certificate proves only the infimum
++    rho for disjoint interiors <= window, not closed-set separation PD_closed
++    <= window (a tight enclosed cavity disproves that). A core certificate
++    bounds local radial shell thickness only. Failure does not prove PD > window. Coordinate dependence and missed oblique exits are
+     intentional limitations, not rotation-invariant PD decisions.
+     interlock solves the first accepted height over this very same model set.
+     """
+@@ -405,6 +416,7 @@ class MarginContact:
+     point_b: Vec3 | None
+     _exact_closed: bool | None = None
+     exact_distance_squared: Fraction | None = None  # certificate even below the display range
++    exact_normal_direction: tuple[Fraction, ...] | None = None  # B-to-A unnormalised certificate
+ 
+     @property
+     def closed(self) -> bool:
+@@ -442,8 +454,11 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
+             denominator = Fraction(w)+Fraction(delta)
+             if denominator:
+                 gap = float((d2-Fraction(delta)**2)/denominator)
++        direction = c.exact_normal_direction
++        direction = (tuple(c.exact_gap_sign*x for x in direction)
++                     if direction is not None and n is not None else None)
+         out.append(MarginContact(c.label(), w, gap, n, c.point_a, c.point_b,
+-                                 delta >= 0 and d2 <= Fraction(delta)**2, d2))
++                                 delta >= 0 and d2 <= Fraction(delta)**2, d2, direction))
+         ranked.append((d2, out[-1]))
+     if contact_window is None or not ctol:
+         return [m for _, m in sorted(ranked, key=lambda item: item[0])]
+@@ -466,8 +481,9 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
+ 
+     atol=None means zero (no implicit rounding floor). contact_window changes
+     only contact reporting by the local penetration-thickness policy (not PD).
+-    Axis acceptance certifies PD <= w; shell acceptance certifies only a local
+-    radial thickness <= w. Rejection does not certify PD > w.
++    Axis acceptance certifies only disjoint-interior infimum rho <= w, not
++    closed-set separation PD_closed <= w; shell acceptance certifies only a
++    local radial thickness <= w. Rejection does not certify PD > w.
+     """
+     ctol, _, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
+     if wits is None:
+@@ -533,9 +549,7 @@ def inflated_normal(E: Polyhedron, x: Vec3) -> Vec3 | None:
+     scale = max(map(abs, v))
+     if not scale:
+         return None
+-    scaled = tuple(float(c/scale) for c in v)
+-    length = math.hypot(*scaled)
+-    return tuple(c/length for c in scaled)
++    return unit(v)
+ 
+ 
+ # ------------------------------------------------------------------ 可微路径
+diff --git a/tests/e5a_cover_oracle.py b/tests/e5a_cover_oracle.py
+index 232c2ec..8d01d50 100644
+--- a/tests/e5a_cover_oracle.py
++++ b/tests/e5a_cover_oracle.py
+@@ -300,13 +300,42 @@ def witness_distance(A, B, label):
+     return math.sqrt(sum(x*x for x in d))
+ 
+ 
++def _margin_witness_distance(A, B, label):
++    """Window-mode source labels, but real folded-face distance when nonplanar.
++
++    The separate local-cover witness_distance intentionally remains the Newell
++    descriptor oracle. Margin uses a real surface, not that supporting-plane
++    descriptor. Only test-owned ear clipping and rational point/triangle
++    minimisation participate; no eab primitive is imported.
++    """
++    kind, fa, fb = label
++    if kind not in ("VF", "FV"):
++        return witness_distance(A, B, label)
++    X, Y, vertex, face = ((A, B, fa[1], fb[1]) if kind == "VF"
++                         else (B, A, fb[1], fa[1]))
++    points, rings, normals, _, _ = _model(Y)
++    ring, normal = rings[face], normals[face]
++    origin = points[ring[0]]
++    if not any(dot(normal, sub(points[i], origin)) for i in ring):
++        return witness_distance(A, B, label)
++    from decimal import Decimal, localcontext
++    from e5a2_surface_oracle import _ring_triangles, _point_tri_sq
++    point = q(X.verts[vertex])
++    squared = min(_point_tri_sq(point, triangle) for triangle in _ring_triangles(points, ring))
++    with localcontext() as context:
++        context.prec = 120
++        return float((Decimal(squared.numerator)/Decimal(squared.denominator)).sqrt())
++
++
+ def margin_selection(A, B, delta, *, touching=False, tol=1e-9):
+     """Independent margin selection for the separated/touching test families.
+ 
+     The pre-existing margin convention is independently evaluated here:
+     ctol=max(1e-9*L, 1e-12*AABB_diagonal, 64*eps*max(C,L))
+     +64*eps*max(C,L); contact witnesses are clamped to zero; include iff
+-    distance<=delta. No margin.py or cover implementation is called.
++    distance<=delta. Nonplanar VF/FV distances use the true triangulated
++    surface, never the source-ring Newell descriptor plane. No margin.py or
++    cover implementation is called. Gate: test_r7fix_margin_oracle.py.
+     """
+     lengths, diagonals = [], []
+     for P in (A, B):
+@@ -318,7 +347,7 @@ def margin_selection(A, B, delta, *, touching=False, tol=1e-9):
+     coordinate = max(abs(x) for P in (A, B) for v in P.verts for x in v)
+     rounding = 64*2.220446049250313e-16*max(coordinate, length)
+     ctol = max(1e-9*length, 1e-12*max(diagonals), rounding)+rounding
+-    distances = {label: witness_distance(A, B, label) for label, _ in cover_labels(A, B, tol)}
++    distances = {label: _margin_witness_distance(A, B, label) for label, _ in cover_labels(A, B, tol)}
+     contact = touching or min(distances.values(), default=float("inf")) <= ctol
+     result = {}
+     for label, distance in distances.items():
+diff --git a/tests/test_e5a2_integer_arithmetic.py b/tests/test_e5a2_integer_arithmetic.py
+index c29487c..b76d98e 100644
+--- a/tests/test_e5a2_integer_arithmetic.py
++++ b/tests/test_e5a2_integer_arithmetic.py
+@@ -183,7 +183,7 @@ def _eager_ee(A, ea, B, eb, tol=0., extent_tol=0.):
+             qa = c.add(pa0, c.mul(dA, c._qclamp(_dot(c.sub(qb, pa0), dA)/_dot(dA, dA))))
+         return c.Cover3('EE', ('edge', *ea), ('edge', *eb), unit_normal, gap,
+                         c._float_vector(qa), c._float_vector(qb), (float(s), float(t)),
+-                        None, sb == 1 and sa == 1, inside, gap2, sign)
++                        None, sb == 1 and sa == 1, inside, gap2, sign, None, candidate)
+     return None
+ 
+ 
+@@ -200,7 +200,11 @@ def test_deferred_edge_parameters_preserve_every_eager_fraction_cover(scale, off
+     for ea in a.edges():
+         for eb in b.edges():
+             for tol in (0., 1e-7):
+-                assert covers3.ee_cover(a, ea, b, eb, tol) == _eager_ee(a, ea, b, eb, tol), (ea, eb, tol)
++                actual, expected = covers3.ee_cover(a, ea, b, eb, tol), _eager_ee(a, ea, b, eb, tol)
++                assert actual == expected, (ea, eb, tol)
++                if actual is not None:
++                    assert actual.exact_normal_direction == expected.exact_normal_direction
++                    assert any(actual.exact_normal_direction), 'nonzero-exact-normal-certificate'
+ 
+ 
+ def _fraction_membership(a, b, point, tol):
+diff --git a/tests/test_interlock_e5a.py b/tests/test_interlock_e5a.py
+index 212c88d..42be7d6 100644
+--- a/tests/test_interlock_e5a.py
++++ b/tests/test_interlock_e5a.py
+@@ -2,19 +2,22 @@
+ from fractions import Fraction as F
+ import math
+ from types import SimpleNamespace
++import inspect
++import pytest
++
++from eab.kernel3d import interlock as I
+ 
+ from eab.kernel3d.geom3 import Polyhedron, cross, norm
+ from eab.kernel3d.interlock import _normal_noise
+ 
+ 
+-def test_normal_noise_handles_exact_cross_hidden_by_unit_vector_rounding():
++def test_normal_noise_handles_exact_cross_hidden_by_unit_vector_rounding(monkeypatch):
+     """Independent rational edge differences, not production cone primitives."""
+     A = Polyhedron([(-0.5499999999999999, -0.5, 1.7321660590032764),
+                     (-0.14999999999999997, -0.5, 1.3910452200557695)], [])
+     B = Polyhedron([(-0.6, 0.5, 0.7321660590032764),
+                     (-0.19999999999999996, 0.5, 0.3910452200557694)], [])
+     edge = (0, 1)
+-    assert norm(cross(B.edge_dir(edge), A.edge_dir(edge))) == 0
+     u = tuple(F(b) - F(a) for a, b in zip(A.verts[0], A.verts[1]))
+     v = tuple(F(b) - F(a) for a, b in zip(B.verts[0], B.verts[1]))
+     n = (u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0])
+@@ -22,6 +25,28 @@ def test_normal_noise_handles_exact_cross_hidden_by_unit_vector_rounding():
+     assert sine_squared > 0
+     expected = (A.edge_noise(edge)+B.edge_noise(edge))/math.sqrt(float(sine_squared))
+     cover = SimpleNamespace(label=lambda: ('EE', ('edge', 0, 1), ('edge', 0, 1)))
+-    actual = _normal_noise(A, B, cover)
++    actual = I._normal_noise(A, B, cover)
+     assert math.isfinite(actual) and actual > 1
+-    assert math.isclose(actual, expected, rel_tol=2e-15)
++    assert math.isclose(actual, expected, rel_tol=2e-15), 'exact-edge-noise'
++    # Correct final normalization need no longer collapse these two directions.
++    # Preserve the old zero-display-cross case explicitly, without changing the
++    # source geometry, rational oracle or acceptance threshold.
++    displayed = A.edge_dir(edge)
++    with monkeypatch.context() as patch:
++        patch.setattr(Polyhedron, 'edge_dir', lambda self, e: displayed)
++        assert norm(cross(B.edge_dir(edge), A.edge_dir(edge))) == 0
++        hidden = I._normal_noise(A, B, cover)
++        assert math.isclose(hidden, expected, rel_tol=2e-15), 'exact-edge-noise-hidden-display'
++        assert hidden == actual, 'display-independent-edge-noise'
++
++
++def test_normal_noise_rejects_nonzero_rounded_cross_fast_path(monkeypatch):
++    source = inspect.getsource(I._normal_noise)
++    exact = 'sine = sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))'
++    assert source.count(exact) == 1
++    namespace = dict(vars(I))
++    exec(compile(source.replace(exact, 'sine = norm(cross(B.edge_dir(eb), A.edge_dir(ea)))'),
++                 '<r7fix-nonzero-rounded-cross-mutation>', 'exec'), namespace)
++    monkeypatch.setattr(I, '_normal_noise', namespace['_normal_noise'])
++    with pytest.raises(AssertionError, match='exact-edge-noise'):
++        test_normal_noise_handles_exact_cross_hidden_by_unit_vector_rounding(monkeypatch)
+diff --git a/tests/test_margin_penetration.py b/tests/test_margin_penetration.py
+index 6705c03..bdb27b9 100644
+--- a/tests/test_margin_penetration.py
++++ b/tests/test_margin_penetration.py
+@@ -193,8 +193,9 @@ def test_edge_edge_penetration_without_any_vertex_inside_is_constructed():
+ 
+ def test_guard_is_not_a_vertex_inside_check(monkeypatch):
+     """牙（穿过被测路径）：把 margin 里的贯入守卫换成"A 的某顶点在 B 内"检查（G6 的变异原样），
+-    交叉方条必须红——它给出间距 0.05、EE 标签、margin_contacts []（fail-unsafe）；
+-    而"顶点在体内"那一类旧输入在同一变异下照绿（这正是旧门无牙的原因）。"""
++    交叉方条先由完整表面距离自校验响亮拒绝；再移除该自校验的交面特征，
++    保留旧门的全部断言：错误间距 0.05、EE 标签、margin_contacts []（fail-unsafe）。
++    而"顶点在体内"那一类旧输入在同一双变异下照绿。"""
+     import eab.margin as M
+     from eab.kernel3d.geom3 import point_in_polyhedron
+ 
+@@ -204,12 +205,33 @@ def test_guard_is_not_a_vertex_inside_check(monkeypatch):
+ 
+     monkeypatch.setattr(M, "polyhedra_overlap", vertex_inside_guard)
+     A, B, _ = _crossbars_case()
+-    d, lab = body_distance(A, B)
+-    assert lab[0] == "EE" and d == pytest.approx(0.05, abs=1e-12), (d, lab)       # 变异：把贯入深度当间距
+-    assert margin_contacts(A, B, delta=0.05) == []
+-    with pytest.raises(AssertionError):
+-        test_penetration_is_reported_as_a_violated_margin("crossed bars (edge-edge only)")
+-    test_penetration_is_reported_as_a_violated_margin("tetra+box (0,0,0.3)")        # 旧类输入看不见这个变异
++    # R7's complete edge/face distance independently detects the bad guard:
++    # fail closed, rather than requiring the old unsafe positive distance.
++    with pytest.raises(RuntimeError, match=r"margin self-check failed:.*nearest feature pair is 0.0"):
++        body_distance(A, B)
++    with pytest.raises(RuntimeError, match=r"margin self-check failed:.*nearest feature pair is 0.0"):
++        margin_contacts(A, B, delta=0.05)
++    with pytest.raises(RuntimeError, match=r"margin self-check failed:.*nearest feature pair is 0.0"):
++        inflated_membership(A, B, delta=0.05)
++
++    # Retain EVERY original unsafe-output/guard assertion too. Reintroduce the
++    # former missing edge-face feature INSIDE the brute implementation, not by
++    # faking output after enumeration, so the primary guard still needs teeth.
++    import inspect
++    from eab.kernel3d import geom3 as G
++    source = inspect.getsource(G.brute_feature_distance)
++    marker = "if _surfaces_intersect(*triangles):"
++    assert source.count(marker) == 1
++    scope = dict(vars(G))
++    exec(compile(source.replace(marker, "if False:"), __file__, "exec"), scope)
++    with monkeypatch.context() as legacy_brute:
++        legacy_brute.setattr(M, "brute_feature_distance", scope["brute_feature_distance"])
++        d, lab = body_distance(A, B)
++        assert lab[0] == "EE" and d == pytest.approx(0.05, abs=1e-12), (d, lab)       # 变异：把贯入深度当间距
++        assert margin_contacts(A, B, delta=0.05) == []
++        with pytest.raises(AssertionError):
++            test_penetration_is_reported_as_a_violated_margin("crossed bars (edge-edge only)")
++        test_penetration_is_reported_as_a_violated_margin("tetra+box (0,0,0.3)")        # 旧类输入看不见这个变异
+ 
+ 
+ # ---------------------------------------------------------------- G6 minor[28]：相触分辨率内的结果单调
+diff --git a/tests/test_r6fix_construction.py b/tests/test_r6fix_construction.py
+index 6b36018..7ae86e2 100644
+--- a/tests/test_r6fix_construction.py
++++ b/tests/test_r6fix_construction.py
+@@ -92,7 +92,7 @@ def test_rational_sqrt_rounds_only_the_final_root():
+ 
+ def test_g6f06_gap_magnitude_gate_has_teeth(monkeypatch):
+     import eab.kernel2d.entrance as E
+-    monkeypatch.setattr(E, "sqrt_rational", lambda value: math.sqrt(float(value)))
++    monkeypatch.setattr(E, "sqrt_rational", lambda value, **kwargs: math.sqrt(float(value)))
+     with pytest.raises(AssertionError, match="representable signed gap") as caught:
+         test_g6f06_exit_gap_preserves_representable_nonzero_magnitude(-600)
+     print("G6F-06 mutant:", caught.value)
+diff --git a/tests/test_r6fix_frozen_construction.py b/tests/test_r6fix_frozen_construction.py
+index 49f25fc..84f4a2c 100644
+--- a/tests/test_r6fix_frozen_construction.py
++++ b/tests/test_r6fix_frozen_construction.py
+@@ -62,5 +62,14 @@ def test_frozen_unit_jet_divides_before_rounding_an_overflowing_tangent_componen
+     B = Polyhedron([(0.0, 0.0, 0.0)], [])
+     n = frozen_normal(A, B, ("VV3", ("V", 0), ("V", 0)))
+     # dn = (I - nn^T) dp / sqrt(3), n=(1,1,1)/sqrt(3).
+-    reference = [float((F(seed) * k / 3) / F(math.sqrt(3))) for k in (4, -2, -2)]
+-    assert [c.e[0] for c in n] == reference
++    # The former reference divided by an already rounded sqrt(3), retaining
++    # the very double rounding fixed in R7. Exact midpoint inequalities below
++    # uniquely require the correctly rounded analytic derivative (no tolerance).
++    for c, k in zip(n, (4, -2, -2)):
++        value = c.e[0]
++        assert (value > 0) == (k > 0)
++        magnitude = abs(value)
++        lo = (F(math.nextafter(magnitude, 0.0)) + F(magnitude)) / 2
++        hi = (F(magnitude) + F(math.nextafter(magnitude, math.inf))) / 2
++        exact_square = F(seed)**2 * k*k / 27
++        assert lo*lo < exact_square < hi*hi

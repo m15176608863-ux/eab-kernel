@@ -101,6 +101,7 @@ from fractions import Fraction
 from math import cos, pi, sin
 
 from .lp import OPTIMAL, UNBOUNDED, _fl, maximize
+from .construction import sqrt_rational
 
 Vec = tuple[float, ...]
 
@@ -242,8 +243,12 @@ class LimitContact:
         if not (m > 0.0 and all(math.isfinite(v) for v in self.normal)):   # NaN 在任一分量都拒：max() 对 NaN 的比较恒假
 
             raise ValueError(f"contact normal must be a finite nonzero vector, got {self.normal!r}")
-        n = sum((v / m) ** 2 for v in self.normal) ** 0.5
-        self.normal = tuple(v / m / n for v in self.normal)
+        exact = tuple(map(Fraction, self.normal))
+        square = sum(v*v for v in exact)
+        # Model directions are rounded only after the complete normalization.
+        # In particular v/m/n can round a representable subnormal component
+        # twice; no rounded norm or scaled component is an intermediate here.
+        self.normal = tuple((-1 if v < 0 else 1)*sqrt_rational(v*v/square) for v in exact)
         # G6 第四轮 minor：cohesion / area 为 NaN 或负数曾被 `cohesion > 0 and area > 0` 静默当成"无黏聚"，α 按纯摩擦给出、
         # 自校验照常通过；mu 为 NaN 只在 Fraction(nan) 处以无关信息报错。非有限输入要在入口响亮失败（与法向同一家族）
         for name in ("mu", "cohesion", "area"):
@@ -541,11 +546,15 @@ def mechanism_power(mech: list[float], ct: LimitContact, g: Vec, origin: Vec, di
 
 
 def _norm(v) -> float:
-    """欧氏范数，先按最大分量归一（1e160 量级的力平方不溢出，1e-200 量级的不下溢成 0）。"""
-    m = max((abs(x) for x in v), default=0.0)
-    if m == 0.0 or m == float("inf") or m != m:
-        return m
-    return m * sum((x / m) ** 2 for x in v) ** 0.5
+    """Checked final root for finite report inputs; explicit infinities stay reports.
+
+    No scaling division is rounded before the final norm. A finite supplied
+    vector whose exact norm is outside binary64 range raises, rather than
+    creating a spurious infinity/zero in the report.
+    """
+    if any(not math.isfinite(x) for x in v):
+        return math.hypot(*v)
+    return sqrt_rational(sum(Fraction(x)**2 for x in v))
 
 
 class _ExactFloat(float):

@@ -8,7 +8,7 @@
 - `retry_contact_pair_probe.tsv` **不是完整接触列表**：只在重试事件时写，且只写涉及触发块/顶压板的接触（`pass 0/1` 两遍筛选，`record_limit = 1024`，tf.cpp:10842-10857）。用作 G2 同构门时，比较对象必须限定为同一筛选子集；完整计数走 `contact_pair_stage.tsv`（逐块对的 nn/ne/np/ee 计数）与 `solver_profile.tsv` 的 `content_xor64/sum64/ordered_hash64`。
 - 探针的 `contact_type` 是 **候选类** `c[i][2]`（0 n-n / 1 n-e / 2 n-p / 3 e-e），不是 tf05 展开后的入口类 `m[j][2]`（只有 2/3）；`contact_entry = m0[i][0]` 才指向当前入口。两者不要混比。
 - `area` 在 `o[i][3] <= 0` 时被替换为 1.0（tf.cpp:10880），`normal_force = ss·gap·area` 只在 `status_closed` 时非零——读探针时不能把 area=1.0 当真实面积。
-- 三维接触枚举（tf04/tf05）目前没有任何独立对账通道（refkernel3d 只覆盖 K/F 装配）。eab-kernel Phase 2 将成为第一份。
+- 2026-09-18 时，已检查的三维接触枚举（tf04/tf05）导出尚缺独立对账通道（refkernel3d 只覆盖 K/F 装配）。eab-kernel Phase 2 的目标是补充独立对账通道，不作学术或项目间优先性声称。
 
 ### 导师线 DDA4.x（DDAKernel.cpp 4.5）
 - `contact_topology_audit_output` 只产出**逐步汇总**（`DDA31::ContactTopologyStepAudit`：接触键 = (vertexId, edgeStartId, edgeEndId)，状态 = `m0[i][2]`，去重/无效计数，跨步差分），写进运行报告 JSON 的 `cross_step_contact_topology_audit` 字段。~~没有逐接触导出~~ **订正（2026-10-10，G6 第五轮 major）**：同一份

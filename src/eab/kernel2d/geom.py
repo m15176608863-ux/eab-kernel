@@ -10,8 +10,11 @@ from __future__ import annotations
 
 import sys
 from fractions import Fraction
+from functools import lru_cache
 from itertools import chain
 from math import hypot
+
+from ..construction import sqrt_rational
 
 Point = tuple[float, float]
 Poly = list[Point]
@@ -37,7 +40,7 @@ def eff_tol(tol: float, *groups) -> float:
 
 def angle_floor(C: float, ell: float) -> float:
     """边长 ℓ、坐标量级 C 下法向/转角的舍入下限 c·eps·C/ℓ（弧度）。ℓ = 0 时为 +inf（零长边另行报错）。"""
-    return ROUND_C * EPS * C / ell if ell > 0.0 else float("inf")
+    return _display_fraction(Fraction(ROUND_C*EPS)*Fraction(C)/Fraction(ell)) if ell > 0.0 else float("inf")
 
 
 def sub(a: Point, b: Point) -> Point:
@@ -61,14 +64,26 @@ def cross(a: Point, b: Point) -> float:
 
 
 def norm(a: Point) -> float:
-    return hypot(a[0], a[1])
+    """One final checked square root of the exact supplied vector square."""
+    return _norm_exact(*map(Fraction, a))
+
+
+@lru_cache(maxsize=4096)
+def _norm_exact(x, y):
+    return sqrt_rational(x*x+y*y)
 
 
 def unit(a: Point) -> Point:
-    n = norm(a)
-    if n == 0.0:
+    """Normalize exact component ratios, never divide by the rounded norm."""
+    return _unit_exact(*map(Fraction, a))
+
+
+@lru_cache(maxsize=4096)
+def _unit_exact(x, y):
+    square = x*x+y*y
+    if not square:
         raise ZeroDivisionError("unit of zero vector")
-    return (a[0] / n, a[1] / n)
+    return tuple(((v > 0)-(v < 0))*sqrt_rational(v*v/square) for v in (x, y))
 
 
 def _area2_exact(poly):
@@ -118,9 +133,7 @@ def outward_normal(poly: Poly, i: int) -> Point:
     if not square:
         raise ValueError(f"zero-length edge {i % len(poly)} (consecutive duplicate vertex at {p}); "
                          f"strip duplicates at the reader boundary")
-    def component(value):
-        return (1 if value>0 else -1)*sqrt_rational(value*value/square) if value else 0.0
-    return component(ey),component(-ex)
+    return unit((ey, -ex))
 
 
 def zero_length_edges(poly: Poly) -> list[int]:
@@ -132,9 +145,8 @@ def zero_length_edges(poly: Poly) -> list[int]:
 def vertex_turn(poly: Poly, i: int) -> float:
     """顶点 i 处 cross(e_{i-1}, e_i)：CCW 多边形 >0 为凸顶点，<0 为凹（反射）顶点。"""
     n = len(poly)
-    e_prev = sub(poly[i % n], poly[(i - 1) % n])
-    e_next = sub(poly[(i + 1) % n], poly[i % n])
-    return cross(e_prev, e_next)
+    a, b, c = (tuple(map(Fraction, poly[k % n])) for k in (i-1, i, i+1))
+    return _display_fraction(cross(sub(b, a), sub(c, b)))
 
 
 def turn_angle(poly: Poly, i: int) -> float:
@@ -143,10 +155,17 @@ def turn_angle(poly: Poly, i: int) -> float:
     用 atan2(cross, dot) 而不是 sin：sin 分不清 θ 与 π−θ（审查 r1：178° 窄缝会被 3° 容差放行）。
     """
     n = len(poly)
-    e_prev = sub(poly[i % n], poly[(i - 1) % n])
-    e_next = sub(poly[(i + 1) % n], poly[i % n])
+    a, b, c = (tuple(map(Fraction, poly[k % n])) for k in (i-1, i, i+1))
+    u, v = sub(b, a), sub(c, b)
+    determinant, scalar = cross(u, v), dot(u, v)
+    scale = max(abs(determinant), abs(scalar))
+    if not scale:
+        raise ValueError("turn angle at zero-length edge")
     from math import atan2
-    return atan2(cross(e_prev, e_next), dot(e_prev, e_next))
+    angle = atan2(float(determinant/scale), float(scalar/scale))
+    if determinant and angle == 0:
+        raise ArithmeticError("nonzero turn angle below binary64 output range")
+    return angle
 
 
 def turn_floor(poly: Poly, i: int) -> float:
@@ -157,8 +176,10 @@ def turn_floor(poly: Poly, i: int) -> float:
     """
     n = len(poly)
     a, b, c = poly[(i - 1) % n], poly[i % n], poly[(i + 1) % n]
-    C = max(abs(a[0]), abs(a[1]), abs(b[0]), abs(b[1]), abs(c[0]), abs(c[1]))
-    return angle_floor(C, min(hypot(b[0] - a[0], b[1] - a[1]), hypot(c[0] - b[0], c[1] - b[1])))
+    a, b, c = (tuple(map(Fraction, p)) for p in (a, b, c))
+    C = max(abs(v) for p in (a, b, c) for v in p)
+    length2 = min(sum((p[k]-q[k])**2 for k in (0, 1)) for p, q in ((a, b), (b, c)))
+    return sqrt_rational((Fraction(ROUND_C*EPS)*C)**2/length2) if length2 else float("inf")
 
 
 def is_convex(poly: Poly, tol: float = 0.0) -> bool:

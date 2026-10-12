@@ -1,0 +1,173 @@
+{
+  "generated_utc": "2026-10-12T04:10:27.258320+00:00",
+  "head": "d44dd78e84fa0434860f52ca1a76306ddc498c48",
+  "head_unchanged": true,
+  "tested_file_count": 1727,
+  "tested_bytes_changed": [],
+  "fixture_count": 62,
+  "fixture_changes": [],
+  "removed_original_test_functions": [],
+  "modified_original_test_files": [
+    "tests/e5a_cover_oracle.py",
+    "tests/test_e5a2_integer_arithmetic.py",
+    "tests/test_interlock_e5a.py",
+    "tests/test_margin_penetration.py",
+    "tests/test_r6fix_construction.py",
+    "tests/test_r6fix_frozen_construction.py"
+  ],
+  "junit_testcases": 9851,
+  "junit_not_passed": [],
+  "full_suite": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-u",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--durations=25",
+      "-n",
+      "4",
+      "--basetemp=D:\\eab-wt\\cx-e2\\reports\\codex\\R7FIX_evidence\\tmp\\full_final",
+      "--junitxml=D:\\eab-wt\\cx-e2\\reports\\codex\\R7FIX_evidence\\full_suite.junit.xml"
+    ],
+    "cwd": "D:\\eab-wt\\cx-e2",
+    "env": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONIOENCODING": "utf-8",
+      "PYTHONPATH": "D:\\eab-wt\\cx-e2\\reports\\codex\\R7FIX_evidence\\verification_deps;"
+    },
+    "start_utc": "2026-10-12T04:02:01.366351+00:00",
+    "end_utc": "2026-10-12T04:09:30.158439+00:00",
+    "elapsed_seconds": 448.7819218999939,
+    "exit_code": 0,
+    "last_line": "9851 passed in 446.20s (0:07:26)",
+    "log_sha256": "a6b80c42c347309539688534a4b3162787624e18c4b5a17d57caf512302f421d"
+  },
+  "full_log_matches_metadata": true,
+  "findings": [
+    {
+      "id": "G6G-01",
+      "test_prefixes": [
+        "test_g6g01_first_exit_checks_isolated_true_boundary_event",
+        "test_g6g01_missing_covers_at_first_boundary_rejected"
+      ],
+      "matched_cases": 2,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-02",
+      "test_prefixes": [
+        "test_g6g02_vv_uses_exact_difference_and_independent_unit_normal",
+        "test_g6g02_vv_unrepresentable_gap_fails_loud_not_inf"
+      ],
+      "matched_cases": 3,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-03",
+      "test_prefixes": [
+        "test_g6g03_unrepresentable_diameter_does_not_disable_missing_cover_gate"
+      ],
+      "matched_cases": 2,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-04",
+      "test_prefixes": [
+        "test_g6g04_folded_internal_ridges_attain_slab_distance"
+      ],
+      "matched_cases": 3,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-05",
+      "test_prefixes": [
+        "test_g6g05_face_area_rounds_after_final_halving",
+        "test_g6g05_face_area_underflow_is_not_silent_zero",
+        "test_g6g05_facet_gap_rounds_after_normal_length_division"
+      ],
+      "matched_cases": 8,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-06",
+      "test_prefixes": [
+        "test_g6g06_margin_normal_does_not_subtract_display_points"
+      ],
+      "matched_cases": 4,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-07",
+      "test_prefixes": [
+        "test_g6g07_derived_power_range_not_just_inputs",
+        "test_g6g07_minimal_representable_derivative_survives"
+      ],
+      "matched_cases": 877,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-08",
+      "test_prefixes": [
+        "test_g6g08_mass_properties_use_exact_products_before_final_rounding",
+        "test_g6g08_centroid_retains_cancellation_even_when_volume_is_representable",
+        "test_g6g08_volume_independent_of_cyclic_face_ring_start"
+      ],
+      "matched_cases": 6,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-09",
+      "test_prefixes": [
+        "test_g6g09_window_documents_distinguish_closed_separation_infimum",
+        "test_g6g09_tight_closed_cavity_distinguishes_rho_from_pd_closed"
+      ],
+      "matched_cases": 6,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-10",
+      "test_prefixes": [
+        "test_g6g10_readme_oracle_and_canon_status_are_current"
+      ],
+      "matched_cases": 1,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    },
+    {
+      "id": "G6G-11",
+      "test_prefixes": [
+        "test_g6g11_priority_claim_is_withdrawn_instead_of_narrowed"
+      ],
+      "matched_cases": 1,
+      "missing_prefixes": [],
+      "not_passed": [],
+      "verified_green": true
+    }
+  ],
+  "diff_check_exit": 0,
+  "verified": true
+}

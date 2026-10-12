@@ -103,24 +103,21 @@ class Dual:
         if self.v < 0.0 and not p.is_integer():
             raise ValueError(f"Dual ** {p!r}: negative base {self.v!r} has no real power")
         value = self.v ** p
-        if p.is_integer() and not _ordinary(self.v, p, *self.e):
+        if p.is_integer():
             # Integer powers admit an exact derivative even if v**(p-1)
             # over/underflows before a representable derivative is formed.
             c = Fraction(p) * Fraction(self.v) ** (int(p) - 1)
             return Dual(value, tuple(_derivative_float(c * Fraction(a)) for a in self.e))
-        if not _ordinary(self.v, p, *self.e):
-            # Noninteger powers need a real-valued construction. Decimal's
-            # separate exponent retains the coefficient until the final seed
-            # multiplication, even when both primal power and coefficient
-            # would underflow as binary64. No branch decision uses this path.
-            with localcontext() as ctx:
-                ctx.prec = 80
-                ctx.traps[Underflow] = True
-                c = Decimal(p) * ctx.power(Decimal(self.v), Decimal(p) - 1)
-                return Dual(value, tuple(_derivative_float(Fraction(c * Decimal(a)))
-                                         for a in self.e))
-        c = p * (self.v ** (p - 1.0))
-        return Dual(value, tuple(c * a for a in self.e))
+        # There is no input-only safe exponent box for powers: even inputs
+        # in [2**-200, 2**200] can produce an out-of-range v**(p-1), then
+        # return to range after multiplying a seed. Retain a separate exponent
+        # through the final product for every noninteger power (G6G-07).
+        with localcontext() as ctx:
+            ctx.prec = 80
+            ctx.traps[Underflow] = True
+            c = Decimal(p) * ctx.power(Decimal(self.v), Decimal(p) - 1)
+            return Dual(value, tuple(_derivative_float(Fraction(c * Decimal(a)))
+                                     for a in self.e))
 
     # ---------------- 择支（只看 primal，禁止参与本构） ----------------
     def __float__(self) -> float:
