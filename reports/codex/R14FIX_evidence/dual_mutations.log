@@ -1,0 +1,66 @@
+
+MUTATION N01 early exponent float
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 35, in expect_red
+    gate()
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 46, in <lambda>
+    lambda: gates.test_r14_integer_power_keeps_exact_parity(2**54+1, int),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r14_dual.py", line 21, in test_r14_integer_power_keeps_exact_parity
+    assert result.v == -1.0, "exact odd exponent must retain negative primal"
+           ^^^^^^^^^^^^^^^^
+AssertionError: exact odd exponent must retain negative primal
+VERIFIED_RED N01 early exponent float target assertion: exact odd exponent must retain negative primal
+
+MUTATION N02 bypass exact angle check
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 35, in expect_red
+    gate()
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 51, in <lambda>
+    lambda: gates.test_r14_trig_rejects_lossy_exact_parameters("sin", 2**54+1, False),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r14_dual.py", line 30, in test_r14_trig_rejects_lossy_exact_parameters
+    with pytest.raises(ConstructionDomainError, match=function):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\raises.py", line 710, in __exit__
+    fail(f"DID NOT RAISE {self.expected_exceptions[0]!r}")
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\outcomes.py", line 163, in __call__
+    raise Failed(msg=reason, pytrace=pytrace)
+Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+VERIFIED_RED N02 bypass exact angle check target assertion: DID NOT RAISE
+
+MUTATION SCAN noninteger exponent check
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 35, in expect_red
+    gate()
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 56, in <lambda>
+    lambda: gates.test_r14_noninteger_power_rejects_lossy_exact_exponent(gates.F(1, 3)),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r14_dual.py", line 60, in test_r14_noninteger_power_rejects_lossy_exact_exponent
+    with pytest.raises(ConstructionDomainError, match="exponent"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\raises.py", line 710, in __exit__
+    fail(f"DID NOT RAISE {self.expected_exceptions[0]!r}")
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\outcomes.py", line 163, in __call__
+    raise Failed(msg=reason, pytrace=pytrace)
+Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+VERIFIED_RED SCAN noninteger exponent check target assertion: DID NOT RAISE
+
+MUTATION SCAN atan2 exact nonzero output cell
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 35, in expect_red
+    gate()
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\dual_mutations.py", line 63, in <lambda>
+    lambda: gates.test_r14_atan2_nonzero_output_underflow_is_named(False),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r14_dual.py", line 98, in test_r14_atan2_nonzero_output_underflow_is_named
+    with pytest.raises(ConstructionDomainError, match="atan2 result"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\raises.py", line 710, in __exit__
+    fail(f"DID NOT RAISE {self.expected_exceptions[0]!r}")
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\outcomes.py", line 163, in __call__
+    raise Failed(msg=reason, pytrace=pytrace)
+Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+VERIFIED_RED SCAN atan2 exact nonzero output cell target assertion: DID NOT RAISE
+
+PRODUCTION_BYTES_UNCHANGED 62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5

@@ -1,0 +1,206 @@
+FFFFFFFFFFFF                                                             [100%]
+================================== FAILURES ===================================
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[lx-False] _
+
+generic = False, parameter = 'lx'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[lx-True] _
+
+generic = True, parameter = 'lx'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[ly-False] _
+
+generic = False, parameter = 'ly'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[ly-True] _
+
+generic = True, parameter = 'ly'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[lz-False] _
+
+generic = False, parameter = 'lz'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[lz-True] _
+
+generic = True, parameter = 'lz'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[amp-False] _
+
+generic = False, parameter = 'amp'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[amp-True] _
+
+generic = True, parameter = 'amp'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[center-False] _
+
+generic = False, parameter = 'center'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_physical_parameters_are_checked_before_early_arithmetic[center-True] _
+
+generic = True, parameter = 'center'
+
+    @pytest.mark.parametrize("generic", [False, True])
+    @pytest.mark.parametrize("parameter", ["lx", "ly", "lz", "amp", "center"])
+    def test_shape_physical_parameters_are_checked_before_early_arithmetic(generic, parameter):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        tiny = F(1, 2**2000)
+        value = (tiny,0,0) if parameter == "center" else tiny
+>       with pytest.raises(ConstructionDomainError, match="osteomorphic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:70: Failed
+_ test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero[False] _
+
+generic = False
+
+    @pytest.mark.parametrize("generic", [False, True])
+    def test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero(generic):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        # Both supplied parameters are ordinary D400 values. A final nonzero
+        # coordinate lies below the RN-zero boundary and must be rejected.
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:79: Failed
+_ test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero[True] __
+
+generic = True
+
+    @pytest.mark.parametrize("generic", [False, True])
+    def test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero(generic):
+        from tools.osteomorphic import osteomorphic_block, osteomorphic_block_generic
+        function = osteomorphic_block_generic if generic else osteomorphic_block
+        # Both supplied parameters are ordinary D400 values. A final nonzero
+        # coordinate lies below the RN-zero boundary and must be rejected.
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_domain.py:79: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[lx-False]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[lx-True]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[ly-False]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[ly-True]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[lz-False]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[lz-True]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[amp-False]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[amp-True]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[center-False]
+FAILED tests/test_r14_domain.py::test_shape_physical_parameters_are_checked_before_early_arithmetic[center-True]
+FAILED tests/test_r14_domain.py::test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero[False]
+FAILED tests/test_r14_domain.py::test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero[True]
+12 failed, 19 deselected in 0.13s

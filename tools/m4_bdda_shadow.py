@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from eab.adapters.bdda2d import detect_step, load_window
+from eab.construction import scalar_rational
 from eab.readers import bdda_df
 from eab.readers.bdda_geom import load_step_geometries
 from eab.oracle_construction import sqrt_exact, scalar_exact
@@ -233,7 +234,7 @@ def compare_step(sg, window, legacy, eab=None):
         if key[0] == "VE" and "df18_cs1" in record.extra:
             s = record.extra["df18_s"]
             assert len(s) >= 2, "legacy df18 normal missing"
-            check_metric(replace(record, gap=float(record.extra["df18_cs1"]), normal=tuple(s[:2])),
+            check_metric(replace(record, gap=scalar_rational(record.extra["df18_cs1"], quantity="M4 legacy cs1"), normal=tuple(s[:2])),
                          key, sg, window)
             observed_metrics += 1
     for key, record in ed.items():

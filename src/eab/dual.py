@@ -13,7 +13,12 @@
 梯度正确性的判据是**收敛阶**（h 扫描误差呈 V 形、大端按 O(h²)），不是某个 h 上的一致；
 纯相对误差判据会被接近零的分量主导而误报。
 Algebraic jet constructions retain the full finite rational input domain;
-unrepresentable nonzero outputs raise ConstructionDomainError. Diagnostic
+unrepresentable nonzero outputs raise ConstructionDomainError. Integer and
+half-integer powers dispatch from the exact exponent, without losing parity.
+Other power exponents/bases and sin/cos/atan2 arguments must be losslessly
+representable finite binary64 values before calling the libm model (R14FIX).
+This includes all finite binary64 subnormals, not just the engineering D400
+interval. Gate: tests/test_r14_dual.py. Diagnostic
 finite differences use the input domain in docs/exact_predicates_plan.md.
 The callback samples and libm coefficients define their approximate model.
 """
@@ -23,7 +28,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from eab.construction import scalar_rational, sqrt_rational
-from eab.numeric_domain import ConstructionDomainError, check_input, check_inputs, exact_input
+from eab.numeric_domain import ConstructionDomainError, check_input, check_inputs, exact_input, binary64_argument
 from fractions import Fraction
 from decimal import Decimal, localcontext, Underflow
 from typing import Iterable, Sequence, Union
@@ -105,30 +110,34 @@ class Dual:
         对偶运算，所以这里当场报错。指数本身不许是对偶数（不支持 ∂/∂p）。"""
         if isinstance(p, Dual):
             raise TypeError("Dual ** Dual is not supported (no derivative w.r.t. the exponent)")
-        p = float(p)
+        p = exact_input(p, "Dual power exponent")
         if p == 0.0:
             return Dual(1.0, (0.0,) * self.width)
-        if self.v < 0.0 and not p.is_integer():
+        if self.v < 0.0 and p.denominator != 1:
             raise ValueError(f"Dual ** {p!r}: negative base {self.v!r} has no real power")
+        if p.denominator == 1:
+            _check_exact_power_size(self.v, max(abs(int(p)), abs(int(p)-1)), "Dual integer power")
+            value = scalar_rational(Fraction(self.v) ** int(p), quantity="Dual integer power")
+            # Dispatch before any binary64 conversion: p can exceed 2**53,
+            # and its parity still determines both primal and derivative signs.
+            c = Fraction(p) * Fraction(self.v) ** (int(p) - 1)
+            return Dual(value, tuple(_derivative_float(c * Fraction(a)) for a in self.e))
+        if Fraction(p).denominator == 2:
+            _check_exact_power_size(self.v, max(abs(int(2*p)), abs(int(2*p)-2)), "Dual half-integer power")
+            value = sqrt_rational(Fraction(self.v) ** int(2*p))
+            # The complete half-integer derivative has a rational square;
+            # Decimal precision must not perturb exact subnormal ties.
+            return Dual(value, tuple(_half_power_derivative(self.v, p, a) for a in self.e))
+        p = _lossless_libm_input(p, "Dual power exponent")
+        base = _lossless_libm_input(self.v, "Dual power base")
         try:
-            value = self.v ** p
+            value = base ** p
         except OverflowError as exc:
             raise ConstructionDomainError("Dual power: primal exceeds binary64 output range") from exc
         if not math.isfinite(value):
             raise ConstructionDomainError("Dual power: primal is outside finite binary64 range")
         if value == 0.0 and self.v != 0.0:
             raise ConstructionDomainError("Dual power: nonzero primal is below the binary64 range")
-        if p.is_integer():
-            value = scalar_rational(Fraction(self.v) ** int(p), quantity="Dual integer power")
-            # Integer powers admit an exact derivative even if v**(p-1)
-            # over/underflows before a representable derivative is formed.
-            c = Fraction(p) * Fraction(self.v) ** (int(p) - 1)
-            return Dual(value, tuple(_derivative_float(c * Fraction(a)) for a in self.e))
-        if Fraction(p).denominator == 2:
-            value = sqrt_rational(Fraction(self.v) ** int(2*p))
-            # The complete half-integer derivative has a rational square;
-            # Decimal precision must not perturb exact subnormal ties.
-            return Dual(value, tuple(_half_power_derivative(self.v, p, a) for a in self.e))
         # There is no input-only safe exponent box for powers: even inputs
         # in [2**-200, 2**200] can produce an out-of-range v**(p-1), then
         # return to range after multiplying a seed. Retain a separate exponent
@@ -138,7 +147,7 @@ class Dual:
             ctx.traps[Underflow] = True
             # General powers retain an 80-digit transcendental approximation;
             # no exact/correctly-rounded claim is made for that coefficient.
-            c = ctx.power(Decimal(self.v), Decimal(p) - 1)
+            c = ctx.power(Decimal(base), Decimal(p) - 1)
             return Dual(value, tuple(_derivative_float(Fraction(p) * Fraction(c) * Fraction(a))
                                      for a in self.e))
 
@@ -215,6 +224,22 @@ def is_exact_zero(x: Number) -> bool:
     return x.is_exact_zero() if isinstance(x, Dual) else (x == 0)
 
 
+def _check_exact_power_size(base, exponent: int, quantity: str) -> None:
+    """Bound exact-power materialisation, not exponent parity or output range.
+
+    For bases other than 0/+1/-1 the numerator+denominator bit allocation
+    estimate is limited to 2**20. Trivial bases stay exact for arbitrary int
+    exponents; final primal/channel range checks still apply. Gate:
+    test_r14_exact_power_resource_limit_is_named_without_losing_trivial_bases.
+    """
+    q = exact_input(base, quantity)
+    if q in (0, 1, -1):
+        return
+    bits = abs(q.numerator).bit_length() + q.denominator.bit_length()
+    if bits * abs(exponent) > 2**20:
+        raise ConstructionDomainError(quantity, "exact power resource domain: estimated numerator+denominator bits exceed 2^20")
+
+
 def _half_power_derivative(value: float, power: float, seed: float) -> float:
     """Exact square of p*value**(p-1)*seed for half-integer p."""
     coefficient = Fraction(power) * Fraction(seed)
@@ -251,42 +276,66 @@ def sqrt(x: Number) -> Number:
     return sqrt_rational(x)
 
 
+def _lossless_libm_input(value, quantity: str) -> float:
+    """Local seam for the central lossless transcendental-parameter policy."""
+    return binary64_argument(value, quantity)
+
+
 def sin(x: Number) -> Number:
-    """libm primal/coefficient; checked final coefficient-times-seed product.
+    """Lossless binary64 argument; libm primal/coefficient, checked final jet.
 
     No correctly-rounded transcendental claim is made for libm coefficients.
-    Gate: test_r10_trigonometric_nonzero_derivative_cannot_underflow_silently.
+    Gate: test_r14_trig_rejects_lossy_exact_parameters;
+    test_r10_trigonometric_nonzero_derivative_cannot_underflow_silently.
     """
+    argument = _lossless_libm_input(val(x), "sin angle")
+    value = math.sin(argument)
+    if value == 0.0 and argument != 0.0:
+        raise ConstructionDomainError("sin result", "nonzero result is below the binary64 range")
     if isinstance(x, Dual):
-        c = math.cos(x.v)
-        return Dual(math.sin(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
-                                        for a in x.e))
-    return math.sin(x)
+        c = math.cos(argument)
+        return Dual(value, tuple(_derivative_float(Fraction(c) * Fraction(a))
+                                 for a in x.e))
+    return value
 
 
 def cos(x: Number) -> Number:
-    """Same libm-coefficient/range contract as sin; exact zero remains zero.
+    """Same lossless-argument/libm-coefficient contract as sin.
 
-    Gate: test_r10_trigonometric_representable_subnormal_and_zero_channels.
+    Gate: test_r14_trig_rejects_lossy_exact_parameters;
+    test_r10_trigonometric_representable_subnormal_and_zero_channels.
     """
+    argument = _lossless_libm_input(val(x), "cos angle")
+    value = math.cos(argument)
+    if value == 0.0:
+        # A finite rational angle is never an odd multiple of pi/2.
+        raise ConstructionDomainError("cos result", "nonzero result is below the binary64 range")
     if isinstance(x, Dual):
-        c = -math.sin(x.v)
-        return Dual(math.cos(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
-                                        for a in x.e))
-    return math.cos(x)
+        c = -math.sin(argument)
+        return Dual(value, tuple(_derivative_float(Fraction(c) * Fraction(a))
+                                 for a in x.e))
+    return value
 
 
 def atan2(y: Number, x: Number) -> Number:
-    if not isinstance(y, Dual) and not isinstance(x, Dual):
-        return math.atan2(y, x)
     if isinstance(y, Dual) and isinstance(x, Dual) and y.width != x.width:
         raise ValueError(f"dual width mismatch: {y.width} vs {x.width}")
-    yv, xv = val(y), val(x)
+    yv = _lossless_libm_input(val(y), "atan2.y")
+    xv = _lossless_libm_input(val(x), "atan2.x")
+    # For x>0, 0<abs(atan(y/x))<abs(y/x). Certify the RN-zero cell
+    # before libm: some platforms incorrectly return min-subnormal at y/x=u/2.
+    if xv > 0 and yv != 0 and 2*abs(Fraction(yv)) <= Fraction(xv)*Fraction(math.ulp(0.0)):
+        raise ConstructionDomainError("atan2 result", "nonzero angle is below the binary64 range")
+    value = math.atan2(yv, xv)
+    if value == 0.0 and yv != 0.0:
+        raise ConstructionDomainError("atan2 result", "nonzero angle is below the binary64 range")
+    if not isinstance(y, Dual) and not isinstance(x, Dual):
+        return value
     w = y.width if isinstance(y, Dual) else x.width       # type: ignore[union-attr]
     ye = grad(y, w)
     xe = grad(x, w)
-    return Dual(math.atan2(yv, xv), tuple(_ratio_derivative(yv, xv, a, b, angular=True)
-                                        for a, b in zip(ye, xe)))
+    return Dual(value, tuple(_ratio_derivative(yv, xv, a, b, angular=True)
+                             for a, b in zip(ye, xe)))
 
 
 def lift(xs: Sequence[float], width: int) -> tuple[Dual, ...]:

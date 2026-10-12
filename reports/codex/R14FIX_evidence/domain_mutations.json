@@ -1,0 +1,34 @@
+{
+  "mutations": [
+    {
+      "mutation": "_shape_value",
+      "target_assertion": "DID NOT RAISE ConstructionDomainError",
+      "caught": true,
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 20, in <module>\n    try: run()\n         ^^^^^\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 13, in <lambda>\n    (osteomorphic,\"_shape_value\",\"else Fraction(value)\", lambda: gates.test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero(False)),\n                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r14_domain.py\", line 79, in test_shape_raw_exact_coordinate_cancellation_cannot_be_silently_zero\n    with pytest.raises(ConstructionDomainError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\raises.py\", line 710, in __exit__\n    fail(f\"DID NOT RAISE {self.expected_exceptions[0]!r}\")\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\outcomes.py\", line 163, in __call__\n    raise Failed(msg=reason, pytrace=pytrace)\nFailed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>\n"
+    },
+    {
+      "mutation": "reflex_vertices",
+      "target_assertion": "DID NOT RAISE ConstructionDomainError",
+      "caught": true,
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 20, in <module>\n    try: run()\n         ^^^^^\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 14, in <lambda>\n    (geom,\"reflex_vertices\",'    tol = binary64_argument(tol, \"reflex_vertices.tol\")\\n', lambda: gates.test_angular_window_exact_input_is_checked_before_libm(F(1,2**1075))),\n                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r14_domain.py\", line 23, in test_angular_window_exact_input_is_checked_before_libm\n    with pytest.raises(ConstructionDomainError, match=\"tol\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\raises.py\", line 710, in __exit__\n    fail(f\"DID NOT RAISE {self.expected_exceptions[0]!r}\")\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\outcomes.py\", line 163, in __call__\n    raise Failed(msg=reason, pytrace=pytrace)\nFailed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>\n"
+    },
+    {
+      "mutation": "osteomorphic_block",
+      "target_assertion": "DID NOT RAISE ConstructionDomainError",
+      "caught": true,
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 20, in <module>\n    try: run()\n         ^^^^^\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 15, in <lambda>\n    (osteomorphic,\"osteomorphic_block\",'    binary64_argument(val(phase), \"osteomorphic.phase\")\\n',lambda: gates.test_shape_phase_is_checked_before_mixed_float_arithmetic(False,2**54+1)),\n                                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r14_domain.py\", line 31, in test_shape_phase_is_checked_before_mixed_float_arithmetic\n    with pytest.raises(ConstructionDomainError, match=\"phase\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\raises.py\", line 710, in __exit__\n    fail(f\"DID NOT RAISE {self.expected_exceptions[0]!r}\")\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\outcomes.py\", line 163, in __call__\n    raise Failed(msg=reason, pytrace=pytrace)\nFailed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>\n"
+    },
+    {
+      "mutation": "osteomorphic_block_generic",
+      "target_assertion": "DID NOT RAISE ConstructionDomainError",
+      "caught": true,
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 20, in <module>\n    try: run()\n         ^^^^^\n  File \"D:\\eab-wt\\cx-e2\\reports\\codex\\R14FIX_evidence\\domain_mutations.py\", line 16, in <lambda>\n    (osteomorphic,\"osteomorphic_block_generic\",'    binary64_argument(val(phase), \"osteomorphic.phase\")\\n',lambda: gates.test_shape_phase_is_checked_before_mixed_float_arithmetic(True,2**54+1))]:\n                                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\eab-wt\\cx-e2\\tests\\test_r14_domain.py\", line 31, in test_shape_phase_is_checked_before_mixed_float_arithmetic\n    with pytest.raises(ConstructionDomainError, match=\"phase\"):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\raises.py\", line 710, in __exit__\n    fail(f\"DID NOT RAISE {self.expected_exceptions[0]!r}\")\n  File \"C:\\Users\\m1517\\AppData\\Roaming\\Python\\Python312\\site-packages\\_pytest\\outcomes.py\", line 163, in __call__\n    raise Failed(msg=reason, pytrace=pytrace)\nFailed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>\n"
+    },
+    {
+      "mutation": "README old mathematical claim restored",
+      "caught": true,
+      "target_assertion": "N05 unqualified nonlinear capacity bound"
+    }
+  ],
+  "readme_restored_sha256": "6fea77e60489d97a65f5a1ebd2c4427b6cbeece7436f9f04b9cf757793ec1295"
+}

@@ -40,6 +40,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from bdda3d_document import loads as numeric_loads
 from eab.kernel3d.covers3 import enumerate_covers3  # noqa: E402
 from eab.kernel3d.geom3 import (Polyhedron, convex_hull_3d, cross, dot, merge_coplanar,  # noqa: E402
                                 norm, sub)
@@ -150,7 +151,7 @@ def plane_of_triple(P: Polyhedron, tri: list[int]):
 def load_case_full(path: Path, *, tol: float = 1e-9) -> dict:
     """夹具 → {case, step, blocks: {块号: Polyhedron}, aliases: {块号: {顶点: 规范顶点}}, entrances}。
     tol：顶点去重/回映的长度容差（随夹具单位缩放；compare 把自己的 tol 传进来）。"""
-    d = json.loads(path.read_text(encoding="utf-8"))
+    d = numeric_loads(path.read_text(encoding="utf-8"))
     blocks, aliases = {}, {}
     for k, vs in d["verts"].items():
         blocks[int(k)], aliases[int(k)] = polyhedron_with_aliases([tuple(v) for v in vs], tol, block=int(k))

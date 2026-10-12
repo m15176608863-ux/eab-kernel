@@ -20,6 +20,8 @@ SIBLING = Path(r"D:\3-b-dda")
 OUT = ROOT / "fixtures" / "bdda3d"
 sys.path.insert(0, str(ROOT / "tools"))
 from ingest_fixtures import provenance_entry, upsert_provenance  # noqa: E402
+sys.path.insert(0, str(ROOT / "src"))
+from bdda3d_document import loads as numeric_loads  # noqa: E402
 
 BUILDERS = {"cb2_locked": "cases.build_cb2(None, bx=0.0)",
             "cb2_sliding": "cases.build_cb2(None, bx=2.0)",
@@ -34,14 +36,25 @@ def source_note(name: str) -> str:
 
 # 在子进程里执行的脚本：只读 bdda3d，把 (ss, C) 转成纯 JSON。
 CHILD = r'''
-import json, sys
+import json, sys, math
+from fractions import Fraction
 from bdda3d import cases
 name = sys.argv[1]
 builders = {"cb2_locked": lambda: cases.build_cb2(None, bx=0.0),
             "cb2_sliding": lambda: cases.build_cb2(None, bx=2.0),
             "cb_bond": lambda: cases.build_cb_bond(None)}
 ss, C = builders[name]()
-verts = {str(b): [list(map(float, v)) for v in blk["vertices"]] for b, blk in ss.blocks.items()}
+def checked_vertex(value):
+    # Keep this child independent of eab and of any sibling implementation.
+    try:
+        exact = Fraction(value)
+        rounded = float(exact)
+    except (OverflowError, ValueError) as exc:
+        raise OverflowError("export vertex: outside finite binary64 range") from exc
+    if not math.isfinite(rounded) or (exact and rounded == 0):
+        raise OverflowError("export vertex: nonzero finite input is not representable")
+    return rounded
+verts = {str(b): [list(map(checked_vertex, v)) for v in blk["vertices"]] for b, blk in ss.blocks.items()}
 def enc(c):
     out = {}
     for k, v in c.items():
@@ -68,7 +81,7 @@ def main() -> int:
         if proc.returncode != 0:
             print(f"FAIL {name}: {proc.stderr[-800:]}")
             continue
-        data = json.loads(proc.stdout)
+        data = numeric_loads(proc.stdout)
         (OUT / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True),
                                           encoding="utf-8", newline="\n")
         upsert_provenance([provenance_entry(f"bdda3d/{name}.json", source_note(name), str(date.today()))])

@@ -56,16 +56,32 @@ def test_public_vector_constructor_has_independent_extreme_cells_and_distinct_ou
 
 @pytest.mark.parametrize("mu", [math.ulp(0.0), 0.5, math.nextafter(1.0, 0.0), 2.0**1022])
 def test_public_friction_generators_round_complete_component(mu):
+    if F(mu) > 2**20:
+        with pytest.raises(ArithmeticError, match="mu"):
+            limit.friction_generators((0.6, 0.8), mu, 2)
+        return
     n = (0.6, 0.8)
     tangent = (-F(n[1]), F(n[0]))
     expected = [tuple(scalar_exact(F(n[i])+sign*F(mu)*tangent[i]) for i in range(2))
                 for sign in (1, -1)]
-    assert limit.friction_generators(n, mu, 2) == expected, "friction complete component rational rounding"
+    from unittest.mock import patch
+    observed=[]
+    certify=limit._certified_friction_direction
+    def capture(normal,candidate,coefficient):
+        observed.append(tuple(candidate))
+        return certify(normal,candidate,coefficient)
+    with patch.object(limit,"_certified_friction_direction",capture):
+        actual=limit.friction_generators(n,mu,2)
+    assert observed==expected,"friction complete component rational rounding"
+    for initial,g in zip(expected,actual):
+        q=sum(F(a)*F(b) for a,b in zip(n,g))
+        assert q>0 and sum(F(a)**2 for a in n)*sum(F(b)**2 for b in g)<=(1+F(mu)**2)*q*q,"2D final circular containment"
+        assert all(abs(F(a)-F(b))<=F(1,2**24)*(1+F(mu)) for a,b in zip(g,initial)),"2D certification correction bound"
 
 
 @pytest.mark.parametrize("k", [5, 8])
 @pytest.mark.parametrize("mu", [math.ulp(0.0), 0.5, math.nextafter(1.0, 0.0), 2.0**1022])
-def test_public_3d_friction_generators_follow_exact_given_coefficient_model(k, mu):
+def test_public_3d_friction_generators_follow_exact_given_coefficient_model(k, mu, monkeypatch):
     # Non-axis normal; supplied y tangent is exactly orthogonal. This avoids
     # copying the production tangent-selection/normalisation algorithm.
     n, t1, t2 = (0.6, 0.0, 0.8), (0, 1, 0), (-F(0.8), 0, F(0.6))
@@ -74,13 +90,46 @@ def test_public_3d_friction_generators_follow_exact_given_coefficient_model(k, m
         angle = 2.0*math.pi*j/k  # the documented supplied binary64 angle model
         cosine, sine = F(math.cos(angle)), F(math.sin(angle))
         exact.append(tuple(F(n[i])+F(mu)*(cosine*t1[i]+sine*t2[i]) for i in range(3)))
+    if F(mu) > 2**20:
+        with pytest.raises(ArithmeticError, match="mu"):
+            limit.friction_generators(n, mu, 3, k, tangent=t1)
+        return
     try:
-        expected = [tuple(scalar_exact(q) for q in row) for row in exact]
+        expected_initial=[tuple(scalar_exact(q) for q in row) for row in exact]
     except ArithmeticError:
         with pytest.raises(ArithmeticError):
             limit.friction_generators(n, mu, 3, k, tangent=t1)
-    else:
-        assert limit.friction_generators(n, mu, 3, k, tangent=t1) == expected, "3D friction complete component rational rounding"
+        return
+    # Preserve the entire original exact-candidate and once-rounded gate.
+    # The final physical model additionally applies minimal certified inward
+    # correction, so demanding the old unsafe candidate as final is invalid.
+    observed=[]
+    certify=limit._certified_friction_direction
+    def capture(normal,candidate,coefficient):
+        observed.append(tuple(candidate))
+        return certify(normal,candidate,coefficient)
+    monkeypatch.setattr(limit,"_certified_friction_direction",capture)
+    actual=limit.friction_generators(n,mu,3,k,tangent=t1)
+    assert observed==exact,"3D complete component rational candidate"
+    for row,g in zip(exact,actual):
+        initial=tuple(scalar_exact(q) for q in row)
+        def inside(v):
+            q=sum(F(a)*F(b) for a,b in zip(n,v))
+            return q>0 and sum(F(a)**2 for a in n)*sum(F(b)**2 for b in v)<=(1+F(mu)**2)*q*q
+        expected=None
+        for attempt in range(9):
+            factor=(1-F(1,2**49)*(1+F(mu)))**attempt
+            ref=tuple(scalar_exact(F(a)+factor*(b-F(a))) for a,b in zip(n,row))
+            if inside(ref):
+                expected=ref
+                break
+        assert expected is not None
+        assert g==expected,"3D final component independent certified rational rounding"
+        assert inside(g),"3D exact circular containment"
+        if inside(initial):
+            assert g==initial,"already safe original candidate must be unchanged"
+        assert all(abs(F(a)-F(b))<=F(1,2**24)*(1+F(mu)) for a,b in zip(g,initial)),"certification correction bound"
+
 
 
 @pytest.mark.parametrize("exponent", [-1074, -600, 0, 600, 1022])

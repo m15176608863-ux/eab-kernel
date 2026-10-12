@@ -23,6 +23,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from eab.construction import scalar_rational
+from eab.numeric_domain import check_input
 from eab.kernel2d.covers import enumerate_covers  # noqa: E402
 from eab.readers.bdda_df import last_oc_judgments, read_df22_csv  # noqa: E402
 from eab.readers.bdda_geom import load_step_geometries  # noqa: E402
@@ -36,13 +38,16 @@ def read_detparams(d: Path) -> dict[str, float]:
         return {"d0": 0.19687500000000002, "h5": 0.3, "h1": 3.0, "w0": 3.15}
     rows = list(csv.DictReader(p.open(newline="")))
     r = rows[0]
-    return {"d0": float(r["d0"]), "h5": float(r["h5"]), "h1": float(r["h1"]), "w0": float(r["w0"])}
+    angle = check_input(r["h1"], "g4 h1_degrees")
+    if not 0 <= angle < 90:
+        raise ValueError("g4 h1_degrees must be in [0, 90)")
+    return {k: scalar_rational(r[k], quantity=f"g4 detparams {k}") for k in ("d0", "h5", "h1", "w0")}
 
 
 def read_contacts(d: Path) -> dict[int, list[dict]]:
     out: dict[int, list[dict]] = {}
     for r in csv.DictReader((d / "bdda_debug_contacts.csv").open(newline="")):
-        out.setdefault(int(r["step"]), []).append({k: (int(v) if k in ("contact", "mtype", "p1", "p2", "p3", "m4", "m5", "m6", "m0_0", "m0_2") else float(v))
+        out.setdefault(int(r["step"]), []).append({k: (int(v) if k in ("contact", "mtype", "p1", "p2", "p3", "m4", "m5", "m6", "m0_0", "m0_2") else scalar_rational(v, quantity=f"g4 contact {k}"))
                                                    for k, v in r.items() if k != "step"})
     return out
 

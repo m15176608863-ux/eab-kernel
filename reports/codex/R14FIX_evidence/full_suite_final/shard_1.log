@@ -1,0 +1,65 @@
+........................................................................ [  3%]
+........................................................................ [  7%]
+........................................................................ [ 10%]
+........................................................................ [ 14%]
+........................................................................ [ 18%]
+........................................................................ [ 21%]
+........................................................................ [ 25%]
+........................................................................ [ 29%]
+........................................................................ [ 32%]
+........................................................................ [ 36%]
+........................................................................ [ 40%]
+........................................................................ [ 43%]
+........................................................................ [ 47%]
+........................................................................ [ 50%]
+........................................................................ [ 54%]
+........................................................................ [ 58%]
+........................................................................ [ 61%]
+........................................................................ [ 65%]
+........................................................................ [ 69%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+...........................................F............................ [ 80%]
+........................................................................ [ 83%]
+........................................................................ [ 87%]
+........................................................................ [ 90%]
+........................................................................ [ 94%]
+........................................................................ [ 98%]
+...................................                                      [100%]
+================================== FAILURES ===================================
+_______ test_canon_current_static_summary_matches_r12fixb_local_policy ________
+
+    def test_canon_current_static_summary_matches_r12fixb_local_policy():
+        text = (Path(__file__).resolve().parents[1] / "docs/canon_map.md").read_text(encoding="utf-8")
+        summary = text.splitlines()[2]
+        assert "全 src/tests/tools 原字节依赖图钉住" not in summary, "obsolete whole-repository pin in current canon summary"
+        assert "自动算术证明仅限纯整数字面量" not in summary, "obsolete integer-literal-only proof in current canon summary"
+>       assert "局部" in summary and "Fraction" in summary, "current local AST/source and Fraction flow contract"
+E       AssertionError: current local AST/source and Fraction flow contract
+E       assert ('局部' in '> **WO-R14FIX 当前补充（2026-10-13）**：[分项数值合同及数学订正](r14fix_design_sync.md) 优先于下文笼统 D400 描述。μ、角度/指数、文本连续量与整数身份分别检查；圆锥/黏聚方向独立精确认证。README 的一般相对余弦承载界已撤回，固定 μ=.2 数值门不升级成一般定理。完整执行与改写账见 [报告](../reports/codex/R14FIX_report.md)；M0/M4a 管理边界不变，仍待独立复审。')
+
+tests\test_r13fix_docs.py:15: AssertionError
+============================ slowest 20 durations =============================
+67.83s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[drop_VE_subset]
+51.15s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[no_EV_covers]
+34.07s call     tests/test_bb52_g1.py::test_g0_exit_completeness_is_blind_to_vv_by_construction
+33.62s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[strict_cone_only]
+32.26s setup    tests/test_bb52_g1.py::test_geometry_reconstruction
+23.95s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[no_VV_covers]
+15.89s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[strict_cone_only]
+15.03s call     tests/test_bb52_g1.py::test_g0_rerun_replays_the_original_1186_translations
+13.92s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[1000.0-4]
+11.71s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[100000.0-4]
+11.38s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[10000.0-1]
+8.54s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[0.001-0.0]
+8.13s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1000.0-100000.0]
+7.79s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-100000.0]
+6.02s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[10000.0-1]
+5.78s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[1000.0-4]
+5.52s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[100000.0-4]
+4.67s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-0.0]
+4.59s call     tests/test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal
+3.92s call     tests/test_r10_static_construction.py::test_j01_removing_keyword_step_inside_gate_trips_real_cone_assertion
+=========================== short test summary info ===========================
+FAILED tests/test_r13fix_docs.py::test_canon_current_static_summary_matches_r12fixb_local_policy
+1 failed, 1978 passed in 482.69s (0:08:02)

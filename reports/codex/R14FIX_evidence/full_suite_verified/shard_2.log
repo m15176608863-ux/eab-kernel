@@ -1,0 +1,48 @@
+........................................................................ [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+........................................................................ [ 23%]
+........................................................................ [ 27%]
+........................................................................ [ 31%]
+........................................................................ [ 35%]
+........................................................................ [ 39%]
+........................................................................ [ 43%]
+........................................................................ [ 47%]
+........................................................................ [ 50%]
+........................................................................ [ 54%]
+........................................................................ [ 58%]
+........................................................................ [ 62%]
+........................................................................ [ 66%]
+........................................................................ [ 70%]
+........................................................................ [ 74%]
+........................................................................ [ 78%]
+........................................................................ [ 82%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+........................................................................ [ 94%]
+........................................................................ [ 97%]
+.....................................                                    [100%]
+============================ slowest 20 durations =============================
+256.16s call     tests/test_r12fixb_maintenance.py::test_unrelated_source_comment_keeps_real_repository_gate_green
+132.02s call     tests/test_r9fix_construction_static.py::test_all_source_and_test_oracles_use_reviewed_construction_boundary
+13.11s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[1000.0-4]
+12.25s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[100000.0-4]
+11.08s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[10000.0-1]
+7.90s call     tests/test_lp_certificates.py::test_accuracy_against_the_exact_rational_optimum[1-1149]
+6.05s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[1000.0-4]
+5.72s call     tests/test_lp_certificates.py::test_accuracy_against_the_exact_rational_optimum[1-1455]
+5.69s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[100000.0-4]
+5.37s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[10000.0-1]
+4.62s call     tests/test_limit.py::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k
+3.51s call     tests/test_kernel2d_review.py::test_g6_12_polygons_overlap_against_exact_ear_clip_area_oracle
+3.36s call     tests/test_r11fix_static_flow.py::test_k01_removing_zero_path_join_trips_the_real_cone_assertion
+3.19s call     tests/test_kernel2d_review.py::test_g6_12_interior_point_on_random_simple_polygons
+2.56s call     tests/test_lp_certificates.py::test_old_badly_scaled_limit_formulation_is_answered_exactly
+2.31s call     tests/test_margin.py::test_config_space_distance_equals_body_distance[1]
+2.31s call     tests/test_limit.py::test_three_d_cone_bound_is_tight_for_loads_in_every_direction[12-1.0-1.0]
+2.16s call     tests/test_r11fix_static_flow.py::test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected[while False:]
+2.01s call     tests/test_limit.py::test_three_d_cone_bound_is_tight_for_loads_in_every_direction[12-10000.0-0.001]
+1.94s call     tests/test_limit.py::test_three_d_cone_bound_is_tight_for_loads_in_every_direction[12-100.0-1.0]
+1837 passed in 574.99s (0:09:34)

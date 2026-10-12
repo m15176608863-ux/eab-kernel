@@ -11,8 +11,42 @@ Dyskin/Estrin 一族的 osteomorphic 块：两组相对的面是**相互补的�
 from __future__ import annotations
 
 from math import pi, sin
+from eab.numeric_domain import binary64_argument, check_input, exact_input
+from eab.construction import scalar_rational
+from fractions import Fraction
+from eab.dual import Dual, val
 
 from eab.kernel3d.geom3 import Polyhedron, Vec3
+
+
+def _shape_value(value):
+    """Retain jets; promote raw coefficients before mixed float arithmetic."""
+    return value if isinstance(value, Dual) else Fraction(value)
+
+
+def _shape_parameters(nx, ny, lx, ly, lz, amp, center):
+    """Approximate sampled shape: D400 physical inputs, exact coordinate algebra.
+
+    Angles retain the documented sampled libm coefficient model. A completed
+    coordinate is checked separately; D400 does not imply output range.
+    """
+    counts = []
+    for name, value in (("nx",nx),("ny",ny)):
+        q = exact_input(value, "osteomorphic."+name)
+        if q.denominator != 1 or q <= 0:
+            raise ValueError("osteomorphic grid counts must be positive integers")
+        counts.append(q.numerator)
+    for name, value in (("lx",lx),("ly",ly),("lz",lz),("amp",amp)):
+        check_input(val(value), "osteomorphic."+name)
+        if name != "amp" and val(value) <= 0:
+            raise ValueError("osteomorphic lengths must be positive")
+    for i,value in enumerate(center):
+        check_input(val(value), f"osteomorphic.center[{i}]")
+    return (*counts,*(_shape_value(v) for v in (lx,ly,lz,amp)),tuple(_shape_value(v) for v in center))
+
+
+def _shape_coordinate(value):
+    return value if isinstance(value,Dual) else scalar_rational(value,quantity="osteomorphic coordinate")
 
 
 def osteomorphic_block(nx: int = 4, ny: int = 4, *, lx: float = 2.0, ly: float = 1.0,
@@ -26,23 +60,26 @@ def osteomorphic_block(nx: int = 4, ny: int = 4, *, lx: float = 2.0, ly: float =
 
     nx 段沿 x、ny 段沿 y；顶底各 (nx+1)×(ny+1) 个网格点，侧面由边界网格线构成。
     """
+    from eab.dual import val
+    binary64_argument(val(phase), "osteomorphic.phase")
+    nx, ny, lx, ly, lz, amp, center = _shape_parameters(nx, ny, lx, ly, lz, amp, center)
     cx, cy, cz = center
     top: list[list[int]] = []
     bot: list[list[int]] = []
     verts: list[Vec3] = []
 
     def add(p: Vec3) -> int:
-        verts.append(p)
+        verts.append(tuple(_shape_coordinate(v) for v in p))
         return len(verts) - 1
 
     for i in range(nx + 1):
         u = i / nx
-        x = cx - lx / 2 + lx * u
-        h = amp * sin(2 * pi * u + phase)
+        x = cx - lx / 2 + lx * Fraction(u)
+        h = amp * Fraction(sin(2 * pi * u + phase))
         row_t: list[int] = []
         row_b: list[int] = []
         for j in range(ny + 1):
-            y = cy - ly / 2 + ly * (j / ny)
+            y = cy - ly / 2 + ly * Fraction(j / ny)
             row_t.append(add((x, y, cz + lz / 2 + h)))
             row_b.append(add((x, y, cz - lz / 2 + h)))
         top.append(row_t)
@@ -75,7 +112,7 @@ def interlocking_pair(**kw) -> tuple[Polyhedron, Polyhedron]:
     lower = osteomorphic_block(**kw)
     upper_kw = dict(kw)
     c = kw.get("center", (0.0, 0.0, 0.0))
-    upper_kw["center"] = (c[0], c[1], c[2] + lz)
+    upper_kw["center"] = (c[0], c[1], _shape_value(c[2]) + _shape_value(lz))
     upper = osteomorphic_block(**upper_kw)
     return upper, lower
 
@@ -91,20 +128,23 @@ def osteomorphic_block_generic(nx: int = 4, ny: int = 4, *, lx=2.0, ly=1.0, lz=1
     import math as _m
     if sin_fn is None:
         from eab.dual import sin as sin_fn
+    from eab.dual import val
+    binary64_argument(val(phase), "osteomorphic.phase")
+    nx, ny, lx, ly, lz, amp, center = _shape_parameters(nx, ny, lx, ly, lz, amp, center)
     cx, cy, cz = center
     top, bot, verts = [], [], []
 
     def add(p):
-        verts.append(p)
+        verts.append(tuple(_shape_coordinate(v) for v in p))
         return len(verts) - 1
 
     for i in range(nx + 1):
         u = i / nx
-        x = cx - lx / 2 + lx * u
-        h = amp * sin_fn(2 * _m.pi * u + phase)
+        x = cx - lx / 2 + lx * Fraction(u)
+        h = amp * _shape_value(sin_fn(2 * _m.pi * u + phase))
         rt, rb = [], []
         for j in range(ny + 1):
-            y = cy - ly / 2 + ly * (j / ny)
+            y = cy - ly / 2 + ly * Fraction(j / ny)
             rt.append(add((x, y, cz + lz / 2 + h)))
             rb.append(add((x, y, cz - lz / 2 + h)))
         top.append(rt)
@@ -131,5 +171,5 @@ def interlocking_pair_generic(**kw):
     lower = osteomorphic_block_generic(**kw)
     up = dict(kw)
     c = kw.get("center", (0.0, 0.0, 0.0))
-    up["center"] = (c[0], c[1], c[2] + lz)
+    up["center"] = (c[0], c[1], _shape_value(c[2]) + _shape_value(lz))
     return osteomorphic_block_generic(**up), lower

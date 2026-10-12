@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R14FIX_evidence\readers_full_followup_mutation.py", line 29, in <module>
+    gate.test_cone_coefficient_outside_declared_angle_domain_is_loud(Fraction(2)**-1074)
+  File "D:\eab-wt\cx-e2\tests\test_r13fixb_readers_oracles.py", line 405, in test_cone_coefficient_outside_declared_angle_domain_is_loud
+    with pytest.raises(ConstructionDomainError, match="cone_tol.h1_degrees"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\raises.py", line 710, in __exit__
+    fail(f"DID NOT RAISE {self.expected_exceptions[0]!r}")
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\outcomes.py", line 163, in __call__
+    raise Failed(msg=reason, pytrace=pytrace)
+Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>

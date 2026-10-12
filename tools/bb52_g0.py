@@ -29,6 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from eab.construction import scalar_rational
 import eab.kernel2d.covers as cv  # noqa: E402  （归因走模块属性：被替换的盖函数也要被如实归因）
 from eab.kernel2d.covers import enumerate_covers  # noqa: E402
 from eab.kernel2d.g0 import g0_distance_completeness, g0_exit_completeness  # noqa: E402
@@ -48,7 +49,7 @@ def load_blocks(step: int = 1) -> tuple[dict, dict[int, int]]:
         rows = [r for r in csv.DictReader(fh) if int(r["step"]) == step]
     by: dict[int, list[tuple[int, tuple[float, float]]]] = defaultdict(list)
     for r in rows:
-        by[int(r["block"])].append((int(r["vidx"]), (float(r["x"]), float(r["y"]))))
+        by[int(r["block"])].append((int(r["vidx"]), (scalar_rational(r["x"], quantity="bb52 vertex x"), scalar_rational(r["y"], quantity="bb52 vertex y"))))
     blocks = {}
     alias: dict[int, int] = {}
     for b, lst in by.items():
@@ -66,7 +67,7 @@ def legacy_contacts(step: int = 1):
     for r in csv.DictReader((FIX / "bdda_debug_contacts.csv").open(newline="")):
         if int(r["step"]) != step:
             continue
-        out.append((int(r["mtype"]), int(r["p1"]), int(r["p2"]), int(r["p3"]), int(r["m0_2"]), float(r["o2"])))
+        out.append((int(r["mtype"]), int(r["p1"]), int(r["p2"]), int(r["p3"]), int(r["m0_2"]), scalar_rational(r["o2"], quantity="bb52 contact o2")))
     return out
 
 

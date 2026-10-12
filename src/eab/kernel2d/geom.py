@@ -13,7 +13,7 @@ from eab.construction import scalar_rational
 
 import sys
 from fractions import Fraction
-from eab.numeric_domain import float_algebra
+from eab.numeric_domain import float_algebra, binary64_argument
 from functools import lru_cache
 from itertools import chain
 from math import hypot
@@ -212,6 +212,7 @@ def reflex_vertices(poly: Poly, tol: float = 0.0) -> list[int]:
     rounded once, then compared by exact rational determinant.
     """
     from math import cos, sin, pi
+    tol = binary64_argument(tol, "reflex_vertices.tol")
     if tol < 0:raise ValueError('tol must be nonnegative')
     if tol >= pi:return []
     cosine, sine = Fraction(cos(tol)), Fraction(sin(tol))

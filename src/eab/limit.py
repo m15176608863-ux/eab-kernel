@@ -45,8 +45,9 @@ y_w 是动体的虚速度旋量（`LimitResult.mechanism`），y_r 是各黏聚�
 
 **精确模型（2026-09-27 返修四）**：LP 是调用方数据的**精确**模型——接触列的力矩 (p − o′) × g 与荷载向形心的平移
 都用有理数算（`_exact_wrench`、`_exact_shift`），浮点层只拿到它们的正确舍入，答案由 lp.py 对这个精确 LP 精确给出。
-黏聚上限 c·A 也是精确乘积（reverify5：曾用 fl(c·A)）。唯一不精确的是模型定义本身：锥棱方向与黏聚方向取浮点
-（锥与黏聚圆的 k 边形线性化）。返修三曾让 LP 对"浮点算出的派生数据"精确，
+黏聚上限 c·A 也是精确乘积（reverify5：曾用 fl(c·A)）。模型定义仍含角度系数的浮点近似：
+摩擦锥棱方向在最终 binary64 舍入后认证内接；黏聚方向保留精确有理正交投影与单位圆盘内缩，
+不再把微小法向舍入误差当成黏聚力。返修三曾让 LP 对"浮点算出的派生数据"精确，
 复核者 reverify4 的 critical 就出在这里：V 槽夹住的顶点上两个重合接触有一对夹持力，实数里合力矩为 0，浮点里各列的
 r × g 各自舍入，3e16 的夹持力拼出舍入级的力矩，报"承载无限"（真值 0）。
 
@@ -63,16 +64,18 @@ UNBOUNDED 沿最小可行荷载的机构作相同报告；alpha_min=0 和一阶 
 
 ## 诚实条款
 
-- **二维的摩擦锥线性化是精确的**（锥恰有两条极棱）；三维用 k 边内接棱锥，是**偏安全**的近似：
-  内接 ⇒ 容许集变小 ⇒ 承载力不高于精确锥。量化：正 k 边形的内切圆半径是外接圆的 cos(π/k) 倍，
-  所以内接棱锥 ⊇ 摩擦系数 μ·cos(π/k) 的精确圆锥——**承载力夹在 μ·cos(π/k) 与 μ 两个精确锥的解之间**。
-  纯滑动（承载力正比于切向能力）时相对短缺 ∈ [0, 1 − cos(π/k)]：**摩擦阻力方向**（滑动方向的反向）正对一条棱时为 0，
+- **二维理想摩擦锥恰有两条极棱**；三维理想正 k 边内接棱锥满足
+  C(μ·cos(π/k)) ≤ C_k ≤ C(μ)，这里 C 是相同几何、荷载与黏聚条件下的容量函数。
+  一般容量非线性，不能推出 C_k ≥ cos(π/k)·C(μ)。实际 binary64 二维/三维棱方向在最终舍入后
+  用独立精确圆锥不等式认证，必要时微量向内收缩，因此认证的是上包含 C_binary64 ≤ C(μ)，
+  不自动继承理想正多边形的精确内半径。μ 的分项支持域是 [0, 2^20]；超界响亮拒收。
+  理想正多边形的纯滑动（承载力正比于切向能力）时相对短缺 ∈ [0, 1 − cos(π/k)]：**摩擦阻力方向**（滑动方向的反向）正对一条棱时为 0，
   平分两棱时取到上界；k 为偶数时棱扇中心对称、按滑动方向说等价，k 为奇数时"滑动方向正对一条棱"恰是最坏情形
   （G6 第三轮 minor）。误差取决于阻力方向相对切向基架的夹角，**不随 k 单调**
   （互锁算例 4|k 时恰有一条棱落在荷载平面内而精确，k=5 反而明显变差）。
   门：tests/test_limit.py 的三个锥线性化门，tests/test_limit_scale.py 的 Patton 全格。
 - **三维棱扇的朝向默认不随刚体转动协变。** 默认切向基架由 `_tangents(n)` 按全局坐标轴选取（球面上不存在处处连续的
-  切向场，任何"默认"都做不到协变），所以把整个模型转一下，α 可以在上面的 [cos(π/k), 1] 夹逼内变。
+  切向场，任何"默认"都做不到协变），所以把整个模型转一下，α 可以变化；一般容量没有 [cos(π/k), 1] 相对比界。
   需要严格协变（或想让某条棱对准预期的摩擦阻力方向，即滑动方向的反向）时，给 `LimitContact.tangent`：基架 t₁ 取它在切平面上的投影，
   t₂ = n × t₁，随模型一起转即严格不变。门：tests/test_invariance_limit.py 的两个门。
 - 刚体、小变形、接触位置在加载中**不变**——极限分析的标准前提。几何非线性不在内。
@@ -91,7 +94,8 @@ UNBOUNDED 沿最小可行荷载的机构作相同报告；alpha_min=0 和一阶 
 纯 float 手工值按其二进制精确值核，Fraction 可表达任意 k 的 alpha×(1-10**(-k)) 注入。
 门：tests/test_limit_exact_selfcheck.py；contact_forces/active 仍只是按 tol 截断的展示量，静力证明来自 lambdas。
 Construction domain: docs/exact_predicates_plan.md. Wrench, midpoint and
-algebraic friction components retain the full finite rational input domain;
+algebraic wrench components retain the full finite rational input domain;
+friction coefficients instead obey the quantity-specific [0, 2^20] domain;
 their final binary64 range is checked by eab.construction. LP certificate
 views remain explicitly certificate-backed displays, not finite quantities.
 """
@@ -106,6 +110,7 @@ from math import cos, pi, sin
 
 from .lp import OPTIMAL, UNBOUNDED, _fl, maximize
 from .construction import sqrt_rational, scalar_rational, unit_rational
+from .numeric_domain import ConstructionDomainError, check_mu
 
 Vec = tuple[float, ...]
 
@@ -221,31 +226,132 @@ def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
     return [t1, t2]
 
 
+def _inside_friction_cone(normal, direction, mu):
+    """Exact physical oracle, independent of tangent/frame construction.
+
+    For the given (not assumed exactly unit) normal n and output g, test
+    n.g > 0 and ||n||^2 ||g||^2 <= (1+mu^2)(n.g)^2 in rational arithmetic.
+    """
+    n, g = tuple(Fraction(_mapped_value) for _mapped_value in normal), tuple(Fraction(_mapped_value) for _mapped_value in direction)
+    ng = sum(a*b for a,b in zip(n,g))
+    return ng > 0 and sum(a*a for a in n)*sum(b*b for b in g) <= (1+Fraction(mu)**2)*ng**2
+
+
+def _certified_friction_direction(normal, candidate, mu):
+    """Round the candidate, then certify; contract inward only if needed.
+
+    mu <= 2^20 gives mu*u <= 2^-33. A normal-relative inward step
+    16*u*(1+mu) is at most about 2^-29, leaving ample resolution for the
+    compressive component. This estimate is NOT the certificate: every final
+    vector passes the exact cone inequality. Eight failed attempts raise.
+    Before that fallback, 2D searches the finite same-sign one-ulp neighbors
+    and selects the closest exactly safe representation. This avoids an
+    unnecessarily coarse inward bias near self-locking, without changing
+    uncertainty or the 3D model. Nonzero components cannot become zero or
+    change sign in that neighboring search.
+    """
+    n = tuple(Fraction(_mapped_value) for _mapped_value in normal)
+    candidate = tuple(Fraction(_mapped_value) for _mapped_value in candidate)
+    if len(n) == 2:
+        first = tuple(scalar_rational(v, quantity="friction generator") for v in candidate)
+        if _inside_friction_cone(n, first, mu):
+            return first
+        nearby = [(v, math.nextafter(v, -math.inf), math.nextafter(v, math.inf)) for v in first]
+        safe = []
+        for x in nearby[0]:
+            for y in nearby[1]:
+                trial = (x,y)
+                same_sign = all(a == 0 or (b != 0 and (a > 0) == (b > 0)) for a,b in zip(first,trial))
+                if all(math.isfinite(v) for v in trial) and same_sign and _inside_friction_cone(n, trial, mu):
+                    distance = sum((Fraction(a)-b)**2 for a,b in zip(trial,candidate))
+                    safe.append((distance,trial))
+        if safe:
+            return min(safe)[1]
+    step = Fraction(1, 2**49)*(1+Fraction(mu))
+    for attempt in range(9):
+        scale = (1-step)**attempt
+        g = tuple(scalar_rational(a+scale*(b-a), quantity="friction generator") for a,b in zip(n,candidate))
+        if _inside_friction_cone(n,g,mu):
+            return g
+    raise ConstructionDomainError("friction generator", "cannot certify unilateral circular-cone containment")
+
+
 def friction_generators(normal: Vec, mu: float, dim: int, k: int = 8,
                         tangent: Vec | None = None) -> list[Vec]:
     """库仑锥的棱方向（单位法向 + μ·切向）。二维恰两条；三维 k 条。
 
     Complete each component in Fraction before its final binary64 view. The
     3D model retains the supplied frame and libm angular coefficients; it does
-    not claim an exact transcendental cone. Gate:
-    test_public_friction_generators_round_complete_component.
+    not claim exact transcendental coefficients. Final 2D/3D vectors are
+    independently certified inside the physical circular cone after rounding;
+    a tiny inward contraction is used if needed. mu is in [0, 2^20]. Gates:
+    test_public_friction_generators_round_complete_component and
+    test_final_generators_are_exactly_unilateral_and_inside_the_circular_cone.
     """
+    mu = check_mu(mu, "friction_generators.mu")
+    if dim not in (2, 3):
+        raise ValueError("friction_generators dim must be 2 or 3")
+    if dim == 3 and (not isinstance(k, int) or isinstance(k, bool) or k < 3):
+        raise ValueError("friction_generators k must be an integer >= 3")
     ts = _tangents(normal, dim, tangent)
     if dim == 2:
         t = ts[0]
-        return [tuple(scalar_rational(Fraction(normal[i]) + Fraction(mu) * Fraction(t[i])) for i in range(2)),
-                tuple(scalar_rational(Fraction(normal[i]) - Fraction(mu) * Fraction(t[i])) for i in range(2))]
+        candidates = [tuple(scalar_rational(Fraction(normal[i]) + Fraction(mu) * Fraction(t[i])) for i in range(2)),
+                      tuple(scalar_rational(Fraction(normal[i]) - Fraction(mu) * Fraction(t[i])) for i in range(2))]
+        return [_certified_friction_direction(normal, g, mu) for g in candidates]
     t1, t2 = ts
     out = []
     for j in range(k):
         a = 2.0 * pi * j / k
         cosine, sine = Fraction(cos(a)), Fraction(sin(a))
-        out.append(tuple(scalar_rational(Fraction(normal[i]) + Fraction(mu) *
-                         (cosine * Fraction(t1[i]) + sine * Fraction(t2[i]))) for i in range(3)))
+        candidate = tuple(Fraction(normal[i]) + Fraction(mu) *
+                          (cosine * Fraction(t1[i]) + sine * Fraction(t2[i])) for i in range(3))
+        out.append(_certified_friction_direction(normal, candidate, mu))
     return out
 
 
+def _cohesion_directions(normal, dim, k, tangent=None):
+    """Exact projection into the tangent plane and rational inner unit disk.
+
+    These are internal LP coefficients, not binary64 output quantities; keep
+    their rational values through wrench assembly. Independent checker tests
+    zero normal work and unit-disk inclusion, never trusts this construction.
+    """
+    n = tuple(Fraction(_mapped_value) for _mapped_value in normal)
+    nn = sum(x*x for x in n)
+    ts = _tangents(normal, dim, tangent)
+    if dim == 2:
+        raw = [tuple(sign*Fraction(x) for x in ts[0]) for sign in (1,-1)]
+    else:
+        raw = [tuple(Fraction(cos(2*pi*j/k))*Fraction(ts[0][i])+
+                     Fraction(sin(2*pi*j/k))*Fraction(ts[1][i]) for i in range(dim)) for j in range(k)]
+    directions = []
+    for v in raw:
+        normal_part = sum(a*b for a,b in zip(n,v))/nn
+        projected = tuple(b-normal_part*a for a,b in zip(n,v))
+        square = sum(x*x for x in projected)
+        if square > 1:
+            bound = sqrt_rational(square)
+            if Fraction(bound)**2 < square:
+                bound = math.nextafter(bound,math.inf)
+            projected = tuple(x/Fraction(bound) for x in projected)
+        directions.append(projected)
+    return directions
+
+
 # ------------------------------------------------------------------ 接触
+
+def _check_material(mu, cohesion, area):
+    """Check material quantities at construction AND mutable-record use.
+
+    Friction has a quantity-specific upper bound; cohesion and area retain
+    their finite nonnegative rational domain. Empty adapters cannot skip it.
+    """
+    for name, v in (("mu", mu), ("cohesion", cohesion), ("area", area)):
+        if not ((not isinstance(v, float) or math.isfinite(v)) and v >= 0):
+            raise ValueError(f"contact {name} must be finite and non-negative, got {v!r}")
+    check_mu(mu, "contact.mu")
+
 
 @dataclass(slots=True)
 class LimitContact:
@@ -276,9 +382,7 @@ class LimitContact:
         self.normal = unit_rational(exact)
         # G6 第四轮 minor：cohesion / area 为 NaN 或负数曾被 `cohesion > 0 and area > 0` 静默当成"无黏聚"，α 按纯摩擦给出、
         # 自校验照常通过；mu 为 NaN 只在 Fraction(nan) 处以无关信息报错。非有限输入要在入口响亮失败（与法向同一家族）
-        for name, v in (("mu", self.mu), ("cohesion", self.cohesion), ("area", self.area)):
-            if not ((not isinstance(v, float) or math.isfinite(v)) and v >= 0.0):
-                raise ValueError(f"contact {name} must be finite and non-negative, got {v!r}")
+        _check_material(self.mu, self.cohesion, self.area)
 
 
 _SIDES = ("a", "b", "mid")
@@ -301,6 +405,7 @@ def contacts_from_covers(covers, *, mu: float, cohesion: float = 0.0,
     真正的面片分配（A/B 重叠多边形在接触面上的面积，分给共用该面的接触、Σ = 真实面片面积）实现之前，
     `cohesion > 0` 一律 ValueError；返回的接触 `area = 0`（不从盖继承，免得事后改 cohesion 时再被放大）。
     """
+    _check_material(mu, cohesion, 0)
     if side not in _SIDES:
         raise ValueError(f"side must be one of {_SIDES}, got {side!r}")
     if cohesion > 0.0:
@@ -352,22 +457,17 @@ def _build_columns(contacts: list[LimitContact], origin: Vec, dim: int, k: int, 
     cap: list[float] = []
     n_rows = 0
     for ci, ct in enumerate(contacts):
+        _check_material(ct.mu, ct.cohesion, ct.area)
         for g in friction_generators(ct.normal, ct.mu, dim, k, ct.tangent):
             cols.append(wrench(g, ct.point, origin, dim))
             owner.append(ci)
             row_of.append(None)
         if ct.cohesion > 0.0 and ct.area > 0.0:
-            mag = ct.cohesion * ct.area
-            if dim == 2:
-                t = _tangents(ct.normal, dim)[0]
-                dirs = [tuple(sg * v for v in t) for sg in (1.0, -1.0)]
-            else:
-                t1, t2 = _tangents(ct.normal, dim, ct.tangent)
-                dirs = [tuple(cos(2.0 * pi * j / k) * t1[i] + sin(2.0 * pi * j / k) * t2[i]
-                              for i in range(3)) for j in range(k)]
-            f = 1.0 if unit_cohesion else mag
+            mag = Fraction(ct.cohesion) * Fraction(ct.area)
+            dirs = _cohesion_directions(ct.normal, dim, k, ct.tangent)
+            f = Fraction(1) if unit_cohesion else Fraction(ct.cohesion)*Fraction(ct.area)
             for d in dirs:
-                cols.append(wrench(tuple(f * v for v in d), ct.point, origin, dim))
+                cols.append(_exact_wrench(tuple(f*v for v in d), ct.point, origin, dim))
                 owner.append(ci)
                 row_of.append(n_rows)
             cap.append(mag)
@@ -662,6 +762,20 @@ def _check_columns(contacts, origin, dim, k):
         cap = Fraction(ct.cohesion) * Fraction(ct.area) if rj is not None else Fraction(1)
         if rj is not None:
             caps[rj] = cap
+        if rj is None:
+            # Independent cross-product formulation, not the generator's
+            # dot/norm predicate and not LP feasibility for that same cone.
+            nn = tuple(Fraction(v) for v in ct.normal)
+            gg = tuple(Fraction(v) for v in col[:dim])
+            normal_force = sum(a*b for a,b in zip(nn,gg))
+            cross = ((nn[0]*gg[1]-nn[1]*gg[0],) if dim == 2 else
+                     (nn[1]*gg[2]-nn[2]*gg[1], nn[2]*gg[0]-nn[0]*gg[2], nn[0]*gg[1]-nn[1]*gg[0]))
+            if normal_force <= 0 or sum(v*v for v in cross) > Fraction(ct.mu)**2*normal_force**2:
+                raise ConstructionDomainError("selfcheck friction generator", "outside unilateral circular cone")
+        else:
+            unit_force = tuple(Fraction(v) for v in col[:dim])
+            if sum(Fraction(n)*v for n,v in zip(ct.normal,unit_force)) != 0 or sum(v*v for v in unit_force) > 1:
+                raise ConstructionDomainError("selfcheck cohesive direction", "outside exact tangential unit disk")
         f = [Fraction(v) * cap for v in col[:dim]]
         p = [Fraction(ct.point[i]) - Fraction(origin[i]) for i in range(dim)]
         moment = ([p[0]*f[1] - p[1]*f[0]] if dim == 2 else

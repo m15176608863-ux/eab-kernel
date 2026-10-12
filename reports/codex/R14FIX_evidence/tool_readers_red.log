@@ -1,0 +1,459 @@
+FFFFFFFFFFFFFFFFFFFFF.........                                           [100%]
+================================== FAILURES ===================================
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-g2_geometry] _
+
+api = 'g2_geometry', token = '1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004681850>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-bb_vertices] _
+
+api = 'bb_vertices', token = '1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004607380>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-bb_contacts] _
+
+api = 'bb_contacts', token = '1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000046060C0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-g4_contacts] _
+
+api = 'g4_contacts', token = '1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000457A7B0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-g4_params] _
+
+api = 'g4_params', token = '1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004579C40>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-m4_summary] _
+
+api = 'm4_summary', token = '1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004572D20>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-ingest_json] _
+
+api = 'ingest_json', token = '1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000456E0C0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+---------------------------- Captured stdout call -----------------------------
+OK   cb2_locked: 1 entrances
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-g2_geometry] _
+
+api = 'g2_geometry', token = '-1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004683950>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-bb_vertices] _
+
+api = 'bb_vertices', token = '-1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal8')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004681EB0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-bb_contacts] _
+
+api = 'bb_contacts', token = '-1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal9')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000467A810>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-g4_contacts] _
+
+api = 'g4_contacts', token = '-1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal10')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000467B9E0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-g4_params] _
+
+api = 'g4_params', token = '-1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal11')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004678F50>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-m4_summary] _
+
+api = 'm4_summary', token = '-1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal12')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000456DA60>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-ingest_json] _
+
+api = 'ingest_json', token = '-1e-400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal13')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000045797F0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+---------------------------- Captured stdout call -----------------------------
+OK   cb2_locked: 1 entrances
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-g2_geometry] _
+
+api = 'g2_geometry', token = '1e400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal14')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000457BA40>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+        with pytest.raises(ConstructionDomainError):
+>           _invoke(api, token, tmp_path, monkeypatch)
+
+tests\test_r14_tool_readers.py:70: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_r14_tool_readers.py:28: in _invoke
+    return g2_bdda3d.load_case_full(path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools\g2_bdda3d.py:156: in load_case_full
+    blocks[int(k)], aliases[int(k)] = polyhedron_with_aliases([tuple(v) for v in vs], tol, block=int(k))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools\g2_bdda3d.py:94: in polyhedron_with_aliases
+    if rep[j] == j and norm(sub(loc[i], loc[j])) <= tol:
+                            ^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\geom3.py:52: in sub
+    return tuple(scalar_rational(Fraction(x)-Fraction(y)) for x,y in zip(a,b))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\geom3.py:52: in <genexpr>
+    return tuple(scalar_rational(Fraction(x)-Fraction(y)) for x,y in zip(a,b))
+                                             ^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cls = <class 'fractions.Fraction'>, numerator = inf, denominator = None
+
+    def __new__(cls, numerator=0, denominator=None):
+        """Constructs a Rational.
+    
+        Takes a string like '3/2' or '1.5', another Rational instance, a
+        numerator/denominator pair, or a float.
+    
+        Examples
+        --------
+    
+        >>> Fraction(10, -8)
+        Fraction(-5, 4)
+        >>> Fraction(Fraction(1, 7), 5)
+        Fraction(1, 35)
+        >>> Fraction(Fraction(1, 7), Fraction(2, 3))
+        Fraction(3, 14)
+        >>> Fraction('314')
+        Fraction(314, 1)
+        >>> Fraction('-35/4')
+        Fraction(-35, 4)
+        >>> Fraction('3.1415') # conversion from numeric string
+        Fraction(6283, 2000)
+        >>> Fraction('-47e-2') # string may include a decimal exponent
+        Fraction(-47, 100)
+        >>> Fraction(1.47)  # direct construction from float (exact conversion)
+        Fraction(6620291452234629, 4503599627370496)
+        >>> Fraction(2.25)
+        Fraction(9, 4)
+        >>> Fraction(Decimal('1.47'))
+        Fraction(147, 100)
+    
+        """
+        self = super(Fraction, cls).__new__(cls)
+    
+        if denominator is None:
+            if type(numerator) is int:
+                self._numerator = numerator
+                self._denominator = 1
+                return self
+    
+            elif isinstance(numerator, numbers.Rational):
+                self._numerator = numerator.numerator
+                self._denominator = numerator.denominator
+                return self
+    
+            elif isinstance(numerator, (float, Decimal)):
+                # Exact conversion
+>               self._numerator, self._denominator = numerator.as_integer_ratio()
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               OverflowError: cannot convert Infinity to integer ratio
+
+C:\Program Files\Python312\Lib\fractions.py:232: OverflowError
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-bb_vertices] _
+
+api = 'bb_vertices', token = '1e400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal15')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004681BB0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+        with pytest.raises(ConstructionDomainError):
+>           _invoke(api, token, tmp_path, monkeypatch)
+
+tests\test_r14_tool_readers.py:70: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_r14_tool_readers.py:32: in _invoke
+    return bb52_g0.load_blocks()
+           ^^^^^^^^^^^^^^^^^^^^^
+tools\bb52_g0.py:56: in load_blocks
+    vids, poly, al = strip_duplicate_vertices([v for v, _ in lst], [p for _, p in lst], 1e-12, block=b)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\readers\bdda_geom.py:63: in strip_duplicate_vertices
+    dup_tol = max(Fraction(dup_tol), Fraction(ROUND_C)*Fraction(EPS)*Fraction(coord_scale(poly)))
+                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cls = <class 'fractions.Fraction'>, numerator = inf, denominator = None
+
+    def __new__(cls, numerator=0, denominator=None):
+        """Constructs a Rational.
+    
+        Takes a string like '3/2' or '1.5', another Rational instance, a
+        numerator/denominator pair, or a float.
+    
+        Examples
+        --------
+    
+        >>> Fraction(10, -8)
+        Fraction(-5, 4)
+        >>> Fraction(Fraction(1, 7), 5)
+        Fraction(1, 35)
+        >>> Fraction(Fraction(1, 7), Fraction(2, 3))
+        Fraction(3, 14)
+        >>> Fraction('314')
+        Fraction(314, 1)
+        >>> Fraction('-35/4')
+        Fraction(-35, 4)
+        >>> Fraction('3.1415') # conversion from numeric string
+        Fraction(6283, 2000)
+        >>> Fraction('-47e-2') # string may include a decimal exponent
+        Fraction(-47, 100)
+        >>> Fraction(1.47)  # direct construction from float (exact conversion)
+        Fraction(6620291452234629, 4503599627370496)
+        >>> Fraction(2.25)
+        Fraction(9, 4)
+        >>> Fraction(Decimal('1.47'))
+        Fraction(147, 100)
+    
+        """
+        self = super(Fraction, cls).__new__(cls)
+    
+        if denominator is None:
+            if type(numerator) is int:
+                self._numerator = numerator
+                self._denominator = 1
+                return self
+    
+            elif isinstance(numerator, numbers.Rational):
+                self._numerator = numerator.numerator
+                self._denominator = numerator.denominator
+                return self
+    
+            elif isinstance(numerator, (float, Decimal)):
+                # Exact conversion
+>               self._numerator, self._denominator = numerator.as_integer_ratio()
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               OverflowError: cannot convert Infinity to integer ratio
+
+C:\Program Files\Python312\Lib\fractions.py:232: OverflowError
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-bb_contacts] _
+
+api = 'bb_contacts', token = '1e400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal16')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000046083E0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-g4_contacts] _
+
+api = 'g4_contacts', token = '1e400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal17')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004678740>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-g4_params] __
+
+api = 'g4_params', token = '1e400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal18')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004681730>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-m4_summary] _
+
+api = 'm4_summary', token = '1e400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal19')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004607CE0>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+_ test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-ingest_json] _
+
+api = 'ingest_json', token = '1e400'
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R14FIX_evidence/tmp/tool_readers_red/test_r14_tool_physical_literal20')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004572330>
+
+    @pytest.mark.parametrize("api", APIS)
+    @pytest.mark.parametrize("token", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_tool_physical_literal_cannot_silently_lose_range(api, token, tmp_path, monkeypatch):
+>       with pytest.raises(ConstructionDomainError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_tool_readers.py:69: Failed
+---------------------------- Captured stdout call -----------------------------
+OK   cb2_locked: 1 entrances
+=========================== short test summary info ===========================
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-g2_geometry]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-bb_vertices]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-bb_contacts]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-g4_contacts]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-g4_params]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-m4_summary]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e-400-ingest_json]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-g2_geometry]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-bb_vertices]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-bb_contacts]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-g4_contacts]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-g4_params]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-m4_summary]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[-1e-400-ingest_json]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-g2_geometry]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-bb_vertices]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-bb_contacts]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-g4_contacts]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-g4_params]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-m4_summary]
+FAILED tests/test_r14_tool_readers.py::test_r14_tool_physical_literal_cannot_silently_lose_range[1e400-ingest_json]
+21 failed, 9 passed in 0.39s

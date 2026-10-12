@@ -1,0 +1,19 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__ test_readme_does_not_assert_the_false_unqualified_relative_capacity_bound __
+
+    def test_readme_does_not_assert_the_false_unqualified_relative_capacity_bound():
+        text=(Path(__file__).resolve().parents[1]/"README.md").read_text(encoding="utf-8")
+>       assert "承载比的相对短缺 ≤ 1−cos(π/k)" not in text,"N05 unqualified nonlinear capacity bound"
+E       AssertionError: N05 unqualified nonlinear capacity bound
+E       assert '承载比的相对短缺 ≤ 1−cos(π/k)' not in '# eab-kerne...e或全链精确化通过。\n'
+E         
+E         '承载比的相对短缺 ≤ 1−cos(π/k)' is contained here:
+E           其余 k 上下振荡，承载比的相对短缺 ≤ 1−cos(π/k)（`test_limit.py::test_three_d_cone_linearisation_is_conservative_within_the_inradius_bound` / `::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k`）。接触点取动体一侧 `point_a`，倾覆承载与间隙无关（`test_limit_contacts.py::test_toppling_capacity_is_independent_of_the_gap`）。本构 = 库仑 + 黏聚，可插；关联流动。**多体（M1，2026-10-10）：有门·未经独立复核·待 G6**——`limit_multi.py` 把各体平衡并进同一 LP、接触在两体间成对出现，单体是特例（`test_limit_multi.py`：单体退化与 `limit_load` 相同、两块叠放 min(μW₂, W₂, (W₁+W₂)/h) 逐点相等、成排块传力、三维叠放、注入错解与"忘记反作用"的变异都抛错；`test_limit_arch.py...
+E         
+E         ...Full output truncated (151 lines hidden), use '-vv' to show
+
+tests\test_r14_cone.py:59: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r14_cone.py::test_readme_does_not_assert_the_false_unqualified_relative_capacity_bound
+1 failed in 0.10s

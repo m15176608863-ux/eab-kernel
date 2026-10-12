@@ -22,10 +22,11 @@ from fractions import Fraction
 from pathlib import Path
 
 from ..construction import norm_rational, scalar_rational
-from ..numeric_domain import check_input
+from ..numeric_domain import check_input, exact_input
 from ..contact_record import ContactRecord, CoverType, Feature
 from ..kernel2d import covers
 from ..readers.bdda_geom import BlockGeom, StepGeometry
+from ..readers.numeric_decode import integer
 
 
 OBSERVABLE = "static_window_valid_covers"
@@ -47,12 +48,24 @@ class Bdda2DWindow:
     raw_parameters: dict[str, float] = field(default_factory=dict)
 
     def __post_init__(self):
+        integer(self.step, "bdda2d.window.step")
         if self.step < 0:
             raise ValueError("negative window step")
-        if any(not math.isfinite(x) or x < 0 for x in (self.d0, self.seg_tol, self.fit_tol)):
-            raise ValueError("distance/segment/fit windows must be finite and nonnegative")
-        if not math.isfinite(self.h1_degrees) or not 0 <= self.h1_degrees < 90:
-            raise ValueError("h1 must be finite and in [0, 90) degrees")
+        for name in ("d0", "seg_tol", "fit_tol", "h1_degrees"):
+            value = getattr(self, name)
+            # Retain the existing ValueError contract for invalid float inputs.
+            if isinstance(value, float) and not math.isfinite(value):
+                raise ValueError(f"{name} must be finite")
+            q = exact_input(value, f"bdda2d.window.{name}")
+            if q < 0:
+                raise ValueError(f"{name} must be nonnegative")
+            if name == "h1_degrees":
+                if q >= 90:
+                    raise ValueError("h1 must be finite and in [0, 90) degrees")
+                check_input(q, "bdda2d.cone_tol.h1_degrees")
+            # Geometry windows retain their exact input (not an early-rounded
+            # replacement); the boundary only checks eventual representability.
+            scalar_rational(q, quantity=f"bdda2d.window.{name}")
 
     @property
     def cone_tol(self) -> float:
@@ -60,7 +73,7 @@ class Bdda2DWindow:
         # predicate. The input envelope avoids radians underflow; its measured
         # platform error gate is test_cone_coefficient_has_a_rational_series_gate.
         check_input(self.h1_degrees, "bdda2d.cone_tol.h1_degrees")
-        return math.sin(math.radians(self.h1_degrees))
+        return math.sin(math.radians(scalar_rational(self.h1_degrees, quantity="bdda2d.cone_tol.h1_degrees")))
 
     def metadata(self) -> dict:
         return {"d0": self.d0, "h1_degrees": self.h1_degrees, "cone_sin": self.cone_tol,

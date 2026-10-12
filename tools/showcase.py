@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import math
+from fractions import Fraction
 import sys
 from pathlib import Path
 
@@ -30,6 +31,9 @@ from eab.kernel2d.entrance import first_entrance as first_entrance2, first_entra
 from eab.kernel2d.geom import outward_normal, polygons_overlap, translate    # noqa: E402
 from eab.kernel3d.entrance3 import first_entrance3, first_entrance_brute          # noqa: E402
 from eab.kernel3d.geom3 import Polyhedron, box, brute_feature_distance, convex_hull_3d  # noqa: E402
+from eab.construction import scalar_rational
+from eab.numeric_domain import check_input, check_mu
+from eab.readers.numeric_decode import integer
 from eab.limit import LimitContact, wrench                                 # noqa: E402
 from eab.limit_multi import BodyContact, LimitBody, limit_load_multi      # noqa: E402
 from eab.margin import body_distance, inflated_membership, margin_contacts  # noqa: E402
@@ -45,24 +49,44 @@ NUM: dict = {}
 # ---------------------------------------------------------------- 1. 薄拱
 
 def arch_problem(n=5, r_in=1.0, r_out=1.15, rho=10.0, mu=2.0):
+    """Finite demonstration model, not a full-range engineering arch solver.
+
+    Length radii: 0<r_in<r_out, nonzero magnitudes in [2**-400,2**400].
+    Density: zero or [2**-400,2**400]; n is an integer in [2,4096].
+    Mu uses the shared [0,2**20] domain. Trig defines the display vertices;
+    shoelace area/centroid and gravity use those given vertices exactly until
+    final wrench construction. Gate: tests/test_r14_showcase.py.
+    """
+    n = integer(n, "showcase.arch.n")
+    if not 2 <= n <= 4096:
+        raise ValueError("showcase.arch.n must be in [2,4096]")
+    r_in = check_input(r_in, "showcase.arch.r_in")
+    r_out = check_input(r_out, "showcase.arch.r_out")
+    rho = check_input(rho, "showcase.arch.rho")
+    check_mu(mu, "showcase.arch.mu")
+    if not 0 < r_in < r_out or rho < 0:
+        raise ValueError("showcase arch requires 0<r_in<r_out and rho>=0")
     ang = [math.pi * j / n for j in range(n + 1)]
-    pt = lambda r, th: (r * math.cos(th), r * math.sin(th))
+    def pt(r, th):
+        return (scalar_rational(r*Fraction(math.cos(th)), quantity="showcase.arch.x"),
+                scalar_rational(r*Fraction(math.sin(th)), quantity="showcase.arch.y"))
     blocks = [[pt(r_in, ang[i]), pt(r_out, ang[i]), pt(r_out, ang[i + 1]), pt(r_in, ang[i + 1])] for i in range(n)]
 
     def area_centroid(P):
-        a = cx = cy = 0.0
+        a = cx = cy = Fraction(0)
         for i in range(len(P)):
-            (x0, y0), (x1, y1) = P[i], P[(i + 1) % len(P)]
+            x0, y0 = map(Fraction, P[i])
+            x1, y1 = map(Fraction, P[(i + 1) % len(P)])
             w = x0 * y1 - x1 * y0
             a += w
             cx += (x0 + x1) * w
             cy += (y0 + y1) * w
-        a *= 0.5
+        a /= 2
         return a, (cx / (6 * a), cy / (6 * a))
     bodies = []
     for P in blocks:
         a, c = area_centroid(P)
-        bodies.append(LimitBody(wrench((0.0, -rho * a), c, (0.0, 0.0), 2), [0.0] * 3))
+        bodies.append(LimitBody(wrench((0, -rho * a), c, (0, 0), 2), [0.0] * 3))
     crown = (0.0, r_out)
     bodies[n // 2].live = wrench((0.0, -1.0), crown, (0.0, 0.0), 2)
     bcs, joints = [], []

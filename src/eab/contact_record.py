@@ -29,6 +29,9 @@ from dataclasses import dataclass, field, fields
 from enum import Enum
 from typing import Any, Iterable
 
+from .readers.numeric_decode import scalar as scalar_rational
+from .readers.numeric_decode import decode_tree, integer, loads as loads_exact
+
 
 class CoverType(str, Enum):
     """∂E(A,B) 的盖类型（方向无关；谁属于哪块记在 feature_a/feature_b）。"""
@@ -169,6 +172,9 @@ def _encode(v: Any) -> Any:
 
 
 _TUPLE_FIELDS = {"ref_points", "normal", "params", "shear", "slip_ref"}
+_SCALAR_FIELDS = {"length_or_area", "gap", "normal_force", "gap_ref", "lock_position"}
+_INTEGER_FIELDS = {"step", "contact_index", "block_a", "block_b", "joint_material",
+                   "raw_mode", "raw_mode_prev", "raw_mode_init", "entrance_index", "bond_flag"}
 
 
 def _decode(name: str, v: Any) -> Any:
@@ -179,11 +185,20 @@ def _decode(name: str, v: Any) -> Any:
     if name in ("mode", "mode_prev", "mode_init"):
         return Mode(v)
     if name in ("feature_a", "feature_b"):
-        return Feature(int(v["block"]), str(v["kind"]), int(v["index"]), tuple(int(x) for x in v.get("verts", ())))
+        return Feature(integer(v["block"], f"{name}.block"), str(v["kind"]),
+                       integer(v["index"], f"{name}.index"),
+                       tuple(integer(x, f"{name}.verts[{i}]") for i, x in enumerate(v.get("verts", ()))))
     if name == "ref_points":
-        return tuple(tuple(float(x) for x in p) for p in v)
+        return tuple(tuple(scalar_rational(x, quantity=f"{name}[{i}][{j}]") for j, x in enumerate(p))
+                     for i, p in enumerate(v))
     if name in _TUPLE_FIELDS:
-        return tuple(float(x) for x in v)
+        return tuple(scalar_rational(x, quantity=f"{name}[{i}]") for i, x in enumerate(v))
+    if name in _SCALAR_FIELDS:
+        return scalar_rational(v, quantity=name)
+    if name in _INTEGER_FIELDS or (name == "raw_cover" and not isinstance(v, str)):
+        return integer(v, name)
+    if name == "extra":
+        return decode_tree(v, name)
     return v
 
 
@@ -219,4 +234,4 @@ def records_to_json(records: Iterable[ContactRecord]) -> str:
 
 
 def records_from_json(text: str) -> list[ContactRecord]:
-    return [ContactRecord.from_dict(d) for d in json.loads(text)]
+    return [ContactRecord.from_dict(d) for d in loads_exact(text)]

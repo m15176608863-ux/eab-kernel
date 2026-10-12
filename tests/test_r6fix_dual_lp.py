@@ -40,6 +40,13 @@ def test_r6fix07_division_and_reverse_preserve_representable_derivatives(scale):
 ])
 def test_r6fix07_atan2_matches_independent_fraction_derivative(y, x, dy, dx):
     q = (F(x) * F(dy) - F(y) * F(dx)) / (F(x) ** 2 + F(y) ** 2)
+    if y != 0 and math.atan2(y, x) == 0.0:
+        # R14: a nonzero primal angle cannot silently become zero. Retain
+        # this original grid cell and its independent complete derivative gate.
+        with pytest.raises(ConstructionDomainError, match="atan2 result"):
+            atan2(Dual(y, (dy,)), Dual(x, (dx,)))
+        assert dual_module._ratio_derivative(y, x, dy, dx, angular=True) == scalar_exact(q)
+        return
     got = atan2(Dual(y, (dy,)), Dual(x, (dx,)))
     assert got.v == math.atan2(y, x)
     assert got.e == (scalar_exact(q),), (got.e, scalar_exact(q))

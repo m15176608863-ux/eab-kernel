@@ -1,0 +1,47 @@
+{
+  "mutations": [
+    {
+      "mutation": "JSON early float",
+      "gate": "test_real_bdda3d_json_literal_is_checked_before_decoding[1e-400-area]",
+      "assertion": "DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>",
+      "caught": true
+    },
+    {
+      "mutation": "direct Fraction unchecked float",
+      "gate": "test_contact_dict_rational_rejects_nonzero_zero_or_infinity[value0-normal]",
+      "assertion": "DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>",
+      "caught": true
+    },
+    {
+      "mutation": "identity integrality guard removed",
+      "gate": "test_fractional_feature_identifiers_are_rejected_not_truncated[value1]",
+      "assertion": "DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>",
+      "caught": true
+    },
+    {
+      "mutation": "window output-range guard replaced by float",
+      "gate": "test_adapter_window_checks_exact_inputs_before_libm_or_float[value0-d0]",
+      "assertion": "DID NOT RAISE any of (<class 'eab.numeric_domain.ConstructionDomainError'>, <class 'ValueError'>)",
+      "caught": true
+    },
+    {
+      "mutation": "signed zero guard removed",
+      "gate": "test_reader_preserves_signed_float_zero_through_json_roundtrip[dict-normal]",
+      "assertion": "reader must preserve signed binary64 zero",
+      "caught": true
+    },
+    {
+      "mutation": "reference evidence integer guard bypassed",
+      "gate": "test_bdda3d_reference_evidence_keeps_checked_integer_identity[json]",
+      "assertion": "reference evidence must preserve exact integer identity",
+      "caught": true
+    }
+  ],
+  "source_bytes_restored": true,
+  "sha256": {
+    "src\\eab\\contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src\\eab\\readers\\bdda3d.py": "afe91b3df7c385ecf0c3755277a7023d9b0efa6b6e73976d9246bf38fa83b845",
+    "src\\eab\\readers\\numeric_decode.py": "f0506af68cdc5c937495748d2a9e2c04e0169ffbbca4c80699303eabb2bb76d6",
+    "src\\eab\\adapters\\bdda2d.py": "3240e49c7cf5f546884a911828e300fe3cb2a3e44079d62a1b0e017be63299b3"
+  }
+}

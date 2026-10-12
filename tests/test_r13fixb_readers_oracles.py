@@ -291,12 +291,16 @@ def test_reader_unrepresentable_numeric_fields_raise_quantity_named_error(tmp_pa
 
 def _mutate(monkeypatch, module, old, new):
     source = inspect.getsource(module)
-    assert source.count(old) == 1
+    replacements = [(old, new)] if isinstance(old, str) else list(zip(old, new))
+    assert isinstance(old, str) or len(old) == len(new)
+    for before, after in replacements:
+        assert source.count(before) == 1
+        source = source.replace(before, after)
     name = module.__name__+"_r13fixb_mutant"
     mutant = types.ModuleType(name)
     mutant.__package__ = module.__package__
     monkeypatch.setitem(sys.modules, name, mutant)
-    exec(compile(source.replace(old, new), module.__file__, "exec"), mutant.__dict__)
+    exec(compile(source, module.__file__, "exec"), mutant.__dict__)
     return mutant
 
 
@@ -403,9 +407,16 @@ def test_cone_coefficient_outside_declared_angle_domain_is_loud(angle):
 
 
 def test_cone_coefficient_domain_guard_has_teeth(monkeypatch):
+    # The same declared angle domain is now checked eagerly and at use.
+    # Remove both actual guards, not a post-output surrogate; retain every
+    # scalar representability check and the original subnormal input.
+    with pytest.raises(ConstructionDomainError, match="cone_tol.h1_degrees"):
+        adapter.Bdda2DWindow(1, 0., F(2)**-1074).cone_tol
     mutant = _mutate(monkeypatch, adapter,
-                     'check_input(self.h1_degrees, "bdda2d.cone_tol.h1_degrees")',
-                     'pass  # restored unchecked radians underflow')
+                     ('check_input(q, "bdda2d.cone_tol.h1_degrees")',
+                      'check_input(self.h1_degrees, "bdda2d.cone_tol.h1_degrees")'),
+                     ('pass  # restored unchecked constructor angle domain',
+                      'pass  # restored unchecked radians underflow'))
     with pytest.raises(pytest.fail.Exception, match="DID NOT RAISE"):
         with pytest.raises(ConstructionDomainError):
             mutant.Bdda2DWindow(1, 0., F(2)**-1074).cone_tol

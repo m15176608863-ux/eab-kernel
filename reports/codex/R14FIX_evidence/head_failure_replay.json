@@ -1,0 +1,53 @@
+{
+  "head": "878d4f0",
+  "read_only_git_show": true,
+  "module_sha256": {
+    "dual": "8d65739fbbfb537a3fbf5bbfaa73ac1547dd6e7f970d0b98cb23e1e389e949f0",
+    "limit": "dffd377bc0c9f386e2666b5e990efb4f78da09f1658ecd5b6ad1903cf604f148"
+  },
+  "dependency_note": "LP/construction unchanged by R14; numeric_domain original helpers unchanged",
+  "results": [
+    {
+      "finding": "N01",
+      "input_type": "int",
+      "exact_exponent": "18014398509481985",
+      "actual": "Dual(1.0, (-1.8014398509481984e+16,))",
+      "expected_primal": -1,
+      "expected_derivative": 1.8014398509481984e+16
+    },
+    {
+      "finding": "N01",
+      "input_type": "Fraction",
+      "exact_exponent": "18014398509481985",
+      "actual": "Dual(1.0, (-1.8014398509481984e+16,))",
+      "expected_primal": -1,
+      "expected_derivative": 1.8014398509481984e+16
+    },
+    {
+      "finding": "N04",
+      "mu": 1e+16,
+      "status": "optimal",
+      "alpha": 1.9506150776589132e+16,
+      "generator_normal_work": [
+        "95520383389434588442681134719873/81129638414606681695789005144064",
+        "16850926812823187/9007199254740992",
+        "556771461113735836883069123038221/649037107316853453566312041152512",
+        "12036376294873705/18014398509481984"
+      ],
+      "squared_capacity_to_raw_normal_circle_upper_ratio": 1.3588925647108172,
+      "old_selfcheck_ok": true
+    },
+    {
+      "finding": "N04",
+      "mu": 1e+17,
+      "status": "unbounded",
+      "alpha": "inf",
+      "generator_normal_work": [
+        "52154767552247157145198284153729/81129638414606681695789005144064",
+        "7221825776924223/1125899906842624",
+        "-9623486554795830337712180030245/10141204801825835211973625643008",
+        "-12036376294873705/2251799813685248"
+      ]
+    }
+  ]
+}

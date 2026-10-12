@@ -1,5 +1,7 @@
 # 换路：精确谓词、浮点只做构造（2026-10-10，G6 第五轮之后）
 
+> **R14FIX 分项优先规则（2026-10-13）**：下文 D400 仅是已显式选入的近似尺度诊断域，不是摩擦/角度/指数/文本的统一上限。当前逐物理量范围、入口检查、无损 binary64 位数推导、RN 文本端点和圆锥安全证明见 [R14FIX 数值合同](r14fix_design_sync.md)。旧全有限精确谓词/代数支持域保留；一般超越误差证明仍不是本轮结论。
+
 <a id="r13fixb-numeric-domain"></a>
 ## R13FIXb：数值支持域契约（2026-10-13，所有者决定）
 
@@ -47,7 +49,7 @@
   Newell 模平方与最终根号内比值保留有理数（最终噪声通常是无理数）。令 `u=2^-53`，真实非退化面噪声为 R，正规输出误差
   `|Rhat-R| ≤ (2u+u²)|R|`；次正规输出可用同一界再加 `2^-1075`。推导：各正边长的相对误差 ≤u，
   正周长的相对误差仍 ≤u，精确比例不放大该相对误差，最终 RN 再贡献 ≤u；乘积界为 `(1+u)^2-1`。
-  不承诺多根式之和正确舍入。门：`test_face_noise_non_axis_error_bound_is_independently_squared`；
+  不承诺多根式之和正确舍入。门：`test_r14_claims.py::test_face_noise_obeys_the_documented_two_rounding_relative_bound` 用有理平方逐句核该常数；旧 `test_face_noise_non_axis_error_bound_is_independently_squared` 仍保留其较宽包围门；
   超长边回归：`test_face_noise_support_does_not_depend_on_intermediate_edge_range`。
 - 既有 margin 容差报告的模型输入是已经构造的 L/C（不是理想几何精确 L）；完整有理报告表达式仅最终舍入。
   随机采样把 RNG 提供的 binary64 draw 视为给定系数，精确仿射后构造坐标；随机造型不是精确几何主 oracle。

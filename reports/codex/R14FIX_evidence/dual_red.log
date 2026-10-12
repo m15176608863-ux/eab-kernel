@@ -1,0 +1,645 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF..........FFF..                            [100%]
+================================== FAILURES ===================================
+______ test_r14_integer_power_keeps_exact_parity[int-18014398509481985] _______
+
+exponent = 18014398509481985, wrapper = <class 'int'>
+
+    @pytest.mark.parametrize("exponent", [2**54+1, -(2**54+1), 2**400+1])
+    @pytest.mark.parametrize("wrapper", [int, F])
+    def test_r14_integer_power_keeps_exact_parity(exponent, wrapper):
+        result = dual.Dual(-1.0, (1.0, -1.0, 0.0)) ** wrapper(exponent)
+>       assert result.v == -1.0, "exact odd exponent must retain negative primal"
+E       AssertionError: exact odd exponent must retain negative primal
+E       assert 1.0 == -1.0
+E        +  where 1.0 = Dual(1.0, (-1.8014398509481984e+16, 1.8014398509481984e+16, 0.0)).v
+
+tests\test_r14_dual.py:21: AssertionError
+______ test_r14_integer_power_keeps_exact_parity[int--18014398509481985] ______
+
+exponent = -18014398509481985, wrapper = <class 'int'>
+
+    @pytest.mark.parametrize("exponent", [2**54+1, -(2**54+1), 2**400+1])
+    @pytest.mark.parametrize("wrapper", [int, F])
+    def test_r14_integer_power_keeps_exact_parity(exponent, wrapper):
+        result = dual.Dual(-1.0, (1.0, -1.0, 0.0)) ** wrapper(exponent)
+>       assert result.v == -1.0, "exact odd exponent must retain negative primal"
+E       AssertionError: exact odd exponent must retain negative primal
+E       assert 1.0 == -1.0
+E        +  where 1.0 = Dual(1.0, (1.8014398509481984e+16, -1.8014398509481984e+16, 0.0)).v
+
+tests\test_r14_dual.py:21: AssertionError
+_ test_r14_integer_power_keeps_exact_parity[int-2582249878086908589655919172003011874329705792829223512830659356540647622016841194629645353280137831435903171972747493377] _
+
+exponent = 258224987808690858...5903171972747493377, wrapper = <class 'int'>
+
+    @pytest.mark.parametrize("exponent", [2**54+1, -(2**54+1), 2**400+1])
+    @pytest.mark.parametrize("wrapper", [int, F])
+    def test_r14_integer_power_keeps_exact_parity(exponent, wrapper):
+        result = dual.Dual(-1.0, (1.0, -1.0, 0.0)) ** wrapper(exponent)
+>       assert result.v == -1.0, "exact odd exponent must retain negative primal"
+E       AssertionError: exact odd exponent must retain negative primal
+E       assert 1.0 == -1.0
+E        +  where 1.0 = Dual(1.0, (-2.5822498780869086e+120, 2.5822498780869086e+120, 0.0)).v
+
+tests\test_r14_dual.py:21: AssertionError
+____ test_r14_integer_power_keeps_exact_parity[Fraction-18014398509481985] ____
+
+exponent = 18014398509481985, wrapper = <class 'fractions.Fraction'>
+
+    @pytest.mark.parametrize("exponent", [2**54+1, -(2**54+1), 2**400+1])
+    @pytest.mark.parametrize("wrapper", [int, F])
+    def test_r14_integer_power_keeps_exact_parity(exponent, wrapper):
+        result = dual.Dual(-1.0, (1.0, -1.0, 0.0)) ** wrapper(exponent)
+>       assert result.v == -1.0, "exact odd exponent must retain negative primal"
+E       AssertionError: exact odd exponent must retain negative primal
+E       assert 1.0 == -1.0
+E        +  where 1.0 = Dual(1.0, (-1.8014398509481984e+16, 1.8014398509481984e+16, 0.0)).v
+
+tests\test_r14_dual.py:21: AssertionError
+___ test_r14_integer_power_keeps_exact_parity[Fraction--18014398509481985] ____
+
+exponent = -18014398509481985, wrapper = <class 'fractions.Fraction'>
+
+    @pytest.mark.parametrize("exponent", [2**54+1, -(2**54+1), 2**400+1])
+    @pytest.mark.parametrize("wrapper", [int, F])
+    def test_r14_integer_power_keeps_exact_parity(exponent, wrapper):
+        result = dual.Dual(-1.0, (1.0, -1.0, 0.0)) ** wrapper(exponent)
+>       assert result.v == -1.0, "exact odd exponent must retain negative primal"
+E       AssertionError: exact odd exponent must retain negative primal
+E       assert 1.0 == -1.0
+E        +  where 1.0 = Dual(1.0, (1.8014398509481984e+16, -1.8014398509481984e+16, 0.0)).v
+
+tests\test_r14_dual.py:21: AssertionError
+_ test_r14_integer_power_keeps_exact_parity[Fraction-2582249878086908589655919172003011874329705792829223512830659356540647622016841194629645353280137831435903171972747493377] _
+
+exponent = 258224987808690858...5903171972747493377
+wrapper = <class 'fractions.Fraction'>
+
+    @pytest.mark.parametrize("exponent", [2**54+1, -(2**54+1), 2**400+1])
+    @pytest.mark.parametrize("wrapper", [int, F])
+    def test_r14_integer_power_keeps_exact_parity(exponent, wrapper):
+        result = dual.Dual(-1.0, (1.0, -1.0, 0.0)) ** wrapper(exponent)
+>       assert result.v == -1.0, "exact odd exponent must retain negative primal"
+E       AssertionError: exact odd exponent must retain negative primal
+E       assert 1.0 == -1.0
+E        +  where 1.0 = Dual(1.0, (-2.5822498780869086e+120, 2.5822498780869086e+120, 0.0)).v
+
+tests\test_r14_dual.py:21: AssertionError
+__ test_r14_trig_rejects_lossy_exact_parameters[False-18014398509481985-sin] __
+
+function = 'sin', value = 18014398509481985, as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+__ test_r14_trig_rejects_lossy_exact_parameters[False-18014398509481985-cos] __
+
+function = 'cos', value = 18014398509481985, as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+_______ test_r14_trig_rejects_lossy_exact_parameters[False-value1-sin] ________
+
+function = 'sin', value = Fraction(54043195528445953, 3), as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+_______ test_r14_trig_rejects_lossy_exact_parameters[False-value1-cos] ________
+
+function = 'cos', value = Fraction(54043195528445953, 3), as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+_______ test_r14_trig_rejects_lossy_exact_parameters[False-value2-sin] ________
+
+function = 'sin'
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+_______ test_r14_trig_rejects_lossy_exact_parameters[False-value2-cos] ________
+
+function = 'cos'
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+_______ test_r14_trig_rejects_lossy_exact_parameters[False-value3-sin] ________
+
+function = 'sin'
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+_______ test_r14_trig_rejects_lossy_exact_parameters[False-value3-cos] ________
+
+function = 'cos'
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+as_dual = False
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+__ test_r14_trig_rejects_lossy_exact_parameters[True-18014398509481985-sin] ___
+
+function = 'sin', value = 18014398509481985, as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+__ test_r14_trig_rejects_lossy_exact_parameters[True-18014398509481985-cos] ___
+
+function = 'cos', value = 18014398509481985, as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+________ test_r14_trig_rejects_lossy_exact_parameters[True-value1-sin] ________
+
+function = 'sin', value = Fraction(54043195528445953, 3), as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+________ test_r14_trig_rejects_lossy_exact_parameters[True-value1-cos] ________
+
+function = 'cos', value = Fraction(54043195528445953, 3), as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+________ test_r14_trig_rejects_lossy_exact_parameters[True-value2-sin] ________
+
+q = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+
+    def _derivative_float(q: Fraction) -> float:
+        """Round once; an unrepresentable nonzero derivative must not silently be 0."""
+        try:
+>           return scalar_rational(q)
+                   ^^^^^^^^^^^^^^^^^^
+
+src\eab\dual.py:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+
+    def scalar_rational(value, *, allow_underflow=False, quantity="scalar_rational result"):
+        """Correctly rounded rational scalar, with explicit output-range checks."""
+        exact = exact_input(value, quantity)
+        try:
+            result = float(exact)
+        except OverflowError:
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range") from None
+        if not math.isfinite(result):
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range")
+        if exact and result == 0 and not allow_underflow:
+>           raise ConstructionDomainError(quantity, "nonzero exact scalar is below binary64 output range")
+E           eab.numeric_domain.ConstructionDomainError: scalar_rational result: nonzero exact scalar is below binary64 output range
+
+src\eab\construction.py:26: ConstructionDomainError
+
+The above exception was the direct cause of the following exception:
+
+function = 'sin'
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+        with pytest.raises(ConstructionDomainError, match=function):
+>           getattr(dual, function)(argument)
+
+tests\test_r14_dual.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\dual.py:262: in sin
+    return Dual(math.sin(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
+src\eab\dual.py:262: in <genexpr>
+    return Dual(math.sin(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+q = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+
+    def _derivative_float(q: Fraction) -> float:
+        """Round once; an unrepresentable nonzero derivative must not silently be 0."""
+        try:
+            return scalar_rational(q)
+        except ArithmeticError as exc:
+>           raise ConstructionDomainError("Dual derivative: outside nonzero finite binary64 output range") from exc
+E           eab.numeric_domain.ConstructionDomainError: Dual derivative: outside nonzero finite binary64 output range: outside numerical support domain
+
+src\eab\dual.py:180: ConstructionDomainError
+
+During handling of the above exception, another exception occurred:
+
+function = 'sin'
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'sin'
+E         Actual message: 'Dual derivative: outside nonzero finite binary64 output range: outside numerical support domain'
+
+tests\test_r14_dual.py:30: AssertionError
+________ test_r14_trig_rejects_lossy_exact_parameters[True-value2-cos] ________
+
+function = 'cos'
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+________ test_r14_trig_rejects_lossy_exact_parameters[True-value3-sin] ________
+
+q = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+
+    def _derivative_float(q: Fraction) -> float:
+        """Round once; an unrepresentable nonzero derivative must not silently be 0."""
+        try:
+>           return scalar_rational(q)
+                   ^^^^^^^^^^^^^^^^^^
+
+src\eab\dual.py:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+
+    def scalar_rational(value, *, allow_underflow=False, quantity="scalar_rational result"):
+        """Correctly rounded rational scalar, with explicit output-range checks."""
+        exact = exact_input(value, quantity)
+        try:
+            result = float(exact)
+        except OverflowError:
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range") from None
+        if not math.isfinite(result):
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range")
+        if exact and result == 0 and not allow_underflow:
+>           raise ConstructionDomainError(quantity, "nonzero exact scalar is below binary64 output range")
+E           eab.numeric_domain.ConstructionDomainError: scalar_rational result: nonzero exact scalar is below binary64 output range
+
+src\eab\construction.py:26: ConstructionDomainError
+
+The above exception was the direct cause of the following exception:
+
+function = 'sin'
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+        with pytest.raises(ConstructionDomainError, match=function):
+>           getattr(dual, function)(argument)
+
+tests\test_r14_dual.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\dual.py:262: in sin
+    return Dual(math.sin(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
+src\eab\dual.py:262: in <genexpr>
+    return Dual(math.sin(x.v), tuple(_derivative_float(Fraction(c) * Fraction(a))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+q = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+
+    def _derivative_float(q: Fraction) -> float:
+        """Round once; an unrepresentable nonzero derivative must not silently be 0."""
+        try:
+            return scalar_rational(q)
+        except ArithmeticError as exc:
+>           raise ConstructionDomainError("Dual derivative: outside nonzero finite binary64 output range") from exc
+E           eab.numeric_domain.ConstructionDomainError: Dual derivative: outside nonzero finite binary64 output range: outside numerical support domain
+
+src\eab\dual.py:180: ConstructionDomainError
+
+During handling of the above exception, another exception occurred:
+
+function = 'sin'
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'sin'
+E         Actual message: 'Dual derivative: outside nonzero finite binary64 output range: outside numerical support domain'
+
+tests\test_r14_dual.py:30: AssertionError
+________ test_r14_trig_rejects_lossy_exact_parameters[True-value3-cos] ________
+
+function = 'cos'
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+as_dual = True
+
+    @pytest.mark.parametrize("function", ["sin", "cos"])
+    @pytest.mark.parametrize("value", [2**54+1, F(3*2**54+1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_trig_rejects_lossy_exact_parameters(function, value, as_dual):
+        argument = dual.Dual(value, (value,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match=function):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:30: Failed
+___ test_r14_atan2_rejects_lossy_exact_parameters[False-18014398509481985] ____
+
+value = 18014398509481985, as_dual = False
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+_________ test_r14_atan2_rejects_lossy_exact_parameters[False-value1] _________
+
+value = Fraction(1, 3), as_dual = False
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+_________ test_r14_atan2_rejects_lossy_exact_parameters[False-value2] _________
+
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+as_dual = False
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+_________ test_r14_atan2_rejects_lossy_exact_parameters[False-value3] _________
+
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+as_dual = False
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+____ test_r14_atan2_rejects_lossy_exact_parameters[True-18014398509481985] ____
+
+value = 18014398509481985, as_dual = True
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+_________ test_r14_atan2_rejects_lossy_exact_parameters[True-value1] __________
+
+value = Fraction(1, 3), as_dual = True
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+_________ test_r14_atan2_rejects_lossy_exact_parameters[True-value2] __________
+
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+as_dual = True
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+_________ test_r14_atan2_rejects_lossy_exact_parameters[True-value3] __________
+
+value = Fraction(1, 1148130695274254524232833201177681984022317702088695200477642736825766261392370313856659486316506269918445...0081957216630582755380425583726015528348786419432054508915275783882625175435528800822842770817965453762184851149029376)
+as_dual = True
+
+    @pytest.mark.parametrize("value", [2**54+1, F(1, 3), F(2)**-1075, F(2)**-2000])
+    @pytest.mark.parametrize("as_dual", [False, True])
+    def test_r14_atan2_rejects_lossy_exact_parameters(value, as_dual):
+        y = dual.Dual(value, (value,)) if as_dual else value
+        x = dual.Dual(value, (0.0,)) if as_dual else value
+>       with pytest.raises(ConstructionDomainError, match="atan2"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:39: Failed
+_______ test_r14_noninteger_power_rejects_lossy_exact_exponent[value0] ________
+
+value = Fraction(1, 3)
+
+    @pytest.mark.parametrize("value", [F(1, 3), F(2)**-1075, F(3*2**54+1, 3)])
+    def test_r14_noninteger_power_rejects_lossy_exact_exponent(value):
+>       with pytest.raises(ConstructionDomainError, match="exponent"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:60: Failed
+_______ test_r14_noninteger_power_rejects_lossy_exact_exponent[value1] ________
+
+value = Fraction(1, 4048045066146212367049906934378346140991132995282842367138027160548606791359906937839207674028742489903741...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+
+    @pytest.mark.parametrize("value", [F(1, 3), F(2)**-1075, F(3*2**54+1, 3)])
+    def test_r14_noninteger_power_rejects_lossy_exact_exponent(value):
+>       with pytest.raises(ConstructionDomainError, match="exponent"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:60: Failed
+_______ test_r14_noninteger_power_rejects_lossy_exact_exponent[value2] ________
+
+value = Fraction(54043195528445953, 3)
+
+    @pytest.mark.parametrize("value", [F(1, 3), F(2)**-1075, F(3*2**54+1, 3)])
+    def test_r14_noninteger_power_rejects_lossy_exact_exponent(value):
+>       with pytest.raises(ConstructionDomainError, match="exponent"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>
+
+tests\test_r14_dual.py:60: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_r14_dual.py::test_r14_integer_power_keeps_exact_parity[int-18014398509481985]
+FAILED tests/test_r14_dual.py::test_r14_integer_power_keeps_exact_parity[int--18014398509481985]
+FAILED tests/test_r14_dual.py::test_r14_integer_power_keeps_exact_parity[int-2582249878086908589655919172003011874329705792829223512830659356540647622016841194629645353280137831435903171972747493377]
+FAILED tests/test_r14_dual.py::test_r14_integer_power_keeps_exact_parity[Fraction-18014398509481985]
+FAILED tests/test_r14_dual.py::test_r14_integer_power_keeps_exact_parity[Fraction--18014398509481985]
+FAILED tests/test_r14_dual.py::test_r14_integer_power_keeps_exact_parity[Fraction-2582249878086908589655919172003011874329705792829223512830659356540647622016841194629645353280137831435903171972747493377]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-18014398509481985-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-18014398509481985-cos]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-value1-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-value1-cos]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-value2-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-value2-cos]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-value3-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[False-value3-cos]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-18014398509481985-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-18014398509481985-cos]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-value1-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-value1-cos]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-value2-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-value2-cos]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-value3-sin]
+FAILED tests/test_r14_dual.py::test_r14_trig_rejects_lossy_exact_parameters[True-value3-cos]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[False-18014398509481985]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[False-value1]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[False-value2]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[False-value3]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[True-18014398509481985]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[True-value1]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[True-value2]
+FAILED tests/test_r14_dual.py::test_r14_atan2_rejects_lossy_exact_parameters[True-value3]
+FAILED tests/test_r14_dual.py::test_r14_noninteger_power_rejects_lossy_exact_exponent[value0]
+FAILED tests/test_r14_dual.py::test_r14_noninteger_power_rejects_lossy_exact_exponent[value1]
+FAILED tests/test_r14_dual.py::test_r14_noninteger_power_rejects_lossy_exact_exponent[value2]
+33 failed, 12 passed, 2 deselected in 0.21s

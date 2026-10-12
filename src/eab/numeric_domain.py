@@ -50,3 +50,41 @@ def float_algebra(values):
     """
     return (all(type(x) in (int, float, Fraction) for x in values)
             and any(type(x) is float for x in values))
+
+
+MAX_MU = Fraction(2**20)
+
+
+def check_mu(value, quantity="friction.mu"):
+    """Exact dimensionless friction domain: 0 <= mu <= 2**20.
+
+    The bound limits mu*eps to 2**-32. It is NOT a cone certificate:
+    final rays must separately pass the exact circular-cone containment gate.
+    Tests: test_r14_domain.py::test_friction_domain_checks_exact_boundaries.
+    """
+    q = exact_input(value, quantity)
+    if not 0 <= q <= MAX_MU:
+        raise ConstructionDomainError(quantity, "friction coefficient must be in [0, 2^20]")
+    return q
+
+
+def binary64_argument(value, quantity: str) -> float:
+    """Check the exact parameter before conversion to the binary64 libm model.
+
+    A reduced rational is binary64 iff its denominator is a power of two,
+    its odd significand has <=53 bits, its lowest bit is >=2**-1074, and
+    its highest bit is <=2**1023. This admits all finite binary64 values,
+    but not an int with lost parity or a nonzero rational rounded to zero.
+    Gate: test_r14_trig_rejects_lossy_exact_parameters.
+    """
+    q = exact_input(value, quantity)
+    if not q:
+        return value if isinstance(value, float) else 0.0
+    numerator, denominator = abs(q.numerator), q.denominator
+    trailing = (numerator & -numerator).bit_length() - 1
+    bits = numerator.bit_length() - trailing
+    exponent = trailing - (denominator.bit_length() - 1)
+    if (denominator & (denominator - 1) or bits > 53
+            or exponent < -1074 or exponent + bits - 1 > 1023):
+        raise ConstructionDomainError(quantity, "exact parameter must be losslessly representable finite binary64")
+    return float(q)

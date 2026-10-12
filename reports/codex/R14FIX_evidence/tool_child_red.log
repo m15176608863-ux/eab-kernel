@@ -1,0 +1,113 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+__________ test_r14_ingest_child_checks_before_vertex_float[1e-400] ___________
+
+value = '1e-400'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000046D1700>
+
+    @pytest.mark.parametrize("value", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_ingest_child_checks_before_vertex_float(value, monkeypatch):
+        from fractions import Fraction
+        vertices = [(Fraction(value), 0, 0)]
+        ss = SimpleNamespace(blocks={1: {"vertices": vertices}})
+        cases = SimpleNamespace(build_cb2=lambda *a, **k: (ss, []), build_cb_bond=lambda *a, **k: (ss, []))
+        # Only the locally-owned export string is executed against an in-memory
+        # sibling stub: no sibling source, executable, directory or process is used.
+        monkeypatch.setitem(sys.modules, "bdda3d", SimpleNamespace(cases=cases))
+        monkeypatch.setattr(sys, "argv", ["stub", "cb2_locked"])
+>       with pytest.raises(OverflowError, match="vertex"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'OverflowError'>
+
+tests\test_r14_tool_readers.py:100: Failed
+---------------------------- Captured stdout call -----------------------------
+{"case": "cb2_locked", "entrances": [], "step": 0, "verts": {"1": [[0.0, 0.0, 0.0]]}}
+__________ test_r14_ingest_child_checks_before_vertex_float[-1e-400] __________
+
+value = '-1e-400'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000046D22A0>
+
+    @pytest.mark.parametrize("value", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_ingest_child_checks_before_vertex_float(value, monkeypatch):
+        from fractions import Fraction
+        vertices = [(Fraction(value), 0, 0)]
+        ss = SimpleNamespace(blocks={1: {"vertices": vertices}})
+        cases = SimpleNamespace(build_cb2=lambda *a, **k: (ss, []), build_cb_bond=lambda *a, **k: (ss, []))
+        # Only the locally-owned export string is executed against an in-memory
+        # sibling stub: no sibling source, executable, directory or process is used.
+        monkeypatch.setitem(sys.modules, "bdda3d", SimpleNamespace(cases=cases))
+        monkeypatch.setattr(sys, "argv", ["stub", "cb2_locked"])
+>       with pytest.raises(OverflowError, match="vertex"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'OverflowError'>
+
+tests\test_r14_tool_readers.py:100: Failed
+---------------------------- Captured stdout call -----------------------------
+{"case": "cb2_locked", "entrances": [], "step": 0, "verts": {"1": [[-0.0, 0.0, 0.0]]}}
+___________ test_r14_ingest_child_checks_before_vertex_float[1e400] ___________
+
+value = '1e400'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000046D38C0>
+
+    @pytest.mark.parametrize("value", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_ingest_child_checks_before_vertex_float(value, monkeypatch):
+        from fractions import Fraction
+        vertices = [(Fraction(value), 0, 0)]
+        ss = SimpleNamespace(blocks={1: {"vertices": vertices}})
+        cases = SimpleNamespace(build_cb2=lambda *a, **k: (ss, []), build_cb_bond=lambda *a, **k: (ss, []))
+        # Only the locally-owned export string is executed against an in-memory
+        # sibling stub: no sibling source, executable, directory or process is used.
+        monkeypatch.setitem(sys.modules, "bdda3d", SimpleNamespace(cases=cases))
+        monkeypatch.setattr(sys, "argv", ["stub", "cb2_locked"])
+        with pytest.raises(OverflowError, match="vertex"):
+>           exec(compile(ingest_bdda3d.CHILD, "<local-export-child-stub>", "exec"), {})
+
+tests\test_r14_tool_readers.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<local-export-child-stub>:9: in <module>
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Fraction(1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000...0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, 1)
+
+    def __float__(self):
+        """float(self) = self.numerator / self.denominator
+    
+        It's important that this conversion use the integer's "true"
+        division rather than casting one side to float before dividing
+        so that ratios of huge integers convert without overflowing.
+    
+        """
+>       return int(self.numerator) / int(self.denominator)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       OverflowError: integer division result too large for a float
+
+C:\Program Files\Python312\Lib\numbers.py:316: OverflowError
+
+During handling of the above exception, another exception occurred:
+
+value = '1e400'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000046D38C0>
+
+    @pytest.mark.parametrize("value", ["1e-400", "-1e-400", "1e400"])
+    def test_r14_ingest_child_checks_before_vertex_float(value, monkeypatch):
+        from fractions import Fraction
+        vertices = [(Fraction(value), 0, 0)]
+        ss = SimpleNamespace(blocks={1: {"vertices": vertices}})
+        cases = SimpleNamespace(build_cb2=lambda *a, **k: (ss, []), build_cb_bond=lambda *a, **k: (ss, []))
+        # Only the locally-owned export string is executed against an in-memory
+        # sibling stub: no sibling source, executable, directory or process is used.
+        monkeypatch.setitem(sys.modules, "bdda3d", SimpleNamespace(cases=cases))
+        monkeypatch.setattr(sys, "argv", ["stub", "cb2_locked"])
+>       with pytest.raises(OverflowError, match="vertex"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'vertex'
+E         Actual message: 'integer division result too large for a float'
+
+tests\test_r14_tool_readers.py:100: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r14_tool_readers.py::test_r14_ingest_child_checks_before_vertex_float[1e-400]
+FAILED tests/test_r14_tool_readers.py::test_r14_ingest_child_checks_before_vertex_float[-1e-400]
+FAILED tests/test_r14_tool_readers.py::test_r14_ingest_child_checks_before_vertex_float[1e400]
+3 failed, 30 deselected in 0.14s

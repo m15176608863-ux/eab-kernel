@@ -20,6 +20,7 @@ from pathlib import Path
 from run_bdda_kernel import BDDA, KERNEL, ROOT, run, sha256
 
 sys.path.insert(0, str(ROOT / "src"))
+from eab.construction import scalar_rational
 from eab.readers.bdda_df import load_records  # noqa: E402
 from eab.readers.bdda_geom import load_step_geometries  # noqa: E402
 
@@ -66,7 +67,7 @@ def fixture_summary(path: Path, steps: int) -> list[dict]:
                          "vertices": len(vs), "contacts": len(cs),
                          "unique_canonical_keys": len(set(keys)), "duplicate_contact_groups": duplicates,
                          "types": dict(sorted(Counter(c["mtype"] for c in cs).items())),
-                         "detparams": {k: float(v) for k, v in dpar.items() if k != "step"}})
+                         "detparams": {k: scalar_rational(v, quantity=f"M4 summary detparams {k}") for k, v in dpar.items() if k != "step"}})
     return per_step
 
 
