@@ -1,0 +1,32 @@
+{
+  "corrections": [
+    {
+      "id": "R12b-L0249",
+      "reason": "具体节点：c.label()。Cover3.label() 仅封装 kind/a_feature/b_feature 为标签元组。在 merge_degenerate 中，该标签用于 normals 字典键、_facet_plane_on_views 的特征身份输入和最终分组的成员标识；本函数没有排序 lambda。法向和平面关系由 _facet_plane_on_views、_same_direction、_same_plane 的精确数据路径判定，不由标签方法进行数值计算或 callable 分派。",
+      "disposition": "DATA_COLLECTION_OR_LABELING"
+    },
+    {
+      "id": "R12b-L0252",
+      "reason": "具体节点：c.label()。Cover3.label() 仅封装 kind/a_feature/b_feature 为标签元组。在 merge_degenerate 中，该标签用于 normals 字典键、_facet_plane_on_views 的特征身份输入和最终分组的成员标识；本函数没有排序 lambda。法向和平面关系由 _facet_plane_on_views、_same_direction、_same_plane 的精确数据路径判定，不由标签方法进行数值计算或 callable 分派。",
+      "disposition": "DATA_COLLECTION_OR_LABELING"
+    },
+    {
+      "id": "R12b-L0476",
+      "reason": "具体节点：_candidates_cached(_CandidateSnapshot(signature, arguments))。该外层调用会经 _candidates_cached 直接执行 _candidates_uncached，不只是建立缓存键；implementations 只参与签名身份，不执行容器中 callable。此链构造 nominal report：初始平移用 translate_exact，但 z/nz 来自 cover 显示数据，候选分组含浮点 z-z_prev，extent 也属于该显示位姿报告。不能称其为理想逃逸高度的精确候选全集；escape_height_covers 的权威 root 另由 _exact_escape/surface_events 的精确全事件与区间证书决定。本条是范围排除，不是无提前舍入证明。",
+      "disposition": "NOMINAL_REPORT_NOT_EXACT_EVENT_SET"
+    },
+    {
+      "id": "R12b-L0514",
+      "reason": "具体节点：effective_geom_tol(report_A,B,geom_tol)。本节点直接计算 nominal cover/extent/并列标签的报告窗口，并非 exact root 的构造。report_A 初始平移为 translate_exact；权威高度另由 _exact_escape 在给定几何的精确事件与前区间证书上判定，geom_tol 不替换该 root。effective_geom_tol/rounding_floor 本身仍为浮点报告预算，不能作为理想几何距离或事件完备性证明。本条是报告范围排除，与同 AST 的 closed-rounded-call 条目一致。",
+      "disposition": "NOMINAL_REPORT_BUDGET_NOT_EXACT_EVENT_SET"
+    },
+    {
+      "id": "R12b-L0611",
+      "reason": "具体节点：contacts_from_covers(covers, mu=mu, side=side)。这是直接调用单体适配器，再逐接触附加 body_a/body_b 身份；无动态 callable。实际读取的是盖的 c.normal、c.point_a、c.point_b 显示数据，而不是 exact_normal_direction 或 exact_area_squared 见证。side=a/b 直接取该侧点，side=mid 对给定显示点做 Fraction 中点后统一构造；LimitContact.__post_init__ 对给定显示法向做 Fraction 后 unit_rational。适配器拒绝 cohesion>0，返回 area=0，不继承盖代表面积。这是已显示盖数据作为新接触模型输入的边界；不保证恢复原未舍入几何法向或接触面片面积，也不是盖至接触整链无提前舍入的证明。",
+      "disposition": "EXPLICIT_DISPLAY_CONTACT_MODEL_BOUNDARY"
+    }
+  ],
+  "metadata_only": true,
+  "may_change_node_or_context": false,
+  "reviewer_approvals_claimed": 0
+}

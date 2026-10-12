@@ -77,7 +77,7 @@ def _raw_cone(poly, i):
 
 @lru_cache(maxsize=4096)
 def _raw_cone_ring(ring):
-    p, a, q = map(_fr, ring)
+    p, a, q = (_fr(_mapped_value) for _mapped_value in ring)
     e, f = _vsub(a, p), _vsub(q, a)
     if e == (0, 0) or f == (0, 0):
         raise ValueError("zero-length edge at vertex: strip duplicates at the reader boundary")
@@ -344,12 +344,12 @@ def first_entrance_for_vertex(A: Poly, ia: int, B: Poly, *, window: float, tol: 
         if c is not None and _in_gap_window(c, A, B, window) and _in_segment_exact(A[ia], *edge(B, jb), tol):
             ves.append(c)
     if ves:
-        return max(ves, key=lambda c: _signed_gap_key(A, ia, B, c.b_index))
+        return max((_signed_gap_key(A, ia, B, c.b_index), -_rank_index, c) for _rank_index, c in enumerate(ves))[2]
     for jb in range(len(B)):
         c = vv_cover(A, ia, B, jb, tol, cone_tol)
         if c is not None and (c.strict or c.window_active) and _in_gap_window(c, A, B, window):
             vvs.append(c)
-    return min(vvs, key=lambda c: sum(v*v for v in _vsub(_fr(A[ia]), _fr(B[c.b_index])))) if vvs else None
+    return min((sum(v*v for v in _vsub(_fr(A[ia]), _fr(B[c.b_index]))), _rank_index, c) for _rank_index, c in enumerate(vvs))[2] if vvs else None
 
 
 # ---------------------------------------------------------------- 凸情形的全局构造（Minkowski 合并）
@@ -401,16 +401,16 @@ def facet_gap(A: Poly, B: Poly, label: tuple[str, int, int], x: Point) -> float:
     kind, ai, bj = label
     X = _fr(x)
     if kind == "VE":
-        b0, b1 = map(_fr, edge(B, bj))
+        b0, b1 = (_fr(_mapped_value) for _mapped_value in edge(B, bj))
         direction = sub(b1, b0)
         v = sub(add(_fr(A[ai]), X), b0)
     elif kind == "EV":
-        a0, a1 = map(_fr, edge(A, ai))
+        a0, a1 = (_fr(_mapped_value) for _mapped_value in edge(A, ai))
         direction = sub(a1, a0)
         v = sub(_fr(B[bj]), add(a0, X))
     else:
-        a0, a1 = map(_fr, edge(A, ai))
-        b0, b1 = map(_fr, edge(B, bj))
+        a0, a1 = (_fr(_mapped_value) for _mapped_value in edge(A, ai))
+        b0, b1 = (_fr(_mapped_value) for _mapped_value in edge(B, bj))
         da, db = sub(a1, a0), sub(b1, b0)
         direction = db if dot(db, db) >= dot(da, da) else neg(da)
         v = sub(add(a0, X), b0)

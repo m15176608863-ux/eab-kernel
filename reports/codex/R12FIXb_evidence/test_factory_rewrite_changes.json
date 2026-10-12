@@ -1,0 +1,37 @@
+[
+  {
+    "path": "tests/test_invariance_geom.py",
+    "backup": "reports/codex/R12FIXb_evidence/test_factory_rewrite_backup/tests/test_invariance_geom.py",
+    "sha256_before": "a57d7ce6056c40ed6d34324c4312481f2304b4f52f4f80e98a30235138a336ba",
+    "sha256_after": "84386e0cf3d5be452ba44d152fd4cfe25070cb81ad349566a5a15f34478464c8",
+    "test_definitions_and_parametrization_preserved": true,
+    "changes": [
+      "fixed factory table now holds data labels only",
+      "same factory expressions called through explicit branches"
+    ]
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "backup": "reports/codex/R12FIXb_evidence/test_factory_rewrite_backup/tests/test_invariance_interlock.py",
+    "sha256_before": "e55ca8731e91b93b5a4d60cb60168c50c061915d232754bdab5e8760ffb70c48",
+    "sha256_after": "f1fa9df232e1833ad16d8a0b8ef643bda48d4581a381c23356dedfbec8ab6858",
+    "test_definitions_and_parametrization_preserved": true,
+    "changes": [
+      "fixed factory table now holds data labels only",
+      "same factory expressions called through explicit branches"
+    ]
+  },
+  {
+    "path": "tests/test_margin.py",
+    "backup": "reports/codex/R12FIXb_evidence/test_factory_rewrite_backup/tests/test_margin.py",
+    "sha256_before": "2e05389faed1a697e95d4db743ff48ced16e6d9b2b65d158ccd730346a650445",
+    "sha256_after": "1af47c22e780e5fd0f25f2466f02c5cf8addb6379d54de7d6e4d632e4670eb58",
+    "test_definitions_and_parametrization_preserved": true,
+    "changes": [
+      "numeric Lipschitz helpers accept ordered coordinate/normal samples, not callbacks",
+      "existing test drivers evaluate identical normal functions in local/loop/global order",
+      "all mutant lambda and bump bodies unchanged",
+      "saved true normal now a direct import alias"
+    ]
+  }
+]

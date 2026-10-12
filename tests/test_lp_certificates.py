@@ -198,8 +198,10 @@ def _block(L, c, mu, off, R):
     hx, hy, hz = L / 2, 0.3 * L, 0.5 * L
     W = 26000.0 * (2 * hx) * (2 * hy) * hz
     A = (2 * hx) * (2 * hy) / 4
-    mv = lambda v: tuple(sum(R[i][j] * v[j] for j in range(3)) for i in range(3))
-    P = lambda p: tuple(a + o for a, o in zip(mv(p), off))
+    def mv(v):
+        return tuple(sum(R[i][j] * v[j] for j in range(3)) for i in range(3))
+    def P(p):
+        return tuple(a + o for a, o in zip(mv(p), off))
     u = (cos(0.3), sin(0.3), 0.0)
     cts = [LimitContact(P((sx * hx, sy * hy, 0.0)), mv((0.0, 0.0, 1.0)), mu, cohesion=c, area=A, tangent=mv(u))
            for sx in (-1, 1) for sy in (-1, 1)]
@@ -282,8 +284,10 @@ MU, WL = 0.5, 10.0
 def _lock_case(margin, rot, t, s):
     """二维近自锁：μ = 0.5 的地面上斜向下推，离自锁角差 margin；闭式 α = μW / (cos b − μ sin b)。"""
     b = pi / 2 - atan(MU) - margin
-    r2 = lambda p: (cos(rot) * p[0] - sin(rot) * p[1], sin(rot) * p[0] + cos(rot) * p[1])
-    P = lambda p: tuple(s * r2(p)[i] + t[i] for i in range(2))
+    def r2(p):
+        return (cos(rot) * p[0] - sin(rot) * p[1], sin(rot) * p[0] + cos(rot) * p[1])
+    def P(p):
+        return tuple(s * r2(p)[i] + t[i] for i in range(2))
     n = r2((0.0, 1.0))
     cts = [LimitContact(P((x, 0.0)), n, MU) for x in (-1.0, 1.0)]
     o = (0.0, 0.0)
@@ -367,7 +371,8 @@ def _si_case(seed, index):
         return ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
                 (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
                 (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
-    mv = lambda R, v: tuple(sum(R[i][j] * v[j] for j in range(len(v))) for i in range(len(v)))
+    def mv(R, v):
+        return tuple(sum(R[i][j] * v[j] for j in range(len(v))) for i in range(len(v)))
     rng = random.Random(seed)
     for t in range(index + 1):
         dim = rng.choice([2, 3]); L = 10 ** rng.uniform(-1, 2.5); mu = rng.uniform(0.2, 0.9)
@@ -378,7 +383,8 @@ def _si_case(seed, index):
             nc = rng.randint(3, 6)
             pts = [(rng.uniform(-L / 2, L / 2), rng.uniform(-L / 3, L / 3), 0.0) for _ in range(nc)]
             V = L * (2 * L / 3) * (L / 2); W = gam * V; Ab = L * (2 * L / 3) / nc
-            P = lambda p, R=R, off=off: tuple(mv(R, p)[i] + off[i] for i in range(3))
+            def P(p, R=R, off=off):
+                return tuple(mv(R, p)[i] + off[i] for i in range(3))
             n = mv(R, (0.0, 0.0, 1.0))
             cts = [LimitContact(P(p), n, mu, cohesion=cmax * rng.uniform(0, 1), area=Ab) for p in pts]
             g = (sum(p[0] for p in pts) / nc, sum(p[1] for p in pts) / nc)
@@ -395,7 +401,8 @@ def _si_case(seed, index):
             nc = rng.randint(2, 4)
             xs = sorted(rng.uniform(-L / 2, L / 2) for _ in range(nc))
             W = gam * L * L / 2; Ab = L / nc
-            P = lambda p, R=R, off=off: tuple(mv(R, p)[i] + off[i] for i in range(2))
+            def P(p, R=R, off=off):
+                return tuple(mv(R, p)[i] + off[i] for i in range(2))
             n = mv(R, (0.0, 1.0))
             cts = [LimitContact(P((x, 0.0)), n, mu, cohesion=cmax * rng.uniform(0, 1), area=Ab) for x in xs]
             o = (0.0, 0.0); gx = sum(xs) / nc
@@ -412,7 +419,8 @@ def _exact_limit_lp(cts, dead, live, dim, k):
     力矩 (p − oc) × g、荷载 m − (oc − 0) × f 都不经被测代码的 `_exact_wrench` / `_exact_shift`。"""
     nw = 3 if dim == 2 else 6
     oc = tuple(sum(ct.point[i] for ct in cts) / len(cts) for i in range(dim))
-    X = lambda v: Fraction(v)
+    def X(v):
+        return Fraction(v)
 
     def cross(r, g):
         if dim == 2:
@@ -566,8 +574,10 @@ def test_near_pure_torsion_does_not_erase_the_dead_load_moment(xg, yg, off):
 
 def _floor(W, H, a, T, press):
     """无摩擦地面双接触，恒载 (H, −W)，活荷载沿地面法向压（θ = 3π/2 的舍入分量）或向上提；整体转 a、平移 T。"""
-    Rm = lambda v: (cos(a) * v[0] - sin(a) * v[1], sin(a) * v[0] + cos(a) * v[1])
-    P = lambda q: (Rm(q)[0] + T[0], Rm(q)[1] + T[1])
+    def Rm(v):
+        return (cos(a) * v[0] - sin(a) * v[1], sin(a) * v[0] + cos(a) * v[1])
+    def P(q):
+        return (Rm(q)[0] + T[0], Rm(q)[1] + T[1])
     o = (0.0, 0.0)
     cts = [LimitContact(P((x, 0.0)), Rm((0.0, 1.0)), 0.0) for x in (-1.0, 1.0)]
     lv = (cos(3 * pi / 2), sin(3 * pi / 2)) if press else (0.0, 1.0)

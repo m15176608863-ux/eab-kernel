@@ -93,7 +93,7 @@ def test_missing_earlier_concave_contact_is_caught_by_exact_selfcheck(monkeypatc
 def _sat_ray(A, B, x, d):
     """独立内联 Fraction 全投影 SAT；无生产几何原语。返回凸片首次闭集相交时刻。"""
     A, B = [[(F(u), F(v)) for u,v in P] for P in (A,B)]
-    X, D = tuple(map(F,x)), tuple(map(F,d))
+    X, D = tuple((F(_r12_item) for _r12_item in x)), tuple((F(_r12_item) for _r12_item in d))
     low, high = F(0), None
     for P in (A,B):
         for i,p in enumerate(P):

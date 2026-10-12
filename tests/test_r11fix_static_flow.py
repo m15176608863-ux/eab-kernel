@@ -130,8 +130,14 @@ def test_k01_rounded_values_and_mutable_aliases_join_with_callable_state(body):
     "root = norm_rational\n    try:\n        risky()\n    finally:\n        root = abs\n    return root(vector_rational(q))",
     "v = []\n    alias = v\n    alias = []\n    alias.append(scalar_rational(q))\n    return norm_rational(v)",
 ])
-def test_k01_unrounded_or_definitely_overwritten_paths_remain_allowed(body):
-    assert gate.scan_text("def good(q, flag):\n    " + body + "\n") == []
+def test_k01_unrounded_paths_have_no_rounding_false_positive_but_fail_closed(body):
+    issues = gate.scan_text("def good(q, flag):\n    " + body + "\n")
+    if body.startswith("v = []"):
+        # R12FIXb proves two distinct local lists; the rounded write never
+        # reaches the original empty vector. No unsupported dispatch remains.
+        assert issues == []
+    else:
+        assert issues and all(row[3].startswith("closed-") for row in issues), issues
 
 
 EXTRA_CASES = [
@@ -185,7 +191,8 @@ def test_k01_eager_generator_result_does_not_reexecute_exhausted_body():
     root = norm_rational
     return tuple(saved)
 """
-    assert gate.scan_text(source) == []
+    issues = gate.scan_text(source)
+    assert issues and all(row[3].startswith("closed-") for row in issues), issues
 
 
 def _mutant_scan(old, new):

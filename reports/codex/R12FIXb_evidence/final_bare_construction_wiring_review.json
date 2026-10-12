@@ -1,0 +1,77 @@
+{
+  "status": "5_FINITE_WIRING_CHECKS_PASSED_NOT_GENERAL_PROOF",
+  "cases": [
+    {
+      "case": "bare_unknown_attribute",
+      "source": "def bad(a):\n    a=a.x\n    return sqrt_rational(a)\n",
+      "call_kinds": [
+        "construction"
+      ],
+      "diagnostics": [
+        [
+          "src/eab/bare_probe.py",
+          2,
+          "bad",
+          "closed-data-attribute",
+          "a.x"
+        ]
+      ]
+    },
+    {
+      "case": "parameter_shadow",
+      "source": "def bad(sqrt_rational,q):\n    return sqrt_rational(q)\n",
+      "call_kinds": [
+        "unknown"
+      ],
+      "diagnostics": [
+        [
+          "src/eab/bare_probe.py",
+          2,
+          "bad",
+          "closed-unknown-call",
+          "sqrt_rational(q)"
+        ]
+      ]
+    },
+    {
+      "case": "local_definition_shadow",
+      "source": "def sqrt_rational(q):\n    return q\ndef good(q):\n    return sqrt_rational(q)\n",
+      "call_kinds": [
+        "defined"
+      ],
+      "diagnostics": [
+        [
+          "src/eab/bare_probe.py",
+          1,
+          "sqrt_rational",
+          "closed-shadowed-intrinsic",
+          "def sqrt_rational(q):\n    return q"
+        ]
+      ]
+    },
+    {
+      "case": "unknown_namespace",
+      "source": "def bad(other,q):\n    return other.sqrt_rational(q)\n",
+      "call_kinds": [
+        "unknown"
+      ],
+      "diagnostics": [
+        [
+          "src/eab/bare_probe.py",
+          2,
+          "bad",
+          "closed-method-call",
+          "other.sqrt_rational(q)"
+        ]
+      ]
+    },
+    {
+      "case": "bare_exact_arithmetic",
+      "source": "from fractions import Fraction\ndef good(q):\n    return sqrt_rational(Fraction(q)*Fraction(q))\n",
+      "call_kinds": [
+        "construction"
+      ],
+      "diagnostics": []
+    }
+  ]
+}

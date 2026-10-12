@@ -1,0 +1,288 @@
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 73%]
+...............................................F........................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 98%]
+.....................................F.................................. [ 99%]
+..............                                                           [100%]
+================================== FAILURES ===================================
+_______ test_unrelated_source_comment_keeps_real_repository_gate_green ________
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/R12FIXb_evidence/tmp/full_suite/shard_3/test_unrelated_source_comment_0')
+
+    def test_unrelated_source_comment_keeps_real_repository_gate_green(tmp_path):
+        copy_root = tmp_path / "comment_repository_copy"
+        for folder in ("src", "tests", "tools"):
+            shutil.copytree(ROOT / folder, copy_root / folder)
+>       assert gate.scan_repository(copy_root) == [], "R12FIXb baseline must be green without policy regeneration"
+E       AssertionError: R12FIXb baseline must be green without policy regeneration
+E       assert [('src/eab/ad... cov))'), ...] == []
+E         
+E         Left contains 168 more items, first extra item: ('src/eab/adapters/bdda2d.py', 139, 'detect_step', 'closed-callback', 'out.sort(key=ContactRecord.canonical_key)')
+E         Use -v to get more diff
+
+tests\test_r12fixb_maintenance.py:52: AssertionError
+_____ test_all_source_and_test_oracles_use_reviewed_construction_boundary _____
+
+    def test_all_source_and_test_oracles_use_reviewed_construction_boundary():
+        issues = gate.scan_repository()
+>       assert not issues, "unsafe exact construction:\n" + "\n".join(map(str, issues))
+E       AssertionError: unsafe exact construction:
+E         ('src/eab/adapters/bdda2d.py', 139, 'detect_step', 'closed-callback', 'out.sort(key=ContactRecord.canonical_key)')
+E         ('src/eab/kernel2d/entrance.py', 292, '_candidate_labels', 'closed-syntax', 'yield c.label()')
+E         ('src/eab/kernel2d/g0.py', 172, 'g0_convex', 'closed-method-call', 'rep.mismatches.append((x, brute, cov))')
+E         ('src/eab/kernel2d/g0.py', 243, 'g0_distance_completeness', 'closed-method-call', 'rep.failures.append((x, got, truth, arg))')
+E         ('src/eab/kernel2d/g0.py', 309, 'g0_exit_completeness', 'closed-method-call', 'rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))')
+E         ('src/eab/kernel2d/g0.py', 172, 'g0_convex', 'closed-unproved-call', 'rep.mismatches.append((x, brute, cov))')
+E         ('src/eab/kernel2d/g0.py', 172, 'g0_convex', 'closed-rounded-call', 'rep.mismatches.append((x, brute, cov))')
+E         ('src/eab/kernel2d/g0.py', 243, 'g0_distance_completeness', 'closed-unproved-call', 'rep.failures.append((x, got, truth, arg))')
+E         ('src/eab/kernel2d/g0.py', 243, 'g0_distance_completeness', 'closed-rounded-call', 'rep.failures.append((x, got, truth, arg))')
+E         ('src/eab/kernel2d/g0.py', 309, 'g0_exit_completeness', 'closed-unproved-call', 'rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))')
+E         ('src/eab/kernel2d/g0.py', 309, 'g0_exit_completeness', 'closed-rounded-call', 'rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))')
+E         ('src/eab/kernel3d/entrance3.py', 308, 'first_entrance3', 'closed-callback', 'tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)')
+E         ('src/eab/kernel3d/entrance3.py', 341, 'shortest_exit3', 'closed-callback', 'tied.sort(key=lambda q: 0 if q.label() == best.label() else 1)')
+E         ('src/eab/kernel3d/entrance_topology.py', 94, '_chamber_directions', 'closed-syntax', 'yield normals[0]')
+E         ('src/eab/kernel3d/entrance_topology.py', 95, '_chamber_directions', 'closed-syntax', 'yield G.mul(normals[0],-1)')
+E         ('src/eab/kernel3d/entrance_topology.py', 143, '_chamber_directions', 'closed-syntax', 'yield direction')
+E         ('src/eab/kernel3d/g03.py', 152, 'g0_convex3', 'closed-method-call', 'rep.mismatches.append((x,brute,cov))')
+E         ('src/eab/kernel3d/g03.py', 230, 'g0_distance_completeness3', 'closed-method-call', 'rep.completeness_failures.append((x,minimum2,truth2))')
+E         ('src/eab/kernel3d/g03.py', 245, 'g0_distance_completeness3', 'closed-method-call', 'rep.construction_failures.append((x, got, truth))')
+E         ('src/eab/kernel3d/g03.py', 247, 'g0_distance_completeness3', 'closed-method-call', 'rep.failures.append((x, got, truth))')
+E         ('src/eab/kernel3d/g03.py', 152, 'g0_convex3', 'closed-unproved-call', 'rep.mismatches.append((x,brute,cov))')
+E         ('src/eab/kernel3d/g03.py', 152, 'g0_convex3', 'closed-rounded-call', 'rep.mismatches.append((x,brute,cov))')
+E         ('src/eab/kernel3d/g03.py', 230, 'g0_distance_completeness3', 'closed-unproved-call', 'rep.completeness_failures.append((x,minimum2,truth2))')
+E         ('src/eab/kernel3d/g03.py', 230, 'g0_distance_completeness3', 'closed-rounded-call', 'rep.completeness_failures.append((x,minimum2,truth2))')
+E         ('src/eab/kernel3d/g03.py', 245, 'g0_distance_completeness3', 'closed-unproved-call', 'rep.construction_failures.append((x, got, truth))')
+E         ('src/eab/kernel3d/g03.py', 245, 'g0_distance_completeness3', 'closed-rounded-call', 'rep.construction_failures.append((x, got, truth))')
+E         ('src/eab/kernel3d/g03.py', 247, 'g0_distance_completeness3', 'closed-unproved-call', 'rep.failures.append((x, got, truth))')
+E         ('src/eab/kernel3d/g03.py', 247, 'g0_distance_completeness3', 'closed-rounded-call', 'rep.failures.append((x, got, truth))')
+E         ('src/eab/kernel3d/g03_exact.py', 140, 'sat_model', 'closed-method-call', 'axes.add(plane_key(n,F(0))[0])')
+E         ('src/eab/kernel3d/g03_exact.py', 140, 'sat_model', 'closed-unproved-call', 'axes.add(plane_key(n,F(0))[0])')
+E         ('src/eab/kernel3d/interlock.py', 224, '_prior_intervals', 'closed-syntax', 'yield left,right,(left+right)/2')
+E         ('src/eab/limit.py', 606, '_ExactFloat.__new__', 'closed-dynamic-call', 'object.__setattr__(obj, "_exact", exact)')
+E         ('src/eab/limit.py', 606, '_ExactFloat.__new__', 'closed-unproved-call', 'object.__setattr__(obj, "_exact", exact)')
+E         ('src/eab/limit.py', 606, '_ExactFloat.__new__', 'closed-rounded-call', 'object.__setattr__(obj, "_exact", exact)')
+E         ('src/eab/readers/bdda_geom.py', 102, 'load_step_geometries', 'closed-method-call', 'sg.alias.update(alias)')
+E         ('src/eab/readers/bdda_geom.py', 102, 'load_step_geometries', 'closed-unproved-call', 'sg.alias.update(alias)')
+E         ('src/eab/readers/bdda_geom.py', 102, 'load_step_geometries', 'closed-rounded-call', 'sg.alias.update(alias)')
+E         ('tests/test_bb52_g1.py', 120, '_drop_vv', 'closed-dynamic-call', 'monkeypatch.setattr(cv, "vv_cover", lambda *a, **k: None)')
+E         ('tests/test_bb52_g1.py', 126, '_drop_cone_boundary', 'closed-dynamic-call', 'monkeypatch.setattr(cv, "_ve_side", lambda *a, **kw: 1 if orig(*a, **kw) == 1 else -1)')
+E         ('tests/test_bb52_g1.py', 147, '_drop_ev', 'closed-dynamic-call', 'monkeypatch.setattr(cv, "ev_cover", lambda *a, **k: None)')
+E         ('tests/test_bb52_g1.py', 154, '_drop_ve_subset', 'closed-dynamic-call', 'monkeypatch.setattr(cv, "ve_cover", lambda A, ia, B, jb, tol=0.0, cone_tol=None:\n                        None if ia % 7 == 3 else orig(A, ia, B, jb, tol, cone_tol))')
+E         ('tests/test_bb52_g1.py', 120, '_drop_vv', 'closed-unproved-call', 'monkeypatch.setattr(cv, "vv_cover", lambda *a, **k: None)')
+E         ('tests/test_bb52_g1.py', 126, '_drop_cone_boundary', 'closed-unproved-call', 'monkeypatch.setattr(cv, "_ve_side", lambda *a, **kw: 1 if orig(*a, **kw) == 1 else -1)')
+E         ('tests/test_bb52_g1.py', 147, '_drop_ev', 'closed-unproved-call', 'monkeypatch.setattr(cv, "ev_cover", lambda *a, **k: None)')
+E         ('tests/test_bb52_g1.py', 154, '_drop_ve_subset', 'closed-unproved-call', 'monkeypatch.setattr(cv, "ve_cover", lambda A, ia, B, jb, tol=0.0, cone_tol=None:\n                        None if ia % 7 == 3 else orig(A, ia, B, jb, tol, cone_tol))')
+E         ('tests/test_covers3_membership.py', 373, '_assert_exact_rotated_vote_counts', 'closed-unproved-call', '_assert_exact_facet_counts(A, B, rep)')
+E         ('tests/test_e5a2_bilinear_integer.py', 25, 'operand_pairs', 'closed-syntax', 'yield a, b')
+E         ('tests/test_e5a2_bilinear_integer.py', 26, 'operand_pairs', 'closed-syntax', 'yield a, a')
+E         ('tests/test_e5a2_bilinear_integer.py', 27, 'operand_pairs', 'closed-syntax', 'yield a, (-a[1], a[0])')
+E         ('tests/test_e5a2_bilinear_integer.py', 29, 'operand_pairs', 'closed-syntax', 'yield (tuple(F(rng.randrange(-10**9, 10**9), rng.randrange(1, 1000)) for _ in range(2)),\n               tuple(F(rng.randrange(-10**9, 10**9), rng.randrange(1, 1000)) for _ in range(2)))')
+E         ('tests/test_e5a2_bilinear_integer.py', 34, 'operand_pairs', 'closed-syntax', 'yield a, b')
+E         ('tests/test_e5a2_integer_arithmetic.py', 38, '_cases', 'closed-syntax', 'yield a, b')
+E         ('tests/test_e5a2_integer_arithmetic.py', 39, '_cases', 'closed-syntax', 'yield a, a')
+E         ('tests/test_e5a2_integer_arithmetic.py', 41, '_cases', 'closed-syntax', 'yield (tuple(F(rng.randrange(-10**8, 10**8), rng.randrange(1, 1000)) for _ in range(3)),\n               tuple(F(rng.randrange(-10**8, 10**8), rng.randrange(1, 1000)) for _ in range(3)))')
+E         ('tests/test_e5a2_integer_arithmetic.py', 46, '_cases', 'closed-syntax', 'yield a, b')
+E         ('tests/test_e5a2_integer_arithmetic.py', 111, '_fraction_rows', 'closed-method-call', 'axes.add(n)')
+E         ('tests/test_e5a2_integer_arithmetic.py', 111, '_fraction_rows', 'closed-unproved-call', 'axes.add(n)')
+E         ('tests/test_e5b_triangle_boolean.py', 53, '_pairs', 'closed-syntax', 'yield make(), make()')
+E         ('tests/test_e5b_triangle_boolean.py', 61, '_pairs', 'closed-syntax', 'yield a,b')
+E         ('tests/test_fixture_provenance.py', 20, '_sha256', 'closed-method-call', 'h.update(chunk)')
+E         ('tests/test_fixture_provenance.py', 20, '_sha256', 'closed-unproved-call', 'h.update(chunk)')
+E         ('tests/test_g2_bdda3d.py', 92, '_fake_case', 'closed-unknown-call', 'mutate(d)')
+E         ('tests/test_g2_bdda3d.py', 94, '_fake_case', 'closed-method-call', 'p.write_text(json.dumps(d), encoding="utf-8")')
+E         ('tests/test_g2_bdda3d.py', 129, '_inject', 'closed-dynamic-call', 'monkeypatch.setattr(g2, "enumerate_covers3", lambda A, B, **kw: orig(A, B, **kw) + [cover(A, B)])')
+E         ('tests/test_g2_bdda3d.py', 281, '_dup_append_moving', 'closed-method-call', 'd["verts"]["2"].append(list(d["verts"]["2"][0]))')
+E         ('tests/test_g2_bdda3d.py', 298, '_dup_host_face', 'closed-method-call', 'd["verts"]["1"].append(list(d["verts"]["1"][6]))')
+E         ('tests/test_g2_bdda3d.py', 307, '_near_dup_moving', 'closed-method-call', 'd["verts"]["2"].append(v)')
+E         ('tests/test_g2_bdda3d.py', 570, '_mutant_g2', 'closed-dynamic-call', 'exec(compile(src.replace(old, new), mod.__file__, "exec"), mod.__dict__)')
+E         ('tests/test_g2_bdda3d.py', 92, '_fake_case', 'closed-unproved-call', 'mutate(d)')
+E         ('tests/test_g2_bdda3d.py', 94, '_fake_case', 'closed-unproved-call', 'p.write_text(json.dumps(d), encoding="utf-8")')
+E         ('tests/test_g2_bdda3d.py', 129, '_inject', 'closed-unproved-call', 'monkeypatch.setattr(g2, "enumerate_covers3", lambda A, B, **kw: orig(A, B, **kw) + [cover(A, B)])')
+E         ('tests/test_g2_bdda3d.py', 281, '_dup_append_moving', 'closed-unproved-call', 'd["verts"]["2"].append(list(d["verts"]["2"][0]))')
+E         ('tests/test_g2_bdda3d.py', 298, '_dup_host_face', 'closed-unproved-call', 'd["verts"]["1"].append(list(d["verts"]["1"][6]))')
+E         ('tests/test_g2_bdda3d.py', 307, '_near_dup_moving', 'closed-unproved-call', 'd["verts"]["2"].append(v)')
+E         ('tests/test_g2_bdda3d.py', 307, '_near_dup_moving', 'closed-rounded-call', 'd["verts"]["2"].append(v)')
+E         ('tests/test_g2_bdda3d.py', 570, '_mutant_g2', 'closed-unproved-call', 'exec(compile(src.replace(old, new), mod.__file__, "exec"), mod.__dict__)')
+E         ('tests/test_geom3_merge.py', 44, '_call_with_timeout', 'closed-method-call', 'th.start()')
+E         ('tests/test_geom3_merge.py', 45, '_call_with_timeout', 'closed-method-call', 'th.join(timeout)')
+E         ('tests/test_geom3_merge.py', 338, '_pocketed_slab', 'closed-method-call', 'V.append((i + 0.5, j + 0.5, 0.5))')
+E         ('tests/test_geom3_merge.py', 44, '_call_with_timeout', 'closed-unproved-call', 'th.start()')
+E         ('tests/test_geom3_merge.py', 45, '_call_with_timeout', 'closed-unproved-call', 'th.join(timeout)')
+E         ('tests/test_geom3_merge.py', 338, '_pocketed_slab', 'closed-unproved-call', 'V.append((i + 0.5, j + 0.5, 0.5))')
+E         ('tests/test_geom3_merge.py', 338, '_pocketed_slab', 'closed-rounded-call', 'V.append((i + 0.5, j + 0.5, 0.5))')
+E         ('tests/test_geom3_overlap_witness.py', 196, '_sat_sigma', 'closed-method-call', 'axes.append(tuple(x / n for x in c))')
+E         ('tests/test_geom3_overlap_witness.py', 196, '_sat_sigma', 'closed-unproved-call', 'axes.append(tuple(x / n for x in c))')
+E         ('tests/test_geom3_overlap_witness.py', 196, '_sat_sigma', 'closed-rounded-call', 'axes.append(tuple(x / n for x in c))')
+E         ('tests/test_invariance_2d.py', 91, '_bb52_blocks', 'closed-unproved-call', 'sys.path.insert(0, str(ROOT / "tools"))')
+E         ('tests/test_kernel2d_covers_e3.py', 134, 'independent_cover_oracle.scan', 'closed-method-call', "out.add((kind,i,j,strict) if kind=='VE' else (kind,j,i,strict))")
+E         ('tests/test_kernel2d_covers_e3.py', 134, 'independent_cover_oracle.scan', 'closed-unproved-call', "out.add((kind,i,j,strict) if kind=='VE' else (kind,j,i,strict))")
+E         ('tests/test_kernel2d_review.py', 259, '_load_both', 'closed-method-call', '(tmp_path / "bdda_debug_verts.csv").write_text(_verts_csv(rows), encoding="utf-8")')
+E         ('tests/test_kernel2d_review.py', 261, '_load_both', 'closed-dynamic-call', 'monkeypatch.setattr(bb52_g0, "FIX", tmp_path)')
+E         ('tests/test_kernel2d_review.py', 256, '_load_both', 'closed-unproved-call', '_sys.path.insert(0, str(_P(__file__).resolve().parents[1] / "tools"))')
+E         ('tests/test_kernel2d_review.py', 259, '_load_both', 'closed-unproved-call', '(tmp_path / "bdda_debug_verts.csv").write_text(_verts_csv(rows), encoding="utf-8")')
+E         ('tests/test_kernel2d_review.py', 259, '_load_both', 'closed-rounded-call', '(tmp_path / "bdda_debug_verts.csv").write_text(_verts_csv(rows), encoding="utf-8")')
+E         ('tests/test_kernel2d_review.py', 261, '_load_both', 'closed-unproved-call', 'monkeypatch.setattr(bb52_g0, "FIX", tmp_path)')
+E         ('tests/test_limit_contacts.py', 111, '_cb2_covers', 'closed-unproved-call', 'sys.path.insert(0, str(ROOT / "tools"))')
+E         ('tests/test_limit_multi.py', 181, '_mutant_module', 'closed-dynamic-call', 'exec(compile(src.replace(old, new), LM.__file__, "exec"), mod.__dict__)')
+E         ('tests/test_limit_multi.py', 181, '_mutant_module', 'closed-unproved-call', 'exec(compile(src.replace(old, new), LM.__file__, "exec"), mod.__dict__)')
+E         ('tests/test_m4_bdda_adapter.py', 63, '_assert_matches_independent_oracle', 'closed-unproved-call', 'validate(rec)')
+E         ('tests/test_m4_bdda_adapter.py', 63, '_assert_matches_independent_oracle', 'closed-rounded-call', 'validate(rec)')
+E         ('tests/test_m4_bdda_shadow.py', 57, '_gate_case', 'closed-unproved-call', '_assert_baseline(case, actual)')
+E         ('tests/test_m4_bdda_shadow.py', 57, '_gate_case', 'closed-rounded-call', '_assert_baseline(case, actual)')
+E         ('tests/test_m4_bdda_vv_reader.py', 36, '_write_case', 'closed-method-call', 'path.mkdir(exist_ok=True)')
+E         ('tests/test_m4_bdda_vv_reader.py', 37, '_write_case', 'closed-method-call', '(path / "bdda_debug_contacts.csv").write_text(\n        HEADER + "\\n" + ",".join(map(str, (1, 1, 1, *six, 0, 1, 0, 0, 0, 0))) + "\\n",\n        encoding="utf-8",\n    )')
+E         ('tests/test_m4_bdda_vv_reader.py', 42, '_write_case', 'closed-method-call', '(path / "bdda_debug_verts.csv").write_text(\n        "step,block,vidx,x,y\\n"\n        "1,1,10,0,0\\n1,1,11,2,0\\n1,1,12,0,2\\n1,1,13,0,0\\n"\n        "1,2,20,0,0\\n1,2,21,1,3\\n1,2,22,-2,1\\n",\n        encoding="utf-8",\n    )')
+E         ('tests/test_m4_bdda_vv_reader.py', 36, '_write_case', 'closed-unproved-call', 'path.mkdir(exist_ok=True)')
+E         ('tests/test_m4_bdda_vv_reader.py', 37, '_write_case', 'closed-unproved-call', '(path / "bdda_debug_contacts.csv").write_text(\n        HEADER + "\\n" + ",".join(map(str, (1, 1, 1, *six, 0, 1, 0, 0, 0, 0))) + "\\n",\n        encoding="utf-8",\n    )')
+E         ('tests/test_m4_bdda_vv_reader.py', 37, '_write_case', 'closed-rounded-call', '(path / "bdda_debug_contacts.csv").write_text(\n        HEADER + "\\n" + ",".join(map(str, (1, 1, 1, *six, 0, 1, 0, 0, 0, 0))) + "\\n",\n        encoding="utf-8",\n    )')
+E         ('tests/test_m4_bdda_vv_reader.py', 42, '_write_case', 'closed-unproved-call', '(path / "bdda_debug_verts.csv").write_text(\n        "step,block,vidx,x,y\\n"\n        "1,1,10,0,0\\n1,1,11,2,0\\n1,1,12,0,2\\n1,1,13,0,0\\n"\n        "1,2,20,0,0\\n1,2,21,1,3\\n1,2,22,-2,1\\n",\n        encoding="utf-8",\n    )')
+E         ('tests/test_perf_2d_directions.py', 80, 'direction_cases', 'closed-syntax', 'yield lo, hi, e, tol, cone_tol')
+E         ('tests/test_perf_contact_window.py', 218, '_mutant', 'closed-dynamic-call', "exec(compile(source, '<PERF window internal mutation>', 'exec'), namespace)")
+E         ('tests/test_perf_contact_window.py', 218, '_mutant', 'closed-unproved-call', "exec(compile(source, '<PERF window internal mutation>', 'exec'), namespace)")
+E         ('tests/test_perf_covers.py', 103, '_samples', 'closed-syntax', 'yield tuple(pts)')
+E         ('tests/test_perf_edge_frame.py', 150, '_queries', 'closed-syntax', 'yield edge, direction, tol')
+E         ('tests/test_perf_integer_geometry.py', 96, 'sat_cases', 'closed-syntax', 'yield _move(A, t, s), _move(B, t, s)')
+E         ('tests/test_perf_integer_geometry.py', 97, 'sat_cases', 'closed-syntax', 'yield _move(A, t, s, True), _move(B, t, s, True)')
+E         ('tests/test_perf_integer_geometry.py', 101, 'sat_cases', 'closed-syntax', 'yield A, box((F(0),)*3, (F(1),)*3)')
+E         ('tests/test_r11fix_numeric_types.py', 44, '_review_cases', 'closed-syntax', 'yield ((2**exponent + ax, ay), (2**exponent + bx, by),\n                       (math.ldexp(1., exponent), 0.))')
+E         ('tests/test_r11fix_numeric_types.py', 117, '_mixed_bilinear_cases', 'closed-syntax', 'yield (n + delta, small), (n, small)')
+E         ('tests/test_r11fix_numeric_types.py', 118, '_mixed_bilinear_cases', 'closed-syntax', 'yield (n + delta, small), (small, -n)')
+E         ('tests/test_r11fix_numeric_types.py', 119, '_mixed_bilinear_cases', 'closed-syntax', 'yield (0, 0.), (F(1, 3), 2**4096)')
+E         ('tests/test_r11fix_static_flow.py', 202, '_mutant_scan', 'closed-dynamic-call', 'exec(compile(source.replace(old, new), "<k01 internal scanner rollback>", "exec"), namespace)')
+E         ('tests/test_r11fix_static_flow.py', 202, '_mutant_scan', 'closed-unproved-call', 'exec(compile(source.replace(old, new), "<k01 internal scanner rollback>", "exec"), namespace)')
+E         ('tests/test_r6fix_dual_lp.py', 157, '_mutant_function', 'closed-dynamic-call', 'exec(compile(source.replace(old, new), function.__code__.co_filename, "exec"), scope)')
+E         ('tests/test_r6fix_dual_lp.py', 157, '_mutant_function', 'closed-unproved-call', 'exec(compile(source.replace(old, new), function.__code__.co_filename, "exec"), scope)')
+E         ('tests/test_r7fix_geom3.py', 134, '_inject', 'closed-dynamic-call', "exec(compile(source.replace(old,new),'<r7fix-internal-mutation-'+name+'>','exec'),namespace)")
+E         ('tests/test_r7fix_geom3.py', 135, '_inject', 'closed-dynamic-call', 'monkeypatch.setattr(module,name,namespace[name])')
+E         ('tests/test_r7fix_geom3.py', 134, '_inject', 'closed-unproved-call', "exec(compile(source.replace(old,new),'<r7fix-internal-mutation-'+name+'>','exec'),namespace)")
+E         ('tests/test_r7fix_geom3.py', 134, '_inject', 'closed-rounded-call', "exec(compile(source.replace(old,new),'<r7fix-internal-mutation-'+name+'>','exec'),namespace)")
+E         ('tests/test_r7fix_geom3.py', 135, '_inject', 'closed-unproved-call', 'monkeypatch.setattr(module,name,namespace[name])')
+E         ('tests/test_r8fix_gate_teeth.py', 37, 'convex_view_mutant', 'closed-dynamic-call', 'exec(compile(source.replace(anchor, replacement), __file__, "exec"), scope)')
+E         ('tests/test_r8fix_gate_teeth.py', 39, 'convex_view_mutant', 'closed-dynamic-call', 'monkeypatch.setattr(module, "exact_convex_view", scope["exact_convex_view"])')
+E         ('tests/test_r8fix_gate_teeth.py', 48, 'reject_z_inside_cone_filter', 'closed-dynamic-call', 'exec(compile(source, __file__, "exec"), scope)')
+E         ('tests/test_r8fix_gate_teeth.py', 49, 'reject_z_inside_cone_filter', 'closed-dynamic-call', 'monkeypatch.setattr(C, "_outside_dot_band", scope["_outside_dot_band"])')
+E         ('tests/test_r8fix_gate_teeth.py', 131, 'all_branch_convex_view_mutant', 'closed-dynamic-call', 'exec(compile(source,__file__,"exec"),scope)')
+E         ('tests/test_r8fix_gate_teeth.py', 133, 'all_branch_convex_view_mutant', 'closed-dynamic-call', 'monkeypatch.setattr(module,"exact_convex_view",scope["exact_convex_view"])')
+E         ('tests/test_r8fix_gate_teeth.py', 37, 'convex_view_mutant', 'closed-unproved-call', 'exec(compile(source.replace(anchor, replacement), __file__, "exec"), scope)')
+E         ('tests/test_r8fix_gate_teeth.py', 39, 'convex_view_mutant', 'closed-unproved-call', 'monkeypatch.setattr(module, "exact_convex_view", scope["exact_convex_view"])')
+E         ('tests/test_r8fix_gate_teeth.py', 48, 'reject_z_inside_cone_filter', 'closed-unproved-call', 'exec(compile(source, __file__, "exec"), scope)')
+E         ('tests/test_r8fix_gate_teeth.py', 49, 'reject_z_inside_cone_filter', 'closed-unproved-call', 'monkeypatch.setattr(C, "_outside_dot_band", scope["_outside_dot_band"])')
+E         ('tests/test_r8fix_gate_teeth.py', 131, 'all_branch_convex_view_mutant', 'closed-unproved-call', 'exec(compile(source,__file__,"exec"),scope)')
+E         ('tests/test_r8fix_gate_teeth.py', 133, 'all_branch_convex_view_mutant', 'closed-unproved-call', 'monkeypatch.setattr(module,"exact_convex_view",scope["exact_convex_view"])')
+E         ('tests/test_r8fix_margin_gap_gate.py', 25, '_arithmetic_fault_inside_margin_contacts', 'closed-dynamic-call', 'exec(compile(source.replace(anchor, "gap = " + replacement), __file__, "exec"), scope)')
+E         ('tests/test_r8fix_margin_gap_gate.py', 26, '_arithmetic_fault_inside_margin_contacts', 'closed-dynamic-call', 'monkeypatch.setattr(margin, "margin_contacts", scope["margin_contacts"])')
+E         ('tests/test_r8fix_margin_gap_gate.py', 33, '_ordinary_gap_gate', 'closed-rounded-construction', 'invariance.test_margin_layer_is_invariant("box_box_face", 7, 0., .001)')
+E         ('tests/test_r8fix_margin_gap_gate.py', 34, '_ordinary_gap_gate', 'closed-rounded-construction', '_ordinary_binary64_midpoint_gap_gate()')
+E         ('tests/test_r8fix_margin_gap_gate.py', 25, '_arithmetic_fault_inside_margin_contacts', 'closed-unproved-call', 'exec(compile(source.replace(anchor, "gap = " + replacement), __file__, "exec"), scope)')
+E         ('tests/test_r8fix_margin_gap_gate.py', 26, '_arithmetic_fault_inside_margin_contacts', 'closed-unproved-call', 'monkeypatch.setattr(margin, "margin_contacts", scope["margin_contacts"])')
+E         ('tests/test_r8fix_margin_gap_gate.py', 33, '_ordinary_gap_gate', 'closed-unproved-call', 'invariance.test_margin_layer_is_invariant("box_box_face", 7, 0., .001)')
+E         ('tests/test_r8fix_margin_gap_gate.py', 34, '_ordinary_gap_gate', 'closed-unproved-call', '_ordinary_binary64_midpoint_gap_gate()')
+E         ('tests/test_r9fix_g03_construction.py', 18, '_bad_witness_report', 'closed-dynamic-call', "exec(compile(source, '<r9-g03-invalid-witness>', 'exec'), namespace)")
+E         ('tests/test_r9fix_g03_construction.py', 19, '_bad_witness_report', 'closed-dynamic-call', "monkeypatch.setattr(C, 'enumerate_covers3', namespace['enumerate_covers3'])")
+E         ('tests/test_r9fix_g03_construction.py', 18, '_bad_witness_report', 'closed-unproved-call', "exec(compile(source, '<r9-g03-invalid-witness>', 'exec'), namespace)")
+E         ('tests/test_r9fix_g03_construction.py', 19, '_bad_witness_report', 'closed-unproved-call', "monkeypatch.setattr(C, 'enumerate_covers3', namespace['enumerate_covers3'])")
+E         ('tests/test_r9fix_oracle_candidate.py', 18, '_fresh_oracle_candidate_cache', 'closed-syntax', 'yield')
+E         ('tests/test_r9fix_oracle_candidate.py', 17, '_fresh_oracle_candidate_cache', 'closed-unproved-call', 'oracle._round_positive.cache_clear()')
+E         ('tests/test_r9fix_oracle_candidate.py', 19, '_fresh_oracle_candidate_cache', 'closed-unproved-call', 'oracle._round_positive.cache_clear()')
+E         ('tests/test_readers_roundtrip.py', 30, '_gate', 'closed-unproved-call', 'validate(r)')
+E         ('tests/test_tf_reader.py', 152, '_mutant_reader', 'closed-method-call', 'monkeypatch.setitem(sys.modules, name, mod)')
+E         ('tests/test_tf_reader.py', 153, '_mutant_reader', 'closed-dynamic-call', 'exec(compile(src.replace(old, new), tf_probe.__file__, "exec"), mod.__dict__)')
+E         ('tests/test_tf_reader.py', 154, '_mutant_reader', 'closed-dynamic-call', 'monkeypatch.setattr(tf_probe, "load_records", mod.load_records)')
+E         ('tests/test_tf_reader.py', 155, '_mutant_reader', 'closed-dynamic-call', 'monkeypatch.setattr(tf_probe, "read_pair_stage", mod.read_pair_stage)')
+E         ('tests/test_tf_reader.py', 227, '_synthetic_probe', 'closed-method-call', 'p.write_text("\\t".join(head) + "\\n" + "\\n".join(rows) + "\\n", encoding="utf-8")')
+E         ('tests/test_tf_reader.py', 152, '_mutant_reader', 'closed-unproved-call', 'monkeypatch.setitem(sys.modules, name, mod)')
+E         ('tests/test_tf_reader.py', 153, '_mutant_reader', 'closed-unproved-call', 'exec(compile(src.replace(old, new), tf_probe.__file__, "exec"), mod.__dict__)')
+E         ('tests/test_tf_reader.py', 154, '_mutant_reader', 'closed-unproved-call', 'monkeypatch.setattr(tf_probe, "load_records", mod.load_records)')
+E         ('tests/test_tf_reader.py', 155, '_mutant_reader', 'closed-unproved-call', 'monkeypatch.setattr(tf_probe, "read_pair_stage", mod.read_pair_stage)')
+E         ('tests/test_tf_reader.py', 227, '_synthetic_probe', 'closed-unproved-call', 'p.write_text("\\t".join(head) + "\\n" + "\\n".join(rows) + "\\n", encoding="utf-8")')
+E       assert not [('src/eab/adapters/bdda2d.py', 139, 'detect_step', 'closed-callback', 'out.sort(key=ContactRecord.canonical_key)'), (...), ('src/eab/kernel2d/g0.py', 172, 'g0_convex', 'closed-unproved-call', 'rep.mismatches.append((x, brute, cov))'), ...]
+
+tests\test_r9fix_construction_static.py:15: AssertionError
+============================ slowest 20 durations =============================
+89.28s call     tests/test_r12fixb_maintenance.py::test_unrelated_source_comment_keeps_real_repository_gate_green
+87.44s call     tests/test_r9fix_construction_static.py::test_all_source_and_test_oracles_use_reviewed_construction_boundary
+12.75s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[0.001]
+11.72s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1000.0]
+11.54s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1.0]
+9.87s call     tests/test_kernel2d_predicates.py::test_hull_of_a_rotated_collinear_strip_matches_exact_support
+6.46s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[2]
+6.25s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[0]
+5.58s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[1]
+4.74s call     tests/test_interlocking.py::test_g0_distance_completeness_on_merged_interlocking_pair
+2.02s call     tests/test_margin.py::test_config_space_distance_equals_body_distance[0]
+1.89s call     tests/test_kernel2d_predicates.py::test_polygons_overlap_on_polyomino_pairs_against_the_cell_oracle
+1.42s call     tests/test_margin.py::test_config_space_distance_equals_body_distance[2]
+1.33s call     tests/test_margin.py::test_config_space_distance_equals_body_distance[1]
+0.92s call     tests/test_kernel2d_predicates.py::test_membership_without_eb_agrees_with_brute_force_in_any_unit[0.001]
+0.90s call     tests/test_margin_resolution.py::test_g0_three_votes_on_the_ridge_pair_at_engineering_coordinates[7-0.0]
+0.90s call     tests/test_r9fix_construction_static.py::test_ast_gate_rejects_forbidden_code_inserted_into_real_source[v = _float_vector(q)\n    return unit(v)-rounded-vector]
+0.87s call     tests/test_margin.py::test_body_distance_is_not_the_cover_gap
+0.86s call     tests/test_kernel2d_predicates.py::test_membership_without_eb_agrees_with_brute_force_in_any_unit[1.0]
+0.86s call     tests/test_frozen_ee_sign.py::test_frozen_gap_on_a_ridge_nearly_parallel_to_a_top_edge[100000.0-0.0001]
+=========================== short test summary info ===========================
+FAILED tests/test_r12fixb_maintenance.py::test_unrelated_source_comment_keeps_real_repository_gate_green
+FAILED tests/test_r9fix_construction_static.py::test_all_source_and_test_oracles_use_reviewed_construction_boundary
+2 failed, 4908 passed in 447.32s (0:07:27)

@@ -74,7 +74,7 @@ class Dual:
         return Dual(self.v - ov, tuple(a - b for a, b in zip(self.e, oe)))
 
     def __rsub__(self, o: Number) -> "Dual":
-        return (-self).__add__(o)
+        return -self + o
 
     def __mul__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)

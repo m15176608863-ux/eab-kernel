@@ -265,8 +265,8 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
         best = tied[0]
         rep_label, members = _representative(merge_degenerate(At, B, tied, tol), best.label())
         return _restore_sources(Entrance3(
-            "entrance", 0.0, tuple(map(scalar_rational, x0)), rep_label, best.normal,
-            tuple(map(scalar_rational, best.point_a)), tuple(map(scalar_rational, best.point_b)),
+            "entrance", 0.0, tuple(scalar_rational(_mapped_value) for _mapped_value in x0), rep_label, best.normal,
+            tuple(scalar_rational(_mapped_value) for _mapped_value in best.point_a), tuple(scalar_rational(_mapped_value) for _mapped_value in best.point_b),
             best.gap, tuple(c.label() for c in tied), members, len(tied), Fraction(0)), A, B)
     raw = []
     for idx, c in enumerate(_facet_covers(At, B, tol)):
@@ -307,7 +307,7 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
                     tied.append(c2x)
         tied.sort(key=lambda q: 0 if q.label() == cc.label() else 1)
         rep_label, members = _representative(merge_degenerate(Ax, B, tied, tol), cc.label())
-        return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(map(scalar_rational, exact_x)), rep_label, cc.normal,
+        return _restore_sources(Entrance3("entrance", scalar_rational(t), tuple(scalar_rational(_mapped_value) for _mapped_value in exact_x), rep_label, cc.normal,
                          cc.point_a, cc.point_b, cc.gap, tuple(q.label() for q in tied),
                          members, len(raw), t), A, B)
     # No valid local cover must never silently hide a genuine surface event.

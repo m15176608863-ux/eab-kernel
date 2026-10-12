@@ -322,7 +322,7 @@ def _g0_exact_affine(theta, s, tm):
     c, sn, scale = Fraction(math.cos(theta)), Fraction(math.sin(theta)), Fraction(s)
     tx, ty = Fraction(tm * math.cos(PHI)), Fraction(tm * math.sin(PHI))
     def vec(p):
-        x, y = map(Fraction, p)
+        x, y = (Fraction(_r12_item) for _r12_item in p)
         return scale * (c*x-sn*y), scale * (sn*x+c*y)
     def poly(P):
         return [(x+tx,y+ty) for x,y in map(vec,P)]
@@ -508,7 +508,7 @@ def _reflex_truth(P, tol):
     sine, cosine = Fraction(math.sin(tol)), Fraction(math.cos(tol))
     out=[]
     for i,p in enumerate(P):
-        a,b,c=[tuple(map(Fraction,q)) for q in (P[i-1],p,P[(i+1)%len(P)])]
+        a,b,c=[tuple((Fraction(_r12_item) for _r12_item in q)) for q in (P[i-1],p,P[(i+1)%len(P)])]
         ex,ey=b[0]-a[0],b[1]-a[1];fx,fy=c[0]-b[0],c[1]-b[1]
         right=ey*fx-ex*fy
         if right>0 and right*cosine>(ex*fx+ey*fy)*sine:out.append(i)

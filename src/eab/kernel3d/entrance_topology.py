@@ -11,7 +11,6 @@ used. This production implementation does not call an independent G0 oracle.
 Gate: tests/test_r8fix_initial_state3.py (Cartesian interval-union oracle).
 """
 from fractions import Fraction as F
-from functools import cmp_to_key
 from itertools import combinations
 
 from . import exact_geom as G
@@ -43,7 +42,7 @@ def _configuration_planes(A, B):
             noncentral[n] = h
 
     def surface(P):
-        vertices = tuple(map(G.vector, P.verts))
+        vertices = tuple(G.vector(_mapped_value) for _mapped_value in P.verts)
         faces, edges = set(), set()
         for _, tri in G.triangles(P):
             n = G.cross(G.sub(tri[1],tri[0]),G.sub(tri[2],tri[0]))
@@ -118,7 +117,12 @@ def _chamber_directions(normals):
             size = abs(a)+abs(b)
             tangent = (a/size,b/size)
             lines.update((tangent,(-tangent[0],-tangent[1])))
-        ordered = sorted(lines,key=cmp_to_key(_angular_compare))
+        ordered = []
+        for line in lines:
+            at = len(ordered)
+            while at and _angular_compare(ordered[at-1], line) > 0:
+                at -= 1
+            ordered.insert(at, line)
         for a,b in zip(ordered,ordered[1:]+ordered[:1]):
             tangent = (a[0]+b[0],a[1]+b[1])
             if tangent == (0,0):
@@ -150,7 +154,7 @@ def entrance_membership3(A, B):
     if state != 0:
         return state
     central, limits = _configuration_planes(A,B)
-    vertices = tuple(map(G.vector,A.verts))
+    vertices = tuple(G.vector(_mapped_value) for _mapped_value in A.verts)
     for direction in _chamber_directions(central):
         step = F(1)
         for n,h in limits:

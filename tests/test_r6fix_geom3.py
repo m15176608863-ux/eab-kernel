@@ -79,7 +79,7 @@ def _prism(eps, translation=F(0), scale=F(1), floating=False):
     verts = [(translation + scale*x, scale*y, scale*z)
              for y in (F(-1), F(1)) for x, z in ring]
     if floating:
-        verts = [tuple(map(scalar_exact, p)) for p in verts]
+        verts = [tuple((scalar_exact(_r12_item) for _r12_item in p)) for p in verts]
     faces = [tuple(range(n)), tuple(reversed(range(n, 2*n)))]
     faces += [(i, n+i, n+(i+1) % n, (i+1) % n) for i in range(n)]
     return G.Polyhedron(verts, faces)

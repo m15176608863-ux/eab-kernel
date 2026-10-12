@@ -1,0 +1,522 @@
+{
+  "status": "REAL_POLICY_LOCALITY_PASS",
+  "verified_at_utc": "2026-10-12T16:13:24.516672+00:00",
+  "elapsed_seconds": 7.101806699996814,
+  "manifest": "tools/exact_construction_policy.json",
+  "manifest_sha256": "5f119aecdc9e51d8af3a168d9854c32e415078225547fa33ef77a54defb49ed5",
+  "manifest_waiver_count": 2365,
+  "reviewed_source_file_count": 133,
+  "manifest_or_reviewed_source_modified": false,
+  "baseline_local_pin_mismatches": 0,
+  "selected_file": "tests/test_invariance_geom.py",
+  "selected_file_sha256": "84386e0cf3d5be452ba44d152fd4cfe25070cb81ad349566a5a15f34478464c8",
+  "baseline_selected_file_issues": [],
+  "locality_mutations": [
+    {
+      "function": "_pair_generic",
+      "selected_real_waivers": 6,
+      "before_context": "9705b492e314f29ebdcbc48ebcde40e34095d19f7a6fbf98fe278471557ae773",
+      "after_context": "4b0f5d6f1900e4813bff761522381f106863d3267d2892853efabaa7d9fe30dc",
+      "changed_scope_names": [
+        "_pair_generic"
+      ],
+      "approved_sites_before": 80,
+      "approved_sites_after": 74,
+      "removed_approved_sites": [
+        [
+          "_pair_generic",
+          "closed-rounded-call",
+          "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))], ctx=Load()), generators=[comprehension(target=Name(id='_', ctx=Store()), iter=Call(func=Name(id='range', ctx=Load()), args=[Constant(value=8)], keywords=[]), ifs=[], is_async=0)])], keywords=[])"
+        ],
+        [
+          "_pair_generic",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3))"
+        ],
+        [
+          "_pair_generic",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6))"
+        ],
+        [
+          "_pair_generic",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))"
+        ],
+        [
+          "_pair_generic",
+          "closed-unproved-call",
+          "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))], ctx=Load()), generators=[comprehension(target=Name(id='_', ctx=Store()), iter=Call(func=Name(id='range', ctx=Load()), args=[Constant(value=8)], keywords=[]), ifs=[], is_async=0)])], keywords=[])"
+        ],
+        [
+          "_pair_generic",
+          "closed-unproved-call",
+          "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[])], ctx=Load()), generators=[comprehension(target=Name(id='_', ctx=Store()), iter=Call(func=Name(id='range', ctx=Load()), args=[Constant(value=8)], keywords=[]), ifs=[], is_async=0)])], keywords=[])"
+        ]
+      ],
+      "unexpected_approved_additions": 0,
+      "other_policy_rows_context_unchanged": 2359,
+      "changed_policy_rows": 6,
+      "red_issue_count": 9,
+      "stale_issue_count": 3,
+      "expired_site_detail_count": 6,
+      "all_red_functions": [
+        "_pair_generic"
+      ],
+      "issues": [
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-rounded-call"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-call"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 144,
+          "function": "_pair_generic",
+          "rule": "closed-unproved-arithmetic",
+          "message": "rng.uniform(-1, 1) + 2.6"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 144,
+          "function": "_pair_generic",
+          "rule": "closed-unproved-arithmetic",
+          "message": "rng.uniform(-1, 1) + 0.3"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 144,
+          "function": "_pair_generic",
+          "rule": "closed-unproved-arithmetic",
+          "message": "rng.uniform(-1, 1) - 0.2"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 143,
+          "function": "_pair_generic",
+          "rule": "closed-unproved-call",
+          "message": "convex_hull_3d([(rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(8)])"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 144,
+          "function": "_pair_generic",
+          "rule": "closed-unproved-call",
+          "message": "convex_hull_3d([(rng.uniform(-1, 1) + 2.6, rng.uniform(-1, 1) + 0.3, rng.uniform(-1, 1) - 0.2)\n                        for _ in range(8)])"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 144,
+          "function": "_pair_generic",
+          "rule": "closed-rounded-call",
+          "message": "convex_hull_3d([(rng.uniform(-1, 1) + 2.6, rng.uniform(-1, 1) + 0.3, rng.uniform(-1, 1) - 0.2)\n                        for _ in range(8)])"
+        }
+      ],
+      "expired_site_details": [
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-rounded-call",
+          "node": "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))], ctx=Load()), generators=[comprehension(target=Name(id='_', ctx=Store()), iter=Call(func=Name(id='range', ctx=Load()), args=[Constant(value=8)], keywords=[]), ifs=[], is_async=0)])], keywords=[])",
+          "context": "4b0f5d6f1900e4813bff761522381f106863d3267d2892853efabaa7d9fe30dc"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3))",
+          "context": "4b0f5d6f1900e4813bff761522381f106863d3267d2892853efabaa7d9fe30dc"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6))",
+          "context": "4b0f5d6f1900e4813bff761522381f106863d3267d2892853efabaa7d9fe30dc"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))",
+          "context": "4b0f5d6f1900e4813bff761522381f106863d3267d2892853efabaa7d9fe30dc"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-call",
+          "node": "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3)), BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))], ctx=Load()), generators=[comprehension(target=Name(id='_', ctx=Store()), iter=Call(func=Name(id='range', ctx=Load()), args=[Constant(value=8)], keywords=[]), ifs=[], is_async=0)])], keywords=[])",
+          "context": "4b0f5d6f1900e4813bff761522381f106863d3267d2892853efabaa7d9fe30dc"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 139,
+          "function": "_pair_generic",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-call",
+          "node": "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[])], ctx=Load()), generators=[comprehension(target=Name(id='_', ctx=Store()), iter=Call(func=Name(id='range', ctx=Load()), args=[Constant(value=8)], keywords=[]), ifs=[], is_async=0)])], keywords=[])",
+          "context": "4b0f5d6f1900e4813bff761522381f106863d3267d2892853efabaa7d9fe30dc"
+        }
+      ]
+    },
+    {
+      "function": "_pair_ve3_wedge",
+      "selected_real_waivers": 12,
+      "before_context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "after_context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e",
+      "changed_scope_names": [
+        "_pair_ve3_wedge"
+      ],
+      "approved_sites_before": 80,
+      "approved_sites_after": 68,
+      "removed_approved_sites": [
+        [
+          "_pair_ve3_wedge",
+          "closed-rounded-call",
+          "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[BinOp(left=List(elts=[Tuple(elts=[Constant(value=0.3), Constant(value=0.0), Name(id='VE3_GAP', ctx=Load())], ctx=Load())], ctx=Load()), op=Add(), right=ListComp(elt=Tuple(elts=[BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))], ctx=Load()), generators=[comprehension(target=Tuple(elts=[Name(id='x', ctx=Store()), Name(id='y', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.2), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), Constant(value=0.17)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), UnaryOp(op=USub(), operand=Constant(value=0.17))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)]))], keywords=[])"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-arithmetic",
+          "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-call",
+          "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[BinOp(left=List(elts=[Tuple(elts=[Constant(value=0.3), Constant(value=0.0), Name(id='VE3_GAP', ctx=Load())], ctx=Load())], ctx=Load()), op=Add(), right=ListComp(elt=Tuple(elts=[BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))], ctx=Load()), generators=[comprehension(target=Tuple(elts=[Name(id='x', ctx=Store()), Name(id='y', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.2), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), Constant(value=0.17)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), UnaryOp(op=USub(), operand=Constant(value=0.17))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)]))], keywords=[])"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-call",
+          "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[Name(id='x', ctx=Load()), Name(id='y', ctx=Load()), Name(id='z', ctx=Load())], ctx=Load()), generators=[comprehension(target=Name(id='x', ctx=Store()), iter=Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=2.0)), Constant(value=2.0)], ctx=Load()), ifs=[], is_async=0), comprehension(target=Tuple(elts=[Name(id='y', ctx=Store()), Name(id='z', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.0), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=1.0)), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load()), Tuple(elts=[Constant(value=1.0), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)])], keywords=[])"
+        ],
+        [
+          "_pair_ve3_wedge",
+          "closed-unproved-call",
+          "Call(func=Name(id='merge_coplanar', ctx=Load()), args=[Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[Name(id='x', ctx=Load()), Name(id='y', ctx=Load()), Name(id='z', ctx=Load())], ctx=Load()), generators=[comprehension(target=Name(id='x', ctx=Store()), iter=Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=2.0)), Constant(value=2.0)], ctx=Load()), ifs=[], is_async=0), comprehension(target=Tuple(elts=[Name(id='y', ctx=Store()), Name(id='z', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.0), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=1.0)), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load()), Tuple(elts=[Constant(value=1.0), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)])], keywords=[])], keywords=[])"
+        ]
+      ],
+      "unexpected_approved_additions": 0,
+      "other_policy_rows_context_unchanged": 2353,
+      "changed_policy_rows": 12,
+      "red_issue_count": 15,
+      "stale_issue_count": 3,
+      "expired_site_detail_count": 12,
+      "all_red_functions": [
+        "_pair_ve3_wedge"
+      ],
+      "issues": [
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-rounded-call"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-call"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "0.3 + c * x - s * y"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "0.3 + c * x"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "c * x"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "s * y"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "s * x + c * y"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "s * x"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "c * y"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-arithmetic",
+          "message": "VE3_GAP + 1.0"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 155,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-call",
+          "message": "convex_hull_3d([(x, y, z) for x in (-2.0, 2.0)\n                                       for (y, z) in ((0.0, 0.0), (-1.0, -1.0), (1.0, -1.0))])"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 155,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-call",
+          "message": "merge_coplanar(convex_hull_3d([(x, y, z) for x in (-2.0, 2.0)\n                                       for (y, z) in ((0.0, 0.0), (-1.0, -1.0), (1.0, -1.0))]))"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-unproved-call",
+          "message": "convex_hull_3d([(0.3, 0.0, VE3_GAP)] + [(0.3 + c * x - s * y, s * x + c * y, VE3_GAP + 1.0)\n                                                for x, y in ((0.2, 0.0), (-0.1, 0.17), (-0.1, -0.17))])"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 158,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-rounded-call",
+          "message": "convex_hull_3d([(0.3, 0.0, VE3_GAP)] + [(0.3 + c * x - s * y, s * x + c * y, VE3_GAP + 1.0)\n                                                for x, y in ((0.2, 0.0), (-0.1, 0.17), (-0.1, -0.17))])"
+        }
+      ],
+      "expired_site_details": [
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-rounded-call",
+          "node": "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[BinOp(left=List(elts=[Tuple(elts=[Constant(value=0.3), Constant(value=0.0), Name(id='VE3_GAP', ctx=Load())], ctx=Load())], ctx=Load()), op=Add(), right=ListComp(elt=Tuple(elts=[BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))], ctx=Load()), generators=[comprehension(target=Tuple(elts=[Name(id='x', ctx=Store()), Name(id='y', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.2), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), Constant(value=0.17)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), UnaryOp(op=USub(), operand=Constant(value=0.17))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)]))], keywords=[])",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-arithmetic",
+          "node": "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-call",
+          "node": "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[BinOp(left=List(elts=[Tuple(elts=[Constant(value=0.3), Constant(value=0.0), Name(id='VE3_GAP', ctx=Load())], ctx=Load())], ctx=Load()), op=Add(), right=ListComp(elt=Tuple(elts=[BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))), BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))], ctx=Load()), generators=[comprehension(target=Tuple(elts=[Name(id='x', ctx=Store()), Name(id='y', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.2), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), Constant(value=0.17)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=0.1)), UnaryOp(op=USub(), operand=Constant(value=0.17))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)]))], keywords=[])",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-call",
+          "node": "Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[Name(id='x', ctx=Load()), Name(id='y', ctx=Load()), Name(id='z', ctx=Load())], ctx=Load()), generators=[comprehension(target=Name(id='x', ctx=Store()), iter=Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=2.0)), Constant(value=2.0)], ctx=Load()), ifs=[], is_async=0), comprehension(target=Tuple(elts=[Name(id='y', ctx=Store()), Name(id='z', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.0), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=1.0)), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load()), Tuple(elts=[Constant(value=1.0), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        },
+        {
+          "path": "tests/test_invariance_geom.py",
+          "line": 151,
+          "function": "_pair_ve3_wedge",
+          "rule": "closed-stale-waiver",
+          "message": "Local review expired: closed-unproved-call",
+          "node": "Call(func=Name(id='merge_coplanar', ctx=Load()), args=[Call(func=Name(id='convex_hull_3d', ctx=Load()), args=[ListComp(elt=Tuple(elts=[Name(id='x', ctx=Load()), Name(id='y', ctx=Load()), Name(id='z', ctx=Load())], ctx=Load()), generators=[comprehension(target=Name(id='x', ctx=Store()), iter=Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=2.0)), Constant(value=2.0)], ctx=Load()), ifs=[], is_async=0), comprehension(target=Tuple(elts=[Name(id='y', ctx=Store()), Name(id='z', ctx=Store())], ctx=Store()), iter=Tuple(elts=[Tuple(elts=[Constant(value=0.0), Constant(value=0.0)], ctx=Load()), Tuple(elts=[UnaryOp(op=USub(), operand=Constant(value=1.0)), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load()), Tuple(elts=[Constant(value=1.0), UnaryOp(op=USub(), operand=Constant(value=1.0))], ctx=Load())], ctx=Load()), ifs=[], is_async=0)])], keywords=[])], keywords=[])",
+          "context": "c9dbc3739cb790a9772c78dbb79402055cf20474d5dd8d61c862ac9cd5373d1e"
+        }
+      ]
+    }
+  ],
+  "new_forbidden_function": {
+    "name": "_r12fixb_new_unreviewed_forbidden",
+    "source": "\n\ndef _r12fixb_new_unreviewed_forbidden(value: float):\n    return math.sqrt(value * value)\n",
+    "all_existing_approved_sites_unchanged": true,
+    "all_existing_contexts_unchanged": true,
+    "issues": [
+      {
+        "path": "tests/test_invariance_geom.py",
+        "line": 528,
+        "function": "_r12fixb_new_unreviewed_forbidden",
+        "rule": "closed-rounded-construction",
+        "message": "math.sqrt(value * value)"
+      },
+      {
+        "path": "tests/test_invariance_geom.py",
+        "line": 528,
+        "function": "_r12fixb_new_unreviewed_forbidden",
+        "rule": "closed-unproved-arithmetic",
+        "message": "value * value"
+      }
+    ]
+  },
+  "unrelated_comment": {
+    "path": "src/eab/__init__.py",
+    "before_issues": 0,
+    "after_issues": 0,
+    "scope": "in-memory scan_text, not a repository-copy run"
+  },
+  "boundaries": [
+    "Uses the installed real manifest; no monkeypatch, synthetic waiver or policy enlargement.",
+    "All mutations are source strings only; no src/tests/tools/docs file is written.",
+    "Tests pin locality and fail-closed detection, not the numerical safety of legacy waivers.",
+    "The full-suite real-repository comment test is separate evidence."
+  ]
+}

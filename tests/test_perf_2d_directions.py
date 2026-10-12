@@ -24,7 +24,7 @@ def _dot(a, b):
 
 def _reference(lo, hi, e, tol, cone_tol):
     """Pre-optimization exact predicates, expanded into local Fraction arithmetic."""
-    lo, hi, e = (tuple(map(F, vector)) for vector in (lo, hi, e))
+    lo, hi, e = (tuple(F(component) for component in vector) for vector in (lo, hi, e))
     v = (-e[1], e[0])
     turn, c1, c2 = _cross(lo, hi), _cross(lo, v), _cross(v, hi)
     if turn >= 0 and (turn > 0 or _dot(lo, hi) > 0) and c1 >= 0 and c2 >= 0 and (turn > 0 or _dot(lo, v) > 0):

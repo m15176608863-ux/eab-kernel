@@ -18,7 +18,7 @@ def cross(a,b): return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b
 
 
 def triangles(P):
-    v=tuple(tuple(map(F,p)) for p in P.verts)
+    v=tuple(tuple(F(_mapped_value) for _mapped_value in p) for p in P.verts)
     return tuple(t for ring in P.faces for t in _ring_triangles(v,ring))
 
 
@@ -72,7 +72,8 @@ def earliest_wall_escape(A,B):
 def _earliest(aa,bb):
     denominator=lcm(*(x.denominator for tri in aa+bb for p in tri for x in p))
     origin=aa[0][0]
-    ints=lambda seq:[tuple(tuple(int((p[i]-origin[i])*denominator) for i in range(3)) for p in tri) for tri in seq]
+    def ints(seq):
+        return [tuple(tuple(int((p[i]-origin[i])*denominator) for i in range(3)) for p in tri) for tri in seq]
     ia,ib=ints(aa),ints(bb)
     spans=[]
     for a in ia:
@@ -130,7 +131,7 @@ def earliest_star_escape(A,B,offset=(0,0,0)):
     """
     from e5a2_surface_oracle import _tetrahedra
     aa,bb=_tetrahedra(A),_tetrahedra(B)
-    d=tuple(map(F,offset))
+    d=tuple(F(_mapped_value) for _mapped_value in offset)
     aa=tuple(tuple(tuple(p[i]+d[i] for i in range(3)) for p in tet) for tet in aa)
     return _star_root(aa,tuple(bb))
 
@@ -140,7 +141,8 @@ def _star_root(aa,bb):
     from itertools import combinations
     denominator=lcm(*(x.denominator for tet in aa+bb for p in tet for x in p))
     origin=aa[0][0]
-    ints=lambda seq:[tuple(tuple(int((p[i]-origin[i])*denominator) for i in range(3)) for p in tet) for tet in seq]
+    def ints(seq):
+        return [tuple(tuple(int((p[i]-origin[i])*denominator) for i in range(3)) for p in tet) for tet in seq]
     ia,ib=ints(aa),ints(bb)
     spans=[]
     for a in ia:

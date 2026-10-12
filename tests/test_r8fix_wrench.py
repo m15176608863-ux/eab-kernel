@@ -11,7 +11,7 @@ import eab.limit as limit
 def _oracle(force, point, origin, dim):
     # Independent alternating determinant, not _exact_wrench/_exact_shift.
     r = [F(p) - F(o) for p, o in zip(point, origin)]
-    f = list(map(F, force))
+    f = list((F(_r12_item) for _r12_item in force))
     pairs = [(0, 1)] if dim == 2 else [(1, 2), (2, 0), (0, 1)]
     return f + [r[i]*f[j] - r[j]*f[i] for i, j in pairs]
 

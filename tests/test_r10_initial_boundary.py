@@ -25,7 +25,7 @@ MOTIONS = [((1,0,0),F(0)),((1,0,0),F(1,16)),
 
 
 def _pose(v, scale, shift, rotated):
-    x,y,z = map(F,v)
+    x,y,z = (F(_r12_item) for _r12_item in v)
     if rotated:
         x,y = F(3,5)*x-F(4,5)*y,F(4,5)*x+F(3,5)*y
     return tuple(scale*c+F(t) for c,t in zip((x,y,z),shift))

@@ -8,7 +8,7 @@ from eab.kernel3d.exact_geom import (vector, sub, add, mul, dot, cross,
     triangle_locate, point_segment_distance_squared, _direction_key)
 
 def segment_distance_squared(p1,p2,q1,q2):
-    p1,p2,q1,q2=map(vector,(p1,p2,q1,q2))
+    p1,p2,q1,q2=(vector(_mapped_value) for _mapped_value in (p1,p2,q1,q2))
     u,v,w=sub(p2,p1),sub(q2,q1),sub(q1,p1)
     a,c=dot(u,u),dot(v,v)
     candidates=[]

@@ -1,0 +1,50 @@
+{
+  "sources": {
+    "unknown_math_member": "import math\ndef bad(q):\n    return math.brand_new_numeric(q)\n",
+    "unknown_imported_module_member": "import eab.construction as c\ndef bad(q):\n    return c.brand_new_numeric(q)\n",
+    "opaque_get": "from eab.construction import vector_rational, norm_rational\nclass Builder:\n    def get(self, q):\n        return vector_rational(q)\ndef bad(q):\n    return norm_rational(Builder().get(q))\n",
+    "opaque_copy": "from eab.construction import vector_rational, norm_rational\nclass Builder:\n    def copy(self):\n        return vector_rational([1])\ndef bad(q):\n    return norm_rational(Builder().copy())\n",
+    "class_dynamic_base": "class Bad(never_seen_before_721()):\n    pass\n",
+    "class_dynamic_keyword": "class Bad(metaclass=never_seen_before_721()):\n    pass\n",
+    "function_annotation": "def bad(q: never_seen_before_721()):\n    return q\n",
+    "function_return_annotation": "def bad(q) -> never_seen_before_721():\n    return q\n",
+    "unknown_binding_method": "def bad(obj,q):\n    return obj.get(q)\n",
+    "custom_operator": "from eab.construction import vector_rational,norm_rational\nclass X:\n    def __add__(self, q):\n        return vector_rational(q)\ndef bad(q):\n    return norm_rational(X()+q)\n"
+  },
+  "issues": {
+    "unknown_math_member": [],
+    "unknown_imported_module_member": [],
+    "opaque_get": [
+      [
+        "src/eab/r12_unknown_probe.py",
+        6,
+        "bad",
+        "rounded-vector",
+        "norm_rational(Builder().get(q))"
+      ]
+    ],
+    "opaque_copy": [
+      [
+        "src/eab/r12_unknown_probe.py",
+        6,
+        "bad",
+        "rounded-vector",
+        "norm_rational(Builder().copy())"
+      ]
+    ],
+    "class_dynamic_base": [],
+    "class_dynamic_keyword": [],
+    "function_annotation": [],
+    "function_return_annotation": [],
+    "unknown_binding_method": [],
+    "custom_operator": [
+      [
+        "src/eab/r12_unknown_probe.py",
+        6,
+        "bad",
+        "rounded-vector",
+        "norm_rational(X()+q)"
+      ]
+    ]
+  }
+}

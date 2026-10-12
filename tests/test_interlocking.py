@@ -88,7 +88,8 @@ def test_g0_distance_completeness_on_concave_interlocking_pair(seed):
 def _scaled_pair(s):
     from eab.kernel3d.geom3 import Polyhedron
     A, L = interlocking_pair(nx=4, ny=2, amp=0.25)
-    sc = lambda P: Polyhedron([tuple(s * c for c in v) for v in P.verts], list(P.faces))
+    def sc(P):
+        return Polyhedron([tuple(s * c for c in v) for v in P.verts], list(P.faces))
     return sc(A), sc(L)
 
 

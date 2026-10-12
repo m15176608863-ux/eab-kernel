@@ -1,0 +1,112 @@
+[
+  {
+    "case": "map_norm",
+    "defect_inside": "real cone_intersection_margin",
+    "rollback_inside": "scanner admission layers; old provenance analysis retained",
+    "intact_gate_targeted_issues": [
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-dynamic-call",
+        "map(norm_rational, [vector_rational(p, allow_underflow=True)])"
+      ],
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-callable-value",
+        "norm_rational"
+      ]
+    ],
+    "rollback_issue_count": 0,
+    "failed_assertion": "('G6L-01 closed-subset rejection assertion', 'src/eab/kernel3d/covers3.py', 'cone_intersection_margin', 436, [])",
+    "status": "EXPECTED_ASSERTION_FAILURE"
+  },
+  {
+    "case": "map_sqrt",
+    "defect_inside": "real cone_intersection_margin",
+    "rollback_inside": "scanner admission layers; old provenance analysis retained",
+    "intact_gate_targeted_issues": [
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-dynamic-call",
+        "map(sqrt_rational, [scalar_rational(sum(x*x for x in p), allow_underflow=True)])"
+      ],
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-callable-value",
+        "sqrt_rational"
+      ],
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-reduction",
+        "sum(x*x for x in p)"
+      ],
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-unproved-arithmetic",
+        "x*x"
+      ]
+    ],
+    "rollback_issue_count": 0,
+    "failed_assertion": "('G6L-01 closed-subset rejection assertion', 'src/eab/kernel3d/covers3.py', 'cone_intersection_margin', 436, [])",
+    "status": "EXPECTED_ASSERTION_FAILURE"
+  },
+  {
+    "case": "iter_callable",
+    "defect_inside": "real cone_intersection_margin",
+    "rollback_inside": "scanner admission layers; old provenance analysis retained",
+    "intact_gate_targeted_issues": [
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-dynamic-call",
+        "iter([norm_rational])"
+      ],
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-callable-value",
+        "norm_rational"
+      ],
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-unproved-call",
+        "iter([norm_rational])"
+      ]
+    ],
+    "rollback_issue_count": 0,
+    "failed_assertion": "('G6L-01 closed-subset rejection assertion', 'src/eab/kernel3d/covers3.py', 'cone_intersection_margin', 436, [])",
+    "status": "EXPECTED_ASSERTION_FAILURE"
+  },
+  {
+    "case": "pop_callable",
+    "defect_inside": "real cone_intersection_margin",
+    "rollback_inside": "scanner admission layers; old provenance analysis retained",
+    "intact_gate_targeted_issues": [
+      [
+        "src/eab/kernel3d/covers3.py",
+        436,
+        "cone_intersection_margin",
+        "closed-callable-value",
+        "norm_rational"
+      ]
+    ],
+    "rollback_issue_count": 0,
+    "failed_assertion": "('G6L-01 closed-subset rejection assertion', 'src/eab/kernel3d/covers3.py', 'cone_intersection_margin', 436, [])",
+    "status": "EXPECTED_ASSERTION_FAILURE"
+  }
+]

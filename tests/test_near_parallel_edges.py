@@ -43,7 +43,7 @@ def _fcross(u, v):
 
 def exact_seg_seg(p1, p2, q1, q2, *, squared=False):
     """两线段最短距离的精确候选枚举（Fraction），最后开一次方。"""
-    P1, P2, Q1, Q2 = map(_fv, (p1, p2, q1, q2))
+    P1, P2, Q1, Q2 = (_fv(_r12_item) for _r12_item in (p1, p2, q1, q2))
     d1, d2, w = _fsub(P2, P1), _fsub(Q2, Q1), _fsub(Q1, P1)
     a, c = _fdot(d1, d1), _fdot(d2, d2)
     cands = []

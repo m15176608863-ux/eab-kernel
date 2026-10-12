@@ -1,0 +1,94 @@
+[
+  {
+    "kind": "math_return_after_cfg",
+    "label": "for_else",
+    "expr": "math.sin(q)",
+    "path": "src/eab/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    for _ in range(1):\n        r=math.sin(q)\n        break\n    else:\n        r=q\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "math_return_after_cfg",
+    "label": "for_else",
+    "expr": "math.sin(q)",
+    "path": "tests/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    for _ in range(1):\n        r=math.sin(q)\n        break\n    else:\n        r=q\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "math_return_after_cfg",
+    "label": "for_else",
+    "expr": "math.prod((q,q))",
+    "path": "src/eab/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    for _ in range(1):\n        r=math.prod((q,q))\n        break\n    else:\n        r=q\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "math_return_after_cfg",
+    "label": "for_else",
+    "expr": "math.prod((q,q))",
+    "path": "tests/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    for _ in range(1):\n        r=math.prod((q,q))\n        break\n    else:\n        r=q\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "local_helper_return_after_cfg",
+    "label": "for_else",
+    "path": "src/eab/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef helper(q:float):\n    r=q\n    for _ in range(1):\n        r=q*q\n        break\n    else:\n        r=q\n    return r\ndef bad(q:float):\n    return norm_rational((helper(q),helper(q)))\n",
+    "issues": []
+  },
+  {
+    "kind": "local_helper_return_after_cfg",
+    "label": "for_else",
+    "path": "tests/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef helper(q:float):\n    r=q\n    for _ in range(1):\n        r=q*q\n        break\n    else:\n        r=q\n    return r\ndef bad(q:float):\n    return norm_rational((helper(q),helper(q)))\n",
+    "issues": []
+  },
+  {
+    "kind": "math_return_after_cfg",
+    "label": "try_prefix",
+    "expr": "math.sin(q)",
+    "path": "src/eab/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    try:\n        r=math.sin(q)\n        unused=1//0\n        r=q\n    except ZeroDivisionError:\n        pass\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "math_return_after_cfg",
+    "label": "try_prefix",
+    "expr": "math.sin(q)",
+    "path": "tests/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    try:\n        r=math.sin(q)\n        unused=1//0\n        r=q\n    except ZeroDivisionError:\n        pass\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "math_return_after_cfg",
+    "label": "try_prefix",
+    "expr": "math.prod((q,q))",
+    "path": "src/eab/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    try:\n        r=math.prod((q,q))\n        unused=1//0\n        r=q\n    except ZeroDivisionError:\n        pass\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "math_return_after_cfg",
+    "label": "try_prefix",
+    "expr": "math.prod((q,q))",
+    "path": "tests/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef bad(q:float):\n    r=q\n    try:\n        r=math.prod((q,q))\n        unused=1//0\n        r=q\n    except ZeroDivisionError:\n        pass\n    return norm_rational((r,r))\n",
+    "issues": []
+  },
+  {
+    "kind": "local_helper_return_after_cfg",
+    "label": "try_prefix",
+    "path": "src/eab/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef helper(q:float):\n    r=q\n    try:\n        r=q*q\n        unused=1//0\n        r=q\n    except ZeroDivisionError:\n        pass\n    return r\ndef bad(q:float):\n    return norm_rational((helper(q),helper(q)))\n",
+    "issues": []
+  },
+  {
+    "kind": "local_helper_return_after_cfg",
+    "label": "try_prefix",
+    "path": "tests/final_return_probe.py",
+    "source": "import math\nfrom eab.construction import norm_rational\ndef helper(q:float):\n    r=q\n    try:\n        r=q*q\n        unused=1//0\n        r=q\n    except ZeroDivisionError:\n        pass\n    return r\ndef bad(q:float):\n    return norm_rational((helper(q),helper(q)))\n",
+    "issues": []
+  }
+]

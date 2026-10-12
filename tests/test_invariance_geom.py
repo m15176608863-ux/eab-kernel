@@ -207,29 +207,56 @@ def _pair_size_ratio():
     return A, B
 
 
-# name → (构造器, 真 overlap, 解析距离（贯入为 None）, 裕度 δ, 是否凸对（跑成员/G0/E）, 尺度 L)
+# name → (构造器名, 真 overlap, 解析距离（贯入为 None）, 裕度 δ, 是否凸对（跑成员/G0/E）, 尺度 L)
+# 数值构造由 _pair_for_name 的显式分支完成，表中仅存数据。
 PAIRS = {
-    "tetra_box_vv": (_pair_tetra_box_vv, -1, 0.1, 0.2, True, 3.0),
-    "box_box_face": (_pair_box_box_face, -1, 0.05, 0.1, True, 3.0),
-    "generic": (_pair_generic, -1, None, 0.5, True, 5.0),
-    "ve3_wedge": (_pair_ve3_wedge, -1, VE3_GAP, 10 * VE3_GAP, True, 4.0),
-    "x_cross": (_pair_x_cross, 1, None, 0.05, True, 3.0),
-    "stack_touch": (_pair_stack_touch, 0, 0.0, 0.05, True, 4.0),
-    "sliver": (_pair_sliver, 1, None, 0.05, True, 3.0),
+    "tetra_box_vv": ("tetra_box_vv", -1, 0.1, 0.2, True, 3.0),
+    "box_box_face": ("box_box_face", -1, 0.05, 0.1, True, 3.0),
+    "generic": ("generic", -1, None, 0.5, True, 5.0),
+    "ve3_wedge": ("ve3_wedge", -1, VE3_GAP, 10 * VE3_GAP, True, 4.0),
+    "x_cross": ("x_cross", 1, None, 0.05, True, 3.0),
+    "stack_touch": ("stack_touch", 0, 0.0, 0.05, True, 4.0),
+    "sliver": ("sliver", 1, None, 0.05, True, 3.0),
     # G6 第三轮（2026-10-10）：八路报出的三维 major 全坐在旧格子外——把它们的几何放进来
-    "yaw_1e-5": (lambda: _pair_yaw(1e-5), -1, 0.1, 0.2, True, 4.0),
-    "yaw_1e-3": (lambda: _pair_yaw(1e-3), -1, 0.1, 0.2, True, 4.0),
-    "ridge_needle": (_pair_ridge_needle, -1, 0.05, 0.1, True, 5.0),
-    "size_ratio": (_pair_size_ratio, -1, 1e-3, 2e-3, True, 100.0),
+    "yaw_1e-5": ("yaw_1e-5", -1, 0.1, 0.2, True, 4.0),
+    "yaw_1e-3": ("yaw_1e-3", -1, 0.1, 0.2, True, 4.0),
+    "ridge_needle": ("ridge_needle", -1, 0.05, 0.1, True, 5.0),
+    "size_ratio": ("size_ratio", -1, 1e-3, 2e-3, True, 100.0),
 }
 PAIR_NAMES = list(PAIRS)
 
+
+def _pair_for_name(name):
+    """Build the same fixed fixture through transparent first-order calls."""
+    if name == "tetra_box_vv":
+        return _pair_tetra_box_vv()
+    if name == "box_box_face":
+        return _pair_box_box_face()
+    if name == "generic":
+        return _pair_generic()
+    if name == "ve3_wedge":
+        return _pair_ve3_wedge()
+    if name == "x_cross":
+        return _pair_x_cross()
+    if name == "stack_touch":
+        return _pair_stack_touch()
+    if name == "sliver":
+        return _pair_sliver()
+    if name == "yaw_1e-5":
+        return _pair_yaw(1e-5)
+    if name == "yaw_1e-3":
+        return _pair_yaw(1e-3)
+    if name == "ridge_needle":
+        return _pair_ridge_needle()
+    if name == "size_ratio":
+        return _pair_size_ratio()
+    raise KeyError(name)
 
 @lru_cache(maxsize=None)
 def _base(name: str):
     """恒等格（基准）：同一 API 在原位的结果，并对闭式真值自检。"""
     make, ov, d0, delta, convex, L = PAIRS[name]
-    A, B = make()
+    A, B = _pair_for_name(name)
     d, lab = body_distance(A, B)
     covs = [c for c in enumerate_covers3(A, B, window=float("inf"), tol=1e-9) if c.in_extent]
     labels = frozenset((c.label(), c.strict) for c in covs)
@@ -369,7 +396,7 @@ def test_support_gaps_scale_and_membership_is_invariant(name, rot, tmag, s):
 
 def _support_gap_oracle(A,B,x):
     """Inline Fraction support arithmetic; no production normal/plane helper."""
-    av,bv=tuple(map(exact_oracle.qpoint,A.verts)),tuple(map(exact_oracle.qpoint,B.verts))
+    av,bv=tuple((exact_oracle.qpoint(_r12_item) for _r12_item in A.verts)),tuple((exact_oracle.qpoint(_r12_item) for _r12_item in B.verts))
     x=exact_oracle.qpoint(x)
     result=[]
     for pts,faces,other,sign in ((bv,B.faces,av,1),(av,A.faces,bv,-1)):

@@ -73,7 +73,7 @@ def _check_ee_exact(A, ea, B, eb, tol=1e-9):
     assert (got is not None) == (truth is not None), (ea,eb,truth,got)
     if truth is not None:
         normal,params,strict,inside = truth
-        assert got.params == tuple(map(scalar_exact,params)), (ea,eb,got.params,params)
+        assert got.params == tuple((scalar_exact(_r12_item) for _r12_item in params)), (ea,eb,got.params,params)
         assert got.strict == strict and got.in_extent == inside, (ea,eb,params)
         assert sum(x*y for x,y in zip(got.normal,normal)) > 1-1e-12
     return got,truth
@@ -319,7 +319,8 @@ def _ridge_pair(theta, g, y0=0.5):
     from eab.kernel3d.geom3 import tetra
     B = box(half=(1.0, 1.0, 1.0))
     c, s = math.cos(theta), math.sin(theta)
-    at = lambda u: (1.0 - u * s, y0 + u * c, 1.0 + g)                  # noqa: E731
+    def at(u):
+        return (1.0 - u * s, y0 + u * c, 1.0 + g)                  # noqa: E731
     P0, P1 = at(-1.5), at(1.5 / c)
     mid = at(0.5 * (-1.5 + 1.5 / c))
     perp = (c, s, 0.0)
@@ -336,7 +337,8 @@ def _wedge_pair(k, g=0.1):
     p1 = (1.5, -1 + 1.5 * d, 0.5 + g)
     u = (-d * 0.3, 0.3, 0.0)
     pts = [p0, p1] + [(p[0] + sg * u[0], p[1] + sg * u[1], p[2] + 1.0) for p in (p0, p1) for sg in (1, -1)]
-    mirror = lambda P: Polyhedron([(-v[0], v[1], v[2]) for v in P.verts], [tuple(reversed(f)) for f in P.faces])  # noqa: E731
+    def mirror(P):
+        return Polyhedron([(-v[0], v[1], v[2]) for v in P.verts], [tuple(reversed(f)) for f in P.faces])  # noqa: E731
     return mirror(convex_hull_3d(pts)), mirror(box(half=(1.0, 1.0, 0.5)))
 
 

@@ -37,7 +37,11 @@ def test_ast_gate_rejects_forbidden_code_inserted_into_real_source(body, rule):
 
 
 def test_checked_construction_calls_are_not_rejected_as_direct_casts():
-    assert gate.scan_text("def good(a,b):\n    return scalar_rational(a-b)\n") == []
+    issues = gate.scan_text("def good(a,b):\n    return scalar_rational(a-b)\n")
+    # R12FIXb: ordinary supplied-data arithmetic at a terminal scalar boundary
+    # is allowed; it is rejected if subsequently consumed by norm/root/unit.
+    assert issues == []
+    assert gate.scan_text("def good():\n    return scalar_rational(3-2)\n") == []
     assert gate.scan_text("def good(q):\n    return sqrt_rational(q)\n") == []
 
 

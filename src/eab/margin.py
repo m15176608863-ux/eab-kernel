@@ -75,7 +75,7 @@ import sys
 import math
 from fractions import Fraction
 from functools import lru_cache
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 
 from .kernel3d import exact_geom as _exact
 from .dual import Number
@@ -121,14 +121,14 @@ def effective_geom_tol(A: Polyhedron, B: Polyhedron, geom_tol: float | None = No
     return max(base, rounding_floor(A, B))
 
 
-def _tie_groups(items: list, key, window: float) -> list:
+def _tie_groups(items: list, keys: list, window: float) -> list:
     """按 key 升序；key 相差 ≤ window（舍入意义上的并列）的一组内按枚举序（items 的原次序）排。"""
-    order = sorted(range(len(items)), key=lambda i: key(items[i]))
+    order = [i for _, i in sorted((key, i) for i, key in enumerate(keys))]
     out: list = []
     i = 0
     while i < len(order):
         j = i
-        while j + 1 < len(order) and key(items[order[j + 1]]) - key(items[order[i]]) <= window:
+        while j + 1 < len(order) and keys[order[j + 1]] - keys[order[i]] <= window:
             j += 1
         out.extend(items[k] for k in sorted(order[i:j + 1]))
         i = j + 1
@@ -167,7 +167,7 @@ def _surface_view(vertices, faces):
 @lru_cache(maxsize=1024)
 def _surface_payload(vertices, faces):
     """Only folded rings are expanded; exact planar source labels are retained."""
-    points = tuple(map(_exact.vector, vertices))
+    points = tuple(_exact.vector(_mapped_value) for _mapped_value in vertices)
     folded = set()
     for fi, face in enumerate(faces):
         p = tuple(points[i] for i in face)
@@ -233,7 +233,7 @@ def _contact_window(contact_window):
 def _witness_squared(vertices_a, faces_a, vertices_b, faces_b, label):
     """Squared local-cover distance on exact input coordinates, before construction."""
     kind, fa, fb = label
-    av, bv = tuple(map(_exact.vector, vertices_a)), tuple(map(_exact.vector, vertices_b))
+    av, bv = tuple(_exact.vector(_mapped_value) for _mapped_value in vertices_a), tuple(_exact.vector(_mapped_value) for _mapped_value in vertices_b)
     if kind == "FV":
         return _witness_squared(vertices_b, faces_b, vertices_a, faces_a, ("VF", fb, fa))
     if kind == "EV3":
@@ -289,16 +289,16 @@ def _repair_folded_construction(A, B, c, w, n, squared, rounding):
     point = _exact.vector(X.verts[fa[1]])
     vectors = [_qclosest_triangle(*(_exact.sub(_exact.vector(Y.verts[i]), point) for i in tri))
                for tri in pieces]
-    delta = min(vectors, key=lambda v: _exact.dot(v, v))
+    delta = min((_exact.dot(v, v), _rank_index, v) for _rank_index, v in enumerate(vectors))[2]
     projected = _exact.add(point, delta)
-    a, b = tuple(map(scalar_rational, point)), tuple(map(scalar_rational, projected))
+    a, b = tuple(scalar_rational(_mapped_value) for _mapped_value in point), tuple(scalar_rational(_mapped_value) for _mapped_value in projected)
     if c.kind == "FV":
         a, b = b, a
     c.point_a, c.point_b = a, b
     direction = _exact.mul(delta, -1 if c.kind == "VF" else 1)
     c.exact_normal_direction = direction
     c.exact_gap_sign = 1 if any(direction) else 0
-    scale = max(map(abs, direction))
+    scale = max(abs(_mapped_value) for _mapped_value in direction)
     n = unit(direction, allow_underflow=True) if scale else None
     return target, n
 
@@ -386,9 +386,12 @@ def _resolved_cached(av, af, bv, bf, tol, geom_tol, contact_window,
     # Implementation pointers remain key material for deliberate fault injection.
     # Cache only immutable data; even internal callers cannot corrupt later reads
     # by editing their returned covers. Gate: test_margin_internal_cached_records_are_isolated.
-    ctol, rnd, wits, contact, minimum2 = implementation(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
-    names = tuple(field.name for field in fields(Cover3))
-    payload = None if wits is None else tuple((tuple(getattr(c, name) for name in names), w, n, d2)
+    ctol, rnd, wits, contact, minimum2 = _resolve(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+    payload = None if wits is None else tuple(((c.kind, c.a_feature, c.b_feature, c.normal,
+                                               c.gap, c.point_a, c.point_b, c.params, c.area,
+                                               c.strict, c.in_extent, c.exact_gap_squared,
+                                               c.exact_gap_sign, c.exact_area_squared,
+                                               c.exact_normal_direction, c.exact_params), w, n, d2)
                                            for c, w, n, d2 in wits)
     return ctol, rnd, payload, contact, minimum2
 
@@ -413,7 +416,7 @@ def body_distance(A: Polyhedron, B: Polyhedron, *, tol: float = 1e-9, geom_tol: 
     if contact_window is None or not ctol:
         c, w, _, d2 = min(wits, key=lambda row: row[3])
         return (0.0 if contact else _exact.sqrt_rational(d2)), c.label()
-    c, w, _, d2 = _tie_groups(wits, lambda t: t[1], rnd)[0]
+    c, w, _, d2 = _tie_groups(wits, [t[1] for t in wits], rnd)[0]
     # Retain the caller-requested tie window, not an inaccurate scalar display:
     # global witness points were rounded separately and are only a self-check.
     return (0.0 if contact else _exact.sqrt_rational(d2)), c.label()
@@ -481,7 +484,7 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
         ranked.append((d2, out[-1]))
     if contact_window is None or not ctol:
         return [m for _, m in sorted(ranked, key=lambda item: item[0])]
-    return _tie_groups(out, lambda m: m.margin_gap, rnd)
+    return _tie_groups(out, [m.margin_gap for m in out], rnd)
 
 
 def boundary_band(A: Polyhedron, B: Polyhedron, atol: float | None = None) -> float:
@@ -555,7 +558,7 @@ def nearest_point_on_convex_entrance(E: Polyhedron, x: Vec3, *, exact: bool = Fa
     X = _exact.vector(x)
     displacement = _qclosest_hull(tuple(_exact.sub(_exact.vector(e), X) for e in E.verts))
     point = _exact.add(X, displacement)
-    return point if exact else tuple(map(scalar_rational, point))
+    return point if exact else tuple(scalar_rational(_mapped_value) for _mapped_value in point)
 
 
 def distance_to_convex_entrance(E: Polyhedron, x: Vec3) -> float:
@@ -573,7 +576,7 @@ def inflated_normal(E: Polyhedron, x: Vec3) -> Vec3 | None:
     Gate: test_r6fix_construction::test_g6f08_distance_and_normal_use_exact_relative_projection.
     """
     v = _exact.sub(_exact.vector(x), nearest_point_on_convex_entrance(E, x, exact=True))
-    scale = max(map(abs, v))
+    scale = max(abs(_mapped_value) for _mapped_value in v)
     if not scale:
         return None
     return unit(v)

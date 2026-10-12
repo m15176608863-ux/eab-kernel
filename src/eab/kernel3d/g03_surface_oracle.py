@@ -147,7 +147,7 @@ def separated_distance(av,af,bv,bf,*,squared=False):
     den=lcm(*(c.denominator for p in av+bv for c in p))
     a=tuple(tuple(int(c*den) for c in p) for p in av)
     b=tuple(tuple(int(c*den) for c in p) for p in bv)
-    A,B=model(a,tuple(map(tuple,af))),model(b,tuple(map(tuple,bf)))
+    A,B=model(a,tuple(tuple(_mapped_value) for _mapped_value in af)),model(b,tuple(tuple(_mapped_value) for _mapped_value in bf))
     if not boxes_disjoint(A[3],B[3]):
         for P,Q in ((A,B),(B,A)):
             for p,q in P[2]:

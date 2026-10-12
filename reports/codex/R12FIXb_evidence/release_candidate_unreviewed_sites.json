@@ -1,0 +1,1334 @@
+[
+  {
+    "path": "src/eab/adapters/bdda2d.py",
+    "line": 138,
+    "function": "detect_step",
+    "rule": "closed-rounded-call",
+    "source": "_record(c, A, B, geometry.step, window)",
+    "node": "Call(func=Name(id='_record', ctx=Load()), args=[Name(id='c', ctx=Load()), Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Attribute(value=Name(id='geometry', ctx=Load()), attr='step', ctx=Load()), Name(id='window', ctx=Load())], keywords=[])",
+    "context": "f1b5e317786d3550b5b804d59c3fb759d508d3403848df4eb9003d39f7f2afc5"
+  },
+  {
+    "path": "src/eab/contact_record.py",
+    "line": 156,
+    "function": "ContactRecord.from_dict",
+    "rule": "closed-rounded-call",
+    "source": "cls(**kw)",
+    "node": "Call(func=Name(id='cls', ctx=Load()), args=[], keywords=[keyword(value=Name(id='kw', ctx=Load()))])",
+    "context": "5dd1923cba944118c7be6387c80b6dfa55b6abe7c56553d7ba0b13df8fd2a0a1"
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 81,
+    "function": "Dual.__mul__",
+    "rule": "closed-rounded-call",
+    "source": "_product_derivative(self.v, ov, a, b)",
+    "node": "Call(func=Name(id='_product_derivative', ctx=Load()), args=[Attribute(value=Name(id='self', ctx=Load()), attr='v', ctx=Load()), Name(id='ov', ctx=Load()), Name(id='a', ctx=Load()), Name(id='b', ctx=Load())], keywords=[])",
+    "context": "ab8fdcbd1b74959696fb5090e4ea2929cac65287b174a2a5d15d2957f47efb85"
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 88,
+    "function": "Dual.__truediv__",
+    "rule": "closed-rounded-call",
+    "source": "_ratio_derivative(self.v, ov, a, b)",
+    "node": "Call(func=Name(id='_ratio_derivative', ctx=Load()), args=[Attribute(value=Name(id='self', ctx=Load()), attr='v', ctx=Load()), Name(id='ov', ctx=Load()), Name(id='a', ctx=Load()), Name(id='b', ctx=Load())], keywords=[])",
+    "context": "681ca2f6117b7637b5bb522f57397cc1250b86fd98f70ad709b3a2d06a5af5a6"
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 93,
+    "function": "Dual.__rtruediv__",
+    "rule": "closed-rounded-call",
+    "source": "_ratio_derivative(ov, self.v, b, a)",
+    "node": "Call(func=Name(id='_ratio_derivative', ctx=Load()), args=[Name(id='ov', ctx=Load()), Attribute(value=Name(id='self', ctx=Load()), attr='v', ctx=Load()), Name(id='b', ctx=Load()), Name(id='a', ctx=Load())], keywords=[])",
+    "context": "1251db3fdc8a24598fae8e9df8758ecdd411cf063db2c1aa88bc7a963f881a6d"
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 274,
+    "function": "sin",
+    "rule": "closed-rounded-call",
+    "source": "_derivative_float(Fraction(c) * Fraction(a))",
+    "node": "Call(func=Name(id='_derivative_float', ctx=Load()), args=[BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='c', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='a', ctx=Load())], keywords=[]))], keywords=[])",
+    "context": "00ebd69fdfb2f2831ec755f689f90369c151cee46702de3cf51fe0dfdfa59c58"
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 286,
+    "function": "cos",
+    "rule": "closed-rounded-call",
+    "source": "_derivative_float(Fraction(c) * Fraction(a))",
+    "node": "Call(func=Name(id='_derivative_float', ctx=Load()), args=[BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='c', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='a', ctx=Load())], keywords=[]))], keywords=[])",
+    "context": "0d0af314f99e0ee73e6747aa85c061432210d7044acc22d242979b9681fccd5c"
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 300,
+    "function": "atan2",
+    "rule": "closed-rounded-call",
+    "source": "_ratio_derivative(yv, xv, a, b, angular=True)",
+    "node": "Call(func=Name(id='_ratio_derivative', ctx=Load()), args=[Name(id='yv', ctx=Load()), Name(id='xv', ctx=Load()), Name(id='a', ctx=Load()), Name(id='b', ctx=Load())], keywords=[keyword(arg='angular', value=Constant(value=True))])",
+    "context": "1a015fa1b7d0d9ad18c0025b6132c43cdb18ab017a3e0f88bc95ae936f5a28cf"
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 333,
+    "function": "_first_entrance_concave",
+    "rule": "closed-rounded-call",
+    "source": "_contact_report(A, B, label, x)",
+    "node": "Call(func=Name(id='_contact_report', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='label', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
+    "context": "6f66f5522daabaae20f46c174f6ba3049e2a09d30d290872acced9760a3874e4"
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 305,
+    "function": "g0_exit_completeness",
+    "rule": "closed-rounded-call",
+    "source": "_minimum_witness_distance(covs)",
+    "node": "Call(func=Name(id='_minimum_witness_distance', ctx=Load()), args=[Name(id='covs', ctx=Load())], keywords=[])",
+    "context": "a043a7a6832f31a7f64735f9dd4e7231d6b5473837051f216ef067d063eb7d0a"
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 309,
+    "function": "g0_exit_completeness",
+    "rule": "closed-rounded-call",
+    "source": "rep.failures.append((x, u, t, got, brute_polygon_distance(Az, B)[1]))",
+    "node": "Expr(value=Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='u', ctx=Load()), Name(id='t', ctx=Load()), Name(id='got', ctx=Load()), Subscript(value=Call(func=Name(id='brute_polygon_distance', ctx=Load()), args=[Name(id='Az', ctx=Load()), Name(id='B', ctx=Load())], keywords=[]), slice=Constant(value=1), ctx=Load())], ctx=Load())], keywords=[]))",
+    "context": "a043a7a6832f31a7f64735f9dd4e7231d6b5473837051f216ef067d063eb7d0a"
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 107,
+    "function": "distance",
+    "rule": "closed-rounded-call",
+    "source": "sqrt_display(best)",
+    "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='best', ctx=Load())], keywords=[])",
+    "context": "526aab047964232095bb02c6230069d5a855a00f4e219930ee90b43aa131f8de"
+  },
+  {
+    "path": "src/eab/kernel2d/geom.py",
+    "line": 381,
+    "function": "_tri_axes",
+    "rule": "closed-rounded-call",
+    "source": "norm(e)",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Name(id='e', ctx=Load())], keywords=[])",
+    "context": "2b8cacead84e8a610410b03717c9f9eba755b43fa4ae361f67be0a5a0b4647c5"
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 227,
+    "function": "_orth",
+    "rule": "closed-rounded-call",
+    "source": "unit(v)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='v', ctx=Load())], keywords=[])",
+    "context": "928e1f282c1afbfe997a4165c7d91ed522b6efa3690594832ac3f5d51e511b4f"
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 573,
+    "function": "ee_cover",
+    "rule": "closed-rounded-call",
+    "source": "_signed_gap(numerator, nn)",
+    "node": "Call(func=Name(id='_signed_gap', ctx=Load()), args=[Name(id='numerator', ctx=Load()), Name(id='nn', ctx=Load())], keywords=[])",
+    "context": "017a2d5b099e67876830b47fc602c500e1ac857813d5d8d0315df369cf789ceb"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 157,
+    "function": "merge_degenerate",
+    "rule": "closed-rounded-call",
+    "source": "_coplanar_face_with_normal(A, neg(n), va)",
+    "node": "Call(func=Name(id='_coplanar_face_with_normal', ctx=Load()), args=[Name(id='A', ctx=Load()), Call(func=Name(id='neg', ctx=Load()), args=[Name(id='n', ctx=Load())], keywords=[]), Name(id='va', ctx=Load())], keywords=[])",
+    "context": "5362a4a5ba823048cebe23118a8336ac1c11246cb70e8e764e3b86b3ddc93a92"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 165,
+    "function": "merge_degenerate",
+    "rule": "closed-rounded-call",
+    "source": "_coplanar_face_with_normal(B, n, vb)",
+    "node": "Call(func=Name(id='_coplanar_face_with_normal', ctx=Load()), args=[Name(id='B', ctx=Load()), Name(id='n', ctx=Load()), Name(id='vb', ctx=Load())], keywords=[])",
+    "context": "5362a4a5ba823048cebe23118a8336ac1c11246cb70e8e764e3b86b3ddc93a92"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 266,
+    "function": "first_entrance3",
+    "rule": "closed-rounded-call",
+    "source": "merge_degenerate(At, B, tied, tol)",
+    "node": "Call(func=Name(id='merge_degenerate', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='B', ctx=Load()), Name(id='tied', ctx=Load()), Name(id='tol', ctx=Load())], keywords=[])",
+    "context": "2f7ca217ecebca1dd24834bfdd799cff9e6929cb720e27c9b99c5168de45bc69"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 289,
+    "function": "first_entrance3",
+    "rule": "closed-rounded-call",
+    "source": "_cover_at(Ax, B, c.label(), tol, 0.0)",
+    "node": "Call(func=Name(id='_cover_at', ctx=Load()), args=[Name(id='Ax', ctx=Load()), Name(id='B', ctx=Load()), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[]), Name(id='tol', ctx=Load()), Constant(value=0.0)], keywords=[])",
+    "context": "2f7ca217ecebca1dd24834bfdd799cff9e6929cb720e27c9b99c5168de45bc69"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 305,
+    "function": "first_entrance3",
+    "rule": "closed-rounded-call",
+    "source": "_cover_at(Ax, B, c2.label(), tol, 0.0)",
+    "node": "Call(func=Name(id='_cover_at', ctx=Load()), args=[Name(id='Ax', ctx=Load()), Name(id='B', ctx=Load()), Call(func=Attribute(value=Name(id='c2', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[]), Name(id='tol', ctx=Load()), Constant(value=0.0)], keywords=[])",
+    "context": "2f7ca217ecebca1dd24834bfdd799cff9e6929cb720e27c9b99c5168de45bc69"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 309,
+    "function": "first_entrance3",
+    "rule": "closed-rounded-call",
+    "source": "merge_degenerate(Ax, B, tied, tol)",
+    "node": "Call(func=Name(id='merge_degenerate', ctx=Load()), args=[Name(id='Ax', ctx=Load()), Name(id='B', ctx=Load()), Name(id='tied', ctx=Load()), Name(id='tol', ctx=Load())], keywords=[])",
+    "context": "2f7ca217ecebca1dd24834bfdd799cff9e6929cb720e27c9b99c5168de45bc69"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 342,
+    "function": "shortest_exit3",
+    "rule": "closed-rounded-call",
+    "source": "merge_degenerate(At, B, tied, tol)",
+    "node": "Call(func=Name(id='merge_degenerate', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='B', ctx=Load()), Name(id='tied', ctx=Load()), Name(id='tol', ctx=Load())], keywords=[])",
+    "context": "04560f699035235fa526ad760f808a0cb33e0ef64746ed97f51f98f73fed0906"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 353,
+    "function": "first_entrance_brute",
+    "rule": "closed-rounded-call",
+    "source": "effective_geom_tol(At, B, geom_tol)",
+    "node": "Call(func=Name(id='effective_geom_tol', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='B', ctx=Load()), Name(id='geom_tol', ctx=Load())], keywords=[])",
+    "context": "73c299654166ccbbcb17c990522c0ac6f7ccf3b8842b1234bbc851422ed8915d"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 354,
+    "function": "first_entrance_brute",
+    "rule": "closed-rounded-call",
+    "source": "characteristic_length(At, B)",
+    "node": "Call(func=Name(id='characteristic_length', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "73c299654166ccbbcb17c990522c0ac6f7ccf3b8842b1234bbc851422ed8915d"
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 659,
+    "function": "_surface_interior_witness",
+    "rule": "closed-rounded-call",
+    "source": "dot(key,a)",
+    "node": "Call(func=Name(id='dot', ctx=Load()), args=[Name(id='key', ctx=Load()), Name(id='a', ctx=Load())], keywords=[])",
+    "context": "fb709b2f99c69caddf9db3d8c4da73308da012a5e9e120f277fb6e2d73840040"
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 61,
+    "function": "_unit_jet",
+    "rule": "closed-rounded-call",
+    "source": "_FrozenNormal(value, tuple(Fraction(sign)*c for c in n), ())",
+    "node": "Call(func=Name(id='_FrozenNormal', ctx=Load()), args=[Name(id='value', ctx=Load()), Call(func=Name(id='tuple', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='sign', ctx=Load())], keywords=[]), op=Mult(), right=Name(id='c', ctx=Load())), generators=[comprehension(target=Name(id='c', ctx=Store()), iter=Name(id='n', ctx=Load()), ifs=[], is_async=0)])], keywords=[]), Tuple(elts=[], ctx=Load())], keywords=[])",
+    "context": "4814d373130a69cf42c25b8e7b33736b54cdd6154638d47a2927f28008f03ab6"
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 284,
+    "function": "frozen_gap",
+    "rule": "closed-rounded-call",
+    "source": "_gap_difference(value, nn, derivative, dn, raw, delta)",
+    "node": "Call(func=Name(id='_gap_difference', ctx=Load()), args=[Name(id='value', ctx=Load()), Name(id='nn', ctx=Load()), Name(id='derivative', ctx=Load()), Name(id='dn', ctx=Load()), Name(id='raw', ctx=Load()), Name(id='delta', ctx=Load())], keywords=[])",
+    "context": "83dd737565f2733b76b6429bab4f6fde26b33231f882a481be83121be0a1cc34"
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 221,
+    "function": "g0_distance_completeness3",
+    "rule": "closed-rounded-call",
+    "source": "surface_oracle.sqrt_display(truth2)",
+    "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='sqrt_display', ctx=Load()), args=[Name(id='truth2', ctx=Load())], keywords=[])",
+    "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb"
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 225,
+    "function": "g0_distance_completeness3",
+    "rule": "closed-rounded-call",
+    "source": "_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())",
+    "node": "Call(func=Name(id='_witness_squared', ctx=Load()), args=[Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
+    "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb"
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 230,
+    "function": "g0_distance_completeness3",
+    "rule": "closed-rounded-call",
+    "source": "rep.completeness_failures.append((x,minimum2,truth2))",
+    "node": "Expr(value=Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[]))",
+    "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb"
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 191,
+    "function": "separated_distance",
+    "rule": "closed-rounded-call",
+    "source": "sqrt_display(result)",
+    "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='result', ctx=Load())], keywords=[])",
+    "context": "451e72e7215054c6314c0a79673582c1f245943db81ad686455c9fb47a3695e9"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 374,
+    "function": "Polyhedron._find_interior_point",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(p, self.verts[0]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='p', ctx=Load()), Subscript(value=Attribute(value=Name(id='self', ctx=Load()), attr='verts', ctx=Load()), slice=Constant(value=0), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "fa62d45c159f4d0d7ed690c2de2b691cad5c87dcaadd1c8aacb06b5a99f18182"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 450,
+    "function": "Polyhedron.manifold_issues",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(self.verts[i], o))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Attribute(value=Name(id='self', ctx=Load()), attr='verts', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load()), Name(id='o', ctx=Load())], keywords=[])], keywords=[])",
+    "context": "62e96741ba9293a52cc70f2c53cf771dc5a5e8d5f92927aeb0223da20dbe0002"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 590,
+    "function": "_inward_vertex_direction",
+    "rule": "closed-rounded-call",
+    "source": "norm(s)",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Name(id='s', ctx=Load())], keywords=[])",
+    "context": "3a0df688aeedb7ba13506856e172bf7a9e17aafbcc5870cc759a53d69bdbfe67"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 592,
+    "function": "_inward_vertex_direction",
+    "rule": "closed-rounded-call",
+    "source": "unit(s)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='s', ctx=Load())], keywords=[])",
+    "context": "3a0df688aeedb7ba13506856e172bf7a9e17aafbcc5870cc759a53d69bdbfe67"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 681,
+    "function": "_active_normals",
+    "rule": "closed-rounded-call",
+    "source": "norm(w)",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Name(id='w', ctx=Load())], keywords=[])",
+    "context": "9ad485017bf7d9edd8a03eb6640882b3f387e82d027f1a2091ef92f25ee74575"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 696,
+    "function": "_gordan_direction",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(n, m))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='n', ctx=Load()), Name(id='m', ctx=Load())], keywords=[])], keywords=[])",
+    "context": "bcf5c79df0cde1e26f41e84be077e248cf9e8f8ba357d5fdcb9102d850f30e3e"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 765,
+    "function": "_contact_cone_witness",
+    "rule": "closed-rounded-call",
+    "source": "_active_normals(A, x, tol)",
+    "node": "Call(func=Name(id='_active_normals', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='x', ctx=Load()), Name(id='tol', ctx=Load())], keywords=[])",
+    "context": "beaca3c314984b31376d1aa0e85ab03d394a9db6b57dc90eb4ab62447f7f553c"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 765,
+    "function": "_contact_cone_witness",
+    "rule": "closed-rounded-call",
+    "source": "_active_normals(B, x, tol)",
+    "node": "Call(func=Name(id='_active_normals', ctx=Load()), args=[Name(id='B', ctx=Load()), Name(id='x', ctx=Load()), Name(id='tol', ctx=Load())], keywords=[])",
+    "context": "beaca3c314984b31376d1aa0e85ab03d394a9db6b57dc90eb4ab62447f7f553c"
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 163,
+    "function": "_candidates_cached",
+    "rule": "closed-rounded-call",
+    "source": "_candidates_uncached(Polyhedron(list(av), list(af)),\n                                   Polyhedron(list(bv), list(bf)), offset, tol, extent_tol)",
+    "node": "Call(func=Name(id='_candidates_uncached', ctx=Load()), args=[Call(func=Name(id='Polyhedron', ctx=Load()), args=[Call(func=Name(id='list', ctx=Load()), args=[Name(id='av', ctx=Load())], keywords=[]), Call(func=Name(id='list', ctx=Load()), args=[Name(id='af', ctx=Load())], keywords=[])], keywords=[]), Call(func=Name(id='Polyhedron', ctx=Load()), args=[Call(func=Name(id='list', ctx=Load()), args=[Name(id='bv', ctx=Load())], keywords=[]), Call(func=Name(id='list', ctx=Load()), args=[Name(id='bf', ctx=Load())], keywords=[])], keywords=[]), Name(id='offset', ctx=Load()), Name(id='tol', ctx=Load()), Name(id='extent_tol', ctx=Load())], keywords=[])",
+    "context": "1253a917e5f9fc3f09e0deae7b04abc166aca0a30c25c7555b3180a681a1e63c"
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 178,
+    "function": "_candidates_uncached",
+    "rule": "closed-rounded-call",
+    "source": "rounding_floor(At, B)",
+    "node": "Call(func=Name(id='rounding_floor', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "1d52a7ac30ca6ea3e9feb9352cc9211eec5f4ee46577e0e07bcabc19c1cbd0eb"
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 210,
+    "function": "escape_candidates",
+    "rule": "closed-rounded-call",
+    "source": "effective_geom_tol(translate_exact(A, offset), B, geom_tol)",
+    "node": "Call(func=Name(id='effective_geom_tol', ctx=Load()), args=[Call(func=Name(id='translate_exact', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='offset', ctx=Load())], keywords=[]), Name(id='B', ctx=Load()), Name(id='geom_tol', ctx=Load())], keywords=[])",
+    "context": "29a5b54bd68d6b1308ffe982ffa180a554c53594bf0cfb243e79d2d5758fd8e7"
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 211,
+    "function": "escape_candidates",
+    "rule": "closed-rounded-call",
+    "source": "_candidates(A, B, offset, tol, gtol)",
+    "node": "Call(func=Name(id='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load()), Name(id='tol', ctx=Load()), Name(id='gtol', ctx=Load())], keywords=[])",
+    "context": "29a5b54bd68d6b1308ffe982ffa180a554c53594bf0cfb243e79d2d5758fd8e7"
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 291,
+    "function": "escape_height_covers",
+    "rule": "closed-rounded-call",
+    "source": "effective_geom_tol(report_A,B,geom_tol)",
+    "node": "Call(func=Name(id='effective_geom_tol', ctx=Load()), args=[Name(id='report_A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='geom_tol', ctx=Load())], keywords=[])",
+    "context": "91062a7a0530ff1a85dd6d17e35c45e9467bb35e675de2424e1cf1df6d788aa4"
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 292,
+    "function": "escape_height_covers",
+    "rule": "closed-rounded-call",
+    "source": "_candidates(A,B,offset,tol,gtol)",
+    "node": "Call(func=Name(id='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load()), Name(id='tol', ctx=Load()), Name(id='gtol', ctx=Load())], keywords=[])",
+    "context": "91062a7a0530ff1a85dd6d17e35c45e9467bb35e675de2424e1cf1df6d788aa4"
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 605,
+    "function": "_ExactFloat.__new__",
+    "rule": "closed-rounded-call",
+    "source": "super().__new__(cls, _fl(exact))",
+    "node": "Call(func=Attribute(value=Call(func=Name(id='super', ctx=Load()), args=[], keywords=[]), attr='__new__', ctx=Load()), args=[Name(id='cls', ctx=Load()), Call(func=Name(id='_fl', ctx=Load()), args=[Name(id='exact', ctx=Load())], keywords=[])], keywords=[])",
+    "context": "ffe5ef5cb98871f1a93c06fae60289c4e127d92a305f397759c5eccc62680066"
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 606,
+    "function": "_ExactFloat.__new__",
+    "rule": "closed-rounded-call",
+    "source": "object.__setattr__(obj, \"_exact\", exact)",
+    "node": "Expr(value=Call(func=Attribute(value=Name(id='object', ctx=Load()), attr='__setattr__', ctx=Load()), args=[Name(id='obj', ctx=Load()), Constant(value='_exact'), Name(id='exact', ctx=Load())], keywords=[]))",
+    "context": "ffe5ef5cb98871f1a93c06fae60289c4e127d92a305f397759c5eccc62680066"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 104,
+    "function": "characteristic_length",
+    "rule": "closed-rounded-call",
+    "source": "norm(_exact.sub(_exact.vector(v), _exact.vector(v0)))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Attribute(value=Name(id='_exact', ctx=Load()), attr='sub', ctx=Load()), args=[Call(func=Attribute(value=Name(id='_exact', ctx=Load()), attr='vector', ctx=Load()), args=[Name(id='v', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='_exact', ctx=Load()), attr='vector', ctx=Load()), args=[Name(id='v0', ctx=Load())], keywords=[])], keywords=[])], keywords=[])",
+    "context": "a0af09e851ecf036d4f2c3229a7acc5a44e1e37e2c5d0bed9a6e775cb3eafd52"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 150,
+    "function": "cover_witness",
+    "rule": "closed-rounded-call",
+    "source": "norm(v)",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Name(id='v', ctx=Load())], keywords=[])",
+    "context": "8e077a409c5e278d8f518ab12a0fe4eec0825c352d9a7430e45fd5bdeaea20b1"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 157,
+    "function": "cover_witness",
+    "rule": "closed-rounded-call",
+    "source": "unit(v)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='v', ctx=Load())], keywords=[])",
+    "context": "8e077a409c5e278d8f518ab12a0fe4eec0825c352d9a7430e45fd5bdeaea20b1"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 302,
+    "function": "_repair_folded_construction",
+    "rule": "closed-rounded-call",
+    "source": "unit(direction, allow_underflow=True)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='direction', ctx=Load())], keywords=[keyword(arg='allow_underflow', value=Constant(value=True))])",
+    "context": "f8377ff2655f54e600823529ee6482ec1a9329bff897d974d6ab7e1587fcf011"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 359,
+    "function": "_resolve",
+    "rule": "closed-rounded-call",
+    "source": "_surface_feature_squared(A, B, c.label())",
+    "node": "Call(func=Name(id='_surface_feature_squared', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
+    "context": "ebcb1461e507b1686ea95e922f634cca30f34b8a074dc03bab9324f2b1e1b6b0"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 341,
+    "function": "_resolve",
+    "rule": "closed-rounded-call",
+    "source": "_repair_folded_construction(A, B, c, w, n, d2, rnd)",
+    "node": "Call(func=Name(id='_repair_folded_construction', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='c', ctx=Load()), Name(id='w', ctx=Load()), Name(id='n', ctx=Load()), Name(id='d2', ctx=Load()), Name(id='rnd', ctx=Load())], keywords=[])",
+    "context": "ebcb1461e507b1686ea95e922f634cca30f34b8a074dc03bab9324f2b1e1b6b0"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 349,
+    "function": "_resolve",
+    "rule": "closed-rounded-call",
+    "source": "brute_feature_distance(view_a, view_b, squared=True)",
+    "node": "Call(func=Name(id='brute_feature_distance', ctx=Load()), args=[Name(id='view_a', ctx=Load()), Name(id='view_b', ctx=Load())], keywords=[keyword(arg='squared', value=Constant(value=True))])",
+    "context": "ebcb1461e507b1686ea95e922f634cca30f34b8a074dc03bab9324f2b1e1b6b0"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 478,
+    "function": "margin_contacts",
+    "rule": "closed-rounded-call",
+    "source": "_normalized_difference(d2, d2 or Fraction(1), Fraction(delta), allow_underflow=True)",
+    "node": "Call(func=Name(id='_normalized_difference', ctx=Load()), args=[Name(id='d2', ctx=Load()), BoolOp(op=Or(), values=[Name(id='d2', ctx=Load()), Call(func=Name(id='Fraction', ctx=Load()), args=[Constant(value=1)], keywords=[])]), Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='delta', ctx=Load())], keywords=[])], keywords=[keyword(arg='allow_underflow', value=Constant(value=True))])",
+    "context": "f864d300775cbb43075f75429564ceb5952ee6e75a23b61ef2865e9e634c7704"
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 582,
+    "function": "inflated_normal",
+    "rule": "closed-rounded-call",
+    "source": "unit(v)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='v', ctx=Load())], keywords=[])",
+    "context": "57e9edb98e9ad95f8b94cead99a9209cd49cf18dd3975c6b1ab87f34a30799cb"
+  },
+  {
+    "path": "tests/e5a_cover_oracle.py",
+    "line": 328,
+    "function": "_margin_witness_distance",
+    "rule": "closed-rounded-construction",
+    "source": "sqrt_exact(squared)",
+    "node": "Call(func=Name(id='sqrt_exact', ctx=Load()), args=[Name(id='squared', ctx=Load())], keywords=[])",
+    "context": "c1373d97ddad4cfb0ad165a7cd33c6c651329fa6d671f5a840bd759c07c517c5"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 74,
+    "function": "facet",
+    "rule": "closed-rounded-call",
+    "source": "_signed_gap(n, w)",
+    "node": "Call(func=Name(id='_signed_gap', ctx=Load()), args=[Name(id='n', ctx=Load()), Name(id='w', ctx=Load())], keywords=[])",
+    "context": "9a96cb3b6e5d695e36c282f2043fbe4ebfab6a6747d0d60bb6229f0a4b3dabb3"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 102,
+    "function": "facet",
+    "rule": "closed-rounded-construction",
+    "source": "unit(d)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='d', ctx=Load())], keywords=[])",
+    "context": "9a96cb3b6e5d695e36c282f2043fbe4ebfab6a6747d0d60bb6229f0a4b3dabb3"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 102,
+    "function": "facet",
+    "rule": "closed-rounded-call",
+    "source": "unit(d)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='d', ctx=Load())], keywords=[])",
+    "context": "9a96cb3b6e5d695e36c282f2043fbe4ebfab6a6747d0d60bb6229f0a4b3dabb3"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 113,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-construction",
+    "source": "norm(sub(vertices[e[1]],vertices[e[0]]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=1), ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=0), ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 113,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(vertices[e[1]],vertices[e[0]]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=1), ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=0), ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 116,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-construction",
+    "source": "norm(sub(vertices[j],vertices[i]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='j', ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 116,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(vertices[j],vertices[i]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='j', ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 117,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-construction",
+    "source": "norm(m[2][fi])",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Subscript(value=Subscript(value=Name(id='m', ctx=Load()), slice=Constant(value=2), ctx=Load()), slice=Name(id='fi', ctx=Load()), ctx=Load())], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 117,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-call",
+    "source": "norm(m[2][fi])",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Subscript(value=Subscript(value=Name(id='m', ctx=Load()), slice=Constant(value=2), ctx=Load()), slice=Name(id='fi', ctx=Load()), ctx=Load())], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 146,
+    "function": "windows",
+    "rule": "closed-rounded-construction",
+    "source": "norm(sub(p,v[0]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='p', ctx=Load()), Subscript(value=Name(id='v', ctx=Load()), slice=Constant(value=0), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "e076d5a021b80e1eb3806e05f364cb93fcdfb53f4f72c1e6c9585eaf1a308ba9"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 146,
+    "function": "windows",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(p,v[0]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='p', ctx=Load()), Subscript(value=Name(id='v', ctx=Load()), slice=Constant(value=0), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "e076d5a021b80e1eb3806e05f364cb93fcdfb53f4f72c1e6c9585eaf1a308ba9"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 176,
+    "function": "_candidates",
+    "rule": "closed-rounded-construction",
+    "source": "unit(normal)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='normal', ctx=Load())], keywords=[])",
+    "context": "1cae33834f117b1fd139614105ec45b6ce891438b3b05de4d006513484a08d44"
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 176,
+    "function": "_candidates",
+    "rule": "closed-rounded-call",
+    "source": "unit(normal)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='normal', ctx=Load())], keywords=[])",
+    "context": "1cae33834f117b1fd139614105ec45b6ce891438b3b05de4d006513484a08d44"
+  },
+  {
+    "path": "tests/e5b_margin_oracle.py",
+    "line": 101,
+    "function": "check_exact_margin",
+    "rule": "closed-rounded-call",
+    "source": "production.inflated_membership(A, B, delta=probe)",
+    "node": "Call(func=Attribute(value=Name(id='production', ctx=Load()), attr='inflated_membership', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='delta', value=Name(id='probe', ctx=Load()))])",
+    "context": "ef1bae9d2903dbcba43ce7aceba3a7c98838c9f499c985625c9602395c512f77"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 70,
+    "function": "facet",
+    "rule": "closed-rounded-call",
+    "source": "_signed_gap(n, w)",
+    "node": "Call(func=Name(id='_signed_gap', ctx=Load()), args=[Name(id='n', ctx=Load()), Name(id='w', ctx=Load())], keywords=[])",
+    "context": "821591173a0c70b124d25b30c7d35fcdf0023758007c4be551583deb1d9722cc"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 96,
+    "function": "facet",
+    "rule": "closed-rounded-construction",
+    "source": "unit(d)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='d', ctx=Load())], keywords=[])",
+    "context": "821591173a0c70b124d25b30c7d35fcdf0023758007c4be551583deb1d9722cc"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 96,
+    "function": "facet",
+    "rule": "closed-rounded-call",
+    "source": "unit(d)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='d', ctx=Load())], keywords=[])",
+    "context": "821591173a0c70b124d25b30c7d35fcdf0023758007c4be551583deb1d9722cc"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 107,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-construction",
+    "source": "norm(sub(vertices[e[1]],vertices[e[0]]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=1), ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=0), ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 107,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(vertices[e[1]],vertices[e[0]]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=1), ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Subscript(value=Name(id='e', ctx=Load()), slice=Constant(value=0), ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 110,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-construction",
+    "source": "norm(sub(vertices[j],vertices[i]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='j', ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 110,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(vertices[j],vertices[i]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='j', ctx=Load()), ctx=Load()), Subscript(value=Name(id='vertices', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 111,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-construction",
+    "source": "norm(m[2][fi])",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Subscript(value=Subscript(value=Name(id='m', ctx=Load()), slice=Constant(value=2), ctx=Load()), slice=Name(id='fi', ctx=Load()), ctx=Load())], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 111,
+    "function": "geometry_noise",
+    "rule": "closed-rounded-call",
+    "source": "norm(m[2][fi])",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Subscript(value=Subscript(value=Name(id='m', ctx=Load()), slice=Constant(value=2), ctx=Load()), slice=Name(id='fi', ctx=Load()), ctx=Load())], keywords=[])",
+    "context": "dbe91667328a8d7ed03299ea0475b587ad573ecf9426cb2a9b68eb682d09a8f1"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 138,
+    "function": "windows",
+    "rule": "closed-rounded-construction",
+    "source": "norm(sub(p,v[0]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='p', ctx=Load()), Subscript(value=Name(id='v', ctx=Load()), slice=Constant(value=0), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "e076d5a021b80e1eb3806e05f364cb93fcdfb53f4f72c1e6c9585eaf1a308ba9"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 138,
+    "function": "windows",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(p,v[0]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='p', ctx=Load()), Subscript(value=Name(id='v', ctx=Load()), slice=Constant(value=0), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "e076d5a021b80e1eb3806e05f364cb93fcdfb53f4f72c1e6c9585eaf1a308ba9"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 152,
+    "function": "_candidates",
+    "rule": "closed-rounded-call",
+    "source": "windows(av,bv)",
+    "node": "Call(func=Name(id='windows', ctx=Load()), args=[Name(id='av', ctx=Load()), Name(id='bv', ctx=Load())], keywords=[])",
+    "context": "49a17513ce667643bf19a08225b525ca1f7eb91ba673275cebd070f1bc1fac48"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 158,
+    "function": "_candidates",
+    "rule": "closed-rounded-call",
+    "source": "facet(a,b,label,exact_coefficients=True)",
+    "node": "Call(func=Name(id='facet', ctx=Load()), args=[Name(id='a', ctx=Load()), Name(id='b', ctx=Load()), Name(id='label', ctx=Load())], keywords=[keyword(arg='exact_coefficients', value=Constant(value=True))])",
+    "context": "49a17513ce667643bf19a08225b525ca1f7eb91ba673275cebd070f1bc1fac48"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 163,
+    "function": "_candidates",
+    "rule": "closed-rounded-call",
+    "source": "direction_noise(av,af,bv,bf,label)",
+    "node": "Call(func=Name(id='direction_noise', ctx=Load()), args=[Name(id='av', ctx=Load()), Name(id='af', ctx=Load()), Name(id='bv', ctx=Load()), Name(id='bf', ctx=Load()), Name(id='label', ctx=Load())], keywords=[])",
+    "context": "49a17513ce667643bf19a08225b525ca1f7eb91ba673275cebd070f1bc1fac48"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 168,
+    "function": "_candidates",
+    "rule": "closed-rounded-construction",
+    "source": "unit(normal)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='normal', ctx=Load())], keywords=[])",
+    "context": "49a17513ce667643bf19a08225b525ca1f7eb91ba673275cebd070f1bc1fac48"
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 168,
+    "function": "_candidates",
+    "rule": "closed-rounded-call",
+    "source": "unit(normal)",
+    "node": "Call(func=Name(id='unit', ctx=Load()), args=[Name(id='normal', ctx=Load())], keywords=[])",
+    "context": "49a17513ce667643bf19a08225b525ca1f7eb91ba673275cebd070f1bc1fac48"
+  },
+  {
+    "path": "tests/test_bb52_g1.py",
+    "line": 98,
+    "function": "_retired_vote",
+    "rule": "closed-rounded-call",
+    "source": "cv.enumerate_covers(At, B, window=bb52_g0.D0, tol=bb52_g0.TOL)",
+    "node": "Call(func=Attribute(value=Name(id='cv', ctx=Load()), attr='enumerate_covers', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='window', value=Attribute(value=Name(id='bb52_g0', ctx=Load()), attr='D0', ctx=Load())), keyword(arg='tol', value=Attribute(value=Name(id='bb52_g0', ctx=Load()), attr='TOL', ctx=Load()))])",
+    "context": "75e87374018502d90e30598e09269091998edb76b688253a1ef3abb37b81a319"
+  },
+  {
+    "path": "tests/test_bb52_g1.py",
+    "line": 172,
+    "function": "_rounded_distance_audit",
+    "rule": "closed-rounded-call",
+    "source": "g0_distance_completeness(rounded, B, [(0, 0)], tol=bb52_g0.TOL, atol=1e-9)",
+    "node": "Call(func=Name(id='g0_distance_completeness', ctx=Load()), args=[Name(id='rounded', ctx=Load()), Name(id='B', ctx=Load()), List(elts=[Tuple(elts=[Constant(value=0), Constant(value=0)], ctx=Load())], ctx=Load())], keywords=[keyword(arg='tol', value=Attribute(value=Name(id='bb52_g0', ctx=Load()), attr='TOL', ctx=Load())), keyword(arg='atol', value=Constant(value=1e-09))])",
+    "context": "ac85342f2afcce187f8bfb22d55f01d67c5e046109f903a61d5858c130af94ba"
+  },
+  {
+    "path": "tests/test_bb52_g1.py",
+    "line": 177,
+    "function": "_rounded_distance_audit",
+    "rule": "closed-rounded-call",
+    "source": "bb52_g0.classify_completeness_failure(rounded, B, arg)",
+    "node": "Call(func=Attribute(value=Name(id='bb52_g0', ctx=Load()), attr='classify_completeness_failure', ctx=Load()), args=[Name(id='rounded', ctx=Load()), Name(id='B', ctx=Load()), Name(id='arg', ctx=Load())], keywords=[])",
+    "context": "ac85342f2afcce187f8bfb22d55f01d67c5e046109f903a61d5858c130af94ba"
+  },
+  {
+    "path": "tests/test_frozen_ee_sign.py",
+    "line": 48,
+    "function": "_ee_exact",
+    "rule": "closed-rounded-construction",
+    "source": "unit_exact(direction)",
+    "node": "Call(func=Name(id='unit_exact', ctx=Load()), args=[Name(id='direction', ctx=Load())], keywords=[])",
+    "context": "2794086386a4e324b7a9dc2a42a93b5179db8c2f6bae77f4598536f8091d6ab3"
+  },
+  {
+    "path": "tests/test_frozen_ee_sign.py",
+    "line": 348,
+    "function": "_frozen_gap_of_chosen_label",
+    "rule": "closed-rounded-call",
+    "source": "margin_gap_from_frozen_cover(A, B, lab, (0.0, 0.0, 0.0), 0.0, ee_sign=sgn)",
+    "node": "Call(func=Name(id='margin_gap_from_frozen_cover', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='lab', ctx=Load()), Tuple(elts=[Constant(value=0.0), Constant(value=0.0), Constant(value=0.0)], ctx=Load()), Constant(value=0.0)], keywords=[keyword(arg='ee_sign', value=Name(id='sgn', ctx=Load()))])",
+    "context": "3c99cc171ecc9e8ba3917159c9fa45b56c68d4b8416766d07ecd889c861f0478"
+  },
+  {
+    "path": "tests/test_frozen_lowdim.py",
+    "line": 73,
+    "function": "_check_one",
+    "rule": "closed-rounded-call",
+    "source": "margin_gap_from_frozen_cover(At, B, lab, (0.0, 0.0, 0.0), 0.0, ee_sign=sign)",
+    "node": "Call(func=Name(id='margin_gap_from_frozen_cover', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='B', ctx=Load()), Name(id='lab', ctx=Load()), Tuple(elts=[Constant(value=0.0), Constant(value=0.0), Constant(value=0.0)], ctx=Load()), Constant(value=0.0)], keywords=[keyword(arg='ee_sign', value=Name(id='sign', ctx=Load()))])",
+    "context": "337f1d5609a3d2bf3af58f2cafe99271b14ebc7ff9edeaed06a9f850161ae9e0"
+  },
+  {
+    "path": "tests/test_frozen_lowdim.py",
+    "line": 76,
+    "function": "_check_one",
+    "rule": "closed-rounded-call",
+    "source": "margin_gap_from_frozen_cover(A, B, lab, _dual_translation(x), Dual.seed(delta0, W, 3),\n                                     ee_sign=sign)",
+    "node": "Call(func=Name(id='margin_gap_from_frozen_cover', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='lab', ctx=Load()), Call(func=Name(id='_dual_translation', ctx=Load()), args=[Name(id='x', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='Dual', ctx=Load()), attr='seed', ctx=Load()), args=[Name(id='delta0', ctx=Load()), Name(id='W', ctx=Load()), Constant(value=3)], keywords=[])], keywords=[keyword(arg='ee_sign', value=Name(id='sign', ctx=Load()))])",
+    "context": "337f1d5609a3d2bf3af58f2cafe99271b14ebc7ff9edeaed06a9f850161ae9e0"
+  },
+  {
+    "path": "tests/test_frozen_surface_diagonal.py",
+    "line": 36,
+    "function": "_check",
+    "rule": "closed-rounded-call",
+    "source": "body_distance(a,b)",
+    "node": "Call(func=Name(id='body_distance', ctx=Load()), args=[Name(id='a', ctx=Load()), Name(id='b', ctx=Load())], keywords=[])",
+    "context": "f7636482f04b8af76c69dd7bb98af42c837d1b159bf69c1b8e1f736a81ce4ded"
+  },
+  {
+    "path": "tests/test_frozen_surface_diagonal.py",
+    "line": 42,
+    "function": "_check",
+    "rule": "closed-rounded-call",
+    "source": "margin_gap_from_frozen_cover(a,b,label,(0,0,0),0.,ee_sign=sign)",
+    "node": "Call(func=Name(id='margin_gap_from_frozen_cover', ctx=Load()), args=[Name(id='a', ctx=Load()), Name(id='b', ctx=Load()), Name(id='label', ctx=Load()), Tuple(elts=[Constant(value=0), Constant(value=0), Constant(value=0)], ctx=Load()), Constant(value=0.0)], keywords=[keyword(arg='ee_sign', value=Name(id='sign', ctx=Load()))])",
+    "context": "f7636482f04b8af76c69dd7bb98af42c837d1b159bf69c1b8e1f736a81ce4ded"
+  },
+  {
+    "path": "tests/test_frozen_surface_diagonal.py",
+    "line": 44,
+    "function": "_check",
+    "rule": "closed-rounded-call",
+    "source": "frozen.ee_normal_generic(a,(0,1),b,(5,7),sign)",
+    "node": "Call(func=Attribute(value=Name(id='frozen', ctx=Load()), attr='ee_normal_generic', ctx=Load()), args=[Name(id='a', ctx=Load()), Tuple(elts=[Constant(value=0), Constant(value=1)], ctx=Load()), Name(id='b', ctx=Load()), Tuple(elts=[Constant(value=5), Constant(value=7)], ctx=Load()), Name(id='sign', ctx=Load())], keywords=[])",
+    "context": "f7636482f04b8af76c69dd7bb98af42c837d1b159bf69c1b8e1f736a81ce4ded"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 395,
+    "function": "_seg_seg_dist",
+    "rule": "closed-rounded-construction",
+    "source": "_dot3(w, w) ** 0.5",
+    "node": "BinOp(left=Call(func=Name(id='_dot3', ctx=Load()), args=[Name(id='w', ctx=Load()), Name(id='w', ctx=Load())], keywords=[]), op=Pow(), right=Constant(value=0.5))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_interlock_escape.py",
+    "line": 68,
+    "function": "_check_escape",
+    "rule": "closed-rounded-call",
+    "source": "escape_height_from_frozen_cover(A, L, lab, off, ee_sign=sign)",
+    "node": "Call(func=Name(id='escape_height_from_frozen_cover', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='L', ctx=Load()), Name(id='lab', ctx=Load()), Name(id='off', ctx=Load())], keywords=[keyword(arg='ee_sign', value=Name(id='sign', ctx=Load()))])",
+    "context": "5eba51ce110185bafb64beb672b0f23e13d4eedf9303184ad8fdd26b31239523"
+  },
+  {
+    "path": "tests/test_interlock_exact.py",
+    "line": 20,
+    "function": "_wall",
+    "rule": "closed-rounded-call",
+    "source": "W._place(W._key(),.7,1e5,r,4)",
+    "node": "Call(func=Attribute(value=Name(id='W', ctx=Load()), attr='_place', ctx=Load()), args=[Call(func=Attribute(value=Name(id='W', ctx=Load()), attr='_key', ctx=Load()), args=[], keywords=[]), Constant(value=0.7), Constant(value=100000.0), Name(id='r', ctx=Load()), Constant(value=4)], keywords=[])",
+    "context": "b9cefc17dd39fa5110a665ffcd37a80934ef5aa9fceafbc3a31ff5eef79b48b0"
+  },
+  {
+    "path": "tests/test_invariance_2d.py",
+    "line": 126,
+    "function": "_covers",
+    "rule": "closed-rounded-call",
+    "source": "enumerate_covers(translate(A, x), B, window=window, tol=tau, cone_tol=cone_tol, seg_tol=tau)",
+    "node": "Call(func=Name(id='enumerate_covers', ctx=Load()), args=[Call(func=Name(id='translate', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='x', ctx=Load())], keywords=[]), Name(id='B', ctx=Load())], keywords=[keyword(arg='window', value=Name(id='window', ctx=Load())), keyword(arg='tol', value=Name(id='tau', ctx=Load())), keyword(arg='cone_tol', value=Name(id='cone_tol', ctx=Load())), keyword(arg='seg_tol', value=Name(id='tau', ctx=Load()))])",
+    "context": "3844be5a5f8e6e01c02066f52e00136f966b0d455543846be3df42611b025947"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 53,
+    "function": "body_distance",
+    "rule": "closed-rounded-call",
+    "source": "exact_margin.body_distance(A, B, contact_window=exact_margin.contact_resolution(A, B))",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='body_distance', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='contact_window', value=Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[]))])",
+    "context": "97f9f7e6e239a3977d4a93711abcc33d7f2ce81f81d6336d8e6adf724b5bf201"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 57,
+    "function": "margin_contacts",
+    "rule": "closed-rounded-call",
+    "source": "exact_margin.margin_contacts(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='margin_contacts', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='contact_window', value=Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])), keyword(value=Name(id='kwargs', ctx=Load()))])",
+    "context": "1598fd92b13b21aa75604a7556b94e006a1a72aa84cf514cafb352935112ecdb"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 61,
+    "function": "inflated_membership",
+    "rule": "closed-rounded-call",
+    "source": "exact_margin.inflated_membership(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='inflated_membership', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='contact_window', value=Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])), keyword(value=Name(id='kwargs', ctx=Load()))])",
+    "context": "32ec5657de4fe78478f12d3f2697584886e2b025ae672e8d49d90a2ecf5d122a"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 260,
+    "function": "_base",
+    "rule": "closed-rounded-call",
+    "source": "body_distance(A, B)",
+    "node": "Call(func=Name(id='body_distance', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "fabef31a374de4d6cebfba4af538c51601ab576cd91ffe89e88ce0b789ab6820"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 267,
+    "function": "_base",
+    "rule": "closed-rounded-call",
+    "source": "brute_feature_distance(A, B)",
+    "node": "Call(func=Name(id='brute_feature_distance', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "fabef31a374de4d6cebfba4af538c51601ab576cd91ffe89e88ce0b789ab6820"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 269,
+    "function": "_base",
+    "rule": "closed-rounded-call",
+    "source": "local_facets3(A, B, 1e-12)",
+    "node": "Call(func=Name(id='local_facets3', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Constant(value=1e-12)], keywords=[])",
+    "context": "fabef31a374de4d6cebfba4af538c51601ab576cd91ffe89e88ce0b789ab6820"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 63,
+    "function": "body_distance",
+    "rule": "closed-rounded-call",
+    "source": "exact_margin.body_distance(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='body_distance', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='contact_window', value=Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])), keyword(value=Name(id='kwargs', ctx=Load()))])",
+    "context": "a1ac4c75ec8c221121202be4ce1c7e69143d3feb946c8dff18e125ea3c34e620"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 67,
+    "function": "margin_contacts",
+    "rule": "closed-rounded-call",
+    "source": "exact_margin.margin_contacts(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='margin_contacts', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='contact_window', value=Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])), keyword(value=Name(id='kwargs', ctx=Load()))])",
+    "context": "1598fd92b13b21aa75604a7556b94e006a1a72aa84cf514cafb352935112ecdb"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 71,
+    "function": "inflated_membership",
+    "rule": "closed-rounded-call",
+    "source": "exact_margin.inflated_membership(A, B, contact_window=exact_margin.contact_resolution(A, B), **kwargs)",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='inflated_membership', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[keyword(arg='contact_window', value=Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])), keyword(value=Name(id='kwargs', ctx=Load()))])",
+    "context": "32ec5657de4fe78478f12d3f2697584886e2b025ae672e8d49d90a2ecf5d122a"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 162,
+    "function": "_escape",
+    "rule": "closed-rounded-call",
+    "source": "escape_height_covers(A, L, o)",
+    "node": "Call(func=Name(id='escape_height_covers', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='L', ctx=Load()), Name(id='o', ctx=Load())], keywords=[])",
+    "context": "3b41ea9d986bae3c1b332e52cf02a677a0c3d26d0b46360d62cc80773099169c"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 190,
+    "function": "_resolution",
+    "rule": "closed-rounded-call",
+    "source": "effective_geom_tol(At, L)",
+    "node": "Call(func=Name(id='effective_geom_tol', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='L', ctx=Load())], keywords=[])",
+    "context": "9afa684cc5baea3bf740d46f70e67971b34b9602c56f66da426b5f26a9170ce9"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 190,
+    "function": "_resolution",
+    "rule": "closed-rounded-call",
+    "source": "rounding_floor(At, L)",
+    "node": "Call(func=Name(id='rounding_floor', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='L', ctx=Load())], keywords=[])",
+    "context": "9afa684cc5baea3bf740d46f70e67971b34b9602c56f66da426b5f26a9170ce9"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 191,
+    "function": "_resolution",
+    "rule": "closed-rounded-call",
+    "source": "characteristic_length(At, L)",
+    "node": "Call(func=Name(id='characteristic_length', ctx=Load()), args=[Name(id='At', ctx=Load()), Name(id='L', ctx=Load())], keywords=[])",
+    "context": "9afa684cc5baea3bf740d46f70e67971b34b9602c56f66da426b5f26a9170ce9"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 467,
+    "function": "_margin_ref",
+    "rule": "closed-rounded-call",
+    "source": "body_distance(A, B)",
+    "node": "Call(func=Name(id='body_distance', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "d4659e29d6b8e5c66e3c79a16f08e095c92679ee2921189df4412193edfa00b7"
+  },
+  {
+    "path": "tests/test_invariance_limit.py",
+    "line": 231,
+    "function": "_reference",
+    "rule": "closed-rounded-call",
+    "source": "_solve(cts, dead, live, case.dim, case.k, None)",
+    "node": "Call(func=Name(id='_solve', ctx=Load()), args=[Name(id='cts', ctx=Load()), Name(id='dead', ctx=Load()), Name(id='live', ctx=Load()), Attribute(value=Name(id='case', ctx=Load()), attr='dim', ctx=Load()), Attribute(value=Name(id='case', ctx=Load()), attr='k', ctx=Load()), Constant(value=None)], keywords=[])",
+    "context": "419f0745e7bc093a2ebfd41da4e4bec15031b93ae86bf17f132f08f724fd9bc0"
+  },
+  {
+    "path": "tests/test_invariance_limit.py",
+    "line": 260,
+    "function": "_dual_residuals",
+    "rule": "closed-rounded-call",
+    "source": "_norm(g)",
+    "node": "Call(func=Name(id='_norm', ctx=Load()), args=[Name(id='g', ctx=Load())], keywords=[])",
+    "context": "2726b03a2bd09436bee62668e576bdc0152f8098db1a3705a065ee1577967995"
+  },
+  {
+    "path": "tests/test_kernel2d_review.py",
+    "line": 259,
+    "function": "_load_both",
+    "rule": "closed-rounded-call",
+    "source": "(tmp_path / \"bdda_debug_verts.csv\").write_text(_verts_csv(rows), encoding=\"utf-8\")",
+    "node": "Expr(value=Call(func=Attribute(value=BinOp(left=Name(id='tmp_path', ctx=Load()), op=Div(), right=Constant(value='bdda_debug_verts.csv')), attr='write_text', ctx=Load()), args=[Call(func=Name(id='_verts_csv', ctx=Load()), args=[Name(id='rows', ctx=Load())], keywords=[])], keywords=[keyword(arg='encoding', value=Constant(value='utf-8'))]))",
+    "context": "bdd18587a5a344106ae6471f5aee9976f63038b65788d027b83090ecd3c03a0a"
+  },
+  {
+    "path": "tests/test_kernel3d_geom.py",
+    "line": 200,
+    "function": "_g6_rot",
+    "rule": "closed-rounded-construction",
+    "source": "sum(c * c for c in q) ** 0.5",
+    "node": "BinOp(left=Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='c', ctx=Load())), generators=[comprehension(target=Name(id='c', ctx=Store()), iter=Name(id='q', ctx=Load()), ifs=[], is_async=0)])], keywords=[]), op=Pow(), right=Constant(value=0.5))",
+    "context": "6df74d6ab6b0b0b5918f28d701f68e189f54d0b5758471b7fb70d9ce3e2eb0a4"
+  },
+  {
+    "path": "tests/test_limit.py",
+    "line": 105,
+    "function": "_interlock_capacity",
+    "rule": "closed-rounded-call",
+    "source": "limit_load(cts, dead, live, dim=3, origin=(0.0, 0.0, 0.0), k=k)",
+    "node": "Call(func=Name(id='limit_load', ctx=Load()), args=[Name(id='cts', ctx=Load()), Name(id='dead', ctx=Load()), Name(id='live', ctx=Load())], keywords=[keyword(arg='dim', value=Constant(value=3)), keyword(arg='origin', value=Tuple(elts=[Constant(value=0.0), Constant(value=0.0), Constant(value=0.0)], ctx=Load())), keyword(arg='k', value=Name(id='k', ctx=Load()))])",
+    "context": "4e20cdd843f1b5bbccf06c8aa746a91f792dd76ddee4b90ab907a56847177c00"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 150,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-rounded-construction",
+    "source": "sum(v * v for v in live[:dim]) ** 0.5",
+    "node": "BinOp(left=Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(upper=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[]), op=Pow(), right=Constant(value=0.5))",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 151,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-rounded-construction",
+    "source": "sum(v * v for v in live[dim:]) ** 0.5",
+    "node": "BinOp(left=Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(lower=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[]), op=Pow(), right=Constant(value=0.5))",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 152,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-rounded-construction",
+    "source": "sum(v * v for v in ct.point) ** 0.5",
+    "node": "BinOp(left=Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Attribute(value=Name(id='ct', ctx=Load()), attr='point', ctx=Load()), ifs=[], is_async=0)])], keywords=[]), op=Pow(), right=Constant(value=0.5))",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_limit_scale.py",
+    "line": 58,
+    "function": "_capacity_ratio",
+    "rule": "closed-rounded-call",
+    "source": "limit_load(cts, dead, live, dim=3, origin=(0.0, 0.0, 0.0), k=k)",
+    "node": "Call(func=Name(id='limit_load', ctx=Load()), args=[Name(id='cts', ctx=Load()), Name(id='dead', ctx=Load()), Name(id='live', ctx=Load())], keywords=[keyword(arg='dim', value=Constant(value=3)), keyword(arg='origin', value=Tuple(elts=[Constant(value=0.0), Constant(value=0.0), Constant(value=0.0)], ctx=Load())), keyword(arg='k', value=Name(id='k', ctx=Load()))])",
+    "context": "e0eb459d10baf32f8f939d140be28c5e5f8150046d6cb5c364f283ffae0f41bc"
+  },
+  {
+    "path": "tests/test_limit_selfcheck.py",
+    "line": 90,
+    "function": "_utm_block",
+    "rule": "closed-rounded-call",
+    "source": "limit_load(cts, dead, live, dim=3, k=8)",
+    "node": "Call(func=Name(id='limit_load', ctx=Load()), args=[Name(id='cts', ctx=Load()), Name(id='dead', ctx=Load()), Name(id='live', ctx=Load())], keywords=[keyword(arg='dim', value=Constant(value=3)), keyword(arg='k', value=Constant(value=8))])",
+    "context": "79a136d5bb2e285e890739a951465182e882132c2769bbbfa61122ecab28ad6b"
+  },
+  {
+    "path": "tests/test_lp_certificates.py",
+    "line": 405,
+    "function": "_si_case.P",
+    "rule": "closed-rounded-call",
+    "source": "mv(R, p)",
+    "node": "Call(func=Name(id='mv', ctx=Load()), args=[Name(id='R', ctx=Load()), Name(id='p', ctx=Load())], keywords=[])",
+    "context": "03c56045480ec831e8d2c933ec1659a3d0a05b949c9fa2121e723564d1956bdb"
+  },
+  {
+    "path": "tests/test_m4_bdda_adapter.py",
+    "line": 63,
+    "function": "_assert_matches_independent_oracle",
+    "rule": "closed-rounded-call",
+    "source": "validate(rec)",
+    "node": "Expr(value=Call(func=Name(id='validate', ctx=Load()), args=[Name(id='rec', ctx=Load())], keywords=[]))",
+    "context": "f5bcdf096918b0954ba36926d32f9395407f80eeff1de36e374d170deed169ad"
+  },
+  {
+    "path": "tests/test_m4_bdda_shadow.py",
+    "line": 31,
+    "function": "_digest",
+    "rule": "closed-rounded-call",
+    "source": "hashlib.sha256(json.dumps(differences, sort_keys=True, separators=(\",\", \":\")).encode())",
+    "node": "Call(func=Attribute(value=Name(id='hashlib', ctx=Load()), attr='sha256', ctx=Load()), args=[Call(func=Attribute(value=Call(func=Attribute(value=Name(id='json', ctx=Load()), attr='dumps', ctx=Load()), args=[Name(id='differences', ctx=Load())], keywords=[keyword(arg='sort_keys', value=Constant(value=True)), keyword(arg='separators', value=Tuple(elts=[Constant(value=','), Constant(value=':')], ctx=Load()))]), attr='encode', ctx=Load()), args=[], keywords=[])], keywords=[])",
+    "context": "50b640c77532a575083734443d87c5932554704de31fd179981664ba7fa0ff0b"
+  },
+  {
+    "path": "tests/test_m4_bdda_shadow.py",
+    "line": 57,
+    "function": "_gate_case",
+    "rule": "closed-rounded-call",
+    "source": "_assert_baseline(case, actual)",
+    "node": "Expr(value=Call(func=Name(id='_assert_baseline', ctx=Load()), args=[Name(id='case', ctx=Load()), Name(id='actual', ctx=Load())], keywords=[]))",
+    "context": "44676d59a39566dceb2a4146f52ce74a43b3d87d44d758aff28ecfd26736cd4c"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 149,
+    "function": "_lipschitz_probe_points",
+    "rule": "closed-rounded-call",
+    "source": "cone_relint_direction(E.vertex_edge_dirs(vi))",
+    "node": "Call(func=Name(id='cone_relint_direction', ctx=Load()), args=[Call(func=Attribute(value=Name(id='E', ctx=Load()), attr='vertex_edge_dirs', ctx=Load()), args=[Name(id='vi', ctx=Load())], keywords=[])], keywords=[])",
+    "context": "3ae156bd4c13b807462911071ba9632b2e5893a7d6654636afe28821ea101f10"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 181,
+    "function": "_lipschitz_worst",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(nx, ny))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='nx', ctx=Load()), Name(id='ny', ctx=Load())], keywords=[])], keywords=[])",
+    "context": "91a17b127043bcae1cc62c88fe6456f0ac58209fce243540689ee53d5d3206f5"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 181,
+    "function": "_lipschitz_worst",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(x, y))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='x', ctx=Load()), Name(id='y', ctx=Load())], keywords=[])], keywords=[])",
+    "context": "91a17b127043bcae1cc62c88fe6456f0ac58209fce243540689ee53d5d3206f5"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 203,
+    "function": "_legacy_global_pairs",
+    "rule": "closed-rounded-call",
+    "source": "norm(sub(pts[i], pts[j]))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Subscript(value=Name(id='pts', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load()), Subscript(value=Name(id='pts', ctx=Load()), slice=Name(id='j', ctx=Load()), ctx=Load())], keywords=[])], keywords=[])",
+    "context": "1cf83d58a37887175a929af02c4aacde0dfa19e796c3efe61dedf4a2c2b8632c"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 211,
+    "function": "_lipschitz_setup",
+    "rule": "closed-rounded-call",
+    "source": "entrance_block_convex(A, B)",
+    "node": "Call(func=Name(id='entrance_block_convex', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "effc4733488d2445ca4832d9126b0ba6dcb5379acc65bb347c69c94e2aa1413f"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 212,
+    "function": "_lipschitz_setup",
+    "rule": "closed-rounded-call",
+    "source": "_lipschitz_probe_points(E, delta)",
+    "node": "Call(func=Name(id='_lipschitz_probe_points', ctx=Load()), args=[Name(id='E', ctx=Load()), Name(id='delta', ctx=Load())], keywords=[])",
+    "context": "effc4733488d2445ca4832d9126b0ba6dcb5379acc65bb347c69c94e2aa1413f"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 212,
+    "function": "_lipschitz_setup",
+    "rule": "closed-rounded-call",
+    "source": "_legacy_global_pairs(E, delta)",
+    "node": "Call(func=Name(id='_legacy_global_pairs', ctx=Load()), args=[Name(id='E', ctx=Load()), Name(id='delta', ctx=Load())], keywords=[])",
+    "context": "effc4733488d2445ca4832d9126b0ba6dcb5379acc65bb347c69c94e2aa1413f"
+  },
+  {
+    "path": "tests/test_perf_interlock.py",
+    "line": 67,
+    "function": "_assert_cache_does_not_cross_offsets",
+    "rule": "closed-rounded-call",
+    "source": "I._candidates(A, B, (0., 0., 0.), 1e-9, 1e-9)",
+    "node": "Call(func=Attribute(value=Name(id='I', ctx=Load()), attr='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Tuple(elts=[Constant(value=0.0), Constant(value=0.0), Constant(value=0.0)], ctx=Load()), Constant(value=1e-09), Constant(value=1e-09)], keywords=[])",
+    "context": "2777005d6695bb9bd09fc593edfa3a98a667cc6f979d7ac619f241fadcceabb2"
+  },
+  {
+    "path": "tests/test_perf_interlock.py",
+    "line": 69,
+    "function": "_assert_cache_does_not_cross_offsets",
+    "rule": "closed-rounded-call",
+    "source": "I._candidates_uncached(A, B, off, 1e-9, 1e-9)",
+    "node": "Call(func=Attribute(value=Name(id='I', ctx=Load()), attr='_candidates_uncached', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='off', ctx=Load()), Constant(value=1e-09), Constant(value=1e-09)], keywords=[])",
+    "context": "2777005d6695bb9bd09fc593edfa3a98a667cc6f979d7ac619f241fadcceabb2"
+  },
+  {
+    "path": "tests/test_perf_interlock.py",
+    "line": 71,
+    "function": "_assert_cache_does_not_cross_offsets",
+    "rule": "closed-rounded-call",
+    "source": "I._candidates(A, B, off, 1e-9, 1e-9)",
+    "node": "Call(func=Attribute(value=Name(id='I', ctx=Load()), attr='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='off', ctx=Load()), Constant(value=1e-09), Constant(value=1e-09)], keywords=[])",
+    "context": "2777005d6695bb9bd09fc593edfa3a98a667cc6f979d7ac619f241fadcceabb2"
+  },
+  {
+    "path": "tests/test_r11fix_static_flow.py",
+    "line": 34,
+    "function": "_assert_cone_rejected",
+    "rule": "closed-rounded-call",
+    "source": "scan(source, \"src/eab/kernel3d/covers3.py\")",
+    "node": "Call(func=Name(id='scan', ctx=Load()), args=[Name(id='source', ctx=Load()), Constant(value='src/eab/kernel3d/covers3.py')], keywords=[])",
+    "context": "ffe8ad1a567a91c33d20d5b7635a2d89cec3c41156b86ebdc3b493fd76adb7c8"
+  },
+  {
+    "path": "tests/test_r6fix_geom3.py",
+    "line": 31,
+    "function": "_assert_returned_view_isolation",
+    "rule": "closed-rounded-call",
+    "source": "G.exact_convex_view(p)",
+    "node": "Call(func=Attribute(value=Name(id='G', ctx=Load()), attr='exact_convex_view', ctx=Load()), args=[Name(id='p', ctx=Load())], keywords=[])",
+    "context": "59b0f025b307f1f780c03942f3310c0b7169cdb65930b0b1e3f124569bd8895c"
+  },
+  {
+    "path": "tests/test_r6fix_geom3.py",
+    "line": 35,
+    "function": "_assert_returned_view_isolation",
+    "rule": "closed-rounded-call",
+    "source": "G.exact_point_in_convex_polyhedron((0, 0, 0), p)",
+    "node": "Call(func=Attribute(value=Name(id='G', ctx=Load()), attr='exact_point_in_convex_polyhedron', ctx=Load()), args=[Tuple(elts=[Constant(value=0), Constant(value=0), Constant(value=0)], ctx=Load()), Name(id='p', ctx=Load())], keywords=[])",
+    "context": "59b0f025b307f1f780c03942f3310c0b7169cdb65930b0b1e3f124569bd8895c"
+  },
+  {
+    "path": "tests/test_r6fix_geom3.py",
+    "line": 36,
+    "function": "_assert_returned_view_isolation",
+    "rule": "closed-rounded-call",
+    "source": "G.exact_convex_overlap(p, G.box(half=(.5, .5, .5)))",
+    "node": "Call(func=Attribute(value=Name(id='G', ctx=Load()), attr='exact_convex_overlap', ctx=Load()), args=[Name(id='p', ctx=Load()), Call(func=Attribute(value=Name(id='G', ctx=Load()), attr='box', ctx=Load()), args=[], keywords=[keyword(arg='half', value=Tuple(elts=[Constant(value=0.5), Constant(value=0.5), Constant(value=0.5)], ctx=Load()))])], keywords=[])",
+    "context": "59b0f025b307f1f780c03942f3310c0b7169cdb65930b0b1e3f124569bd8895c"
+  },
+  {
+    "path": "tests/test_r6fix_geom3.py",
+    "line": 66,
+    "function": "_assert_face_hints_do_not_change_convex_membership",
+    "rule": "closed-rounded-call",
+    "source": "G.exact_point_in_convex_polyhedron((0, 0, 0), p)",
+    "node": "Call(func=Attribute(value=Name(id='G', ctx=Load()), attr='exact_point_in_convex_polyhedron', ctx=Load()), args=[Tuple(elts=[Constant(value=0), Constant(value=0), Constant(value=0)], ctx=Load()), Name(id='p', ctx=Load())], keywords=[])",
+    "context": "b114db0241a7e6d2f2873e613ef79d5008f4afbb9fa505b7d2e9dca4c1a29be8"
+  },
+  {
+    "path": "tests/test_r6fix_geom3.py",
+    "line": 67,
+    "function": "_assert_face_hints_do_not_change_convex_membership",
+    "rule": "closed-rounded-call",
+    "source": "membership_convex3(G.box(half=(.5, .5, .5)), p, (0, 0, 0))",
+    "node": "Call(func=Name(id='membership_convex3', ctx=Load()), args=[Call(func=Attribute(value=Name(id='G', ctx=Load()), attr='box', ctx=Load()), args=[], keywords=[keyword(arg='half', value=Tuple(elts=[Constant(value=0.5), Constant(value=0.5), Constant(value=0.5)], ctx=Load()))]), Name(id='p', ctx=Load()), Tuple(elts=[Constant(value=0), Constant(value=0), Constant(value=0)], ctx=Load())], keywords=[])",
+    "context": "b114db0241a7e6d2f2873e613ef79d5008f4afbb9fa505b7d2e9dca4c1a29be8"
+  },
+  {
+    "path": "tests/test_r9fix_construction_rounding.py",
+    "line": 29,
+    "function": "_certificate",
+    "rule": "closed-rounded-construction",
+    "source": "lower**power",
+    "node": "BinOp(left=Name(id='lower', ctx=Load()), op=Pow(), right=Name(id='power', ctx=Load()))",
+    "context": "3be3fdc6d1cd151f8052a864a411e39cf0cd679ccd39e6f203913331f110bddf"
+  },
+  {
+    "path": "tests/test_r9fix_construction_rounding.py",
+    "line": 32,
+    "function": "_certificate",
+    "rule": "closed-rounded-construction",
+    "source": "upper**power",
+    "node": "BinOp(left=Name(id='upper', ctx=Load()), op=Pow(), right=Name(id='power', ctx=Load()))",
+    "context": "3be3fdc6d1cd151f8052a864a411e39cf0cd679ccd39e6f203913331f110bddf"
+  },
+  {
+    "path": "tests/test_r9fix_g03_construction.py",
+    "line": 21,
+    "function": "_bad_witness_report",
+    "rule": "closed-rounded-call",
+    "source": "G.g0_distance_completeness3(box(), box(center=(3, 0, 0)), radius=0, samples=1, tol=0)",
+    "node": "Call(func=Attribute(value=Name(id='G', ctx=Load()), attr='g0_distance_completeness3', ctx=Load()), args=[Call(func=Name(id='box', ctx=Load()), args=[], keywords=[]), Call(func=Name(id='box', ctx=Load()), args=[], keywords=[keyword(arg='center', value=Tuple(elts=[Constant(value=3), Constant(value=0), Constant(value=0)], ctx=Load()))])], keywords=[keyword(arg='radius', value=Constant(value=0)), keyword(arg='samples', value=Constant(value=1)), keyword(arg='tol', value=Constant(value=0))])",
+    "context": "54ec0ecf46ea408f4f5ed2bca73f30eab80470ca3959d6d1d0b1e1f79a0bc2c4"
+  }
+]

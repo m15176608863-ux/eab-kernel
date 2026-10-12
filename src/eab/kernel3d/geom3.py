@@ -102,7 +102,7 @@ def angle_between(a: Vec3, b: Vec3) -> float:
     """
     a, b = _eg.vector(a), _eg.vector(b)
     c, d = _eg.cross(a, b), _eg.dot(a, b)
-    scale = max(abs(d), *map(abs, c))
+    scale = max(abs(d), *(abs(_mapped_value) for _mapped_value in c))
     if not scale:
         return 0.0
     sine = _eg.sqrt_rational(_eg.dot(c, c)/(scale*scale), allow_underflow=d <= 0)
@@ -141,9 +141,16 @@ class Polyhedron:
         signature = (tuple(tuple(p) for p in self.verts),
                      tuple(tuple(f) for f in self.faces))
         if signature != self._geometry_signature:
-            for name in ("_edges", "_vf", "_ef", "_edir", "_normals",
-                         "_face_noise", "_vedges", "_metrics", "_interior", "_convex_view"):
-                setattr(self, name, None)
+            self._edges = None
+            self._vf = None
+            self._ef = None
+            self._edir = None
+            self._normals = None
+            self._face_noise = None
+            self._vedges = None
+            self._metrics = None
+            self._interior = None
+            self._convex_view = None
             self._geometry_signature = signature
 
     # ---------------- 尺度 ----------------
@@ -350,7 +357,7 @@ class Polyhedron:
         Gate: test_g6g08_centroid_retains_cancellation_even_when_volume_is_representable.
         """
         volume6, moments = _mass_properties(tuple(self.verts), tuple(self.faces))
-        points = tuple(map(exact_vector, self.verts))
+        points = tuple(exact_vector(_mapped_value) for _mapped_value in self.verts)
         if not volume6:
             return tuple(_checked_scalar(sum(p[k] for p in points) / len(points)) for k in range(3))
         return tuple(_checked_scalar(points[0][k] + moments[k] / (4*volume6)) for k in range(3))
@@ -493,7 +500,7 @@ class Polyhedron:
 # ------------------------------------------------------------------ 面多边形内点（唯一实现）
 
 def _point_segment_distance(x: Vec3, a: Vec3, b: Vec3) -> float:
-    x, a, b = map(exact_vector, (x, a, b))
+    x, a, b = (exact_vector(_mapped_value) for _mapped_value in (x, a, b))
     return _eg.sqrt_rational(_eg.point_segment_distance_squared(x, a, b))
 
 
@@ -607,7 +614,7 @@ def _segment_closest_points(p1: Vec3, p2: Vec3, q1: Vec3, q2: Vec3) -> tuple[Vec
 
     Gate: test_r6fix_closest_points_do_not_drop_nonzero_segments.
     """
-    p1, p2, q1, q2 = map(exact_vector, (p1, p2, q1, q2))
+    p1, p2, q1, q2 = (exact_vector(_mapped_value) for _mapped_value in (p1, p2, q1, q2))
     zero, one = Fraction(0), Fraction(1)
     d1, d2, r = sub(p2, p1), sub(q2, q1), sub(p1, q1)
     a, e, f = dot(d1, d1), dot(d2, d2), dot(d2, r)
@@ -834,7 +841,7 @@ def _checked_scalar(value):
 @lru_cache(maxsize=1024)
 def _mass_properties(vertices, faces):
     """Six times signed volume and its relative first moment, on the actual surface."""
-    points = tuple(map(exact_vector, vertices))
+    points = tuple(exact_vector(_mapped_value) for _mapped_value in vertices)
     origin = points[0]
     relative = tuple(_eg.sub(p, origin) for p in points)
     volume6, moments = Fraction(0), (Fraction(0),)*3
@@ -890,9 +897,10 @@ def _surface_distance_edges(P):
 
 def _surfaces_intersect(triangles_a, triangles_b):
     """Exact triangle crossings, after exact per-triangle AABB rejection."""
-    bounds = lambda tri: tuple((min(p[k] for p in tri), max(p[k] for p in tri)) for k in range(3))
-    first = tuple((tri, bounds(tri)) for _, tri in triangles_a)
-    second = tuple((tri, bounds(tri)) for _, tri in triangles_b)
+    first = tuple((tri, tuple((min(p[k] for p in tri), max(p[k] for p in tri))
+                              for k in range(3))) for _, tri in triangles_a)
+    second = tuple((tri, tuple((min(p[k] for p in tri), max(p[k] for p in tri))
+                               for k in range(3))) for _, tri in triangles_b)
     for a, ba in first:
         for b, bb in second:
             if any(ha < lb or hb < la for (la, ha), (lb, hb) in zip(ba, bb)):
@@ -914,7 +922,7 @@ def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: boo
     returns that certificate without any float construction or coordinate floor.
     Gate: test_r6fix_brute_distance_does_not_subtract_rounded_global_projections.
     """
-    vertices = (tuple(map(exact_vector, A.verts)), tuple(map(exact_vector, B.verts)))
+    vertices = (tuple(exact_vector(_mapped_value) for _mapped_value in A.verts), tuple(exact_vector(_mapped_value) for _mapped_value in B.verts))
     triangles = (_eg.triangles(A), _eg.triangles(B))
     if _surfaces_intersect(*triangles):
         return Fraction(0) if squared else 0.0
@@ -1014,18 +1022,18 @@ def _quickhull_once(pts: list[Vec3], tol: float, skip: set[int]) -> tuple[Polyhe
         raise ValueError('need >= 4 non-degenerate points')
     v = [_eg.vector(p) for p in pts]
     i0 = min(cand,key=lambda i:v[i])
-    i1 = max(cand,key=lambda i:_eg.dot(_eg.sub(v[i],v[i0]),_eg.sub(v[i],v[i0])))
+    i1 = max((_eg.dot(_eg.sub(v[i],v[i0]),_eg.sub(v[i],v[i0])), -_rank_index, i) for _rank_index, i in enumerate(cand))[2]
     u = _eg.sub(v[i1],v[i0])
     if not any(u):
         raise ValueError('points are coincident')
     def off_line(i):
         n=_eg.cross(u,_eg.sub(v[i],v[i0]))
         return _eg.dot(n,n)
-    i2 = max(cand,key=off_line)
+    i2 = max((off_line(i), -_rank_index, i) for _rank_index, i in enumerate(cand))[2]
     if off_line(i2) == 0:
         raise ValueError('points are collinear')
     n=_eg.cross(u,_eg.sub(v[i2],v[i0]))
-    i3=max(cand,key=lambda i:abs(_eg.dot(n,_eg.sub(v[i],v[i0]))))
+    i3=max((abs(_eg.dot(n,_eg.sub(v[i],v[i0]))), -_rank_index, i) for _rank_index, i in enumerate(cand))[2]
     if _eg.dot(n,_eg.sub(v[i3],v[i0])) == 0:
         raise ValueError('points are coplanar')
     base=[i0,i1,i2,i3]

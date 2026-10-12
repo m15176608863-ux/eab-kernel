@@ -1,0 +1,352 @@
+"""G6L-01: a closed static subset rejects higher-order and dynamic dispatch.
+
+Oracle: Fraction KKT equations and exact squared binary64 midpoint cells,
+independent of eab geometry and construction primitives. Runtime mutants are
+compiled from the real cone function, not appended to its output. Other cases
+exercise default rejection, including a previously unknown user-defined HOF.
+"""
+from fractions import Fraction
+import importlib.util
+import inspect
+import math
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location("r12_static_gate", ROOT / "tools/check_exact_construction.py")
+gate = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(gate)
+
+CONE_MUTANTS = [
+    ("map_norm", "return tuple(map(norm_rational, [vector_rational(p, allow_underflow=True)]))[0], noise"),
+    ("map_sqrt", "return tuple(map(sqrt_rational, [scalar_rational(sum(x*x for x in p), allow_underflow=True)]))[0], noise"),
+    ("iter_callable", "root = next(iter([norm_rational]))\n    return root(vector_rational(p, allow_underflow=True)), noise"),
+    ("pop_callable", "box = [norm_rational]\n    root = box.pop()\n    return root(vector_rational(p, allow_underflow=True)), noise"),
+]
+
+
+def _assert_closed_rejection(scan, source, path, function, target_line):
+    issues = scan(source, path)
+    assert any(row[1] == target_line and row[2] == function and row[3].startswith("closed-") for row in issues), (
+        "G6L-01 closed-subset rejection assertion", path, function, target_line, issues)
+
+
+@pytest.mark.parametrize("label,body", CONE_MUTANTS, ids=[row[0] for row in CONE_MUTANTS])
+def test_l01_real_cone_higher_order_implants_change_answer_and_are_rejected(label, body):
+    import eab.kernel3d.covers3 as covers
+    from eab.kernel3d.geom3 import tetra
+
+    original = "return norm_rational(p), noise"
+    path = "src/eab/kernel3d/covers3.py"
+    source = (ROOT / path).read_text(encoding="utf-8")
+    assert source.count(original) == 1
+    namespace = dict(vars(covers))
+    function = inspect.getsource(covers.cone_intersection_margin)
+    exec(compile(function.replace(original, body), "<l01 actual cone implant>", "exec"), namespace)
+    u = math.ulp(0.0)
+    q = Fraction(1, 2**1074)
+    assert Fraction(u) == q
+    rows = ((-Fraction(1), Fraction(1), -q), (-q, -Fraction(1), Fraction(1)),
+            (Fraction(1), -q, -Fraction(1)))
+    projection = (-q / 3,) * 3
+    squared = q*q / 3
+    assert projection == tuple(sum(row[i] for row in rows) / 3 for i in range(3))
+    assert sum(x*x for x in projection) == squared
+    assert all(sum(x*y for x, y in zip(projection, row)) == squared for row in rows)
+    assert (q/2)**2 < squared < (3*q/2)**2
+    shape = tetra((0., 0., 0.), (1., -1., u), (u, 1., -1.), (-1., u, 1.))
+    assert covers.cone_intersection_margin(shape, 0, shape.reflected(), 0)[0] == u
+    mutant_answer = namespace["cone_intersection_margin"](shape, 0, shape.reflected(), 0)[0]
+    assert mutant_answer == 0.0 and mutant_answer != u, (label, mutant_answer, u)
+    mutated = source.replace(original, body)
+    target_line = next(i for i, line in enumerate(mutated.splitlines(), 1) if line.strip() == body.splitlines()[0].strip())
+    _assert_closed_rejection(gate.scan_text, mutated, path, "cone_intersection_margin", target_line)
+
+
+DYNAMIC_CASES = [
+    ("map_norm", "return tuple(map(norm_rational, [vector_rational(q)]))[0]"),
+    ("map_sqrt", "return tuple(map(sqrt_rational, [scalar_rational(q)]))[0]"),
+    ("iter_callable", "root = next(iter([norm_rational]))\n    return root(vector_rational(q))"),
+    ("pop_callable", "box = [norm_rational]\n    return box.pop()(vector_rational(q))"),
+    ("getattr", "root = getattr(construction, name)\n    return root(vector_rational(q))"),
+    ("eval", "root = eval('norm_rational')\n    return root(vector_rational(q))"),
+    ("exec", "exec('root = norm_rational')\n    return root(vector_rational(q))"),
+    ("globals", "return globals()['norm_rational'](vector_rational(q))"),
+    ("mutable_dict_callable", "box = {'root': norm_rational}\n    return box['root'](vector_rational(q))"),
+    ("mutable_list_callable", "box = [norm_rational]\n    return box[0](vector_rational(q))"),
+    ("partial", "from functools import partial\n    root = partial(norm_rational, vector_rational(q))\n    return root()"),
+    ("lambda_capture", "root = norm_rational\n    thunk = lambda: root(vector_rational(q))\n    return thunk()"),
+    ("lambda_parameter", "return (lambda root, v: root(v))(norm_rational, vector_rational(q))"),
+    ("methodcaller", "from operator import methodcaller\n    return methodcaller('__call__', vector_rational(q))(norm_rational)"),
+    ("unknown_import", "from not_a_reviewed_numeric_package import build as root\n    return root(q)"),
+    ("returned_callable", "return produce_root()(vector_rational(q))"),
+    ("callable_parameter", "return supplied_root(q)"),
+    ("custom_higher_order", "def never_seen_before_731(fn, value):\n        return fn(value)\n    return never_seen_before_731(norm_rational, q)"),
+]
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_numeric_probe.py", "tests/r12_oracle_helper.py"])
+@pytest.mark.parametrize("label,body", DYNAMIC_CASES, ids=[row[0] for row in DYNAMIC_CASES])
+def test_l01_unknown_higher_order_and_dynamic_forms_are_default_rejected(path, label, body):
+    source = "def bad(q, name, supplied_root):\n    " + body + "\n"
+    # The novel HOF is deliberately unrounded: rejection must follow from the
+    # unproved callable path, not from recognizing one old rounding signature.
+    issues = gate.scan_text(source, path)
+    assert any(row[2].startswith("bad") and row[3].startswith("closed-") for row in issues), (
+        "G6L-01 default-reject assertion", label, path, issues, source)
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_numeric_probe.py", "tests/r12_oracle_helper.py"])
+def test_l01_unproved_direct_helper_cannot_launder_rounded_arguments(path):
+    source = "def hide(value):\n    return value\ndef bad(q):\n    return norm_rational(hide(vector_rational(q)))\n"
+    issues = gate.scan_text(source, path)
+    assert any(row[2:4] == ("bad", "rounded-vector") for row in issues), (
+        "G6L-01 helper cannot launder rounded arguments", path, issues)
+
+
+@pytest.mark.parametrize("label,body", CONE_MUTANTS, ids=[row[0] for row in CONE_MUTANTS])
+def test_l01_disabling_closed_pass_trips_real_cone_rejection_assertion(label, body):
+    """Remove the scanner's admission check internally, never forge its output."""
+    scanner = ROOT / "tools/check_exact_construction.py"
+    scanner_source = scanner.read_text(encoding="utf-8")
+    key_step = "closed_subset_issues(text, path, analysis=analysis)"
+    assert scanner_source.count(key_step) == 1
+    # Roll back the complete default-denial layer, including the secondary
+    # intraprocedural refusal of unproved or rounded-argument ordinary calls.
+    # Keep all legacy provenance assertions, so this mutation tests the new
+    # admission guarantee rather than disabling the old dataflow detector.
+    mutant_scanner_source = scanner_source.replace(key_step, "[]")
+    for issue_step in ('self.issue(node, "closed-unproved-call")',
+                       'self.issue(node, "closed-rounded-call")'):
+        assert scanner_source.count(issue_step) == 1
+        mutant_scanner_source = mutant_scanner_source.replace(issue_step, "pass")
+    namespace = {"__file__": str(scanner), "__name__": "l01_closed_pass_rollback"}
+    exec(compile(mutant_scanner_source, "<l01 internal closed-pass rollback>", "exec"), namespace)
+    path = "src/eab/kernel3d/covers3.py"
+    source = (ROOT / path).read_text(encoding="utf-8")
+    original = "return norm_rational(p), noise"
+    assert source.count(original) == 1
+    source = source.replace(original, body)
+    target_line = next(i for i, line in enumerate(source.splitlines(), 1) if line.strip() == body.splitlines()[0].strip())
+    _assert_closed_rejection(gate.scan_text, source, path, "cone_intersection_margin", target_line)
+    with pytest.raises(AssertionError, match="G6L-01 closed-subset rejection assertion"):
+        _assert_closed_rejection(namespace["scan_text"], source, path, "cone_intersection_margin", target_line)
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_numeric_probe.py", "tests/r12_oracle_helper.py"])
+def test_l01_direct_helper_cannot_hide_its_own_rounded_return(path):
+    source = (
+        "from eab.construction import vector_rational, norm_rational\n"
+        "def construct_display_without_a_known_summary(value):\n"
+        "    return vector_rational(value, allow_underflow=True)\n"
+        "def bad(q):\n"
+        "    return norm_rational(construct_display_without_a_known_summary(q))\n"
+    )
+    issues = gate.scan_text(source, path)
+    assert any(row[2] == "bad" and (row[3].startswith("closed-") or row[3] == "rounded-vector")
+               for row in issues), ("G6L-01 unknown rounded return must not be proved safe", path, issues)
+
+
+UNANALYSED_SURFACES = [
+    ("unknown_math_member", "import math\ndef bad(q):\n    return math.never_reviewed_member_731(q)\n"),
+    ("unknown_construction_member", "import eab.construction as c\ndef bad(q):\n    return c.never_reviewed_member_731(q)\n"),
+    ("dynamic_class_base", "class Bad(never_seen_before_721()):\n    pass\n"),
+    ("dynamic_metaclass", "class Bad(metaclass=never_seen_before_721()):\n    pass\n"),
+    ("dynamic_arg_annotation", "def bad(q: never_seen_before_721()):\n    return q\n"),
+    ("dynamic_return_annotation", "def bad(q) -> never_seen_before_721():\n    return q\n"),
+    ("unknown_receiver_get", "def bad(obj,q):\n    return norm_rational(obj.get(q))\n"),
+    ("unknown_receiver_copy", "def bad(obj,q):\n    return norm_rational(obj.copy())\n"),
+    ("unknown_receiver_values", "def bad(obj,q):\n    return norm_rational(obj.values())\n"),
+    ("unknown_sorted_key", "def bad(q,key):\n    return sorted(q, key=key)\n"),
+]
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_numeric_probe.py", "tests/r12_oracle_helper.py"])
+@pytest.mark.parametrize("label,source", UNANALYSED_SURFACES, ids=[row[0] for row in UNANALYSED_SURFACES])
+def test_l01_every_unanalysed_call_surface_is_default_rejected(path, label, source):
+    issues = gate.scan_text(source, path)
+    assert any(row[3].startswith("closed-") for row in issues), (
+        "G6L-01 unanalysed call surface must be rejected", label, path, issues)
+
+
+def test_l01_baseline_waiver_does_not_admit_new_higher_order_cone_source():
+    path = "src/eab/kernel3d/covers3.py"
+    source = (ROOT / path).read_text(encoding="utf-8")
+    original = "return norm_rational(p), noise"
+    body = (
+        "def never_reviewed_dispatch_821(operation, data):\n"
+        "        return operation(data)\n"
+        "    return never_reviewed_dispatch_821(norm_rational, p), noise"
+    )
+    assert source.count(original) == 1
+    mutant = source.replace(original, body)
+    target_line = next(i for i, line in enumerate(mutant.splitlines(), 1)
+                       if line.strip() == "return operation(data)")
+    issues = gate.scan_text(mutant, path)
+    assert any(row[1:4] == (target_line, "cone_intersection_margin.never_reviewed_dispatch_821", "closed-unknown-call")
+               for row in issues), ("G6L-01 baseline waiver must not expand to a new callback", issues)
+
+
+def test_l01_full_repository_copy_rejects_real_map_implant_and_changed_dependency(tmp_path):
+    """Historical nodeid retained: dependency edits now preserve local reviews."""
+    import shutil
+
+    copy_root = tmp_path / "closed_repository_copy"
+    for folder in ("src", "tests", "tools"):
+        shutil.copytree(ROOT / folder, copy_root / folder)
+    path = "src/eab/kernel3d/covers3.py"
+    target = copy_root / path
+    original_bytes = target.read_bytes()
+    source = original_bytes.decode("utf-8")
+    # The copy has exactly the reviewed inputs; no policy refresh is allowed.
+    # A fully proved cone needs no waiver after R12FIXb, so do not require one.
+    baseline_approved = gate._subset.approved_sites(source, path, copy_root)
+    baseline_contexts = gate._subset.site_contexts(source)
+    original = "return norm_rational(p), noise"
+    assert source.count(original) == 1
+    body = CONE_MUTANTS[0][1]
+    mutant = source.replace(original, body)
+    target.write_bytes(mutant.encode("utf-8"))
+    target_line = next(i for i, line in enumerate(mutant.splitlines(), 1)
+                       if line.strip() == body.strip())
+    issues = gate.scan_repository(copy_root)
+    assert any(row[0] == path and row[1] == target_line
+               and row[2] == "cone_intersection_margin" and row[3].startswith("closed-")
+               for row in issues), ("G6L-01 full-repository map implant assertion", target_line, issues)
+    mutant_approved = gate._subset.approved_sites(mutant, path, copy_root)
+    assert not any(row[0] == "cone_intersection_margin" for row in mutant_approved), (
+        "G6L-01 changed function must invalidate its reviewed sites")
+    assert {row for row in mutant_approved if row[0] != "cone_intersection_margin"} == {
+        row for row in baseline_approved if row[0] != "cone_intersection_margin"
+    }, "R12FIXb another function's reviewed sites must remain valid"
+    mutant_contexts = gate._subset.site_contexts(mutant)
+    assert mutant_contexts["cone_intersection_margin"] != baseline_contexts["cone_intersection_margin"]
+    target.write_bytes(original_bytes)
+    assert gate._subset.approved_sites(source, path, copy_root) == baseline_approved
+    helper = copy_root / "tests/construction_oracle.py"
+    helper_original = helper.read_bytes()
+    helper.write_bytes(helper_original + b"\nR12_DEPENDENCY_MARKER = 731\n")
+    assert gate._subset.approved_sites(source, path, copy_root) == baseline_approved, (
+        "R12FIXb unrelated helper edit must preserve reviewed sites")
+    helper.write_bytes(helper_original)
+    assert gate._subset.approved_sites(source, path, copy_root) == baseline_approved
+    local_tool = copy_root / "tools/osteomorphic.py"
+    local_tool.write_bytes(local_tool.read_bytes() + b"\nR12_TOOL_MARKER = 732\n")
+    assert gate._subset.approved_sites(source, path, copy_root) == baseline_approved, (
+        "R12FIXb unrelated tool edit must preserve reviewed sites")
+
+
+@pytest.mark.parametrize("name", ["abs", "tuple", "get", "copy", "values", "items", "Fraction", "from_float"])
+def test_l01_local_intrinsic_shadow_cannot_launder_rounded_return(name):
+    """A lexical local definition is not the builtin/passthrough of its spelling."""
+    source = (
+        "from eab.construction import vector_rational, norm_rational\n"
+        f"def {name}(p):\n"
+        "    return vector_rational(p, allow_underflow=True)\n"
+        "def bad(p):\n"
+        f"    return norm_rational({name}(p))\n"
+    )
+    issues = gate.scan_text(source, "src/eab/r12_shadow_intrinsic.py")
+    assert any(row[3] == "closed-shadowed-intrinsic" for row in issues), (
+        "G6L-01 local intrinsic shadow must not acquire a trusted return summary", name, issues)
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_numeric_probe.py", "tests/r12_oracle_helper.py"])
+def test_l01_rounded_argument_cannot_hide_root_inside_a_callee(path):
+    """Unknown return taint alone cannot protect a root inside the callee."""
+    source = (
+        "from eab.construction import vector_rational, norm_rational\n"
+        "def finish(p):\n"
+        "    return norm_rational(p)\n"
+        "def bad(q):\n"
+        "    return finish(vector_rational(q, allow_underflow=True))\n"
+    )
+    issues = gate.scan_text(source, path)
+    assert any(row[2] == "bad" and row[3] in {"closed-unproved-call", "closed-rounded-call"}
+               for row in issues), (
+        "G6L-01 rounded argument must not enter an unproved callee", path, issues)
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_annotation_probe.py", "tests/r12_oracle_helper.py"])
+@pytest.mark.parametrize("mechanism", ["module_annotation", "function_annotation", "function_globals", "class_dict", "function_defaults", "function_kwdefaults", "generator_frame", "exception_args"])
+def test_l01_runtime_annotation_and_reflection_cannot_hide_rounding(path, mechanism):
+    """Executed metadata can transport rounded values, not merely type names."""
+    prefix = (
+        "from fractions import Fraction\n"
+        "from eab.construction import vector_rational, norm_rational\n"
+    )
+    rounded = "vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True)"
+    forms = {
+        "module_annotation": f'marker: {rounded}\ndef bad():\n    return norm_rational(__annotations__["marker"])\n',
+        "function_annotation": f'def marker(x: {rounded}):\n    pass\ndef bad():\n    return norm_rational(marker.__annotations__["x"])\n',
+        "function_globals": f'def marker():\n    pass\nleak = {rounded}\ndef bad():\n    return norm_rational(marker.__globals__["leak"])\n',
+        "class_dict": f'class Holder:\n    leak = {rounded}\ndef bad():\n    return norm_rational(Holder.__dict__["leak"])\n',
+        "function_defaults": f'def carrier(q={rounded}):\n    pass\ndef bad():\n    return norm_rational(carrier.__defaults__[0])\n',
+        "function_kwdefaults": f'def carrier(*, q={rounded}):\n    pass\ndef bad():\n    return norm_rational(carrier.__kwdefaults__["q"])\n',
+        "generator_frame": f'def bad():\n    g = (None for p in [{rounded}])\n    next(g)\n    return norm_rational(g.gi_frame.f_locals["p"])\n',
+        "exception_args": f'def bad():\n    carrier = ValueError({rounded})\n    return norm_rational(carrier.args[0])\n',
+    }
+    source = prefix + forms[mechanism]
+    namespace = {}
+    exec(compile(source, "<l01 executed annotation/reflection>", "exec", dont_inherit=True), namespace)
+    # Independent midpoint oracle: two half-subnormal components have a norm
+    # strictly above the zero/min-subnormal midpoint, yet both pre-round to zero.
+    u = math.ulp(0.0)
+    q = Fraction(1, 2**1075)
+    squared = 2*q*q
+    assert (Fraction(u)/2)**2 < squared < (3*Fraction(u)/2)**2
+    assert namespace["bad"]() == 0.0 and u != 0.0
+    issues = gate.scan_text(source, path)
+    assert any(row[3] in {"closed-annotation-call", "closed-runtime-reflection", "closed-data-attribute"} for row in issues), (
+        "G6L-01 executed metadata must not hide early rounding", mechanism, path, issues)
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_format_probe.py", "tests/r12_oracle_helper.py"])
+@pytest.mark.parametrize("formatting", ['"%g" % x', 'f"{x:.0f}"'])
+def test_l01_numeric_formatting_is_not_a_proved_exact_constructor(path, formatting):
+    """String formatting can construct zero before Fraction reparses it."""
+    source = (
+        "from fractions import Fraction\n"
+        "from eab.construction import norm_rational\n"
+        "def bad():\n"
+        "    q = (Fraction(1, 2**1075), Fraction(1, 2**1075))\n"
+        f"    return norm_rational(tuple(Fraction({formatting}) for x in q))\n"
+    )
+    namespace = {}
+    exec(compile(source, "<l01 numeric formatting>", "exec", dont_inherit=True), namespace)
+    u = math.ulp(0.0)
+    q = Fraction(1, 2**1075)
+    assert (Fraction(u)/2)**2 < 2*q*q < (3*Fraction(u)/2)**2
+    assert namespace["bad"]() == 0.0 and u != 0.0
+    issues = gate.scan_text(source, path)
+    assert any(row[3] in {"closed-modulo", "closed-syntax", "closed-formatting"} for row in issues), (
+        "G6L-01 formatted numeric data must not be silently certified", formatting, path, issues)
+
+
+@pytest.mark.parametrize("path", ["src/eab/r12_arithmetic_probe.py", "tests/r12_oracle_helper.py"])
+@pytest.mark.parametrize("mechanism", ["int_division", "negative_power", "mixed_literal", "mixed_parameter", "sum_float_element", "sum_float_start"])
+def test_l01_implicit_binary64_arithmetic_requires_type_proof(path, mechanism):
+    """A closed subset cannot silently admit builtin mixed-type construction."""
+    prefix = (
+        "from fractions import Fraction\n"
+        "from eab.construction import norm_rational\n"
+    )
+    forms = {
+        "int_division": "def bad():\n    return norm_rational((1 / 2**1075, 1 / 2**1075))\n",
+        "negative_power": "def bad():\n    return norm_rational((2**-1075, 2**-1075))\n",
+        "mixed_literal": "def bad():\n    q = (Fraction(1, 2**1075), Fraction(1, 2**1075))\n    return norm_rational(tuple(x*1.0 for x in q))\n",
+        "mixed_parameter": "def bad(scale=1.0):\n    q = (Fraction(1, 2**1075), Fraction(1, 2**1075))\n    return norm_rational(tuple(x*scale for x in q))\n",
+        "sum_float_element": "def bad():\n    tiny = Fraction(1, 2**1075)\n    x = sum((tiny, 0.0))\n    return norm_rational((x, x))\n",
+        "sum_float_start": "def bad():\n    tiny = Fraction(1, 2**1075)\n    x = sum((tiny,), 0.0)\n    return norm_rational((x, x))\n",
+    }
+    source = prefix + forms[mechanism]
+    namespace = {}
+    exec(compile(source, "<l01 implicit builtin construction>", "exec", dont_inherit=True), namespace)
+    u = math.ulp(0.0)
+    q = Fraction(1, 2**1075)
+    assert (Fraction(u)/2)**2 < 2*q*q < (3*Fraction(u)/2)**2
+    assert namespace["bad"]() == 0.0 and u != 0.0
+    issues = gate.scan_text(source, path)
+    assert any(row[3] in {"closed-unproved-arithmetic", "closed-reduction"} for row in issues), (
+        "G6L-01 implicit binary64 arithmetic must not be silently certified", mechanism, path, issues)

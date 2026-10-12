@@ -35,6 +35,6 @@ def canonical_view(vertices, faces):
 
 def assert_raw_coordinate_view(actual, expected):
     assert tuple(actual.verts)==expected.verts, "raw-coordinate convex view lost or reordered extreme vertices"
-    assert tuple(map(frozenset,actual.faces))==tuple(map(frozenset,expected.faces)), "raw-coordinate convex view changed source face numbering"
+    assert tuple(frozenset(_mapped_value) for _mapped_value in actual.faces)==tuple(frozenset(_mapped_value) for _mapped_value in expected.faces), "raw-coordinate convex view changed source face numbering"
     assert actual.source_vertices==expected.source_vertices, "raw-coordinate source-vertex map"
     assert actual.source_faces==expected.source_faces, "raw-coordinate source-face map"

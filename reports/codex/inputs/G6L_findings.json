@@ -1,0 +1,247 @@
+{
+  "work_order": "WO-G6L",
+  "review_date_local": "2026-10-12",
+  "head": "0ce65a44c9c26d99411cee68d7300e7b5521bb40",
+  "confirmed_counts": {
+    "critical": 0,
+    "major": 1,
+    "minor": 0
+  },
+  "m0_exit": {
+    "criterion": "0 critical / 0 major",
+    "reviewer_criterion_met": false,
+    "owner_historical_exit_decision_not_modified": true
+  },
+  "findings": [
+    {
+      "id": "G6L-01",
+      "severity": "major",
+      "file": "tools/check_exact_construction.py",
+      "line": 356,
+      "file_line": "tools/check_exact_construction.py:356-387",
+      "summary": "已知 builtin map/iter/list.pop 可绕过构造门的舍入与 callable 来源，真实 cone 内先舍入再求根/范数仍报零违例。",
+      "failure_scenario": "给原 cone_intersection_margin 的四面体顶点 (0,0,0),(1,-1,u),(u,1,-1),(-1,u,1)，u=2**-1074，B=A.reflected()，ia=ib=0。未变异生产返回 u；独立 Fraction KKT 与平方中点核真值为 u。把真实函数末行改为 tuple(map(norm_rational,[vector_rational(p,allow_underflow=True)]))[0]（或 map sqrt、next(iter([norm_rational]))、list.pop callable）会返回0.0，但完整 covers3 源文本 scan_text 的 issues=[]；只改 map 的完整 src/tests 副本 scan_repository 仍零违例。",
+      "how_to_reproduce": "$env:PYTHONDONTWRITEBYTECODE=\"1\"; python -X utf8 review/repro/numeric_static_higher_order.py; python -X utf8 review/repro/numeric_static_repository_copy.py",
+      "repro_script": "review/repro/numeric_static_higher_order.py",
+      "repository_scan_script": "review/repro/numeric_static_repository_copy.py",
+      "suggested_fix": "为 builtin map 实现 mapped callable 的根/范数调用参数核验，而非只识别 float；为已知 iter 和本地容器 pop 保守保留元素的 rounding/callable provenance，或遇已知但不支持的高阶/元素返回形态时响亮拒绝。补穿过真实 cone 被测路径的四种变异门。无须任意反射/未知跨过程返回的全Python证明。",
+      "verified_output": {
+        "confirmed": true,
+        "results": [
+          {
+            "case": "map_norm",
+            "baseline": "5e-324",
+            "expected_by_independent_KKT_and_midpoints": "5e-324",
+            "mutant": "0.0",
+            "gate_issues": [],
+            "body": "return tuple(map(norm_rational, [vector_rational(p, allow_underflow=True)]))[0], noise"
+          },
+          {
+            "case": "map_sqrt",
+            "baseline": "5e-324",
+            "expected_by_independent_KKT_and_midpoints": "5e-324",
+            "mutant": "0.0",
+            "gate_issues": [],
+            "body": "return tuple(map(sqrt_rational, [scalar_rational(sum(x*x for x in p), allow_underflow=True)]))[0], noise"
+          },
+          {
+            "case": "iter_callable",
+            "baseline": "5e-324",
+            "expected_by_independent_KKT_and_midpoints": "5e-324",
+            "mutant": "0.0",
+            "gate_issues": [],
+            "body": "root = next(iter([norm_rational]))\n    return root(vector_rational(p, allow_underflow=True)), noise"
+          },
+          {
+            "case": "pop_callable",
+            "baseline": "5e-324",
+            "expected_by_independent_KKT_and_midpoints": "5e-324",
+            "mutant": "0.0",
+            "gate_issues": [],
+            "body": "box = [norm_rational]\n    root = box.pop()\n    return root(vector_rational(p, allow_underflow=True)), noise"
+          }
+        ],
+        "tracked_sha256_before": "23da74c34f963b5b12559bf9b3eba91687d6fd3f07334004e191200501b164dc",
+        "tracked_sha256_after": "23da74c34f963b5b12559bf9b3eba91687d6fd3f07334004e191200501b164dc"
+      },
+      "repository_verified_output": {
+        "whole_repository_static_scan_copy": "D:\\eab-wt\\g6l\\review\\copies\\numeric_static_map",
+        "gate_issues": [],
+        "python_file_count": 195,
+        "changed_copy_file": "src\\eab\\kernel3d\\covers3.py",
+        "original_tracked_source_unchanged": true
+      },
+      "classification_boundary": "门无牙/核心静态承诺漏网的 major；当前未变异生产 cone 仍返回正确 u，不计生产 critical。四种同根因合并一条；未计 late-lambda/reduce（涉及已经限定的跨过程边界）。",
+      "conclusion": "已知 builtin map/iter/list.pop 可绕过构造门的舍入与 callable 来源，真实 cone 内先舍入再求根/范数仍报零违例。",
+      "root_independently_reproduced": true,
+      "root_verification_logs": [
+        "review/logs/root_verify_numeric_static_higher_order.log",
+        "review/logs/root_verify_numeric_static_repository_copy.log"
+      ]
+    }
+  ],
+  "full_suite": {
+    "mode": "serial pytest (no xdist)",
+    "summary": "11256 passed in 1460.86s (0:24:20)",
+    "passed": 11256,
+    "pytest_elapsed_seconds": 1460.86,
+    "wall_elapsed_seconds": 1473.3085719,
+    "exit_code": 0,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python -X utf8 -m pytest -q -p no:cacheprovider tests --basetemp=D:/eab-wt/g6l/review/tmp/fullsuite",
+    "shared_machine_with_parallel_audit": true,
+    "log": "review/logs/fullsuite_utf8.log"
+  },
+  "scope_verification": {
+    "head": "0ce65a44c9c26d99411cee68d7300e7b5521bb40",
+    "expected_head": "0ce65a44c9c26d99411cee68d7300e7b5521bb40",
+    "head_unchanged": true,
+    "tracked_files_before": 3375,
+    "tracked_files_after": 3375,
+    "changed_tracked_bytes": [],
+    "new_tracked_paths": [],
+    "unchanged": true,
+    "outside_review_status": [],
+    "status_line_count": 1114,
+    "status_command": "git status --porcelain=v1 --untracked-files=all",
+    "git_write_operations": [],
+    "write_scope": "review/ only",
+    "verification_time_local": "2026-10-12T21:01:16.991042"
+  },
+  "regression_replay": {
+    "g6k_original_classes": 2,
+    "g6e_original_script_ids": [
+      7,
+      9,
+      11,
+      20,
+      21,
+      22,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      34,
+      36,
+      37,
+      38,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45
+    ],
+    "g6e_equivalent_numeric_ids": [
+      9,
+      11,
+      20,
+      21,
+      22,
+      23,
+      38,
+      45,
+      47
+    ],
+    "unique_g6e_ids": [
+      7,
+      9,
+      11,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      34,
+      36,
+      37,
+      38,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      47
+    ],
+    "unique_g6e_count": 26,
+    "raw_total": 50,
+    "unreplayed_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      32,
+      33,
+      35,
+      39,
+      46,
+      48,
+      49,
+      50
+    ],
+    "g6e40_hull_anomalies_not_independently_resolved": true
+  },
+  "m4a": {
+    "confirmed_counts": {
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "cases": 15,
+    "frames": 45,
+    "legacy_records": 2538,
+    "unique_primary_records": 2529,
+    "exact_aliases": 696,
+    "nonzero_alias_merges": 0,
+    "window_monotonicity_comparisons": 450,
+    "unclassified": 0,
+    "scope": "frozen three-step offline detection; not online/lock/slip/displacement/assembly proof",
+    "complete_gate_unknown_category_and_same_counts_wrong_key_mutants_killed": true
+  },
+  "unconfirmed": [
+    {
+      "key": "g6e40_hull_anomaly",
+      "summary": "原脚本不再NameError；先float做差后的3条hull_anomaly未独立核完，不计数。"
+    },
+    {
+      "key": "mechanism_power_float_view",
+      "summary": "精确机构power=0、float helper约2.808e-17；未确认helper承诺读证书，不计数。"
+    },
+    {
+      "key": "unsupported_crossprocedure_static_forms",
+      "summary": "late-lambda/reduce探索不计，已声明跨过程边界；确认项仅known builtin/局部容器。"
+    }
+  ],
+  "coverage_artifacts": [
+    "review/ROOT_scope_notes.md",
+    "review/source_coverage.json",
+    "review/numeric/coverage.json",
+    "review/geometry/coverage.json",
+    "review/m4/coverage.json"
+  ],
+  "finite_review_not_correctness_proof": true,
+  "terminator": "G6L_DONE critical=0 major=1 minor=0"
+}

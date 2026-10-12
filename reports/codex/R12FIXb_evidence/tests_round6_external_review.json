@@ -1,0 +1,781 @@
+[
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 362,
+    "function": "_sub3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] - b[0]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load()))",
+    "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点直接对 float 坐标/已算见证作分量差，确实可能先舍入；结果进入 _seg_seg_dist 的 dot 后 **0.5，也用于窗口点面距离。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "9a82abc44966f34d97389af7cc1bd79fb7066a96c892277b29ba84d6f86c594a",
+    "reviewed_scope_lines": [
+      361,
+      362
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 362,
+    "function": "_sub3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[1] - b[1]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))",
+    "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点直接对 float 坐标/已算见证作分量差，确实可能先舍入；结果进入 _seg_seg_dist 的 dot 后 **0.5，也用于窗口点面距离。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "9a82abc44966f34d97389af7cc1bd79fb7066a96c892277b29ba84d6f86c594a",
+    "reviewed_scope_lines": [
+      361,
+      362
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 362,
+    "function": "_sub3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[2] - b[2]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load()))",
+    "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点直接对 float 坐标/已算见证作分量差，确实可能先舍入；结果进入 _seg_seg_dist 的 dot 后 **0.5，也用于窗口点面距离。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "9a82abc44966f34d97389af7cc1bd79fb7066a96c892277b29ba84d6f86c594a",
+    "reviewed_scope_lines": [
+      361,
+      362
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] * b[0] + a[1] * b[1] + a[2] * b[2]",
+    "node": "BinOp(left=BinOp(left=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load())), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load())))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+    "reviewed_scope_lines": [
+      365,
+      366
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] * b[0] + a[1] * b[1]",
+    "node": "BinOp(left=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load())), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load())))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+    "reviewed_scope_lines": [
+      365,
+      366
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] * b[0]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load()))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+    "reviewed_scope_lines": [
+      365,
+      366
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[1] * b[1]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+    "reviewed_scope_lines": [
+      365,
+      366
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[2] * b[2]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load()))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+    "reviewed_scope_lines": [
+      365,
+      366
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 378,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "f / e",
+    "node": "BinOp(left=Name(id='f', ctx=Load()), op=Div(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 389,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "-c / a",
+    "node": "BinOp(left=UnaryOp(op=USub(), operand=Name(id='c', ctx=Load())), op=Div(), right=Name(id='a', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 385,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a * e - b * b",
+    "node": "BinOp(left=BinOp(left=Name(id='a', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='b', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 385,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a * e",
+    "node": "BinOp(left=Name(id='a', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 385,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * b",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='b', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "(b * f - c * e) / den",
+    "node": "BinOp(left=BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))), op=Div(), right=Name(id='den', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * f - c * e",
+    "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * f",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * e",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 387,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "(b * s + f) / e",
+    "node": "BinOp(left=BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())), op=Add(), right=Name(id='f', ctx=Load())), op=Div(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 387,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * s + f",
+    "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())), op=Add(), right=Name(id='f', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 387,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * s",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 391,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "(b - c) / a",
+    "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Sub(), right=Name(id='c', ctx=Load())), op=Div(), right=Name(id='a', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 391,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b - c",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Sub(), right=Name(id='c', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p1[0] + d1[0] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d1[0] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p1[1] + d1[1] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d1[1] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p1[2] + d1[2] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d1[2] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p2[0] + d2[0] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d2[0] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p2[1] + d2[1] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d2[1] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p2[2] + d2[2] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d2[2] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+    "disposition": "legacy_approximate_oracle",
+    "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+    "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+    "reviewed_scope_lines": [
+      369,
+      395
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_kernel3d_geom.py",
+    "line": 200,
+    "function": "_g6_rot",
+    "rule": "closed-reduction",
+    "source": "sum(c * c for c in q)",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='c', ctx=Load())), generators=[comprehension(target=Name(id='c', ctx=Store()), iter=Name(id='q', ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "6df74d6ab6b0b0b5918f28d701f68e189f54d0b5758471b7fb70d9ce3e2eb0a4",
+    "disposition": "given_input_fixture_boundary",
+    "reason": "高斯 float 四元数先 c*c 与 sum，再 **0.5 和除法单位化，真实先舍入。此 helper 只生成测试给定姿态矩阵；_placed_exact 会精确提升已存储矩阵而不是恢复理想旋转，独立 Fraction hull 证书检查最终给定坐标。不能称随机矩阵精确正交或开方无舍入。",
+    "recommended_action": "若保留此生成器，只能说明近似随机姿态输入角色并保留最终坐标的独立证书；不要把给定输入例外推广到生产 normal/norm 构造。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "0bee320b47abb74a3375521f5b3ba8fd1a90028c1abd7317477946b152ff76f2",
+    "reviewed_scope_lines": [
+      197,
+      204
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_kernel3d_geom.py",
+    "line": 200,
+    "function": "_g6_rot",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * c",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='c', ctx=Load()))",
+    "context": "6df74d6ab6b0b0b5918f28d701f68e189f54d0b5758471b7fb70d9ce3e2eb0a4",
+    "disposition": "given_input_fixture_boundary",
+    "reason": "高斯 float 四元数先 c*c 与 sum，再 **0.5 和除法单位化，真实先舍入。此 helper 只生成测试给定姿态矩阵；_placed_exact 会精确提升已存储矩阵而不是恢复理想旋转，独立 Fraction hull 证书检查最终给定坐标。不能称随机矩阵精确正交或开方无舍入。",
+    "recommended_action": "若保留此生成器，只能说明近似随机姿态输入角色并保留最终坐标的独立证书；不要把给定输入例外推广到生产 normal/norm 构造。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "0bee320b47abb74a3375521f5b3ba8fd1a90028c1abd7317477946b152ff76f2",
+    "reviewed_scope_lines": [
+      197,
+      204
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 150,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-reduction",
+    "source": "sum(v * v for v in live[:dim])",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(upper=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+    "disposition": "bounded_legacy_diagnostic",
+    "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+    "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+    "reviewed_scope_lines": [
+      146,
+      162
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 152,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-unproved-arithmetic",
+    "source": "v * v",
+    "node": "BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load()))",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+    "disposition": "bounded_legacy_diagnostic",
+    "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+    "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+    "reviewed_scope_lines": [
+      146,
+      162
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 151,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-reduction",
+    "source": "sum(v * v for v in live[dim:])",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(lower=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+    "disposition": "bounded_legacy_diagnostic",
+    "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+    "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+    "reviewed_scope_lines": [
+      146,
+      162
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 152,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-reduction",
+    "source": "sum(v * v for v in ct.point)",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Attribute(value=Name(id='ct', ctx=Load()), attr='point', ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+    "disposition": "bounded_legacy_diagnostic",
+    "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+    "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+    "reviewed_scope_lines": [
+      146,
+      162
+    ],
+    "raw_node_still_in_scope": true
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 152,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-data-attribute",
+    "source": "ct.point",
+    "node": "Attribute(value=Name(id='ct', ctx=Load()), attr='point', ctx=Load())",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+    "disposition": "bounded_legacy_diagnostic",
+    "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+    "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+    "waiver_approved": false,
+    "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+    "reviewed_scope_lines": [
+      146,
+      162
+    ],
+    "raw_node_still_in_scope": true
+  }
+]

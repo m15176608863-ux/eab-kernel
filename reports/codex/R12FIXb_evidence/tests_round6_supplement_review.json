@@ -1,0 +1,1811 @@
+{
+  "input": "round6_unreviewed_sites.json",
+  "input_sha256": "29e70917848e4444bcdcbea97cae602a80ba3626ba099c786cf1a333cdb1de84",
+  "review_kind": "source-context review only; NOT waiver approval",
+  "reviewed_sites": 94,
+  "reviewed_functions": 21,
+  "category_counts": {
+    "legacy_approximate_oracle": 34,
+    "test_execution_legacy_contact_window": 2,
+    "given_input_fixture_boundary": 44,
+    "direct_fixture_dispatch_with_rounded_inputs": 4,
+    "bounded_legacy_diagnostic": 5,
+    "test_execution_direct_api": 1,
+    "legacy_approximate_diagnostic": 4
+  },
+  "all_raw_keys_covered_once": true,
+  "waiver_approvals": 0,
+  "limits": [
+    "固定采样输入、近似数值诊断、被测 API 执行与精确 oracle 必须区分；此文件不修改 policy。",
+    "真实 float 差/Gram/见证经根或范数的站点如实保留为遗留，不声明无先舍入。",
+    "本审核针对 round6 当前源码快照；后续任何源码修改须重新匹配 AST 与所在作用域，不可整体重新批准。"
+  ],
+  "sites": [
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 362,
+      "function": "_sub3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[0] - b[0]",
+      "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load()))",
+      "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点直接对 float 坐标/已算见证作分量差，确实可能先舍入；结果进入 _seg_seg_dist 的 dot 后 **0.5，也用于窗口点面距离。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "9a82abc44966f34d97389af7cc1bd79fb7066a96c892277b29ba84d6f86c594a",
+      "reviewed_scope_lines": [
+        361,
+        362
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 362,
+      "function": "_sub3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[1] - b[1]",
+      "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))",
+      "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点直接对 float 坐标/已算见证作分量差，确实可能先舍入；结果进入 _seg_seg_dist 的 dot 后 **0.5，也用于窗口点面距离。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "9a82abc44966f34d97389af7cc1bd79fb7066a96c892277b29ba84d6f86c594a",
+      "reviewed_scope_lines": [
+        361,
+        362
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 362,
+      "function": "_sub3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[2] - b[2]",
+      "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load()))",
+      "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点直接对 float 坐标/已算见证作分量差，确实可能先舍入；结果进入 _seg_seg_dist 的 dot 后 **0.5，也用于窗口点面距离。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "9a82abc44966f34d97389af7cc1bd79fb7066a96c892277b29ba84d6f86c594a",
+      "reviewed_scope_lines": [
+        361,
+        362
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 366,
+      "function": "_dot3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[0] * b[0] + a[1] * b[1] + a[2] * b[2]",
+      "node": "BinOp(left=BinOp(left=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load())), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load())))",
+      "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+      "reviewed_scope_lines": [
+        365,
+        366
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 366,
+      "function": "_dot3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[0] * b[0] + a[1] * b[1]",
+      "node": "BinOp(left=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load())), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load())))",
+      "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+      "reviewed_scope_lines": [
+        365,
+        366
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 366,
+      "function": "_dot3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[0] * b[0]",
+      "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load()))",
+      "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+      "reviewed_scope_lines": [
+        365,
+        366
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 366,
+      "function": "_dot3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[1] * b[1]",
+      "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))",
+      "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+      "reviewed_scope_lines": [
+        365,
+        366
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 366,
+      "function": "_dot3",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a[2] * b[2]",
+      "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load()))",
+      "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是未 Fraction 提升的分量乘积/累加，调用者将平方长度交给 **0.5；确实是先浮点舍入再构造根，不能以 _dot3 名字豁免。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "54acb29630c4e85cbe0094c0f017d87a07f18d6622a3159bfa2e9f130f11621d",
+      "reviewed_scope_lines": [
+        365,
+        366
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 378,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "f / e",
+      "node": "BinOp(left=Name(id='f', ctx=Load()), op=Div(), right=Name(id='e', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 385,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a * e - b * b",
+      "node": "BinOp(left=BinOp(left=Name(id='a', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='b', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 385,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "a * e",
+      "node": "BinOp(left=Name(id='a', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 385,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "b * b",
+      "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='b', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 386,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "(b * f - c * e) / den",
+      "node": "BinOp(left=BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))), op=Div(), right=Name(id='den', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 386,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "b * f - c * e",
+      "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 386,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "b * f",
+      "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 386,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c * e",
+      "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 387,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "(b * s + f) / e",
+      "node": "BinOp(left=BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())), op=Add(), right=Name(id='f', ctx=Load())), op=Div(), right=Name(id='e', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 387,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "b * s + f",
+      "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())), op=Add(), right=Name(id='f', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 387,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "b * s",
+      "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 389,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "-c / a",
+      "node": "BinOp(left=UnaryOp(op=USub(), operand=Name(id='c', ctx=Load())), op=Div(), right=Name(id='a', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 391,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "(b - c) / a",
+      "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Sub(), right=Name(id='c', ctx=Load())), op=Div(), right=Name(id='a', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram/夹紧参数的除法，参数继续构造见证并最终 **0.5；并非 Fraction 精确参数。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 391,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "b - c",
+      "node": "BinOp(left=Name(id='b', ctx=Load()), op=Sub(), right=Name(id='c', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点是浮点 Gram 行列式/参数分子算术，继续驱动近点见证并最终 **0.5；根之前的舍入真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 392,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "d1[0] * s",
+      "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 392,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "d1[1] * s",
+      "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 392,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "d1[2] * s",
+      "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 392,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "p1[0] + d1[0] * s",
+      "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 392,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "p1[1] + d1[1] * s",
+      "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 392,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "p1[2] + d1[2] * s",
+      "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 393,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "d2[0] * t",
+      "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 393,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "d2[1] * t",
+      "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 393,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "d2[2] * t",
+      "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 393,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "p2[0] + d2[0] * t",
+      "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 393,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "p2[1] + d2[1] * t",
+      "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "line": 393,
+      "function": "_seg_seg_dist",
+      "rule": "closed-unproved-arithmetic",
+      "source": "p2[2] + d2[2] * t",
+      "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+      "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5",
+      "disposition": "legacy_approximate_oracle",
+      "reason": "该站点先以浮点参数构造夹紧见证坐标，随后两见证作差、dot 并 **0.5；见证构造的舍入历史真实存在。现有使用范围是固定轴对齐 cb2 夹具的宽分离窗口佐证：non_face≈1（abs=1e-12），G2_WINDOW≤1e-3*non_face。它与生产几何原语独立，但‘独立’不等于精确数值 oracle，不能写成无先舍入。",
+      "recommended_action": "若必须保持原格子，可将其明确列为旧近似窗口佐证的遗留，且不声称满足精确构造要求；更稳妥是独立有理参数/平方距离比较，保留现有内部枚举变异牙。不得批准泛型 _sub3/_dot3 数值豁免。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "fe4134638857abca1f59e1749208ddb9f7b82e490fc18daa8e32ee271de7547d",
+      "reviewed_scope_lines": [
+        369,
+        395
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 53,
+      "function": "body_distance",
+      "rule": "closed-rounded-construction",
+      "source": "exact_margin.contact_resolution(A, B)",
+      "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+      "context": "97f9f7e6e239a3977d4a93711abcc33d7f2ce81f81d6336d8e6adf724b5bf201",
+      "disposition": "test_execution_legacy_contact_window",
+      "reason": "本 AST 站点 `exact_margin.contact_resolution(A, B)`：此处只把未改动的 A/B 传给生产 contact_resolution，所得尺度窗口显式传给生产 body_distance。它是保留历史容差窗口的被测 API 调用，不是独立期望值构造；默认精确 API 另逐格审核。包装层自身没有先计算距离或法向，不能因此断言所有 A/B 上游 fixture 都精确。",
+      "recommended_action": "保留被测路径和显式 legacy window 标签；应分析 contact_resolution 的实际契约，不能以本调用站点豁免其内部数值实现。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "8aef314d54b2d4f950bb2ffe3c9c8dcce360d1bebb3b6b14327379437811b504",
+      "reviewed_scope_lines": [
+        52,
+        53
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c[0] + ct * x - st * y",
+      "node": "BinOp(left=BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c[0] + ct * x - st * y`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c[1] + st * x + ct * y",
+      "node": "BinOp(left=BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Add(), right=BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c[1] + st * x + ct * y`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "ct * x",
+      "node": "BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `ct * x`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "ct * y",
+      "node": "BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `ct * y`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "st * x",
+      "node": "BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `st * x`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "st * y",
+      "node": "BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `st * y`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c[0] + ct * x",
+      "node": "BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c[0] + ct * x`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c[1] + st * x",
+      "node": "BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c[1] + st * x`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 117,
+      "function": "_slab",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c[2] + z",
+      "node": "BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=Name(id='z', ctx=Load()))",
+      "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c[2] + z`：此算式是固定 x_cross / yaw 样本的 box 顶点绕 z 旋转再平移，ct/st 来自 math.cos/sin。float 乘加确实舍入，结果成为 Polyhedron 的给定坐标，不是精确旋转后的理论点。独立精确盖/拓扑 oracle 针对这些最终给定坐标；旧蜕变距离仍按声明的噪声预算比较。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5d5b3c5b71ade33d318691b7d96986e0c551af93ab2a3be48209b9804a4317db",
+      "reviewed_scope_lines": [
+        114,
+        118
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 126,
+      "function": "_pair_tetra_box_vv",
+      "rule": "closed-unproved-arithmetic",
+      "source": "1.0 / math.sqrt(3.0)",
+      "node": "BinOp(left=Constant(value=1.0), op=Div(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='sqrt', ctx=Load()), args=[Constant(value=3.0)], keywords=[]))",
+      "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `1.0 / math.sqrt(3.0)`：该分量参与固定 VV3 样本：先用 sqrt(3.0) 的显示值形成 r3，再用 0.1*r3 定义 apex，最后按 apex-T0 顶点的 float 差平移四面体。此流程真实舍入，理想距离 0.1 只是带容差的闭式基准；不得把它写成精确单位化或精确平移。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ab7db73bd6737816b42d0128b44ad886e4dd07ee7bff780a89d8ee627aed8175",
+      "reviewed_scope_lines": [
+        121,
+        129
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 127,
+      "function": "_pair_tetra_box_vv",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.1 * r3",
+      "node": "BinOp(left=Constant(value=0.1), op=Mult(), right=Name(id='r3', ctx=Load()))",
+      "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.1 * r3`：该分量参与固定 VV3 样本：先用 sqrt(3.0) 的显示值形成 r3，再用 0.1*r3 定义 apex，最后按 apex-T0 顶点的 float 差平移四面体。此流程真实舍入，理想距离 0.1 只是带容差的闭式基准；不得把它写成精确单位化或精确平移。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ab7db73bd6737816b42d0128b44ad886e4dd07ee7bff780a89d8ee627aed8175",
+      "reviewed_scope_lines": [
+        121,
+        129
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 127,
+      "function": "_pair_tetra_box_vv",
+      "rule": "closed-unproved-arithmetic",
+      "source": "1.0 + 0.1 * r3",
+      "node": "BinOp(left=Constant(value=1.0), op=Add(), right=BinOp(left=Constant(value=0.1), op=Mult(), right=Name(id='r3', ctx=Load())))",
+      "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `1.0 + 0.1 * r3`：该分量参与固定 VV3 样本：先用 sqrt(3.0) 的显示值形成 r3，再用 0.1*r3 定义 apex，最后按 apex-T0 顶点的 float 差平移四面体。此流程真实舍入，理想距离 0.1 只是带容差的闭式基准；不得把它写成精确单位化或精确平移。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ab7db73bd6737816b42d0128b44ad886e4dd07ee7bff780a89d8ee627aed8175",
+      "reviewed_scope_lines": [
+        121,
+        129
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 127,
+      "function": "_pair_tetra_box_vv",
+      "rule": "closed-unproved-arithmetic",
+      "source": "-1.0 - 0.1 * r3",
+      "node": "BinOp(left=UnaryOp(op=USub(), operand=Constant(value=1.0)), op=Sub(), right=BinOp(left=Constant(value=0.1), op=Mult(), right=Name(id='r3', ctx=Load())))",
+      "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `-1.0 - 0.1 * r3`：该分量参与固定 VV3 样本：先用 sqrt(3.0) 的显示值形成 r3，再用 0.1*r3 定义 apex，最后按 apex-T0 顶点的 float 差平移四面体。此流程真实舍入，理想距离 0.1 只是带容差的闭式基准；不得把它写成精确单位化或精确平移。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ab7db73bd6737816b42d0128b44ad886e4dd07ee7bff780a89d8ee627aed8175",
+      "reviewed_scope_lines": [
+        121,
+        129
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 128,
+      "function": "_pair_tetra_box_vv",
+      "rule": "closed-unproved-arithmetic",
+      "source": "apex[i] - T0.verts[3][i]",
+      "node": "BinOp(left=Subscript(value=Name(id='apex', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load()), op=Sub(), right=Subscript(value=Subscript(value=Attribute(value=Name(id='T0', ctx=Load()), attr='verts', ctx=Load()), slice=Constant(value=3), ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load()))",
+      "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `apex[i] - T0.verts[3][i]`：该分量参与固定 VV3 样本：先用 sqrt(3.0) 的显示值形成 r3，再用 0.1*r3 定义 apex，最后按 apex-T0 顶点的 float 差平移四面体。此流程真实舍入，理想距离 0.1 只是带容差的闭式基准；不得把它写成精确单位化或精确平移。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ab7db73bd6737816b42d0128b44ad886e4dd07ee7bff780a89d8ee627aed8175",
+      "reviewed_scope_lines": [
+        121,
+        129
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 135,
+      "function": "_pair_box_box_face",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.5 + 0.05 + 0.35",
+      "node": "BinOp(left=BinOp(left=Constant(value=0.5), op=Add(), right=Constant(value=0.05)), op=Add(), right=Constant(value=0.35))",
+      "context": "7ba78ca502116ecf16df3c908e0d43b6cbe176f1c0410eb364a5149c326b4235",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.5 + 0.05 + 0.35`：该加法定义面对面方块的 z 中心，来自 half-height 0.5、目标间隙 0.05 与 A 的 half-height 0.35。它产生实际 binary64 box 输入，可能与实数三数之和不同；测试随后对实际坐标做精确边界/盖检查，历史 0.05 距离比较不是其无舍入证明。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "0b0cef002a4734b01c596f4b1097b00cea1a223b55f52b85892b5612c191ed40",
+      "reviewed_scope_lines": [
+        132,
+        136
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 135,
+      "function": "_pair_box_box_face",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.5 + 0.05",
+      "node": "BinOp(left=Constant(value=0.5), op=Add(), right=Constant(value=0.05))",
+      "context": "7ba78ca502116ecf16df3c908e0d43b6cbe176f1c0410eb364a5149c326b4235",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.5 + 0.05`：该加法定义面对面方块的 z 中心，来自 half-height 0.5、目标间隙 0.05 与 A 的 half-height 0.35。它产生实际 binary64 box 输入，可能与实数三数之和不同；测试随后对实际坐标做精确边界/盖检查，历史 0.05 距离比较不是其无舍入证明。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "0b0cef002a4734b01c596f4b1097b00cea1a223b55f52b85892b5612c191ed40",
+      "reviewed_scope_lines": [
+        132,
+        136
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 143,
+      "function": "_pair_generic",
+      "rule": "closed-unproved-arithmetic",
+      "source": "rng.uniform(-1, 1) + 0.3",
+      "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3))",
+      "context": "9705b492e314f29ebdcbc48ebcde40e34095d19f7a6fbf98fe278471557ae773",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `rng.uniform(-1, 1) + 0.3`：Random(5) 的 uniform 样本在此加固定中心偏移，生成第二个凸包的坐标。该普通 float 运算流入凸包几何，实际有舍入；这里的角色是固定采样输入，不是对采样前理想实数的构造保证。3 个偏移分量和 RNG 消费顺序均与原工单代码相同。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "b69364b9394a39a2c14ff2f3d11398de186ff7f95d38654391bd14a09b56dd4c",
+      "reviewed_scope_lines": [
+        139,
+        145
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 143,
+      "function": "_pair_generic",
+      "rule": "closed-unproved-arithmetic",
+      "source": "rng.uniform(-1, 1) + 2.6",
+      "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6))",
+      "context": "9705b492e314f29ebdcbc48ebcde40e34095d19f7a6fbf98fe278471557ae773",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `rng.uniform(-1, 1) + 2.6`：Random(5) 的 uniform 样本在此加固定中心偏移，生成第二个凸包的坐标。该普通 float 运算流入凸包几何，实际有舍入；这里的角色是固定采样输入，不是对采样前理想实数的构造保证。3 个偏移分量和 RNG 消费顺序均与原工单代码相同。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "b69364b9394a39a2c14ff2f3d11398de186ff7f95d38654391bd14a09b56dd4c",
+      "reviewed_scope_lines": [
+        139,
+        145
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 143,
+      "function": "_pair_generic",
+      "rule": "closed-unproved-arithmetic",
+      "source": "rng.uniform(-1, 1) - 0.2",
+      "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))",
+      "context": "9705b492e314f29ebdcbc48ebcde40e34095d19f7a6fbf98fe278471557ae773",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `rng.uniform(-1, 1) - 0.2`：Random(5) 的 uniform 样本在此加固定中心偏移，生成第二个凸包的坐标。该普通 float 运算流入凸包几何，实际有舍入；这里的角色是固定采样输入，不是对采样前理想实数的构造保证。3 个偏移分量和 RNG 消费顺序均与原工单代码相同。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "b69364b9394a39a2c14ff2f3d11398de186ff7f95d38654391bd14a09b56dd4c",
+      "reviewed_scope_lines": [
+        139,
+        145
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.3 + c * x - s * y",
+      "node": "BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.3 + c * x - s * y`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "s * x + c * y",
+      "node": "BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `s * x + c * y`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.3 + c * x",
+      "node": "BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.3 + c * x`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "VE3_GAP + 1.0",
+      "node": "BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `VE3_GAP + 1.0`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c * x",
+      "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c * x`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c * y",
+      "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c * y`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "s * x",
+      "node": "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `s * x`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 157,
+      "function": "_pair_ve3_wedge",
+      "rule": "closed-unproved-arithmetic",
+      "source": "s * y",
+      "node": "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+      "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `s * y`：此分量构造尖棱锥的三个底面顶点：用 cos(0.5)/sin(0.5) 旋转，再平移 x=0.3、z=VE3_GAP+1。float 乘加确实发生在凸包输入之前；尖端固定 (0.3,0,VE3_GAP) 的闭式分离关系不等于所有底面顶点精确构造。应只承认给定坐标 fixture 和针对实际输入的独立检查。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "af9001beee5d7bfbdeacc1d406578f972465556f0c95564c964b64d00a09cb67",
+      "reviewed_scope_lines": [
+        151,
+        159
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 197,
+      "function": "_pair_ridge_needle",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.3 + 0.3 * math.cos(t)",
+      "node": "BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Constant(value=0.3), op=Mult(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='cos', ctx=Load()), args=[Name(id='t', ctx=Load())], keywords=[])))",
+      "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.3 + 0.3 * math.cos(t)`：此表达式参与固定脊+针 fixture：尖端高度 h+0.05，底环以 cos/sin 三个固定角与半径 0.3 生成，底高 h+1.05。三角函数及 float 加乘均舍入，之后才给 convex_hull_3d；解析 0.05 距离只说明设计意图和旧容差基准。保留原坐标不等于证明理想实数圆锥构造精确。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "c34fc36e089ead0b7b1fd535f1cbec133f15544cff2404e31a1a68eb26a6d34d",
+      "reviewed_scope_lines": [
+        188,
+        199
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 197,
+      "function": "_pair_ridge_needle",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.3 * math.cos(t)",
+      "node": "BinOp(left=Constant(value=0.3), op=Mult(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='cos', ctx=Load()), args=[Name(id='t', ctx=Load())], keywords=[]))",
+      "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.3 * math.cos(t)`：此表达式参与固定脊+针 fixture：尖端高度 h+0.05，底环以 cos/sin 三个固定角与半径 0.3 生成，底高 h+1.05。三角函数及 float 加乘均舍入，之后才给 convex_hull_3d；解析 0.05 距离只说明设计意图和旧容差基准。保留原坐标不等于证明理想实数圆锥构造精确。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "c34fc36e089ead0b7b1fd535f1cbec133f15544cff2404e31a1a68eb26a6d34d",
+      "reviewed_scope_lines": [
+        188,
+        199
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 197,
+      "function": "_pair_ridge_needle",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.3 * math.sin(t)",
+      "node": "BinOp(left=Constant(value=0.3), op=Mult(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='sin', ctx=Load()), args=[Name(id='t', ctx=Load())], keywords=[]))",
+      "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.3 * math.sin(t)`：此表达式参与固定脊+针 fixture：尖端高度 h+0.05，底环以 cos/sin 三个固定角与半径 0.3 生成，底高 h+1.05。三角函数及 float 加乘均舍入，之后才给 convex_hull_3d；解析 0.05 距离只说明设计意图和旧容差基准。保留原坐标不等于证明理想实数圆锥构造精确。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "c34fc36e089ead0b7b1fd535f1cbec133f15544cff2404e31a1a68eb26a6d34d",
+      "reviewed_scope_lines": [
+        188,
+        199
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 197,
+      "function": "_pair_ridge_needle",
+      "rule": "closed-unproved-arithmetic",
+      "source": "h + 0.05",
+      "node": "BinOp(left=Name(id='h', ctx=Load()), op=Add(), right=Constant(value=0.05))",
+      "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `h + 0.05`：此表达式参与固定脊+针 fixture：尖端高度 h+0.05，底环以 cos/sin 三个固定角与半径 0.3 生成，底高 h+1.05。三角函数及 float 加乘均舍入，之后才给 convex_hull_3d；解析 0.05 距离只说明设计意图和旧容差基准。保留原坐标不等于证明理想实数圆锥构造精确。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "c34fc36e089ead0b7b1fd535f1cbec133f15544cff2404e31a1a68eb26a6d34d",
+      "reviewed_scope_lines": [
+        188,
+        199
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 197,
+      "function": "_pair_ridge_needle",
+      "rule": "closed-unproved-arithmetic",
+      "source": "h + 1.05",
+      "node": "BinOp(left=Name(id='h', ctx=Load()), op=Add(), right=Constant(value=1.05))",
+      "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `h + 1.05`：此表达式参与固定脊+针 fixture：尖端高度 h+0.05，底环以 cos/sin 三个固定角与半径 0.3 生成，底高 h+1.05。三角函数及 float 加乘均舍入，之后才给 convex_hull_3d；解析 0.05 距离只说明设计意图和旧容差基准。保留原坐标不等于证明理想实数圆锥构造精确。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "c34fc36e089ead0b7b1fd535f1cbec133f15544cff2404e31a1a68eb26a6d34d",
+      "reviewed_scope_lines": [
+        188,
+        199
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 206,
+      "function": "_pair_size_ratio",
+      "rule": "closed-unproved-arithmetic",
+      "source": "50.0 + 0.5 + 1e-3",
+      "node": "BinOp(left=BinOp(left=Constant(value=50.0), op=Add(), right=Constant(value=0.5)), op=Add(), right=Constant(value=0.001))",
+      "context": "9ce13ae47831c2a5af440f0b4f8ab32431f51bc64db6190b71a9c20ed5f17e89",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `50.0 + 0.5 + 1e-3`：50.0+0.5+1e-3 是尺寸比 100 样本小方块的 x 中心；第二次加法可能舍入。所得 box 输入保持原 bit pattern，测试的 1e-3 间隙对照带原有容差，不能据此将中心构造称为精确。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "e58ce8d34b1a66f70c2426052a5d1190b11d43280f62c17211d1413161d98022",
+      "reviewed_scope_lines": [
+        202,
+        207
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 206,
+      "function": "_pair_size_ratio",
+      "rule": "closed-unproved-arithmetic",
+      "source": "50.0 + 0.5",
+      "node": "BinOp(left=Constant(value=50.0), op=Add(), right=Constant(value=0.5))",
+      "context": "9ce13ae47831c2a5af440f0b4f8ab32431f51bc64db6190b71a9c20ed5f17e89",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `50.0 + 0.5`：50.0+0.5+1e-3 是尺寸比 100 样本小方块的 x 中心；第二次加法可能舍入。所得 box 输入保持原 bit pattern，测试的 1e-3 间隙对照带原有容差，不能据此将中心构造称为精确。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "e58ce8d34b1a66f70c2426052a5d1190b11d43280f62c17211d1413161d98022",
+      "reviewed_scope_lines": [
+        202,
+        207
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 236,
+      "function": "_pair_for_name",
+      "rule": "closed-unproved-call",
+      "source": "_pair_generic()",
+      "node": "Call(func=Name(id='_pair_generic', ctx=Load()), args=[], keywords=[])",
+      "context": "b7465e0a3b4ce345e4ff2e9a937656f6320e1df0919186608dbdb076686f69bf",
+      "disposition": "direct_fixture_dispatch_with_rounded_inputs",
+      "reason": "本 AST 站点 `_pair_generic()`：此站点是固定名称 if 分支中的已知一阶 fixture 函数直调，不再从 PAIRS 取 callable，也没有 lambda 捕获。callee 返回固定采样/旋转/三角函数生成的给定 float 顶点，具体舍入已在该 callee 各站点列出；直接化使调用可追踪，不会让下游浮点几何自动变安全。22 factory 顶点/面/顺序与旧版本逐项运行时相等。",
+      "recommended_action": "保留一阶调用传播并分别审 callee；不要为此 dispatcher 批准能吞掉 callee 数值风险的整体例外。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "58dcaea36792f455920348b81eae13c5675c9c8949aad74530ca7821af686bd0",
+      "reviewed_scope_lines": [
+        229,
+        253
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 238,
+      "function": "_pair_for_name",
+      "rule": "closed-unproved-call",
+      "source": "_pair_ve3_wedge()",
+      "node": "Call(func=Name(id='_pair_ve3_wedge', ctx=Load()), args=[], keywords=[])",
+      "context": "b7465e0a3b4ce345e4ff2e9a937656f6320e1df0919186608dbdb076686f69bf",
+      "disposition": "direct_fixture_dispatch_with_rounded_inputs",
+      "reason": "本 AST 站点 `_pair_ve3_wedge()`：此站点是固定名称 if 分支中的已知一阶 fixture 函数直调，不再从 PAIRS 取 callable，也没有 lambda 捕获。callee 返回固定采样/旋转/三角函数生成的给定 float 顶点，具体舍入已在该 callee 各站点列出；直接化使调用可追踪，不会让下游浮点几何自动变安全。22 factory 顶点/面/顺序与旧版本逐项运行时相等。",
+      "recommended_action": "保留一阶调用传播并分别审 callee；不要为此 dispatcher 批准能吞掉 callee 数值风险的整体例外。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "58dcaea36792f455920348b81eae13c5675c9c8949aad74530ca7821af686bd0",
+      "reviewed_scope_lines": [
+        229,
+        253
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 250,
+      "function": "_pair_for_name",
+      "rule": "closed-unproved-call",
+      "source": "_pair_ridge_needle()",
+      "node": "Call(func=Name(id='_pair_ridge_needle', ctx=Load()), args=[], keywords=[])",
+      "context": "b7465e0a3b4ce345e4ff2e9a937656f6320e1df0919186608dbdb076686f69bf",
+      "disposition": "direct_fixture_dispatch_with_rounded_inputs",
+      "reason": "本 AST 站点 `_pair_ridge_needle()`：此站点是固定名称 if 分支中的已知一阶 fixture 函数直调，不再从 PAIRS 取 callable，也没有 lambda 捕获。callee 返回固定采样/旋转/三角函数生成的给定 float 顶点，具体舍入已在该 callee 各站点列出；直接化使调用可追踪，不会让下游浮点几何自动变安全。22 factory 顶点/面/顺序与旧版本逐项运行时相等。",
+      "recommended_action": "保留一阶调用传播并分别审 callee；不要为此 dispatcher 批准能吞掉 callee 数值风险的整体例外。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "58dcaea36792f455920348b81eae13c5675c9c8949aad74530ca7821af686bd0",
+      "reviewed_scope_lines": [
+        229,
+        253
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_geom.py",
+      "line": 259,
+      "function": "_base",
+      "rule": "closed-unproved-call",
+      "source": "_pair_for_name(name)",
+      "node": "Call(func=Name(id='_pair_for_name', ctx=Load()), args=[Name(id='name', ctx=Load())], keywords=[])",
+      "context": "fabef31a374de4d6cebfba4af538c51601ab576cd91ffe89e88ce0b789ab6820",
+      "disposition": "direct_fixture_dispatch_with_rounded_inputs",
+      "reason": "本 AST 站点 `_pair_for_name(name)`：此调用只按固定 PAIRS 名称取得 A/B，原容器 callable 已换为 _pair_for_name 的显式分支。所得坐标仍是原有给定 binary64 fixtures；_base 后续被测 API、显示见证 math.dist 的近似并列分类各有独立审核，不能靠本取样站点替整个 _base 作精确担保。",
+      "recommended_action": "应分别追踪一阶 factory 的返回值及后续诊断用途，保持源站点诊断；不可 broad-waive _base 的构造或近似距离。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "e84e3b3576bbf5c59356d1aff8afc1f175fff4b683fbf0a885c8ebf8d3b8c93a",
+      "reviewed_scope_lines": [
+        255,
+        269
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 63,
+      "function": "body_distance",
+      "rule": "closed-rounded-construction",
+      "source": "exact_margin.contact_resolution(A, B)",
+      "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+      "context": "a1ac4c75ec8c221121202be4ce1c7e69143d3feb946c8dff18e125ea3c34e620",
+      "disposition": "test_execution_legacy_contact_window",
+      "reason": "本 AST 站点 `exact_margin.contact_resolution(A, B)`：此包装函数把原样 A/B 与 kwargs 传给生产 body_distance，只额外显式提供 contact_resolution(A,B)。该值规定历史测试所用接触窗口，而不是 independently computed 精确距离；文件另外检查默认精确 API 的实际舍入输入。本调用站点没有自行作几何差，但也不证明上游 float 构造无舍入。",
+      "recommended_action": "保持 legacy window 的诚实范围；需要生产函数摘要，而不是给所有以此包装进入的数值路径整体放行。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "87f74c09dd8459f0617e17bc46f0299188cfa04bf5c1c7bca911141d14c1ca07",
+      "reviewed_scope_lines": [
+        62,
+        63
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 427,
+      "function": "_yawed_stack",
+      "rule": "closed-unproved-arithmetic",
+      "source": "1.0 + gap",
+      "node": "BinOp(left=Constant(value=1.0), op=Add(), right=Name(id='gap', ctx=Load()))",
+      "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `1.0 + gap`：此算式定义 sep_ee_yaw 固定样本：先设箱体中心 z=1+gap，再用 cos(yaw)/sin(yaw) 旋转顶点。float 乘加是真实舍入，结果作为 Polyhedron 的给定坐标；该测试检验近乎平行 EE 格，不保证理想实数 yaw 的精确几何。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5f4892d54974d021355db50d2621a3b54010ae8e8b70a195c9f42d2bba78159f",
+      "reviewed_scope_lines": [
+        425,
+        429
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 428,
+      "function": "_yawed_stack",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c * x - sn * y",
+      "node": "BinOp(left=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+      "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c * x - sn * y`：此算式定义 sep_ee_yaw 固定样本：先设箱体中心 z=1+gap，再用 cos(yaw)/sin(yaw) 旋转顶点。float 乘加是真实舍入，结果作为 Polyhedron 的给定坐标；该测试检验近乎平行 EE 格，不保证理想实数 yaw 的精确几何。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5f4892d54974d021355db50d2621a3b54010ae8e8b70a195c9f42d2bba78159f",
+      "reviewed_scope_lines": [
+        425,
+        429
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 428,
+      "function": "_yawed_stack",
+      "rule": "closed-unproved-arithmetic",
+      "source": "sn * x + c * y",
+      "node": "BinOp(left=BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+      "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `sn * x + c * y`：此算式定义 sep_ee_yaw 固定样本：先设箱体中心 z=1+gap，再用 cos(yaw)/sin(yaw) 旋转顶点。float 乘加是真实舍入，结果作为 Polyhedron 的给定坐标；该测试检验近乎平行 EE 格，不保证理想实数 yaw 的精确几何。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5f4892d54974d021355db50d2621a3b54010ae8e8b70a195c9f42d2bba78159f",
+      "reviewed_scope_lines": [
+        425,
+        429
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 428,
+      "function": "_yawed_stack",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c * x",
+      "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+      "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c * x`：此算式定义 sep_ee_yaw 固定样本：先设箱体中心 z=1+gap，再用 cos(yaw)/sin(yaw) 旋转顶点。float 乘加是真实舍入，结果作为 Polyhedron 的给定坐标；该测试检验近乎平行 EE 格，不保证理想实数 yaw 的精确几何。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5f4892d54974d021355db50d2621a3b54010ae8e8b70a195c9f42d2bba78159f",
+      "reviewed_scope_lines": [
+        425,
+        429
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 428,
+      "function": "_yawed_stack",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c * y",
+      "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+      "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `c * y`：此算式定义 sep_ee_yaw 固定样本：先设箱体中心 z=1+gap，再用 cos(yaw)/sin(yaw) 旋转顶点。float 乘加是真实舍入，结果作为 Polyhedron 的给定坐标；该测试检验近乎平行 EE 格，不保证理想实数 yaw 的精确几何。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5f4892d54974d021355db50d2621a3b54010ae8e8b70a195c9f42d2bba78159f",
+      "reviewed_scope_lines": [
+        425,
+        429
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 428,
+      "function": "_yawed_stack",
+      "rule": "closed-unproved-arithmetic",
+      "source": "sn * x",
+      "node": "BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+      "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `sn * x`：此算式定义 sep_ee_yaw 固定样本：先设箱体中心 z=1+gap，再用 cos(yaw)/sin(yaw) 旋转顶点。float 乘加是真实舍入，结果作为 Polyhedron 的给定坐标；该测试检验近乎平行 EE 格，不保证理想实数 yaw 的精确几何。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5f4892d54974d021355db50d2621a3b54010ae8e8b70a195c9f42d2bba78159f",
+      "reviewed_scope_lines": [
+        425,
+        429
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 428,
+      "function": "_yawed_stack",
+      "rule": "closed-unproved-arithmetic",
+      "source": "sn * y",
+      "node": "BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+      "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `sn * y`：此算式定义 sep_ee_yaw 固定样本：先设箱体中心 z=1+gap，再用 cos(yaw)/sin(yaw) 旋转顶点。float 乘加是真实舍入，结果作为 Polyhedron 的给定坐标；该测试检验近乎平行 EE 格，不保证理想实数 yaw 的精确几何。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "5f4892d54974d021355db50d2621a3b54010ae8e8b70a195c9f42d2bba78159f",
+      "reviewed_scope_lines": [
+        425,
+        429
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_invariance_interlock.py",
+      "line": 450,
+      "function": "_margin_pair_for_name",
+      "rule": "closed-unproved-arithmetic",
+      "source": "0.4 - 3e-10",
+      "node": "BinOp(left=Constant(value=0.4), op=Sub(), right=Constant(value=3e-10))",
+      "context": "2ab5fd1ebc6329ef2c75a3b04f13376aa4257366defd0bd65bf89fd9f5490b6b",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "本 AST 站点 `0.4 - 3e-10`：0.4-3e-10 是原 subtol 格的实际给定平移高度，刻意落在历史接触窗口内部；减法确实舍入。原 MARGIN_CASES 的 lambda 改成显式 if 后，运算次序、常数、顶点和测试名称完全保留，默认精确判定另对给定坐标检查；不能把这个 subtract 称为精确派生量。",
+      "recommended_action": "只可明确讨论给定 binary64 测试输入的边界，不得称此算式没有舍入；若要求理想几何变换也精确，须另做独立 Fraction 构造并核对旧格子，而不是批准通用数值 helper。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "e7df91b0eaba251a390e8f7baa7c4072bd63f2a7fc7545450471327e809068c1",
+      "reviewed_scope_lines": [
+        437,
+        461
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_kernel3d_geom.py",
+      "line": 200,
+      "function": "_g6_rot",
+      "rule": "closed-reduction",
+      "source": "sum(c * c for c in q)",
+      "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='c', ctx=Load())), generators=[comprehension(target=Name(id='c', ctx=Store()), iter=Name(id='q', ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+      "context": "6df74d6ab6b0b0b5918f28d701f68e189f54d0b5758471b7fb70d9ce3e2eb0a4",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "高斯 float 四元数先 c*c 与 sum，再 **0.5 和除法单位化，真实先舍入。此 helper 只生成测试给定姿态矩阵；_placed_exact 会精确提升已存储矩阵而不是恢复理想旋转，独立 Fraction hull 证书检查最终给定坐标。不能称随机矩阵精确正交或开方无舍入。",
+      "recommended_action": "若保留此生成器，只能说明近似随机姿态输入角色并保留最终坐标的独立证书；不要把给定输入例外推广到生产 normal/norm 构造。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "0bee320b47abb74a3375521f5b3ba8fd1a90028c1abd7317477946b152ff76f2",
+      "reviewed_scope_lines": [
+        197,
+        204
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_kernel3d_geom.py",
+      "line": 200,
+      "function": "_g6_rot",
+      "rule": "closed-unproved-arithmetic",
+      "source": "c * c",
+      "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='c', ctx=Load()))",
+      "context": "6df74d6ab6b0b0b5918f28d701f68e189f54d0b5758471b7fb70d9ce3e2eb0a4",
+      "disposition": "given_input_fixture_boundary",
+      "reason": "高斯 float 四元数先 c*c 与 sum，再 **0.5 和除法单位化，真实先舍入。此 helper 只生成测试给定姿态矩阵；_placed_exact 会精确提升已存储矩阵而不是恢复理想旋转，独立 Fraction hull 证书检查最终给定坐标。不能称随机矩阵精确正交或开方无舍入。",
+      "recommended_action": "若保留此生成器，只能说明近似随机姿态输入角色并保留最终坐标的独立证书；不要把给定输入例外推广到生产 normal/norm 构造。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "0bee320b47abb74a3375521f5b3ba8fd1a90028c1abd7317477946b152ff76f2",
+      "reviewed_scope_lines": [
+        197,
+        204
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_limit_fuzz.py",
+      "line": 150,
+      "function": "_genuinely_unresolvable",
+      "rule": "closed-reduction",
+      "source": "sum(v * v for v in live[:dim])",
+      "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(upper=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+      "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+      "disposition": "bounded_legacy_diagnostic",
+      "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+      "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+      "reviewed_scope_lines": [
+        146,
+        162
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_limit_fuzz.py",
+      "line": 151,
+      "function": "_genuinely_unresolvable",
+      "rule": "closed-reduction",
+      "source": "sum(v * v for v in live[dim:])",
+      "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(lower=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+      "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+      "disposition": "bounded_legacy_diagnostic",
+      "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+      "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+      "reviewed_scope_lines": [
+        146,
+        162
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_limit_fuzz.py",
+      "line": 152,
+      "function": "_genuinely_unresolvable",
+      "rule": "closed-data-attribute",
+      "source": "ct.point",
+      "node": "Attribute(value=Name(id='ct', ctx=Load()), attr='point', ctx=Load())",
+      "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+      "disposition": "bounded_legacy_diagnostic",
+      "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+      "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+      "reviewed_scope_lines": [
+        146,
+        162
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_limit_fuzz.py",
+      "line": 152,
+      "function": "_genuinely_unresolvable",
+      "rule": "closed-reduction",
+      "source": "sum(v * v for v in ct.point)",
+      "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Attribute(value=Name(id='ct', ctx=Load()), attr='point', ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+      "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+      "disposition": "bounded_legacy_diagnostic",
+      "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+      "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+      "reviewed_scope_lines": [
+        146,
+        162
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_limit_fuzz.py",
+      "line": 152,
+      "function": "_genuinely_unresolvable",
+      "rule": "closed-unproved-arithmetic",
+      "source": "v * v",
+      "node": "BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load()))",
+      "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4",
+      "disposition": "bounded_legacy_diagnostic",
+      "reason": "Fn/Mn/R 由原始给定浮点荷载/接触点作平方和后 **0.5，确实先舍入后开方；ct.point 不是已证明的精确长度。所得幅度仅定义±1e-12随机荷载扰动诊断，pert 的实际binary64分量随后交独立Fraction LP状态/最优值层，不是理想精确扰动或精确几何范数。",
+      "recommended_action": "如保留，报告为旧近似扰动幅度诊断并说明精确 LP 对最终给定 pert 成立；不得把这5站点称精确证明误报或批准普通范数先舍入。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "cbc81f29494dcf3ef781367e5d47f0047fda18c1da3f709985c6241a11a1f74e",
+      "reviewed_scope_lines": [
+        146,
+        162
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_margin.py",
+      "line": 127,
+      "function": "_true_normal",
+      "rule": "closed-rounded-construction",
+      "source": "_TRUE_INFLATED_NORMAL(E, x)",
+      "node": "Call(func=Name(id='_TRUE_INFLATED_NORMAL', ctx=Load()), args=[Name(id='E', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
+      "context": "24dc97f1699387d58d04969d323df32c5fdebdbef8053931d5f9a0c01ab0da97",
+      "disposition": "test_execution_direct_api",
+      "reason": "本 AST 站点 `_TRUE_INFLATED_NORMAL(E, x)`：这里使用 from eab.margin import inflated_normal as _TRUE_INFLATED_NORMAL 的直接源级绑定，将未改动的 E/x 传给被测 API 并仅缓存其返回值。它不是容器取 callable 或 callback，也不是独立真法向 oracle；normal 将进入旧 Lipschitz 浮点差商诊断，该差商另列遗留。",
+      "recommended_action": "应解析明确导入绑定及生产函数的实际输入契约；保留 cache 行为，不把被测 API 输出当作独立精确期望值。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "8721110880a4ae8525daf9b5e12eff9d31d7d6ad4f3cb26997d1f8c0d0b1da7a",
+      "reviewed_scope_lines": [
+        125,
+        128
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_margin.py",
+      "line": 181,
+      "function": "_lipschitz_worst",
+      "rule": "closed-rounded-construction",
+      "source": "norm(sub(nx, ny))",
+      "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='nx', ctx=Load()), Name(id='ny', ctx=Load())], keywords=[])], keywords=[])",
+      "context": "91a17b127043bcae1cc62c88fe6456f0ac58209fce243540689ee53d5d3206f5",
+      "disposition": "legacy_approximate_diagnostic",
+      "reason": "本 AST 站点 `norm(sub(nx, ny))`：nx/ny 是测试驱动预先算好的真实或变异法向样本，此站点先用 float sub 做法向差，再 norm，确有先舍入再求范数；分母同样对给定点做差后范数。它只产生旧 Lipschitz 差商上下界的近似观测量，不是精确法向构造，不可写成无先舍入。改写仅取消 normal_fn 高阶参数，原6类正常/变异调用序列和结果逐位等价。",
+      "recommended_action": "如当前阶段保留全部旧门，必须诚实列为近似诊断遗留并保留真实变异牙；若要满足严格精确构造，需独立有理平方差商重写并复核全部样本。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "a23e0c4eddecdac0a7c4860eb5e309986bc289249c078ee6e40e89cb51798045",
+      "reviewed_scope_lines": [
+        177,
+        182
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_margin.py",
+      "line": 217,
+      "function": "_lipschitz_verdict",
+      "rule": "closed-rounded-construction",
+      "source": "_lipschitz_worst(local)",
+      "node": "Call(func=Name(id='_lipschitz_worst', ctx=Load()), args=[Name(id='local', ctx=Load())], keywords=[])",
+      "context": "1b0c0797e88e32331412388a338a8aa1e744227fa74c15ac3b8c4bc9cbfbfbc4",
+      "disposition": "legacy_approximate_diagnostic",
+      "reason": "本 AST 站点 `_lipschitz_worst(local)`：此一阶调用把 local/loops/glob 的 (x,y,nx,ny) 数据交给 _lipschitz_worst，该 helper 的 float 差后 norm 具有真实提前舍入。此层只按原顺序汇总差商并对 2/delta 与 0.9/delta 判界；取消 callback 不会使旧经验性 Lipschitz 量成为精确构造证明。",
+      "recommended_action": "保留独立定理阈值、三组样本和6类故障牙；不能通过仅豁免 caller 掩盖 _lipschitz_worst 的近似构造遗留。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ea84f440a0d7a56c49d486a4ae6b27688597952ad6660b829144caffe78c643e",
+      "reviewed_scope_lines": [
+        215,
+        220
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_margin.py",
+      "line": 217,
+      "function": "_lipschitz_verdict",
+      "rule": "closed-rounded-construction",
+      "source": "_lipschitz_worst(loops)",
+      "node": "Call(func=Name(id='_lipschitz_worst', ctx=Load()), args=[Name(id='loops', ctx=Load())], keywords=[])",
+      "context": "1b0c0797e88e32331412388a338a8aa1e744227fa74c15ac3b8c4bc9cbfbfbc4",
+      "disposition": "legacy_approximate_diagnostic",
+      "reason": "本 AST 站点 `_lipschitz_worst(loops)`：此一阶调用把 local/loops/glob 的 (x,y,nx,ny) 数据交给 _lipschitz_worst，该 helper 的 float 差后 norm 具有真实提前舍入。此层只按原顺序汇总差商并对 2/delta 与 0.9/delta 判界；取消 callback 不会使旧经验性 Lipschitz 量成为精确构造证明。",
+      "recommended_action": "保留独立定理阈值、三组样本和6类故障牙；不能通过仅豁免 caller 掩盖 _lipschitz_worst 的近似构造遗留。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ea84f440a0d7a56c49d486a4ae6b27688597952ad6660b829144caffe78c643e",
+      "reviewed_scope_lines": [
+        215,
+        220
+      ],
+      "raw_node_still_in_scope": true
+    },
+    {
+      "path": "tests/test_margin.py",
+      "line": 218,
+      "function": "_lipschitz_verdict",
+      "rule": "closed-rounded-construction",
+      "source": "_lipschitz_worst(glob)",
+      "node": "Call(func=Name(id='_lipschitz_worst', ctx=Load()), args=[Name(id='glob', ctx=Load())], keywords=[])",
+      "context": "1b0c0797e88e32331412388a338a8aa1e744227fa74c15ac3b8c4bc9cbfbfbc4",
+      "disposition": "legacy_approximate_diagnostic",
+      "reason": "本 AST 站点 `_lipschitz_worst(glob)`：此一阶调用把 local/loops/glob 的 (x,y,nx,ny) 数据交给 _lipschitz_worst，该 helper 的 float 差后 norm 具有真实提前舍入。此层只按原顺序汇总差商并对 2/delta 与 0.9/delta 判界；取消 callback 不会使旧经验性 Lipschitz 量成为精确构造证明。",
+      "recommended_action": "保留独立定理阈值、三组样本和6类故障牙；不能通过仅豁免 caller 掩盖 _lipschitz_worst 的近似构造遗留。",
+      "waiver_approved": false,
+      "reviewed_scope_sha256": "ea84f440a0d7a56c49d486a4ae6b27688597952ad6660b829144caffe78c643e",
+      "reviewed_scope_lines": [
+        215,
+        220
+      ],
+      "raw_node_still_in_scope": true
+    }
+  ]
+}

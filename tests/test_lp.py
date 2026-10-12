@@ -376,7 +376,7 @@ def test_anti_cycling_breaks_the_classic_beale_cycle(monkeypatch):
     S.inbasis = [j in (4, 5, 6) for j in range(10)]
     S.reinvert()
     cost = c + [0.0, 0.0, 0.0]
-    st, _ = S.optimize(cost, [True] * 7 + [False] * 3, 1e-10, lambda e, d: False)
+    st, _ = S.optimize(cost, [True] * 7 + [False] * 3, 1e-10, None)
     assert st == OPTIMAL
     assert hist[5] == (4, 5, 6)                            # 第 6 次换基回到起点：真循环
     assert cleanups                                        # 扰动 → 撤扰动 → 对偶单纯形

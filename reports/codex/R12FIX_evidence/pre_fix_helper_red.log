@@ -1,0 +1,36 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_ test_l01_unproved_direct_helper_cannot_launder_rounded_arguments[src/eab/r12_numeric_probe.py] _
+
+path = 'src/eab/r12_numeric_probe.py'
+
+    @pytest.mark.parametrize("path", ["src/eab/r12_numeric_probe.py", "tests/r12_oracle_helper.py"])
+    def test_l01_unproved_direct_helper_cannot_launder_rounded_arguments(path):
+        source = "def hide(value):\n    return value\ndef bad(q):\n    return norm_rational(hide(vector_rational(q)))\n"
+        issues = gate.scan_text(source, path)
+>       assert any(row[2:4] == ("bad", "rounded-vector") for row in issues), (
+            "G6L-01 helper cannot launder rounded arguments", path, issues)
+E       AssertionError: ('G6L-01 helper cannot launder rounded arguments', 'src/eab/r12_numeric_probe.py', [])
+E       assert False
+E        +  where False = any(<generator object test_l01_unproved_direct_helper_cannot_launder_rounded_arguments.<locals>.<genexpr> at 0x00000000046460C0>)
+
+tests\test_r12fix_static_closed.py:102: AssertionError
+_ test_l01_unproved_direct_helper_cannot_launder_rounded_arguments[tests/r12_oracle_helper.py] _
+
+path = 'tests/r12_oracle_helper.py'
+
+    @pytest.mark.parametrize("path", ["src/eab/r12_numeric_probe.py", "tests/r12_oracle_helper.py"])
+    def test_l01_unproved_direct_helper_cannot_launder_rounded_arguments(path):
+        source = "def hide(value):\n    return value\ndef bad(q):\n    return norm_rational(hide(vector_rational(q)))\n"
+        issues = gate.scan_text(source, path)
+>       assert any(row[2:4] == ("bad", "rounded-vector") for row in issues), (
+            "G6L-01 helper cannot launder rounded arguments", path, issues)
+E       AssertionError: ('G6L-01 helper cannot launder rounded arguments', 'tests/r12_oracle_helper.py', [])
+E       assert False
+E        +  where False = any(<generator object test_l01_unproved_direct_helper_cannot_launder_rounded_arguments.<locals>.<genexpr> at 0x0000000004751CB0>)
+
+tests\test_r12fix_static_closed.py:102: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r12fix_static_closed.py::test_l01_unproved_direct_helper_cannot_launder_rounded_arguments[src/eab/r12_numeric_probe.py]
+FAILED tests/test_r12fix_static_closed.py::test_l01_unproved_direct_helper_cannot_launder_rounded_arguments[tests/r12_oracle_helper.py]
+2 failed, 44 deselected in 0.08s

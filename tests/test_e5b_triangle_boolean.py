@@ -16,7 +16,7 @@ from eab.kernel3d import exact_geom as E
 
 
 def _feasible(first, second):
-    a, b = [tuple(tuple(map(F, p)) for p in tri) for tri in (first, second)]
+    a, b = [tuple(tuple((F(_r12_item) for _r12_item in p)) for p in tri) for tri in (first, second)]
     rows = [[a[j][i] for j in range(3)] + [-b[j][i] for j in range(3)] for i in range(3)]
     rows += [[F(1)]*3+[F(0)]*3, [F(0)]*3+[F(1)]*3]
     rhs = [F(0)]*3+[F(1), F(1)]
@@ -80,8 +80,8 @@ def test_boolean_intersection_matches_independent_rational_feasibility():
 
 
 def _endpoint_check():
-    a=tuple(map(E.vector,((0,0,0),(2,0,0),(0,2,0))))
-    b=tuple(map(E.vector,((2,0,0),(2,0,1),(3,0,1))))
+    a=tuple((E.vector(_r12_item) for _r12_item in ((0,0,0),(2,0,0),(0,2,0))))
+    b=tuple((E.vector(_r12_item) for _r12_item in ((2,0,0),(2,0,1),(3,0,1))))
     assert _feasible(a,b)
     assert E._triangles_near([(0,a)],[(0,b)],F(0)), 'closed endpoint lost'
 

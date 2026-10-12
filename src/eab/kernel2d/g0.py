@@ -48,7 +48,7 @@ def _bbox(P: Poly) -> tuple[float, float, float, float]:
 def _char_length_squared(*polys):
     """Exact squared diameter: a large finite input must not create inf tolerance."""
     return max(((Fraction(x1)-Fraction(x0))**2+(Fraction(y1)-Fraction(y0))**2
-                for x0, x1, y0, y1 in map(_bbox, polys)), default=Fraction(0))
+                for x0, x1, y0, y1 in (_bbox(_mapped_value) for _mapped_value in polys)), default=Fraction(0))
 
 
 def char_length(*polys: Poly) -> float:

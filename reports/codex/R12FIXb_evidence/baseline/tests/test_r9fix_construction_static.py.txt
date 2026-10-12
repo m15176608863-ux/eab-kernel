@@ -1,0 +1,72 @@
+"""Structural teeth: mutate actual source text before the AST gate consumes it."""
+import importlib.util
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location("construction_scan", ROOT / "tools/check_exact_construction.py")
+gate = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(gate)
+
+
+def test_all_source_and_test_oracles_use_reviewed_construction_boundary():
+    issues = gate.scan_repository()
+    assert not issues, "unsafe exact construction:\n" + "\n".join(map(str, issues))
+
+
+@pytest.mark.parametrize("body,rule", [
+    ("return sqrt(float(q))", "rounded-root"),
+    ("return math.sqrt(float(q))", "rounded-root"),
+    ("return math.hypot(*map(float, q))", "rounded-vector"),
+    ("v = _float_vector(q)\n    return unit(v)", "rounded-vector"),
+    ("v = _float_vector(q)\n    return norm(v)", "rounded-vector"),
+    ("return float(a) - float(b)", "subtract-rounded"),
+    ("x = float(a)\n    y = float(b)\n    return x-y", "subtract-rounded"),
+    ("f = float\n    return f(a)", "direct-float"),
+    ("return msqrt(float(q))", "rounded-root"),
+    ("return math.sqrt(q)", "implicit-root"),
+    ("return sum(x*x for x in q)**0.5", "implicit-root"),
+])
+def test_ast_gate_rejects_forbidden_code_inserted_into_real_source(body, rule):
+    path = "src/eab/construction.py"
+    original = (ROOT / path).read_text(encoding="utf-8")
+    mutated = original + "\nfrom math import sqrt as msqrt\n\ndef injected_bad(a, b, q):\n    " + body + "\n"
+    issues = gate.scan_text(mutated, path)
+    assert any(row[2] == "injected_bad" and row[3] == rule for row in issues), (rule, issues)
+
+
+def test_checked_construction_calls_are_not_rejected_as_direct_casts():
+    issues = gate.scan_text("def good(a,b):\n    return scalar_rational(a-b)\n")
+    # No direct-cast false positive; unknown operand types now fail closed.
+    assert issues == [("<injected>", 2, "good", "closed-unproved-arithmetic", "a-b")]
+    assert gate.scan_text("def good():\n    return scalar_rational(3-2)\n") == []
+    assert gate.scan_text("def good(q):\n    return sqrt_rational(q)\n") == []
+
+
+@pytest.mark.parametrize("source,rule", [
+    ("def bad(q):\n    v: tuple = _float_vector(q)\n    return norm(v)\n", "rounded-vector"),
+    ("def bad(q):\n    cast = vector_rational\n    return norm(cast(q))\n", "rounded-vector"),
+    ("def bad(q):\n    root = math.sqrt\n    return root(scalar_rational(q))\n", "rounded-root"),
+    ("def bad(q):\n    v = tuple(map(scalar_rational, q))\n    return norm(v)\n", "rounded-vector"),
+    ("v = _float_vector(q)\ndef bad():\n    return norm(v)\n", "rounded-vector"),
+    ("def bad(q):\n    (v := _float_vector(q))\n    return unit(v)\n", "rounded-vector"),
+])
+def test_ast_gate_tracks_annotations_aliases_map_and_captured_conversions(source, rule):
+    """Adversarial syntax must not bypass the same prohibited construction."""
+    issues = gate.scan_text(source)
+    assert any(row[2] == "bad" and row[3] == rule for row in issues), (source, rule, issues)
+
+
+@pytest.mark.parametrize("body,rule", [
+    ("return sqrt_rational(scalar_rational(q))", "rounded-root"),
+    ("return sqrt_exact(scalar_exact(q))", "rounded-root"),
+    ("return unit_rational(tuple(ratio_rational(x,d) for x in q))", "rounded-vector"),
+    ("v = tuple(ratio_exact(x,d) for x in q)\n    return norm_exact(v)", "rounded-vector"),
+    ("root = sqrt_exact\n    return root(ratio_exact(q,d))", "rounded-root"),
+    ("return sqrt_rational(sqrt_rational(q))", "rounded-root"),
+])
+def test_ast_gate_rejects_premature_rounding_hidden_by_checked_constructor_names(body, rule):
+    source = "def bad(q,d):\n    " + body + "\n"
+    issues = gate.scan_text(source)
+    assert any(row[2] == "bad" and row[3] == rule for row in issues), (source, rule, issues)

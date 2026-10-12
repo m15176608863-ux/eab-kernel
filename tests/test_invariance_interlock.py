@@ -400,24 +400,25 @@ def _box():
 
 
 # 参考位形（R = I、t = 0、s = 1）。kind：sep（分离）/ contact（相触或亚容差贯入）/ pen（贯入）
+# 第二列只存构造器名；数值构造由 _margin_pair_for_name 显式分派。
 MARGIN_CASES = {
     # 一般位置的分离对：最近对分别是 VE3、EV3、VF（与平行面上另一顶点并列）、平行棱（VE3/EV3 并列）
-    "sep_ve3": ("sep", lambda: (_tet().translated((0.291, 0.352, -1.217)), _box())),
-    "sep_ev3": ("sep", lambda: (_tet().translated((0.84, -0.96, -0.87)), _box())),
-    "sep_vf": ("sep", lambda: (_tet().translated((0.942, -0.066, 0.389)), _box())),
-    "sep_parallel_edges": ("sep", lambda: (_tet().translated((0.065, 0.676, 0.48)), _box())),
+    "sep_ve3": ("sep", "sep_ve3"),
+    "sep_ev3": ("sep", "sep_ev3"),
+    "sep_vf": ("sep", "sep_vf"),
+    "sep_parallel_edges": ("sep", "sep_parallel_edges"),
     # 分界点：面面相触（深度恰为 0）与亚容差贯入（3e-10 < geom_tol）
-    "touch": ("contact", lambda: (_tet().translated((0.0, 0.0, 0.4)), _box())),
-    "subtol": ("contact", lambda: (_tet().translated((0.0, 0.0, 0.4 - 3e-10)), _box())),
+    "touch": ("contact", "touch"),
+    "subtol": ("contact", "subtol"),
     # 贯入：顶点在体内；棱-棱贯入（交叉方条，无任何顶点在对方体内）
-    "deep": ("pen", lambda: (_tet().translated((0.0, 0.0, 0.3)), _box())),
-    "crossbars": ("pen", lambda: (box((0.0, 0.0, 0.45), (2.0, 0.2, 0.1)), box((0.0, 0.0, 0.0), (0.2, 2.0, 0.4)))),
+    "deep": ("pen", "deep"),
+    "crossbars": ("pen", "crossbars"),
     # 偏航 1e-5 rad 的方块叠在方块上方 0.06：最近对含 EE（候选法向恰在 B 顶棱弧的边界上，EE 冻结朝向的边界态；
     # G6 第五轮 major：frozen_ee_sign 漏了候选法向自身的噪声 /sinθ，一经旋转 + 平移就把朝向判反，冻结 gap 给 −d）
-    "sep_ee_yaw": ("sep", lambda: _yawed_stack(1e-5, 0.06)),
+    "sep_ee_yaw": ("sep", "sep_ee_yaw"),
     # 凹体：互锁块（nx=3 以控制耗时）抬起后分离 / 横移咬进
-    "ilock_sep": ("sep", lambda: _ilock_pair((0.11, -0.07, 0.3))),
-    "ilock_bite": ("pen", lambda: _ilock_pair((0.12, 0.0, 0.0))),
+    "ilock_sep": ("sep", "ilock_sep"),
+    "ilock_bite": ("pen", "ilock_bite"),
 }
 
 
@@ -433,10 +434,36 @@ def _ilock_pair(off):
     return A.translated(off), L
 
 
+def _margin_pair_for_name(name):
+    """Build the same fixed fixture through transparent first-order calls."""
+    if name == "sep_ve3":
+        return (_tet().translated((0.291, 0.352, -1.217)), _box())
+    if name == "sep_ev3":
+        return (_tet().translated((0.84, -0.96, -0.87)), _box())
+    if name == "sep_vf":
+        return (_tet().translated((0.942, -0.066, 0.389)), _box())
+    if name == "sep_parallel_edges":
+        return (_tet().translated((0.065, 0.676, 0.48)), _box())
+    if name == "touch":
+        return (_tet().translated((0.0, 0.0, 0.4)), _box())
+    if name == "subtol":
+        return (_tet().translated((0.0, 0.0, 0.4 - 3e-10)), _box())
+    if name == "deep":
+        return (_tet().translated((0.0, 0.0, 0.3)), _box())
+    if name == "crossbars":
+        return (box((0.0, 0.0, 0.45), (2.0, 0.2, 0.1)), box((0.0, 0.0, 0.0), (0.2, 2.0, 0.4)))
+    if name == "sep_ee_yaw":
+        return _yawed_stack(1e-5, 0.06)
+    if name == "ilock_sep":
+        return _ilock_pair((0.11, -0.07, 0.3))
+    if name == "ilock_bite":
+        return _ilock_pair((0.12, 0.0, 0.0))
+    raise KeyError(name)
+
 @lru_cache(maxsize=None)
 def _margin_ref(name):
     kind, make = MARGIN_CASES[name]
-    A, B = make()
+    A, B = _margin_pair_for_name(name)
     d0, lab0 = body_distance(A, B)
     ties = set()
     if kind == "sep":
@@ -590,7 +617,7 @@ def test_margin_default_relation_matches_independent_exact_oracle(name, rot, t, 
     not the unrounded ideal touching construction, are the contract.
     """
     import e5a2_surface_oracle as oracle
-    A0, B0 = MARGIN_CASES[name][1]()
+    A0, B0 = _margin_pair_for_name(name)
     A, B = _rigid(A0, ROT_3[rot], t, s), _rigid(B0, ROT_3[rot], t, s)
     expected = oracle.star_relation(A, B, 0)
     d, label = exact_margin.body_distance(A, B)

@@ -1,0 +1,28 @@
+{
+  "sources": {
+    "unpacked_sort_callback": "def bad(p, fn):\n    options = {\"key\": fn}\n    return sorted(p, **options)\n",
+    "positional_filter": "def bad(p, fn):\n    return list(filter(fn, p))\n",
+    "construct_list_initializer": "def bad(p, fn):\n    return sorted(p, **dict(key=fn))\n"
+  },
+  "results": {
+    "unpacked_sort_callback": [],
+    "positional_filter": [
+      [
+        "src/eab/r12_hidden_callback.py",
+        2,
+        "bad",
+        "closed-dynamic-call",
+        "filter(fn, p)"
+      ]
+    ],
+    "construct_list_initializer": [
+      [
+        "src/eab/r12_hidden_callback.py",
+        2,
+        "bad",
+        "closed-callback",
+        "dict(key=fn)"
+      ]
+    ]
+  }
+}

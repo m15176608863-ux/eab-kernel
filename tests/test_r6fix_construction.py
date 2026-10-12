@@ -101,10 +101,10 @@ def test_g6f06_gap_magnitude_gate_has_teeth(monkeypatch):
 
 def test_g6f08_relative_projection_gate_has_teeth(monkeypatch):
     source = inspect.getsource(M.nearest_point_on_convex_entrance)
-    step = "return point if exact else tuple(map(scalar_rational, point))"
+    step = "return point if exact else tuple(scalar_rational(_mapped_value) for _mapped_value in point)"
     assert step in source
     scope = dict(vars(M))
-    exec(source.replace(step, "return tuple(map(scalar_rational, point))"), scope)
+    exec(source.replace(step, "return tuple(scalar_rational(_mapped_value) for _mapped_value in point)"), scope)
     monkeypatch.setattr(M, "nearest_point_on_convex_entrance", scope["nearest_point_on_convex_entrance"])
     with pytest.raises(AssertionError, match="exact relative distance") as caught:
         test_g6f08_distance_and_normal_use_exact_relative_projection(F(10**8), F(1, 10**9))

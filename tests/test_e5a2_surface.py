@@ -21,7 +21,7 @@ def l_block():
 
 def placed(P,s,t):
     def transform(p):
-        x,y,z=map(F,p)
+        x,y,z=(F(_r12_item) for _r12_item in p)
         return (t+s*(3*x-4*y)/5,-2*t+s*(4*x+3*y)/5,3*t+s*z)
     return G.Polyhedron([transform(p) for p in P.verts],list(P.faces))
 

@@ -26,7 +26,7 @@ ROUND_C = 64.0          # 舍入误差放大系数（"c 几十"）：覆盖差�
 
 def coord_scale(*groups) -> float:
     """坐标量级 C = 各点集里 max |坐标|（点集可以是多边形，也可以是单点的列表）。"""
-    return max(map(abs, chain.from_iterable(chain.from_iterable(groups))), default=0.0)
+    return max((abs(_mapped_value) for _mapped_value in chain.from_iterable(chain.from_iterable(groups))), default=0.0)
 
 
 def round_floor(C: float) -> float:
@@ -66,7 +66,7 @@ def cross(a: Point, b: Point) -> float:
 
 def norm(a: Point) -> float:
     """One final checked square root of the exact supplied vector square."""
-    return _norm_exact(*map(Fraction, a))
+    return _norm_exact(*(Fraction(_mapped_value) for _mapped_value in a))
 
 
 @lru_cache(maxsize=4096)
@@ -76,7 +76,7 @@ def _norm_exact(x, y):
 
 def unit(a: Point) -> Point:
     """Normalize exact component ratios, never divide by the rounded norm."""
-    return _unit_exact(*map(Fraction, a))
+    return _unit_exact(*(Fraction(_mapped_value) for _mapped_value in a))
 
 
 @lru_cache(maxsize=4096)
@@ -85,7 +85,7 @@ def _unit_exact(x, y):
 
 
 def _area2_exact(poly):
-    P=[tuple(map(Fraction,p)) for p in poly];o=P[0]
+    P=[tuple(Fraction(_mapped_value) for _mapped_value in p) for p in poly];o=P[0]
     return sum(((a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])
                 for a,b in zip(P,P[1:]+P[:1])),Fraction(0))
 
@@ -143,7 +143,7 @@ def zero_length_edges(poly: Poly) -> list[int]:
 def vertex_turn(poly: Poly, i: int) -> float:
     """顶点 i 处 cross(e_{i-1}, e_i)：CCW 多边形 >0 为凸顶点，<0 为凹（反射）顶点。"""
     n = len(poly)
-    a, b, c = (tuple(map(Fraction, poly[k % n])) for k in (i-1, i, i+1))
+    a, b, c = (tuple(Fraction(_mapped_value) for _mapped_value in poly[k % n]) for k in (i-1, i, i+1))
     return _display_fraction(cross(sub(b, a), sub(c, b)))
 
 
@@ -153,7 +153,7 @@ def turn_angle(poly: Poly, i: int) -> float:
     用 atan2(cross, dot) 而不是 sin：sin 分不清 θ 与 π−θ（审查 r1：178° 窄缝会被 3° 容差放行）。
     """
     n = len(poly)
-    a, b, c = (tuple(map(Fraction, poly[k % n])) for k in (i-1, i, i+1))
+    a, b, c = (tuple(Fraction(_mapped_value) for _mapped_value in poly[k % n]) for k in (i-1, i, i+1))
     u, v = sub(b, a), sub(c, b)
     determinant, scalar = cross(u, v), dot(u, v)
     scale = max(abs(determinant), abs(scalar))
@@ -175,7 +175,7 @@ def turn_floor(poly: Poly, i: int) -> float:
     """
     n = len(poly)
     a, b, c = poly[(i - 1) % n], poly[i % n], poly[(i + 1) % n]
-    a, b, c = (tuple(map(Fraction, p)) for p in (a, b, c))
+    a, b, c = (tuple(Fraction(_mapped_value) for _mapped_value in p) for p in (a, b, c))
     C = max(abs(v) for p in (a, b, c) for v in p)
     length2 = min(sum((p[k]-q[k])**2 for k in (0, 1)) for p, q in ((a, b), (b, c)))
     return sqrt_rational((Fraction(ROUND_C*EPS)*C)**2/length2) if length2 else float("inf")
@@ -213,7 +213,7 @@ def reflex_vertices(poly: Poly, tol: float = 0.0) -> list[int]:
 def point_side(p: Point, a: Point, b: Point) -> float:
     """cross(b-a, p-a)：>0 在有向边 a->b 左侧。"""
     floating = any(isinstance(v, float) for point in (p, a, b) for v in point)
-    p, a, b = (tuple(map(Fraction, point)) for point in (p, a, b))
+    p, a, b = (tuple(Fraction(_mapped_value) for _mapped_value in point) for point in (p, a, b))
     exact = cross(sub(b, a), sub(p, a))
     # interior_point passes rational coordinates and needs exact ordering.
     return _display_fraction(exact) if floating else exact
@@ -226,7 +226,7 @@ def point_in_polygon(pt: Point, poly: Poly, tol: float = 0.0) -> int:
 
 
 def _point_in_polygon(pt: Point, poly: Poly, tol: float) -> int:
-    p=tuple(map(Fraction,pt));P=[tuple(map(Fraction,a)) for a in poly]
+    p=tuple(Fraction(_mapped_value) for _mapped_value in pt);P=[tuple(Fraction(_mapped_value) for _mapped_value in a) for a in poly]
     window=Fraction(tol)**2
     winding=0
     for a,b in zip(P,P[1:]+P[:1]):
@@ -247,7 +247,7 @@ def segments_properly_cross(p1: Point, p2: Point, q1: Point, q2: Point, tol: flo
     if tol < 0:raise ValueError('tol must be nonnegative')
     if tol==0:
         return orient2d(p1,p2,q1)*orient2d(p1,p2,q2)<0 and orient2d(q1,q2,p1)*orient2d(q1,q2,p2)<0
-    p1,p2,q1,q2=[tuple(map(Fraction,p)) for p in (p1,p2,q1,q2)]
+    p1,p2,q1,q2=[tuple(Fraction(_mapped_value) for _mapped_value in p) for p in (p1,p2,q1,q2)]
     window=Fraction(tol)**2
     for a,b,c,d in ((p1,p2,q1,q2),(q1,q2,p1,p2)):
         ex,ey=b[0]-a[0],b[1]-a[1];length=ex*ex+ey*ey
@@ -258,7 +258,7 @@ def segments_properly_cross(p1: Point, p2: Point, q1: Point, q2: Point, tol: flo
 
 def centroid(poly: Poly) -> Point:
     """Rational area moments, divided before rounding the final centroid."""
-    P=[tuple(map(Fraction,p)) for p in poly];o=P[0]
+    P=[tuple(Fraction(_mapped_value) for _mapped_value in p) for p in poly];o=P[0]
     relative=[(x-o[0],y-o[1]) for x,y in P]
     area2=Fraction(0);cx=cy=Fraction(0)
     for a,b in zip(relative,relative[1:]+relative[:1]):
@@ -307,7 +307,7 @@ def interior_point(poly: Poly) -> Point:
     旧规则取"离 v 最远"的顶点（G6 major 12），vx 可以穿过缺口：V 形缺口六边形上返回体外点，2-opt 随机简单
     多边形 0.1–0.25% 失败。门：tests/test_kernel2d_review.py::test_g6_12_*（独立 oracle：Fraction 射线奇偶）。
     """
-    poly = [tuple(map(Fraction, p)) for p in poly]
+    poly = [tuple(Fraction(_mapped_value) for _mapped_value in p) for p in poly]
     n = len(poly)
     iv = min(range(n), key=lambda i: (poly[i][0], poly[i][1]))
     p, v, q = poly[(iv - 1) % n], poly[iv], poly[(iv + 1) % n]
@@ -386,7 +386,7 @@ def _tri_axes(T) -> list[Point]:
 
 def _triangles_overlap(T, U, tol: float, o: Point) -> bool:
     """Triangle SAT with exact signed projection gaps and explicit length tol."""
-    T,U=[tuple(map(Fraction,p)) for p in T],[tuple(map(Fraction,p)) for p in U]
+    T,U=[tuple(Fraction(_mapped_value) for _mapped_value in p) for p in T],[tuple(Fraction(_mapped_value) for _mapped_value in p) for p in U]
     window=Fraction(tol)**2
     for P in (T,U):
         for a,b in zip(P,P[1:]+P[:1]):
@@ -426,8 +426,8 @@ def polygons_overlap(A: Poly, B: Poly, tol: float = 0.0) -> int:
     """
     if tol < 0:raise ValueError('tol must be nonnegative')
     t=Fraction(tol)
-    A=[tuple(map(Fraction,p)) for p in A]
-    B=[tuple(map(Fraction,p)) for p in B]
+    A=[tuple(Fraction(_mapped_value) for _mapped_value in p) for p in A]
+    B=[tuple(Fraction(_mapped_value) for _mapped_value in p) for p in B]
     ax0, ax1 = min(p[0] for p in A), max(p[0] for p in A)
     ay0, ay1 = min(p[1] for p in A), max(p[1] for p in A)
     bx0, bx1 = min(p[0] for p in B), max(p[0] for p in B)

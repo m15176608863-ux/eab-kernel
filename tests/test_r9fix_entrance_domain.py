@@ -25,7 +25,7 @@ def _pose(points, scale, rotation, translation=(0, 0)):
 def _finite_contact(A, B, x, label):
     """Independent closed point/segment or collinear segment intersection."""
     A = [(F(p[0])+x[0], F(p[1])+x[1]) for p in A]
-    B = [tuple(map(F, p)) for p in B]
+    B = [tuple((F(_r12_item) for _r12_item in p)) for p in B]
     kind, ai, bj = label
     def on(p, a, b):
         return ((b[0]-a[0])*(p[1]-a[1]) == (b[1]-a[1])*(p[0]-a[0])

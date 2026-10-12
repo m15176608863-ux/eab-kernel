@@ -1,0 +1,23 @@
+{
+  "input": "round6_unreviewed_sites.json",
+  "input_sha256": "29e70917848e4444bcdcbea97cae602a80ba3626ba099c786cf1a333cdb1de84",
+  "review_kind": "source-context review only; NOT waiver approval",
+  "reviewed_sites": 94,
+  "reviewed_functions": 21,
+  "category_counts": {
+    "legacy_approximate_oracle": 34,
+    "test_execution_legacy_contact_window": 2,
+    "given_input_fixture_boundary": 44,
+    "direct_fixture_dispatch_with_rounded_inputs": 4,
+    "bounded_legacy_diagnostic": 5,
+    "test_execution_direct_api": 1,
+    "legacy_approximate_diagnostic": 4
+  },
+  "all_raw_keys_covered_once": true,
+  "waiver_approvals": 0,
+  "limits": [
+    "固定采样输入、近似数值诊断、被测 API 执行与精确 oracle 必须区分；此文件不修改 policy。",
+    "真实 float 差/Gram/见证经根或范数的站点如实保留为遗留，不声明无先舍入。",
+    "本审核针对 round6 当前源码快照；后续任何源码修改须重新匹配 AST 与所在作用域，不可整体重新批准。"
+  ]
+}

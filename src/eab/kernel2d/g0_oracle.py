@@ -6,7 +6,6 @@ projections/events. Final display uses the independent Fraction-midpoint referen
 from eab.oracle_construction import sqrt_exact, scalar_exact
 from fractions import Fraction as F
 from math import lcm
-from functools import cmp_to_key
 
 
 def sqrt_display(q):
@@ -19,7 +18,7 @@ def points(P):
 
 
 def translate(P, x):
-    x, y = map(F, x)
+    x, y = (F(_mapped_value) for _mapped_value in x)
     return tuple((F(a)+x, F(b)+y) for a, b in P)
 
 
@@ -139,7 +138,12 @@ def boundary_has_exterior(A, B):
             return half(u)-half(v)
         determinant = u[0]*v[1]-u[1]*v[0]
         return -1 if determinant > 0 else (1 if determinant < 0 else 0)
-    ordered = sorted(rays, key=cmp_to_key(compare))
+    ordered = []
+    for ray in rays:
+        at = len(ordered)
+        while at and compare(ordered[at-1], ray) > 0:
+            at -= 1
+        ordered.insert(at, ray)
     for a, b in zip(ordered, ordered[1:]+ordered[:1]):
         dx, dy = a[0]+b[0], a[1]+b[1]
         if dx == dy == 0:
@@ -161,7 +165,7 @@ def ray_exit(A,B,u):
     seams. Non-overlap events/intervals therefore require a local exterior
     sector certificate; merely inspecting adjacent ray intervals is unsound.
     """
-    A,B=points(A),points(B);ux,uy=map(F,u)
+    A,B=points(A),points(B);ux,uy=(F(_mapped_value) for _mapped_value in u)
     uu=ux*ux+uy*uy
     if not uu:raise ValueError('brute_ray_exit: direction u must be non-zero')
     hits=set()

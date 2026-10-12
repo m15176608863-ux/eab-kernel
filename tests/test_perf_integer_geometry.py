@@ -79,7 +79,7 @@ def _move(P, t, s, rounded=False):
         x, y = F(3, 5)*x-F(4, 5)*y, F(4, 5)*x+F(3, 5)*y
         y, z = F(5, 13)*y-F(12, 13)*z, F(12, 13)*y+F(5, 13)*z
         p = (s*x+t, s*y-2*t, s*z+3*t)
-        points.append(tuple(map(scalar_exact, p)) if rounded else p)
+        points.append(tuple(scalar_exact(component) for component in p) if rounded else p)
     return Polyhedron(points, list(P.faces))
 
 
@@ -102,7 +102,7 @@ def sat_cases():
 
 
 def _sat_input(A, B):
-    av, bv = tuple(map(G.vector, A.verts)), tuple(map(G.vector, B.verts))
+    av, bv = tuple(G.vector(point) for point in A.verts), tuple(G.vector(point) for point in B.verts)
     at, bt = G.triangles(A), G.triangles(B)
     return av, bv, at, bt, G._planes(at), G._planes(bt)
 

@@ -158,7 +158,7 @@ def _twist_transform(y, d, dim, sign):
     # LP calls this with Fractions: retain those exact certificates. Only
     # floating callers request final floating output, after cancellation.
     floating = any(isinstance(v, float) for v in (*y, *d))
-    y, d = list(map(Fraction, y)), tuple(map(Fraction, d))
+    y, d = list(Fraction(_mapped_value) for _mapped_value in y), tuple(Fraction(_mapped_value) for _mapped_value in d)
     if dim == 2:
         result = [y[0] + sign*y[2]*d[1], y[1] - sign*y[2]*d[0], y[2]]
     else:
@@ -190,12 +190,12 @@ def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
     """
     if dim == 2:
         return [(-n[1], n[0])]
-    n = tuple(map(Fraction, n))
+    n = tuple(Fraction(_mapped_value) for _mapped_value in n)
     if tangent is None:
         a = (1, 0, 0) if abs(n[0]) < 0.9 else (0, 1, 0)
         t1 = (a[1] * n[2] - a[2] * n[1], a[2] * n[0] - a[0] * n[2], a[0] * n[1] - a[1] * n[0])
     else:
-        tangent = tuple(map(Fraction, tangent))
+        tangent = tuple(Fraction(_mapped_value) for _mapped_value in tangent)
         nn = sum(v * v for v in n)
         tn = sum(t * v for t, v in zip(tangent, n)) / nn
         t1 = tuple(tangent[i] - tn * n[i] for i in range(3))
@@ -210,7 +210,7 @@ def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
     t1 = unit_rational(t1)
     # The model defines t2 = n cross the returned binary64 t1. Complete each
     # cross-product subtraction exactly before rounding that final component.
-    first = tuple(map(Fraction, t1))
+    first = tuple(Fraction(_mapped_value) for _mapped_value in t1)
     t2 = tuple(scalar_rational(v) for v in (
         n[1] * first[2] - n[2] * first[1], n[2] * first[0] - n[0] * first[2],
         n[0] * first[1] - n[1] * first[0]))
@@ -256,7 +256,7 @@ class LimitContact:
         if not (m > 0.0 and all(math.isfinite(v) for v in self.normal)):   # NaN 在任一分量都拒：max() 对 NaN 的比较恒假
 
             raise ValueError(f"contact normal must be a finite nonzero vector, got {self.normal!r}")
-        exact = tuple(map(Fraction, self.normal))
+        exact = tuple(Fraction(_mapped_value) for _mapped_value in self.normal)
         square = sum(v*v for v in exact)
         # Model directions are rounded only after the complete normalization.
         # In particular v/m/n can round a representable subnormal component
@@ -264,8 +264,7 @@ class LimitContact:
         self.normal = unit_rational(exact)
         # G6 第四轮 minor：cohesion / area 为 NaN 或负数曾被 `cohesion > 0 and area > 0` 静默当成"无黏聚"，α 按纯摩擦给出、
         # 自校验照常通过；mu 为 NaN 只在 Fraction(nan) 处以无关信息报错。非有限输入要在入口响亮失败（与法向同一家族）
-        for name in ("mu", "cohesion", "area"):
-            v = getattr(self, name)
+        for name, v in (("mu", self.mu), ("cohesion", self.cohesion), ("area", self.area)):
             if not (math.isfinite(v) and v >= 0.0):
                 raise ValueError(f"contact {name} must be finite and non-negative, got {v!r}")
 
@@ -402,7 +401,7 @@ def _wrench_rounding(w: list[float], dim: int, R: float) -> list[Fraction]:
     # neither a subnormal load nor its smaller noise budget is displayed first.
     def scaled_norm(values):
         values = tuple(_rational(v) for v in values)
-        scale = max(map(abs, values), default=Fraction(0))
+        scale = max((abs(_mapped_value) for _mapped_value in values), default=Fraction(0))
         if not scale:
             return Fraction(0)
         squared = sum((v/scale)**2 for v in values)

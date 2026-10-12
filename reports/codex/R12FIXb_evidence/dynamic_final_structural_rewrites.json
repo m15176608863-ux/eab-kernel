@@ -1,0 +1,52 @@
+[
+  {
+    "path": "src/eab/dual.py",
+    "function": "Dual.__rsub__",
+    "before": "        return (-self).__add__(o)",
+    "after": "        return -self + o",
+    "reason": "Direct supported-number arithmetic, preserving negation then addition.",
+    "before_sha256": "9901b2f07d84ac11b335e3571a015d2166f245fad8abddd3e76d03578a849c26",
+    "after_sha256": "cfdb3c6679f612180f1b28353731eb67694bb025c2e2b995bfa3363554435d01",
+    "line_ending_used": "b'\\n'"
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "function": "_quickhull_once",
+    "before": "    i2 = max(cand,key=off_line)",
+    "after": "    i2 = max((off_line(i), -_rank_index, i) for _rank_index, i in enumerate(cand))[2]",
+    "reason": "Each pure exact key once, first maximum retained via negative stable index.",
+    "before_sha256": "a571c1ee208680145cc202efc348021d0e014d761207f03ad8c18ec54177dbc6",
+    "after_sha256": "8d0f12671afd04878f1afa8ded1c4970c99843dc1d3ee6c95087eb0b4ffddb0a",
+    "line_ending_used": "b'\\n'"
+  },
+  {
+    "path": "src/eab/kernel2d/exact.py",
+    "function": "entrance_membership_exact",
+    "before": "    ordered = sorted(rays, key=cmp_to_key(compare))",
+    "after": "    ordered = []\n    for ray in rays:\n        at = len(ordered)\n        while at and compare(ordered[at-1], ray) > 0:\n            at -= 1\n        ordered.insert(at, ray)",
+    "reason": "Direct pure exact comparator; stable insertion only moves strictly greater predecessors.",
+    "before_sha256": "c8899fa970b69f09855fe7f326f8960715374362df62f38af757ea6668af6453",
+    "after_sha256": "78129139217c46f355cf0d1fc3d3d631a7d25999f9e873e9b1a9ec578b75956c",
+    "line_ending_used": "b'\\r\\n'"
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "function": "boundary_has_exterior",
+    "before": "    ordered = sorted(rays, key=cmp_to_key(compare))",
+    "after": "    ordered = []\n    for ray in rays:\n        at = len(ordered)\n        while at and compare(ordered[at-1], ray) > 0:\n            at -= 1\n        ordered.insert(at, ray)",
+    "reason": "Independent oracle comparator retained locally; stable exact comparison, no shared production primitive.",
+    "before_sha256": "c02c2d86af18c46bf9a3c5690c8fcbd2f3c3be841ba344493bd5ec173da6f9d2",
+    "after_sha256": "07f2ca70df03d909a8579c7a930317e160310a64efa41e6ab1607c6542ea39c0",
+    "line_ending_used": "b'\\n'"
+  },
+  {
+    "path": "src/eab/kernel3d/entrance_topology.py",
+    "function": "_chamber_directions",
+    "before": "        ordered = sorted(lines,key=cmp_to_key(_angular_compare))",
+    "after": "        ordered = []\n        for line in lines:\n            at = len(ordered)\n            while at and _angular_compare(ordered[at-1], line) > 0:\n                at -= 1\n            ordered.insert(at, line)",
+    "reason": "Direct _angular_compare unchanged; stable insertion only moves strictly greater predecessors.",
+    "before_sha256": "49019288e7913483bffd6a8a4549a5d15c2f4c95f8254b113c532bb2120aa05c",
+    "after_sha256": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
+    "line_ending_used": "b'\\n'"
+  }
+]

@@ -18,7 +18,7 @@ def surface(P):
 
 @lru_cache(maxsize=64)
 def _surface(vertices, faces):
-    points = tuple(tuple(map(Fraction, p)) for p in vertices)
+    points = tuple(tuple(Fraction(_mapped_value) for _mapped_value in p) for p in vertices)
     indices = {point: i for i, point in enumerate(points)}
     rings, labels = [], []
     for fi, face in enumerate(faces):

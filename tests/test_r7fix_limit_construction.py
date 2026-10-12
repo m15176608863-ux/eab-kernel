@@ -44,7 +44,7 @@ def test_limit_normal_nonzero_unrepresentable_component_fails_loud():
 
 def test_limit_normal_early_rounding_mutation_is_caught(monkeypatch):
     source = textwrap.dedent(inspect.getsource(LimitContact.__post_init__))
-    begin = source.index('    exact = tuple(map(Fraction, self.normal))')
+    begin = source.index('    exact = tuple(Fraction(_mapped_value) for _mapped_value in self.normal)')
     end = source.index('    # G6 第四轮 minor', begin)
     source = source[:begin] + ('    n = sum((v/m)**2 for v in self.normal)**.5\n'
                               '    self.normal = tuple(v/m/n for v in self.normal)\n') + source[end:]

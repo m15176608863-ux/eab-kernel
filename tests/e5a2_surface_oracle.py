@@ -53,7 +53,7 @@ def _ring_triangles(vertices,face):
 
 
 def _tetrahedra(P):
-    v=[tuple(map(F,p)) for p in P.verts]
+    v=[tuple(F(_mapped_value) for _mapped_value in p) for p in P.verts]
     center=tuple(sum(p[k] for p in v)/len(v) for k in range(3))
     triangles=[tri for f in P.faces for tri in _ring_triangles(v,f)]
     planes=[(_times(_minus(b,a),_minus(c,a)),a) for a,b,c in triangles]

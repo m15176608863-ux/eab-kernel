@@ -1,0 +1,6 @@
+{
+  "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\nmarker: vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True)\ndef bad():\n    return norm_rational(__annotations__[\"marker\"])\n",
+  "issues": [],
+  "actual": 0.0,
+  "expected": 5e-324
+}

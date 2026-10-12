@@ -1,0 +1,197 @@
+{
+  "review": "Read-only integrity audit; no src/tests/tools/policy/docs modifications. UTF-8 BOM decoded identically to repository scanner.",
+  "policy_sha256": "115f74bf16f1cf9b4d9141441d13186ede28d0fc5be924531abf8738221e697a",
+  "waiver_count": 16936,
+  "path_count": 162,
+  "context_or_node_errors": [],
+  "duplicate_exact_keys": 0,
+  "empty_reasons": [],
+  "unreviewed_marker_rows": [],
+  "dependency_count": 213,
+  "dependencies_match": true,
+  "dependency_errors": {
+    "missing": [],
+    "added": [],
+    "changed": []
+  },
+  "imports": {
+    "count": 621,
+    "unique": true,
+    "wildcards": []
+  },
+  "members": {
+    "count": 432,
+    "unique": true,
+    "wildcards": []
+  },
+  "limited_manifest_negative_probes": [
+    {
+      "label": "approved_import_still_unproved",
+      "rules": [
+        "closed-unproved-call"
+      ],
+      "passed": true
+    },
+    {
+      "label": "approved_namespace_still_unproved",
+      "rules": [
+        "closed-unproved-call"
+      ],
+      "passed": true
+    },
+    {
+      "label": "unknown_member",
+      "rules": [
+        "closed-unknown-member",
+        "closed-unproved-call"
+      ],
+      "passed": true
+    },
+    {
+      "label": "unknown_import_tail",
+      "rules": [
+        "closed-import",
+        "closed-import-call"
+      ],
+      "passed": true
+    },
+    {
+      "label": "local_intrinsic_shadow",
+      "rules": [
+        "closed-shadowed-intrinsic"
+      ],
+      "passed": true
+    },
+    {
+      "label": "unknown_parameter_callback",
+      "rules": [
+        "closed-unknown-call",
+        "closed-unproved-call"
+      ],
+      "passed": true
+    }
+  ],
+  "literal_integer_boundary_probes": [
+    {
+      "code": "1+2",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "code": "(1<<1075)+3",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "code": "(-2)**2",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "code": "5//2",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "code": "5%2",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "code": "2**0",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "code": "1/2",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    },
+    {
+      "code": "2**-1075",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    },
+    {
+      "code": "1.0*2",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    },
+    {
+      "code": "x*2",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    },
+    {
+      "code": "2**True",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    },
+    {
+      "code": "True+1",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    },
+    {
+      "code": "2**(1+1)",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    },
+    {
+      "code": "Fraction(1)*2",
+      "expected": false,
+      "actual": false,
+      "passed": true
+    }
+  ],
+  "boundary": "Import/member manifests authorize fixed identities, not clean-return summaries. Ordinary unproved calls still fail. Manual fixed-baseline waiver admissions are not machine proofs; explicit drivers/scaffolding and arbitrary external runtime protocols remain outside scope.",
+  "passed": true,
+  "benign_marker_matches": {
+    "rows": [
+      [
+        11628,
+        "tests/test_geom3_merge.py",
+        "_assert_exact_merge"
+      ],
+      [
+        11629,
+        "tests/test_geom3_merge.py",
+        "_assert_exact_merge"
+      ],
+      [
+        11632,
+        "tests/test_geom3_merge.py",
+        "_assert_exact_merge"
+      ],
+      [
+        11634,
+        "tests/test_geom3_merge.py",
+        "_assert_exact_merge"
+      ],
+      [
+        11643,
+        "tests/test_geom3_merge.py",
+        "_assert_exact_merge"
+      ],
+      [
+        11645,
+        "tests/test_geom3_merge.py",
+        "_assert_exact_merge"
+      ]
+    ],
+    "explanation": "The token todo names the actual integer-face-ID worklist in _assert_exact_merge. These six reasons are completed topology/container reviews, not unfinished TODO annotations."
+  }
+}

@@ -325,7 +325,8 @@ def _pocketed_slab(dents=frozenset({(1, 1), (0, 2)})):
     默认 (1,1) 与 (0,2)：7 个平顶格**共棱连通**，而两个凹坑在 (1,2) 顶点处相触 ⇒ 平顶区域的
     边界在 (1,2) 处 pinch（一个贴着外边界的洞），不是简单多边形。"""
     V = [(scalar_exact(i), scalar_exact(j), 1.0) for i in range(4) for j in range(4)]          # idx = 4i + j
-    T = lambda i, j: 4 * i + j                                                    # noqa: E731
+    def T(i, j):
+        return 4 * i + j                                                    # noqa: E731
     b = [(0.0, 0.0, 0.0), (3.0, 0.0, 0.0), (3.0, 3.0, 0.0), (0.0, 3.0, 0.0)]
     b0 = len(V)
     V += b

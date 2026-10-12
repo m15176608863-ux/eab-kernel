@@ -142,11 +142,10 @@ def _vv_opposite_vertex(c: dict, sg, block_a: int, block_b: int) -> int:
     intersection is unchanged by that swap. Geometry, when present, verifies
     block incidence; no distance tolerance or nearest-point guess is used.
     """
-    canon = sg.canon if sg is not None else (lambda v: v)
     names = ("p1", "p2", "p3", "m4", "m5", "m6")
     if any(k not in c or c[k] <= 0 or int(c[k]) != c[k] for k in names):
         raise ValueError("VV reference requires six positive vertex ids")
-    p1, p2, p3, q1, q2, q3 = (canon(int(c[k])) for k in names)
+    p1, p2, p3, q1, q2, q3 = (sg.canon(int(c[k])) if sg is not None else int(c[k]) for k in names)
     shared = {p1, p2, p3} & {q1, q2, q3}
     if len(shared) != 2 or p1 not in shared:
         raise ValueError(f"VV reference has ambiguous shared corners: {sorted(shared)}")
@@ -225,9 +224,8 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
         raw_init = int(c["m0_2"]) if "m0_2" in c else None
 
         sg = geoms.get(step)
-        canon = sg.canon if sg is not None else (lambda v: v)
         extra: dict = {}
-        fa = Feature(block_a, "vertex", canon(int(c["p1"]))) if ("p1" in c and block_a >= 0) else None
+        fa = Feature(block_a, "vertex", (sg.canon(int(c["p1"])) if sg is not None else int(c["p1"]))) if ("p1" in c and block_a >= 0) else None
         fb = None
         if "p2" in c and block_b >= 0:
             if cover == CoverType.VV:

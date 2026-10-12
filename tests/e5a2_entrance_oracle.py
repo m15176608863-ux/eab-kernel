@@ -34,8 +34,8 @@ def _canonical(v):
 
 def _model(av, bv, start=(0, 0, 0), velocity=(0, 0, 0)):
     a = [tuple(F(c)+F(t) for c, t in zip(p, start)) for p in av]
-    b = [tuple(map(F, p)) for p in bv]
-    velocity = tuple(map(F, velocity))
+    b = [tuple(F(_mapped_value) for _mapped_value in p) for p in bv]
+    velocity = tuple(F(_mapped_value) for _mapped_value in velocity)
     denominator = lcm(*(x.denominator for p in a+b+[velocity] for x in p))
     a, b, (velocity,) = [tuple(tuple(int(x*denominator) for x in p) for p in seq)
                          for seq in (a, b, [velocity])]
@@ -64,7 +64,7 @@ def convex_overlap(av, bv):
 
 def assert_supporting_surface(vertices, faces):
     """Check the convex-oracle precondition on supplied faces, exactly."""
-    v = [tuple(map(F, p)) for p in vertices]
+    v = [tuple(F(_mapped_value) for _mapped_value in p) for p in vertices]
     denominator = lcm(*(x.denominator for p in v for x in p))
     v = [tuple(int(x*denominator) for x in p) for p in v]
     for face in faces:

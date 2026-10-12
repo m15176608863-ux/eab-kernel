@@ -1,0 +1,41 @@
+........................................................................ [  5%]
+........................................................................ [ 10%]
+........................................................................ [ 15%]
+........................................................................ [ 21%]
+........................................................................ [ 26%]
+........................................................................ [ 31%]
+........................................................................ [ 36%]
+........................................................................ [ 42%]
+........................................................................ [ 47%]
+........................................................................ [ 52%]
+........................................................................ [ 57%]
+........................................................................ [ 63%]
+........................................................................ [ 68%]
+........................................................................ [ 73%]
+........................................................................ [ 79%]
+........................................................................ [ 84%]
+........................................................................ [ 89%]
+........................................................................ [ 94%]
+.......................................................................  [100%]
+============================ slowest 20 durations =============================
+71.37s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[drop_VE_subset]
+54.94s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[no_EV_covers]
+36.52s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[strict_cone_only]
+36.44s call     tests/test_bb52_g1.py::test_g0_exit_completeness_is_blind_to_vv_by_construction
+34.05s setup    tests/test_bb52_g1.py::test_geometry_reconstruction
+25.85s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[no_VV_covers]
+17.28s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[strict_cone_only]
+16.78s call     tests/test_bb52_g1.py::test_g0_rerun_replays_the_original_1186_translations
+5.89s call     tests/test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal
+5.57s call     tests/test_g4_multistep.py::test_static_prior_verdict_under_the_df22_truth
+5.50s call     tests/test_lp_certificates.py::test_accuracy_against_the_exact_rational_optimum[1-1149]
+4.09s call     tests/test_limit.py::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k
+3.87s call     tests/test_margin_exact.py::test_content_cache_is_value_identical_to_the_uncached_exact_path
+3.58s call     tests/test_g4_multistep.py::test_g4_truth_is_the_df22_final_open_close_judgment[bb52_N10]
+3.45s call     tests/test_g4_multistep.py::test_bb52_n10_pinned
+3.19s call     tests/test_lp_certificates.py::test_accuracy_against_the_exact_rational_optimum[1-1455]
+3.01s call     tests/test_covers3_g0_vote2.py::test_vote2_has_teeth_every_single_dropped_facet_is_caught
+2.28s call     tests/test_g4_multistep.py::test_w025_n10_pinned
+2.05s call     tests/test_g4_multistep.py::test_g4_truth_is_the_df22_final_open_close_judgment[bbW025_N10]
+1.75s call     tests/test_lp_certificates.py::test_old_badly_scaled_limit_formulation_is_answered_exactly
+1367 passed in 426.60s (0:07:06)

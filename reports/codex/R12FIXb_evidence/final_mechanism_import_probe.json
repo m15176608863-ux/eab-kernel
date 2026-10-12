@@ -1,0 +1,84 @@
+[
+  {
+    "label": "new_module_direct",
+    "source": "from probe.safe import square\ndef use(q:int):\n    return square(q)\n",
+    "issues": []
+  },
+  {
+    "label": "new_module_alias",
+    "source": "from probe import safe\ndef use(q:int):\n    c=safe\n    return c.square(q)\n",
+    "issues": []
+  },
+  {
+    "label": "new_module_constant",
+    "source": "from probe.safe import LABEL\ndef use():\n    return LABEL\n",
+    "issues": []
+  },
+  {
+    "label": "missing_import",
+    "source": "from no_such_package import unseen\ndef use(q):\n    return unseen(q)\n",
+    "issues": [
+      [
+        "src/probe/client.py",
+        1,
+        "<module>",
+        "closed-import",
+        "from no_such_package import unseen"
+      ],
+      [
+        "src/probe/client.py",
+        3,
+        "use",
+        "closed-import-call",
+        "unseen(q)"
+      ],
+      [
+        "src/probe/client.py",
+        3,
+        "use",
+        "closed-unproved-call",
+        "unseen(q)"
+      ]
+    ]
+  },
+  {
+    "label": "existing_dynamic_callee",
+    "source": "from probe.dynamic import run\ndef bad(q):\n    return run(q)\n",
+    "issues": [
+      [
+        "src/probe/client.py",
+        3,
+        "bad",
+        "closed-import-call",
+        "run(q)"
+      ],
+      [
+        "src/probe/client.py",
+        3,
+        "bad",
+        "closed-unproved-call",
+        "run(q)"
+      ]
+    ]
+  },
+  {
+    "label": "module_written",
+    "source": "from probe import safe\ndef bad(q):\n    c=safe\n    c.square=q\n    return safe.square(q)\n",
+    "issues": [
+      [
+        "src/probe/client.py",
+        5,
+        "bad",
+        "closed-unknown-member",
+        "safe.square(q)"
+      ],
+      [
+        "src/probe/client.py",
+        5,
+        "bad",
+        "closed-unproved-call",
+        "safe.square(q)"
+      ]
+    ]
+  }
+]

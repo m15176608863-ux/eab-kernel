@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "gen_frame",
+    "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\ndef bad():\n    g=(None for p in [vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True)])\n    next(g)\n    return norm_rational(g.gi_frame.f_locals[\"p\"])\n",
+    "issues": [],
+    "actual": 0.0
+  },
+  {
+    "kind": "int_fraction",
+    "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\ndef bad():\n    q=(Fraction(1,3),Fraction(1,3))\n    return norm_rational(tuple(int(x) for x in q))\n",
+    "issues": [],
+    "actual": 0.0
+  },
+  {
+    "kind": "percent_float",
+    "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\ndef bad():\n    q=(Fraction(1,2**1075),Fraction(1,2**1075))\n    return norm_rational(tuple(Fraction(\"%g\" % x) for x in q))\n",
+    "issues": [],
+    "actual": 0.0
+  }
+]

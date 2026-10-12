@@ -1,0 +1,62 @@
+[
+  {
+    "kind": "positional",
+    "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\ndef bad(q=vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True)):\n    return norm_rational(q)\n",
+    "issues": [
+      [
+        "src/eab/r12_default_probe.py",
+        4,
+        "bad",
+        "rounded-vector",
+        "norm_rational(q)"
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 5e-324
+  },
+  {
+    "kind": "keyword_only",
+    "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\ndef bad(*,q=vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True)):\n    return norm_rational(q)\n",
+    "issues": [
+      [
+        "src/eab/r12_default_probe.py",
+        4,
+        "bad",
+        "rounded-vector",
+        "norm_rational(q)"
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 5e-324
+  },
+  {
+    "kind": "name",
+    "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\nready=vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True)\ndef bad(q=ready):\n    return norm_rational(q)\n",
+    "issues": [
+      [
+        "src/eab/r12_default_probe.py",
+        5,
+        "bad",
+        "rounded-vector",
+        "norm_rational(q)"
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 5e-324
+  },
+  {
+    "kind": "container",
+    "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\nready=(vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True),)\ndef bad(q=ready[0]):\n    return norm_rational(q)\n",
+    "issues": [
+      [
+        "src/eab/r12_default_probe.py",
+        5,
+        "bad",
+        "rounded-vector",
+        "norm_rational(q)"
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 5e-324
+  }
+]

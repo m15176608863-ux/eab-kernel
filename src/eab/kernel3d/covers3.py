@@ -61,7 +61,8 @@ def _qedge(P, e):
 
 @lru_cache(maxsize=8192)
 def _qedge_vector_cached(a, b, vector_implementation):
-    return sub(vector_implementation(b), vector_implementation(a))
+    # Implementation arguments are cache-identity data only; calls stay named.
+    return sub(_qvector(b), _qvector(a))
 
 
 def _qnormal(P, fi):
@@ -85,7 +86,7 @@ def _qincident(P, vi):
 @lru_cache(maxsize=8192)
 def _qincident_cached(vertices, faces, vi, edge_implementation):
     P = Polyhedron(list(vertices), list(faces))
-    return tuple(edge_implementation(P, (vi, e[1] if e[0] == vi else e[0]))
+    return tuple(_qedge(P, (vi, e[1] if e[0] == vi else e[0]))
                  for e in P.edges() if vi in e)
 
 
@@ -118,7 +119,7 @@ def _squared_tol(tol):
 
 @lru_cache(maxsize=16384)
 def _qnorm2(v, dot_implementation):
-    return dot_implementation(v, v)
+    return dot(v, v)
 
 
 @lru_cache(maxsize=8192)
@@ -139,7 +140,7 @@ def _qvertex_state_cached(edges, d, tol, band_implementation):
     strict = True
     for e in edges:
         value = dot(d, e)
-        if band_implementation(value, d, e, tol):
+        if _outside_dot_band(value, d, e, tol):
             return -1
         if value >= 0:
             strict = False
@@ -185,10 +186,10 @@ def _qedge_contains(P, e, d, tol=0.0):
 @lru_cache(maxsize=8192)
 def _qedge_frame_cached(t, n1, n2, cross_implementation, dot_implementation):
     """Same content/implementation key; store positive-rescaled integer rays."""
-    return (dot_implementation(cross_implementation(n1, n2), t) > 0,
+    return (dot(cross(n1, n2), t) > 0,
             _integer_ray(t),
-            _integer_ray(cross_implementation(t, n1)),
-            _integer_ray(cross_implementation(n2, t)))
+            _integer_ray(cross(t, n1)),
+            _integer_ray(cross(n2, t)))
 
 
 def _clamp01(s: float) -> float:
@@ -213,10 +214,9 @@ def _closest_on_face_boundary(x: Vec3, P: Polyhedron, fi: int) -> Vec3:
 
 def _face_witness(x: Vec3, g: float, P: Polyhedron, fi: int, lng: float) -> tuple[Vec3, bool]:
     """Exact projection extent; an explicit length window only expands acceptance."""
-    locate = geom3.face_polygon_locate
-    if locate(x, P, fi, max(0.0, lng)) < 0:
+    if geom3.face_polygon_locate(x, P, fi, max(0.0, lng)) < 0:
         return _float_vector(x), False
-    witness = x if locate(x, P, fi, 0.0) >= 0 else _closest_on_face_boundary(x, P, fi)
+    witness = x if geom3.face_polygon_locate(x, P, fi, 0.0) >= 0 else _closest_on_face_boundary(x, P, fi)
     return _float_vector(witness), True
 
 
@@ -317,11 +317,11 @@ def _qclosest_triangle(a, b, c):
                for u, v in ((b, c), (c, a), (a, b))):
             return p
     candidates = [_qclosest_segment(a, b), _qclosest_segment(b, c), _qclosest_segment(c, a)]
-    return min(candidates, key=lambda x: dot(x, x))
+    return min((dot(x, x), _rank_index, x) for _rank_index, x in enumerate(candidates))[2]
 
 
 def _closest_point_on_triangle(a: Vec3, b: Vec3, c: Vec3) -> Vec3:
-    return _float_vector(_qclosest_triangle(*map(_qvector, (a, b, c))))
+    return _float_vector(_qclosest_triangle(*(_qvector(_mapped_value) for _mapped_value in (a, b, c))))
 
 
 def _qtetra_contains_origin(a, b, c, d):
@@ -350,7 +350,7 @@ def _qclosest_simplex(points):
     scale = lcm(*(c.denominator for p in points for c in p))
     integer = tuple(tuple(c.numerator * (scale // c.denominator) for c in p) for p in points)
     indices = range(len(points))
-    first = min(indices, key=lambda i: dot(integer[i], integer[i]))
+    first = min((dot(integer[i], integer[i]), _rank_index, i) for _rank_index, i in enumerate(indices))[2]
     best, den, support = integer[first], 1, (points[first],)
     best_num, best_den2 = dot(best, best), 1
     for i, j in combinations(indices, 2):
@@ -391,10 +391,10 @@ def _qclosest_hull(pts):
     """
     if not pts:
         raise ValueError("empty point set")
-    point = min(pts, key=lambda x: dot(x, x))
+    point = min((dot(x, x), _rank_index, x) for _rank_index, x in enumerate(pts))[2]
     support = (point,)
     while True:
-        q = min(pts, key=lambda x: dot(x, point))
+        q = min((dot(x, point), _rank_index, x) for _rank_index, x in enumerate(pts))[2]
         if dot(q, point) >= dot(point, point):
             return point
         previous = dot(point, point)
@@ -411,7 +411,7 @@ def closest_point_of_convex_hull_to_origin(pts: list[Vec3]) -> Vec3:
     reads the rational result, never this rounded construction. There is no
     thickness or barycentric tolerance, including for thin simplices.
     """
-    return _float_vector(_qclosest_hull(tuple(map(_qvector, pts))))
+    return _float_vector(_qclosest_hull(tuple(_qvector(_mapped_value) for _mapped_value in pts)))
 
 
 def cone_relint_direction(g: list[Vec3], tol: float = 1e-12) -> Vec3 | None:
@@ -442,7 +442,7 @@ def cones_intersect_relint(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: 
     tol is retained for call compatibility but cannot discard a thin true cone.
     """
     return _cone_relint_cached(tuple(A.verts), tuple(A.faces), ia,
-                              tuple(B.verts), tuple(B.faces), ib,
+                              tuple(B.verts), tuple(B.faces), ib, False,
                               (cone_constraints, _qincident, _qedge, _qclosest_hull,
                                _qclosest_simplex, _qtetra_contains_origin, _normalised_constraint, geom3.exact_surface))
 
@@ -450,15 +450,15 @@ def cones_intersect_relint(A: Polyhedron, ia: int, B: Polyhedron, ib: int, tol: 
 def _source_cones_intersect_relint(A, ia, B, ib):
     """Exact descriptor feasibility for source-labelled VV3, not solid API."""
     return _cone_relint_cached(tuple(A.verts), tuple(A.faces), ia,
-                              tuple(B.verts), tuple(B.faces), ib,
+                              tuple(B.verts), tuple(B.faces), ib, True,
                               (_source_cone_constraints, _qincident, _qedge, _qclosest_hull,
                                _qclosest_simplex, _qtetra_contains_origin, _normalised_constraint))
 
 
 @lru_cache(maxsize=8192)
-def _cone_relint_cached(av, af, ia, bv, bf, ib, implementations):
+def _cone_relint_cached(av, af, ia, bv, bf, ib, source, implementations):
     A, B = Polyhedron(list(av), list(af)), Polyhedron(list(bv), list(bf))
-    g = implementations[0](A, ia, B, ib)
+    g = _source_cone_constraints(A, ia, B, ib) if source else cone_constraints(A, ia, B, ib)
     if not g:
         return False
     points = tuple(_normalised_constraint(x) for x in g if any(x))
@@ -527,7 +527,7 @@ def _qclosest_params(p1, d1, p2, d2):
 
 def _closest_params(p1: Vec3, d1: Vec3, p2: Vec3, d2: Vec3) -> tuple[float, float] | None:
     """Exact parallel decision and rational line parameters, float output only."""
-    result = _qclosest_params(*map(_qvector, (p1, d1, p2, d2)))
+    result = _qclosest_params(*(_qvector(_mapped_value) for _mapped_value in (p1, d1, p2, d2)))
     return None if result is None else vector_rational(result)
 
 
@@ -810,17 +810,17 @@ def facet_gap3(A: Polyhedron, B: Polyhedron, label: tuple, x: Vec3) -> float:
 @lru_cache(maxsize=128)
 def _support_planes_cached(av, af, bv, bf, labels, implementations):
     A, B = Polyhedron(list(av), list(af)), Polyhedron(list(bv), list(bf))
-    aq, bq = tuple(map(_qvector, av)), tuple(map(_qvector, bv))
+    aq, bq = tuple(_qvector(_mapped_value) for _mapped_value in av), tuple(_qvector(_mapped_value) for _mapped_value in bv)
     out = []
     for fi in range(len(bf)):
         n = _qnormal(B, fi)
-        a = min(aq, key=lambda x: dot(n, x))
+        a = min((dot(n, x), _rank_index, x) for _rank_index, x in enumerate(aq))[2]
         b = bq[bf[fi][0]]
         out.append((n, sub(b, a)))
     for fi in range(len(af)):
         n = neg(_qnormal(A, fi))
         a = aq[af[fi][0]]
-        b = max(bq, key=lambda x: dot(n, x))
+        b = max((dot(n, x), -_rank_index, x) for _rank_index, x in enumerate(bq))[2]
         out.append((n, sub(b, a)))
     # Caller-supplied labels are deliberately not sanitized: a false local
     # support plane must be exposed by the independent G0 membership vote.
@@ -895,7 +895,7 @@ def membership_convex3(A: Polyhedron, B: Polyhedron, x: Vec3, tol: float = 0.0,
         if tol2 and value * value * divisor <= threshold * normal2:
             near = True
     if outside:
-        aq, bq = tuple(map(_qvector, A.verts)), tuple(map(_qvector, B.verts))
+        aq, bq = tuple(_qvector(_mapped_value) for _mapped_value in A.verts), tuple(_qvector(_mapped_value) for _mapped_value in B.verts)
         nearest = _qclosest_hull(tuple(sub(sub(b, a), point) for a in aq for b in bq))
         return 0 if dot(nearest, nearest) <= tol2 else -1
     return 0 if boundary or near else 1

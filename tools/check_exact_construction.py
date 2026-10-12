@@ -1,114 +1,27 @@
 """AST gate for the exact-to-binary64 boundary (src and test oracles).
 
-Not a proof of arbitrary Python dataflow: deliberately fail closed on direct
-float conversions, with narrow reviewed input/filter exceptions. Additionally
-reject premature sqrt/norm/unit and subtract-after-rounding idioms, including
-keywords/unpacking, local aliases, containers, loops and augmented assignment.
-Fraction preserves known rounding provenance; it cannot recover discarded bits.
-Unknown interprocedural/reflective Python is not a proved dataflow domain.
-Exceptions match a named function
-and rule; none is a whole-file exemption. Run from any working directory.
+Positive closed-subset admission plus default rejection, NOT a numerical proof
+of arbitrary Python. exact_construction_subset.py rejects unknown syntax,
+dispatch, imports and callable flow. The JSON policy records individually
+reviewed sites pinned to their AST node and enclosing function source. No automatic waiver generation occurs during a scan.
+The original local may-analysis still rejects premature sqrt/norm/unit and
+subtract-after-rounding idioms; opaque call boundaries are rejected,
+not silently assumed to have safe return or side-effect summaries. Test driver/scaffolding exemptions and the unchanged
+legacy input/filter exceptions are documented in docs/r12fix_design_sync.md.
+Run from any working directory.
 """
 from __future__ import annotations
 
 import ast
+import importlib.util
 from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-
-# (relative path, qualified function, rule) -> individual auditable rationale.
-EXCEPTIONS = {
-    ("src/eab/limit.py", "_tangents", "subtract-rounded"):
-        "The documented model defines t2 from the returned binary64 t1; Fraction completes that model cross product exactly before the final scalar construction, not a norm of prematurely rounded components.",
-    ("tests/e5a_escape_oracle.py", "_candidates", "subtract-rounded"):
-        "Cache-reuse window between constructed candidate displays; the independent exact facet-extent oracle is evaluated at the chosen supplied candidate coordinates.",
-    ("tests/perf_escape_oracle_reference.py", "_candidates", "subtract-rounded"):
-        "Frozen performance reference cache-reuse window between candidate displays, not an exact derived geometry constructor or branch oracle.",
-    ("tests/test_perf_2d_directions.py", "direction_cases", "subtract-rounded"):
-        "Generates supplied predicate inputs from the actual rounded engineering-coordinate endpoints, as required by the test's documented data model.",
-    ("tests/test_filtered_predicates.py", "test_orient3d_filter_has_a_real_fast_path", "direct-float"):
-        "Exercises float and Fraction supplied input types using only exactly representable 0/1 coordinates; no derived construction or expected-value conversion.",
-    ("src/eab/adapters/bdda2d.py", "load_window", "direct-float"):
-        "Legacy detparams CSV string parsing at the explicit L5 input boundary; not a derived exact construction.",
-    ("src/eab/construction.py", "normalized_difference_rational", "subtract-rounded"):
-        "Untrusted initial candidate only; exact algebraic comparisons bracket it and certify the final midpoint or perform full bit search.",
-    ("src/eab/margin.py", "_resolve", "subtract-rounded"):
-        "Diagnostic residual comparing two already-constructed witness displays; exact feature squared distance separately governs completeness.",
-    ("tests/test_r8fix_frozen.py", "test_contact_margin_postround_subtraction_mutant_is_caught.premature_round", "subtract-rounded"):
-        "Deliberately faulty internal compound-construction mutation; independent midpoint assertion must reject it.",
-    ("src/eab/oracle_construction.py", "_candidate_positive", "direct-float"):
-        "Untrusted candidate only; independent Fraction midpoint certificate precedes acceptance, else exact bit bisection.",
-    ("tests/test_limit_exact_selfcheck.py", "test_exact_witness_is_preserved_by_copy_not_by_float_arithmetic", "direct-float"):
-        "Tests builtin float's intentional certificate-stripping protocol; not an oracle numeric construction.",
-    ("src/eab/construction.py", "scalar_rational", "direct-float"):
-        "Single checked Fraction-to-binary64 boundary; exact midpoint gates certify RN-even.",
-    ("src/eab/construction.py", "sqrt_rational", "direct-float"):
-        "The integer significand is <= 2**53, so its cast is exact; ldexp is the final construction.",
-    ("src/eab/predicates.py", "_float_value", "direct-float"):
-        "Outward error-bounded filter candidate only; not a geometric output or exact decision.",
-    ("src/eab/kernel3d/exact_geom.py", "_iv", "direct-float"):
-        "Nextafter-enclosed interval candidate; inconclusive filters fall back to rational arithmetic.",
-    ("src/eab/limit.py", "_rational", "direct-float"):
-        "Read the already-rounded float subclass to check its immutable exact witness, not construct a quantity.",
-    ("tests/test_r6fix_construction.py", "test_g6f06_gap_magnitude_gate_has_teeth", "direct-float"):
-        "Intentional broken internal sqrt mutation; the target nonzero-gap assertion must reject it.",
-    ("tests/test_r6fix_construction.py", "test_g6f06_gap_magnitude_gate_has_teeth", "rounded-root"):
-        "Intentional broken internal sqrt mutation, not an oracle.",
-    ("tests/test_r6fix_g2_oracle.py", "test_g2_oracle_early_square_rounding_mutation_is_caught", "direct-float"):
-        "Intentional old oracle mutation; the independent range assertion rejects it.",
-    ("tests/test_r6fix_g2_oracle.py", "test_g2_oracle_early_square_rounding_mutation_is_caught", "rounded-root"):
-        "Intentional old oracle mutation, never an expected-value constructor.",
-    ("tests/test_r9fix_construction.py", "_premature_sqrt_mutant", "direct-float"):
-        "G6I-04 defect injected inside the real distance function; midpoint certificate must fail.",
-    ("tests/test_r9fix_construction.py", "_premature_sqrt_mutant", "rounded-root"):
-        "G6I-04 deliberately faulty sqrt factory, used only by internal mutation tests.",
-    ("src/eab/contact_record.py", "_decode", "direct-float"):
-        "Decode serialized scalar tags; this is external input parsing, not exact derived geometry.",
-    ("src/eab/dual.py", "Dual.const", "direct-float"):
-        "Public Number-to-primal input coercion (int/float), not a derived exact quantity.",
-    ("src/eab/dual.py", "Dual.seed", "direct-float"):
-        "Public Number-to-primal input coercion before derivative seeding.",
-    ("src/eab/dual.py", "Dual._pair", "direct-float"):
-        "Public Number input coercion; exact derivative output uses scalar_rational.",
-    ("src/eab/dual.py", "Dual.__pow__", "direct-float"):
-        "Coerce public real exponent parameter, preserving documented Number API.",
-    ("src/eab/dual.py", "Dual.__lt__", "direct-float"):
-        "Primal-only comparator on public Number operand, not a constructed output.",
-    ("src/eab/dual.py", "Dual.__le__", "direct-float"):
-        "Primal-only comparator on public Number operand, not a constructed output.",
-    ("src/eab/dual.py", "Dual.__gt__", "direct-float"):
-        "Primal-only comparator on public Number operand, not a constructed output.",
-    ("src/eab/dual.py", "Dual.__ge__", "direct-float"):
-        "Primal-only comparator on public Number operand, not a constructed output.",
-    ("src/eab/dual.py", "val", "direct-float"):
-        "Explicit public primal extraction required by the Dual contract.",
-    ("src/eab/dual.py", "is_exact_zero", "direct-float"):
-        "Number input comparator; Dual inputs inspect every stored channel separately.",
-    ("src/eab/readers/bdda3d.py", "record_from_entrance", "direct-float"):
-        "Parse finite legacy export fields; no rational geometric intermediate.",
-    ("src/eab/readers/bdda_df.py", "read_contacts_csv", "direct-float"):
-        "CSV string input parsing under the legacy format contract.",
-    ("src/eab/readers/bdda_df.py", "read_df22_csv", "direct-float"):
-        "CSV string input parsing under the legacy format contract.",
-    ("src/eab/readers/bdda_df.py", "read_verts_csv", "direct-float"):
-        "CSV vertex input parsing, before any exact geometric operations.",
-    ("src/eab/readers/bdda_df.py", "load_records", "direct-float"):
-        "Legacy dump scalar decoding, not derived rational constructions.",
-    ("src/eab/readers/bdda_geom.py", "load_step_geometries", "direct-float"):
-        "CSV coordinate string parsing, before the documented input normalization.",
-    ("src/eab/readers/tf_probe.py", "read_pair_stage", "direct-float"):
-        "Probe time-string parsing, not exact intermediate construction.",
-    ("src/eab/readers/tf_probe.py", "load_records", "direct-float"):
-        "Probe export string parsing; stored values are the supplied binary64 data.",
-    ("tests/test_lp.py", "test_weak_and_strong_duality", "subtract-rounded"):
-        "The cast integer grid defines LP input floats; subtraction is a residual on that given model, not a rational constructor.",
-    ("src/eab/limit.py", "_norm", "implicit-root"):
-        "Only the explicit nonfinite-report branch uses hypot; every finite vector uses the checked exact root.",
-    ("src/eab/kernel3d/geom3.py", "_ray_directions", "implicit-root"):
-        "Caller-independent bounded binary64 golden-angle seed generation, not a constructor from exact geometric intermediates.",
-}
-
+_subset_spec = importlib.util.spec_from_file_location("exact_construction_subset", ROOT / "tools/exact_construction_subset.py")
+_subset = importlib.util.module_from_spec(_subset_spec)
+_subset_spec.loader.exec_module(_subset)
+closed_subset_issues = _subset.closed_subset_issues
 
 def _name(node):
     if isinstance(node, ast.Name):
@@ -118,7 +31,7 @@ def _name(node):
     return ""
 
 
-def scan_text(text, path="<injected>"):
+def scan_text(text, path="<injected>", *, repository_root=None):
     """Finite, conservative intraprocedural may-analysis, not Python proof.
 
     Values snapshot rounding/callable provenance at assignment, plus abstract
@@ -126,7 +39,8 @@ def scan_text(text, path="<injected>"):
     lexically scoped input names; callable labels are source names or imported
     namespace members. Joins are set union over that finite domain, so loops
     reach a fixed point without a depth/iteration cap or growing synthetic AST.
-    Unknown returned objects, reflection and arbitrary callees are not proved.
+    Unknown call boundaries are rejected unless context-pinned review applies;
+    known argument rounding is preserved, without inventing a clean summary. This is not a proof for arbitrary Python object protocols.
     """
     tree = ast.parse(text, filename=path)
     converters = {"_float_vector", "_display_fraction", "_construction_float",
@@ -149,15 +63,18 @@ def scan_text(text, path="<injected>"):
                 parts = name.split(".")
                 namespaces.update(".".join(parts[:i]) for i in range(1, len(parts) + 1))
 
-    # A value is (rounded, callable labels, abstract object references). These
+    # A value is (rounding bits: 1 explicit boundary / 2 implicit arithmetic, callable labels, object references). These
     # immutable snapshots never retain a live AST Name to resolve after rebinding.
     empty = (False, frozenset(), frozenset())
 
     def value(rounded=False, names=(), refs=()):
-        return bool(rounded), frozenset(names), frozenset(refs)
+        return int(rounded), frozenset(names), frozenset(refs)
 
     def combine(*values):
-        return (any(v[0] for v in values),
+        flags = 0
+        for v in values:
+            flags |= v[0]
+        return (flags,
                 frozenset().union(*(v[1] for v in values)),
                 frozenset().union(*(v[2] for v in values)))
 
@@ -172,7 +89,11 @@ def scan_text(text, path="<injected>"):
                       for key in set().union(*(set(part) for part in parts))}
                      for parts in zip(*states)) if states else None
 
-    issues = []
+    analysis = _subset.analyze(text, path, repository_root)
+    closed_rows = (closed_subset_issues(text, path, analysis=analysis) if repository_root is None else
+                   _subset.closed_subset_issues(text, path, repository_root=repository_root, analysis=analysis))
+    issues = [row[:5] for row in closed_rows]
+    approved_sites = _subset.approved_sites(text, path, repository_root)
 
     class Check:
         def __init__(self):
@@ -218,7 +139,15 @@ def scan_text(text, path="<injected>"):
 
         def issue(self, node, rule):
             function = ".".join(self.stack) or "<module>"
-            if (path, function, rule) not in EXCEPTIONS:
+            driver = path.startswith("tests/test_") and (not self.stack or self.stack[0].startswith("test_"))
+            if driver and rule.startswith("closed-"):
+                return
+            if rule == "closed-unproved-call" and (analysis.call_proved(node) or
+                    _subset._flow.key(node) in getattr(analysis, "structural_calls", ())):
+                return
+            if rule == "closed-rounded-call" and analysis.call_proved(node) and not analysis.reaches_sink(node):
+                return
+            if (function, rule, ast.dump(node, include_attributes=False)) not in approved_sites:
                 issues.append((path, node.lineno, function, rule, ast.get_source_segment(text, node)))
 
         def bind(self, target, v, evaluated_owner=None):
@@ -355,11 +284,16 @@ def scan_text(text, path="<injected>"):
                     self.issue(node, "direct-float")
                 if names & {"map"} and args and args[0][1] & {"float", "builtins.float"}:
                     self.issue(node, "direct-float")
-                if any(self.read(arg)[0] for arg in args):
+                rounding = combine(*(self.read(arg) for arg in args))[0]
+                if analysis.power_sink(node) and args and self.read(args[0])[0]:
+                    self.issue(node, "closed-rounded-construction")
+                if rounding & 1:
                     if names & roots:
                         self.issue(node, "rounded-root")
                     if names & vectors:
                         self.issue(node, "rounded-vector")
+                if rounding & 2 and names & (roots | vectors):
+                    self.issue(node, "closed-rounded-construction")
                 if isinstance(node.func, ast.Attribute) and node.func.attr in mutators:
                     for ref in function[2]:
                         self.heap[ref] = combine(self.heap.get(ref, empty), *args)
@@ -383,20 +317,41 @@ def scan_text(text, path="<injected>"):
                 if names & (passthrough | {"next", "filter"}):
                     contents = combine(*args, value(function[0]),
                                        self.elements(value(refs=function[2])))
+                    if names & {"sum"} and analysis.return_kind(node) != "exact":
+                        contents = combine(contents, value(2))
                     return self.container(node, contents)
-                return value(refs={node})
+                # Exact discrete metadata is not a floating construction.
+                if function[1] & {"len", "range", "isinstance", "issubclass", "type", "bool"}:
+                    return value(refs={node})
+                if function[1] & {"AssertionError", "ArithmeticError", "IndexError", "KeyError", "NotImplementedError", "OverflowError", "RuntimeError", "StopIteration", "TypeError", "ValueError", "ZeroDivisionError"}:
+                    return value(refs={node})
+                if function[1] & {"int", "builtins.int"}:
+                    return value(combine(*args)[0], refs={node})
+                driver = path.startswith("tests/test_") and (not self.stack or self.stack[0].startswith("test_"))
+                if not driver:
+                    self.issue(node, "closed-unproved-call")
+                    sink_inputs = analysis.sink_arguments(node)
+                    selected = [arg for i, arg in enumerate(args) if i in sink_inputs]
+                    selected += [evaluated[k.value] for k in node.keywords if k.arg in sink_inputs]
+                    if any(arg[0] for arg in (selected if analysis.call_proved(node) else args)):
+                        self.issue(node, "closed-rounded-call")
+                return value(0 if driver else combine(*args, value(2) if analysis.call_may_round(node) else empty)[0], refs={node})
             if isinstance(node, ast.Starred):
                 return self.consume(self.evaluate(node.value))
             children = [self.evaluate(child) for child in ast.iter_child_nodes(node)
                         if isinstance(child, ast.expr)]
             if isinstance(node, ast.BinOp):
-                if isinstance(node.op, ast.Sub) and all(v[0] for v in children):
+                if analysis.power_sink(node) and children and self.read(children[0])[0]:
+                    self.issue(node, "closed-rounded-construction")
+                if isinstance(node.op, ast.Sub) and all(v[0] & 1 for v in children):
                     self.issue(node, "subtract-rounded")
                 if (isinstance(node.op, ast.Pow) and isinstance(node.right, ast.Constant)
                         and node.right.value == 0.5 and not path.startswith("tests/")):
                     self.issue(node, "implicit-root")
             if isinstance(node, (ast.Tuple, ast.List, ast.Set, ast.Dict)):
                 return self.container(node, combine(*children))
+            if isinstance(node, ast.BinOp) and analysis.may_round(node):
+                return combine(*children, value(2))
             return combine(*children)
 
         def consume(self, v):
@@ -614,11 +569,13 @@ def scan_text(text, path="<injected>"):
                 owner = (self.expression_values[node.target.value]
                          if isinstance(node.target, (ast.Attribute, ast.Subscript)) else None)
                 right = self.evaluate(node.value)
-                if isinstance(node.op, ast.Sub) and left[0] and right[0]:
+                if analysis.power_sink(node) and self.read(left)[0]:
+                    self.issue(node, "closed-rounded-construction")
+                if isinstance(node.op, ast.Sub) and left[0] & 1 and right[0] & 1:
                     self.issue(node, "subtract-rounded")
                 # Augmented assignment evaluates its lvalue exactly once,
                 # before the RHS; writing back must not replay an index walrus.
-                self.bind(node.target, combine(left, right), evaluated_owner=owner)
+                self.bind(node.target, combine(left, right, value(2) if analysis.may_round(node) else empty), evaluated_owner=owner)
             elif isinstance(node, ast.Assert):
                 self.evaluate(node.test)
                 success = self.state()
@@ -690,7 +647,7 @@ def scan_text(text, path="<injected>"):
 def scan_repository(root=ROOT):
     return [issue for folder in ("src", "tests")
             for path in sorted((root / folder).rglob("*.py"))
-            for issue in scan_text(path.read_text(encoding="utf-8-sig"), path.relative_to(root).as_posix())]
+            for issue in scan_text(path.read_text(encoding="utf-8-sig"), path.relative_to(root).as_posix(), repository_root=root)]
 
 
 if __name__ == "__main__":

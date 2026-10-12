@@ -1,0 +1,80 @@
+........................................................................ [  3%]
+........................................................................ [  6%]
+........................................................................ [  9%]
+........................................................................ [ 12%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+........................................................................ [ 22%]
+........................................................................ [ 25%]
+........................................................................ [ 28%]
+........................................................................ [ 31%]
+........................................................................ [ 34%]
+........................................................................ [ 38%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 47%]
+........................................................................ [ 50%]
+........................................................................ [ 53%]
+........................................................................ [ 57%]
+........................................................................ [ 60%]
+........................................................................ [ 63%]
+........................................................................ [ 66%]
+........................................................................ [ 69%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 82%]
+................F....................................................... [ 85%]
+........................................................................ [ 88%]
+........................................................................ [ 91%]
+........................................................................ [ 95%]
+........................................................................ [ 98%]
+......................................                                   [100%]
+================================== FAILURES ===================================
+_____________ test_j01_self_expanding_attribute_alias_terminates ______________
+
+    def test_j01_self_expanding_attribute_alias_terminates():
+        """Timeout protects the test runner against a=a.x canonical expansion."""
+        script = (
+            "import importlib.util; "
+            "s=importlib.util.spec_from_file_location('gate', 'tools/check_exact_construction.py'); "
+            "g=importlib.util.module_from_spec(s); s.loader.exec_module(g); "
+            "print(g.scan_text('def bad(a):\\n    a=a.x\\n    return sqrt_rational(a)\\n'))"
+        )
+        try:
+            result = subprocess.run([sys.executable, "-X", "utf8", "-c", script], cwd=ROOT,
+                                    text=True, capture_output=True, timeout=2, check=False)
+        except subprocess.TimeoutExpired:
+            pytest.fail("J01 canonical alias resolution must terminate for a=a.x")
+        assert result.returncode == 0, result.stderr
+>       assert result.stdout.strip() == repr([("<injected>", 2, "bad", "closed-data-attribute", "a.x")])
+E       assert '[]' == "[('<injected...ute', 'a.x')]"
+E         
+E         - [('<injected>', 2, 'bad', 'closed-data-attribute', 'a.x')]
+E         + []
+
+tests\test_r10_static_construction.py:164: AssertionError
+============================ slowest 20 durations =============================
+89.46s call     tests/test_r12fix_static_closed.py::test_l01_full_repository_copy_rejects_real_map_implant_and_changed_dependency
+17.70s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_convex_400
+8.51s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw1-8]
+7.00s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[0.001-0.0]
+6.78s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-0.0]
+6.69s call     tests/test_invariance_interlock.py::test_dilatancy_profile_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1.0]
+6.50s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-100000.0]
+6.39s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1000.0-100000.0]
+5.87s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1000.0]
+5.85s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_scaled[0.001]
+5.78s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1.0]
+5.46s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw0-1]
+5.31s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_scaled[1000.0]
+5.25s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-0.001]
+4.75s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1.0]
+4.65s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-100000.0-1000.0]
+4.62s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1000.0]
+4.58s call     tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[I-0.0-0.001]
+4.53s call     tests/test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal
+4.52s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-0.001]
+=========================== short test summary info ===========================
+FAILED tests/test_r10_static_construction.py::test_j01_self_expanding_attribute_alias_terminates
+1 failed, 2269 passed in 545.75s (0:09:05)

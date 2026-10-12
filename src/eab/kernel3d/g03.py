@@ -60,8 +60,8 @@ def _hull_facets(A,B,diffs,hull,fl=0,area_tol=0,eps=0):
 
 @lru_cache(maxsize=256)
 def _hull_facets_cached(av,bv,hp,faces,ds):
-    av,bv=tuple(map(oracle.qpoint,av)),tuple(map(oracle.qpoint,bv))
-    hp=tuple(map(oracle.qpoint,hp));ds=tuple(map(oracle.qpoint,ds))
+    av,bv=tuple(oracle.qpoint(_mapped_value) for _mapped_value in av),tuple(oracle.qpoint(_mapped_value) for _mapped_value in bv)
+    hp=tuple(oracle.qpoint(_mapped_value) for _mapped_value in hp);ds=tuple(oracle.qpoint(_mapped_value) for _mapped_value in ds)
     out=[];seen=set()
     for f in faces:
         o=hp[f[0]]

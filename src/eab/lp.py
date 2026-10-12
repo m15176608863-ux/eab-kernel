@@ -269,10 +269,11 @@ class _Revised:
         return -1
 
     # ---- 主循环
-    def optimize(self, cost: list[float], allowed: list[bool], tol: float, ray_ok) -> tuple[str, list | None]:
+    def optimize(self, cost: list[float], allowed: list[bool], tol: float, ray_data) -> tuple[str, list | None]:
         """从当前（原始可行的）基出发做原始单纯形。返回 (OPTIMAL, None) 或 (UNBOUNDED, (e, d))。
 
-        `ray_ok(e, d)` 在核验无界射线时调用（原始未缩放数据上）；核验不过就在最大的正元上换基。"""
+        `ray_data=(A0, c0, ec)` 给出无界射线核验的原始未缩放数据；None 表示一阶段不接受无界射线。
+        核验不过就在最大的正元上换基。"""
         b_work = self.b
         perturbed, n_perturb = False, 0
         seen: set[tuple[int, ...]] = {tuple(sorted(self.basis))}
@@ -291,7 +292,8 @@ class _Revised:
             d = self.direction(e)
             p = self.ratio(d, x, None)
             if p < 0:
-                if not perturbed and ray_ok(e, d):
+                if (not perturbed and ray_data is not None
+                        and _ray_verifies(ray_data[0], ray_data[1], self, e, d, ray_data[2])):
                     return UNBOUNDED, (e, d)
                 p = self.ratio(d, x, self.dnoise(e))   # 射线不成立：有一行其实约束步长——按逐分量噪声线再找
                 if p < 0:
@@ -455,13 +457,10 @@ def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
     S = _Revised(A, b, max_iter)
     N = n + m
 
-    def ray_ok(e: int, d: list[float]) -> bool:
-        return _ray_verifies(A0, c0, S, e, d, ec)
-
     # ---- 一阶段：min Σ 人工
     cost1 = [0.0] * n + [1.0] * m
     allow1 = [True] * N
-    _certified_optimize(S, cost1, allow1, tol, lambda e, d: False, phase=1)
+    _certified_optimize(S, cost1, allow1, tol, None, phase=1)
     x = S.xB(b)
     ft1 = S.ftol(b)
     art = sum(max(0.0, x[i] - ft1[i]) / S.nu[S.basis[i]] for i in range(m) if S.basis[i] >= n)
@@ -485,7 +484,7 @@ def _float_solve(A: list[list[float]], b: list[float], c: list[float], *,
     # ---- 二阶段：真目标，人工变量不许入基
     cost2 = cq + [0.0] * m
     allow2 = [True] * n + [False] * m
-    st, info = _certified_optimize(S, cost2, allow2, tol, ray_ok, phase=2)
+    st, info = _certified_optimize(S, cost2, allow2, tol, (A0, c0, ec), phase=2)
     if st == UNBOUNDED:
         return UNBOUNDED, list(S.basis), info[0], S.iters
     return OPTIMAL, list(S.basis), -1, S.iters
@@ -755,13 +754,13 @@ def _exact_simplex(X: _Exact, start: list[int] | None) -> tuple[str, list[int], 
     return st, basis, e, pivots
 
 
-def _certified_optimize(S: _Revised, cost: list[float], allowed: list[bool], tol: float, ray_ok,
+def _certified_optimize(S: _Revised, cost: list[float], allowed: list[bool], tol: float, ray_data,
                         *, phase: int) -> tuple[str, object]:
     """浮点层的优化 + 清理：最终基上重新求逆，约化成本 ≥ −_DUAL_CHECK（相对）；不过就收紧定价阈值再迭代，
     三轮仍不过也照样交出候选（精确层会判定）。这里的一切阈值只影响候选的质量，不影响答案。"""
     ptol = tol
     for _ in range(_CLEANUP_ROUNDS):
-        st, info = S.optimize(cost, allowed, ptol, ray_ok)
+        st, info = S.optimize(cost, allowed, ptol, ray_data)
         if st == UNBOUNDED:
             if phase == 1:
                 raise RuntimeError("phase one reported unbounded (impossible in exact arithmetic)")

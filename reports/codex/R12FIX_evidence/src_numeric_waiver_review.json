@@ -1,0 +1,2042 @@
+[
+  {
+    "path": "src/eab/construction.py",
+    "line": 51,
+    "function": "sqrt_rational",
+    "rule": "subtract-rounded",
+    "code": "numerator.bit_length() - denominator.bit_length()",
+    "category": "exact-integer",
+    "reason": "Both operands are integer bit lengths or integer significand/midpoint terms derived from Fraction numerator/denominator. No floating construction precedes this subtraction; the checked binary64 boundary occurs later.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/construction.py",
+    "line": 64,
+    "function": "sqrt_rational",
+    "rule": "subtract-rounded",
+    "code": "4*numerator - denominator*(2*lower+1)**2",
+    "category": "exact-integer",
+    "reason": "Both operands are integer bit lengths or integer significand/midpoint terms derived from Fraction numerator/denominator. No floating construction precedes this subtraction; the checked binary64 boundary occurs later.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 74,
+    "function": "Dual.__sub__",
+    "rule": "subtract-rounded",
+    "code": "a - b",
+    "category": "supplied-channel-arithmetic",
+    "reason": "The operands are existing public Dual derivative channels unpacked by _pair, not exact geometric intermediates hidden behind an unknown constructor. This subtraction implements the declared floating Dual arithmetic model; it is not a pre-rounding norm/root composition.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 198,
+    "function": "_ratio_derivative",
+    "rule": "subtract-rounded",
+    "code": "Fraction(a) * vn - un * Fraction(b)",
+    "category": "exact-rational",
+    "reason": "Fallback derivative numerator is formed from Fraction(a), Fraction(b), and rationally scaled un/vn. Conversion to the returned derivative happens only after the complete quotient.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 234,
+    "function": "_half_power_derivative",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(squared)",
+    "category": "exact-rational-final-root",
+    "reason": "The coefficient and complete squared half-power derivative are Fraction expressions; sqrt_rational performs the single final magnitude construction, not a root of a rounded primal.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 322,
+    "function": "central_difference",
+    "rule": "subtract-rounded",
+    "code": "f(tp) - f(tm)",
+    "category": "scope-exemption-diagnostic",
+    "reason": "Explicit scope exception: finite-difference/convergence diagnostics subtract rounded evaluations. They are not exact construction oracles and are not covered by an exact-intermediate promise; this existing diagnostic site is frozen rather than mislabeled exact.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 336,
+    "function": "convergence_order",
+    "rule": "subtract-rounded",
+    "code": "a - b",
+    "category": "scope-exemption-diagnostic",
+    "reason": "Explicit scope exception: finite-difference/convergence diagnostics subtract rounded evaluations. They are not exact construction oracles and are not covered by an exact-intermediate promise; this existing diagnostic site is frozen rather than mislabeled exact.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 99,
+    "function": "_bisector_positive",
+    "rule": "subtract-rounded",
+    "code": "a * a * dot(hi, hi) - b * b * dot(lo, lo)",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 218,
+    "function": "ve_cover",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(g*g/l2)",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 231,
+    "function": "ev_cover",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(g*g/l2)",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 261,
+    "function": "vv_cover",
+    "rule": "rounded-vector",
+    "code": "unit(d)",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 261,
+    "function": "vv_cover",
+    "rule": "rounded-vector",
+    "code": "norm(d)",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 274,
+    "function": "_in_segment_exact",
+    "rule": "subtract-rounded",
+    "code": "along - l2",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 417,
+    "function": "facet_gap",
+    "rule": "subtract-rounded",
+    "code": "direction[1]*v[0]-direction[0]*v[1]",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/covers.py",
+    "line": 418,
+    "function": "facet_gap",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(numerator*numerator/dot(direction, direction))",
+    "category": "exact-rational",
+    "reason": "The fixed helper chain _fr/_vsub/raw cone/dot uses Fraction coordinates. This subtraction or final norm/root consumes the exact derived direction/gap; conservative unknown-call taint is not evidence of a real earlier conversion. Dependencies and this complete module must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 173,
+    "function": "_first_entrance_convex",
+    "rule": "subtract-rounded",
+    "code": "ex * (X[1] - f.start[1]) - ey * (X[0] - f.start[0])",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 174,
+    "function": "_first_entrance_convex",
+    "rule": "subtract-rounded",
+    "code": "ex * D[1] - ey * D[0]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 191,
+    "function": "_first_entrance_convex",
+    "rule": "subtract-rounded",
+    "code": "exact_x[1] - f.start[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 192,
+    "function": "_first_entrance_convex",
+    "rule": "subtract-rounded",
+    "code": "exact_x[0] - f.start[0]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 191,
+    "function": "_first_entrance_convex",
+    "rule": "subtract-rounded",
+    "code": "f.direction[0] * (exact_x[1] - f.start[1])\n        - f.direction[1] * (exact_x[0] - f.start[0])",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 201,
+    "function": "_first_entrance_convex",
+    "rule": "subtract-rounded",
+    "code": "t - t_in",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 229,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "a[0] + X[0] - p[0]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 229,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "a[1] + X[1] - p[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 234,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "b[0] - p[0]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 234,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "b[1] - p[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 236,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "q[0] - p[0]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 236,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "q[1] - p[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 240,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "ey * v[0] - ex * v[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 240,
+    "function": "_feature_data",
+    "rule": "subtract-rounded",
+    "code": "ey * velocity[0] - ex * velocity[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 277,
+    "function": "_contact_report",
+    "rule": "subtract-rounded",
+    "code": "b1[0] - b0[0]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 277,
+    "function": "_contact_report",
+    "rule": "subtract-rounded",
+    "code": "b1[1] - b0[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 280,
+    "function": "_contact_report",
+    "rule": "subtract-rounded",
+    "code": "a1[0] - a0[0]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 280,
+    "function": "_contact_report",
+    "rule": "subtract-rounded",
+    "code": "a1[1] - a0[1]",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 282,
+    "function": "_contact_report",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(g * g / length2)",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 361,
+    "function": "shortest_exit",
+    "rule": "subtract-rounded",
+    "code": "distance - best_distance",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 361,
+    "function": "shortest_exit",
+    "rule": "subtract-rounded",
+    "code": "distance - best_distance - band2",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 362,
+    "function": "shortest_exit",
+    "rule": "subtract-rounded",
+    "code": "distance - best_distance",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/entrance.py",
+    "line": 362,
+    "function": "shortest_exit",
+    "rule": "subtract-rounded",
+    "code": "distance - best_distance - band2",
+    "category": "exact-rational",
+    "reason": "Fixed entrance feature helpers return Fraction points, directions, projection/gap terms and squared distances. This operation remains on those exact values until the final reported gap/point boundary; event/feature data are not first rounded and then differenced.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 95,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "bx0 - ax1",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 95,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "bx1 - ax0",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 96,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "by0 - ay1",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 96,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "by1 - ay0",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 97,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "hi_x - lo_x",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 97,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "hi_y - lo_y",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 98,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "lo_x - margin * wx",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 99,
+    "function": "sample_translations",
+    "rule": "subtract-rounded",
+    "code": "lo_y - margin * wy",
+    "category": "scope-exemption-sample-input",
+    "reason": "Input-sampling bounds and random-grid padding are intentionally ordinary binary64 arithmetic on supplied polygon endpoints. These values define probes, not exact expected outputs or derived-construction oracle values.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 152,
+    "function": "g0_convex",
+    "rule": "subtract-rounded",
+    "code": "walk - truth_boundary",
+    "category": "set-operation",
+    "reason": "This minus operator is a set difference between contact-label sets (walk/truth/got), not scalar subtraction or a numeric construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 157,
+    "function": "g0_convex",
+    "rule": "subtract-rounded",
+    "code": "walk - truth_strict",
+    "category": "set-operation",
+    "reason": "This minus operator is a set difference between contact-label sets (walk/truth/got), not scalar subtraction or a numeric construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 157,
+    "function": "g0_convex",
+    "rule": "subtract-rounded",
+    "code": "walk - truth_strict - truth_boundary",
+    "category": "set-operation",
+    "reason": "This minus operator is a set difference between contact-label sets (walk/truth/got), not scalar subtraction or a numeric construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0.py",
+    "line": 240,
+    "function": "g0_distance_completeness",
+    "rule": "subtract-rounded",
+    "code": "got - truth",
+    "category": "set-operation",
+    "reason": "This minus operator is a set difference between contact-label sets (walk/truth/got), not scalar subtraction or a numeric construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 74,
+    "function": "overlap",
+    "rule": "subtract-rounded",
+    "code": "b[axis]-a[axis]",
+    "category": "exact-integer",
+    "reason": "The independent oracle first scales all Fraction coordinates to common-denominator integers. Endpoint direction differences therefore contain no rounding.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 74,
+    "function": "overlap",
+    "rule": "subtract-rounded",
+    "code": "d[axis]-c[axis]",
+    "category": "exact-integer",
+    "reason": "The independent oracle first scales all Fraction coordinates to common-denominator integers. Endpoint direction differences therefore contain no rounding.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 139,
+    "function": "boundary_has_exterior.compare",
+    "rule": "subtract-rounded",
+    "code": "half(u)-half(v)",
+    "category": "integer-classification",
+    "reason": "half returns a small integer half-plane class; subtracting two classifications is comparator output, not derived numeric geometry.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 173,
+    "function": "ray_exit",
+    "rule": "subtract-rounded",
+    "code": "dx*ey-dy*ex",
+    "category": "exact-rational",
+    "reason": "Independent ray-exit oracle uses points(A/B) and F(u), then exact rational intersection/projection algebra. No displayed point is rounded before this difference.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 176,
+    "function": "ray_exit",
+    "rule": "subtract-rounded",
+    "code": "wx*dy-wy*dx",
+    "category": "exact-rational",
+    "reason": "Independent ray-exit oracle uses points(A/B) and F(u), then exact rational intersection/projection algebra. No displayed point is rounded before this difference.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 178,
+    "function": "ray_exit",
+    "rule": "subtract-rounded",
+    "code": "wx*dy-wy*dx",
+    "category": "exact-rational",
+    "reason": "Independent ray-exit oracle uses points(A/B) and F(u), then exact rational intersection/projection algebra. No displayed point is rounded before this difference.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/g0_oracle.py",
+    "line": 183,
+    "function": "ray_exit",
+    "rule": "subtract-rounded",
+    "code": "max(x*ux+y*uy for x,y in B)-min(x*ux+y*uy for x,y in A)",
+    "category": "exact-rational",
+    "reason": "Independent ray-exit oracle uses points(A/B) and F(u), then exact rational intersection/projection algebra. No displayed point is rounded before this difference.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/geom.py",
+    "line": 129,
+    "function": "outward_normal",
+    "rule": "subtract-rounded",
+    "code": "Fraction(q[k])-Fraction(p[k])",
+    "category": "exact-rational-final-normal",
+    "reason": "The edge difference is formed as Fraction(q[k])-Fraction(p[k]) before normalization. unit receives exact relative components, not a vector rounded by a helper.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/geom.py",
+    "line": 134,
+    "function": "outward_normal",
+    "rule": "rounded-vector",
+    "code": "unit((ey, -ex))",
+    "category": "exact-rational-final-normal",
+    "reason": "The edge difference is formed as Fraction(q[k])-Fraction(p[k]) before normalization. unit receives exact relative components, not a vector rounded by a helper.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/geom.py",
+    "line": 209,
+    "function": "reflex_vertices",
+    "rule": "subtract-rounded",
+    "code": "-cosine*determinant-sine*scalar",
+    "category": "declared-trig-model",
+    "reason": "The angular-tolerance model uses Fraction of the supplied binary64 sin/cos(tol); coordinate determinants remain Fraction. This is exact evaluation of that declared angular model, not a claim of exact transcendental trigonometry.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel2d/geom.py",
+    "line": 381,
+    "function": "_tri_axes",
+    "rule": "rounded-vector",
+    "code": "norm(e)",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit retained legacy helper exception: _tri_axes subtracts supplied floating endpoints and normalizes the resulting floating edge. It has no production caller in current src/tests search and is NOT asserted to be an exact geometry oracle.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 227,
+    "function": "_orth",
+    "rule": "rounded-vector",
+    "code": "unit(v)",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit retained helper exception: _orth applies two floating Gram-Schmidt corrections to its supplied direction, then normalizes. It has no current production caller in src/tests search; it is not certified as an exact compound constructor.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 436,
+    "function": "cone_intersection_margin",
+    "rule": "rounded-vector",
+    "code": "norm_rational(p)",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 499,
+    "function": "vf_cover",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(nn/4, allow_underflow=True)",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 515,
+    "function": "fv_cover",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(nn/4, allow_underflow=True)",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 606,
+    "function": "ve3_cover",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(vv, allow_underflow=True)",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 633,
+    "function": "vv3_cover",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(vv, allow_underflow=True)",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 669,
+    "function": "_cover_in_window",
+    "rule": "subtract-rounded",
+    "code": "dot(w, w) * denominator - dot(w, d) ** 2",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 807,
+    "function": "facet_gap3",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(numerator*numerator / dot(n, n))",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 857,
+    "function": "support_gaps3",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(numerator*numerator / dot(n, n))",
+    "category": "exact-rational-final-construction",
+    "reason": "The fixed _qvector/_qnormal/closest-simplex chain computes Fraction constraints, squared distances and exact projections. This final root/norm or squared-distance difference occurs before any display conversion. Pin all helper dependencies; do not generalize the waiver to arbitrary returned vectors.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/covers3.py",
+    "line": 885,
+    "function": "membership_convex3",
+    "rule": "subtract-rounded",
+    "code": "plane[0]*point_i[0] + plane[1]*point_i[1]\n                 + plane[2]*point_i[2] - plane[3]*den",
+    "category": "exact-integer",
+    "reason": "Plane coefficients, point_i and denominator are the exact integerized homogeneous representation; this subtracts integer plane terms, not rounded displays.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/entrance3.py",
+    "line": 373,
+    "function": "first_entrance_brute",
+    "rule": "subtract-rounded",
+    "code": "up - lo",
+    "category": "scope-exemption-brute-reference",
+    "reason": "The brute first-entrance reference bisects existing floating lo/up sampling bounds; this diagnostic bracket-width subtraction is not a precise geometric construction oracle. Its limited reference role is an explicit scope exception.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/entrance_topology.py",
+    "line": 78,
+    "function": "_angular_compare",
+    "rule": "subtract-rounded",
+    "code": "half(u)-half(v)",
+    "category": "integer-classification",
+    "reason": "half returns integer half-plane labels; subtraction implements angular comparator ordering without constructing or rounding geometry.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 146,
+    "function": "polygon_locate",
+    "rule": "subtract-rounded",
+    "code": "min(ai[j][0],bi[j][0])-ti[1]",
+    "category": "certified-interval-filter",
+    "reason": "This subtraction is an outward-enclosed floating interval bound, immediately expanded with math.nextafter. It is a conservative filter, not a geometric output; inconclusive cases use original Fraction geometry.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 227,
+    "function": "triangulate",
+    "rule": "subtract-rounded",
+    "code": "p2[a][0]*p2[b][1]-p2[b][0]*p2[a][1]",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 270,
+    "function": "segment_triangle",
+    "rule": "subtract-rounded",
+    "code": "dp-dq",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 335,
+    "function": "_point_in_triangles",
+    "rule": "subtract-rounded",
+    "code": "h*multiplier-_int_dot(n,point)",
+    "category": "exact-integer",
+    "reason": "The helper operates on common-denominator integer coordinate/plane representations. Products, projection bounds and their differences are exact integer operations; no displayed geometry is reused.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 336,
+    "function": "_point_in_triangles",
+    "rule": "subtract-rounded",
+    "code": "_int_dot(v,point)-h*multiplier",
+    "category": "exact-integer",
+    "reason": "The helper operates on common-denominator integer coordinate/plane representations. Products, projection bounds and their differences are exact integer operations; no displayed geometry is reused.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 426,
+    "function": "_integer_point_segment_squared",
+    "rule": "subtract-rounded",
+    "code": "ww*dd-wd*wd",
+    "category": "exact-integer",
+    "reason": "The helper operates on common-denominator integer coordinate/plane representations. Products, projection bounds and their differences are exact integer operations; no displayed geometry is reused.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 479,
+    "function": "triangle_intersection",
+    "rule": "subtract-rounded",
+    "code": "u[i]*v[j]-u[j]*v[i]",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 481,
+    "function": "triangle_intersection",
+    "rule": "subtract-rounded",
+    "code": "w[i]*v[j]-w[j]*v[i]",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 482,
+    "function": "triangle_intersection",
+    "rule": "subtract-rounded",
+    "code": "w[i]*u[j]-w[j]*u[i]",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 558,
+    "function": "_convex_surface_sat",
+    "rule": "subtract-rounded",
+    "code": "min(x)-max(y)",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 558,
+    "function": "_convex_surface_sat",
+    "rule": "subtract-rounded",
+    "code": "min(y)-max(x)",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 571,
+    "function": "_convex_surface_sat",
+    "rule": "subtract-rounded",
+    "code": "min(x)-max(y)",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 571,
+    "function": "_convex_surface_sat",
+    "rule": "subtract-rounded",
+    "code": "min(y)-max(x)",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 591,
+    "function": "_split_polygon",
+    "rule": "subtract-rounded",
+    "code": "a-b",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 760,
+    "function": "_transverse_interior_witness",
+    "rule": "subtract-rounded",
+    "code": "s-t",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 762,
+    "function": "_transverse_interior_witness",
+    "rule": "subtract-rounded",
+    "code": "(low+high)/2-u[k]",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 762,
+    "function": "_transverse_interior_witness",
+    "rule": "subtract-rounded",
+    "code": "v[k]-u[k]",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 766,
+    "function": "_transverse_interior_witness",
+    "rule": "subtract-rounded",
+    "code": "nm-mm",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 766,
+    "function": "_transverse_interior_witness",
+    "rule": "subtract-rounded",
+    "code": "nm-nn",
+    "category": "exact-rational",
+    "reason": "The reviewed exact_geom helper receives or constructs Fraction/integer polygon, plane, segment or line data from vector()/integer scaling. This algebra stays exact; no scalar/vector display conversion precedes the operation.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 855,
+    "function": "_integer_tetrahedron_overlap",
+    "rule": "subtract-rounded",
+    "code": "min(x)-max(y)",
+    "category": "exact-integer",
+    "reason": "The helper operates on common-denominator integer coordinate/plane representations. Products, projection bounds and their differences are exact integer operations; no displayed geometry is reused.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 855,
+    "function": "_integer_tetrahedron_overlap",
+    "rule": "subtract-rounded",
+    "code": "min(y)-max(x)",
+    "category": "exact-integer",
+    "reason": "The helper operates on common-denominator integer coordinate/plane representations. Products, projection bounds and their differences are exact integer operations; no displayed geometry is reused.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_sweep.py",
+    "line": 126,
+    "function": "_events_cached",
+    "rule": "subtract-rounded",
+    "code": "q[k]-p[k]",
+    "category": "exact-rational",
+    "reason": "Event points, affine differences and star-core inputs are represented as Fraction vectors in the exact sweep model. This difference is not applied to separately rounded event displays.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_sweep.py",
+    "line": 152,
+    "function": "star_core",
+    "rule": "subtract-rounded",
+    "code": "x-y",
+    "category": "exact-rational",
+    "reason": "Event points, affine differences and star-core inputs are represented as Fraction vectors in the exact sweep model. This difference is not applied to separately rounded event displays.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 54,
+    "function": "_unit_jet.normalized",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(c * c / nn)",
+    "category": "exact-rational-jet",
+    "reason": "_affine_point_jets/_frozen_gap_polynomial and raw normals retain Fraction primal and derivative coefficients. The full residual/derivative/root expression is formed before _derivative_float or sqrt_rational constructs each final channel.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 176,
+    "function": "_line_residual_jet",
+    "rule": "subtract-rounded",
+    "code": "w[i] - s * d[i]",
+    "category": "exact-rational-jet",
+    "reason": "_affine_point_jets/_frozen_gap_polynomial and raw normals retain Fraction primal and derivative coefficients. The full residual/derivative/root expression is formed before _derivative_float or sqrt_rational constructs each final channel.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 181,
+    "function": "_line_residual_jet",
+    "rule": "subtract-rounded",
+    "code": "dot(dw, d) + dot(w, dv) - 2 * s * dot(d, dv)",
+    "category": "exact-rational-jet",
+    "reason": "_affine_point_jets/_frozen_gap_polynomial and raw normals retain Fraction primal and derivative coefficients. The full residual/derivative/root expression is formed before _derivative_float or sqrt_rational constructs each final channel.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 182,
+    "function": "_line_residual_jet",
+    "rule": "subtract-rounded",
+    "code": "dw[i] - ds * d[i]",
+    "category": "exact-rational-jet",
+    "reason": "_affine_point_jets/_frozen_gap_polynomial and raw normals retain Fraction primal and derivative coefficients. The full residual/derivative/root expression is formed before _derivative_float or sqrt_rational constructs each final channel.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 182,
+    "function": "_line_residual_jet",
+    "rule": "subtract-rounded",
+    "code": "dw[i] - ds * d[i] - s * dv[i]",
+    "category": "exact-rational-jet",
+    "reason": "_affine_point_jets/_frozen_gap_polynomial and raw normals retain Fraction primal and derivative coefficients. The full residual/derivative/root expression is formed before _derivative_float or sqrt_rational constructs each final channel.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/frozen.py",
+    "line": 317,
+    "function": "frozen_lift",
+    "rule": "subtract-rounded",
+    "code": "-dg-result*d[2]",
+    "category": "exact-rational-jet",
+    "reason": "_affine_point_jets/_frozen_gap_polynomial and raw normals retain Fraction primal and derivative coefficients. The full residual/derivative/root expression is formed before _derivative_float or sqrt_rational constructs each final channel.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 84,
+    "function": "_hull_facets_cached",
+    "rule": "subtract-rounded",
+    "code": "bmax-amin",
+    "category": "exact-rational",
+    "reason": "Independent hull facet support extrema are computed from oracle.qpoint Fraction coordinates; the support-width subtraction contains no earlier display conversion.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 115,
+    "function": "sample_translations3",
+    "rule": "subtract-rounded",
+    "code": "Fraction(lo_b[i])-Fraction(hi_a[i])",
+    "category": "exact-rational-input-grid",
+    "reason": "Bounding-box supplied coordinates are converted to Fraction before range/padding differences; these exact bounds feed a sampling grid, not a rounded-derived oracle.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 116,
+    "function": "sample_translations3",
+    "rule": "subtract-rounded",
+    "code": "Fraction(hi_b[i])-Fraction(lo_a[i])",
+    "category": "exact-rational-input-grid",
+    "reason": "Bounding-box supplied coordinates are converted to Fraction before range/padding differences; these exact bounds feed a sampling grid, not a rounded-derived oracle.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 117,
+    "function": "sample_translations3",
+    "rule": "subtract-rounded",
+    "code": "hi[i]-lo[i]",
+    "category": "exact-rational-input-grid",
+    "reason": "Bounding-box supplied coordinates are converted to Fraction before range/padding differences; these exact bounds feed a sampling grid, not a rounded-derived oracle.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 118,
+    "function": "sample_translations3",
+    "rule": "subtract-rounded",
+    "code": "lo[i]-padding[i]",
+    "category": "exact-rational-input-grid",
+    "reason": "Bounding-box supplied coordinates are converted to Fraction before range/padding differences; these exact bounds feed a sampling grid, not a rounded-derived oracle.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 210,
+    "function": "g0_distance_completeness3",
+    "rule": "rounded-vector",
+    "code": "norm(v)",
+    "category": "scope-exemption-sample-input",
+    "reason": "Normalizes a supplied random binary64 probe direction, not an expected geometry result or exact oracle-derived vector. Actual normalized probes define the test inputs.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03.py",
+    "line": 234,
+    "function": "g0_distance_completeness3",
+    "rule": "subtract-rounded",
+    "code": "got - truth",
+    "category": "set-operation",
+    "reason": "got/truth are sets of labelled contacts; this is set difference rather than subtraction of numeric outputs.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_exact.py",
+    "line": 144,
+    "function": "sat_model",
+    "rule": "subtract-rounded",
+    "code": "min(bb)-max(aa)",
+    "category": "exact-rational-integer",
+    "reason": "Independent exact SAT model uses Fraction extrema and integer numerator/denominator cross-products; these differences cannot lose information through floating construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_exact.py",
+    "line": 144,
+    "function": "sat_model",
+    "rule": "subtract-rounded",
+    "code": "max(bb)-min(aa)",
+    "category": "exact-rational-integer",
+    "reason": "Independent exact SAT model uses Fraction extrema and integer numerator/denominator cross-products; these differences cannot lose information through floating construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_exact.py",
+    "line": 156,
+    "function": "overlap",
+    "rule": "subtract-rounded",
+    "code": "shift*ld-ln*den",
+    "category": "exact-rational-integer",
+    "reason": "Independent exact SAT model uses Fraction extrema and integer numerator/denominator cross-products; these differences cannot lose information through floating construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_exact.py",
+    "line": 156,
+    "function": "overlap",
+    "rule": "subtract-rounded",
+    "code": "shift*hd-hn*den",
+    "category": "exact-rational-integer",
+    "reason": "Independent exact SAT model uses Fraction extrema and integer numerator/denominator cross-products; these differences cannot lose information through floating construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 132,
+    "function": "segment_face_hits",
+    "rule": "subtract-rounded",
+    "code": "aa-bb",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 166,
+    "function": "separated_distance.point_segment",
+    "rule": "subtract-rounded",
+    "code": "ww*uu-uw*uw",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 171,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "dot(n,p)-h",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 173,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "p[i]*nn-n[i]*height",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 179,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "x[0]-y[1]",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 179,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "y[0]-x[1]",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 184,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "aa*cc-bb*bb",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 186,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "bb*ee-cc*dd",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 186,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "aa*ee-bb*dd",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "line": 188,
+    "function": "separated_distance",
+    "rule": "subtract-rounded",
+    "code": "dot(w,w)*det+dd*sn-ee*tn",
+    "category": "exact-rational-integer",
+    "reason": "Independent surface oracle uses rational/integer segment, plane and squared-distance expressions. Minima are compared before any display construction; this is not subtraction of rounded witness points.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 108,
+    "function": "angle_between",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(_eg.dot(c, c)/(scale*scale), allow_underflow=d <= 0)",
+    "category": "exact-rational-final-angle-components",
+    "reason": "Exact vector/plane products form the complete rational squared sine/cosine ratios before sqrt_rational. These final trigonometric display components are not roots of prematurely rounded squared terms.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 156,
+    "function": "Polyhedron.metrics",
+    "rule": "rounded-vector",
+    "code": "norm(_eg.sub(exact_vector(hi), exact_vector(lo)))",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 157,
+    "function": "Polyhedron.metrics",
+    "rule": "rounded-vector",
+    "code": "norm(exact_edge_vector(self, (a, b)))",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 164,
+    "function": "Polyhedron.edge_noise",
+    "rule": "rounded-vector",
+    "code": "norm(exact_edge_vector(self, e))",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 178,
+    "function": "Polyhedron.face_noise",
+    "rule": "rounded-vector",
+    "code": "norm(sub(self.verts[f[(i + 1) % len(f)]], self.verts[f[i]]))",
+    "category": "scope-exemption-noise-diagnostic",
+    "reason": "Explicit diagnostic boundary: this existing norm measures floating endpoint displacement to estimate face noise or tolerance-based planarity. It is not the independent exact area/overlap oracle; exact topology/volume checks are separate. No exact-construction claim is made for this diagnostic scale.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 201,
+    "function": "Polyhedron._newell_normal",
+    "rule": "rounded-vector",
+    "code": "unit(exact_face_normal(self, fi))",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 215,
+    "function": "Polyhedron.face_area",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(_eg.dot(n, n) / 4)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 273,
+    "function": "Polyhedron.vertex_edge_dirs",
+    "rule": "rounded-vector",
+    "code": "norm(d)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 274,
+    "function": "Polyhedron.vertex_edge_dirs",
+    "rule": "rounded-vector",
+    "code": "unit(d)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 291,
+    "function": "Polyhedron.vertex_edges",
+    "rule": "rounded-vector",
+    "code": "norm(d)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 293,
+    "function": "Polyhedron.vertex_edges",
+    "rule": "rounded-vector",
+    "code": "unit(d)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 302,
+    "function": "Polyhedron.edge_dir",
+    "rule": "rounded-vector",
+    "code": "unit(d)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 333,
+    "function": "Polyhedron.dihedral_turn",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(sine2/scale2, allow_underflow=cosine <= 0)",
+    "category": "exact-rational-final-angle-components",
+    "reason": "Exact vector/plane products form the complete rational squared sine/cosine ratios before sqrt_rational. These final trigonometric display components are not roots of prematurely rounded squared terms.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 334,
+    "function": "Polyhedron.dihedral_turn",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(cosine*cosine/scale2, allow_underflow=True)",
+    "category": "exact-rational-final-angle-components",
+    "reason": "Exact vector/plane products form the complete rational squared sine/cosine ratios before sqrt_rational. These final trigonometric display components are not roots of prematurely rounded squared terms.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 367,
+    "function": "Polyhedron._find_interior_point",
+    "rule": "rounded-vector",
+    "code": "norm(sub(p, self.verts[0]))",
+    "category": "scope-exemption-candidate-search",
+    "reason": "Floating norms here set heuristic search step sizes. Returned candidates must separately satisfy point_in_polyhedron; the step-size computation is not an exact distance or complete geometric oracle.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 443,
+    "function": "Polyhedron.manifold_issues",
+    "rule": "rounded-vector",
+    "code": "norm(sub(self.verts[i], o))",
+    "category": "scope-exemption-noise-diagnostic",
+    "reason": "Explicit diagnostic boundary: this existing norm measures floating endpoint displacement to estimate face noise or tolerance-based planarity. It is not the independent exact area/overlap oracle; exact topology/volume checks are separate. No exact-construction claim is made for this diagnostic scale.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 497,
+    "function": "_point_segment_distance",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(_eg.point_segment_distance_squared(x, a, b))",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 548,
+    "function": "_ray_directions",
+    "rule": "rounded-root",
+    "code": "sqrt(max(0.0, 1.0 - z * z))",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 550,
+    "function": "_ray_directions",
+    "rule": "rounded-vector",
+    "code": "unit((r * math.cos(th), r * math.sin(th), z))",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 583,
+    "function": "_inward_vertex_direction",
+    "rule": "rounded-vector",
+    "code": "norm(s)",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 585,
+    "function": "_inward_vertex_direction",
+    "rule": "rounded-vector",
+    "code": "unit(s)",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 624,
+    "function": "_segment_closest_points",
+    "rule": "subtract-rounded",
+    "code": "a * e - b * b",
+    "category": "exact-rational",
+    "reason": "_segment_closest_points explicitly rationalizes all four endpoints and returns exact affine witnesses. The determinant/parameter algebra or witness-distance norm therefore sees exact relative components; surrounding heuristic AABB filters are not being certified by this exception.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 625,
+    "function": "_segment_closest_points",
+    "rule": "subtract-rounded",
+    "code": "b * f - c * e",
+    "category": "exact-rational",
+    "reason": "_segment_closest_points explicitly rationalizes all four endpoints and returns exact affine witnesses. The determinant/parameter algebra or witness-distance norm therefore sees exact relative components; surrounding heuristic AABB filters are not being certified by this exception.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 630,
+    "function": "_segment_closest_points",
+    "rule": "subtract-rounded",
+    "code": "b - c",
+    "category": "exact-rational",
+    "reason": "_segment_closest_points explicitly rationalizes all four endpoints and returns exact affine witnesses. The determinant/parameter algebra or witness-distance norm therefore sees exact relative components; surrounding heuristic AABB filters are not being certified by this exception.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 658,
+    "function": "_edge_edge_contacts",
+    "rule": "rounded-vector",
+    "code": "norm(sub(xa, xb))",
+    "category": "exact-rational",
+    "reason": "_segment_closest_points explicitly rationalizes all four endpoints and returns exact affine witnesses. The determinant/parameter algebra or witness-distance norm therefore sees exact relative components; surrounding heuristic AABB filters are not being certified by this exception.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 674,
+    "function": "_active_normals",
+    "rule": "rounded-vector",
+    "code": "norm(w)",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 689,
+    "function": "_gordan_direction",
+    "rule": "rounded-vector",
+    "code": "norm(sub(n, m))",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 701,
+    "function": "_gordan_direction",
+    "rule": "rounded-vector",
+    "code": "norm_rational(p)",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 702,
+    "function": "_gordan_direction",
+    "rule": "rounded-vector",
+    "code": "unit_rational(p)",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 720,
+    "function": "_min_norm_on_simplex",
+    "rule": "subtract-rounded",
+    "code": "g11 * g22 - g12 * g12",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 724,
+    "function": "_min_norm_on_simplex",
+    "rule": "subtract-rounded",
+    "code": "r1 * g22 - r2 * g12",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 725,
+    "function": "_min_norm_on_simplex",
+    "rule": "subtract-rounded",
+    "code": "r2 * g11 - r1 * g12",
+    "category": "scope-exemption-legacy-diagnostic",
+    "reason": "Explicit scope exception for retained approximate direction/contact-cone diagnostics. This helper intentionally uses floating seed/unit-normal data and tolerance tests; it is NOT claimed to preserve exact compound-construction intermediates. Current exact overlap APIs use exact_geom.surface_overlap instead; the reviewed legacy chain must remain pinned.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 809,
+    "function": "_seg_seg_distance",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(_eg.segment_distance_squared(p1, p2, q1, q2))",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 826,
+    "function": "_point_face_distance",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(g*g / nn)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 937,
+    "function": "brute_feature_distance",
+    "rule": "rounded-root",
+    "code": "_eg.sqrt_rational(best, allow_underflow=allow_underflow)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 1005,
+    "function": "_sliver_middle_vertex",
+    "rule": "subtract-rounded",
+    "code": "max(p[k] for p in (a,b,c))-min(p[k] for p in (a,b,c))",
+    "category": "exact-rational",
+    "reason": "a,b,c are _eg.vector Fraction coordinates. max-minus-min chooses an axis on exact collinear points, without numeric output rounding.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 1305,
+    "function": "exact_convex_overlap",
+    "rule": "subtract-rounded",
+    "code": "min(x)-max(y)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 1305,
+    "function": "exact_convex_overlap",
+    "rule": "subtract-rounded",
+    "code": "min(y)-max(x)",
+    "category": "exact-rational-final-construction",
+    "reason": "This site consumes exact_vector/exact_edge_vector/exact_face_normal or exact_geom squared-distance/projection results. The relative geometry is kept Fraction until the checked final norm/unit/root; conservative unknown-return taint is the false-positive source.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 96,
+    "function": "_normal_noise",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(dot(n, n) / (dot(a, a) * dot(b, b)))",
+    "category": "exact-rational-diagnostic-root",
+    "reason": "exact_edge_vector gives Fraction edges and the complete squared angular sine is rational before sqrt_rational. The resulting value is only a diagnostic noise factor, not a replacement for exact overlap/event decisions.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 195,
+    "function": "_candidates_uncached",
+    "rule": "subtract-rounded",
+    "code": "z - z_prev",
+    "category": "scope-exemption-display-clustering",
+    "reason": "Subtracts already displayed candidate heights for the retained reporting/tie-clustering window. Exact kinetic event heights and escape decisions are computed separately; this is not an exact-derived geometry constructor.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 313,
+    "function": "escape_height_covers",
+    "rule": "subtract-rounded",
+    "code": "F(nearest[0])-root",
+    "category": "scope-exemption-label-association",
+    "reason": "F(nearest[0])-root compares an already displayed legacy candidate height with the exact event root solely to associate reporting labels. The solved exact height and certificates are unaffected; it does not build a new geometric norm/root.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 374,
+    "function": "dilatancy_profile",
+    "rule": "subtract-rounded",
+    "code": "out[i + 1][\"h\"] - out[i - 1][\"h\"]",
+    "category": "scope-exemption-diagnostic-profile",
+    "reason": "Finite differences of displayed escape-height/profile sample values produce a diagnostic slope, not an exact construction oracle or exact derivative certificate.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 374,
+    "function": "dilatancy_profile",
+    "rule": "subtract-rounded",
+    "code": "out[i + 1][\"delta\"] - out[i - 1][\"delta\"]",
+    "category": "scope-exemption-diagnostic-profile",
+    "reason": "Finite differences of displayed escape-height/profile sample values produce a diagnostic slope, not an exact construction oracle or exact derivative certificate.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 409,
+    "function": "_wrench_rounding.scaled_norm",
+    "rule": "rounded-root",
+    "code": "sqrt_rational(squared)",
+    "category": "exact-rational-diagnostic-root",
+    "reason": "_rational preserves each immutable exact witness or supplied scalar, and normalized squared terms remain Fraction until sqrt_rational. This norm estimates input-rounding uncertainty, not the exact LP constraint model.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 509,
+    "function": "limit_load._pushes",
+    "rule": "subtract-rounded",
+    "code": "li - Fraction(pi)",
+    "category": "exact-rational-certificate",
+    "reason": "The _pushes/_resolvable comparison uses rational LP certified outcomes and Fraction input perturbations, not separately rounded output subtraction. These checks operate on the documented exact model.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 529,
+    "function": "limit_load._resolvable",
+    "rule": "subtract-rounded",
+    "code": "am-a0",
+    "category": "exact-rational-certificate",
+    "reason": "The _pushes/_resolvable comparison uses rational LP certified outcomes and Fraction input perturbations, not separately rounded output subtraction. These checks operate on the documented exact model.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 529,
+    "function": "limit_load._resolvable",
+    "rule": "subtract-rounded",
+    "code": "ap-a0",
+    "category": "exact-rational-certificate",
+    "reason": "The _pushes/_resolvable comparison uses rational LP certified outcomes and Fraction input perturbations, not separately rounded output subtraction. These checks operate on the documented exact model.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 676,
+    "function": "_exact_duality_report",
+    "rule": "subtract-rounded",
+    "code": "upper-alpha",
+    "category": "exact-rational-certificate",
+    "reason": "alpha, forces, velocities and loads are restored with _rational; the duality gap is computed from exact witness algebra before _fl constructs diagnostic displays.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit_multi.py",
+    "line": 112,
+    "function": "_pair_powers",
+    "rule": "subtract-rounded",
+    "code": "va - (ys[b][i] if b is not None else 0)",
+    "category": "exact-rational-certificate",
+    "reason": "_rational/Fraction restores load, origin, velocity and certified LP terms; coupling rows and sensitivity differences remain exact rational algebra. Floating public result displays are not substituted for the certificates.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit_multi.py",
+    "line": 145,
+    "function": "limit_load_multi",
+    "rule": "subtract-rounded",
+    "code": "Fraction(oi[i][q])-Fraction(oc[q])",
+    "category": "exact-rational-certificate",
+    "reason": "_rational/Fraction restores load, origin, velocity and certified LP terms; coupling rows and sensitivity differences remain exact rational algebra. Floating public result displays are not substituted for the certificates.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit_multi.py",
+    "line": 172,
+    "function": "limit_load_multi._solve",
+    "rule": "subtract-rounded",
+    "code": "row[j] -= Cx[j][r]",
+    "category": "exact-rational-certificate",
+    "reason": "_rational/Fraction restores load, origin, velocity and certified LP terms; coupling rows and sensitivity differences remain exact rational algebra. Floating public result displays are not substituted for the certificates.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit_multi.py",
+    "line": 206,
+    "function": "limit_load_multi._pushes",
+    "rule": "subtract-rounded",
+    "code": "li - pi",
+    "category": "exact-rational-certificate",
+    "reason": "_rational/Fraction restores load, origin, velocity and certified LP terms; coupling rows and sensitivity differences remain exact rational algebra. Floating public result displays are not substituted for the certificates.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit_multi.py",
+    "line": 245,
+    "function": "limit_load_multi",
+    "rule": "subtract-rounded",
+    "code": "am-alpha",
+    "category": "exact-rational-certificate",
+    "reason": "_rational/Fraction restores load, origin, velocity and certified LP terms; coupling rows and sensitivity differences remain exact rational algebra. Floating public result displays are not substituted for the certificates.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit_multi.py",
+    "line": 245,
+    "function": "limit_load_multi",
+    "rule": "subtract-rounded",
+    "code": "ap-alpha",
+    "category": "exact-rational-certificate",
+    "reason": "_rational/Fraction restores load, origin, velocity and certified LP terms; coupling rows and sensitivity differences remain exact rational algebra. Floating public result displays are not substituted for the certificates.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/limit_multi.py",
+    "line": 294,
+    "function": "check_duality_multi",
+    "rule": "subtract-rounded",
+    "code": "int(i == bc.body_a)-int(i == bc.body_b)",
+    "category": "integer-incidence",
+    "reason": "Subtracts int body-incidence indicators to obtain +1/-1/0 coupling signs; no numeric rounding is involved.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/lp.py",
+    "line": 320,
+    "function": "_Revised.optimize",
+    "rule": "subtract-rounded",
+    "code": "delta[i] - min(x[i], 0.0)",
+    "category": "scope-exemption-certified-candidate",
+    "reason": "Explicit floating-candidate layer: these subtractions are permitted numerical simplex heuristics, not accepted final certificates. lp.solve certifies original-data optimal/unbounded/infeasible results exactly and falls back to rational simplex when needed.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/lp.py",
+    "line": 387,
+    "function": "_Revised.dual_violation",
+    "rule": "subtract-rounded",
+    "code": "-r - _NOISE_FLOOR * S",
+    "category": "scope-exemption-certified-candidate",
+    "reason": "Explicit floating-candidate layer: these subtractions are permitted numerical simplex heuristics, not accepted final certificates. lp.solve certifies original-data optimal/unbounded/infeasible results exactly and falls back to rational simplex when needed.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/lp.py",
+    "line": 467,
+    "function": "_float_solve",
+    "rule": "subtract-rounded",
+    "code": "x[i] - ft1[i]",
+    "category": "scope-exemption-certified-candidate",
+    "reason": "Explicit floating-candidate layer: these subtractions are permitted numerical simplex heuristics, not accepted final certificates. lp.solve certifies original-data optimal/unbounded/infeasible results exactly and falls back to rational simplex when needed.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/lp.py",
+    "line": 553,
+    "function": "_Exact.inverse",
+    "rule": "subtract-rounded",
+    "code": "a - f * bb",
+    "category": "exact-rational-simplex",
+    "reason": "_Exact/_exact_simplex uses Fraction matrix rows, inverse factors, basis values and pivots. The elimination/update subtraction is exact; it is not arithmetic on displayed floating LP outputs.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/lp.py",
+    "line": 712,
+    "function": "_exact_simplex.run",
+    "rule": "subtract-rounded",
+    "code": "a - f * bb",
+    "category": "exact-rational-simplex",
+    "reason": "_Exact/_exact_simplex uses Fraction matrix rows, inverse factors, basis values and pivots. The elimination/update subtraction is exact; it is not arithmetic on displayed floating LP outputs.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/lp.py",
+    "line": 713,
+    "function": "_exact_simplex.run",
+    "rule": "subtract-rounded",
+    "code": "xB[i] -= theta * f",
+    "category": "exact-rational-simplex",
+    "reason": "_Exact/_exact_simplex uses Fraction matrix rows, inverse factors, basis values and pivots. The elimination/update subtraction is exact; it is not arithmetic on displayed floating LP outputs.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/lp.py",
+    "line": 747,
+    "function": "_exact_simplex",
+    "rule": "subtract-rounded",
+    "code": "p - d[r_] * q",
+    "category": "exact-rational-simplex",
+    "reason": "_Exact/_exact_simplex uses Fraction matrix rows, inverse factors, basis values and pivots. The elimination/update subtraction is exact; it is not arithmetic on displayed floating LP outputs.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 104,
+    "function": "characteristic_length",
+    "rule": "rounded-vector",
+    "code": "norm(_exact.sub(_exact.vector(v), _exact.vector(v0)))",
+    "category": "exact-rational-final-construction",
+    "reason": "_exact vector/projection/feature-squared-distance helpers preserve Fraction geometry; the local direction or complete squared distance reaches norm/unit/sqrt only at the final display boundary. Pin helper implementations and call arguments.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 131,
+    "function": "_tie_groups",
+    "rule": "subtract-rounded",
+    "code": "key(items[order[j + 1]]) - key(items[order[i]])",
+    "category": "scope-exemption-display-report",
+    "reason": "Explicit reporting boundary: compares/display-normalizes already constructed witness coordinates or distance keys. The independent exact feature-squared-distance path controls completeness and contact/body-distance decisions; this report helper is not certified as an exact witness-distance constructor.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 150,
+    "function": "cover_witness",
+    "rule": "rounded-vector",
+    "code": "norm(v)",
+    "category": "scope-exemption-display-report",
+    "reason": "Explicit reporting boundary: compares/display-normalizes already constructed witness coordinates or distance keys. The independent exact feature-squared-distance path controls completeness and contact/body-distance decisions; this report helper is not certified as an exact witness-distance constructor.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 157,
+    "function": "cover_witness",
+    "rule": "rounded-vector",
+    "code": "unit(v)",
+    "category": "scope-exemption-display-report",
+    "reason": "Explicit reporting boundary: compares/display-normalizes already constructed witness coordinates or distance keys. The independent exact feature-squared-distance path controls completeness and contact/body-distance decisions; this report helper is not certified as an exact witness-distance constructor.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 302,
+    "function": "_repair_folded_construction",
+    "rule": "rounded-vector",
+    "code": "unit(direction, allow_underflow=True)",
+    "category": "exact-rational-final-construction",
+    "reason": "_exact vector/projection/feature-squared-distance helpers preserve Fraction geometry; the local direction or complete squared distance reaches norm/unit/sqrt only at the final display boundary. Pin helper implementations and call arguments.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 350,
+    "function": "_resolve",
+    "rule": "rounded-root",
+    "code": "_exact.sqrt_rational(truth2, allow_underflow=True)",
+    "category": "exact-rational-final-construction",
+    "reason": "_exact vector/projection/feature-squared-distance helpers preserve Fraction geometry; the local direction or complete squared distance reaches norm/unit/sqrt only at the final display boundary. Pin helper implementations and call arguments.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 415,
+    "function": "body_distance",
+    "rule": "rounded-root",
+    "code": "_exact.sqrt_rational(d2)",
+    "category": "exact-rational-final-construction",
+    "reason": "_exact vector/projection/feature-squared-distance helpers preserve Fraction geometry; the local direction or complete squared distance reaches norm/unit/sqrt only at the final display boundary. Pin helper implementations and call arguments.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 419,
+    "function": "body_distance",
+    "rule": "rounded-root",
+    "code": "_exact.sqrt_rational(d2)",
+    "category": "exact-rational-final-construction",
+    "reason": "_exact vector/projection/feature-squared-distance helpers preserve Fraction geometry; the local direction or complete squared distance reaches norm/unit/sqrt only at the final display boundary. Pin helper implementations and call arguments.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 469,
+    "function": "margin_contacts",
+    "rule": "rounded-root",
+    "code": "_exact.sqrt_rational(d2, allow_underflow=True)",
+    "category": "exact-rational-final-construction",
+    "reason": "_exact vector/projection/feature-squared-distance helpers preserve Fraction geometry; the local direction or complete squared distance reaches norm/unit/sqrt only at the final display boundary. Pin helper implementations and call arguments.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 564,
+    "function": "distance_to_convex_entrance",
+    "rule": "rounded-root",
+    "code": "_exact.sqrt_rational(_exact.dot(displacement, displacement))",
+    "category": "exact-rational-final-construction",
+    "reason": "nearest_point_on_convex_entrance is explicitly called with exact=True. The relative displacement is formed from that Fraction witness and _exact.vector(x), then normalized/rooted once; the rounded default display point is not used.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 579,
+    "function": "inflated_normal",
+    "rule": "rounded-vector",
+    "code": "unit(v)",
+    "category": "exact-rational-final-construction",
+    "reason": "nearest_point_on_convex_entrance is explicitly called with exact=True. The relative displacement is formed from that Fraction witness and _exact.vector(x), then normalized/rooted once; the rounded default display point is not used.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/predicates.py",
+    "line": 114,
+    "function": "orient3d",
+    "rule": "subtract-rounded",
+    "code": "af[k] - pf[k]",
+    "category": "certified-floating-filter",
+    "reason": "These subtractions form the fast orient3d candidate on supplied floats, with a rigorous error bound and exact Fraction fallback. They are not accepted derived geometry constructions or unguarded exact branch answers.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/predicates.py",
+    "line": 115,
+    "function": "orient3d",
+    "rule": "subtract-rounded",
+    "code": "bf[k] - pf[k]",
+    "category": "certified-floating-filter",
+    "reason": "These subtractions form the fast orient3d candidate on supplied floats, with a rigorous error bound and exact Fraction fallback. They are not accepted derived geometry constructions or unguarded exact branch answers.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/predicates.py",
+    "line": 116,
+    "function": "orient3d",
+    "rule": "subtract-rounded",
+    "code": "cf[k] - pf[k]",
+    "category": "certified-floating-filter",
+    "reason": "These subtractions form the fast orient3d candidate on supplied floats, with a rigorous error bound and exact Fraction fallback. They are not accepted derived geometry constructions or unguarded exact branch answers.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/predicates.py",
+    "line": 120,
+    "function": "orient3d",
+    "rule": "subtract-rounded",
+    "code": "bdxcdy - cdxbdy",
+    "category": "certified-floating-filter",
+    "reason": "These subtractions form the fast orient3d candidate on supplied floats, with a rigorous error bound and exact Fraction fallback. They are not accepted derived geometry constructions or unguarded exact branch answers.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/predicates.py",
+    "line": 120,
+    "function": "orient3d",
+    "rule": "subtract-rounded",
+    "code": "cdxady - adxcdy",
+    "category": "certified-floating-filter",
+    "reason": "These subtractions form the fast orient3d candidate on supplied floats, with a rigorous error bound and exact Fraction fallback. They are not accepted derived geometry constructions or unguarded exact branch answers.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/predicates.py",
+    "line": 120,
+    "function": "orient3d",
+    "rule": "subtract-rounded",
+    "code": "adxbdy - bdxady",
+    "category": "certified-floating-filter",
+    "reason": "These subtractions form the fast orient3d candidate on supplied floats, with a rigorous error bound and exact Fraction fallback. They are not accepted derived geometry constructions or unguarded exact branch answers.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/rational3.py",
+    "line": 34,
+    "function": "_product_difference",
+    "rule": "subtract-rounded",
+    "code": "a.numerator * b.numerator * (second // common)\n           - c.numerator * d.numerator * (first // common)",
+    "category": "exact-integer",
+    "reason": "The optimized rational product difference subtracts integer numerator cross-products with exact common-denominator factors. No float conversion occurs.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 153,
+    "function": "_vv_opposite_vertex",
+    "rule": "subtract-rounded",
+    "code": "shared - {p1}",
+    "category": "set-operation",
+    "reason": "shared is a set of integer vertex identities; subtracting {p1} is topology-set filtering, not numeric construction.",
+    "review_boundary": "Exact site only, with full module and source dependency lock; no wildcard function waiver."
+  }
+]

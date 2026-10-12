@@ -68,7 +68,8 @@ def _grid_truth(S1, S2):
     """1 内部相交（共格子）/ 0 仅边界接触（有格子共角点）/ −1 分离。只看格子集合。"""
     if S1 & S2:
         return 1
-    corners = lambda S: {(i + di, j + dj) for i, j in S for di in (0, 1) for dj in (0, 1)}
+    def corners(S):
+        return {(i + di, j + dj) for i, j in S for di in (0, 1) for dj in (0, 1)}
     return 0 if corners(S1) & corners(S2) else -1
 
 

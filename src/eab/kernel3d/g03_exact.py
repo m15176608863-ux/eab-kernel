@@ -75,15 +75,15 @@ def planar_ring(points, indices, n):
 @lru_cache(maxsize=256)
 def hull(raw):
     """Return (unique input points, extreme facet rings, exact planes)."""
-    p=tuple(sorted(set(map(qpoint,raw))))
+    p=tuple(sorted(set(qpoint(_mapped_value) for _mapped_value in raw)))
     if len(p)<4:raise ValueError('G0 oracle needs a solid hull')
     original=p
     den=lcm(*(c.denominator for v in p for c in v))
     p=tuple(tuple(int(c*den) for c in v) for v in p)
     i=0
-    j=max(range(1,len(p)),key=lambda k:scalar(minus(p[k],p[i]),minus(p[k],p[i])))
-    k=max(range(len(p)),key=lambda k:scalar(wedge(minus(p[j],p[i]),minus(p[k],p[i])),wedge(minus(p[j],p[i]),minus(p[k],p[i]))))
-    l=max(range(len(p)),key=lambda l:abs(volume(p[i],p[j],p[k],p[l])))
+    j=max((scalar(minus(p[k],p[i]),minus(p[k],p[i])), -_rank_index, k) for _rank_index, k in enumerate(range(1,len(p))))[2]
+    k=max((scalar(wedge(minus(p[j],p[i]),minus(p[k],p[i])),wedge(minus(p[j],p[i]),minus(p[k],p[i]))), -_rank_index, k) for _rank_index, k in enumerate(range(len(p))))[2]
+    l=max((abs(volume(p[i],p[j],p[k],p[l])), -_rank_index, l) for _rank_index, l in enumerate(range(len(p))))[2]
     if volume(p[i],p[j],p[k],p[l])==0:raise ValueError('G0 oracle: coplanar input')
     seed=(i,j,k,l)
     center=tuple(F(sum(p[v][a] for v in seed),4) for a in range(3))
@@ -118,7 +118,7 @@ def hull(raw):
 
 @lru_cache(maxsize=256)
 def difference_hull(av,bv):
-    a,b=tuple(map(qpoint,av)),tuple(map(qpoint,bv))
+    a,b=tuple(qpoint(_mapped_value) for _mapped_value in av),tuple(qpoint(_mapped_value) for _mapped_value in bv)
     return hull(tuple(minus(y,x) for x in a for y in b))
 
 
@@ -171,7 +171,7 @@ def boundary_probes(av,bv):
 
 def support_labels(av,af,bv,bf):
     """Independent exact strict labels on the supplied canonical convex views."""
-    a,b=tuple(map(qpoint,av)),tuple(map(qpoint,bv))
+    a,b=tuple(qpoint(_mapped_value) for _mapped_value in av),tuple(qpoint(_mapped_value) for _mapped_value in bv)
     _,_,planes=difference_hull(av,bv)
     amap={frozenset(f):i for i,f in enumerate(af)}
     bmap={frozenset(f):i for i,f in enumerate(bf)}

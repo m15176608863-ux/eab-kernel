@@ -125,7 +125,8 @@ def _small_pair(g, s):
     c, sn = math.cos(0.5), math.sin(0.5)
     A = convex_hull_3d([(0.3, 0.0, g)] + [(0.3 + c * x - sn * y, sn * x + c * y, g + 0.1)
                                           for x, y in ((1.0, 0.0), (-0.5, 0.85), (-0.5, -0.85))])
-    sc = lambda P: Polyhedron([tuple(s * v for v in p) for p in P.verts], list(P.faces))
+    def sc(P):
+        return Polyhedron([tuple(s * v for v in p) for p in P.verts], list(P.faces))
     return sc(A), sc(B)
 
 

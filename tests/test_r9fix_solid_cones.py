@@ -18,7 +18,7 @@ FACES=[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]
 def _roof(scale=F(1), shift=F(0), rotated=False):
     raw=[(0,0,0),(1,0,0),(1,1,0),(0,1,0),(0,0,1),(1,0,1),(1,1,F(3,2)),(0,1,1)]
     def transform(p):
-        x,y,z=map(F,p)
+        x,y,z=(F(_r12_item) for _r12_item in p)
         if rotated:
             x,y=(3*x-4*y)/5,(4*x+3*y)/5
         return tuple(scale*c+shift for c in (x,y,z))

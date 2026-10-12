@@ -209,7 +209,7 @@ def test_deferred_edge_parameters_preserve_every_eager_fraction_cover(scale, off
 def _fraction_membership(a, b, point, tol):
     a, b = geom3.exact_convex_view(a), geom3.exact_convex_view(b)
     facets = covers3.local_facets3(a, b)
-    point = tuple(map(F, point))
+    point = tuple((F(_r12_item) for _r12_item in point))
     tol2 = F(tol)**2 if tol > 0 else F(0)
     boundary = outside = near = False
     for n, p in covers3._planes(a, b, facets):

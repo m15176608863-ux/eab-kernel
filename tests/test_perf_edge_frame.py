@@ -23,7 +23,7 @@ FACES = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4),
 
 
 def _v(v):
-    return tuple(map(F, v))
+    return tuple(F(component) for component in v)
 
 
 def _sub(a, b):
@@ -108,13 +108,21 @@ def _body(kind, scale, offset, rounded):
         faces = [tuple(reversed(face)) for face in faces]
     vertices = [tuple(scale*x+(j+1)*offset for j, x in enumerate(p)) for p in vertices]
     if rounded:
-        vertices = [tuple(map(scalar_exact, p)) for p in vertices]
+        vertices = [tuple(scalar_exact(component) for component in p) for p in vertices]
     return Polyhedron(vertices, faces)
 
 
-def _outcome(func, *args):
+def _production_outcome(P, edge, direction, tol):
     try:
-        return func(*args)
+        return C._qedge_contains(P, edge, direction, tol)
+    except ValueError as error:
+        assert "zero-length edge" in str(error)
+        return "zero-length edge"
+
+
+def _reference_outcome(P, edge, direction, tol):
+    try:
+        return _reference_edge_state(P, edge, direction, tol)
     except ValueError as error:
         assert "zero-length edge" in str(error)
         return "zero-length edge"
@@ -149,8 +157,8 @@ def _queries(P):
 def test_integer_edge_frame_matches_fraction_reference(kind, scale, offset, rounded):
     P = _body(kind, scale, offset, rounded)
     for edge, direction, tol in _queries(P):
-        got = _outcome(C._qedge_contains, P, edge, direction, tol)
-        expected = _outcome(_reference_edge_state, P, edge, direction, tol)
+        got = _production_outcome(P, edge, direction, tol)
+        expected = _reference_outcome(P, edge, direction, tol)
         assert got == expected, ("exact edge state", kind, scale, offset, rounded, edge, direction, tol)
 
 

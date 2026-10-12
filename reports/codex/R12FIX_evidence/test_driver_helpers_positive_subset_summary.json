@@ -1,0 +1,33 @@
+{
+  "sites": 4727,
+  "scopes": 550,
+  "reviewed_candidate": 4727,
+  "needs_review": 0,
+  "scope_exemption_sites": 723,
+  "scope_exemption_scopes": 87,
+  "rules": {
+    "closed-data-attribute": 536,
+    "closed-unproved-arithmetic": 3957,
+    "closed-modulo": 80,
+    "closed-reduction": 120,
+    "closed-syntax": 14,
+    "closed-runtime-reflection": 20
+  },
+  "categories": {
+    "reviewed_data_access": 630,
+    "legacy_scope_exemption": 631,
+    "supplied_input_then_exact": 24,
+    "non_numeric_bookkeeping": 89,
+    "supplied_input_sampling": 1965,
+    "exact_rational": 1072,
+    "exact_assertion": 69,
+    "exact_rational_or_integer": 78,
+    "exact_shared_reference": 21,
+    "observed_sut": 50,
+    "deliberate_mutation_harness": 46,
+    "exact_model_reference": 28,
+    "limited_legacy_float_oracle": 24
+  },
+  "borrowed_exactsite_data_access": 630,
+  "note": "Only raw_v2 - raw_v1 tests/test_* top-level helper differences; no blanket test-file or test-driver exemption. Exact operand chains, given-input generation, terminal residual displays, integer/topology/I-O and targeted source-mutant metadata are separately reviewed. Existing approximate references are explicit scope exemptions, never machine-proved exact oracles."
+}

@@ -118,7 +118,7 @@ def test_margin_contacts_are_generalized_contacts():
 # ---------------------------------------------------------------- 定理四：C^{1,1}
 
 # 探针点集是确定性的；真实法向带备忘（每次 inflated_normal ~11 ms，全部探针点 ~400 个）
-_TRUE_INFLATED_NORMAL = inflated_normal
+from eab.margin import inflated_normal as _TRUE_INFLATED_NORMAL
 _TRUE_MEMO: dict = {}
 
 
@@ -174,10 +174,11 @@ def _lipschitz_probe_points(E, delta):
     return local, loops
 
 
-def _lipschitz_worst(normal_fn, E, pairs):
+def _lipschitz_worst(samples):
+    """Each sample is (x, y, normal_at_x, normal_at_y); no callback."""
     worst = 0.0
-    for x, y in pairs:
-        worst = max(worst, norm(sub(normal_fn(E, x), normal_fn(E, y))) / norm(sub(x, y)))
+    for x, y, nx, ny in samples:
+        worst = max(worst, norm(sub(nx, ny)) / norm(sub(x, y)))
     return worst
 
 
@@ -211,16 +212,10 @@ def _lipschitz_setup(delta):
     return (E,) + _lipschitz_probe_points(E, delta) + (_legacy_global_pairs(E, delta),)
 
 
-def _lipschitz_verdict(normal_fn, delta=0.25):
-    """定理四的双边门。
-
-    上界（Lipschitz，常数 2/δ，容差 1e-9 与原门相同）查**全部**点对：局部差商 ∪ 闭环 ∪ 原门 66 个全局点对；
-    紧性下界（≥ 0.9/δ，顶点处真实值 = 1/δ）只看局部 ∪ 闭环——把全局点对并进下界只会让下界更松，故不并。
-    返回 ((局部∪闭环最坏商, 全局点对最坏商), 是否通过)。
-    """
-    E, local, loops, glob = _lipschitz_setup(delta)
-    w_local = max(_lipschitz_worst(normal_fn, E, local), _lipschitz_worst(normal_fn, E, loops))
-    w_global = _lipschitz_worst(normal_fn, E, glob)
+def _lipschitz_verdict(local, loops, glob, delta=0.25):
+    """Check the original ordered samples; their normals are supplied data."""
+    w_local = max(_lipschitz_worst(local), _lipschitz_worst(loops))
+    w_global = _lipschitz_worst(glob)
     ok = max(w_local, w_global) <= 2.0 / delta + 1e-9 and w_local >= 0.9 / delta
     return (w_local, w_global), ok
 
@@ -237,12 +232,14 @@ def test_inflated_normal_is_lipschitz():
     顶点基点与闭环点的位置由法锥方向与三角不等式构造，不经过最近点例程。
     """
     delta = 0.25
-    _, _, _, glob = _lipschitz_setup(delta)
+    E, local, loops, glob = _lipschitz_setup(delta)
     assert len(glob) == 66
     dmin = min(norm(sub(x, y)) for x, y in glob)
     assert 2.0 / dmin < 4.82 < 2.0 / delta, dmin          # 旧门单独无牙的原因（任何单位向量场都过）
     fn = _true_normal if inflated_normal is _TRUE_INFLATED_NORMAL else inflated_normal
-    (w_local, w_global), ok = _lipschitz_verdict(fn, delta)
+    samples = [[(x, y, fn(E, x), fn(E, y)) for x, y in pairs]
+               for pairs in (local, loops, glob)]
+    (w_local, w_global), ok = _lipschitz_verdict(*samples, delta=delta)
     assert w_global <= 2.0 / delta + 1e-9, w_global       # 原门断言，原样
     assert w_local <= 2.0 / delta + 1e-9, w_local
     assert w_local >= 0.9 / delta, w_local
@@ -263,8 +260,11 @@ def test_lipschitz_gate_has_teeth():
         "local_flip": lambda E, x: (tuple(-c for c in _true_normal(E, x)) if x[0] > 0.0
                                     else _true_normal(E, x)),
     }
+    E, local, loops, glob = _lipschitz_setup(0.25)
     for name, fn in mutants.items():
-        worst, ok = _lipschitz_verdict(fn)
+        samples = [[(x, y, fn(E, x), fn(E, y)) for x, y in pairs]
+                   for pairs in (local, loops, glob)]
+        worst, ok = _lipschitz_verdict(*samples)
         assert not ok, f"错误实现 {name} 没被抓住：(局部∪闭环, 全局) worst = {worst}"
 
 
@@ -285,8 +285,12 @@ def test_lipschitz_gate_global_pairs_have_their_own_teeth():
         n = _true_normal(E, x)
         return (n[0] + 10.0, n[1], n[2]) if norm(sub(x, p0)) < 1e-3 else n
 
-    (w_local, w_global), ok = _lipschitz_verdict(bump, delta)
-    (w_true, _), _ = _lipschitz_verdict(_true_normal, delta)
+    samples = [[(x, y, bump(E, x), bump(E, y)) for x, y in pairs]
+               for pairs in (local, loops, glob)]
+    (w_local, w_global), ok = _lipschitz_verdict(*samples, delta=delta)
+    true_samples = [[(x, y, _true_normal(E, x), _true_normal(E, y)) for x, y in pairs]
+                    for pairs in (local, loops, glob)]
+    (w_true, _), _ = _lipschitz_verdict(*true_samples, delta=delta)
     assert w_local == w_true and 0.9 / delta <= w_local <= 2.0 / delta, (w_local, w_true)   # 局部 ∪ 闭环看不见
     assert w_global > 2.0 / delta and not ok, w_global         # 全局点对抓住
 

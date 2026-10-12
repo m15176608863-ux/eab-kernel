@@ -1,0 +1,195 @@
+{
+  "factory_cases": [
+    {
+      "file": "test_invariance_geom.py",
+      "name": "tetra_box_vv",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "box_box_face",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "generic",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "ve3_wedge",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "x_cross",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "stack_touch",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "sliver",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "yaw_1e-5",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "yaw_1e-3",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "ridge_needle",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_geom.py",
+      "name": "size_ratio",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "sep_ve3",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "sep_ev3",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "sep_vf",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "sep_parallel_edges",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "touch",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "subtol",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "deep",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "crossbars",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "sep_ee_yaw",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "ilock_sep",
+      "identical_vertices_faces_and_metadata": true
+    },
+    {
+      "file": "test_invariance_interlock.py",
+      "name": "ilock_bite",
+      "identical_vertices_faces_and_metadata": true
+    }
+  ],
+  "lipschitz_cases": [
+    {
+      "kind": "true",
+      "normal_call_count": 828,
+      "normal_call_order_identical": true,
+      "result_identical": true,
+      "result": [
+        [
+          3.9999875843175863,
+          1.232996310004886
+        ],
+        true
+      ]
+    },
+    {
+      "kind": "random",
+      "normal_call_count": 828,
+      "normal_call_order_identical": true,
+      "result_identical": true,
+      "result": [
+        [
+          7991.709618902315,
+          3.7559848840321606
+        ],
+        false
+      ]
+    },
+    {
+      "kind": "constant",
+      "normal_call_count": 828,
+      "normal_call_order_identical": true,
+      "result_identical": true,
+      "result": [
+        [
+          0.0,
+          0.0
+        ],
+        false
+      ]
+    },
+    {
+      "kind": "radial",
+      "normal_call_count": 828,
+      "normal_call_order_identical": true,
+      "result_identical": true,
+      "result": [
+        [
+          1.3733215006304695,
+          1.1940965189622323
+        ],
+        false
+      ]
+    },
+    {
+      "kind": "local_flip",
+      "normal_call_count": 828,
+      "normal_call_order_identical": true,
+      "result_identical": true,
+      "result": [
+        [
+          13.426522769075028,
+          2.2138105048785692
+        ],
+        false
+      ]
+    },
+    {
+      "kind": "bump",
+      "normal_call_count": 828,
+      "normal_call_order_identical": true,
+      "result_identical": true,
+      "result": [
+        [
+          3.9999875843175863,
+          24.059426982497648
+        ],
+        false
+      ]
+    }
+  ],
+  "identical_lipschitz_point_sets": true
+}

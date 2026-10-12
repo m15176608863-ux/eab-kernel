@@ -48,7 +48,7 @@ def cross2_sign(a, b) -> int:
         return _sign(numerator)
     if any(type(v) is not float for v in (*a, *b)):
         return _sign(Fraction(a[0]) * Fraction(b[1]) - Fraction(a[1]) * Fraction(b[0]))
-    ax, ay, bx, by = map(_float_value, (a[0], a[1], b[0], b[1]))
+    ax, ay, bx, by = (_float_value(_mapped_value) for _mapped_value in (a[0], a[1], b[0], b[1]))
     p, q = ax * by, ay * bx
     d = p - q
     bound = _BILINEAR_ERR * (abs(p) + abs(q)) + 8.0 * _TINY * (1.0 + abs(ax) + abs(ay) + abs(bx) + abs(by))
@@ -66,7 +66,7 @@ def dot2_sign(a, b) -> int:
         return _sign(numerator)
     if any(type(v) is not float for v in (*a, *b)):
         return _sign(Fraction(a[0]) * Fraction(b[0]) + Fraction(a[1]) * Fraction(b[1]))
-    ax, ay, bx, by = map(_float_value, (a[0], a[1], b[0], b[1]))
+    ax, ay, bx, by = (_float_value(_mapped_value) for _mapped_value in (a[0], a[1], b[0], b[1]))
     p, q = ax * bx, ay * by
     d = p + q
     bound = _BILINEAR_ERR * (abs(p) + abs(q)) + 8.0 * _TINY * (1.0 + abs(ax) + abs(ay) + abs(bx) + abs(by))

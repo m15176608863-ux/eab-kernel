@@ -54,7 +54,7 @@ def _facet_normal(A: Poly, B: Poly, label: tuple) -> Point:
 def _facet_points(A: Poly, B: Poly, label: tuple, x: Point) -> tuple[Point, Point]:
     """已精确核有限域的首入接触点对：VE/EV 取源顶点与边上投影；FF 取两闭段真实重叠上的同点，不以 clamp 掩盖域外标签。"""
     kind, ai, bj = label
-    A, B, x = [tuple(map(Fraction, p)) for p in A], [tuple(map(Fraction, p)) for p in B], tuple(map(Fraction, x))
+    A, B, x = [tuple(Fraction(_mapped_value) for _mapped_value in p) for p in A], [tuple(Fraction(_mapped_value) for _mapped_value in p) for p in B], tuple(Fraction(_mapped_value) for _mapped_value in x)
     if kind == "VE":
         a = add(A[ai], x)
         b0, b1 = edge(B, bj)
@@ -159,7 +159,7 @@ def _first_entrance_convex(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r
     门：test_convex_ray_decisions_do_not_use_constructed_facet_gaps / test_convex_ray_resolves_tiny_slopes_and_misses。
     """
     eb = entrance_block_exact(A, B)
-    X, D = tuple(map(Fraction, x0)), tuple(map(Fraction, d))
+    X, D = tuple(Fraction(_mapped_value) for _mapped_value in x0), tuple(Fraction(_mapped_value) for _mapped_value in d)
     enter = []
     t_out = None
 

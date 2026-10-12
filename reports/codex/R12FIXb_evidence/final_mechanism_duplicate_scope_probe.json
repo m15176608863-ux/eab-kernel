@@ -1,0 +1,40 @@
+{
+  "source": "def choose(flag):\n    if flag:\n        def read(record):\n            note = 1\n            return getattr(record, 'first')\n    else:\n        def read(record):\n            note = 2\n            return getattr(record, 'second')\n    return read\n",
+  "changed": "def choose(flag):\n    if flag:\n        def read(record):\n            note = 3\n            return getattr(record, 'first')\n    else:\n        def read(record):\n            note = 2\n            return getattr(record, 'second')\n    return read\n",
+  "original_contexts": {
+    "<module>": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "choose": "aa67bd5fa0ed5c4a5c2ef18fc701272ff3f30751cf055d7835a59ca8fdcd7296",
+    "choose.read": "44c6f331439ed2f7e55823c384fd589091c55e1f9f7988d867ffa64788ecc61d"
+  },
+  "changed_contexts": {
+    "<module>": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "choose": "5455c03f3ddfadd327938679e6d254fb7f507d3838da5f15487623b00e0e8f8d",
+    "choose.read": "44c6f331439ed2f7e55823c384fd589091c55e1f9f7988d867ffa64788ecc61d"
+  },
+  "before_approved": [
+    [
+      "choose.read",
+      "closed-dynamic-call",
+      "Call(func=Name(id='getattr', ctx=Load()), args=[Name(id='record', ctx=Load()), Constant(value='first')], keywords=[])"
+    ],
+    [
+      "choose.read",
+      "closed-dynamic-call",
+      "Call(func=Name(id='getattr', ctx=Load()), args=[Name(id='record', ctx=Load()), Constant(value='second')], keywords=[])"
+    ]
+  ],
+  "after_approved": [
+    [
+      "choose.read",
+      "closed-dynamic-call",
+      "Call(func=Name(id='getattr', ctx=Load()), args=[Name(id='record', ctx=Load()), Constant(value='first')], keywords=[])"
+    ],
+    [
+      "choose.read",
+      "closed-dynamic-call",
+      "Call(func=Name(id='getattr', ctx=Load()), args=[Name(id='record', ctx=Load()), Constant(value='second')], keywords=[])"
+    ]
+  ],
+  "stale_issues": [],
+  "changed_scope_issues": []
+}

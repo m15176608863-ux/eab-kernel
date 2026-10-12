@@ -131,7 +131,14 @@ def test_j01_seven_mutations_inside_real_cone_path_are_rejected(index):
     "v = []\n    v.append(Fraction(q))\n    return sqrt_rational(v[0])",
 ])
 def test_j01_fraction_on_unrounded_supplied_data_remains_allowed(body):
-    assert gate.scan_text("def good(q):\n    " + body + "\n") == []
+    issues = gate.scan_text("def good(q):\n    " + body + "\n")
+    if "map(" in body:
+        # R12 strengthens admission: no false rounding diagnosis, but the
+        # higher-order callable form is still rejected; known local list
+        # append of an exact Fraction is now analysed, not waived.
+        assert issues and all(row[3].startswith("closed-") for row in issues), issues
+    else:
+        assert issues == []
 
 
 @pytest.mark.parametrize("signature", ["value=scalar_rational(q)", "*, value=scalar_rational(q)"])
@@ -154,7 +161,7 @@ def test_j01_self_expanding_attribute_alias_terminates():
     except subprocess.TimeoutExpired:
         pytest.fail("J01 canonical alias resolution must terminate for a=a.x")
     assert result.returncode == 0, result.stderr
-    assert result.stdout.strip() == "[]"
+    assert result.stdout.strip() == repr([("<injected>", 2, "bad", "closed-data-attribute", "a.x")])
 
 
 def test_j01_removing_keyword_step_inside_gate_trips_real_cone_assertion():

@@ -1,0 +1,7 @@
+G6F-08 mutant: exact relative distance
+assert 0.0 == 1e-09
+ +  where 0.0 = <function distance_to_convex_entrance at 0x0000000004A23A60>(Polyhedron(verts=[(Fraction(100000000000000001, 1000000000), Fraction(-1, 1000000000), Fraction(-1, 1000000000)), (Fra... Fraction(1, 1000000000))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), (Fraction(100000000, 1), 0, 0))
+ +    where <function distance_to_convex_entrance at 0x0000000004A23A60> = M.distance_to_convex_entrance
+ +  and   1e-09 = scalar_exact(Fraction(1, 1000000000))
+..
+2 passed in 0.11s

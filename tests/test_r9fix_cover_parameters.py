@@ -11,14 +11,15 @@ from eab.kernel3d import geom3 as G, covers3 as C
 
 
 def _assert_parameters(c, a, b):
-    av = [tuple(map(F,p)) for p in a.verts]
-    bv = [tuple(map(F,p)) for p in b.verts]
+    av = [tuple((F(_r12_item) for _r12_item in p)) for p in a.verts]
+    bv = [tuple((F(_r12_item) for _r12_item in p)) for p in b.verts]
     if c.kind == "EE":
         pa, qa = (av[i] for i in c.a_feature[1:])
         pb, qb = (bv[i] for i in c.b_feature[1:])
         da, db = tuple(y-x for x,y in zip(pa,qa)), tuple(y-x for x,y in zip(pb,qb))
         w = tuple(x-y for x,y in zip(pa,pb))
-        dot = lambda u,v: sum(x*y for x,y in zip(u,v))
+        def dot(u, v):
+            return sum(x*y for x,y in zip(u,v))
         aa, bb, ab = dot(da,da), dot(db,db), dot(da,db)
         det = aa*bb-ab*ab
         expected = ((ab*dot(db,w)-bb*dot(da,w))/det,

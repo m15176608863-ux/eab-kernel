@@ -28,7 +28,7 @@ def _folded_roof(h=F(1, 2), scale=F(1), translated=False, rotated=False):
     assert inside(raw[4]) and inside(raw[6]) and not inside(midpoint)
     shift = (10**8, -2*10**8, 3*10**8) if translated else (0, 0, 0)
     def transform(p):
-        x, y, z = map(F, p)
+        x, y, z = (F(_r12_item) for _r12_item in p)
         if rotated:
             x, y = (3*x-4*y)/5, (4*x+3*y)/5
         return tuple(F(t) + scale*c for t, c in zip(shift, (x, y, z)))
@@ -75,7 +75,7 @@ def test_g6i02_flat_boundary_and_geometry_edit_use_fresh_surface_topology():
 
 
 def _cube(center, half, inward=False):
-    x, y, z = map(F, center)
+    x, y, z = (F(_r12_item) for _r12_item in center)
     h = F(half)
     verts = [(x-h, y-h, z-h), (x+h, y-h, z-h), (x+h, y+h, z-h), (x-h, y+h, z-h),
              (x-h, y-h, z+h), (x+h, y-h, z+h), (x+h, y+h, z+h), (x-h, y+h, z+h)]

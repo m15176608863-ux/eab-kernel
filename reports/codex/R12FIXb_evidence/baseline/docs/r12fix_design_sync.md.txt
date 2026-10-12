@@ -1,0 +1,61 @@
+# R12FIX 设计同步（2026-10-12）
+
+## 1. 输入、治理与范围
+
+本树修前锚为 `0ce65a4`，已含 M4a；本单只修 G6L-01，实际输入为 **0 critical / 1 major / 0 minor**。工单正文遗留的“6 条”“11 条”不是本轮额外发现。四种高阶绕过按共同根因合并为一条，不拆成四条计数。
+
+M0 已于 2026-10-12 按所有者决定退出，独立正确性复审并行继续；本单不变更该决定，也不将工作树全绿写成原 G6 的 0 critical / 0 major 已获独立认可。工单禁止新建 worktree，因此不宣称做过新鲜 worktree 门。外部设计正本 `D:/E(A, B)/07 程序设计·统一接触内核方案.md` 只读；本文件是本树合同增补和后续回写登记，不是外部正本已修改。
+
+## 2. 保证形态：封闭子集上的静态保证 + 默认拒绝
+
+入口仍为 `tools/check_exact_construction.py`，扫描 `src/` 与 `tests/` 下全部 Python 文件；新增 `tools/exact_construction_subset.py` 作**正向准入前检**，登记见 `tools/exact_construction_policy.json`。这不是“再补几种绕过语法”的黑名单修复。
+
+1. AST 节点、直接一阶调用、静态 import 及 namespace member 仅在封闭登记内放行；未登记/未来新增语法和未知名字不自动获得安全身份。import 必须核实际限定来源，不凭名字尾缀把任意别名当成数值原语。 **算术的自动静态证明范围极保守：只准入可由 AST 证明为纯整数字面量的有限整数表达式**（整数常量、允许的一元符号/取反、整数加减乘、整除/取模、位运算/位移、非负整数字面量幂；正常求值时保持整数）。这不证明任意输入下无异常，也不根据变量名、`Fraction` 风格命名或类型注解猜类型。`int/int`、负整数幂会产生 float；Fraction 与 float 混合及 `sum` 混合累加也可能静默舍入。因此其余 `BinOp`、全部 `AugAssign` 和尚无元素类型证明的 `sum` 均默认拒绝。即使实际为全 Fraction/整数的变量算法，也必须逐站点人工审阅并绑定完整上下文/依赖快照；不能把它写成已自动证明的有理数算法。
+2. 传递 callable、从可变容器取 callable 后调用、动态属性/反射、`eval`/`exec`、`functools.partial`、lambda 捕获数值函数、未知对象方法和自定义高阶函数等不可分析形态，以及 intrinsic 同名遮蔽、`**kwargs` 解包、`key=` 回调、属性/下标间接写入、装饰器，默认报告 `closed-*` 违例。普通对象属性读取也不能靠字段名猜成安全：未知 `Attribute`、namespace 常量/类型成员、`__annotations__` 与其他 dunder/运行时反射、注解中的调用、f-string 和未证明为纯整数字面量取模的 `%` 格式化均进入拒绝/逐站点审阅边界；注解及字符串不是隐藏舍入值的可信通道。调用者应改写成可分析的简单形态，或把**具体站点**作为人工审阅例外登记，不能因为“之前未见过”而放行。
+3. 保留既有舍入来源分析：控制流合流、零次循环/回边、别名与容器的 may-state，以及 `direct-float`、`rounded-root`、`rounded-vector`、`subtract-rounded` 等检查不被准入前检替代。旧过程内分析不能证明普通调用的返回值/副作用摘要时，受检路径直接报 `closed-unproved-call`，不把未知返回猜成“安全”或一概猜成“已舍入”。已知舍入实参跨过该未证明边界时另报 `closed-rounded-call`；实参舍入来源继续保守传播。现有一阶调用若需要保留，须逐站点审阅并由完整模块/依赖图钉住；这不赋予同名函数普遍安全的返回摘要。
+4. 上述算术/属性/格式化边界是同一“默认拒绝”合同的一部分，人工审阅可确认具体 Fraction 算法或无数值作用的字符串/记录字段，但这仍不是机器类型证明。封闭登记不声称证明任意函数数学正确。它的静态保证针对受支持的标量/容器数据模型和调用形态；不涵盖外部运行时 monkeypatch、任意用户对象运算协议/属性协议、任意动态 Python、任意数值算法的完整正确性。构造值仍须由独立数值 oracle、精确证书及变异门验证。
+
+因此，**零违例只表示“受支持子集检查通过，或存在明确登记的人工审阅例外”**，不是任意 Python 数值证明；不得把例外当成机器证明覆盖的代码。
+
+## 3. 例外记录不是开放式逃生口
+
+新增例外逐点记录路径、限定函数名、规则、精确 AST、包含完整模块 AST 与外层函数/类上下文的摘要，以及为何不构成“先舍入再构造”的理由。修改站点、同模块任意函数语义或相关绑定后，旧条目不再精确匹配；此外冻结全部 `src/`、`tests/` 与 `tools/` Python 文件的原字节 SHA-256 依赖图（静态分析目标仍仅 `src/`、`tests/`），任一 caller/callee 文件的字节或路径集改变均使新增白名单失效，必须重新审阅后登记。扫描副本以副本自己的依赖图核验，不能借主树快照替副本背书。AST 摘要本身不依赖行号，但原字节依赖图连纯换行/注释变化也会捕获，不能声称移行后自动沿用白名单。不得将整文件、路径存在、任意函数名或可调用对象的名字加入全面豁免。
+
+既有 `check_exact_construction.py::EXCEPTIONS` 的输入解析、候选过滤、显示残差及故意内部变异等具名理由保留；这些也不是任意代码正确性证明。新增清单中的每一条说明应按其具体用途读取，例如输入解析只定义给定数据、候选需独立精确认证、显示量不回流到精确分支、故意坏代码仅服务目标断言。完整站点与理由以 JSON 清单为准，实际同类扫描计数和处置见 [R12FIX 报告](../reports/codex/R12FIX_report.md)。
+
+## 4. 测试 oracle/helper 与显式豁免
+
+- `src/eab/` 中的 oracle/helper，以及 `tests/` 独立 oracle/helper 模块，进入同一闭集准入和舍入来源检查。
+- `tests/test_*.py` 里的**顶层独立 helper/oracle**同样进入闭集检查，不因文件名含 `test_` 而整体豁免。
+- 明确不纳入闭集前检保证的范围：`tests/test_*.py` 的模块级 pytest/import/参数化 scaffold，以及顶层 `test_*` 驱动的整个子树（含嵌套动态变异器与局部 helper）。这些代码需要 `inspect`/`exec`/monkeypatch、pytest context manager 及动态调用测试对象；它们仍接受原有舍入/直接转换扫描，普通未知调用保持原驱动规则（不适用 `closed-unproved-call` 的受检 helper 保证），但不能据闭集前检零违例声称其中所有 oracle 已证明安全。
+- 已有近似 oracle/报告 helper 的例外另按具体站点明确列账，而非把整个 tests 文件放行。`tests/test_*.py` 独立 helper 的本轮人工审核见 [逐调用点理由](../reports/codex/R12FIX_evidence/test_legacy_call_review.json) 与 [legacy 范围豁免](../reports/codex/R12FIX_evidence/test_legacy_call_scope_exemptions.json)：例如有限差分/显示残差、旧接近筛选、旧噪声窗口或 tie 报告只保证固定测试用途，不享有本门的精确构造 oracle 声称；`_exact_status_alpha` 的最终浮点显示也不冒充精确有理目标。独立 oracle 文件的对应旧报告策略边界另见 [oracle 例外](../reports/codex/R12FIX_evidence/test_legacy_oracle_scope_exemptions.json)。新增属性/格式化/算术边界的逐站点审核另见 [helper 正向子集审核](../reports/codex/R12FIX_evidence/test_driver_helpers_positive_subset_review.json) 与 [新增 legacy 边界](../reports/codex/R12FIX_evidence/test_driver_helpers_positive_subset_exemptions.json)，不可把先前调用审核自动当成算术类型证明。这些是人工候选证据，最终安装以精确站点及全依赖 pin 匹配的 policy 为准，不能自动扩展至新调用或任意新输入。
+- 若一个预期值构造要承担本门的 oracle 保证，应提取为上述受检独立 helper，而不是藏进驱动豁免区。数值 oracle 的独立性仍须按 AGENTS A 单独核查；静态准入不能替代“与被测对象不共用几何原语”。
+
+## 5. G6L-01 的牙与验证入口
+
+永久门为 `tests/test_r12fix_static_closed.py`：
+
+- `test_l01_real_cone_higher_order_implants_change_answer_and_are_rejected`：在真实 `cone_intersection_margin` 内植入审查四形态；独立 Fraction KKT 与平方中点证书确认正确最小次正规答案为 `2**-1074`，内部坏构造确实变成 `0.0`，随后要求目标函数出现 `closed-*` 拒绝。
+- `test_l01_unknown_higher_order_and_dynamic_forms_are_default_rejected`：除已知 map/iter/pop 外，纳入动态反射、lambda/partial、未知导入及未见过的自定义高阶函数；不能依赖提前登记该新形态才报红。
+- `test_l01_unproved_direct_helper_cannot_launder_rounded_arguments` 与 `test_l01_direct_helper_cannot_hide_its_own_rounded_return`：未知 helper 不能洗掉已舍入实参，也不能把自身产生的舍入值冒充精确返回。
+- `test_l01_disabling_closed_pass_trips_real_cone_rejection_assertion`：在 scanner 内移除关键闭集准入步骤，目标拒绝断言必须失败；不在输出后追加假违例来充牙。
+- `test_l01_every_unanalysed_call_surface_is_default_rejected` 与 `test_l01_local_intrinsic_shadow_cannot_launder_rounded_return`：未分析调用表面及同名 intrinsic 遮蔽仍默认拒绝，不借名字获得安全摘要。
+- `test_l01_rounded_argument_cannot_hide_root_inside_a_callee`：已舍入实参不得通过已定义 helper 隐藏其中的根/范数构造；受检调用边界必须拒绝。
+- `test_l01_runtime_annotation_and_reflection_cannot_hide_rounding`、`test_l01_numeric_formatting_is_not_a_proved_exact_constructor` 与 `test_l01_implicit_binary64_arithmetic_requires_type_proof`：注解/dunder/普通属性、f-string/% 格式化，以及 int/int、负幂、Fraction×float、混合 sum 等隐式舍入载体不能绕开默认拒绝。
+- `test_l01_baseline_waiver_does_not_admit_new_higher_order_cone_source` 与 `test_l01_full_repository_copy_rejects_real_map_implant_and_changed_dependency`：基线白名单不能放行新的 cone 形态，整个扫描副本的内部变异/依赖变化使旧白名单失效。
+
+修前红、修后绿、实际哪条变异断言失败、完整扫描和全套末行由 [R12FIX 报告](../reports/codex/R12FIX_report.md) 及其 evidence 保存。可重跑：
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+python -X utf8 tools/check_exact_construction.py
+python -X utf8 -m pytest -q -p no:cacheprovider tests/test_r12fix_static_closed.py --basetemp=reports/codex/R12FIX_evidence/tmp/r12_static
+python -X utf8 tools/fix_canon_ptrs.py --apply
+python -X utf8 -m pytest -q -p no:cacheprovider --basetemp=reports/codex/R12FIX_evidence/tmp/fullsuite
+```
+
+## 6. M4a 增量同步与未扩张边界
+
+`canon_map.md` 第八节新增 M4a 列，保留原三列历史记录；更新 15 输入配对 × 3 步的离线检测、局部 G5 差异台账和 Phase 5 接缝提案。README 的主特征键唯一性也按当前 ContactRecord 合同订正：M4 v01/v02 四例有 9 条额外主键重复，multiplicity 与第二参考不能静默删除。
+
+M4a 仍只消费冻结导出、使用显式域窗口内的静态局部盖。它不是完整 legacy 等价、真实运动首入、锁态/滑动符号/位移同构，不是在线检测/装配/开闭切换。既有三组门 `tests/test_m4_bdda_adapter.py`、`tests/test_m4_bdda_shadow.py`、`tests/test_m4_bdda_vv_reader.py` 纳入本轮全套；本单不重捕获、不删改 fixtures、不写姊妹仓库。

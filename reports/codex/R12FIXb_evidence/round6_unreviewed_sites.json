@@ -1,0 +1,848 @@
+[
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 362,
+    "function": "_sub3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] - b[0]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load()))",
+    "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 362,
+    "function": "_sub3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[1] - b[1]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))",
+    "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 362,
+    "function": "_sub3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[2] - b[2]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Sub(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load()))",
+    "context": "fc7952d597938b444610f4fda7ab20d8cb6e05b874b89613f3f5e2448ed3ff8f"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] * b[0] + a[1] * b[1] + a[2] * b[2]",
+    "node": "BinOp(left=BinOp(left=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load())), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load())))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] * b[0] + a[1] * b[1]",
+    "node": "BinOp(left=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load())), op=Add(), right=BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load())))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[0] * b[0]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=0), ctx=Load()))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[1] * b[1]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=1), ctx=Load()))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 366,
+    "function": "_dot3",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a[2] * b[2]",
+    "node": "BinOp(left=Subscript(value=Name(id='a', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Subscript(value=Name(id='b', ctx=Load()), slice=Constant(value=2), ctx=Load()))",
+    "context": "ef1fca041b9c514260ee6c69c844c0c213bd49ec7e440ef74e82211d5c1bdea7"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 378,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "f / e",
+    "node": "BinOp(left=Name(id='f', ctx=Load()), op=Div(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 389,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "-c / a",
+    "node": "BinOp(left=UnaryOp(op=USub(), operand=Name(id='c', ctx=Load())), op=Div(), right=Name(id='a', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 385,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a * e - b * b",
+    "node": "BinOp(left=BinOp(left=Name(id='a', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='b', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 385,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "a * e",
+    "node": "BinOp(left=Name(id='a', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 385,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * b",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='b', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "(b * f - c * e) / den",
+    "node": "BinOp(left=BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))), op=Div(), right=Name(id='den', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * f - c * e",
+    "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * f",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='f', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 386,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * e",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 387,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "(b * s + f) / e",
+    "node": "BinOp(left=BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())), op=Add(), right=Name(id='f', ctx=Load())), op=Div(), right=Name(id='e', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 387,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * s + f",
+    "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())), op=Add(), right=Name(id='f', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 387,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b * s",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 391,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "(b - c) / a",
+    "node": "BinOp(left=BinOp(left=Name(id='b', ctx=Load()), op=Sub(), right=Name(id='c', ctx=Load())), op=Div(), right=Name(id='a', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 391,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "b - c",
+    "node": "BinOp(left=Name(id='b', ctx=Load()), op=Sub(), right=Name(id='c', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p1[0] + d1[0] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d1[0] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p1[1] + d1[1] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d1[1] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p1[2] + d1[2] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='p1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 392,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d1[2] * s",
+    "node": "BinOp(left=Subscript(value=Name(id='d1', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='s', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p2[0] + d2[0] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d2[0] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p2[1] + d2[1] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d2[1] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "p2[2] + d2[2] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='p2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load())))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_g2_bdda3d.py",
+    "line": 393,
+    "function": "_seg_seg_dist",
+    "rule": "closed-unproved-arithmetic",
+    "source": "d2[2] * t",
+    "node": "BinOp(left=Subscript(value=Name(id='d2', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Mult(), right=Name(id='t', ctx=Load()))",
+    "context": "e21d29d603191f0a4cbf9ba07218b40fc3f53ca7e4298f7f0d4a02d7f9b4a4e5"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 53,
+    "function": "body_distance",
+    "rule": "closed-rounded-construction",
+    "source": "exact_margin.contact_resolution(A, B)",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "97f9f7e6e239a3977d4a93711abcc33d7f2ce81f81d6336d8e6adf724b5bf201"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c[0] + ct * x - st * y",
+    "node": "BinOp(left=BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c[0] + ct * x",
+    "node": "BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=0), ctx=Load()), op=Add(), right=BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "ct * x",
+    "node": "BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "st * y",
+    "node": "BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c[1] + st * x + ct * y",
+    "node": "BinOp(left=BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Add(), right=BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c[1] + st * x",
+    "node": "BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=1), ctx=Load()), op=Add(), right=BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "st * x",
+    "node": "BinOp(left=Name(id='st', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "ct * y",
+    "node": "BinOp(left=Name(id='ct', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 117,
+    "function": "_slab",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c[2] + z",
+    "node": "BinOp(left=Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=2), ctx=Load()), op=Add(), right=Name(id='z', ctx=Load()))",
+    "context": "0db74ffa90264a80410cd5188c4501507ddcdab70e33d2cb60e70e4c4db6b7cf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 126,
+    "function": "_pair_tetra_box_vv",
+    "rule": "closed-unproved-arithmetic",
+    "source": "1.0 / math.sqrt(3.0)",
+    "node": "BinOp(left=Constant(value=1.0), op=Div(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='sqrt', ctx=Load()), args=[Constant(value=3.0)], keywords=[]))",
+    "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 127,
+    "function": "_pair_tetra_box_vv",
+    "rule": "closed-unproved-arithmetic",
+    "source": "1.0 + 0.1 * r3",
+    "node": "BinOp(left=Constant(value=1.0), op=Add(), right=BinOp(left=Constant(value=0.1), op=Mult(), right=Name(id='r3', ctx=Load())))",
+    "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 127,
+    "function": "_pair_tetra_box_vv",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.1 * r3",
+    "node": "BinOp(left=Constant(value=0.1), op=Mult(), right=Name(id='r3', ctx=Load()))",
+    "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 127,
+    "function": "_pair_tetra_box_vv",
+    "rule": "closed-unproved-arithmetic",
+    "source": "-1.0 - 0.1 * r3",
+    "node": "BinOp(left=UnaryOp(op=USub(), operand=Constant(value=1.0)), op=Sub(), right=BinOp(left=Constant(value=0.1), op=Mult(), right=Name(id='r3', ctx=Load())))",
+    "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 128,
+    "function": "_pair_tetra_box_vv",
+    "rule": "closed-unproved-arithmetic",
+    "source": "apex[i] - T0.verts[3][i]",
+    "node": "BinOp(left=Subscript(value=Name(id='apex', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load()), op=Sub(), right=Subscript(value=Subscript(value=Attribute(value=Name(id='T0', ctx=Load()), attr='verts', ctx=Load()), slice=Constant(value=3), ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load()))",
+    "context": "4f79a053102053c731ca3454ae9ca877e51813e81b7e169566f118ae93aa335a"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 135,
+    "function": "_pair_box_box_face",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.5 + 0.05 + 0.35",
+    "node": "BinOp(left=BinOp(left=Constant(value=0.5), op=Add(), right=Constant(value=0.05)), op=Add(), right=Constant(value=0.35))",
+    "context": "7ba78ca502116ecf16df3c908e0d43b6cbe176f1c0410eb364a5149c326b4235"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 135,
+    "function": "_pair_box_box_face",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.5 + 0.05",
+    "node": "BinOp(left=Constant(value=0.5), op=Add(), right=Constant(value=0.05))",
+    "context": "7ba78ca502116ecf16df3c908e0d43b6cbe176f1c0410eb364a5149c326b4235"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 143,
+    "function": "_pair_generic",
+    "rule": "closed-unproved-arithmetic",
+    "source": "rng.uniform(-1, 1) + 2.6",
+    "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=2.6))",
+    "context": "9705b492e314f29ebdcbc48ebcde40e34095d19f7a6fbf98fe278471557ae773"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 143,
+    "function": "_pair_generic",
+    "rule": "closed-unproved-arithmetic",
+    "source": "rng.uniform(-1, 1) + 0.3",
+    "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Add(), right=Constant(value=0.3))",
+    "context": "9705b492e314f29ebdcbc48ebcde40e34095d19f7a6fbf98fe278471557ae773"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 143,
+    "function": "_pair_generic",
+    "rule": "closed-unproved-arithmetic",
+    "source": "rng.uniform(-1, 1) - 0.2",
+    "node": "BinOp(left=Call(func=Attribute(value=Name(id='rng', ctx=Load()), attr='uniform', ctx=Load()), args=[UnaryOp(op=USub(), operand=Constant(value=1)), Constant(value=1)], keywords=[]), op=Sub(), right=Constant(value=0.2))",
+    "context": "9705b492e314f29ebdcbc48ebcde40e34095d19f7a6fbf98fe278471557ae773"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.3 + c * x - s * y",
+    "node": "BinOp(left=BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))), op=Sub(), right=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.3 + c * x",
+    "node": "BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * x",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "s * y",
+    "node": "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "s * x + c * y",
+    "node": "BinOp(left=BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "s * x",
+    "node": "BinOp(left=Name(id='s', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * y",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 157,
+    "function": "_pair_ve3_wedge",
+    "rule": "closed-unproved-arithmetic",
+    "source": "VE3_GAP + 1.0",
+    "node": "BinOp(left=Name(id='VE3_GAP', ctx=Load()), op=Add(), right=Constant(value=1.0))",
+    "context": "9ae870273ed6e331510d2846f6d291c4c063d0143bb7b978aa9e1cb5dada3dc2"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 197,
+    "function": "_pair_ridge_needle",
+    "rule": "closed-unproved-arithmetic",
+    "source": "h + 0.05",
+    "node": "BinOp(left=Name(id='h', ctx=Load()), op=Add(), right=Constant(value=0.05))",
+    "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 197,
+    "function": "_pair_ridge_needle",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.3 + 0.3 * math.cos(t)",
+    "node": "BinOp(left=Constant(value=0.3), op=Add(), right=BinOp(left=Constant(value=0.3), op=Mult(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='cos', ctx=Load()), args=[Name(id='t', ctx=Load())], keywords=[])))",
+    "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 197,
+    "function": "_pair_ridge_needle",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.3 * math.cos(t)",
+    "node": "BinOp(left=Constant(value=0.3), op=Mult(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='cos', ctx=Load()), args=[Name(id='t', ctx=Load())], keywords=[]))",
+    "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 197,
+    "function": "_pair_ridge_needle",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.3 * math.sin(t)",
+    "node": "BinOp(left=Constant(value=0.3), op=Mult(), right=Call(func=Attribute(value=Name(id='math', ctx=Load()), attr='sin', ctx=Load()), args=[Name(id='t', ctx=Load())], keywords=[]))",
+    "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 197,
+    "function": "_pair_ridge_needle",
+    "rule": "closed-unproved-arithmetic",
+    "source": "h + 1.05",
+    "node": "BinOp(left=Name(id='h', ctx=Load()), op=Add(), right=Constant(value=1.05))",
+    "context": "e12966a50509f2913ef5dcb0eaa8a91330c3df5f6c38e96dadf4f06d65e0a1b6"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 206,
+    "function": "_pair_size_ratio",
+    "rule": "closed-unproved-arithmetic",
+    "source": "50.0 + 0.5 + 1e-3",
+    "node": "BinOp(left=BinOp(left=Constant(value=50.0), op=Add(), right=Constant(value=0.5)), op=Add(), right=Constant(value=0.001))",
+    "context": "9ce13ae47831c2a5af440f0b4f8ab32431f51bc64db6190b71a9c20ed5f17e89"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 206,
+    "function": "_pair_size_ratio",
+    "rule": "closed-unproved-arithmetic",
+    "source": "50.0 + 0.5",
+    "node": "BinOp(left=Constant(value=50.0), op=Add(), right=Constant(value=0.5))",
+    "context": "9ce13ae47831c2a5af440f0b4f8ab32431f51bc64db6190b71a9c20ed5f17e89"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 236,
+    "function": "_pair_for_name",
+    "rule": "closed-unproved-call",
+    "source": "_pair_generic()",
+    "node": "Call(func=Name(id='_pair_generic', ctx=Load()), args=[], keywords=[])",
+    "context": "b7465e0a3b4ce345e4ff2e9a937656f6320e1df0919186608dbdb076686f69bf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 238,
+    "function": "_pair_for_name",
+    "rule": "closed-unproved-call",
+    "source": "_pair_ve3_wedge()",
+    "node": "Call(func=Name(id='_pair_ve3_wedge', ctx=Load()), args=[], keywords=[])",
+    "context": "b7465e0a3b4ce345e4ff2e9a937656f6320e1df0919186608dbdb076686f69bf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 250,
+    "function": "_pair_for_name",
+    "rule": "closed-unproved-call",
+    "source": "_pair_ridge_needle()",
+    "node": "Call(func=Name(id='_pair_ridge_needle', ctx=Load()), args=[], keywords=[])",
+    "context": "b7465e0a3b4ce345e4ff2e9a937656f6320e1df0919186608dbdb076686f69bf"
+  },
+  {
+    "path": "tests/test_invariance_geom.py",
+    "line": 259,
+    "function": "_base",
+    "rule": "closed-unproved-call",
+    "source": "_pair_for_name(name)",
+    "node": "Call(func=Name(id='_pair_for_name', ctx=Load()), args=[Name(id='name', ctx=Load())], keywords=[])",
+    "context": "fabef31a374de4d6cebfba4af538c51601ab576cd91ffe89e88ce0b789ab6820"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 63,
+    "function": "body_distance",
+    "rule": "closed-rounded-construction",
+    "source": "exact_margin.contact_resolution(A, B)",
+    "node": "Call(func=Attribute(value=Name(id='exact_margin', ctx=Load()), attr='contact_resolution', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+    "context": "a1ac4c75ec8c221121202be4ce1c7e69143d3feb946c8dff18e125ea3c34e620"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 427,
+    "function": "_yawed_stack",
+    "rule": "closed-unproved-arithmetic",
+    "source": "1.0 + gap",
+    "node": "BinOp(left=Constant(value=1.0), op=Add(), right=Name(id='gap', ctx=Load()))",
+    "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 428,
+    "function": "_yawed_stack",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * x - sn * y",
+    "node": "BinOp(left=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Sub(), right=BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+    "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 428,
+    "function": "_yawed_stack",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * x",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+    "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 428,
+    "function": "_yawed_stack",
+    "rule": "closed-unproved-arithmetic",
+    "source": "sn * y",
+    "node": "BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+    "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 428,
+    "function": "_yawed_stack",
+    "rule": "closed-unproved-arithmetic",
+    "source": "sn * x + c * y",
+    "node": "BinOp(left=BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Add(), right=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))",
+    "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 428,
+    "function": "_yawed_stack",
+    "rule": "closed-unproved-arithmetic",
+    "source": "sn * x",
+    "node": "BinOp(left=Name(id='sn', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load()))",
+    "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 428,
+    "function": "_yawed_stack",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * y",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load()))",
+    "context": "ed659c8de8163f4653308ed01a013357e08b3681d945801f4c4f314a1fa945c6"
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 450,
+    "function": "_margin_pair_for_name",
+    "rule": "closed-unproved-arithmetic",
+    "source": "0.4 - 3e-10",
+    "node": "BinOp(left=Constant(value=0.4), op=Sub(), right=Constant(value=3e-10))",
+    "context": "2ab5fd1ebc6329ef2c75a3b04f13376aa4257366defd0bd65bf89fd9f5490b6b"
+  },
+  {
+    "path": "tests/test_kernel3d_geom.py",
+    "line": 200,
+    "function": "_g6_rot",
+    "rule": "closed-reduction",
+    "source": "sum(c * c for c in q)",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='c', ctx=Load())), generators=[comprehension(target=Name(id='c', ctx=Store()), iter=Name(id='q', ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "6df74d6ab6b0b0b5918f28d701f68e189f54d0b5758471b7fb70d9ce3e2eb0a4"
+  },
+  {
+    "path": "tests/test_kernel3d_geom.py",
+    "line": 200,
+    "function": "_g6_rot",
+    "rule": "closed-unproved-arithmetic",
+    "source": "c * c",
+    "node": "BinOp(left=Name(id='c', ctx=Load()), op=Mult(), right=Name(id='c', ctx=Load()))",
+    "context": "6df74d6ab6b0b0b5918f28d701f68e189f54d0b5758471b7fb70d9ce3e2eb0a4"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 150,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-reduction",
+    "source": "sum(v * v for v in live[:dim])",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(upper=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 152,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-unproved-arithmetic",
+    "source": "v * v",
+    "node": "BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load()))",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 151,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-reduction",
+    "source": "sum(v * v for v in live[dim:])",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Subscript(value=Name(id='live', ctx=Load()), slice=Slice(lower=Name(id='dim', ctx=Load())), ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 152,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-reduction",
+    "source": "sum(v * v for v in ct.point)",
+    "node": "Call(func=Name(id='sum', ctx=Load()), args=[GeneratorExp(elt=BinOp(left=Name(id='v', ctx=Load()), op=Mult(), right=Name(id='v', ctx=Load())), generators=[comprehension(target=Name(id='v', ctx=Store()), iter=Attribute(value=Name(id='ct', ctx=Load()), attr='point', ctx=Load()), ifs=[], is_async=0)])], keywords=[])",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_limit_fuzz.py",
+    "line": 152,
+    "function": "_genuinely_unresolvable",
+    "rule": "closed-data-attribute",
+    "source": "ct.point",
+    "node": "Attribute(value=Name(id='ct', ctx=Load()), attr='point', ctx=Load())",
+    "context": "979dcdce0a725e8be0f3c22e9c7eda5797177dbfff03a7ab44b795c96b6912a4"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 127,
+    "function": "_true_normal",
+    "rule": "closed-rounded-construction",
+    "source": "_TRUE_INFLATED_NORMAL(E, x)",
+    "node": "Call(func=Name(id='_TRUE_INFLATED_NORMAL', ctx=Load()), args=[Name(id='E', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
+    "context": "24dc97f1699387d58d04969d323df32c5fdebdbef8053931d5f9a0c01ab0da97"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 181,
+    "function": "_lipschitz_worst",
+    "rule": "closed-rounded-construction",
+    "source": "norm(sub(nx, ny))",
+    "node": "Call(func=Name(id='norm', ctx=Load()), args=[Call(func=Name(id='sub', ctx=Load()), args=[Name(id='nx', ctx=Load()), Name(id='ny', ctx=Load())], keywords=[])], keywords=[])",
+    "context": "91a17b127043bcae1cc62c88fe6456f0ac58209fce243540689ee53d5d3206f5"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 217,
+    "function": "_lipschitz_verdict",
+    "rule": "closed-rounded-construction",
+    "source": "_lipschitz_worst(local)",
+    "node": "Call(func=Name(id='_lipschitz_worst', ctx=Load()), args=[Name(id='local', ctx=Load())], keywords=[])",
+    "context": "1b0c0797e88e32331412388a338a8aa1e744227fa74c15ac3b8c4bc9cbfbfbc4"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 217,
+    "function": "_lipschitz_verdict",
+    "rule": "closed-rounded-construction",
+    "source": "_lipschitz_worst(loops)",
+    "node": "Call(func=Name(id='_lipschitz_worst', ctx=Load()), args=[Name(id='loops', ctx=Load())], keywords=[])",
+    "context": "1b0c0797e88e32331412388a338a8aa1e744227fa74c15ac3b8c4bc9cbfbfbc4"
+  },
+  {
+    "path": "tests/test_margin.py",
+    "line": 218,
+    "function": "_lipschitz_verdict",
+    "rule": "closed-rounded-construction",
+    "source": "_lipschitz_worst(glob)",
+    "node": "Call(func=Name(id='_lipschitz_worst', ctx=Load()), args=[Name(id='glob', ctx=Load())], keywords=[])",
+    "context": "1b0c0797e88e32331412388a338a8aa1e744227fa74c15ac3b8c4bc9cbfbfbc4"
+  }
+]

@@ -292,7 +292,7 @@ def _gap_difference(value, nn, derivative, dn, raw, delta):
         if not derivative:
             derivative = [Fraction(0)]*delta.width
             dn = [(Fraction(0),)*3 for _ in derivative]
-        offset, d_offset = Fraction(delta.v), tuple(map(Fraction, delta.e))
+        offset, d_offset = Fraction(delta.v), tuple(Fraction(_mapped_value) for _mapped_value in delta.e)
     else:
         offset, d_offset = Fraction(delta), (Fraction(0),)*len(derivative)
     primal = _normalized_difference(value, nn, offset)

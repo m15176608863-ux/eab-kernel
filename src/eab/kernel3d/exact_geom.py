@@ -410,7 +410,7 @@ def segment_crosses(p,q,P,fi,tol=0):
 
 def _integer_points(points):
     """One positive scale clears all exact denominators; no rounded data/cache."""
-    points=tuple(map(vector,points))
+    points=tuple(vector(_mapped_value) for _mapped_value in points)
     den=math.lcm(*(x.denominator for p in points for x in p))
     return tuple(tuple(x.numerator*(den//x.denominator) for x in p) for p in points),den
 
@@ -454,7 +454,7 @@ def triangle_intersection(first, second):
     The returned set is unordered.  A point, segment, or coplanar polygon can
     result; the empty tuple means disjoint. No fitting plane is used.
     """
-    first=tuple(map(vector,first));second=tuple(map(vector,second))
+    first=tuple(vector(_mapped_value) for _mapped_value in first);second=tuple(vector(_mapped_value) for _mapped_value in second)
     for tri in (first,second):
         if not any(cross(sub(tri[1],tri[0]),sub(tri[2],tri[0]))):
             raise ValueError('triangle intersection requires nondegenerate triangles')
@@ -819,7 +819,7 @@ def _star_tetrahedra(vertices,faces):
     triangle is star-shaped about that point. Coning its triangles partitions
     the solid. This sufficient certificate is checked on the supplied surface.
     """
-    verts=tuple(map(vector,vertices))
+    verts=tuple(vector(_mapped_value) for _mapped_value in vertices)
     centre=tuple(sum(p[k] for p in verts)/len(verts) for k in range(3))
     out=[]
     for _,indices in triangulate(vertices,faces):
@@ -884,7 +884,7 @@ def surface_overlap(A,B,tol=0):
     tol=F(tol)
     if tol < 0:
         raise ValueError('surface tolerance must be nonnegative')
-    av=tuple(map(vector,A.verts)); bv=tuple(map(vector,B.verts))
+    av=tuple(vector(_mapped_value) for _mapped_value in A.verts); bv=tuple(vector(_mapped_value) for _mapped_value in B.verts)
     if any(max(p[i] for p in av)+tol < min(p[i] for p in bv)
            or max(p[i] for p in bv)+tol < min(p[i] for p in av) for i in range(3)):
         return -1

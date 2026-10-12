@@ -1,0 +1,19 @@
+
+=================================== ERRORS ====================================
+____________________ ERROR collecting tests/test_margin.py ____________________
+ImportError while importing test module 'D:\eab-wt\cx-e2\tests\test_margin.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_margin.py:121: in <module>
+    from eab.kernel3d.margin import inflated_normal as _TRUE_INFLATED_NORMAL
+E   ModuleNotFoundError: No module named 'eab.kernel3d.margin'
+=========================== short test summary info ===========================
+ERROR tests/test_margin.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.40s
+
+WALL_SECONDS=0.872943
+RETURN_CODE=2

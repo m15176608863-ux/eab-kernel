@@ -41,7 +41,8 @@ def _triangle(a, b, c):
         if all(_dot(_cross(_sub(u, p), _sub(v, p)), n) >= 0
                for u, v in ((b, c), (c, a), (a, b))):
             return p
-    return min((_segment(a, b), _segment(b, c), _segment(c, a)), key=lambda x: _dot(x, x))
+    candidates = (_segment(a, b), _segment(b, c), _segment(c, a))
+    return min((_dot(x, x), index, x) for index, x in enumerate(candidates))[2]
 
 
 def _tetra(a, b, c, d):
@@ -54,15 +55,19 @@ def _tetra(a, b, c, d):
 
 
 def _reference_simplex(points):
-    best = min(points, key=lambda x: _dot(x, x))
+    best = min((_dot(x, x), index, x) for index, x in enumerate(points))[2]
     support = (best,)
     best2 = _dot(best, best)
-    for size, operation in ((2, _segment), (3, _triangle)):
-        for subset in combinations(points, size):
-            p = operation(*subset)
-            d2 = _dot(p, p)
-            if d2 < best2:
-                best, best2, support = p, d2, subset
+    for subset in combinations(points, 2):
+        p = _segment(*subset)
+        d2 = _dot(p, p)
+        if d2 < best2:
+            best, best2, support = p, d2, subset
+    for subset in combinations(points, 3):
+        p = _triangle(*subset)
+        d2 = _dot(p, p)
+        if d2 < best2:
+            best, best2, support = p, d2, subset
     for subset in combinations(points, 4):
         if _tetra(*subset):
             return (F(0),)*3, subset
@@ -70,10 +75,10 @@ def _reference_simplex(points):
 
 
 def _reference_hull(points):
-    point = min(points, key=lambda x: _dot(x, x))
+    point = min((_dot(x, x), index, x) for index, x in enumerate(points))[2]
     support = (point,)
     while True:
-        q = min(points, key=lambda x: _dot(x, point))
+        q = min((_dot(x, point), index, x) for index, x in enumerate(points))[2]
         if _dot(q, point) >= _dot(point, point):
             return point
         previous = _dot(point, point)

@@ -60,7 +60,7 @@ def cross(a, b):
 
 @lru_cache(maxsize=256)
 def model(vertices, faces):
-    v = tuple(map(q, vertices))
+    v = tuple(q(_mapped_value) for _mapped_value in vertices)
     normals = []
     edge_faces = {}
     neighbors = [set() for _ in v]
@@ -161,7 +161,7 @@ def strict_cone(constraints):
     """Gordan: positive feasible rays span a strict direction iff one exists."""
     if not constraints:
         return False
-    normalized = tuple(scale(g, 1/max(map(abs, g))) for g in constraints)
+    normalized = tuple(scale(g, 1/max(abs(_mapped_value) for _mapped_value in g)) for g in constraints)
     values = set(normalized)
     if any(scale(g, -1) in values for g in values):
         return False
@@ -175,7 +175,7 @@ def strict_cone(constraints):
             continue
         for d in (r, scale(r, -1)):
             if all(dot(d, g) <= 0 for g in normalized):
-                acc = add(acc, scale(d, 1/max(map(abs, d))))
+                acc = add(acc, scale(d, 1/max(abs(_mapped_value) for _mapped_value in d)))
                 if all(dot(acc, g) < 0 for g in normalized):
                     return True
     return False

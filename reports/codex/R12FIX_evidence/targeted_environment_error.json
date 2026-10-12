@@ -1,0 +1,36 @@
+[
+  {
+    "name": "static_gate",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/check_exact_construction.py"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 26.13569070000085,
+    "last_line": "exact construction AST gate: 0 violation(s)"
+  },
+  {
+    "name": "targeted_regression",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--durations=10",
+      "tests/test_r9fix_construction_static.py",
+      "tests/test_r10_static_construction.py",
+      "tests/test_r11fix_static_flow.py",
+      "tests/test_r12fix_static_closed.py",
+      "--basetemp=reports/codex/R12FIX_evidence/tmp/final_targeted"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 66.42383780001546,
+    "last_line": "279 passed, 1 error in 65.92s (0:01:05)"
+  }
+]

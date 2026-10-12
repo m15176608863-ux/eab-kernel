@@ -1,0 +1,690 @@
+[
+  {
+    "path": "src/eab/adapters/bdda2d.py",
+    "line": 73,
+    "function": "load_window",
+    "rule": "direct-float",
+    "source": "float(value)",
+    "previous_reason": "Legacy detparams CSV string parsing at the explicit L5 input boundary; not a derived exact construction."
+  },
+  {
+    "path": "src/eab/construction.py",
+    "line": 17,
+    "function": "scalar_rational",
+    "rule": "direct-float",
+    "source": "float(exact)",
+    "previous_reason": "Single checked Fraction-to-binary64 boundary; exact midpoint gates certify RN-even."
+  },
+  {
+    "path": "src/eab/construction.py",
+    "line": 69,
+    "function": "sqrt_rational",
+    "rule": "direct-float",
+    "source": "float(significand)",
+    "previous_reason": "The integer significand is <= 2**53, so its cast is exact; ldexp is the final construction."
+  },
+  {
+    "path": "src/eab/construction.py",
+    "line": 133,
+    "function": "normalized_difference_rational",
+    "rule": "subtract-rounded",
+    "source": "(-root if c < 0 else root)-scalar_rational(offset, allow_underflow=True)",
+    "previous_reason": "Untrusted initial candidate only; exact algebraic comparisons bracket it and certify the final midpoint or perform full bit search."
+  },
+  {
+    "path": "src/eab/contact_record.py",
+    "line": 184,
+    "function": "_decode",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Decode serialized scalar tags; this is external input parsing, not exact derived geometry."
+  },
+  {
+    "path": "src/eab/contact_record.py",
+    "line": 186,
+    "function": "_decode",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Decode serialized scalar tags; this is external input parsing, not exact derived geometry."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 37,
+    "function": "Dual.const",
+    "rule": "direct-float",
+    "source": "float(v)",
+    "previous_reason": "Public Number-to-primal input coercion (int/float), not a derived exact quantity."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 44,
+    "function": "Dual.seed",
+    "rule": "direct-float",
+    "source": "float(v)",
+    "previous_reason": "Public Number-to-primal input coercion before derivative seeding."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 61,
+    "function": "Dual._pair",
+    "rule": "direct-float",
+    "source": "float(o)",
+    "previous_reason": "Public Number input coercion; exact derivative output uses scalar_rational."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 101,
+    "function": "Dual.__pow__",
+    "rule": "direct-float",
+    "source": "float(p)",
+    "previous_reason": "Coerce public real exponent parameter, preserving documented Number API."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 143,
+    "function": "Dual.__lt__",
+    "rule": "direct-float",
+    "source": "float(o)",
+    "previous_reason": "Primal-only comparator on public Number operand, not a constructed output."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 146,
+    "function": "Dual.__le__",
+    "rule": "direct-float",
+    "source": "float(o)",
+    "previous_reason": "Primal-only comparator on public Number operand, not a constructed output."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 149,
+    "function": "Dual.__gt__",
+    "rule": "direct-float",
+    "source": "float(o)",
+    "previous_reason": "Primal-only comparator on public Number operand, not a constructed output."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 152,
+    "function": "Dual.__ge__",
+    "rule": "direct-float",
+    "source": "float(o)",
+    "previous_reason": "Primal-only comparator on public Number operand, not a constructed output."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 216,
+    "function": "val",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Explicit public primal extraction required by the Dual contract."
+  },
+  {
+    "path": "src/eab/dual.py",
+    "line": 227,
+    "function": "is_exact_zero",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Number input comparator; Dual inputs inspect every stored channel separately."
+  },
+  {
+    "path": "src/eab/kernel3d/exact_geom.py",
+    "line": 18,
+    "function": "_iv",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Nextafter-enclosed interval candidate; inconclusive filters fall back to rational arithmetic."
+  },
+  {
+    "path": "src/eab/kernel3d/geom3.py",
+    "line": 548,
+    "function": "_ray_directions",
+    "rule": "implicit-root",
+    "source": "sqrt(max(0.0, 1.0 - z * z))",
+    "previous_reason": "Caller-independent bounded binary64 golden-angle seed generation, not a constructor from exact geometric intermediates."
+  },
+  {
+    "path": "src/eab/kernel3d/interlock.py",
+    "line": 195,
+    "function": "_candidates_uncached",
+    "rule": "subtract-rounded",
+    "source": "z - z_prev",
+    "previous_reason": null
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 215,
+    "function": "_tangents",
+    "rule": "subtract-rounded",
+    "source": "n[1] * first[2] - n[2] * first[1]",
+    "previous_reason": "The documented model defines t2 from the returned binary64 t1; Fraction completes that model cross product exactly before the final scalar construction, not a norm of prematurely rounded components."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 215,
+    "function": "_tangents",
+    "rule": "subtract-rounded",
+    "source": "n[2] * first[0] - n[0] * first[2]",
+    "previous_reason": "The documented model defines t2 from the returned binary64 t1; Fraction completes that model cross product exactly before the final scalar construction, not a norm of prematurely rounded components."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 216,
+    "function": "_tangents",
+    "rule": "subtract-rounded",
+    "source": "n[0] * first[1] - n[1] * first[0]",
+    "previous_reason": "The documented model defines t2 from the returned binary64 t1; Fraction completes that model cross product exactly before the final scalar construction, not a norm of prematurely rounded components."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 593,
+    "function": "_norm",
+    "rule": "implicit-root",
+    "source": "math.hypot(*v)",
+    "previous_reason": "Only the explicit nonfinite-report branch uses hypot; every finite vector uses the checked exact root."
+  },
+  {
+    "path": "src/eab/limit.py",
+    "line": 623,
+    "function": "_rational",
+    "rule": "direct-float",
+    "source": "float(v)",
+    "previous_reason": "Read the already-rounded float subclass to check its immutable exact witness, not construct a quantity."
+  },
+  {
+    "path": "src/eab/margin.py",
+    "line": 362,
+    "function": "_resolve",
+    "rule": "subtract-rounded",
+    "source": "dmin - truth",
+    "previous_reason": "Diagnostic residual comparing two already-constructed witness displays; exact feature squared distance separately governs completeness."
+  },
+  {
+    "path": "src/eab/oracle_construction.py",
+    "line": 32,
+    "function": "_candidate_positive",
+    "rule": "direct-float",
+    "source": "float(value)",
+    "previous_reason": "Untrusted candidate only; independent Fraction midpoint certificate precedes acceptance, else exact bit bisection."
+  },
+  {
+    "path": "src/eab/oracle_construction.py",
+    "line": 35,
+    "function": "_candidate_positive",
+    "rule": "direct-float",
+    "source": "float((Decimal(value.numerator)/Decimal(value.denominator)).sqrt())",
+    "previous_reason": "Untrusted candidate only; independent Fraction midpoint certificate precedes acceptance, else exact bit bisection."
+  },
+  {
+    "path": "src/eab/predicates.py",
+    "line": 28,
+    "function": "_float_value",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Outward error-bounded filter candidate only; not a geometric output or exact decision."
+  },
+  {
+    "path": "src/eab/readers/bdda3d.py",
+    "line": 45,
+    "function": "record_from_entrance",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Parse finite legacy export fields; no rational geometric intermediate."
+  },
+  {
+    "path": "src/eab/readers/bdda3d.py",
+    "line": 63,
+    "function": "record_from_entrance",
+    "rule": "direct-float",
+    "source": "float(c[\"area\"])",
+    "previous_reason": "Parse finite legacy export fields; no rational geometric intermediate."
+  },
+  {
+    "path": "src/eab/readers/bdda3d.py",
+    "line": 64,
+    "function": "record_from_entrance",
+    "rule": "direct-float",
+    "source": "float(c[\"t1\"])",
+    "previous_reason": "Parse finite legacy export fields; no rational geometric intermediate."
+  },
+  {
+    "path": "src/eab/readers/bdda3d.py",
+    "line": 64,
+    "function": "record_from_entrance",
+    "rule": "direct-float",
+    "source": "float(c[\"t2\"])",
+    "previous_reason": "Parse finite legacy export fields; no rational geometric intermediate."
+  },
+  {
+    "path": "src/eab/readers/bdda3d.py",
+    "line": 71,
+    "function": "record_from_entrance",
+    "rule": "direct-float",
+    "source": "float(c[\"o3t\"])",
+    "previous_reason": "Parse finite legacy export fields; no rational geometric intermediate."
+  },
+  {
+    "path": "src/eab/readers/bdda3d.py",
+    "line": 72,
+    "function": "record_from_entrance",
+    "rule": "direct-float",
+    "source": "float(x)",
+    "previous_reason": "Parse finite legacy export fields; no rational geometric intermediate."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 69,
+    "function": "read_contacts_csv",
+    "rule": "direct-float",
+    "source": "float(v)",
+    "previous_reason": "CSV string input parsing under the legacy format contract."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 93,
+    "function": "read_df22_csv",
+    "rule": "direct-float",
+    "source": "float(raw[\"o3\"])",
+    "previous_reason": "CSV string input parsing under the legacy format contract."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 93,
+    "function": "read_df22_csv",
+    "rule": "direct-float",
+    "source": "float(raw[\"o4\"])",
+    "previous_reason": "CSV string input parsing under the legacy format contract."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 94,
+    "function": "read_df22_csv",
+    "rule": "direct-float",
+    "source": "float(raw[\"t3\"])",
+    "previous_reason": "CSV string input parsing under the legacy format contract."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 94,
+    "function": "read_df22_csv",
+    "rule": "direct-float",
+    "source": "float(raw[\"w0\"])",
+    "previous_reason": "CSV string input parsing under the legacy format contract."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 115,
+    "function": "read_verts_csv",
+    "rule": "direct-float",
+    "source": "float(raw[\"x\"])",
+    "previous_reason": "CSV vertex input parsing, before any exact geometric operations."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 115,
+    "function": "read_verts_csv",
+    "rule": "direct-float",
+    "source": "float(raw[\"y\"])",
+    "previous_reason": "CSV vertex input parsing, before any exact geometric operations."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 216,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"x1\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 216,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"y1\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 216,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"x2\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 216,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"y2\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 217,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"x3\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 217,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"y3\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 218,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"cs3\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 219,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[\"b1\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 221,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(c[\"o2\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 254,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(g[f\"s{i}\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 275,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(c[\"o3\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 276,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(c[\"o4\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 278,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(c[\"o2\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_df.py",
+    "line": 284,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(c[\"o5\"])",
+    "previous_reason": "Legacy dump scalar decoding, not derived rational constructions."
+  },
+  {
+    "path": "src/eab/readers/bdda_geom.py",
+    "line": 95,
+    "function": "load_step_geometries",
+    "rule": "direct-float",
+    "source": "float(r[\"x\"])",
+    "previous_reason": "CSV coordinate string parsing, before the documented input normalization."
+  },
+  {
+    "path": "src/eab/readers/bdda_geom.py",
+    "line": 95,
+    "function": "load_step_geometries",
+    "rule": "direct-float",
+    "source": "float(r[\"y\"])",
+    "previous_reason": "CSV coordinate string parsing, before the documented input normalization."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 55,
+    "function": "read_pair_stage",
+    "rule": "direct-float",
+    "source": "float(r[\"time\"])",
+    "previous_reason": "Probe time-string parsing, not exact intermediate construction."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 75,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"time\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 80,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"px\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 80,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"py\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 80,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"pz\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 81,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"nx\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 81,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"ny\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 81,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"nz\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 82,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"area\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 86,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"gap\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 87,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"shear_dx\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 87,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"shear_dy\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 87,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"shear_dz\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "src/eab/readers/tf_probe.py",
+    "line": 88,
+    "function": "load_records",
+    "rule": "direct-float",
+    "source": "float(r[\"normal_force\"])",
+    "previous_reason": "Probe export string parsing; stored values are the supplied binary64 data."
+  },
+  {
+    "path": "tests/e5a_escape_oracle.py",
+    "line": 185,
+    "function": "_candidates",
+    "rule": "subtract-rounded",
+    "source": "z-zprev",
+    "previous_reason": "Cache-reuse window between constructed candidate displays; the independent exact facet-extent oracle is evaluated at the chosen supplied candidate coordinates."
+  },
+  {
+    "path": "tests/perf_escape_oracle_reference.py",
+    "line": 177,
+    "function": "_candidates",
+    "rule": "subtract-rounded",
+    "source": "z-zprev",
+    "previous_reason": "Frozen performance reference cache-reuse window between candidate displays, not an exact derived geometry constructor or branch oracle."
+  },
+  {
+    "path": "tests/test_filtered_predicates.py",
+    "line": 121,
+    "function": "test_orient3d_filter_has_a_real_fast_path",
+    "rule": "direct-float",
+    "source": "map(ctor, q)",
+    "previous_reason": "Exercises float and Fraction supplied input types using only exactly representable 0/1 coordinates; no derived construction or expected-value conversion."
+  },
+  {
+    "path": "tests/test_invariance_interlock.py",
+    "line": 445,
+    "function": "_margin_ref",
+    "rule": "rounded-vector",
+    "source": "norm(sub(c.point_a, c.point_b))",
+    "previous_reason": null
+  },
+  {
+    "path": "tests/test_limit_exact_selfcheck.py",
+    "line": 127,
+    "function": "test_exact_witness_is_preserved_by_copy_not_by_float_arithmetic",
+    "rule": "direct-float",
+    "source": "float(r.alpha)",
+    "previous_reason": "Tests builtin float's intentional certificate-stripping protocol; not an oracle numeric construction."
+  },
+  {
+    "path": "tests/test_limit_exact_selfcheck.py",
+    "line": 131,
+    "function": "test_exact_witness_is_preserved_by_copy_not_by_float_arithmetic",
+    "rule": "direct-float",
+    "source": "float(r.alpha)",
+    "previous_reason": "Tests builtin float's intentional certificate-stripping protocol; not an oracle numeric construction."
+  },
+  {
+    "path": "tests/test_lp.py",
+    "line": 206,
+    "function": "test_weak_and_strong_duality",
+    "rule": "subtract-rounded",
+    "source": "c[j] - sum(r.y[i] * A[i][j] for i in range(m))",
+    "previous_reason": "The cast integer grid defines LP input floats; subtraction is a residual on that given model, not a rational constructor."
+  },
+  {
+    "path": "tests/test_perf_2d_directions.py",
+    "line": 63,
+    "function": "direction_cases",
+    "rule": "subtract-rounded",
+    "source": "F(endpoint[j])-F(origin[j])",
+    "previous_reason": "Generates supplied predicate inputs from the actual rounded engineering-coordinate endpoints, as required by the test's documented data model."
+  },
+  {
+    "path": "tests/test_r6fix_construction.py",
+    "line": 96,
+    "function": "test_g6f06_gap_magnitude_gate_has_teeth",
+    "rule": "direct-float",
+    "source": "float(value)",
+    "previous_reason": "Intentional broken internal sqrt mutation; the target nonzero-gap assertion must reject it."
+  },
+  {
+    "path": "tests/test_r6fix_construction.py",
+    "line": 96,
+    "function": "test_g6f06_gap_magnitude_gate_has_teeth",
+    "rule": "rounded-root",
+    "source": "math.sqrt(float(value))",
+    "previous_reason": "Intentional broken internal sqrt mutation, not an oracle."
+  },
+  {
+    "path": "tests/test_r6fix_g2_oracle.py",
+    "line": 35,
+    "function": "test_g2_oracle_early_square_rounding_mutation_is_caught",
+    "rule": "direct-float",
+    "source": "float(squared)",
+    "previous_reason": "Intentional old oracle mutation; the independent range assertion rejects it."
+  },
+  {
+    "path": "tests/test_r6fix_g2_oracle.py",
+    "line": 35,
+    "function": "test_g2_oracle_early_square_rounding_mutation_is_caught",
+    "rule": "rounded-root",
+    "source": "math.sqrt(float(squared))",
+    "previous_reason": "Intentional old oracle mutation, never an expected-value constructor."
+  },
+  {
+    "path": "tests/test_r8fix_frozen.py",
+    "line": 255,
+    "function": "test_contact_margin_postround_subtraction_mutant_is_caught.premature_round",
+    "rule": "subtract-rounded",
+    "source": "(-root if c<0 else root)-scalar_exact(offset)",
+    "previous_reason": "Deliberately faulty internal compound-construction mutation; independent midpoint assertion must reject it."
+  },
+  {
+    "path": "tests/test_r9fix_construction.py",
+    "line": 79,
+    "function": "_premature_sqrt_mutant",
+    "rule": "direct-float",
+    "source": "float(value)",
+    "previous_reason": "G6I-04 defect injected inside the real distance function; midpoint certificate must fail."
+  },
+  {
+    "path": "tests/test_r9fix_construction.py",
+    "line": 79,
+    "function": "_premature_sqrt_mutant",
+    "rule": "rounded-root",
+    "source": "math.sqrt(float(value))",
+    "previous_reason": "G6I-04 deliberately faulty sqrt factory, used only by internal mutation tests."
+  }
+]

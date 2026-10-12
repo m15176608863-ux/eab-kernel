@@ -59,7 +59,7 @@ def test_corner_start_reports_both_exact_active_facets(direction):
 def _sat_ray(A, B, x, d):
     """独立全投影SAT：在原始两个凸体边法向上求投影区间首次相交，内联有理数，无Minkowski原语。"""
     A, B = [[(F(u), F(v)) for u, v in P] for P in (A, B)]
-    X, D = tuple(map(F, x)), tuple(map(F, d))
+    X, D = tuple((F(_r12_item) for _r12_item in x)), tuple((F(_r12_item) for _r12_item in d))
     low, high = F(0), None
     for P in (A, B):
         for i, p in enumerate(P):

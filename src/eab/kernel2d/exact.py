@@ -19,7 +19,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction
-from functools import cmp_to_key
 
 from .geom import Point, Poly
 
@@ -342,7 +341,12 @@ def entrance_membership_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
     def compare(u, v):
         return -1 if _angle_less(u, v) else (1 if _angle_less(v, u) else 0)
 
-    ordered = sorted(rays, key=cmp_to_key(compare))
+    ordered = []
+    for ray in rays:
+        at = len(ordered)
+        while at and compare(ordered[at-1], ray) > 0:
+            at -= 1
+        ordered.insert(at, ray)
     for u, v in zip(ordered, ordered[1:] + ordered[:1]):
         direction = (u[0] + v[0], u[1] + v[1])
         if direction == (0, 0):

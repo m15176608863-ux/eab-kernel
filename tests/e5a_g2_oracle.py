@@ -18,7 +18,7 @@ from e5a_cover_oracle import q, sub, add, scale, dot, cross, model, arc, cover_l
 
 @lru_cache(maxsize=128)
 def support_sets(raw):
-    p = tuple(map(q, raw))
+    p = tuple(q(_mapped_value) for _mapped_value in raw)
     result = set()
     for i, j, k in combinations(range(len(p)), 3):
         n = cross(sub(p[j], p[i]), sub(p[k], p[i]))
@@ -34,7 +34,7 @@ def assert_exact_hull(P):
     expected = support_sets(tuple(P.verts))
     assert {frozenset(f) for f in P.faces} == expected
     assert len(P.faces) == len(expected)
-    p = tuple(map(q, P.verts))
+    p = tuple(q(_mapped_value) for _mapped_value in P.verts)
     for face in P.faces:
         n = cross(sub(p[face[1]], p[face[0]]), sub(p[face[2]], p[face[0]]))
         assert any(n)

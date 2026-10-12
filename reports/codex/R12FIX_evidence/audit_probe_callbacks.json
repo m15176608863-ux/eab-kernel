@@ -1,0 +1,56 @@
+{
+  "unknown_builtin_key": [
+    [
+      "src/eab/independent_closed_probe.py",
+      2,
+      "reorder",
+      "closed-callback",
+      "sorted(p, key=fn)"
+    ]
+  ],
+  "unknown_builtin_default": [
+    [
+      "src/eab/independent_closed_probe.py",
+      2,
+      "select",
+      "closed-callback",
+      "max(p, key=fn)"
+    ]
+  ],
+  "unknown_builtin_map": [
+    [
+      "src/eab/independent_closed_probe.py",
+      2,
+      "transform",
+      "closed-dynamic-call",
+      "map(fn, p)"
+    ]
+  ],
+  "unknown_namespace_member": [
+    [
+      "src/eab/independent_closed_probe.py",
+      3,
+      "call",
+      "closed-unknown-member",
+      "math.not_in_policy(p)"
+    ]
+  ],
+  "new_object_method": [
+    [
+      "src/eab/independent_closed_probe.py",
+      2,
+      "call",
+      "closed-method-call",
+      "p.copy()"
+    ]
+  ],
+  "param_to_type_constructor": [
+    [
+      "src/eab/independent_closed_probe.py",
+      2,
+      "call",
+      "closed-unknown-call",
+      "cls(p)"
+    ]
+  ]
+}

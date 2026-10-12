@@ -141,8 +141,8 @@ def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_t
     Direct cover implementations participate so injected defects remain visible.
     Exact escape decisions are independent of this nominal-report cache.
     """
-    av, af = tuple(map(tuple, A.verts)), tuple(map(tuple, A.faces))
-    bv, bf = tuple(map(tuple, B.verts)), tuple(map(tuple, B.faces))
+    av, af = tuple(tuple(_mapped_value) for _mapped_value in A.verts), tuple(tuple(_mapped_value) for _mapped_value in A.faces)
+    bv, bf = tuple(tuple(_mapped_value) for _mapped_value in B.verts), tuple(tuple(_mapped_value) for _mapped_value in B.faces)
     offset = tuple(offset)
     numeric_types = tuple(type(x) for vertices in (av, bv, (offset,))
                           for p in vertices for x in p) + (type(tol), type(extent_tol))
@@ -159,9 +159,9 @@ def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_t
 @lru_cache(maxsize=512)
 def _candidates_cached(snapshot):
     av, af, bv, bf, offset, tol, extent_tol = snapshot.arguments
-    implementation = snapshot.signature[-1][0]
-    rows, r = implementation(Polyhedron(list(av), list(af)),
-                             Polyhedron(list(bv), list(bf)), offset, tol, extent_tol)
+    # Implementation identities remain in signature only to invalidate the cache.
+    rows, r = _candidates_uncached(Polyhedron(list(av), list(af)),
+                                   Polyhedron(list(bv), list(bf)), offset, tol, extent_tol)
     return tuple(rows), r
 
 
@@ -227,27 +227,28 @@ def _prior_intervals(times, height):
 
 def _exact_escape(A, B, offset, cap=None):
     return _exact_escape_cached(tuple(A.verts),tuple(A.faces),tuple(B.verts),tuple(B.faces),
-                                tuple(map(F,offset)),cap,_nonpenetrating_at,_prior_intervals,surface_events)
+                                tuple(F(_mapped_value) for _mapped_value in offset),cap,_nonpenetrating_at,_prior_intervals,surface_events)
 
 
 @lru_cache(maxsize=512)
 def _exact_escape_cached(av,af,bv,bf,offset,cap,predicate,intervals,event_source):
+    # The final three arguments invalidate caches under fault injection, not dispatch.
     A,B=Polyhedron(av,af),Polyhedron(bv,bf)
-    initial=predicate(A,B,offset,F(0))
+    initial=_nonpenetrating_at(A,B,offset,F(0))
     if initial != 1:
         return F(0),None,(),initial,()
-    events=event_source(A,B,start=offset,t_max=cap)
+    events=surface_events(A,B,start=offset,t_max=cap)
     groups={}
     for event in events:
         if event.time>0:
             groups.setdefault(event.time,[]).append(event)
     for height, group in sorted(groups.items()):
-        state=predicate(A,B,offset,height)
+        state=_nonpenetrating_at(A,B,offset,height)
         if state == 1:
             continue
         proof=[]
-        for left,right,mid in intervals(groups,height):
-            inside=predicate(A,B,offset,mid)
+        for left,right,mid in _prior_intervals(groups,height):
+            inside=_nonpenetrating_at(A,B,offset,mid)
             if inside != 1:
                 raise AssertionError('event completeness: an earlier interval is nonpenetrating')
             proof.append((left,right,mid,inside))
@@ -309,7 +310,7 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     if root>0:
         usable=[c for c in cands if c[0]>0]
         if usable:
-            nearest=min(usable,key=lambda c:abs(F(c[0])-root)*F(c[2]))
+            nearest=min((abs(F(c[0])-root)*F(c[2]), _rank_index, c) for _rank_index, c in enumerate(usable))[2]
             if abs(F(nearest[0])-root)*F(nearest[2]) <= F(gtol)+F(r)*4:
                 report=_escape_solution(nearest[0],nearest[2],cands,gtol,r)
                 lab,tied=report.cover_label,report.tied_labels

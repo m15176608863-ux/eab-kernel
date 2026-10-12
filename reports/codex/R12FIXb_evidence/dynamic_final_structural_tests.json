@@ -1,0 +1,24 @@
+{
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=reports/codex/R12FIXb_evidence/tmp/dynamic_final_structural",
+    "tests/test_dual.py",
+    "tests/test_kernel2d_exact.py",
+    "tests/test_r8fix_initial_state.py",
+    "tests/test_r8fix_initial_state3.py",
+    "tests/test_hull_robustness.py",
+    "tests/test_r6fix_g0.py",
+    "tests/test_kernel2d_entrance.py",
+    "tests/test_e5a2_entrance_oracle.py"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 29.909731099993223,
+  "last_line": "538 passed in 29.20s"
+}

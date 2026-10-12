@@ -16,7 +16,7 @@ from eab.kernel3d import exact_geom as EG
 
 
 def _map(p, scale, translation):
-    x,y,z=map(F,p)
+    x,y,z=(F(_r12_item) for _r12_item in p)
     # An exactly orthogonal rational rotation: no rounded-input coplanarity fiction.
     u,v=F(3,5)*x-F(4,5)*y,F(4,5)*x+F(3,5)*y
     return (translation+scale*u, -2*translation+scale*(F(5,13)*v-F(12,13)*z),
