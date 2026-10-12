@@ -1,0 +1,17 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___ test_zero_margin_membership_classifies_tight_fit_int_E_not_body_contact ___
+
+    def test_zero_margin_membership_classifies_tight_fit_int_E_not_body_contact():
+        A,B = _tight_pair()
+>       assert margin.inflated_membership(A,B,delta=0) == margin.INSIDE, 'zero-margin E topology mismatch'
+E       AssertionError: zero-margin E topology mismatch
+E       assert 0 == 1
+E        +  where 0 = <function inflated_membership at 0x00000000041FDE40>(Polyhedron(verts=[(0.0, 0.5, 0.25), (1.0, 0.5, 0.25), (1.0, 1.5, 0.25), (0.0, 1.5, 0.25), (0.0, 0.5, 0.75), (1.0, 0.5,..., 0.75), (0.0, 1.5, 0.75)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(Fraction(-1, 1), Fraction(-1, 1), Fraction(0, 1)), (Fraction(2, 1), Fraction(-1, 1), Fraction(0, 1)..., 9, 8), (1, 2, 10, 9), (2, 3, 11, 10), (3, 4, 12, 11), (4, 5, 13, 12), (5, 6, 14, 13), (6, 7, 15, 14), (7, 0, 8, 15)]), delta=0)
+E        +    where <function inflated_membership at 0x00000000041FDE40> = margin.inflated_membership
+E        +  and   1 = margin.INSIDE
+
+tests\test_r8fix_initial_state3.py:75: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r8fix_initial_state3.py::test_zero_margin_membership_classifies_tight_fit_int_E_not_body_contact
+1 failed in 0.14s

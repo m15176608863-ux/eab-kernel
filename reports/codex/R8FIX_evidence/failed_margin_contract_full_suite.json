@@ -1,0 +1,31 @@
+{
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-u",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--durations=25",
+    "-n",
+    "4",
+    "--basetemp=D:\\eab-wt\\cx-e2\\reports\\codex\\R8FIX_evidence\\tmp\\full_suite",
+    "--junitxml=D:\\eab-wt\\cx-e2\\reports\\codex\\R8FIX_evidence\\full_suite.junit.xml"
+  ],
+  "cwd": "D:\\eab-wt\\cx-e2",
+  "start_utc": "2026-10-12T05:38:15.139460+00:00",
+  "end_utc": "2026-10-12T05:45:02.604179+00:00",
+  "env": {
+    "PYTHONPATH": "D:\\eab-wt\\cx-e2\\reports\\codex\\R7FIX_evidence\\verification_deps;",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "elapsed_seconds": 407.4342694999941,
+  "exit_code": 1,
+  "last_line": "105 failed, 9977 passed in 404.70s (0:06:44)",
+  "log_sha256": "b4119a2063f25be12b586b95a7aeb954554db936ddc7ec8564473970d3f510b4",
+  "tested_file_drift": []
+}

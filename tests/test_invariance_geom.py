@@ -33,6 +33,7 @@ from fractions import Fraction
 import pytest
 from e5a_cover_oracle import cover_labels as independent_cover_labels
 from e5a2_surface_oracle import star_relation
+from e5a_convex_oracle import canonical_view, assert_raw_coordinate_view
 from e5b_margin_oracle import check_exact_margin
 import eab.margin as exact_margin
 
@@ -268,6 +269,14 @@ def _cell(name, rot, tmag, s):
     return base, M, M.poly(base["A"]), M.poly(base["B"])
 
 
+def _raw_coordinate_views(A,B):
+    # Save BOTH source models before calling any tested canonicalization.
+    expected = tuple(canonical_view(tuple(raw.verts),tuple(raw.faces)) for raw in (A,B))
+    for raw,view in zip((A,B),expected):
+        assert_raw_coordinate_view(exact_convex_view(raw),view)
+    return expected
+
+
 # ================================================================ 判定不变：polyhedra_overlap
 
 @pytest.mark.parametrize("rot,tmag,s", CELLS, ids=CELL_IDS)
@@ -312,6 +321,7 @@ def test_body_distance_scales_and_keeps_its_label(name, rot, tmag, s):
 @pytest.mark.parametrize("name", PAIR_NAMES)
 def test_cover_labels_and_strictness_are_invariant(name, rot, tmag, s):
     base, M, A, B = _cell(name, rot, tmag, s)
+    ca,cb=_raw_coordinate_views(A,B)
     covs = [c for c in enumerate_covers3(A, B, window=float("inf"), tol=1e-9) if c.in_extent]
     got = frozenset((c.label(), c.strict) for c in covs)
     expected_covers=independent_cover_labels(A,B,tol=1e-9)
@@ -319,9 +329,10 @@ def test_cover_labels_and_strictness_are_invariant(name, rot, tmag, s):
     facets = frozenset(local_facets3(A, B, 1e-12))
     # Convex models are exact hulls of each rounded input, not the ideal rotated
     # planes. Check every strict label against independent rational support sets.
-    ca,cb=exact_convex_view(A),exact_convex_view(B)
     expected,_=exact_oracle.support_labels(tuple(ca.verts),tuple(ca.faces),tuple(cb.verts),tuple(cb.faces))
-    assert facets==expected, (sorted(facets-expected),sorted(expected-facets))
+    assert facets==expected, ("raw-coordinate complete facet labels",sorted(facets-expected),sorted(expected-facets))
+    if rot==0 and tmag==1000. and s==1. and name in ("tetra_box_vv","generic","ve3_wedge"):
+        assert facets==base["facets"], ("stable-source complete facet labels",sorted(facets-base["facets"]),sorted(base["facets"]-facets))
 
 
 # ================================================================ 成员判定与支撑间隙
@@ -337,10 +348,10 @@ def _displacements(name):
 def test_support_gaps_scale_and_membership_is_invariant(name, rot, tmag, s):
     base, M, A, B = _cell(name, rot, tmag, s)
     L = PAIRS[name][5]
+    ca,cb=_raw_coordinate_views(A,B)
     for x in _displacements(name):
         g0 = support_gaps3(base["A"], base["B"], x)
         g1 = support_gaps3(A, B, M.vec(x))
-        ca,cb=exact_convex_view(A),exact_convex_view(B)
         # The rounded input may split one source face into several exact facets.
         # Each output plane, not just their maximum, has an independent value.
         expected=_support_gap_oracle(ca,cb,M.vec(x))
@@ -396,7 +407,7 @@ def test_margin_layer_is_invariant(name, rot, tmag, s):
     # Rounded boundary features can become exactly strict/non-active. Instead
     # of preserving ideal labels, independently enumerate every local cover,
     # construct its witnesses and apply the existing margin selection contract.
-    from e5a_cover_oracle import margin_selection
+    from e5a_cover_oracle import margin_selection, margin_witness_squared, assert_margin_gap_rounding
     expected = margin_selection(A, B, s * delta, touching=(ov == 0))
     expected_base = margin_selection(base["A"], base["B"], delta, touching=(ideal_ov == 0))
     current, original = {m.label: m for m in m1}, {m.label: m for m in m0}
@@ -405,7 +416,12 @@ def test_margin_layer_is_invariant(name, rot, tmag, s):
     assert set(original) == set(expected_base)
     for label, contact in current.items():
         assert abs(contact.distance - expected[label]) <= M.dist_tol(L), (label, contact.distance, expected[label])
-        assert contact.margin_gap == contact.distance - s * delta
+        # R8: distance is a legacy display value, not the exact radicand.
+        # Independent window selection above determines the zero clamp; all
+        # nonzero values use raw-coordinate Gram/triangulated feature truth.
+        squared = Fraction(0) if expected[label] == 0 else margin_witness_squared(A, B, label)
+        assert contact.exact_distance_squared == squared, "independent source-feature squared distance"
+        assert_margin_gap_rounding(contact.margin_gap, squared, s * delta)
     # Retain rigid-motion/scale distance checks, now matching physical feature
     # identities instead of zipping unrelated entries after labels split.
     for label in set(current) & set(original):
@@ -435,12 +451,12 @@ def test_g0_three_votes_are_invariant(name, rot, tmag, s):
     rb = g0_convex3(base["A"], base["B"], samples=12, seed=1)
     assert rb.passed, rb
     _, M, A, B = _cell(name, rot, tmag, s)
+    ca,cb=_raw_coordinate_views(A,B)
     r = g0_convex3(A, B, samples=12, seed=1)
     assert r.passed, (r.mismatches[:2], r.facet_symmetric_diff[:4], r.hull_vertices, r.e_vertices)
     assert rb.facet_ambiguous == 0 and rb.e_vertices_ambiguous == 0
     p,f,_=exact_oracle.difference_hull(tuple(A.verts),tuple(B.verts))
     nv=len({i for face in f for i in face})
-    ca,cb=exact_convex_view(A),exact_convex_view(B)
     labels,deg=exact_oracle.support_labels(tuple(ca.verts),tuple(ca.faces),tuple(cb.verts),tuple(cb.faces))
     assert r.e_vertices==r.hull_vertices==nv
     assert (r.facet_local,r.facet_global,r.facet_degenerate)==(len(labels),len(labels),deg)
@@ -473,8 +489,8 @@ def test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells(tmag, amb, dropp
     base = _base("generic")
     M = Motion(7, tmag, 1e-3)
     A,B=M.poly(base["A"]),M.poly(base["B"])
+    ca,cb=_raw_coordinate_views(A,B)
     r = g0_convex3(A,B, samples=12, seed=1)
-    ca,cb=exact_convex_view(A),exact_convex_view(B)
     expected,deg=exact_oracle.support_labels(tuple(ca.verts),tuple(ca.faces),tuple(cb.verts),tuple(cb.faces))
     assert r.passed and (r.facet_ambiguous,r.facet_local_dropped,r.e_vertices_ambiguous)==(0,0,0),r
     assert r.facet_global==r.facet_local==len(expected)==39

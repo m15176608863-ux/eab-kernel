@@ -251,8 +251,14 @@ def test_yawed_stack_passes_g0_under_random_rotations(yaw, seed):
     from eab.kernel3d.geom3 import exact_convex_view
     r0=g0_convex3(A0,B0,samples=0)
     assert (r0.facet_local,r0.facet_global,r0.facet_degenerate)==(0,0,10)
-    a,b=exact_convex_view(xf(A0)),exact_convex_view(xf(B0))
-    expected,deg=g03_exact.support_labels(tuple(a.verts),tuple(a.faces),tuple(b.verts),tuple(b.faces))
+    from e5a_convex_oracle import canonical_view, assert_raw_coordinate_view
+    raw_a,raw_b=xf(A0),xf(B0)
+    expected_a=canonical_view(tuple(raw_a.verts),tuple(raw_a.faces))
+    expected_b=canonical_view(tuple(raw_b.verts),tuple(raw_b.faces))
+    a,b=exact_convex_view(raw_a),exact_convex_view(raw_b)
+    assert_raw_coordinate_view(a,expected_a)
+    assert_raw_coordinate_view(b,expected_b)
+    expected,deg=g03_exact.support_labels(expected_a.verts,expected_a.faces,expected_b.verts,expected_b.faces)
     assert local_facets3(a,b)==expected
     assert (r.facet_local,r.facet_global,r.facet_degenerate)==(len(expected),len(expected),deg)
     assert r.facet_ambiguous==r.facet_local_dropped==r.e_vertices_ambiguous==0

@@ -135,7 +135,7 @@ def segment_face_hits(a,b,face):
     return in_face(p,den,face)>=0
 
 
-def separated_distance(av,af,bv,bf):
+def separated_distance(av,af,bv,bf,*,squared=False):
     """Return distance for strictly disjoint solids, None for overlap/contact.
 
     Independent primitives: exact integer plane/ring winding and segment
@@ -187,4 +187,5 @@ def separated_distance(av,af,bv,bf):
                 if 0<sn<det and 0<tn<det:
                     keep(dot(w,w)*det+dd*sn-ee*tn,det)
     if best==0:return None
-    return sqrt_display(best/F(den*den))
+    result=best/F(den*den)
+    return result if squared else sqrt_display(result)

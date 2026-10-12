@@ -1,0 +1,26 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______________ test_3d_topology_keeps_narrow_exterior_chamber[0] ______________
+
+shear = 0
+
+    @pytest.mark.parametrize('shear',[0,2**30])
+    def test_3d_topology_keeps_narrow_exterior_chamber(shear):
+        from eab.kernel3d.entrance_topology import entrance_membership3
+        B = _extrude([(0,0),(3,0),(3,1),(1,1),(1,3),(0,3)])
+        A = box((1.25,1.25,.5),(.25,.25,.25))
+        def skew(P):
+            return Polyhedron([(F(p[0])+shear*F(p[1])+shear**2*F(p[2]),
+                                F(p[1])+shear*F(p[2]),F(p[2])) for p in P.verts],list(P.faces))
+        A,B = skew(A),skew(B)
+        # Cartesian L complement contains (epsilon,epsilon,0) before this invertible
+        # exact shear; its extremely narrow image remains a genuine exterior room.
+>       assert entrance_membership3(A,B) == 0, 'narrow exterior chamber was lost'
+E       AssertionError: narrow exterior chamber was lost
+E       assert 1 == 0
+E        +  where 1 = <function entrance_membership3 at 0x0000000004210F40>(Polyhedron(verts=[(Fraction(1, 1), Fraction(1, 1), Fraction(1, 4)), (Fraction(3, 2), Fraction(1, 1), Fraction(1, 4)), ...on(3, 2), Fraction(3, 4))], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]), Polyhedron(verts=[(Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), (Fraction(3, 1), Fraction(0, 1), Fraction(0, 1)), ..., 1, 0), (6, 7, 8, 9, 10, 11), (0, 1, 7, 6), (1, 2, 8, 7), (2, 3, 9, 8), (3, 4, 10, 9), (4, 5, 11, 10), (5, 0, 6, 11)]))
+
+tests\test_r8fix_initial_state3.py:103: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r8fix_initial_state3.py::test_3d_topology_keeps_narrow_exterior_chamber[0]
+1 failed in 0.14s

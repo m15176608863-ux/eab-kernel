@@ -32,8 +32,8 @@ from math import atan2, isfinite, lcm
 
 from ..predicates import cross2_sign, dot2_sign
 from ..construction import sqrt_rational
-from .exact import (convexity_violation, entrance_block_exact, ev_side_exact, membership_exact,
-                    polygons_overlap_exact, ve_side_exact)
+from .exact import (convexity_violation, entrance_block_exact, entrance_membership_exact, ev_side_exact, membership_exact,
+                    ve_side_exact)
 from .geom import (Point, Poly, add, cross, dot, edge, neg, norm, outward_normal, sub, unit)
 
 
@@ -121,8 +121,17 @@ def normal_cone(poly: Poly, i: int, tol: float = 0.0) -> tuple[Point, Point] | N
 
 
 def cone_width(cone: tuple[Point, Point]) -> float:
-    """浮点构造量：两条法向的有符号转角（弧度），不用于精确分支。"""
-    return atan2(cross(cone[0], cone[1]), dot(cone[0], cone[1]))
+    """两条给定法向的有符号转角（弧度）；精确叉积/点积共同缩放后才构造 atan2。
+    不用于精确分支；非零角不可表达时报错。门：test_r8fix_initial_state 的 cone_width 门。"""
+    lo, hi = _fr(cone[0]), _fr(cone[1])
+    determinant, scalar = cross(lo, hi), dot(lo, hi)
+    scale = max(abs(determinant), abs(scalar))
+    if not scale:
+        return 0.0
+    angle = atan2(float(determinant / scale), float(scalar / scale))
+    if determinant and angle == 0:
+        raise ArithmeticError("nonzero cone width below binary64 output range")
+    return angle
 
 
 def in_cone(cone: tuple[Point, Point], v: Point, tol: float = 0.0) -> int:
@@ -417,10 +426,10 @@ def _in_exact_boundary_band(ex, x: Point, tol: float) -> bool:
 
 def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
                       eb: EntranceBlock | None = None) -> int:
-    """参考点相对 E 的位置：1 内部（A+x 与 B 内部相交）/ 0 边界或显式报告带 / -1 外部（分离）。
+    """参考点相对 E 的位置：1 拓扑内部（含紧配接触内缝）/ 0 边界或显式报告带 / -1 外部（分离）。
 
     tol=0 时**对给定浮点坐标精确**：A、B 精确凸时用精确 E 的 facet 符号，否则（包括刚体运动把平直顶点舍入成微凹）
-    用一般简单多边形的精确相交；x 的加法也在 Fraction 上做。tol（长度）只把有边界距离见证的非零答案报告为 0，
+    用一般简单多边形的精确 E 成员判定（相触时核局部切锥并，不能把实体内缝当 ∂E）；x 的加法也在 Fraction 上做。tol（长度）只把有边界距离见证的非零答案报告为 0，
     不吞带外答案、不抬到舍入下限。凸对完整检验到 E 边界的欧氏距离 ≤ tol（精确线段距离平方；外角不等同于最大 facet gap）。
     非凸对没有全局 E：只沿四条坐标轴探到距离 tol，精确状态改变即由连续性证明其间有边界；这是**保守、不完备**的报告带，
     无见证时保留精确答案，不承诺检出全部带内样本。完整非凸 E 距离留待全局构造。eb 保留只为兼容旧调用。
@@ -433,14 +442,14 @@ def membership_convex(A: Poly, B: Poly, x: Point, tol: float = 0.0,
         if tol == float("inf"):
             return 0
         return 0 if _in_exact_boundary_band(ex, x, tol) else s
-    s = polygons_overlap_exact(A, B, x)
+    s = entrance_membership_exact(A, B, x)
     if s == 0 or not tol > 0.0:
         return s
     if tol == float("inf"):
         return 0
     X, t = (Fraction(x[0]), Fraction(x[1])), Fraction(tol)
     for dx, dy in ((t, 0), (-t, 0), (0, t), (0, -t)):
-        if polygons_overlap_exact(A, B, (X[0] + dx, X[1] + dy)) != s:
+        if entrance_membership_exact(A, B, (X[0] + dx, X[1] + dy)) != s:
             return 0
     return s
 

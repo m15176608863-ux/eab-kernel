@@ -1,0 +1,103 @@
+=== ordinary_1ulp/old_subtraction ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 32, in _ordinary_gap_gate
+    invariance.test_margin_layer_is_invariant("box_box_face", 7, 0., .001)
+  File "D:\eab-wt\cx-e2\tests\test_invariance_geom.py", line 424, in test_margin_layer_is_invariant
+    assert_margin_gap_rounding(contact.margin_gap, squared, s * delta)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', -4.9999999999999935e-05, Fraction(121663696179095030376055472254315300296898864620652806601379830070072463017254519251934961274665, 48665478471637907867297799554039211979822025035717657421886698364711385108260777676968331466235237629952), Fraction(7378697629483821, 73786976294838206464), -1, -1, False)
+
+=== ordinary_1ulp/omit_delta ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 32, in _ordinary_gap_gate
+    invariance.test_margin_layer_is_invariant("box_box_face", 7, 0., .001)
+  File "D:\eab-wt\cx-e2\tests\test_invariance_geom.py", line 424, in test_margin_layer_is_invariant
+    assert_margin_gap_rounding(contact.margin_gap, squared, s * delta)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', 5.000000000000005e-05, Fraction(448307270501200300323760037499915876743208388774648415403633175788166539638599919030278699215961, 179322908200479747904317807459949204167801333771083117510430796971200564169239374786705907906369718059008), Fraction(7378697629483821, 73786976294838206464), -1, -1, True)
+
+=== ordinary_1ulp/reverse_delta ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 32, in _ordinary_gap_gate
+    invariance.test_margin_layer_is_invariant("box_box_face", 7, 0., .001)
+  File "D:\eab-wt\cx-e2\tests\test_invariance_geom.py", line 424, in test_margin_layer_is_invariant
+    assert_margin_gap_rounding(contact.margin_gap, squared, s * delta)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', 0.00015000000000000007, Fraction(448307270501200300323760037499915876743208388774648415403633175788166539638599919030278699215961, 179322908200479747904317807459949204167801333771083117510430796971200564169239374786705907906369718059008), Fraction(7378697629483821, 73786976294838206464), -1, -1, True)
+
+=== ordinary_1ulp/double_distance ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 32, in _ordinary_gap_gate
+    invariance.test_margin_layer_is_invariant("box_box_face", 7, 0., .001)
+  File "D:\eab-wt\cx-e2\tests\test_invariance_geom.py", line 424, in test_margin_layer_is_invariant
+    assert_margin_gap_rounding(contact.margin_gap, squared, s * delta)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', 9.486769009248164e-20, Fraction(448307270501200300323760037499915876743208388774648415403633175788166539638599919030278699215961, 179322908200479747904317807459949204167801333771083117510430796971200564169239374786705907906369718059008), Fraction(7378697629483821, 73786976294838206464), -1, -1, True)
+
+=== large_cancellation/old_subtraction ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 45, in _large_gap_gate
+    assert_margin_gap_rounding(first.margin_gap, squared, M)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', 0.0, Fraction(10000000000000000000200000000000000000001, 1), Fraction(100000000000000000000, 1), 1, 1, True)
+
+=== large_cancellation/omit_delta ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 45, in _large_gap_gate
+    assert_margin_gap_rounding(first.margin_gap, squared, M)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', 1e+20, Fraction(10000000000000000000200000000000000000001, 1), Fraction(100000000000000000000, 1), -1, -1, True)
+
+=== large_cancellation/reverse_delta ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 45, in _large_gap_gate
+    assert_margin_gap_rounding(first.margin_gap, squared, M)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', 2e+20, Fraction(10000000000000000000200000000000000000001, 1), Fraction(100000000000000000000, 1), -1, -1, True)
+
+=== large_cancellation/double_distance ===
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\reports\codex\R8FIX_evidence\gate_teeth\audit_margin_gap_migration.py", line 45, in <module>
+    try:run()
+        ^^^^^
+  File "D:\eab-wt\cx-e2\tests\test_r8fix_margin_gap_gate.py", line 45, in _large_gap_gate
+    assert_margin_gap_rounding(first.margin_gap, squared, M)
+  File "D:\eab-wt\cx-e2\tests\e5a_cover_oracle.py", line 385, in assert_margin_gap_rounding
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('exact margin-gap midpoint', 1e+20, Fraction(10000000000000000000200000000000000000001, 1), Fraction(100000000000000000000, 1), -1, -1, True)

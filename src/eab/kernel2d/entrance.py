@@ -11,7 +11,7 @@
   · **凹对**：没有全局 E（M3 之前），用局部盖（VE/EV）给完备候选、在各自时刻重验"投影落在边内"、精确谓词 `polygons_overlap_exact`
     裁决（t* 处相触或相交；t* 前全部原始接触事件及相邻事件中点分离，否则抛 RuntimeError——候选集漏了更早的首入，不静默）；与三维同一结构。
   · 集值点（首入点落在 E 的顶点上，两条 facet 精确同时被触及）：按枚举序取第一个作裁决，并列集如实报出（tied_labels）。
-  · x0 已在 E 内（已侵入）：取**最短出口**——在程的 facet 型盖里取间隙最大者（侵入最浅）作接触法向与出口方向。
+  · x0 已在拓扑 int(E) 内（含紧配接触内缝）：取**局部最短出口**——在程的 facet 型盖里取间隙最大者（侵入最浅）作接触法向与局部分离方向；不是一般凹对的全局穿透深度，内缝的局部 gap 可为 0。
 E2：凸选路、凸初态、半空间射线裁剪均用精确有理数；facet_gap/法向/接触点只作浮点输出，法向取 facet 自己的边。
 E3：凹路径的平移、零间隙时刻、段内重验、相交与漏候选自检均用 Fraction；最短出口用精确平方距离排序。
 精确并列集 tied_labels 与长度窗/舍入量级的 near_labels 分开；tol 不改 kind、时刻或获选标签。
@@ -24,7 +24,7 @@ from fractions import Fraction
 from math import inf, nextafter
 
 from .covers import _facet_normal_own, enumerate_covers, facet_gap
-from .exact import (convexity_violation, entrance_block_exact, membership_exact,
+from .exact import (convexity_violation, entrance_block_exact, entrance_membership_exact, membership_exact,
                     polygons_overlap_exact, ve_side_exact, ev_side_exact)
 from .geom import Point, Poly, add, coord_scale, dot, edge, norm, round_floor, sub
 from ..construction import sqrt_rational
@@ -107,7 +107,7 @@ def first_entrance(A: Poly, B: Poly, x0: Point, d: Point, *, tol: float = 0.0, t
         if membership_exact(A, B, x0) == 1:
             return shortest_exit(A, B, x0, tol=tol)
         return _first_entrance_convex(A, B, x0, d, tol, r, t_max)
-    if polygons_overlap_exact(A, B, x0) == 1:
+    if entrance_membership_exact(A, B, x0) == 1:
         return shortest_exit(A, B, x0, tol=tol)
     return _first_entrance_concave(A, B, x0, d, tol, r, t_max)
 
@@ -309,7 +309,8 @@ def _first_entrance_concave(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, 
 
 def shortest_exit(A: Poly, B: Poly, x0: Point, *, tol: float = 0.0) -> Entrance2:
     """已侵入时在程 VE/EV 的最大非正间隙；有理数平方距离选最浅盖，精确同距才并列。
-    这是局部 facet 选择，不声称一般凹对该单次平移能令所有接触同时脱开。tol 只报告 near_labels。"""
+    这是局部 facet 选择，不声称一般凹对该单次平移能令所有接触同时脱开。紧配内缝的局部 gap 可为 0，
+    kind="exit" 表示初态处理策略，不把该接触盖声称为真实 ∂E 或零全局穿透深度。tol 只报告 near_labels。"""
     X = _frpoint(x0)
     candidates = []
     for label in _candidate_labels(A, B):

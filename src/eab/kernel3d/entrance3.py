@@ -19,6 +19,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 from math import isfinite
+from .entrance_topology import entrance_membership3
 
 from ..margin import characteristic_length, effective_geom_tol
 from .covers3 import (Cover3, ee_cover, enumerate_covers3, fv_cover, vf_cover,
@@ -229,6 +230,12 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
                     geom_tol: float | None = None, t_max: float = float("inf")) -> Entrance3:
     """Exact supplied-data first event; floating normal/point/time are outputs only.
 
+    An initial topological int(E) configuration, including a tight-fit seam
+    without body-interior overlap, uses shortest_exit3. This is the existing
+    local-facet policy, not global nonconvex penetration depth: a seam's local
+    exit gap can be zero without asserting that it lies on the true boundary E.
+    Gate: test_r8fix_initial_state3.
+
     geom_tol is retained for source compatibility but never thickens the set.
     Candidate roots, ordering, t_max and ties are rational. The complete surface
     event partition supplies an exact preceding interval for the self-check.
@@ -237,7 +244,7 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
         raise ValueError("direction must be nonzero")
     A, B = exact_surface(A), exact_surface(B)
     At = _translated_exact(A, x0)
-    if polyhedra_overlap(At, B, 0.0) == 1:
+    if entrance_membership3(At, B) == 1:
         return _restore_sources(shortest_exit3(A, B, x0, tol=tol, geom_tol=geom_tol), A, B)
     raw = []
     for idx, c in enumerate(_facet_covers(At, B, tol)):
@@ -291,7 +298,11 @@ def first_entrance3(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, tol: flo
 
 def shortest_exit3(A: Polyhedron, B: Polyhedron, x0: Vec3, *, tol: float = 1e-9,
                    geom_tol: float | None = None) -> Entrance3:
-    """Local-facet minimum exact squared depth; exact ties, stable enumeration."""
+    """Local-facet minimum exact squared depth; exact ties, stable enumeration.
+
+    Tight-fit seams may have local depth zero inside E. This is a contact
+    normal/initial-state policy, not global distance to the nonconvex boundary.
+    """
     A, B = exact_surface(A), exact_surface(B)
     At = _translated_exact(A, x0)
     candidates = []

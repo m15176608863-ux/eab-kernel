@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_doc_pointers.py",
+    "tests/test_r8fix_initial_state.py",
+    "tests/test_r8fix_frozen.py",
+    "tests/test_r8fix_dihedral.py",
+    "tests/test_r8fix_gate_teeth.py",
+    "tests/test_r8fix_wrench.py",
+    "--basetemp=reports/codex/R8FIX_evidence/tmp/preflight"
+  ],
+  "cwd": "D:\\eab-wt\\cx-e2",
+  "exit_code": 0,
+  "wall_seconds": 3.805395600007614
+}

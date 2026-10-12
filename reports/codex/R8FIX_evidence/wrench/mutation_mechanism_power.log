@@ -1,0 +1,17 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+____________ test_mechanism_power_cancels_products_before_rounding ____________
+
+    def test_mechanism_power_cancels_products_before_rounding():
+        a = 1e200
+        contact = limit.LimitContact((0.0, 1.0), (0.0, 1.0))
+        # Power = a*a - a*a + 1*(-a), exactly -a.
+        result = limit.mechanism_power([a, -a, 1.0], contact, (a, a), (0.0, 0.0), 2)
+>       assert result == -a, "finite exact power must survive intermediate overflow"
+E       AssertionError: finite exact power must survive intermediate overflow
+E       assert nan == -1e+200
+
+tests\test_r8fix_wrench.py:108: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r8fix_wrench.py::test_mechanism_power_cancels_products_before_rounding
+1 failed in 0.08s

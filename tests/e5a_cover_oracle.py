@@ -253,12 +253,13 @@ def _cover_labels_cached(av_raw, af_raw, bv_raw, bf_raw, tol):
     return frozenset(out)
 
 
-def witness_points(A, B, label):
+def witness_points(A, B, label, *, exact=False):
     """Independent exact witnesses for an in-extent local cover.
 
     Gram solves, not production projection/line helpers, determine both points.
-    The final float conversion is explicit because margin.py consumes the
-    rounded witness coordinates, not the rational geometric distance.
+    Default float conversion preserves the historical display-point oracle.
+    exact=True retains rational points for independently certifying the final
+    margin expression before either distance or global coordinates are rounded.
     """
     kind, fa, fb = label
     am, bm = _model(A), _model(B)
@@ -268,7 +269,7 @@ def witness_points(A, B, label):
         origin, normal = bv[bm[1][fb[1]][0]], bm[2][fb[1]]
         a, b = p, sub(p, scale(normal, dot(normal, sub(p, origin))/dot(normal, normal)))
     elif kind == "FV":
-        b, a = witness_points(B, A, ("VF", fb, fa))
+        b, a = witness_points(B, A, ("VF", fb, fa), exact=exact)
         return a, b
     elif kind == "EE":
         a0, b0 = av[fa[1]], bv[fb[1]]
@@ -285,12 +286,14 @@ def witness_points(A, B, label):
         t = dot(sub(a, p), d)/dot(d, d)
         b = add(p, scale(d, t))
     elif kind == "EV3":
-        b, a = witness_points(B, A, ("VE3", fb, fa))
+        b, a = witness_points(B, A, ("VE3", fb, fa), exact=exact)
         return a, b
     elif kind == "VV3":
         a, b = av[fa[1]], bv[fb[1]]
     else:
         raise ValueError(label)
+    if exact:
+        return a, b
     return tuple(map(float, a)), tuple(map(float, b))
 
 
@@ -325,6 +328,66 @@ def _margin_witness_distance(A, B, label):
     with localcontext() as context:
         context.prec = 120
         return float((Decimal(squared.numerator)/Decimal(squared.denominator)).sqrt())
+
+
+def margin_witness_squared(A, B, label):
+    """Independent exact source-feature value; folded faces use actual triangles.
+
+    Gram witnesses and test-owned ear cutting share no production primitive.
+    Unlike witness_distance this never rounds an intermediate global point.
+    """
+    kind, fa, fb = label
+    if kind in ("VF", "FV"):
+        X, Y, vertex, face = ((A, B, fa[1], fb[1]) if kind == "VF"
+                             else (B, A, fb[1], fa[1]))
+        points, rings, normals, _, _ = _model(Y)
+        ring, normal = rings[face], normals[face]
+        origin = points[ring[0]]
+        if any(dot(normal, sub(points[i], origin)) for i in ring):
+            from e5a2_surface_oracle import _ring_triangles, _point_tri_sq
+            point = q(X.verts[vertex])
+            return min(_point_tri_sq(point, triangle)
+                       for triangle in _ring_triangles(points, ring))
+    a, b = witness_points(A, B, label, exact=True)
+    displacement = sub(a, b)
+    return dot(displacement, displacement)
+
+
+def assert_margin_gap_rounding(value, squared, delta):
+    """Certify RN-even(sqrt(squared)-delta) using exact midpoint inequalities.
+
+    No production rounding routine or sqrt participates. Rational comparison
+    to a midpoint is reduced to squaring only after its sign is established.
+    Bounds cover signed zero/subnormals and the finite overflow thresholds;
+    exact half-way cases accept only an even binary64 significand.
+    """
+    import struct
+    from fractions import Fraction as F
+    assert math.isfinite(value), "exact margin-gap midpoint: nonfinite output"
+    squared, delta = F(squared), F(delta)
+    assert squared >= 0
+
+    def compare(midpoint):
+        rhs = delta + midpoint
+        if rhs < 0:
+            return 1
+        difference = squared - rhs*rhs
+        return (difference > 0) - (difference < 0)
+
+    center = F(value)
+    previous, following = math.nextafter(value, -math.inf), math.nextafter(value, math.inf)
+    # The conceptual neighbor beyond max finite is +/-2**1024.
+    previous = F(previous) if math.isfinite(previous) else -F(2)**1024
+    following = F(following) if math.isfinite(following) else F(2)**1024
+    lower, upper = (previous+center)/2, (center+following)/2
+    even = struct.unpack('>Q', struct.pack('>d', value))[0] % 2 == 0
+    low, high = compare(lower), compare(upper)
+    assert (low > 0 or low == 0 and even) and (high < 0 or high == 0 and even), (
+        "exact margin-gap midpoint", value, squared, delta, low, high, even)
+    if value == 0.0:
+        sign = compare(F(0))
+        assert sign == 0 or (math.copysign(1.0, value) < 0) == (sign < 0), (
+            "exact margin-gap midpoint: signed underflow", value, sign)
 
 
 def margin_selection(A, B, delta, *, touching=False, tol=1e-9):

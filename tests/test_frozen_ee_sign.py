@@ -151,11 +151,18 @@ def test_frozen_ee_orientation_agrees_with_ee_cover_and_facet_normal3_on_every_e
     assert n_cov >= 8
     # facet_normal3 is defined on canonical convex views and strict local labels.
     # Check that complete label set as well, rather than deleting the facet gate.
+    from e5a_convex_oracle import canonical_view, assert_raw_coordinate_view
+    expected_a=canonical_view(tuple(A.verts),tuple(A.faces))
+    expected_b=canonical_view(tuple(B.verts),tuple(B.faces))
     ca,cb=exact_convex_view(A),exact_convex_view(B)
+    assert_raw_coordinate_view(ca,expected_a)
+    assert_raw_coordinate_view(cb,expected_b)
+    def oracle_edges(view):
+        return sorted({tuple(sorted((i,j))) for face in view.faces for i,j in zip(face,face[1:]+face[:1])})
     expected=set()
-    for ea in ca.edges():
-        for eb in cb.edges():
-            truth=_ee_exact(ca,ea,cb,eb,0.0)
+    for ea in oracle_edges(expected_a):
+        for eb in oracle_edges(expected_b):
+            truth=_ee_exact(expected_a,ea,expected_b,eb,0.0)
             if truth is not None and truth[2]:
                 lab=("EE",("edge",*ea),("edge",*eb))
                 expected.add(lab)

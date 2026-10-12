@@ -1,0 +1,632 @@
+[
+  {
+    "family": "G6H-05",
+    "gate": "test_cover_labels_and_strictness_are_invariant",
+    "args": [
+      "tetra_box_vv",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "drop_vertex",
+    "old_sha256": "264eb6f6ed3bdb07a8bfc414c7dd8242c243a4f967dba7e9d9672bfe6c920f9e",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "([('VF', ('vertex', 1), ('face', 2)), ('VF', ('vertex', 1), ('face', 3)), ('VF', ('vertex', 2), ('face', 5)), ('VF', ('vertex', 3), ('face', 1))], [('VF', ('vertex', 1), ('face', 5)), ('VF', ('vertex', 2), ('face', 2)), ('VF', ('vertex', 3), ('face', 0))])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 7 in test_cover_labels_and_strictness_are_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view lost or reordered extreme vertices",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 37 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "G6H-05",
+    "gate": "test_cover_labels_and_strictness_are_invariant",
+    "args": [
+      "generic",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "drop_vertex",
+    "old_sha256": "264eb6f6ed3bdb07a8bfc414c7dd8242c243a4f967dba7e9d9672bfe6c920f9e",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "([('EE', ('edge', 0, 2), ('edge', 4, 6)), ('FV', ('face', 0), ('vertex', 4)), ('VF', ('vertex', 0), ('face', 8)), ('VF', ('vertex', 1), ('face', 2)), ('VF', ('vertex', 2), ('face', 5)), ('VF', ('vertex', 2), ('face', 6)), ('VF', ('vertex', 2), ('face', 7)), ('VF', ('vertex', 4), ('face', 3)), ('VF', ('vertex', 6), ('face', 4))], [('EE', ('edge', 0, 2), ('edge', 6, 7)), ('EE', ('edge', 0, 4), ('edge', 4, 7)), ('EE', ('edge', 2, 4), ('edge', 4, 7)), ('FV', ('face', 0), ('vertex', 7)), ('VF', ('vertex', 0), ('face', 10)), ('VF', ('vertex', 0), ('face', 11)), ('VF', ('vertex', 1), ('face', 5)), ('VF', ('vertex', 2), ('face', 2)), ('VF', ('vertex', 2), ('face', 3)), ('VF', ('vertex', 2), ('face', 4)), ('VF', ('vertex', 2), ('face', 8)), ('VF', ('vertex', 4), ('face', 7)), ('VF', ('vertex', 6), ('face', 6))])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 7 in test_cover_labels_and_strictness_are_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view lost or reordered extreme vertices",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 37 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "G6H-05",
+    "gate": "test_cover_labels_and_strictness_are_invariant",
+    "args": [
+      "tetra_box_vv",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "source_faces",
+    "old_sha256": "264eb6f6ed3bdb07a8bfc414c7dd8242c243a4f967dba7e9d9672bfe6c920f9e",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "([('FV', ('face', 1), ('vertex', 0)), ('VF', ('vertex', 1), ('face', 4)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 3), ('face', 5))], [('FV', ('face', 2), ('vertex', 0)), ('VF', ('vertex', 1), ('face', 5)), ('VF', ('vertex', 2), ('face', 2)), ('VF', ('vertex', 3), ('face', 0))])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 7 in test_cover_labels_and_strictness_are_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view changed source face numbering",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 38 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "G6H-05",
+    "gate": "test_cover_labels_and_strictness_are_invariant",
+    "args": [
+      "generic",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "source_faces",
+    "old_sha256": "264eb6f6ed3bdb07a8bfc414c7dd8242c243a4f967dba7e9d9672bfe6c920f9e",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "([('FV', ('face', 0), ('vertex', 4)), ('FV', ('face', 1), ('vertex', 5)), ('FV', ('face', 3), ('vertex', 0)), ('FV', ('face', 4), ('vertex', 6)), ('FV', ('face', 5), ('vertex', 4)), ('FV', ('face', 6), ('vertex', 5)), ('FV', ('face', 7), ('vertex', 1)), ('FV', ('face', 9), ('vertex', 7)), ('VF', ('vertex', 0), ('face', 8)), ('VF', ('vertex', 1), ('face', 4)), ('VF', ('vertex', 1), ('face', 11)), ('VF', ('vertex', 2), ('face', 1)), ('VF', ('vertex', 2), ('face', 7)), ('VF', ('vertex', 4), ('face', 6)), ('VF', ('vertex', 6), ('face', 5))], [('FV', ('face', 0), ('vertex', 7)), ('FV', ('face', 1), ('vertex', 4)), ('FV', ('face', 3), ('vertex', 5)), ('FV', ('face', 4), ('vertex', 0)), ('FV', ('face', 5), ('vertex', 6)), ('FV', ('face', 6), ('vertex', 4)), ('FV', ('face', 7), ('vertex', 5)), ('FV', ('face', 9), ('vertex', 1)), ('VF', ('vertex', 0), ('face', 11)), ('VF', ('vertex', 1), ('face', 1)), ('VF', ('vertex', 1), ('face', 5)), ('VF', ('vertex', 2), ('face', 4)), ('VF', ('vertex', 2), ('face', 8)), ('VF', ('vertex', 4), ('face', 7)), ('VF', ('vertex', 6), ('face', 6))])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 7 in test_cover_labels_and_strictness_are_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view changed source face numbering",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 38 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "G6H-05",
+    "gate": "test_cover_labels_and_strictness_are_invariant",
+    "args": [
+      "ve3_wedge",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "source_faces",
+    "old_sha256": "264eb6f6ed3bdb07a8bfc414c7dd8242c243a4f967dba7e9d9672bfe6c920f9e",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "([('FV', ('face', 0), ('vertex', 5)), ('FV', ('face', 1), ('vertex', 2)), ('FV', ('face', 3), ('vertex', 1)), ('VF', ('vertex', 0), ('face', 0)), ('VF', ('vertex', 0), ('face', 3)), ('VF', ('vertex', 1), ('face', 4)), ('VF', ('vertex', 2), ('face', 2))], [('FV', ('face', 0), ('vertex', 1)), ('FV', ('face', 1), ('vertex', 5)), ('FV', ('face', 2), ('vertex', 2)), ('VF', ('vertex', 0), ('face', 1)), ('VF', ('vertex', 0), ('face', 4)), ('VF', ('vertex', 1), ('face', 0)), ('VF', ('vertex', 2), ('face', 3))])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 7 in test_cover_labels_and_strictness_are_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view changed source face numbering",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 38 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "same-family convex oracle",
+    "gate": "test_support_gaps_scale_and_membership_is_invariant",
+    "args": [
+      "generic",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "drop_vertex",
+    "old_sha256": "ae38090b5f53a499cd3f7df49df1a1d714b14f054599d78638d406e9419f7315",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 7 in test_support_gaps_scale_and_membership_is_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view lost or reordered extreme vertices",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 37 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "same-family convex oracle",
+    "gate": "test_support_gaps_scale_and_membership_is_invariant",
+    "args": [
+      "generic",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "source_faces",
+    "old_sha256": "ae38090b5f53a499cd3f7df49df1a1d714b14f054599d78638d406e9419f7315",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "((1.7946922147003619, -1.0445631356247818, -1.5570389095039592), -2.3296896589337175, -1.669461567049185)",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 9 in test_support_gaps_scale_and_membership_is_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view changed source face numbering",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 38 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "same-family convex oracle",
+    "gate": "test_g0_three_votes_are_invariant",
+    "args": [
+      "generic",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "drop_vertex",
+    "old_sha256": "ab2fc14663dd746e2fd894b0c2a39b44899197051e69af584a5f939bf77a70e3",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "([((Fraction(7436031084507, 8796093022208), Fraction(-10152080214493, 17592186044416), Fraction(-230465883111, 274877906944)), 0, -1), ((Fraction(12598910737449, 8796093022208), Fraction(-15816831569613, 17592186044416), Fraction(6859264283685, 8796093022208)), 0, -1)], [('hull_anomaly', (-997439804151994521139446035596642877440, -2035041225603208231191826909936226402304, -43159488089212563856516957080104468480), 1, 0), ('hull_anomaly', (-509450527471022222695465929687651319808, 162947570204665775903572549544611676160, -377970007457902746910273229657649184768), 0, 1), ('hull_anomaly', (-477523184642228124142941886208240779264, 61994449988401253893300890141273882624, 185538449675677100935979550631100678144), 2, 0), ('hull_anomaly', (-130600604349937741613974131057910349824, 19077467343150457648293318546350407680, 68943652334830069496871891825795792896), 1, 0)], 30, 27)",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 7 in test_g0_three_votes_are_invariant>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view lost or reordered extreme vertices",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 37 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "same-family convex oracle",
+    "gate": "test_g0_three_votes_are_invariant",
+    "args": [
+      "generic",
+      0,
+      1000.0,
+      1.0
+    ],
+    "fault": "source_faces",
+    "old_sha256": "ab2fc14663dd746e2fd894b0c2a39b44899197051e69af584a5f939bf77a70e3",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view changed source face numbering",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 38 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "same-family convex oracle",
+    "gate": "test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells",
+    "args": [
+      100000.0,
+      0,
+      0,
+      39
+    ],
+    "fault": "drop_vertex",
+    "old_sha256": "9bcc7c983ea2432259e8f5833252cb29c531023abaea5e19ce59eb77a14f5fe1",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "G0Report3(samples=148, band_skipped=0, mismatches=[((Fraction(-211805761, 137438953472), Fraction(-23658979, 34359738368), Fraction(-54063435, 68719476736)), 0, -1), ((Fraction(-77407421, 68719476736), Fraction(86986849, 137438953472), Fraction(39172743, 137438953472)), 0, -1), ((Fraction(-72624149, 137438953472), Fraction(56957109, 137438953472), Fraction(-243903229, 137438953472)), 0, -1), ((Fraction(-310350319, 137438953472), Fraction(-52733815, 274877906944), Fraction(-69108877, 68719476736)), 0, -1), ((Fraction(-295926695, 137438953472), Fraction(-8907839, 68719476736), Fraction(-94296139, 137438953472)), 0, -1), ((Fraction(-280985681, 137438953472), Fraction(-104276455, 274877906944), Fraction(-206912101, 137438953472)), 0, -1), ((Fraction(-526596507, 274877906944), Fraction(-82302825, 274877906944), Fraction(-43552415, 68719476736)), 0, -1), ((Fraction(-412614669, 274877906944), Fraction(280942705, 274877906944), Fraction(60194783, 137438953472)), 0, -1), ((Fraction(-366620603, 274877906944), Fraction(-7649067, 274877906944), Fraction(-68954127, 274877906944)), 0, -1), ((Fraction(-334482091, 274877906944), Fraction(-27483005, 68719476736), Fraction(-353092461, 274877906944)), 0, -1), ((Fraction(-142214955, 137438953472), Fraction(-37678807, 274877906944), Fraction(-352030099, 274877906944)), 0, -1), ((Fraction(-227438991, 274877906944), Fraction(71971979, 137438953472), Fraction(-102365243, 137438953472)), 0, -1), ((Fraction(-220500253, 274877906944), Fraction(126656755, 137438953472), Fraction(-58493235, 274877906944)), 0, -1), ((Fraction(-56118867, 274877906944), Fraction(96627015, 137438953472), Fraction(-624645179, 274877906944)), 0, -1), ((Fraction(-970866239, 412316860416), Fraction(-31187177, 206158430208), Fraction(-24255535, 17179869184)), 0, -1), ((Fraction(-117401397, 68719476736), Fraction(24829985, 68719476736), Fraction(-26910047, 274877906944)), 0, -1), ((Fraction(-1000748267, 412316860416), Fraction(6270745, 412316860416), Fraction(-29741743, 34359738368)), 0, -1), ((Fraction(-37776839, 17179869184), Fraction(-23298265, 412316860416), Fraction(-63668767, 103079215104)), 0, -1), ((Fraction(-171161923, 103079215104), Fraction(-119572559, 412316860416), Fraction(-658789793, 412316860416)), 0, -1), ((Fraction(-195300479, 274877906944), Fraction(41661005, 274877906944), Fraction(-122217205, 68719476736)), 0, -1), ((Fraction(-9964585, 8589934592), Fraction(223634683, 206158430208), Fraction(5680897, 103079215104)), 0, -1), ((Fraction(-17288695, 34359738368), Fraction(111641885, 137438953472), Fraction(-341569207, 274877906944)), 0, -1), ((Fraction(-27452797, 25769803776), Fraction(8218007, 68719476736), Fraction(-78214339, 103079215104)), 0, -1)], facet_local=35, facet_global=30, facet_degenerate=0, facet_ambiguous=0, facet_local_dropped=0, facet_symmetric_diff=[('hull_anomaly', (-1502256348838057740806914048, -2103657658218096746291003392, 147040058675540140991971328), 0, 1), ('hull_anomaly', (-1116049831953897161807101952, -2414222309208946154825318400, 3408579469221429171428786176), 1, 0), ('hull_anomaly', (-894947259275918933430894592, -1070434091750711325649534976, 502301892833648222729666560), 0, 1), ('hull_anomaly', (-240569937835374014843846656, -290330120956011239251640320, 149396378786918100134526976), 0, 1), ('hull_anomaly', (555877981525905653675065344, -5022339098374870620033777664, -2549909478227871319011098624), 0, 1), ('hull_anomaly', (1235113813224854175615025152, 710900836071370614772858880, 1216671194095104783162540032), 0, 1), ('hull_anomaly', (1370448452995226760615297024, -954343678190298986086137856, 339303396582375138611167232), 1, 0), ('hull_anomaly', (3229105648417494805312962560, -1940597963844059656378908672, 1143431853383920424719482880), 2, 0), ('hull_anomaly', (3651536611753826744939839488, -1921881867295297314580594688, 1264098591245007708206661632), 1, 0), ('local_only', ('EE', ('edge', 0, 2), ('edge', 4, 6))), ('local_only', ('FV', ('face', 0), ('vertex', 4))), ('local_only', ('VF', ('vertex', 2), ('face', 7))), ('local_only', ('VF', ('vertex', 2), ('face', 8))), ('local_only', ('VF', ('vertex', 2), ('face', 9)))], hull_vertex_mismatch=3, hull_vertices=30, e_vertices=27, e_vertices_ambiguous=0, boundary_probes=136, boundary_checked=136, boundary_kinds=(30, 67, 39))",
+        "assertion": "<FrameSummary file b6126cf:tests/test_invariance_geom.py, line 9 in test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view lost or reordered extreme vertices",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 37 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "same-family convex oracle",
+    "gate": "test_vote_two_ambiguity_band_is_pinned_on_the_generic_cells",
+    "args": [
+      100000.0,
+      0,
+      0,
+      39
+    ],
+    "fault": "source_faces",
+    "old_sha256": "9bcc7c983ea2432259e8f5833252cb29c531023abaea5e19ce59eb77a14f5fe1",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view changed source face numbering",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 38 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "family": "G6H-06",
+    "translation": 0.0,
+    "baseline": {
+      "old": {
+        "result": "PASS",
+        "samples": 1,
+        "failures": "[]"
+      },
+      "new": {
+        "result": "PASS",
+        "samples": 1,
+        "failures": "[]"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "REJECT",
+        "samples": 1,
+        "failures": "[((0.0, 0.0, 0.0), 1.4901161193847656e-07, 1.4901161193847656e-08)]"
+      },
+      "new": {
+        "result": "REJECT",
+        "samples": 1,
+        "failures": "[((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), 1.4901161193847656e-07, 1.4901161193847656e-08)]"
+      }
+    }
+  },
+  {
+    "family": "G6H-06",
+    "translation": 1000.0,
+    "baseline": {
+      "old": {
+        "result": "PASS",
+        "samples": 1,
+        "failures": "[]"
+      },
+      "new": {
+        "result": "PASS",
+        "samples": 1,
+        "failures": "[]"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "REJECT",
+        "samples": 1,
+        "failures": "[((0.0, 0.0, 0.0), 1.4901161193847656e-07, 1.4901161193847656e-08)]"
+      },
+      "new": {
+        "result": "REJECT",
+        "samples": 1,
+        "failures": "[((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), 1.4901161193847656e-07, 1.4901161193847656e-08)]"
+      }
+    }
+  },
+  {
+    "family": "G6H-06",
+    "translation": 100000000.0,
+    "baseline": {
+      "old": {
+        "result": "PASS",
+        "samples": 1,
+        "failures": "[]"
+      },
+      "new": {
+        "result": "PASS",
+        "samples": 1,
+        "failures": "[]"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "PASS",
+        "samples": 1,
+        "failures": "[]"
+      },
+      "new": {
+        "result": "REJECT",
+        "samples": 1,
+        "failures": "[((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), 1.4901161193847656e-07, 1.4901161193847656e-08)]"
+      }
+    }
+  },
+  {
+    "family": "migrated G2 active predicate",
+    "gate": "D:\\eab-wt\\cx-e2\\fixtures\\bdda3d\\cb2_locked.json",
+    "fault": "_qvertex_contains returns boundary",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('VF', ('vertex', 0), ('face', 0), -1.0), ('VF', ('vertex', 0), ('face', 1), -1.0), ('VF', ('vertex', 0), ('face', 2), -1.0), ('VF', ('vertex', 1), ('face', 0), -1.0), ('VF', ('vertex', 1), ('face', 1), -1.0), ('VF', ('vertex', 1), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 0), -1.0), ('VF', ('vertex', 2), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 4), -1.0), ('VF', ('vertex', 3), ('face', 0), -1.0), ('VF', ('vertex', 3), ('face', 2), -1.0), ('VF', ('vertex', 3), ('face', 4), -1.0), ('VF', ('vertex', 4), ('face', 5), 1.0), ('VF', ('vertex', 5), ('face', 5), 1.0), ('VF', ('vertex', 6), ('face', 5), 1.0), ('VF', ('vertex', 7), ('face', 5), 1.0)])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_g2_bdda3d.py, line 21 in _assert_g2_gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('VF', ('vertex', 0), ('face', 0), -1.0), ('VF', ('vertex', 0), ('face', 1), -1.0), ('VF', ('vertex', 0), ('face', 2), -1.0), ('VF', ('vertex', 1), ('face', 0), -1.0), ('VF', ('vertex', 1), ('face', 1), -1.0), ('VF', ('vertex', 1), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 0), -1.0), ('VF', ('vertex', 2), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 4), -1.0), ('VF', ('vertex', 3), ('face', 0), -1.0), ('VF', ('vertex', 3), ('face', 2), -1.0), ('VF', ('vertex', 3), ('face', 4), -1.0), ('VF', ('vertex', 4), ('face', 5), 1.0), ('VF', ('vertex', 5), ('face', 5), 1.0), ('VF', ('vertex', 6), ('face', 5), 1.0), ('VF', ('vertex', 7), ('face', 5), 1.0)])",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\test_g2_bdda3d.py, line 77 in _assert_g2_gate>"
+      }
+    }
+  },
+  {
+    "family": "migrated G2 active predicate",
+    "gate": "D:\\eab-wt\\cx-e2\\fixtures\\bdda3d\\cb2_sliding.json",
+    "fault": "_qvertex_contains returns boundary",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('VF', ('vertex', 0), ('face', 0), -1.0), ('VF', ('vertex', 0), ('face', 1), -1.0), ('VF', ('vertex', 0), ('face', 2), -1.0), ('VF', ('vertex', 1), ('face', 0), -1.0), ('VF', ('vertex', 1), ('face', 1), -1.0), ('VF', ('vertex', 1), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 0), -1.0), ('VF', ('vertex', 2), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 4), -1.0), ('VF', ('vertex', 3), ('face', 0), -1.0), ('VF', ('vertex', 3), ('face', 2), -1.0), ('VF', ('vertex', 3), ('face', 4), -1.0), ('VF', ('vertex', 4), ('face', 5), 1.0), ('VF', ('vertex', 5), ('face', 5), 1.0), ('VF', ('vertex', 6), ('face', 5), 1.0), ('VF', ('vertex', 7), ('face', 5), 1.0)])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_g2_bdda3d.py, line 21 in _assert_g2_gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('VF', ('vertex', 0), ('face', 0), -1.0), ('VF', ('vertex', 0), ('face', 1), -1.0), ('VF', ('vertex', 0), ('face', 2), -1.0), ('VF', ('vertex', 1), ('face', 0), -1.0), ('VF', ('vertex', 1), ('face', 1), -1.0), ('VF', ('vertex', 1), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 0), -1.0), ('VF', ('vertex', 2), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 4), -1.0), ('VF', ('vertex', 3), ('face', 0), -1.0), ('VF', ('vertex', 3), ('face', 2), -1.0), ('VF', ('vertex', 3), ('face', 4), -1.0), ('VF', ('vertex', 4), ('face', 5), 1.0), ('VF', ('vertex', 5), ('face', 5), 1.0), ('VF', ('vertex', 6), ('face', 5), 1.0), ('VF', ('vertex', 7), ('face', 5), 1.0)])",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\test_g2_bdda3d.py, line 77 in _assert_g2_gate>"
+      }
+    }
+  },
+  {
+    "family": "migrated G2 active predicate",
+    "gate": "D:\\eab-wt\\cx-e2\\fixtures\\bdda3d\\cb_bond.json",
+    "fault": "_qvertex_contains returns boundary",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('VF', ('vertex', 0), ('face', 0), -1.0), ('VF', ('vertex', 0), ('face', 1), -1.0), ('VF', ('vertex', 0), ('face', 2), -1.0), ('VF', ('vertex', 1), ('face', 0), -1.0), ('VF', ('vertex', 1), ('face', 1), -1.0), ('VF', ('vertex', 1), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 0), -1.0), ('VF', ('vertex', 2), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 4), -1.0), ('VF', ('vertex', 3), ('face', 0), -1.0), ('VF', ('vertex', 3), ('face', 2), -1.0), ('VF', ('vertex', 3), ('face', 4), -1.0), ('VF', ('vertex', 4), ('face', 5), 1.0), ('VF', ('vertex', 5), ('face', 5), 1.0), ('VF', ('vertex', 6), ('face', 5), 1.0), ('VF', ('vertex', 7), ('face', 5), 1.0)])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_g2_bdda3d.py, line 21 in _assert_g2_gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('VF', ('vertex', 0), ('face', 0), -1.0), ('VF', ('vertex', 0), ('face', 1), -1.0), ('VF', ('vertex', 0), ('face', 2), -1.0), ('VF', ('vertex', 1), ('face', 0), -1.0), ('VF', ('vertex', 1), ('face', 1), -1.0), ('VF', ('vertex', 1), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 0), -1.0), ('VF', ('vertex', 2), ('face', 3), -1.0), ('VF', ('vertex', 2), ('face', 4), -1.0), ('VF', ('vertex', 3), ('face', 0), -1.0), ('VF', ('vertex', 3), ('face', 2), -1.0), ('VF', ('vertex', 3), ('face', 4), -1.0), ('VF', ('vertex', 4), ('face', 5), 1.0), ('VF', ('vertex', 5), ('face', 5), 1.0), ('VF', ('vertex', 6), ('face', 5), 1.0), ('VF', ('vertex', 7), ('face', 5), 1.0)])",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\test_g2_bdda3d.py, line 77 in _assert_g2_gate>"
+      }
+    }
+  },
+  {
+    "family": "migrated G2 active predicate",
+    "gate": "D:\\eab-wt\\cx-e2\\fixtures\\bdda3d\\cb2_locked.json",
+    "fault": "_qedge_contains returns boundary",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('EE', ('edge', 0, 4), ('edge', 4, 5), -1.0), ('EE', ('edge', 0, 4), ('edge', 4, 7), 1.0), ('EE', ('edge', 1, 5), ('edge', 4, 5), -1.0), ('EE', ('edge', 1, 5), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 6, 7), -1.0), ('EE', ('edge', 3, 7), ('edge', 4, 7), 1.0), ('EE', ('edge', 3, 7), ('edge', 6, 7), -1.0), ('VE3', ('vertex', 0), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 0), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 1), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 1), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 6, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 6, 7), 1.0)])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_g2_bdda3d.py, line 21 in _assert_g2_gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('EE', ('edge', 0, 4), ('edge', 4, 5), -1.0), ('EE', ('edge', 0, 4), ('edge', 4, 7), 1.0), ('EE', ('edge', 1, 5), ('edge', 4, 5), -1.0), ('EE', ('edge', 1, 5), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 6, 7), -1.0), ('EE', ('edge', 3, 7), ('edge', 4, 7), 1.0), ('EE', ('edge', 3, 7), ('edge', 6, 7), -1.0), ('VE3', ('vertex', 0), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 0), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 1), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 1), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 6, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 6, 7), 1.0)])",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\test_g2_bdda3d.py, line 77 in _assert_g2_gate>"
+      }
+    }
+  },
+  {
+    "family": "migrated G2 active predicate",
+    "gate": "D:\\eab-wt\\cx-e2\\fixtures\\bdda3d\\cb2_sliding.json",
+    "fault": "_qedge_contains returns boundary",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('EE', ('edge', 0, 4), ('edge', 4, 5), -1.0), ('EE', ('edge', 0, 4), ('edge', 4, 7), 1.0), ('EE', ('edge', 1, 5), ('edge', 4, 5), -1.0), ('EE', ('edge', 1, 5), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 6, 7), -1.0), ('EE', ('edge', 3, 7), ('edge', 4, 7), 1.0), ('EE', ('edge', 3, 7), ('edge', 6, 7), -1.0), ('VE3', ('vertex', 0), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 0), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 1), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 1), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 6, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 6, 7), 1.0)])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_g2_bdda3d.py, line 21 in _assert_g2_gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('EE', ('edge', 0, 4), ('edge', 4, 5), -1.0), ('EE', ('edge', 0, 4), ('edge', 4, 7), 1.0), ('EE', ('edge', 1, 5), ('edge', 4, 5), -1.0), ('EE', ('edge', 1, 5), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 6, 7), -1.0), ('EE', ('edge', 3, 7), ('edge', 4, 7), 1.0), ('EE', ('edge', 3, 7), ('edge', 6, 7), -1.0), ('VE3', ('vertex', 0), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 0), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 1), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 1), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 6, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 6, 7), 1.0)])",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\test_g2_bdda3d.py, line 77 in _assert_g2_gate>"
+      }
+    }
+  },
+  {
+    "family": "migrated G2 active predicate",
+    "gate": "D:\\eab-wt\\cx-e2\\fixtures\\bdda3d\\cb_bond.json",
+    "fault": "_qedge_contains returns boundary",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('EE', ('edge', 0, 4), ('edge', 4, 5), -1.0), ('EE', ('edge', 0, 4), ('edge', 4, 7), 1.0), ('EE', ('edge', 1, 5), ('edge', 4, 5), -1.0), ('EE', ('edge', 1, 5), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 6, 7), -1.0), ('EE', ('edge', 3, 7), ('edge', 4, 7), 1.0), ('EE', ('edge', 3, 7), ('edge', 6, 7), -1.0), ('VE3', ('vertex', 0), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 0), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 1), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 1), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 6, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 6, 7), 1.0)])",
+        "assertion": "<FrameSummary file b6126cf:tests/test_g2_bdda3d.py, line 21 in _assert_g2_gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "((2, 1), '带内有多余的盖', [('EE', ('edge', 0, 4), ('edge', 4, 5), -1.0), ('EE', ('edge', 0, 4), ('edge', 4, 7), 1.0), ('EE', ('edge', 1, 5), ('edge', 4, 5), -1.0), ('EE', ('edge', 1, 5), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 5, 6), -1.0), ('EE', ('edge', 2, 6), ('edge', 6, 7), -1.0), ('EE', ('edge', 3, 7), ('edge', 4, 7), 1.0), ('EE', ('edge', 3, 7), ('edge', 6, 7), -1.0), ('VE3', ('vertex', 0), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 0), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 1), ('edge', 4, 5), 1.0), ('VE3', ('vertex', 1), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 5, 6), 1.0), ('VE3', ('vertex', 2), ('edge', 6, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 4, 7), 1.0), ('VE3', ('vertex', 3), ('edge', 6, 7), 1.0)])",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\test_g2_bdda3d.py, line 77 in _assert_g2_gate>"
+      }
+    }
+  },
+  {
+    "family": "migrated position-independence",
+    "fault": "absolute edge",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "[('labels', (3.4442185152504816, 2.5795440294030243, -0.79428419169155), [('EE', ('edge', 0, 3), ('edge', 2, 4)), ('EE', ('edge', 0, 5), ('edge', 0, 3)), ('EE', ('edge', 0, 5), ('edge', 0, 5))]), ('labels', (-2.4108324970703663, 0.11274721368608542, -0.9506586254958567), [('EE', ('edge', 0, 5), ('edge', 0, 3)), ('EE', ('edge', 0, 5), ('edge', 0, 5)), ('EE', ('edge', 0, 5), ('edge', 2, 4))])]",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\reports\\codex\\R8FIX_evidence\\gate_teeth\\compare_old_gates.py, line 77 in gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "[('labels', (3.4442185152504816, 2.5795440294030243, -0.79428419169155), [('EE', ('edge', 0, 3), ('edge', 2, 4)), ('EE', ('edge', 0, 5), ('edge', 0, 3)), ('EE', ('edge', 0, 5), ('edge', 0, 5))]), ('labels', (-2.4108324970703663, 0.11274721368608542, -0.9506586254958567), [('EE', ('edge', 0, 5), ('edge', 0, 3)), ('EE', ('edge', 0, 5), ('edge', 0, 5)), ('EE', ('edge', 0, 5), ('edge', 2, 4))])]",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\reports\\codex\\R8FIX_evidence\\gate_teeth\\compare_old_gates.py, line 77 in gate>"
+      }
+    }
+  },
+  {
+    "family": "migrated position-independence",
+    "fault": "missing displacement",
+    "baseline": {
+      "old": {
+        "result": "PASS"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "old": {
+        "result": "AssertionError",
+        "message": "[('gap', (3.4442185152504816, 2.5795440294030243, -0.79428419169155), ('VF', ('vertex', 1), ('face', 5)), -3.4442185152504816), ('gap', (3.4442185152504816, 2.5795440294030243, -0.79428419169155), ('VF', ('vertex', 2), ('face', 2)), -2.5795440294030243)]",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\reports\\codex\\R8FIX_evidence\\gate_teeth\\compare_old_gates.py, line 77 in gate>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "[('gap', (3.4442185152504816, 2.5795440294030243, -0.79428419169155), ('VF', ('vertex', 1), ('face', 5)), -3.4442185152504816), ('gap', (3.4442185152504816, 2.5795440294030243, -0.79428419169155), ('VF', ('vertex', 2), ('face', 2)), -2.5795440294030243)]",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\reports\\codex\\R8FIX_evidence\\gate_teeth\\compare_old_gates.py, line 77 in gate>"
+      }
+    }
+  }
+]

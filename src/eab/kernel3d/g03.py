@@ -158,6 +158,9 @@ class DistanceReport3:
     worst_abs_error: float = 0.0
     failures: list[tuple[Vec3, float, float]] = field(default_factory=list)   # (x, 盖距离, 真距离)
 
+    completeness_failures: list = field(default_factory=list)  # exact (x, candidate squared, true squared)
+    construction_failures: list = field(default_factory=list)  # displayed witness failures
+
     @property
     def passed(self) -> bool:
         return not self.failures
@@ -171,9 +174,11 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
     Oracle primitives: integer planes/ring winding and generic-ray parity,
     rational vertex/face and edge/edge squared distances; zero production
     geometry is shared. No implicit band excludes a strict positive gap.
-    Only float witness construction is audited with the relative allowance.
+    Exact nearest-feature completeness has no tolerance or coordinate floor.
+    Float witness construction separately retains the relative/rounding allowance.
     """
     from .covers3 import enumerate_covers3
+    from ..margin import _surface_view, _witness_squared
     if not math.isfinite(atol) or atol < 0:
         raise ValueError("atol must be finite and nonnegative")
     rng = random.Random(seed)
@@ -189,11 +194,20 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
         x = tuple(Fraction(base[i]) + Fraction(radius) * Fraction(v[i]) for i in range(3))
         At = Polyhedron([tuple(Fraction(v[i]) + Fraction(x[i]) for i in range(3))
                          for v in A.verts], list(A.faces))
-        truth = surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces)
-        if truth is None:
+        truth2 = surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces, squared=True)
+        if truth2 is None:
             rep.skipped_intersecting += 1
             continue
-        covs = [c for c in enumerate_covers3(At, B, window=float("inf"), tol=tol) if c.in_extent]
+        truth = surface_oracle.sqrt_display(truth2)
+        va,_ = _surface_view(tuple(At.verts),tuple(At.faces))
+        vb,_ = _surface_view(tuple(B.verts),tuple(B.faces))
+        covs = [c for c in enumerate_covers3(va, vb, window=float("inf"), tol=tol) if c.in_extent]
+        exact_candidates = [_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())
+                            for c in covs]
+        minimum2 = min(exact_candidates,default=None)
+        incomplete = minimum2 != truth2
+        if incomplete:
+            rep.completeness_failures.append((x,minimum2,truth2))
         cand = [norm(sub(c.point_a, c.point_b)) for c in covs
                 if c.point_a is not None and c.point_b is not None]
         got = min(cand) if cand else float("inf")
@@ -209,5 +223,7 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
             rounding = noise_floor(max(At.metrics()[0], B.metrics()[0]))
             failed = Fraction(err) > Fraction(atol)*max(Fraction(L), Fraction(truth)) + Fraction(rounding)
         if failed:
+            rep.construction_failures.append((x, got, truth))
+        if failed or incomplete:
             rep.failures.append((x, got, truth))
     return rep

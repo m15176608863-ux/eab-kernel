@@ -1,0 +1,91 @@
+{
+  "scope": "The old equality specified subtraction of display floats, not the mathematical gap. The new certificate deliberately rejects that buggy model. Both catch omit/reverse/double distance; this is semantic strength, not literal logical implication for a changed contract.",
+  "rows": [
+    {
+      "case": "ordinary_1ulp",
+      "implementation": "fixed",
+      "new_gate": "PASS",
+      "gap": -4.999999999999995e-05,
+      "distance": 5.000000000000007e-05,
+      "old_equality": false
+    },
+    {
+      "case": "ordinary_1ulp",
+      "implementation": "old_subtraction",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": -4.9999999999999935e-05,
+      "distance": 5.000000000000007e-05,
+      "old_equality": true
+    },
+    {
+      "case": "ordinary_1ulp",
+      "implementation": "omit_delta",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": 5.000000000000007e-05,
+      "distance": 5.000000000000007e-05,
+      "old_equality": false
+    },
+    {
+      "case": "ordinary_1ulp",
+      "implementation": "reverse_delta",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": 0.00015000000000000007,
+      "distance": 5.000000000000007e-05,
+      "old_equality": false
+    },
+    {
+      "case": "ordinary_1ulp",
+      "implementation": "double_distance",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": 1.3552527156068805e-19,
+      "distance": 5.000000000000007e-05,
+      "old_equality": false
+    },
+    {
+      "case": "large_cancellation",
+      "implementation": "fixed",
+      "new_gate": "PASS",
+      "gap": 1.0,
+      "distance": 1e+20,
+      "old_equality": false
+    },
+    {
+      "case": "large_cancellation",
+      "implementation": "old_subtraction",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": 0.0,
+      "distance": 1e+20,
+      "old_equality": true
+    },
+    {
+      "case": "large_cancellation",
+      "implementation": "omit_delta",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": 1e+20,
+      "distance": 1e+20,
+      "old_equality": false
+    },
+    {
+      "case": "large_cancellation",
+      "implementation": "reverse_delta",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": 2e+20,
+      "distance": 1e+20,
+      "old_equality": false
+    },
+    {
+      "case": "large_cancellation",
+      "implementation": "double_distance",
+      "new_gate": "AssertionError: exact margin-gap midpoint",
+      "gap": 1e+20,
+      "distance": 1e+20,
+      "old_equality": false
+    }
+  ],
+  "sha256_unchanged": {
+    "src/eab/margin.py": "5505b3ff1bc34adfac11fb01bbd021b7f514e0e338a487c2c65842e86b4a2632",
+    "tests/e5a_cover_oracle.py": "3a4469869cf144c36b669e015f4a9a30be03072e05a49ab58e994c144f1f75a7",
+    "tests/test_invariance_geom.py": "a11e823fc295ae85a3ec32d0e8d90c8fb10e024edb428592701e66390f6fbc5a",
+    "tests/test_r8fix_margin_gap_gate.py": "5c6c63990c49ad1fbeea3b159917a33f2bf6f0a61f432912d6ff10a2901998dc"
+  }
+}

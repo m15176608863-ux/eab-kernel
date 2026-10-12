@@ -108,26 +108,27 @@ Vec = tuple[float, ...]
 
 # ------------------------------------------------------------------ 旋量
 
+def _construction_float(value: Fraction) -> float:
+    """Round a completed exact construction; never silently erase its range."""
+    result = float(value)  # Fraction raises on overflow, including finite inputs.
+    if result == 0.0 and value:
+        raise ArithmeticError("nonzero wrench/twist construction is below binary64 range")
+    return result
+
+
 def wrench(force: Vec, point: Vec, origin: Vec, dim: int) -> list[float]:
-    """力 `force` 作用于 `point` 时相对 `origin` 的旋量。二维 3 维、三维 6 维。"""
-    r = tuple(point[i] - origin[i] for i in range(dim))
-    if dim == 2:
-        return [force[0], force[1], r[0] * force[1] - r[1] * force[0]]
-    return [force[0], force[1], force[2],
-            r[1] * force[2] - r[2] * force[1],
-            r[2] * force[0] - r[0] * force[2],
-            r[0] * force[1] - r[1] * force[0]]
+    """Force at point about origin (3 components in 2D, 6 in 3D).
+
+    Form the lever and determinant exactly from the given inputs, then round
+    once. Intermediate overflow/underflow cannot erase a representable result;
+    an unrepresentable nonzero construction raises. Gate: test_r8fix_wrench.
+    """
+    return [_construction_float(v) for v in _exact_wrench(force, point, origin, dim)]
 
 
 def _shift_wrench(w: list[float], d: Vec, dim: int) -> list[float]:
-    """关于 o 的旋量 → 关于 o + d 的旋量：力不变，m' = m − d × f。精确的线性变换（只有舍入）。"""
-    if dim == 2:
-        return [w[0], w[1], w[2] - (d[0] * w[1] - d[1] * w[0])]
-    f = w[:3]
-    return [f[0], f[1], f[2],
-            w[3] - (d[1] * f[2] - d[2] * f[1]),
-            w[4] - (d[2] * f[0] - d[0] * f[2]),
-            w[5] - (d[0] * f[1] - d[1] * f[0])]
+    """Shift a wrench from o to o+d: form m - d cross f exactly, then round."""
+    return [_construction_float(v) for v in _exact_shift(w, (0,)*dim, d, dim)]
 
 
 def _exact_wrench(force: Vec, point: Vec, origin: Vec, dim: int) -> list[Fraction]:
@@ -153,27 +154,33 @@ def _exact_shift(w: list[float], origin: Vec, to: Vec, dim: int) -> list[Fractio
     return f + [W[3] - (d[1] * f[2] - d[2] * f[1]), W[4] - (d[2] * f[0] - d[0] * f[2]), W[5] - (d[0] * f[1] - d[1] * f[0])]
 
 
-def _twist_back(y: list[float], d: Vec, dim: int) -> list[float]:
-    """关于 o + d 的速度旋量 → 关于 o 的速度旋量（`_shift_wrench` 的对偶）：v_o = v_{o+d} + d × ω。
-    于是对任意旋量 w 有 y_oᵀ w_o = y_{o+d}ᵀ w_{o+d}（功率不变）。"""
+def _twist_transform(y, d, dim, sign):
+    # LP calls this with Fractions: retain those exact certificates. Only
+    # floating callers request final floating output, after cancellation.
+    floating = any(isinstance(v, float) for v in (*y, *d))
+    y, d = list(map(Fraction, y)), tuple(map(Fraction, d))
     if dim == 2:
-        return [y[0] + y[2] * d[1], y[1] - y[2] * d[0], y[2]]
-    om = y[3:]
-    return [y[0] + (d[1] * om[2] - d[2] * om[1]),
-            y[1] + (d[2] * om[0] - d[0] * om[2]),
-            y[2] + (d[0] * om[1] - d[1] * om[0]),
-            om[0], om[1], om[2]]
+        result = [y[0] + sign*y[2]*d[1], y[1] - sign*y[2]*d[0], y[2]]
+    else:
+        om = y[3:]
+        result = [y[0] + sign*(d[1]*om[2] - d[2]*om[1]),
+                  y[1] + sign*(d[2]*om[0] - d[0]*om[2]),
+                  y[2] + sign*(d[0]*om[1] - d[1]*om[0]), *om]
+    return [_construction_float(v) for v in result] if floating else result
+
+
+def _twist_back(y: list[float], d: Vec, dim: int) -> list[float]:
+    """Shift a twist from o+d to o: v_o = v_(o+d) + d cross omega.
+
+    Rational callers retain exact certificates; floating callers round only
+    the final result. The exact map is power-dual to _shift_wrench.
+    """
+    return _twist_transform(y, d, dim, 1)
 
 
 def _twist_forward(y: list[float], d: Vec, dim: int) -> list[float]:
-    """关于 o 的速度旋量 → 关于 o + d 的速度旋量（`_twist_back` 的逆）：v_{o+d} = v_o − d × ω。"""
-    if dim == 2:
-        return [y[0] - y[2] * d[1], y[1] + y[2] * d[0], y[2]]
-    om = y[3:]
-    return [y[0] - (d[1] * om[2] - d[2] * om[1]),
-            y[1] - (d[2] * om[0] - d[0] * om[2]),
-            y[2] - (d[0] * om[1] - d[1] * om[0]),
-            om[0], om[1], om[2]]
+    """Shift a twist from o to o+d; exact inverse of _twist_back."""
+    return _twist_transform(y, d, dim, -1)
 
 
 def _tangents(n: Vec, dim: int, tangent: Vec | None = None) -> list[Vec]:
@@ -294,7 +301,7 @@ def contacts_from_covers(covers, *, mu: float, cohesion: float = 0.0,
         elif side == "b":
             p = tuple(c.point_b)
         else:
-            p = tuple((a + b) / 2.0 for a, b in zip(c.point_a, c.point_b))
+            p = tuple(_construction_float((Fraction(a) + Fraction(b))/2) for a, b in zip(c.point_a, c.point_b))
         out.append(LimitContact(p, tuple(c.normal), mu, 0.0, 0.0, c.label()))
     return out
 
@@ -542,7 +549,8 @@ def limit_load(contacts: list[LimitContact], dead: list[float], live: list[float
 
 
 def mechanism_power(mech: list[float], ct: LimitContact, g: Vec, origin: Vec, dim: int) -> float:
-    return sum(m * wi for m, wi in zip(mech, wrench(g, ct.point, origin, dim)))
+    return _construction_float(sum(Fraction(m)*wi for m, wi in
+                                   zip(mech, _exact_wrench(g, ct.point, origin, dim))))
 
 
 def _norm(v) -> float:

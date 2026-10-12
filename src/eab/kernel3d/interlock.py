@@ -28,7 +28,7 @@ from ..dual import Dual, Number, val
 from ..margin import characteristic_length, effective_geom_tol, rounding_floor
 from .covers3 import ee_cover, enumerate_covers3, fv_cover, vf_cover
 from . import covers3 as _covers
-from .frozen import FACET_KINDS, frozen_ee_sign, frozen_gap, frozen_normal  # noqa: F401  (L5 转出的公共入口)
+from .frozen import FACET_KINDS, frozen_ee_sign, frozen_gap, frozen_normal, frozen_lift  # noqa: F401  (L5 转出的公共入口)
 from .geom3 import Polyhedron, Vec3, cross, dot, norm, polyhedra_overlap, sub
 from .geom3 import exact_edge_vector
 from .exact_geom import sqrt_rational
@@ -349,25 +349,7 @@ def escape_height_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple,
     """
     if not label or label[0] not in FACET_KINDS:
         raise ValueError(f"escape height is defined by facet covers (VF/FV/EE) only, got {label[:1]}")
-    if not any(isinstance(c,Dual) for P in (A,B) for p in P.verts for c in p) and not any(isinstance(c,Dual) for c in offset):
-        kind,af,bf=label
-        if kind=='VF':
-            face=bf[3:] if len(bf)>2 else B.faces[bf[1]]
-            n=_exact.normal([_exact.vector(B.verts[i]) for i in face])
-            a,b=_exact.vector(A.verts[af[1]]),_exact.vector(B.verts[face[0]])
-        elif kind=='FV':
-            face=af[3:] if len(af)>2 else A.faces[af[1]]
-            n=_exact.normal([_exact.vector(A.verts[i]) for i in face])
-            a,b=_exact.vector(A.verts[face[0]]),_exact.vector(B.verts[bf[1]])
-        else:
-            n=_exact.cross(exact_edge_vector(B,(bf[1],bf[2])),exact_edge_vector(A,(af[1],af[2])))
-            a,b=_exact.vector(A.verts[af[1]]),_exact.vector(B.verts[bf[1]])
-        # Orientation and normalization cancel in this ratio. Keeping the raw
-        # rational plane avoids magnifying rounded unit-normal error by 1/n_z.
-        return -_exact.dot(n,_exact.sub(_exact.add(a,_exact.vector(offset)),b))/n[2]
-    n = frozen_normal(A, B, label, ee_sign)
-    g = frozen_gap(A, B, label, offset, n)
-    return -g / n[2]
+    return frozen_lift(A, B, label, offset, ee_sign)
 
 
 def dilatancy_profile(A: Polyhedron, B: Polyhedron, *, direction: Vec3 = (1.0, 0.0, 0.0),

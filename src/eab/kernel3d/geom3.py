@@ -321,9 +321,23 @@ class Polyhedron:
         if len(trav) != 2:
             raise ValueError(f"edge {e} has {len(trav)} incident face traversals, need 2")
         (f1, a1, b1), (f2, _, _) = trav
-        t = unit(exact_edge_vector(self, (a1, b1)))
-        n1, n2 = self.face_normal(f1), self.face_normal(f2)
-        return atan2(dot(cross(n1, n2), t), dot(n1, n2))
+        t = exact_edge_vector(self, (a1, b1))
+        n1, n2 = exact_face_normal(self, f1), exact_face_normal(self, f2)
+        triple, cosine = dot(cross(n1, n2), t), dot(n1, n2)
+        tt = dot(t, t)
+        if not tt:
+            raise ValueError(f"zero-length dihedral edge {e}")
+        # sin-angle numerator is triple/|t|; form its square exactly, then
+        # rescale atan2's two same-degree arguments before final construction.
+        # A rounded pair of unit normals can erase a representable thin turn.
+        sine2 = triple*triple/tt
+        scale2 = max(sine2, cosine*cosine)
+        if not scale2:
+            raise ValueError(f"zero face normal at dihedral edge {e}")
+        sine = _eg.sqrt_rational(sine2/scale2, allow_underflow=cosine <= 0)
+        cosine_value = _eg.sqrt_rational(cosine*cosine/scale2, allow_underflow=True)
+        return atan2(-sine if triple < 0 else sine,
+                     -cosine_value if cosine < 0 else cosine_value)
 
     # ---------------- 体积与内点 ----------------
     def volume(self) -> float:
@@ -851,20 +865,22 @@ def _surfaces_intersect(triangles_a, triangles_b):
     return False
 
 
-def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: bool = False) -> float:
+def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: bool = False,
+                           squared: bool = False) -> float | Fraction:
     """Exact all-feature surface distance, with one final floating construction.
 
     Triangulated face projections include vertex/edge endpoints; all geometric
     surface-edge pairs (including folded-ring ridges) provide remaining minima. This is internal corroboration,
     not an independent G0 oracle: it shares exact_geom primitives with production.
     G0 uses the separate g03_surface_oracle. Explicit allow_underflow is only for
-    display callers retaining an exact squared-distance certificate.
+    display callers retaining an exact squared-distance certificate. squared=True
+    returns that certificate without any float construction or coordinate floor.
     Gate: test_r6fix_brute_distance_does_not_subtract_rounded_global_projections.
     """
     vertices = (tuple(map(exact_vector, A.verts)), tuple(map(exact_vector, B.verts)))
     triangles = (_eg.triangles(A), _eg.triangles(B))
     if _surfaces_intersect(*triangles):
-        return 0.0
+        return Fraction(0) if squared else 0.0
     best = None
     for points, faces in ((vertices[0], triangles[1]), (vertices[1], triangles[0])):
         for p in points:
@@ -877,6 +893,10 @@ def brute_feature_distance(A: Polyhedron, B: Polyhedron, *, allow_underflow: boo
             value = _eg.segment_distance_squared(vertices[0][ea[0]], vertices[0][ea[1]],
                                                  vertices[1][eb[0]], vertices[1][eb[1]])
             best = value if best is None else min(best, value)
+    if squared:
+        if best is None:
+            raise ValueError("surface distance requires nonempty feature sets")
+        return best
     return float('inf') if best is None else _eg.sqrt_rational(best, allow_underflow=allow_underflow)
 
 

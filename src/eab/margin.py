@@ -79,7 +79,7 @@ from dataclasses import dataclass, fields
 from .kernel3d import exact_geom as _exact
 from .dual import Number
 from .kernel3d.covers3 import Cover3, _qclosest_hull, enumerate_covers3
-from .kernel3d.frozen import frozen_gap, frozen_normal
+from .kernel3d.frozen import frozen_gap, frozen_normal, _normalized_difference
 from .kernel3d.geom3 import (Polyhedron, Vec3, add, brute_feature_distance, convex_hull_3d, norm,
                              polyhedra_overlap, sub, unit)
 
@@ -321,7 +321,8 @@ def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None,
 
     geom_tol remains a compatibility argument. The legacy resolution is never
     inferred: the caller must pass contact_window=contact_resolution(A, B).
-    The final self-check bounds construction error, not a geometric branch.
+    The self-check separately certifies exact cover completeness and bounds
+    floating witness construction error.
     """
     ctol = _contact_window(contact_window)
     state = polyhedra_overlap(A, B, 0)
@@ -339,11 +340,8 @@ def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None,
     dmin = min((w for _, w, _, _ in wits), default=float("inf"))
     view_a, _ = _surface_view(tuple(A.verts), tuple(A.faces))
     view_b, _ = _surface_view(tuple(B.verts), tuple(B.faces))
-    truth = brute_feature_distance(view_a, view_b, allow_underflow=True)
-    if abs(dmin - truth) > 4.0 * rnd:
-        raise RuntimeError(f"margin self-check failed: the covers give distance {dmin!r} but the nearest feature pair "
-                           f"is {truth!r} apart (rounding {rnd:.3g}); the cover enumeration "
-                           + ("missed the nearest pair" if dmin > truth else "returned witnesses off the bodies"))
+    truth2 = brute_feature_distance(view_a, view_b, squared=True)
+    truth = _exact.sqrt_rational(truth2, allow_underflow=True)
     minimum2 = min((row[3] for row in wits), default=None)
     if contact_window is not None:
         # Window mode may retain source-ring labels for legacy reporting, but
@@ -353,6 +351,16 @@ def _resolve(A: Polyhedron, B: Polyhedron, tol: float, geom_tol: float | None,
         if any(len(f) == 6 for f in (*af, *bf)):
             actual = _witnesses(A, B, tol, exact_surface=True)
             minimum2 = min((_surface_feature_squared(A, B, c.label()) for c, _, _ in actual), default=None)
+    # G6H-06: completeness is exact; coordinate noise belongs only to the
+    # separately retained floating-witness construction check below.
+    if minimum2 != truth2 or abs(dmin - truth) > 4.0 * rnd:
+        raise RuntimeError(f"margin self-check failed: the covers give distance {dmin!r} but the nearest feature pair "
+                           f"is {truth!r} apart (rounding {rnd:.3g}); the cover enumeration "
+                           + ("missed the nearest pair (exact squared-distance mismatch)"
+                              if minimum2 is None or minimum2 > truth2 else
+                              "returned an invalid nearest-feature certificate (exact squared-distance mismatch)"
+                              if minimum2 < truth2 else
+                              "missed the nearest pair" if dmin > truth else "returned witnesses off the bodies"))
     return ctol, rnd, wits, minimum2 is not None and minimum2 <= ctol*ctol, minimum2
 
 
@@ -432,6 +440,10 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
     accepts certified local penetration thickness and separated distances <= w.
     This is not a Euclidean whole-body PD threshold; see body_distance.
     Accepted contact distances are zero, normal is None, margin_gap=-delta.
+    margin_gap rounds the exact distance-minus-delta expression, not the
+    subtraction of two display floats. Display underflow is accompanied by
+    exact_distance_squared and the separately exact closed classification.
+    Gate: test_margin_contact_difference_is_constructed_before_display_rounding.
     Default ordering uses exact squared distances. Window-mode construction
     distances and tie reporting retain the historical floating convention.
     """
@@ -449,11 +461,10 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
             w = _exact.sqrt_rational(d2, allow_underflow=True)
         if threshold < 0 or d2 > threshold*threshold:
             continue
-        gap = w - delta
-        if gap == 0 and d2 != Fraction(delta)**2 and delta >= 0:
-            denominator = Fraction(w)+Fraction(delta)
-            if denominator:
-                gap = float((d2-Fraction(delta)**2)/denominator)
+        # The display distance may lose a representable margin difference.
+        # Keep the exact squared-distance certificate through the subtraction;
+        # permitted display underflow cannot affect _exact_closed below.
+        gap = _normalized_difference(d2, d2 or Fraction(1), Fraction(delta), allow_underflow=True)
         direction = c.exact_normal_direction
         direction = (tuple(c.exact_gap_sign*x for x in direction)
                      if direction is not None and n is not None else None)
@@ -479,6 +490,11 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
                         contact_window: float | None = None) -> int:
     """Exact squared-distance comparison against δ; optional explicit boundary band.
 
+    At exact zero margin, physical contact can still be topological int(E),
+    as at a tight-fit seam. Classify that state after the existing distance
+    self-check, without changing body_distance or physical-contact reporting.
+    Gate: test_r8fix_initial_state3.
+
     atol=None means zero (no implicit rounding floor). contact_window changes
     only contact reporting by the local penetration-thickness policy (not PD).
     Axis acceptance certifies only disjoint-interior infimum rho <= w, not
@@ -488,6 +504,9 @@ def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: floa
     ctol, _, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:
         return INSIDE
+    if contact and delta == 0 and (atol is None or atol == 0) and (contact_window is None or contact_window == 0):
+        from .kernel3d.entrance_topology import entrance_membership3
+        return entrance_membership3(A, B)
     if not wits:
         return ON_BOUNDARY if contact and delta == 0 else (INSIDE if contact else OUTSIDE)
     d2 = minimum2
@@ -568,5 +587,4 @@ def margin_gap_from_frozen_cover(A: Polyhedron, B: Polyhedron, label: tuple, x, 
     """
     if label and label[0] == PENETRATING:
         raise ValueError("bodies interpenetrate: there is no frozen cover (margin already violated)")
-    n = frozen_normal(A, B, label, ee_sign, x=x)
-    return frozen_gap(A, B, label, x, n) - delta
+    return frozen_gap(A, B, label, x, ee_sign=ee_sign, delta=delta)

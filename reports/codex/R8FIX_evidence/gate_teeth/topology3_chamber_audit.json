@@ -1,0 +1,69 @@
+{
+  "source_sha256": "bc13bb59414b12a98460a0176cb56e86cda45823ef34be86df9c5aa4d17968b4",
+  "chamber_cases": [
+    {
+      "case": "rank1",
+      "planes": 1,
+      "expected_chambers": 2,
+      "actual_chambers": 2,
+      "off_all_planes": true,
+      "duplicate_count": 0,
+      "seconds": 0.00010689999908208847
+    },
+    {
+      "case": "rank2",
+      "planes": 4,
+      "expected_chambers": 8,
+      "actual_chambers": 8,
+      "off_all_planes": true,
+      "duplicate_count": 0,
+      "seconds": 0.005439400003524497
+    },
+    {
+      "case": "rank3_axes",
+      "planes": 3,
+      "expected_chambers": 8,
+      "actual_chambers": 8,
+      "off_all_planes": true,
+      "duplicate_count": 0,
+      "seconds": 0.0015611999842803925
+    },
+    {
+      "case": "general6",
+      "planes": 6,
+      "expected_chambers": 32,
+      "actual_chambers": 32,
+      "off_all_planes": true,
+      "duplicate_count": 0,
+      "seconds": 0.09927869998500682
+    },
+    {
+      "case": "narrow_200bits",
+      "planes": 5,
+      "expected_chambers": 20,
+      "actual_chambers": 20,
+      "off_all_planes": true,
+      "duplicate_count": 0,
+      "seconds": 0.02773850000812672
+    }
+  ],
+  "geometry_diagnostics": [
+    {
+      "case": "tight_seam",
+      "central_planes": 10,
+      "noncentral_directions": 51,
+      "chambers": 60,
+      "state": 1,
+      "seconds": 0.12319780001416802
+    },
+    {
+      "case": "ordinary_face_touch",
+      "central_planes": 12,
+      "noncentral_directions": 12,
+      "chambers": 84,
+      "state": 0,
+      "seconds": 0.026276899996446446
+    }
+  ],
+  "independence": "Expected signs use elementary Fraction Gaussian elimination, Gordan separation and Caratheodory subsets; no tested angular, plane, cross, dot or overlap primitive."
+}

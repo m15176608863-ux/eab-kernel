@@ -1,4 +1,4 @@
-"""二维凸入口块的**精确**构造与成员判定（对给定浮点坐标精确；"精确谓词、浮点只做构造"）。
+"""二维入口块的**精确**构造与成员判定（对给定浮点坐标精确；"精确谓词、浮点只做构造"）。
 
 为什么要有这一层（G6 第五轮，2026-10-10）：二维核的判定此前全部是"浮点 + 噪声带"——每个判据都要论证"被测量 + 它的噪声"，
 五轮独立重审每轮都从"两把尺"或"漏了某个方向的噪声"里挖出新的静默错判（第五轮 critical：Minkowski 扫描按宽窗合并了一条
@@ -19,6 +19,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction
+from functools import cmp_to_key
 
 from .geom import Point, Poly
 
@@ -292,6 +293,63 @@ def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
             if s == 0:
                 touch = True
     return 0 if touch else -1
+
+
+
+def entrance_membership_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+    """Topological E membership: 1 interior / 0 boundary / -1 exterior.
+
+    Strict body overlap implies int(E), but the converse fails at tight-fit
+    contact seams. On body-contact configurations, triangulation yields a
+    finite union of exact triangle-pair Minkowski cells. Cells containing x
+    give their local tangent cones; their union covers every direction iff x
+    is interior E. Testing each open angular sector of the active edge lines
+    suffices because the cones are closed. No epsilon or constructed float is
+    used. This is production geometry, independent of g0_oracle's local
+    line-arrangement / integer-winding implementation.
+    Gates: tests/test_r8fix_initial_state.py (Cartesian interval-union oracle).
+    """
+    state = polygons_overlap_exact(A, B, x)
+    if state != 0:
+        return state
+    from .geom import triangulate
+    X = _fr(x)
+    ta = [[_fr(A[i]) for i in tri] for tri in triangulate(A)]
+    tb = [[_fr(B[i]) for i in tri] for tri in triangulate(B)]
+    cones, rays = [], set()
+    for T in ta:
+        for U in tb:
+            cell = hull_exact_fr([_sub(b, a) for a in T for b in U])
+            active = []
+            for p, q in zip(cell, cell[1:] + cell[:1]):
+                direction = _sub(q, p)
+                h = _cross(direction, _sub(X, p))
+                if h < 0:
+                    break
+                if h == 0:
+                    active.append(direction)
+            else:
+                if not active:
+                    return 1
+                cones.append(active)
+                for ex, ey in active:
+                    length = abs(ex) + abs(ey)
+                    ray = (ex / length, ey / length)
+                    rays.update((ray, (-ray[0], -ray[1])))
+    if not cones:
+        raise ArithmeticError('body contact has no containing entrance cell')
+
+    def compare(u, v):
+        return -1 if _angle_less(u, v) else (1 if _angle_less(v, u) else 0)
+
+    ordered = sorted(rays, key=cmp_to_key(compare))
+    for u, v in zip(ordered, ordered[1:] + ordered[:1]):
+        direction = (u[0] + v[0], u[1] + v[1])
+        if direction == (0, 0):
+            direction = (-u[1], u[0])
+        if not any(all(_cross(e, direction) >= 0 for e in cone) for cone in cones):
+            return 0
+    return 1
 
 
 def _tri_overlap_exact(T, U, X: FPoint) -> int:

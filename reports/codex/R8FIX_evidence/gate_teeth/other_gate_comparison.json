@@ -1,0 +1,83 @@
+[
+  {
+    "gate": "test_yawed_stack_passes_g0_under_random_rotations",
+    "args": [
+      0.001,
+      1
+    ],
+    "fault": "permute_canonical",
+    "HEAD_metadata": {
+      "sha256": "84138d329f9f4304eb21ca9d6cae0c0475d68ef4abb53a9b9ab445e8c4eb70e8"
+    },
+    "b6126cf_metadata": {
+      "sha256": "15af9d05b822e6ce043c2f17472e27d86026e6845bc4d1cb4400cc242960430f"
+    },
+    "baseline": {
+      "HEAD": {
+        "result": "PASS"
+      },
+      "b6126cf": {
+        "result": "AssertionError",
+        "message": "G0Report3(samples=154, band_skipped=0, mismatches=[], facet_local=41, facet_global=41, facet_degenerate=0, facet_ambiguous=0, facet_local_dropped=0, facet_symmetric_diff=[], hull_vertex_mismatch=0, hull_vertices=31, e_vertices=31, e_vertices_ambiguous=0, boundary_probes=142, boundary_checked=142, boundary_kinds=(31, 70, 41))",
+        "assertion": "<FrameSummary file b6126cf:tests/test_covers3_g0_vote2.py, line 18 in test_yawed_stack_passes_g0_under_random_rotations>"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "HEAD": {
+        "result": "PASS"
+      },
+      "b6126cf": {
+        "result": "AssertionError",
+        "message": "G0Report3(samples=154, band_skipped=0, mismatches=[], facet_local=41, facet_global=41, facet_degenerate=0, facet_ambiguous=0, facet_local_dropped=0, facet_symmetric_diff=[], hull_vertex_mismatch=0, hull_vertices=31, e_vertices=31, e_vertices_ambiguous=0, boundary_probes=142, boundary_checked=142, boundary_kinds=(31, 70, 41))",
+        "assertion": "<FrameSummary file b6126cf:tests/test_covers3_g0_vote2.py, line 18 in test_yawed_stack_passes_g0_under_random_rotations>"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view changed source face numbering",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 38 in assert_raw_coordinate_view>"
+      }
+    }
+  },
+  {
+    "gate": "test_frozen_ee_orientation_agrees_with_ee_cover_and_facet_normal3_on_every_ee_pair",
+    "args": [
+      0.001,
+      4,
+      1000.0
+    ],
+    "fault": "drop_all",
+    "HEAD_metadata": {
+      "sha256": "66cc2655dae58dfd41d0918b7167cdc6f31e006cdaad4e4b991ff0eed04c568d"
+    },
+    "b6126cf_metadata": {
+      "unavailable": "fatal: path 'tests/test_frozen_ee_sign.py' exists on disk, but not in 'b6126cf'\n"
+    },
+    "baseline": {
+      "HEAD": {
+        "result": "PASS"
+      },
+      "b6126cf": {
+        "result": "UNAVAILABLE"
+      },
+      "new": {
+        "result": "PASS"
+      }
+    },
+    "mutant": {
+      "HEAD": {
+        "result": "PASS"
+      },
+      "b6126cf": {
+        "result": "UNAVAILABLE"
+      },
+      "new": {
+        "result": "AssertionError",
+        "message": "raw-coordinate convex view lost or reordered extreme vertices",
+        "assertion": "<FrameSummary file D:\\eab-wt\\cx-e2\\tests\\e5a_convex_oracle.py, line 37 in assert_raw_coordinate_view>"
+      }
+    }
+  }
+]

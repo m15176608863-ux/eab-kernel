@@ -1,0 +1,20 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_twist_transform_cancels_overflow_before_constructing_velocity[_twist_back] _
+
+name = '_twist_back'
+
+    @pytest.mark.parametrize("name", ["_twist_back", "_twist_forward"])
+    def test_twist_transform_cancels_overflow_before_constructing_velocity(name):
+        a = 1e200
+        y = [3.0, -5.0, 7.0, a, a, a]
+>       assert getattr(limit, name)(y, (a,)*3, 3) == y
+E       assert [nan, nan, na...e+200, 1e+200] == [3.0, -5.0, 7...e+200, 1e+200]
+E         
+E         At index 0 diff: nan != 3.0
+E         Use -v to get more diff
+
+tests\test_r8fix_wrench.py:75: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_r8fix_wrench.py::test_twist_transform_cancels_overflow_before_constructing_velocity[_twist_back]
+1 failed in 0.08s

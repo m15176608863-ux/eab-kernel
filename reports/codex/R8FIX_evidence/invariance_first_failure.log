@@ -1,0 +1,68 @@
+........................................................................ [  2%]
+........................................................................ [  5%]
+........................................................................ [  8%]
+........................................................................ [ 11%]
+........................................................................ [ 14%]
+........................................................................ [ 17%]
+........................................................................ [ 20%]
+........................................................................ [ 23%]
+........................................................................ [ 26%]
+........................................................................ [ 29%]
+........................................................................ [ 32%]
+........................................................................ [ 35%]
+........................................................................ [ 38%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 47%]
+........................................................................ [ 50%]
+........................................................................ [ 53%]
+........................................................................ [ 56%]
+........................................................................ [ 59%]
+........................................................................ [ 62%]
+........................................................................ [ 65%]
+.............F
+================================== FAILURES ===================================
+__________ test_margin_layer_is_invariant[box_box_face-R7-t0-s0.001] __________
+
+name = 'box_box_face', rot = 7, tmag = 0.0, s = 0.001
+
+    @pytest.mark.parametrize("rot,tmag,s", CELLS, ids=CELL_IDS)
+    @pytest.mark.parametrize("name", PAIR_NAMES)
+    def test_margin_layer_is_invariant(name, rot, tmag, s):
+        base, M, A, B = _cell(name, rot, tmag, s)
+        _, ideal_ov, _, delta, _, L = PAIRS[name]
+        check_exact_margin(A, B, s * delta, state=star_relation(A, B))
+        ov = ideal_ov  # explicit old contact window restores nominal touching
+        # 真值：贯入或真距离 < δ ⇒ 裕度违约（INSIDE）；否则 OUTSIDE（本文件的 δ 都离真距离很远）
+        want_in = INSIDE if ov == 1 or base["d"] < delta else OUTSIDE
+        assert inflated_membership(A, B, delta=s * delta) == want_in
+        m1 = margin_contacts(A, B, delta=s * delta)
+        if ov == 1:
+            assert [m.label for m in m1] == [(PENETRATING,)]
+            assert m1[0].closed and m1[0].distance == 0 and m1[0].margin_gap == -s * delta
+            return
+        if want_in == INSIDE:
+            assert m1, "间距 < δ 却返回 []（= 裕度安全）：fail-unsafe"
+        m0 = margin_contacts(base["A"], base["B"], delta=delta)
+        # Rounded boundary features can become exactly strict/non-active. Instead
+        # of preserving ideal labels, independently enumerate every local cover,
+        # construct its witnesses and apply the existing margin selection contract.
+        from e5a_cover_oracle import margin_selection
+        expected = margin_selection(A, B, s * delta, touching=(ov == 0))
+        expected_base = margin_selection(base["A"], base["B"], delta, touching=(ideal_ov == 0))
+        current, original = {m.label: m for m in m1}, {m.label: m for m in m0}
+        assert len(current) == len(m1) and len(original) == len(m0), "duplicate margin labels"
+        assert set(current) == set(expected), (set(current) - set(expected), set(expected) - set(current))
+        assert set(original) == set(expected_base)
+        for label, contact in current.items():
+            assert abs(contact.distance - expected[label]) <= M.dist_tol(L), (label, contact.distance, expected[label])
+>           assert contact.margin_gap == contact.distance - s * delta
+E           AssertionError: assert -4.999999999999995e-05 == (5.000000000000007e-05 - (0.001 * 0.1))
+E            +  where -4.999999999999995e-05 = MarginContact(label=('EE', ('edge', 0, 1), ('edge', 5, 6)), distance=5.000000000000007e-05, margin_gap=-4.999999999999...507707706996859454145691648), Fraction(-1697111534040173587872847720866515, 1361129467683753853853498429727072845824))).margin_gap
+E            +  and   5.000000000000007e-05 = MarginContact(label=('EE', ('edge', 0, 1), ('edge', 5, 6)), distance=5.000000000000007e-05, margin_gap=-4.999999999999...507707706996859454145691648), Fraction(-1697111534040173587872847720866515, 1361129467683753853853498429727072845824))).distance
+
+tests\test_invariance_geom.py:419: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_invariance_geom.py::test_margin_layer_is_invariant[box_box_face-R7-t0-s0.001]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1597 passed in 107.06s (0:01:47)

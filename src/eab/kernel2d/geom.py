@@ -213,7 +213,11 @@ def reflex_vertices(poly: Poly, tol: float = 0.0) -> list[int]:
 
 def point_side(p: Point, a: Point, b: Point) -> float:
     """cross(b-a, p-a)：>0 在有向边 a->b 左侧。"""
-    return cross(sub(b, a), sub(p, a))
+    floating = any(isinstance(v, float) for point in (p, a, b) for v in point)
+    p, a, b = (tuple(map(Fraction, point)) for point in (p, a, b))
+    exact = cross(sub(b, a), sub(p, a))
+    # interior_point passes rational coordinates and needs exact ordering.
+    return _display_fraction(exact) if floating else exact
 
 
 def point_in_polygon(pt: Point, poly: Poly, tol: float = 0.0) -> int:
