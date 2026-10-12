@@ -1,0 +1,20 @@
+{
+  "original_remaining": 138,
+  "dispositions": {
+    "differential": 107,
+    "gap": 2,
+    "nonconstructive": 29
+  },
+  "final_gaps": 2,
+  "gap_apis": [
+    "eab.dual.Dual.__pow__",
+    "eab.dual.convergence_order"
+  ],
+  "additional_reviewed": 31,
+  "additional_limits": [
+    "eab.adapters.bdda2d.Bdda2DWindow.cone_tol",
+    "eab.adapters.bdda2d.Bdda2DWindow.metadata"
+  ],
+  "whole_public_surface_fully_proved": false,
+  "note": "逐值门覆盖列明输入族，源码证明/独立G6不由nodeid存在推定。原249字段与未在此次表内的旧API没有被默认为新完成。"
+}

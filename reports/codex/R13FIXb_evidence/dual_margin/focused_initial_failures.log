@@ -1,0 +1,159 @@
+........................................................................ [  2%]
+........................................................................ [  5%]
+........................................................................ [  8%]
+........................................................................ [ 11%]
+........................................................................ [ 14%]
+........................................................................ [ 17%]
+........................................................................ [ 20%]
+........................................................................ [ 23%]
+........................................................................ [ 26%]
+........................................................................ [ 29%]
+........................................................................ [ 32%]
+........................................................................ [ 35%]
+........................................................................ [ 38%]
+........................................................................ [ 41%]
+........................................................................ [ 43%]
+.......................F................................................ [ 46%]
+........................................................................ [ 49%]
+..........................FF............................................ [ 52%]
+........................................................................ [ 55%]
+........................................................................ [ 58%]
+........................................................................ [ 61%]
+........................................................................ [ 64%]
+........................................................................ [ 67%]
+........................................................................ [ 70%]
+........................................................................ [ 73%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 82%]
+........................................................................ [ 85%]
+........................................................................ [ 87%]
+........................................................................ [ 90%]
+........................................................................ [ 93%]
+........................................................................ [ 96%]
+.................................................F...................... [ 99%]
+.......                                                                  [100%]
+================================== FAILURES ===================================
+________ test_closed_is_exact_when_the_display_gap_underflows_to_zero _________
+
+    def test_closed_is_exact_when_the_display_gap_underflows_to_zero():
+        # Both bodies have macroscopic size; only their exact rational separation
+        # is below binary64. No geometry predicate may read the rounded display.
+        gap = F(1, 2**1075)
+        A = box((0, 0, F(1)+gap), (F(1, 2),)*3)
+        B = box(half=(F(1, 2),)*3)
+        assert _signed_gap(A, B) == gap > 0
+>       assert M.inflated_membership(A, B, delta=0) == M.OUTSIDE
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_margin_exact.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\margin.py:517: in inflated_membership
+    ctol, _, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:377: in _resolved
+    ctol, rnd, wits, contact, minimum2 = _resolved_cached(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+src\eab\margin.py:391: in _resolved_cached
+    ctol, rnd, wits, contact, minimum2 = _resolve(Polyhedron(av, af), Polyhedron(bv, bf), tol, geom_tol, contact_window)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:341: in _resolve
+    for c, w, n in _witnesses(A, B, tol, exact_surface=contact_window is None or not ctol):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:203: in _witnesses
+    w = cover_witness(c)
+        ^^^^^^^^^^^^^^^^
+src\eab\margin.py:151: in cover_witness
+    d = norm(v)
+        ^^^^^^^
+src\eab\kernel3d\geom3.py:102: in norm
+    return norm_rational(a)
+           ^^^^^^^^^^^^^^^^
+src\eab\construction.py:85: in norm_rational
+    return sqrt_rational(sum(exact_input(x, "norm_rational component")**2 for x in values),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(1, 1638666885755069285807049153921723645757142657034732574792025535080431162124979748570438405962811689179080...1279237915672326525727558230210998031336785433168974643348984874024785785179575028648323183890102410274348650540826624)
+
+    def sqrt_rational(value, *, allow_underflow=False):
+        """Round an exact nonnegative square using integer square root/midpoints.
+    
+        No floating square, intermediate root, scale factor or component is ever
+        constructed. ``isqrt(floor(n/d))`` is the exact lower integer root. The
+        midpoint test is ``4*n`` versus ``d*(2*k+1)**2``; parity resolves ties.
+        The final ``ldexp`` sees an exactly representable integer significand.
+        Gate: test_rational_sqrt_rounds_only_the_final_root and the R9 midpoint grid.
+        """
+        value = exact_input(value, "sqrt_rational radicand")
+        if value < 0:
+            raise ValueError("square root of negative rational")
+        if not value:
+            return 0.0
+        numerator, denominator = value.numerator, value.denominator
+        exponent = numerator.bit_length() - denominator.bit_length()
+        if (numerator < denominator << exponent if exponent >= 0
+                else numerator << -exponent < denominator):
+            exponent -= 1
+        root_exponent = exponent // 2
+        if root_exponent > 1023:
+            raise ConstructionDomainError("sqrt_rational result", "exact root is outside finite binary64 range")
+        quantum = max(root_exponent - 52, -1074)
+        if quantum >= 0:
+            denominator <<= 2*quantum
+        else:
+            numerator <<= -2*quantum
+        lower = math.isqrt(numerator // denominator)
+        comparison = 4*numerator - denominator*(2*lower+1)**2
+        significand = lower + (comparison > 0 or (comparison == 0 and lower % 2 == 1))
+        if not significand and not allow_underflow:
+>           raise ConstructionDomainError("sqrt_rational result", "nonzero exact root is below binary64 output range")
+E           eab.numeric_domain.ConstructionDomainError: sqrt_rational result: nonzero exact root is below binary64 output range
+
+src\eab\construction.py:73: ConstructionDomainError
+__________ test_r10_atan2_source_float_fast_path_mutation_is_caught ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000076B8A10>
+
+    def test_r10_atan2_source_float_fast_path_mutation_is_caught(monkeypatch):
+        source = inspect.getsource(dual._ratio_derivative)
+        needle = "u, v, a, b = (Fraction(q) for q in (u, v, a, b))"
+>       assert source.count(needle) == 1
+E       assert 0 == 1
+E        +  where 0 = <built-in method count of str object at 0x00000000023F60A0>('if not angular and _ordinary(u, v, a, b):')
+E        +    where <built-in method count of str object at 0x00000000023F60A0> = 'def _ratio_derivative(u: float, v: float, a: float, b: float, *, angular=False) -> float:\n    """(a*v-u*b)/v^2, or /...tion(q) for q in (u, v, a, b))\n    den = u*u + v*v if angular else v*v\n    return _derivative_float((a*v-u*b)/den)\n'.count
+
+tests\test_r10_dual_construction.py:160: AssertionError
+________ test_r10_power_source_removed_range_check_mutation_is_caught _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000674EC30>
+
+>   ???
+E   Failed: DID NOT RAISE <class 'Failed'>
+
+tests\test_r10_dual_construction.py:176: Failed
+_____________ test_g6g07_input_only_fast_path_mutation_is_caught ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000008567590>
+
+    def test_g6g07_input_only_fast_path_mutation_is_caught(monkeypatch):
+        # Reintroduce the defective branch INSIDE __pow__, before any real output.
+        source = textwrap.dedent(inspect.getsource(Dual.__pow__))
+        marker = "    value = self.v ** p\n"
+        assert source.count(marker) == 1
+        injected = marker + ("    if _ordinary(self.v, p, *self.e):\n"
+                             "        c = p * self.v ** (p - 1.0)\n"
+                             "        return Dual(value, tuple(c * a for a in self.e))\n")
+        scope = dict(vars(dual_module))
+>       exec(compile(source.replace(marker, injected), __file__, "exec"), scope)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         File "D:\eab-wt\cx-e2\tests\test_r7fix_dual.py", line 13
+E           
+E           ^
+E       SyntaxError: expected 'except' or 'finally' block
+
+tests\test_r7fix_dual.py:61: SyntaxError
+=========================== short test summary info ===========================
+FAILED tests/test_margin_exact.py::test_closed_is_exact_when_the_display_gap_underflows_to_zero
+FAILED tests/test_r10_dual_construction.py::test_r10_atan2_source_float_fast_path_mutation_is_caught
+FAILED tests/test_r10_dual_construction.py::test_r10_power_source_removed_range_check_mutation_is_caught
+FAILED tests/test_r7fix_dual.py::test_g6g07_input_only_fast_path_mutation_is_caught
+4 failed, 2451 passed in 89.32s (0:01:29)

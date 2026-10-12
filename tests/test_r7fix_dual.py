@@ -52,11 +52,11 @@ def test_g6g07_minimal_representable_derivative_survives():
 def test_g6g07_input_only_fast_path_mutation_is_caught(monkeypatch):
     # Reintroduce the defective branch INSIDE __pow__, before any real output.
     source = textwrap.dedent(inspect.getsource(Dual.__pow__))
-    marker = "    value = self.v ** p\n"
+    marker = "    if not math.isfinite(value):\n"
     assert source.count(marker) == 1
-    injected = marker + ("    if _ordinary(self.v, p, *self.e):\n"
+    injected = ("    if _ordinary(self.v, p, *self.e):\n"
                          "        c = p * self.v ** (p - 1.0)\n"
-                         "        return Dual(value, tuple(c * a for a in self.e))\n")
+                         "        return Dual(value, tuple(c * a for a in self.e))\n") + marker
     scope = dict(vars(dual_module))
     exec(compile(source.replace(marker, injected), __file__, "exec"), scope)
     monkeypatch.setattr(Dual, "__pow__", scope["__pow__"])

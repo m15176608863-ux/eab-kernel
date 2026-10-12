@@ -181,7 +181,8 @@ def test_g6f09_mutation_rounding_mixed_translation_is_caught(monkeypatch):
 
 
 def test_r6fix_mutation_rounding_squared_norm_is_caught(monkeypatch):
-    monkeypatch.setattr(G, 'norm', lambda a: math.sqrt(G.dot(a, a)))
+    # Restore the actual old float products, not the newly checked G.dot.
+    monkeypatch.setattr(G, 'norm', lambda a: math.sqrt(sum(x*x for x in a)))
     with pytest.raises(AssertionError, match='representable-norm'):
         test_r6fix_norm_does_not_lose_representable_result_to_intermediate_square(2.**-600)
 

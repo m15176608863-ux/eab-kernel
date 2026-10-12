@@ -167,9 +167,13 @@ def test_g6g06_internal_mutation_reverting_to_display_normal_is_caught(monkeypat
 
 
 def test_g6g08_internal_mutation_rounding_before_cross_product_is_caught(monkeypatch):
+    # Restore genuinely early float cross products inside the mass reduction.
+    # Fraction wraps the already damaged products only so new public cross/mul
+    # range guards cannot mask the targeted nonzero-volume assertion.
     _inject(monkeypatch,G,'_mass_properties',
-            'relative = tuple(_eg.sub(p, origin) for p in points)',
-            'relative = tuple(tuple(float(x) for x in _eg.sub(p, origin)) for p in points)')
+            'weight = _eg.dot(a, _eg.cross(b, c))',
+            'weight = _eg.dot(a, tuple(Fraction(float(b[i])*float(c[j])-float(b[j])*float(c[i])) '
+            'for i,j in ((1,2),(2,0),(0,1))))')
     with pytest.raises(AssertionError,match='axis-product-volume'):
         test_g6g08_mass_properties_use_exact_products_before_final_rounding(-600)
 

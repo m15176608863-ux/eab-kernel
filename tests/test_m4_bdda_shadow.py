@@ -124,8 +124,8 @@ def test_misclassified_difference_is_rejected_by_named_counts(monkeypatch):
 
 def test_legacy_reader_shifted_column_is_rejected_by_independent_raw_identity(monkeypatch):
     original = bdda_df._read_csv
-    def shifted_column(path):
-        rows = original(path)
+    def shifted_column(path, **kwargs):
+        rows = original(path, **kwargs)
         if path.name == "bdda_debug_contacts.csv":
             for row in rows:
                 if row["mtype"] == "0":

@@ -16,6 +16,9 @@ contact_entry = m0[i][0]（当前选中入口的 m[][] 索引）。gap 约定：
 含法向、接触点、法向力、剪切、contact_index 与全部余项列；牙注入本文件源码，G6 major 16 的五个变异逐一报红）。
 两个探针都是 HeavyProbe，默认关闭；retry 探针只在重试事件时写、且只写涉及触发块/顶压板的接触
 （record_limit 1024）——它不是完整接触列表，是抽样。完整计数在 contact_pair_stage。
+Numeric boundary: docs/exact_predicates_plan.md (R13FIXb). Readers retain
+all finite representable binary64 values; exact decimal conversion rejects
+nonzero underflow and finite overflow with ConstructionDomainError.
 """
 
 from __future__ import annotations
@@ -24,6 +27,7 @@ import csv
 from dataclasses import dataclass
 from pathlib import Path
 
+from ..construction import scalar_rational
 from ..contact_record import TF_COVER, TF_MODE, ContactRecord, CoverType, Mode
 
 
@@ -45,7 +49,13 @@ class PairStageRow:
 
 def _rows(path: Path) -> list[dict[str, str]]:
     with Path(path).open(newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh, delimiter="\t"))
+        rows = list(csv.DictReader(fh, delimiter="\t"))
+    numeric = {"time", "gap", "area", "normal_force", "px", "py", "pz", "nx", "ny", "nz",
+               "shear_dx", "shear_dy", "shear_dz"}
+    for row in rows:
+        for name in numeric & row.keys():
+            scalar_rational(row[name], quantity=f"{path.name}.{name}")
+    return rows
 
 
 def read_pair_stage(path: Path) -> list[PairStageRow]:

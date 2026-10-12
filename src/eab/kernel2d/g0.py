@@ -4,10 +4,13 @@ Convex votes use rational SAT, independent support sets and gift-wrap.
 Concave membership, event partitioning and distance truth use g0_oracle's
 independent integer/rational arithmetic. No hidden band excludes strict samples.
 Relative/roundoff allowances audit float witness construction only, never truth.
+Support-domain policy: docs/exact_predicates_plan.md (R13FIXb). Exact rational
+outputs remain unrestricted; final float displays reject unrepresentable values.
 """
 
 from __future__ import annotations
 from eab.oracle_construction import scalar_exact, norm_exact
+from eab.numeric_domain import check_input
 
 import math
 import random
@@ -92,11 +95,13 @@ def sample_translations(A: Poly, B: Poly, n: int, rng: random.Random, margin: fl
     """在 (B 的包围盒 − A 的包围盒) 外扩 margin 的范围里均匀采样平移。"""
     ax0, ax1, ay0, ay1 = _bbox(A)
     bx0, bx1, by0, by1 = _bbox(B)
-    lo_x, hi_x = bx0 - ax1, bx1 - ax0
-    lo_y, hi_y = by0 - ay1, by1 - ay0
+    lo_x, hi_x = Fraction(bx0) - Fraction(ax1), Fraction(bx1) - Fraction(ax0)
+    lo_y, hi_y = Fraction(by0) - Fraction(ay1), Fraction(by1) - Fraction(ay0)
     wx, wy = hi_x - lo_x, hi_y - lo_y
-    return [(rng.uniform(lo_x - margin * wx, hi_x + margin * wx),
-             rng.uniform(lo_y - margin * wy, hi_y + margin * wy)) for _ in range(n)]
+    m = Fraction(margin)
+    bounds = ((lo_x-m*wx, hi_x+m*wx), (lo_y-m*wy, hi_y+m*wy))
+    return [tuple(scalar_exact(lo + Fraction(rng.random()) * (hi-lo))
+                  for lo,hi in bounds) for _ in range(n)]
 
 
 def _support_labels_independent(A: Poly, B: Poly) -> tuple[set[tuple], set[tuple]]:
@@ -311,8 +316,17 @@ def g0_exit_completeness(A: Poly, B: Poly, translations: list[Point], directions
 
 
 def random_convex_polygon(rng: random.Random, n_points: int = 8, scale: float = 1.0) -> Poly:
+    """Random hull coordinates, final RN of exact affine RNG draws.
+
+    The scale input uses the engineering domain in docs/exact_predicates_plan.md;
+    it must be positive, with at least three requested source points.
+    """
+    scale = check_input(scale, "random_convex_polygon.scale")
+    if scale <= 0 or n_points < 3:
+        raise ValueError("positive scale and at least three points required")
     while True:
-        pts = [(rng.uniform(-scale, scale), rng.uniform(-scale, scale)) for _ in range(n_points)]
+        pts = [tuple(scalar_exact(-scale+2*scale*Fraction(rng.random()))
+                     for _ in range(2)) for _ in range(n_points)]
         hull = convex_hull(pts)
         if len(hull) >= 3:
             return hull

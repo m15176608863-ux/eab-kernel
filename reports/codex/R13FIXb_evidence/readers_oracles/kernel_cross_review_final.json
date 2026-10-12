@@ -1,0 +1,44 @@
+{
+  "review_kind": "task_internal_readonly_final_followup_not_G6",
+  "test_hash_before": "5088295dda94d57d38c73f5ef5ed2b1f6b389a75af314ee8336daead34955953",
+  "test_hash_after": "5088295dda94d57d38c73f5ef5ed2b1f6b389a75af314ee8336daead34955953",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests\\test_r13fixb_kernel_numeric.py::test_3d_g0_nonempty_completeness_payload_matches_omitted_nearest_face",
+    "--tb=short"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.6458662000077311,
+  "final_four_api_states": [
+    {
+      "api": "eab.kernel2d.g0.g0_distance_completeness",
+      "status": "closed",
+      "evidence": "test_2d_g0_nonzero_diagnostics_and_failure_payload_are_independent: real projection expression fault before construction, all nonzero report/payload values independently exact across 3 scales."
+    },
+    {
+      "api": "eab.kernel2d.g0.g0_exit_completeness",
+      "status": "closed",
+      "evidence": "Same 2D gate independently asserts exit parameter, nonzero witness and nonempty failure numeric payload at 3 scales."
+    },
+    {
+      "api": "eab.kernel3d.exact_sweep.surface_events",
+      "status": "closed",
+      "evidence": "test_surface_event_label_time_binding_matches_independent_xy_elimination independently computes all VF/FV/EE source-label/time pairs, including nondyadic times, across 3 scales."
+    },
+    {
+      "api": "eab.kernel3d.g03.g0_distance_completeness3",
+      "status": "closed",
+      "evidence": "New 3-scale gate omits face3 at real vf_cover enumeration call site, retains genuine remaining covers, and independently asserts nonempty completeness_failures=(x,25*s*s,9*s*s), error=2*s, got=5*s, truth=3*s plus whole dataclass. Scales2^-400,1,2^395 keep expanded geometry <=24*s<2^400."
+    }
+  ],
+  "remaining_review_gap_count": 0,
+  "inventory_test_reference_verified": true,
+  "metadata_observation": "coverage.json new proof and limits text contains literal question-mark runs from encoding loss; main scales still 2^397 while new 3D failure gates explicitly use 2^395. Repair readable proof/precise per-family scale metadata without altering tests."
+}

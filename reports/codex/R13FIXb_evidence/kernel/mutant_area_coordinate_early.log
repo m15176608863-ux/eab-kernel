@@ -1,0 +1,25 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+___________ test_exact_area_nondyadic_raw_values_match_shoelace[s0] ___________
+tests\test_r13fixb_kernel_numeric.py:412: in test_exact_area_nondyadic_raw_values_match_shoelace
+    assert E2.signed_area2(P)==want
+E   assert 7.0639203676781604e-242 == Fraction(1465, 2073919188986456675595685903209079206356948457198305335587246085903909681892229015044953450276075173278...5344724755241200128161761964150867463861683463780459789238757219570413263441436641303813553649083561163730842449608704)
+E    +  where 7.0639203676781604e-242 = <function signed_area2 at 0x000000000491D4E0>([(Fraction(1, 18075749146608360127591434204021083120307940549804564589814615495784533354117888362407517472960964820051...46464520349100021655988087344355561467992047481872089121339678781038488394644259715245123997111641191987209677307904))])
+E    +    where <function signed_area2 at 0x000000000491D4E0> = E2.signed_area2
+___________ test_exact_area_nondyadic_raw_values_match_shoelace[s1] ___________
+tests\test_r13fixb_kernel_numeric.py:412: in test_exact_area_nondyadic_raw_values_match_shoelace
+    assert E2.signed_area2(P)==want
+E   assert 0.4710232296439194 == Fraction(5860, 12441)
+E    +  where 0.4710232296439194 = <function signed_area2 at 0x000000000491D4E0>([(Fraction(1, 7), Fraction(2, 9)), (Fraction(13, 11), Fraction(5, 13)), (Fraction(17, 19), Fraction(23, 29))])
+E    +    where <function signed_area2 at 0x000000000491D4E0> = E2.signed_area2
+___________ test_exact_area_nondyadic_raw_values_match_shoelace[s2] ___________
+tests\test_r13fixb_kernel_numeric.py:412: in test_exact_area_nondyadic_raw_values_match_shoelace
+    assert E2.signed_area2(P)==want
+E   assert 4.9074838960739635e+238 == Fraction(6105400715105616569704364295879151670510669338870503409362823558896446595876769365486811358923016897461495199...304365170769788541541626095587865874251958009275605553800471639245859289942116993948559117181438486972192522240, 12441)
+E    +  where 4.9074838960739635e+238 = <function signed_area2 at 0x000000000491D4E0>([(Fraction(32278123476086357370698989650037648429121322410365293910383241956758095275210514932870566916001722892948789...9499862195260767619508659138697904154384017599388145650054361913298418434560230390680396265378221619421649043456, 29))])
+E    +    where <function signed_area2 at 0x000000000491D4E0> = E2.signed_area2
+=========================== short test summary info ===========================
+FAILED tests/test_r13fixb_kernel_numeric.py::test_exact_area_nondyadic_raw_values_match_shoelace[s0]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_exact_area_nondyadic_raw_values_match_shoelace[s1]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_exact_area_nondyadic_raw_values_match_shoelace[s2]
+3 failed in 0.20s

@@ -10,12 +10,15 @@ General surface membership and overlap use exact triangulated input semantics.
 Positive tolerance is an explicit Euclidean reporting band, never a noise floor.
 Contact construction helpers retain their separately documented limitations;
 general APIs never silently convexify concave input. See docs/exact_3d_design.md and the E5a report.
+Construction support: docs/exact_predicates_plan.md (R13FIXb); raw mixed
+builtin real operations round the exact expression once, with named failures.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from fractions import Fraction
+from eab.numeric_domain import float_algebra
 from eab import rational3 as _rational3
 from eab.construction import norm_rational, ratio_rational, scalar_rational, unit_rational
 from itertools import combinations
@@ -45,13 +48,13 @@ from eab.predicates import orient3d
 
 
 def sub(a: Vec3, b: Vec3) -> Vec3:
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         return tuple(scalar_rational(Fraction(x)-Fraction(y)) for x,y in zip(a,b))
     return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
 
 
 def add(a: Vec3, b: Vec3) -> Vec3:
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         return tuple(scalar_rational(Fraction(x)+Fraction(y)) for x,y in zip(a,b))
     return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
 
@@ -61,7 +64,7 @@ def neg(a: Vec3) -> Vec3:
 
 
 def mul(a: Vec3, s: float) -> Vec3:
-    if all(type(x) is float for x in (*a, s)):
+    if float_algebra((*a, s)):
         return tuple(scalar_rational(Fraction(x)*Fraction(s)) for x in a)
     return (a[0] * s, a[1] * s, a[2] * s)
 
@@ -73,7 +76,7 @@ def dot(a: Vec3, b: Vec3) -> float:
     """
     if _rational3.fraction_vectors(a, b):
         return _rational3.dot(a, b)
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         return scalar_rational(sum((Fraction(x)*Fraction(y) for x,y in zip(a,b)), Fraction(0)))
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 
@@ -85,7 +88,7 @@ def cross(a: Vec3, b: Vec3) -> Vec3:
     """
     if _rational3.fraction_vectors(a, b):
         return _rational3.cross(a, b)
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         qa, qb = tuple(Fraction(x) for x in a), tuple(Fraction(x) for x in b)
         return tuple(scalar_rational(x) for x in _rational3.cross(qa, qb))
     return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
@@ -128,6 +131,20 @@ def angle_between(a: Vec3, b: Vec3) -> float:
     # A sub-binary64 cosine is only the display of an angle near pi/2;
     # all orientation and zero tests above consumed the exact dot product.
     return atan2(sine, ratio_rational(d, scale, allow_underflow=True))
+
+
+
+def _extended_edge_length(vector):
+    """53-bit rounded length as a Fraction, without an exponent restriction.
+
+    Gate: test_face_noise_support_does_not_depend_on_intermediate_edge_range.
+    """
+    squared = sum(Fraction(x)**2 for x in vector)
+    if not squared:
+        return Fraction(0)
+    exponent = squared.numerator.bit_length() - squared.denominator.bit_length()
+    scale = Fraction(2) ** (exponent // 2)
+    return Fraction(_eg.sqrt_rational(squared/(scale*scale))) * scale
 
 
 @dataclass(slots=True)
@@ -197,10 +214,12 @@ class Polyhedron:
         δ·周长，方向至多转 δ·周长/(2·面积)。三角形上 2·面积/周长 是内切圆半径——细条三角的法向本来就不准。
         退化面（面积 0）为 +inf。缓存。
 
-        Reporting contract: perimeter is the exact sum of individually rounded
-        edge lengths, not a correctly-rounded sum of real radicals. The final
-        ratio uses that perimeter and the exact Newell square without first
-        constructing an absolute noise floor or an area that may not fit.
+        Reporting contract: each edge length has a 53-bit significand with an
+        unbounded binary exponent; perimeter is their exact rational sum. This
+        equals ordinary RN-even for normal finite edge lengths, without an
+        intermediate binary64 range restriction. Relative error of the final
+        nonzero normal result is at most 2*u+u*u (u=2**-53); add half a minsub
+        for a subnormal result. The exact Newell square is never rounded.
         Gate: test_relative_noise_diagnostics_do_not_round_away_scale_before_ratio.
         """
         self._sync_geometry_cache()
@@ -210,7 +229,7 @@ class Polyhedron:
         v = cache[fi]
         if v is None:
             f = self.faces[fi]
-            per = sum((Fraction(norm(exact_edge_vector(self, (f[i], f[(i+1)%len(f)]))))
+            per = sum((_extended_edge_length(exact_edge_vector(self, (f[i], f[(i+1)%len(f)])))
                        for i in range(len(f))), Fraction(0))
             try:
                 n = exact_face_normal(self, fi)
@@ -224,7 +243,11 @@ class Polyhedron:
 
     def dihedral_noise(self, e: tuple[int, int]) -> float:
         """棱 e 二面转角的舍入噪声：两相邻面法向噪声之和。平棱经刚体运动后转角在 ±它以内。"""
-        return sum(self.face_noise(fi) for fi in self.edge_faces(e))
+        values = [self.face_noise(fi) for fi in self.edge_faces(e)]
+        if any(math.isinf(x) for x in values):
+            return math.inf  # documented degenerate-face sentinel, not a finite construction
+        return scalar_rational(sum((Fraction(x) for x in values), Fraction(0)),
+                               quantity="dihedral_noise result")
 
     # ---------------- 拓扑 ----------------
     def face_normal(self, fi: int) -> Vec3:

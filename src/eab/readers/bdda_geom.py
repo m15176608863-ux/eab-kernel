@@ -5,6 +5,9 @@
 
 审查 C19（2026-09-21）：除尾部回绕外，**任何**循环意义下的连续重复点（零长边）也在这里剥除并登记
 alias——内核不接受零长边（`kernel2d.geom.outward_normal` 清晰报错）。见 `strip_duplicate_vertices`。
+Numeric boundary: docs/exact_predicates_plan.md (R13FIXb). Readers retain
+all finite representable binary64 values; exact decimal conversion rejects
+nonzero underflow and finite overflow with ConstructionDomainError.
 """
 
 from __future__ import annotations
@@ -13,8 +16,10 @@ import csv
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
+from fractions import Fraction
 
-from ..kernel2d.geom import Poly, coord_scale, ensure_ccw, round_floor
+from ..construction import scalar_rational
+from ..kernel2d.geom import EPS, ROUND_C, Poly, coord_scale, ensure_ccw
 
 
 @dataclass(slots=True)
@@ -53,10 +58,13 @@ def strip_duplicate_vertices(vids: list[int], poly: Poly, dup_tol: float = 1e-12
     """
     vids, poly = list(vids), list(poly)
     alias: dict[int, int] = {}
-    dup_tol = max(dup_tol, round_floor(coord_scale(poly)))
+    # This is a predicate threshold, not a reported construction. Keep the
+    # model c*eps*C exact even when C or c*eps*C cannot be stored in binary64.
+    dup_tol = max(Fraction(dup_tol), Fraction(ROUND_C)*Fraction(EPS)*Fraction(coord_scale(poly)))
 
     def same(p, q) -> bool:
-        return abs(p[0] - q[0]) <= dup_tol and abs(p[1] - q[1]) <= dup_tol
+        return (abs(Fraction(p[0]) - Fraction(q[0])) <= Fraction(dup_tol)
+                and abs(Fraction(p[1]) - Fraction(q[1])) <= Fraction(dup_tol))
 
     while len(poly) > 3:
         k = len(poly) - 1
@@ -92,7 +100,8 @@ def load_step_geometries(verts_csv: Path, *, dup_tol: float = 1e-12) -> dict[int
     by: dict[int, dict[int, list[tuple[int, tuple[float, float]]]]] = defaultdict(lambda: defaultdict(list))
     with Path(verts_csv).open(newline="", encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            by[int(r["step"])][int(r["block"])].append((int(r["vidx"]), (float(r["x"]), float(r["y"]))))
+            by[int(r["step"])][int(r["block"])].append((int(r["vidx"]), (scalar_rational(r["x"], quantity="bdda_geom.x"),
+                scalar_rational(r["y"], quantity="bdda_geom.y"))))
     out: dict[int, StepGeometry] = {}
     for step, blocks in by.items():
         sg = StepGeometry(step=step, blocks={})

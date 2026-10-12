@@ -9,7 +9,9 @@ requires a separate check. DDA/TIA adapters must consume the exact displacement
 or explicitly choose and verify a local contact_window.
 
 Reporting covers/ties retain their nominal extent/normal bands for derivative
-compatibility. They never accept an intruding root in the default exact mode.
+compatibility. Internal length windows remain rational through comparisons;
+they are not binary64 outputs and cannot underflow to a zero branch window.
+They never accept an intruding root in the default exact mode.
 The explicit finite-certificate window proves local shell thickness or a
 rigid displacement <= window; it is not the shortest
 rigid-body translation. Gates: tests/test_interlock_exact.py,
@@ -26,7 +28,7 @@ from functools import lru_cache
 from dataclasses import dataclass, field
 
 from ..dual import Dual, Number, val
-from ..margin import characteristic_length, effective_geom_tol, rounding_floor
+from ..margin import characteristic_length, _effective_geom_tol_exact, _rounding_floor_exact
 from .covers3 import ee_cover, enumerate_covers3, fv_cover, vf_cover
 from . import covers3 as _covers
 from .frozen import FACET_KINDS, frozen_ee_sign, frozen_gap, frozen_normal, frozen_lift  # noqa: F401  (L5 转出的公共入口)
@@ -147,7 +149,7 @@ def _candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float, extent_t
     numeric_types = tuple(type(x) for vertices in (av, bv, (offset,))
                           for p in vertices for x in p) + (type(tol), type(extent_tol))
     implementations = (_candidates_uncached, enumerate_covers3, _cover_at,
-                       _normal_noise, _cover_escape_z, rounding_floor,
+                       _normal_noise, _cover_escape_z, _rounding_floor_exact,
                        _covers.vf_cover, _covers.fv_cover, _covers.ee_cover,
                        vf_cover, fv_cover, ee_cover)
     arguments = (av, af, bv, bf, offset, tol, extent_tol)
@@ -175,7 +177,7 @@ def _candidates_uncached(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float,
     Gate: test_g6f09_nominal_report_cannot_collapse_float_body_under_large_offset.
     Extent is checked at each candidate construction as in the public report."""
     At = translate_exact(A, offset)
-    r = rounding_floor(At, B)
+    r = _rounding_floor_exact(At, B)
     raw: list[tuple] = []
     for idx, c in enumerate(enumerate_covers3(At, B, window=float("inf"), tol=tol, require_in_extent=False,
                                               include_low_dim=False)):
@@ -183,7 +185,7 @@ def _candidates_uncached(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float,
         if zn is None:
             continue
         z, nz = zn
-        if z * nz >= -r:                  # 法向间隙在舍入以内的负高度 = 已接触，记 0
+        if F(z) * F(nz) >= -r:                  # 法向间隙在舍入以内的负高度 = 已接触，记 0
             raw.append((max(z, 0.0), c.label(), nz, idx))
     raw.sort(key=lambda t: t[0])
     out: list[tuple] = []
@@ -192,7 +194,7 @@ def _candidates_uncached(A: Polyhedron, B: Polyhedron, offset: Vec3, tol: float,
         if z <= 0.0:
             out.append((z, lab, nz, idx))     # 已接触/已分离：由调用方的谓词裁决，无需抬升
             continue
-        if z_prev is None or z - z_prev > r:
+        if z_prev is None or F(z) - F(z_prev) > r:
             z_prev, Az = z, translate_exact(At, (0.0, 0.0, z))
         c = _cover_at(Az, B, lab, tol, extent_tol)
         if c is not None and c.in_extent:
@@ -207,7 +209,7 @@ def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float 
     Preserves the documented extent/normal report band for frozen derivatives.
     It is not the complete exact kinetic event list: use exact_sweep.surface_events
     for that list. escape_height_covers uses the latter for all decisions."""
-    gtol = effective_geom_tol(translate_exact(A, offset), B, geom_tol)
+    gtol = _effective_geom_tol_exact(translate_exact(A, offset), B, geom_tol)
     return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
 
 
@@ -288,7 +290,7 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     if contact_window is not None and F(contact_window)<0:
         raise ValueError('contact_window must be nonnegative')
     report_A=translate_exact(A,offset)
-    gtol=effective_geom_tol(report_A,B,geom_tol)
+    gtol=_effective_geom_tol_exact(report_A,B,geom_tol)
     cands,r=_candidates(A,B,offset,tol,gtol)
     choices=(('exact',A,B),) if contact_window is None else contact_models(A,B,contact_window)
     solved=[]
@@ -331,9 +333,9 @@ def _escape_solution(z: float, nz: float, cands: list[tuple], gtol: float, r: fl
     separately verify and return its actual nonpenetrating constructed height.
     """
     pos = [t for t in cands if t[0] > 0.0]
-    exact = [t for t in pos if abs(t[0] - z) * t[2] <= r * (1.0 + t[2] / nz)]
+    exact = [t for t in pos if abs(F(t[0]) - F(z)) * F(t[2]) <= F(r) * (1 + F(t[2]) / F(nz))]
     _, win, _, iw = min(exact, key=lambda t: t[3])
-    band = sorted((t for t in pos if abs(t[0] - z) * t[2] <= gtol + r * (1.0 + t[2] / nz)), key=lambda t: t[3])
+    band = sorted((t for t in pos if abs(F(t[0]) - F(z)) * F(t[2]) <= F(gtol) + F(r) * (1 + F(t[2]) / F(nz))), key=lambda t: t[3])
     tied = (win,) + tuple(t[1] for t in band if t[3] != iw)
     return EscapeSolution(z, win, len(cands), tied)
 

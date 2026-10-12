@@ -156,10 +156,10 @@ def test_r10_half_power_source_decimal_fallback_mutation_is_caught(monkeypatch):
 
 def test_r10_atan2_source_float_fast_path_mutation_is_caught(monkeypatch):
     source = inspect.getsource(dual._ratio_derivative)
-    needle = "if not angular and _ordinary(u, v, a, b):"
+    needle = "u, v, a, b = (Fraction(q) for q in (u, v, a, b))"
     assert source.count(needle) == 1
     namespace = dict(vars(dual))
-    exec(compile(source.replace(needle, "if _ordinary(u, v, a, b):"),
+    exec(compile(source.replace(needle, "u, v, a, b = (float(q) for q in (u, v, a, b))"),
                  "<r10-angular-float-path>", "exec"), namespace)
     monkeypatch.setattr(dual, "_ratio_derivative", namespace["_ratio_derivative"])
     with pytest.raises(AssertionError, match="atan2 derivative exact rational final rounding"):
@@ -171,7 +171,13 @@ def test_r10_power_source_removed_range_check_mutation_is_caught(monkeypatch):
     needle = "if value == 0.0 and self.v != 0.0:"
     assert source.count(needle) == 1
     namespace = dict(vars(dual))
-    exec(compile(source.replace(needle, "if False:"), "<r10-unchecked-power-primal>", "exec"), namespace)
+    mutated = source.replace(needle, "if False:")
+    # R13FIXb added a second checked boundary for exact integer primals.
+    # Restore the same silent-primal-underflow defect through both guards.
+    exact_primal = 'scalar_rational(Fraction(self.v) ** int(p), quantity="Dual integer power")'
+    assert mutated.count(exact_primal) == 1
+    mutated = mutated.replace(exact_primal, 'float(Fraction(self.v) ** int(p))')
+    exec(compile(mutated, "<r10-unchecked-power-primal>", "exec"), namespace)
     monkeypatch.setattr(dual.Dual, "__pow__", namespace["__pow__"])
     with pytest.raises(pytest.fail.Exception, match="DID NOT RAISE"):
         test_r10_power_primal_underflow_without_an_exact_channel_fails_loudly(2.0)

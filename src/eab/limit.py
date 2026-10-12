@@ -90,6 +90,10 @@ UNBOUNDED 沿最小可行荷载的机构作相同报告；alpha_min=0 和一阶 
 返回 alpha/lambdas/mechanism/row_duals 为带不可变 exact 见证的 float 视图；复制保留，算术和 JSON 往返不保留。
 纯 float 手工值按其二进制精确值核，Fraction 可表达任意 k 的 alpha×(1-10**(-k)) 注入。
 门：tests/test_limit_exact_selfcheck.py；contact_forces/active 仍只是按 tol 截断的展示量，静力证明来自 lambdas。
+Construction domain: docs/exact_predicates_plan.md. Wrench, midpoint and
+algebraic friction components retain the full finite rational input domain;
+their final binary64 range is checked by eab.construction. LP certificate
+views remain explicitly certificate-backed displays, not finite quantities.
 """
 
 from __future__ import annotations
@@ -261,7 +265,7 @@ class LimitContact:
         """法向归一化（G6 第二轮 major：曾不检查也不归一，三维摩擦与黏聚承载力随 |n| 缩放——|n| = 1e-3 时报 500、
         真值 0.5，自校验照样放行）。|n| 为 0 或非有限时抛 ValueError。二维纯摩擦的锥角本就与 |n| 无关。"""
         m = max((abs(v) for v in self.normal), default=0.0)
-        if not (m > 0.0 and all(math.isfinite(v) for v in self.normal)):   # NaN 在任一分量都拒：max() 对 NaN 的比较恒假
+        if not (m > 0.0 and all(not isinstance(v, float) or math.isfinite(v) for v in self.normal)):   # NaN 在任一分量都拒：max() 对 NaN 的比较恒假
 
             raise ValueError(f"contact normal must be a finite nonzero vector, got {self.normal!r}")
         exact = tuple(Fraction(_mapped_value) for _mapped_value in self.normal)
@@ -273,7 +277,7 @@ class LimitContact:
         # G6 第四轮 minor：cohesion / area 为 NaN 或负数曾被 `cohesion > 0 and area > 0` 静默当成"无黏聚"，α 按纯摩擦给出、
         # 自校验照常通过；mu 为 NaN 只在 Fraction(nan) 处以无关信息报错。非有限输入要在入口响亮失败（与法向同一家族）
         for name, v in (("mu", self.mu), ("cohesion", self.cohesion), ("area", self.area)):
-            if not (math.isfinite(v) and v >= 0.0):
+            if not ((not isinstance(v, float) or math.isfinite(v)) and v >= 0.0):
                 raise ValueError(f"contact {name} must be finite and non-negative, got {v!r}")
 
 

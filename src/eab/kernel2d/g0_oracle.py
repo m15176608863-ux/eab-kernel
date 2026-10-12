@@ -2,6 +2,8 @@
 
 The implementation uses integer winding/intersections and rational segment
 projections/events. Final display uses the independent Fraction-midpoint reference boundary.
+Support-domain policy: docs/exact_predicates_plan.md (R13FIXb). Exact rational
+outputs remain unrestricted; final float displays reject unrepresentable values.
 """
 from eab.oracle_construction import sqrt_exact, scalar_exact
 from fractions import Fraction as F
@@ -23,6 +25,8 @@ def translate(P, x):
 
 
 def turn(a,b,c):
+    if any(isinstance(x,float) for p in (a,b,c) for x in p):
+        a,b,c=points((a,b,c))
     return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
 
 
@@ -87,6 +91,7 @@ def overlap(A,B):
 
 
 def segment_square(p,a,b):
+    p,a,b=points((p,a,b))
     ex,ey=b[0]-a[0],b[1]-a[1]
     wx,wy=p[0]-a[0],p[1]-a[1]
     length=ex*ex+ey*ey

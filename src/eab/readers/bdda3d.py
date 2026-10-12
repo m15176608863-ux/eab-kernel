@@ -5,6 +5,9 @@
   etype "np"|"ee"; bi, bj; refs 4×(块号, 顶点局部索引); owner 长 4 的 0/1; nsign ±1;
   t1, t2; d1; area; fa, coh, tens; m0init (0 开/1 滑/2 锁/3 键合); m0_0 (2=键合起源);
   o3t 转移法向参考; slip_ref 转移滑移 3 向量。
+Numeric boundary: docs/exact_predicates_plan.md (R13FIXb). Readers retain
+all finite representable binary64 values; exact decimal conversion rejects
+nonzero underflow and finite overflow with ConstructionDomainError.
 """
 
 from __future__ import annotations
@@ -13,6 +16,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ..construction import scalar_rational
 from ..contact_record import BDDA3D_COVER, BDDA3D_MODE, ContactRecord, CoverType, Feature, Mode
 
 _KNOWN = {"etype", "bi", "bj", "refs", "owner", "nsign", "t1", "t2", "d1", "area",
@@ -42,7 +46,7 @@ def record_from_entrance(c: dict[str, Any], *, step: int = 0, index: int = 0,
     if verts is not None and refs:
         pts = []
         for b, k in refs:
-            pts.append(tuple(float(x) for x in verts[str(b)][k]))
+            pts.append(tuple(scalar_rational(x, quantity="bdda3d.ref_points") for x in verts[str(b)][k]))
         ref_points = tuple(pts)
 
     raw_init = int(c["m0init"]) if "m0init" in c else None
@@ -60,16 +64,16 @@ def record_from_entrance(c: dict[str, Any], *, step: int = 0, index: int = 0,
         block_a=bi, block_b=bj, cover=cover, raw_cover=etype,
         feature_a=fa, feature_b=fb,
         ref_points=ref_points,
-        length_or_area=float(c["area"]) if "area" in c else None,
-        params=(float(c["t1"]), float(c["t2"])) if ("t1" in c and "t2" in c) else (),
+        length_or_area=scalar_rational(c["area"], quantity="bdda3d.area") if "area" in c else None,
+        params=(scalar_rational(c["t1"], quantity="bdda3d.t1"), scalar_rational(c["t2"], quantity="bdda3d.t2")) if ("t1" in c and "t2" in c) else (),
         # 状态字段只来自本步判定；3-b-dda 的入口 dict 只有转移进来的 m0init，没有本步开闭判定 → mode 留 UNKNOWN，
         # 携带值只在 mode_init（与 bdda_df 缺 df22 时同一口径，G6 第三轮 minor）
         mode=Mode.UNKNOWN,
         raw_mode=None,
         mode_init=BDDA3D_MODE.get(raw_init, Mode.UNKNOWN) if raw_init is not None else None,
         raw_mode_init=raw_init,
-        gap_ref=float(c["o3t"]) if c.get("o3t") is not None else None,
-        slip_ref=tuple(float(x) for x in slip) if slip is not None else None,
+        gap_ref=scalar_rational(c["o3t"], quantity="bdda3d.o3t") if c.get("o3t") is not None else None,
+        slip_ref=tuple(scalar_rational(x, quantity="bdda3d.slip_ref") for x in slip) if slip is not None else None,
         bond_flag=int(c["m0_0"]) if c.get("m0_0") is not None else None,
         extra=extra,
     )

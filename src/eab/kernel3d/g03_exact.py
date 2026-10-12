@@ -3,6 +3,8 @@
 All determinants, planar hulls, support sets and SAT projections below are
 inline rational arithmetic. The incremental hull is independent of the tested
 geometry implementation; only the input coordinate values are shared.
+Support-domain policy: docs/exact_predicates_plan.md (R13FIXb). Exact rational
+outputs remain unrestricted; final float displays reject unrepresentable values.
 """
 from fractions import Fraction as F
 from functools import lru_cache
@@ -14,15 +16,22 @@ def qpoint(p):
     return tuple(F(c) for c in p)
 
 
+def _lift_binary64(values):
+    return tuple(F(x) if isinstance(x,float) else x for x in values) if any(isinstance(x,float) for x in values) else values
+
+
 def minus(a, b):
+    a,b=_lift_binary64(a),_lift_binary64(b)
     return tuple(x-y for x,y in zip(a,b))
 
 
 def scalar(a,b):
+    a,b=_lift_binary64(a),_lift_binary64(b)
     return sum(x*y for x,y in zip(a,b))
 
 
 def wedge(a,b):
+    a,b=_lift_binary64(a),_lift_binary64(b)
     return (a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0])
 
 

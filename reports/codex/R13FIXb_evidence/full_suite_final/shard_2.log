@@ -1,0 +1,142 @@
+........................................................................ [  3%]
+........................................................................ [  6%]
+........................................................................ [ 10%]
+........................................................................ [ 13%]
+........................................................................ [ 17%]
+........................................................................ [ 20%]
+........................................................................ [ 24%]
+........................................................................ [ 27%]
+........................................................................ [ 31%]
+........................................................................ [ 34%]
+........................................................................ [ 38%]
+........................................................................ [ 41%]
+........................................................................ [ 45%]
+........................................................................ [ 48%]
+........................................................................ [ 51%]
+........................................................................ [ 55%]
+........................................................................ [ 58%]
+........................................................................ [ 62%]
+........................................................................ [ 65%]
+..........F............................................................. [ 69%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 83%]
+........................................................................ [ 86%]
+...................F.................................................... [ 90%]
+........................................................................ [ 93%]
+........................................................................ [ 96%]
+...............................................................          [100%]
+================================== FAILURES ===================================
+__ test_legacy_reader_shifted_column_is_rejected_by_independent_raw_identity __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000124C0170>
+
+    def test_legacy_reader_shifted_column_is_rejected_by_independent_raw_identity(monkeypatch):
+        original = bdda_df._read_csv
+        def shifted_column(path):
+            rows = original(path)
+            if path.name == "bdda_debug_contacts.csv":
+                for row in rows:
+                    if row["mtype"] == "0":
+                        row["p1"] = row["p2"]
+            return rows
+        _gate_case("bb52_N3")
+        monkeypatch.setattr(bdda_df, "_read_csv", shifted_column)
+        with pytest.raises(AssertionError, match="legacy p1 column misread"):
+>           _gate_case("bb52_N3")
+
+tests\test_m4_bdda_shadow.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_m4_bdda_shadow.py:54: in _gate_case
+    legacy = bdda_df.load_records(path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\readers\bdda_df.py:190: in load_records
+    df18 = read_df18_csv(dump_dir / "bdda_debug_df18.csv") if (dump_dir / "bdda_debug_df18.csv").exists() else {}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('D:/eab-wt/cx-e2/fixtures/bdda_df/bb52_N3/bdda_debug_df18.csv')
+
+    def read_df18_csv(path: Path) -> dict[tuple[int, int], dict[str, str]]:
+        """(step, contact) -> df18 几何/系数行。同一 (step, contact) 多次出现时保留最后一次，并记 count。"""
+    
+        out: dict[tuple[int, int], dict[str, str]] = {}
+        counts: dict[tuple[int, int], int] = {}
+        # This API transports strings, not binary64 constructions; do not narrow
+        # otherwise exact passthrough data to a floating output range.
+>       for raw in _read_csv(path, validate_numeric=False):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: test_legacy_reader_shifted_column_is_rejected_by_independent_raw_identity.<locals>.shifted_column() got an unexpected keyword argument 'validate_numeric'
+
+src\eab\readers\bdda_df.py:97: TypeError
+____ test_g6g08_internal_mutation_rounding_before_cross_product_is_caught _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004ECBF80>
+
+    def test_g6g08_internal_mutation_rounding_before_cross_product_is_caught(monkeypatch):
+        _inject(monkeypatch,G,'_mass_properties',
+                'relative = tuple(_eg.sub(p, origin) for p in points)',
+                'relative = tuple(tuple(float(x) for x in _eg.sub(p, origin)) for p in points)')
+        with pytest.raises(AssertionError,match='axis-product-volume'):
+>           test_g6g08_mass_properties_use_exact_products_before_final_rounding(-600)
+
+tests\test_r7fix_geom3.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_r7fix_geom3.py:90: in test_g6g08_mass_properties_use_exact_products_before_final_rounding
+    assert p.volume() == expected, 'axis-product-volume'
+           ^^^^^^^^^^
+src\eab\kernel3d\geom3.py:409: in volume
+    volume6, _ = _mass_properties(tuple(self.verts), tuple(self.faces))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<r7fix-internal-mutation-_mass_properties>:10: in _mass_properties
+    ???
+src\eab\kernel3d\exact_geom.py:116: in cross
+    return tuple(scalar_rational(x) for x in _rational3.cross(vector(a),vector(b)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\kernel3d\exact_geom.py:116: in <genexpr>
+    return tuple(scalar_rational(x) for x in _rational3.cross(vector(a),vector(b)))
+                 ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(-1, 430461986409643765451684442401315887089498118636217248043330920410018517281043640484937113430901154332159...9491646183795943934858494678644646945675345199310193119411968638996678186567840723056879051329728608978377785259065344)
+
+    def scalar_rational(value, *, allow_underflow=False, quantity="scalar_rational result"):
+        """Correctly rounded rational scalar, with explicit output-range checks."""
+        exact = exact_input(value, quantity)
+        try:
+            result = float(exact)
+        except OverflowError:
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range") from None
+        if not math.isfinite(result):
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range")
+        if exact and result == 0 and not allow_underflow:
+>           raise ConstructionDomainError(quantity, "nonzero exact scalar is below binary64 output range")
+E           eab.numeric_domain.ConstructionDomainError: scalar_rational result: nonzero exact scalar is below binary64 output range
+
+src\eab\construction.py:26: ConstructionDomainError
+============================ slowest 20 durations =============================
+31.57s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_convex_400
+14.98s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase0]
+14.73s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[0.001]
+14.41s call     tests/test_interlock_escape.py::test_escape_height_covers_is_complete_off_axis_on_asymmetric_blocks[nx5 amp0.3 phase1.0]
+13.94s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw1-8]
+13.07s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1.0]
+13.06s call     tests/test_interlocking.py::test_g0_distance_completeness_gate_is_unit_invariant_and_keeps_its_teeth[1000.0]
+10.40s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_scaled[0.001]
+9.32s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_scaled[1000.0]
+9.14s call     tests/test_frozen_lowdim.py::test_every_body_distance_label_enters_the_frozen_path_interlocking[kw0-1]
+7.90s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[2]
+7.37s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[0]
+6.73s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-0.001]
+6.70s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1000.0]
+6.64s call     tests/test_invariance_interlock.py::test_dilatancy_profile_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1.0]
+6.23s call     tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[1]
+5.98s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1000.0]
+5.95s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1.0]
+5.88s call     tests/test_invariance_interlock.py::test_dilatancy_profile_is_rigid_motion_and_unit_invariant[z0.7-100000.0-0.001]
+5.80s call     tests/test_interlocking.py::test_g0_distance_completeness_on_merged_interlocking_pair
+=========================== short test summary info ===========================
+FAILED tests/test_m4_bdda_shadow.py::test_legacy_reader_shifted_column_is_rejected_by_independent_raw_identity
+FAILED tests/test_r7fix_geom3.py::test_g6g08_internal_mutation_rounding_before_cross_product_is_caught
+2 failed, 2077 passed in 500.83s (0:08:20)

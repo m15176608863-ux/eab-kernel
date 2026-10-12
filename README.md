@@ -1,5 +1,8 @@
 # eab-kernel
 
+> **WO-R13FIXb 数值支持域（2026-10-13）**：判定继续对任意有限 binary64 / int / Fraction 精确；构造按声明域保证 RN-even 或所列误差界，超域须抛含量名的 `ConstructionDomainError`。基础近似输入域为非零 `[2^-400, 2^400]`，但仍需核输出范围；已有全域正确的代数构造不收窄。合同与推导见 [支持域定义](docs/exact_predicates_plan.md#r13fixb-numeric-domain)，实现未闭合项见 [138 项清单](docs/r13fix_construction_inventory.md) / [R13FIXb 报告](reports/codex/R13FIXb_report.md)；不能据此声称全 API 已满足该合同。
+
+
 > **WO-R13FIX 当前定位（2026-10-13）**：静态工具及子集准入是辅助代码检查，不是安全保证；公开构造量与独立有理参考的极端尺度逐值差分是主保证要求。类生命周期漏传播与事件返回字段脱钩已补门；全部 API 的未覆盖项不能以静态零诊断代替。以 [本轮设计同步](docs/r13fix_design_sync.md) 与 [R13FIX 报告](reports/codex/R13FIX_report.md) 为准，下文旧轮次“静态保证/默认拒绝”不能当作现行安全承诺。M0 所有者决定、M4a 离线边界和外部正本只读约束不变。
 
 > **WO-R12FIXb（2026-10-12，工作树重做，待独立复审）**：静态构造门改为按构造数据流准入，支持已知 int/Fraction、统一构造调用及不流入禁止构造的普通 float 运算。撤掉 R12FIX 的整库依赖冻结；例外仅锁 AST 站点和所在函数源码，未知动态/高阶形态仍默认拒绝。例外压缩是否达到 200 条、近似旧路径与人工排除范围以 [R12FIXb 报告](reports/codex/R12FIXb_report.md) 为准，不能把扫描零违例当作任意 Python 的数值证明。可维护性、实际内部变异、原 11368 节点保留和全套实测见报告；现行合同见 [设计同步](docs/r12fix_design_sync.md)。R12FIX 旧报告是历史证据，其全库冻结方案不再适用。本单不宣称新鲜 worktree 或独立 G6 通过，M0 所有者决定和 M4a 门不变。

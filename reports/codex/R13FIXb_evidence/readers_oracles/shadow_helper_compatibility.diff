@@ -1,0 +1,13 @@
+--- reports\codex\R13FIXb_evidence\readers_oracles\before\test_m4_bdda_shadow.py
++++ tests\test_m4_bdda_shadow.py
+@@ -124,8 +124,8 @@
+ 
+ def test_legacy_reader_shifted_column_is_rejected_by_independent_raw_identity(monkeypatch):
+     original = bdda_df._read_csv
+-    def shifted_column(path):
+-        rows = original(path)
++    def shifted_column(path, **kwargs):
++        rows = original(path, **kwargs)
+         if path.name == "bdda_debug_contacts.csv":
+             for row in rows:
+                 if row["mtype"] == "0":

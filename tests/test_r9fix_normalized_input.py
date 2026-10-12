@@ -31,10 +31,11 @@ def test_normalized_difference_rejects_nonpositive_normal_squared(nn,offset):
 
 def test_normalized_difference_float_nn_mutant_hits_target_assertion(monkeypatch):
     source=inspect.getsource(production.normalized_difference_rational)
-    old="c, nn, offset = Fraction(c), Fraction(nn), Fraction(offset)"
+    # Match the named exact boundary now used by the production constructor.
+    old='exact_input(nn, "normalized difference square")'
     assert source.count(old)==1
     namespace=dict(vars(production))
-    exec(compile(source.replace(old,"c, offset = Fraction(c), Fraction(offset)"),
+    exec(compile(source.replace(old,"nn"),
                  "<R9 normalized nn rationalization removed>","exec"),namespace)
     monkeypatch.setattr(production,"normalized_difference_rational",
                         namespace["normalized_difference_rational"])

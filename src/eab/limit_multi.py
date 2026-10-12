@@ -25,6 +25,9 @@ w_j = (g_j, (p_j − o′) × g_j) 关于**共同参考点** o′（全部接触
 - 接触的 (a, b) 与法向约定：`normal` 是 b 推 a 的方向（b 固定时就是"固定体推动体"）。调用方给反了，LP 就在算另一个问题——
   本层无法察觉（法向的物理含义是输入）。`contacts_from_covers_multi` 给出的接触按盖的约定（B → A）自动取 a = A 体、b = B 体。
 - 三维摩擦锥线性化、棱扇朝向、黏聚面积的条款与单体版相同。
+Construction domain: docs/exact_predicates_plan.md and eab.limit. Contact
+adapter midpoints use the checked exact construction boundary; certificate
+views retain their explicit exact witnesses.
 """
 
 from __future__ import annotations

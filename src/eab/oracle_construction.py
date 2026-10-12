@@ -5,12 +5,16 @@ float arithmetic supplies candidates only; Fraction midpoint cells certify
 every answer. Uncertified candidates fall back to ordered binary64 bit-pattern
 search, unlike the production integer-significand/isqrt construction. This
 independent reference path is shared by oracles, not the implementation tested.
+Support contract: docs/exact_predicates_plan.md, R13FIXb. This exact boundary
+retains its full representable-output domain; no +/-400 input restriction.
 """
 from decimal import Decimal, DecimalException, localcontext
 from fractions import Fraction
 from functools import lru_cache
 import math
 import struct
+
+from .numeric_domain import ConstructionDomainError
 
 
 _MAX_BITS = 0x7fefffffffffffff
@@ -60,7 +64,7 @@ def _round_positive(value, power, allow_underflow):
     candidate = _candidate_positive(value, power)
     if _candidate_is_certified(value, power, candidate):
         if value and candidate == 0 and not allow_underflow:
-            raise ArithmeticError("nonzero oracle construction is below binary64 output range")
+            raise ConstructionDomainError("oracle construction", "nonzero value is below binary64 output range")
         return candidate
     lower, upper = 0, _MAX_BITS
     while lower < upper:
@@ -76,10 +80,10 @@ def _round_positive(value, power, allow_underflow):
     boundary = midpoint**power
     go_up = value > boundary or (value == boundary and lower % 2)
     if go_up and lower == _MAX_BITS:
-        raise OverflowError("exact oracle construction exceeds finite binary64 range")
+        raise ConstructionDomainError("oracle construction", "exact value exceeds finite binary64 range")
     answer = _from_bits(lower+1) if go_up else low
     if value and answer == 0 and not allow_underflow:
-        raise ArithmeticError("nonzero oracle construction is below binary64 output range")
+        raise ConstructionDomainError("oracle construction", "nonzero value is below binary64 output range")
     return answer
 
 

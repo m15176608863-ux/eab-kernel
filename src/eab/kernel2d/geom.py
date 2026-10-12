@@ -4,6 +4,8 @@ CCW edge normals point right. Zero-tolerance convexity, reflex turns, membership
 and overlap have no implicit noise band. Positive angular/length tolerances are
 explicit caller windows, never inflated by coordinate magnitude. Reporting-only
 angle_floor/turn_floor/round_floor remain available, not predicate truth.
+Construction support: docs/exact_predicates_plan.md (R13FIXb); raw mixed
+builtin real operations round the exact expression once, with named failures.
 """
 
 from __future__ import annotations
@@ -11,6 +13,7 @@ from eab.construction import scalar_rational
 
 import sys
 from fractions import Fraction
+from eab.numeric_domain import float_algebra
 from functools import lru_cache
 from itertools import chain
 from math import hypot
@@ -45,13 +48,13 @@ def angle_floor(C: float, ell: float) -> float:
 
 
 def sub(a: Point, b: Point) -> Point:
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         return tuple(scalar_rational(Fraction(x)-Fraction(y)) for x,y in zip(a,b))
     return (a[0] - b[0], a[1] - b[1])
 
 
 def add(a: Point, b: Point) -> Point:
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         return tuple(scalar_rational(Fraction(x)+Fraction(y)) for x,y in zip(a,b))
     return (a[0] + b[0], a[1] + b[1])
 
@@ -65,7 +68,7 @@ def dot(a: Point, b: Point) -> float:
 
     Gate: test_public_dot_cross_round_after_cancellation.
     """
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         return scalar_rational(Fraction(a[0])*Fraction(b[0])+Fraction(a[1])*Fraction(b[1]))
     return a[0] * b[0] + a[1] * b[1]
 
@@ -75,7 +78,7 @@ def cross(a: Point, b: Point) -> float:
 
     Gate: test_public_dot_cross_round_after_cancellation.
     """
-    if all(type(x) is float for x in (*a, *b)):
+    if float_algebra((*a, *b)):
         return scalar_rational(Fraction(a[0])*Fraction(b[1])-Fraction(a[1])*Fraction(b[0]))
     return a[0] * b[1] - a[1] * b[0]
 

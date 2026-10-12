@@ -1,0 +1,41 @@
+{
+  "review_kind": "task_internal_readonly_crosscheck_not_G6",
+  "reviewed_inventory": "reports/codex/R13FIXb_evidence/kernel/coverage.json",
+  "inventory_count": 77,
+  "required_gap_api_count_at_review": 4,
+  "findings": [
+    {
+      "id": "KCR-01",
+      "severity": "coverage_gap",
+      "apis": [
+        "eab.kernel2d.g0.g0_distance_completeness",
+        "eab.kernel2d.g0.g0_exit_completeness",
+        "eab.kernel3d.g03.g0_distance_completeness3"
+      ],
+      "test": "tests/test_r13fixb_kernel_numeric.py::test_g0_success_report_numeric_fields_are_analytic",
+      "reason": "All three scales produce only zero error and empty failure payloads; nonzero numeric report fields and nonempty payload values have no independent per-value check.",
+      "required_action": "Add three-scale independent nonzero report/payload gate through actual internal path, or downgrade each API to partial."
+    },
+    {
+      "id": "KCR-02",
+      "severity": "coverage_gap",
+      "apis": [
+        "eab.kernel3d.exact_sweep.surface_events"
+      ],
+      "tests": [
+        "test_surface_events_each_exact_time_and_normal",
+        "test_surface_events_non_dyadic_exact_times"
+      ],
+      "reason": "Tests compare sets of event times; per-event loop validates normal but not time bound to its source label. Permuting times among labels preserves asserted sets.",
+      "required_action": "Compute independent time for each label and compare each event, including nondyadic cases."
+    }
+  ],
+  "nonconstructive_review": "20 entries inspected: no returned real geometric construction hidden under boolean/discrete/index classification. support_labels count is exact discrete metadata.",
+  "scale_review": "Main coordinate scale grid is genuine. Integer payload model uses valid lowest nonzero integer1, ordinary7, high2^397. Dimensionless invariant time alone does not prove per-event field binding.",
+  "docs_review": "No new all-API completion overclaim found: contract/implementation distinction and libm gap are explicit. Final inventory must reflect repaired/unrepaired review findings.",
+  "production_or_test_files_modified": false,
+  "notes": [
+    "Source review only; no independent G6 or new full-suite run.",
+    "Kernel author was asked by parent to repair findings concurrently; this is a review-time snapshot, not the post-repair verdict."
+  ]
+}

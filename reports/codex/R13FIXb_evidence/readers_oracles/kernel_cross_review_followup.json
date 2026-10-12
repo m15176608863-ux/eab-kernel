@@ -1,0 +1,44 @@
+{
+  "review_kind": "task_internal_readonly_followup_not_G6",
+  "test_hash_before": "e0426ce4573d226bfe2d367ffaf1cbcb4b31272cb08b79ad01ad101650f7b911",
+  "test_hash_after": "e0426ce4573d226bfe2d367ffaf1cbcb4b31272cb08b79ad01ad101650f7b911",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests\\test_r13fixb_kernel_numeric.py",
+    "-k",
+    "nonzero_diagnostics or label_time_binding",
+    "--tb=short"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.6942995999997947,
+  "original_four_api_findings": [
+    {
+      "api": "eab.kernel2d.g0.g0_distance_completeness",
+      "status": "closed",
+      "evidence": "test_2d_g0_nonzero_diagnostics_and_failure_payload_are_independent: real projection expression fault before construction, all nonzero report/payload values independently exact across 3 scales."
+    },
+    {
+      "api": "eab.kernel2d.g0.g0_exit_completeness",
+      "status": "closed",
+      "evidence": "Same 2D gate independently asserts exit parameter, nonzero witness and nonempty failure numeric payload at 3 scales."
+    },
+    {
+      "api": "eab.kernel3d.exact_sweep.surface_events",
+      "status": "closed",
+      "evidence": "test_surface_event_label_time_binding_matches_independent_xy_elimination independently computes all VF/FV/EE source-label/time pairs, including nondyadic times, across 3 scales."
+    },
+    {
+      "api": "eab.kernel3d.g03.g0_distance_completeness3",
+      "status": "narrow_residual_gap",
+      "evidence": "test_3d_g0_nonzero_diagnostics_and_failure_payload_are_independent validates nonzero worst_abs_error, failures and construction_failures using a real internal coordinate-constructor defect. completeness_failures remains []; no nonempty (x,minimum2,truth2) numeric reference yet.",
+      "required_action": "Retain narrow completeness-failure payload gap or add internal exact-enumeration defect with independently computed squared-distance payload."
+    }
+  ]
+}

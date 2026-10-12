@@ -1,0 +1,28 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+______ test_random_coordinate_samplers_round_only_final_affine_value[s0] ______
+tests\test_r13fixb_kernel_numeric.py:221: in test_random_coordinate_samplers_round_only_final_affine_value
+    assert G2.sample_translations(A,B,4,rng)==want
+E   assert [(1.139971838...5032669e-121)] == [(1.139971838...5032669e-121)]
+E     
+E     At index 0 diff: (1.1399718388190835e-120, 6.3330721611199e-121) != (1.1399718388190835e-120, 6.333072161119899e-121)
+E     Use -v to get more diff
+______ test_random_coordinate_samplers_round_only_final_affine_value[s1] ______
+tests\test_r13fixb_kernel_numeric.py:221: in test_random_coordinate_samplers_round_only_final_affine_value
+    assert G2.sample_translations(A,B,4,rng)==want
+E   assert [(2.943692141...128628178004)] == [(2.943692141...128628178004)]
+E     
+E     At index 0 diff: (2.9436921418130875, 1.6353574815967455) != (2.9436921418130875, 1.6353574815967453)
+E     Use -v to get more diff
+______ test_random_coordinate_samplers_round_only_final_affine_value[s2] ______
+tests\test_r13fixb_kernel_numeric.py:221: in test_random_coordinate_samplers_round_only_final_affine_value
+    assert G2.sample_translations(A,B,4,rng)==want
+E   assert [(9.501685842...2291358e+119)] == [(9.501685842...2291358e+119)]
+E     
+E     At index 0 diff: (9.501685842902795e+119, 5.2786270718521375e+119) != (9.501685842902795e+119, 5.278627071852137e+119)
+E     Use -v to get more diff
+=========================== short test summary info ===========================
+FAILED tests/test_r13fixb_kernel_numeric.py::test_random_coordinate_samplers_round_only_final_affine_value[s0]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_random_coordinate_samplers_round_only_final_affine_value[s1]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_random_coordinate_samplers_round_only_final_affine_value[s2]
+3 failed in 0.21s

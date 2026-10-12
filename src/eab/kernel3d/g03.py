@@ -5,6 +5,8 @@ independent rational SAT, including every exact E vertex/edge midpoint/facet
 centroid. Vote 2 compares complete support sets. Vote 3 compares exact extreme
 points with local cone intersections. No band, ambiguous or low-height exemption
 changes an answer. The compatibility counters for exemptions are always zero.
+Support-domain policy: docs/exact_predicates_plan.md (R13FIXb). Exact rational
+outputs remain unrestricted; final float displays reject unrepresentable values.
 """
 from __future__ import annotations
 from eab.construction import scalar_rational
@@ -115,9 +117,9 @@ def sample_translations3(A,B,n,rng,margin=0.25):
     lo=tuple(Fraction(lo_b[i])-Fraction(hi_a[i]) for i in range(3))
     hi=tuple(Fraction(hi_b[i])-Fraction(lo_a[i]) for i in range(3))
     padding=tuple(Fraction(margin)*(hi[i]-lo[i]) for i in range(3))
-    bounds=tuple((scalar_rational(lo[i]-padding[i]), scalar_rational(hi[i]+padding[i]))
-                 for i in range(3))
-    return [tuple(rng.uniform(*bounds[i]) for i in range(3)) for _ in range(n)]
+    bounds=tuple((lo[i]-padding[i], hi[i]+padding[i]) for i in range(3))
+    return [tuple(scalar_rational(a+Fraction(rng.random())*(b-a))
+                  for a,b in bounds) for _ in range(n)]
 
 
 def g0_convex3(A,B,*,samples=400,seed=0,tol=1e-12,band=1e-7):

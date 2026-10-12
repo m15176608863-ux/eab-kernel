@@ -8,6 +8,9 @@
 默认 seg_tol=1e-9 延续 tools/bb52_g0.py 的已验证枚举口径；fit_tol=1e-6
 只供逐条对账使用，不参与几何枚举。缺参数时明记 bb52 fallback；已有 CSV 缺步、
 重复步或非法参数则报错，不静默借用第一步。契约由 tests/test_m4_bdda_adapter.py 看护。
+Numeric boundary: docs/exact_predicates_plan.md (R13FIXb). Readers retain
+all finite representable binary64 values; exact decimal conversion rejects
+nonzero underflow and finite overflow with ConstructionDomainError.
 """
 
 from __future__ import annotations
@@ -18,7 +21,8 @@ from dataclasses import dataclass, field
 from fractions import Fraction
 from pathlib import Path
 
-from ..construction import norm_rational
+from ..construction import norm_rational, scalar_rational
+from ..numeric_domain import check_input
 from ..contact_record import ContactRecord, CoverType, Feature
 from ..kernel2d import covers
 from ..readers.bdda_geom import BlockGeom, StepGeometry
@@ -52,6 +56,10 @@ class Bdda2DWindow:
 
     @property
     def cone_tol(self) -> float:
+        # Explicit legacy libm coefficient model, not an exact transcendental
+        # predicate. The input envelope avoids radians underflow; its measured
+        # platform error gate is test_cone_coefficient_has_a_rational_series_gate.
+        check_input(self.h1_degrees, "bdda2d.cone_tol.h1_degrees")
         return math.sin(math.radians(self.h1_degrees))
 
     def metadata(self) -> dict:
@@ -70,7 +78,8 @@ def load_window(dump_dir: Path, step: int) -> Bdda2DWindow:
         rows = [row for row in csv.DictReader(fh) if int(row["step"]) == step]
     if len(rows) != 1:
         raise ValueError(f"detparams step {step}: expected one row, got {len(rows)}")
-    raw = {name: float(value) for name, value in rows[0].items() if name != "step" and value != ""}
+    raw = {name: scalar_rational(value, quantity=f"bdda2d.window.{name}")
+           for name, value in rows[0].items() if name != "step" and value != ""}
     fallback = tuple(name for name in ("d0", "h1") if name not in raw)
     return Bdda2DWindow(step, raw.get("d0", FALLBACK_D0), raw.get("h1", FALLBACK_H1_DEGREES),
                         source="detparams" + ("+bb52_fallback" if fallback else ""),

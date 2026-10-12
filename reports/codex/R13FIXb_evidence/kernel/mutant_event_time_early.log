@@ -1,0 +1,46 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+_______________ test_surface_events_non_dyadic_exact_times[s0] ________________
+tests\test_r13fixb_kernel_numeric.py:406: in test_surface_events_non_dyadic_exact_times
+    assert {e.time for e in events}=={F(2,21),F(11,21),F(20,21)}
+E   AssertionError: assert {Fraction(857...599627370496)} == {Fraction(2, ...ction(20, 21)}
+E     
+E     Extra items in the left set:
+E     Fraction(857828500451523, 9007199254740992)
+E     Fraction(4718056752483377, 9007199254740992)
+E     Fraction(4289142502257615, 4503599627370496)
+E     Extra items in the right set:
+E     Fraction(2, 21)...
+E     
+E     ...Full output truncated (3 lines hidden), use '-vv' to show
+_______________ test_surface_events_non_dyadic_exact_times[s1] ________________
+tests\test_r13fixb_kernel_numeric.py:406: in test_surface_events_non_dyadic_exact_times
+    assert {e.time for e in events}=={F(2,21),F(11,21),F(20,21)}
+E   AssertionError: assert {Fraction(857...599627370496)} == {Fraction(2, ...ction(20, 21)}
+E     
+E     Extra items in the left set:
+E     Fraction(857828500451523, 9007199254740992)
+E     Fraction(4718056752483377, 9007199254740992)
+E     Fraction(4289142502257615, 4503599627370496)
+E     Extra items in the right set:
+E     Fraction(2, 21)...
+E     
+E     ...Full output truncated (3 lines hidden), use '-vv' to show
+_______________ test_surface_events_non_dyadic_exact_times[s2] ________________
+tests\test_r13fixb_kernel_numeric.py:406: in test_surface_events_non_dyadic_exact_times
+    assert {e.time for e in events}=={F(2,21),F(11,21),F(20,21)}
+E   AssertionError: assert {Fraction(857...599627370496)} == {Fraction(2, ...ction(20, 21)}
+E     
+E     Extra items in the left set:
+E     Fraction(857828500451523, 9007199254740992)
+E     Fraction(4718056752483377, 9007199254740992)
+E     Fraction(4289142502257615, 4503599627370496)
+E     Extra items in the right set:
+E     Fraction(2, 21)...
+E     
+E     ...Full output truncated (3 lines hidden), use '-vv' to show
+=========================== short test summary info ===========================
+FAILED tests/test_r13fixb_kernel_numeric.py::test_surface_events_non_dyadic_exact_times[s0]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_surface_events_non_dyadic_exact_times[s1]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_surface_events_non_dyadic_exact_times[s2]
+3 failed in 0.24s

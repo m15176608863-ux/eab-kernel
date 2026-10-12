@@ -1,0 +1,74 @@
+[
+  {
+    "construction_class": "jet_derivative",
+    "test": "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion",
+    "injected_inside": "eab.dual._product_derivative",
+    "expected_failure_message": "Dual derivative exact expression",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "ordinary in-domain numerical inputs",
+    "note": "Mutation is compiled inside production function before calling public API; domain guard is monkeypatched at the called check boundary."
+  },
+  {
+    "construction_class": "sample_difference",
+    "test": "tests/test_r13fixb_dual_margin.py::test_difference_early_sample_rounding_mutant_fails_value_assertion",
+    "injected_inside": "eab.dual.central_difference",
+    "expected_failure_message": "sample callback exact quotient",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "ordinary in-domain numerical inputs",
+    "note": "Mutation is compiled inside production function before calling public API; domain guard is monkeypatched at the called check boundary."
+  },
+  {
+    "construction_class": "witness_distance",
+    "test": "tests/test_r13fixb_dual_margin.py::test_cover_witness_early_difference_mutant_fails_value_assertion",
+    "injected_inside": "eab.margin.cover_witness",
+    "expected_failure_message": "witness cancellation retained",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "ordinary in-domain numerical inputs",
+    "note": "Mutation is compiled inside production function before calling public API; domain guard is monkeypatched at the called check boundary."
+  },
+  {
+    "construction_class": "contact_adapter",
+    "test": "tests/test_r13fixb_dual_margin.py::test_adapter_early_midpoint_mutant_fails_value_assertion",
+    "injected_inside": "eab.limit.contacts_from_covers",
+    "expected_failure_message": "adapter cancellation retained",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "ordinary in-domain numerical inputs",
+    "note": "Mutation is compiled inside production function before calling public API; domain guard is monkeypatched at the called check boundary."
+  },
+  {
+    "construction_class": "noise_report",
+    "test": "tests/test_r13fixb_dual_margin.py::test_resolution_early_product_mutant_fails_value_assertion",
+    "injected_inside": "eab.margin.contact_resolution",
+    "expected_failure_message": "resolution final complete expression",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "ordinary in-domain numerical inputs",
+    "note": "Mutation is compiled inside production function before calling public API; domain guard is monkeypatched at the called check boundary."
+  },
+  {
+    "construction_class": "domain_guard",
+    "test": "tests/test_r13fixb_dual_margin.py::test_difference_domain_guard_removal_fails_rejection_assertion",
+    "injected_inside": "eab.dual.check_inputs invoked by central_difference",
+    "expected_failure_message": "DID NOT RAISE",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "outside input domain: 2^401",
+    "note": "Mutation is compiled inside production function before calling public API; domain guard is monkeypatched at the called check boundary."
+  },
+  {
+    "construction_class": "internal_nominal_threshold",
+    "test": "tests/test_r13fixb_dual_margin.py::test_subnormal_internal_threshold_early_rounding_mutant_is_caught[_effective_geom_tol_exact-internal gtol must not round to zero]",
+    "injected_inside": "eab.margin._effective_geom_tol_exact imported by eab.kernel3d.interlock",
+    "expected_failure_message": "internal gtol must not round to zero",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "2^-1070, preserving existing full-domain representable escape-root behavior",
+    "note": "Complete Fraction threshold is mutated to float inside its helper. Root remains correct but actual candidate-path nonzero threshold assertion fails. Cache includes rounding helper callable identity."
+  },
+  {
+    "construction_class": "internal_nominal_threshold",
+    "test": "tests/test_r13fixb_dual_margin.py::test_subnormal_internal_threshold_early_rounding_mutant_is_caught[_rounding_floor_exact-internal rounding floor must not round to zero]",
+    "injected_inside": "eab.margin._rounding_floor_exact imported by eab.kernel3d.interlock",
+    "expected_failure_message": "internal rounding floor must not round to zero",
+    "result": "CAUGHT_NAMED_ASSERTION",
+    "scale": "2^-1070, preserving existing full-domain representable escape-root behavior",
+    "note": "Complete Fraction threshold is mutated to float inside its helper. Root remains correct but actual candidate-path nonzero threshold assertion fails. Cache includes rounding helper callable identity."
+  }
+]

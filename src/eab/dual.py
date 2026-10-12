@@ -12,6 +12,10 @@
 
 梯度正确性的判据是**收敛阶**（h 扫描误差呈 V 形、大端按 O(h²)），不是某个 h 上的一致；
 纯相对误差判据会被接近零的分量主导而误报。
+Algebraic jet constructions retain the full finite rational input domain;
+unrepresentable nonzero outputs raise ConstructionDomainError. Diagnostic
+finite differences use the input domain in docs/exact_predicates_plan.md.
+The callback samples and libm coefficients define their approximate model.
 """
 
 from __future__ import annotations
@@ -19,6 +23,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from eab.construction import scalar_rational, sqrt_rational
+from eab.numeric_domain import ConstructionDomainError, check_input, check_inputs, exact_input
 from fractions import Fraction
 from decimal import Decimal, localcontext, Underflow
 from typing import Iterable, Sequence, Union
@@ -34,14 +39,14 @@ class Dual:
     # ---------------- 构造 ----------------
     @staticmethod
     def const(v: float, width: int) -> "Dual":
-        return Dual(float(v), (0.0,) * width)
+        return Dual(scalar_rational(v, quantity="Dual.const primal"), (0.0,) * width)
 
     @staticmethod
     def seed(v: float, width: int, k: int) -> "Dual":
         """第 k 个参数的种子：值 v，第 k 通道导数 1。"""
         e = [0.0] * width
         e[k] = 1.0
-        return Dual(float(v), tuple(e))
+        return Dual(scalar_rational(v, quantity="Dual.seed primal"), tuple(e))
 
     @property
     def width(self) -> int:
@@ -58,11 +63,12 @@ class Dual:
             if o.width != self.width:
                 raise ValueError(f"dual width mismatch: {self.width} vs {o.width}")
             return o.v, o.e
-        return float(o), (0.0,) * self.width
+        return o, (0.0,) * self.width
 
     def __add__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        return Dual(self.v + ov, tuple(a + b for a, b in zip(self.e, oe)))
+        return Dual(scalar_rational(Fraction(self.v) + Fraction(ov)),
+                    tuple(_derivative_float(Fraction(a) + Fraction(b)) for a, b in zip(self.e, oe)))
 
     __radd__ = __add__
 
@@ -71,26 +77,27 @@ class Dual:
 
     def __sub__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        return Dual(self.v - ov, tuple(a - b for a, b in zip(self.e, oe)))
+        return Dual(scalar_rational(Fraction(self.v) - Fraction(ov)),
+                    tuple(_derivative_float(Fraction(a) - Fraction(b)) for a, b in zip(self.e, oe)))
 
     def __rsub__(self, o: Number) -> "Dual":
         return -self + o
 
     def __mul__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        return Dual(self.v * ov, tuple(_product_derivative(self.v, ov, a, b)
+        return Dual(scalar_rational(Fraction(self.v) * Fraction(ov)), tuple(_product_derivative(self.v, ov, a, b)
                                       for a, b in zip(self.e, oe)))
 
     __rmul__ = __mul__
 
     def __truediv__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        return Dual(self.v / ov, tuple(_ratio_derivative(self.v, ov, a, b)
+        return Dual(scalar_rational(Fraction(self.v) / Fraction(ov)), tuple(_ratio_derivative(self.v, ov, a, b)
                                       for a, b in zip(self.e, oe)))
 
     def __rtruediv__(self, o: Number) -> "Dual":
         ov, oe = self._pair(o)
-        return Dual(ov / self.v, tuple(_ratio_derivative(ov, self.v, b, a)
+        return Dual(scalar_rational(Fraction(ov) / Fraction(self.v)), tuple(_ratio_derivative(ov, self.v, b, a)
                                       for a, b in zip(self.e, oe)))
 
     def __pow__(self, p: float) -> "Dual":
@@ -103,17 +110,22 @@ class Dual:
             return Dual(1.0, (0.0,) * self.width)
         if self.v < 0.0 and not p.is_integer():
             raise ValueError(f"Dual ** {p!r}: negative base {self.v!r} has no real power")
-        value = self.v ** p
+        try:
+            value = self.v ** p
+        except OverflowError as exc:
+            raise ConstructionDomainError("Dual power: primal exceeds binary64 output range") from exc
         if not math.isfinite(value):
-            raise OverflowError("Dual power is outside finite binary64 range")
+            raise ConstructionDomainError("Dual power: primal is outside finite binary64 range")
         if value == 0.0 and self.v != 0.0:
-            raise FloatingPointError("nonzero Dual power is below the binary64 range")
+            raise ConstructionDomainError("Dual power: nonzero primal is below the binary64 range")
         if p.is_integer():
+            value = scalar_rational(Fraction(self.v) ** int(p), quantity="Dual integer power")
             # Integer powers admit an exact derivative even if v**(p-1)
             # over/underflows before a representable derivative is formed.
             c = Fraction(p) * Fraction(self.v) ** (int(p) - 1)
             return Dual(value, tuple(_derivative_float(c * Fraction(a)) for a in self.e))
         if Fraction(p).denominator == 2:
+            value = sqrt_rational(Fraction(self.v) ** int(2*p))
             # The complete half-integer derivative has a rational square;
             # Decimal precision must not perturb exact subnormal ties.
             return Dual(value, tuple(_half_power_derivative(self.v, p, a) for a in self.e))
@@ -140,16 +152,16 @@ class Dual:
                         "sqrt/atan2 for arithmetic")
 
     def __lt__(self, o: Number) -> bool:
-        return self.v < (o.v if isinstance(o, Dual) else float(o))
+        return self.v < (o.v if isinstance(o, Dual) else o)
 
     def __le__(self, o: Number) -> bool:
-        return self.v <= (o.v if isinstance(o, Dual) else float(o))
+        return self.v <= (o.v if isinstance(o, Dual) else o)
 
     def __gt__(self, o: Number) -> bool:
-        return self.v > (o.v if isinstance(o, Dual) else float(o))
+        return self.v > (o.v if isinstance(o, Dual) else o)
 
     def __ge__(self, o: Number) -> bool:
-        return self.v >= (o.v if isinstance(o, Dual) else float(o))
+        return self.v >= (o.v if isinstance(o, Dual) else o)
 
     def __repr__(self) -> str:
         return f"Dual({self.v!r}, {self.e!r})"
@@ -163,57 +175,33 @@ def _ordinary(*values: float) -> bool:
 def _derivative_float(q: Fraction) -> float:
     """Round once; an unrepresentable nonzero derivative must not silently be 0."""
     try:
-        result = scalar_rational(q)
+        return scalar_rational(q)
     except ArithmeticError as exc:
-        if isinstance(exc, OverflowError):
-            raise
-        raise FloatingPointError("nonzero Dual derivative is below the binary64 range") from exc
-    if result == 0.0 and q:
-        raise FloatingPointError("nonzero Dual derivative is below the binary64 range")
-    return result
+        raise ConstructionDomainError("Dual derivative: outside nonzero finite binary64 output range") from exc
 
 
 def _ratio_derivative(u: float, v: float, a: float, b: float, *, angular=False) -> float:
     """(a*v-u*b)/v^2, or /(u^2+v^2), without intermediate range loss.
 
-    Ordinary, non-cancelling quotient inputs retain the fast calculation.
-    Angular derivatives always use the complete rational expression (R10).
-    Otherwise normalize the primal pair by an exact power of two, evaluate
-    the rational scaled expression and round once. Rational normalization
-    also retains components whose exponent span exceeds binary64's range.
+    All algebraic jets are completed exactly before final rounding.
+    This also retains components whose exponent span exceeds binary64 range.
     The oracle for this contract is test_r6fix07_* (raw Fraction formulas).
     """
-    if a == b == 0.0 and (u != 0.0 or v != 0.0) and (angular or v != 0.0):
-        return 0.0
-    if not angular and _ordinary(u, v, a, b):
-        av, ub = a * v, u * b
-        num = av - ub
-        if abs(num) > 2.0 ** -40 * (abs(av) + abs(ub)):
-            den = u * u + v * v if angular else v * v
-            return num / den
-    exponent = math.frexp(max(abs(u), abs(v)))[1]
-    scale = Fraction(2) ** exponent
-    un, vn = Fraction(u) / scale, Fraction(v) / scale
-    den = un * un + vn * vn if angular else vn * vn
-    q = (Fraction(a) * vn - un * Fraction(b)) / den / scale
-    return _derivative_float(q)
+    # Complete polynomial/rational expression first: a fast rounded numerator
+    # loses a last bit even without severe cancellation (R13FIXb).
+    u, v, a, b = (Fraction(q) for q in (u, v, a, b))
+    den = u*u + v*v if angular else v*v
+    return _derivative_float((a*v-u*b)/den)
 
 
 def _product_derivative(u: float, v: float, a: float, b: float) -> float:
     """a*v+u*b: the same two-product cancellation risk as quotient/atan2."""
-    if a == b == 0.0:
-        return 0.0
-    if _ordinary(u, v, a, b):
-        av, ub = a * v, u * b
-        result = av + ub
-        if abs(result) > 2.0 ** -40 * (abs(av) + abs(ub)):
-            return result
     return _derivative_float(Fraction(a) * Fraction(v) + Fraction(u) * Fraction(b))
 
 
 def val(x: Number) -> float:
     """取 primal。**只用于择支**：开闭判定、主元、钳位、排序、打印。"""
-    return x.v if isinstance(x, Dual) else float(x)
+    return x.v if isinstance(x, Dual) else x
 
 
 def grad(x: Number, width: int | None = None) -> tuple[float, ...]:
@@ -224,7 +212,7 @@ def grad(x: Number, width: int | None = None) -> tuple[float, ...]:
 
 def is_exact_zero(x: Number) -> bool:
     """跳过恒等更新的**唯一**合法判据。对 float 退化为 x == 0。"""
-    return x.is_exact_zero() if isinstance(x, Dual) else (float(x) == 0.0)
+    return x.is_exact_zero() if isinstance(x, Dual) else (x == 0)
 
 
 def _half_power_derivative(value: float, power: float, seed: float) -> float:
@@ -313,13 +301,16 @@ def seeded(values: Sequence[float]) -> tuple[Dual, ...]:
 
 def central_difference(f, theta: Sequence[float], h: float) -> list[float]:
     """中心差分（G3 的对照）。返回每个参数通道的导数。"""
+    check_inputs(theta, "central_difference.theta")
+    check_input(h, "central_difference.h")
     out = []
     for k in range(len(theta)):
         tp = list(theta)
         tm = list(theta)
         tp[k] += h
         tm[k] -= h
-        out.append((f(tp) - f(tm)) / (2.0 * h))
+        fp, fm = f(tp), f(tm)
+        out.append(scalar_rational((exact_input(fp, "central_difference.f(tp)") - exact_input(fm, "central_difference.f(tm)")) / (2 * Fraction(h))))
     return out
 
 
@@ -330,13 +321,20 @@ def convergence_order(f, theta: Sequence[float], analytic: Sequence[float],
     返回 {h: 最大绝对误差}、谷底 h 与谷底误差、以及大端两点的实测阶。
     """
     hs = list(hs)
+    check_inputs(analytic, "convergence_order.analytic")
     errs = {}
     for h in hs:
         fd = central_difference(f, theta, h)
-        errs[h] = max(abs(a - b) for a, b in zip(fd, analytic))
+        errs[h] = scalar_rational(max(abs(Fraction(a) - Fraction(b)) for a, b in zip(fd, analytic)))
     big = sorted(hs, reverse=True)[:2]
     order = None
     if len(big) == 2 and errs[big[1]] > 0 and errs[big[0]] > 0:
-        order = math.log(errs[big[0]] / errs[big[1]]) / math.log(big[0] / big[1])
+        ratio = Fraction(errs[big[0]]) / Fraction(errs[big[1]])
+        if Fraction(2)**-1000 <= ratio <= Fraction(2)**1000:
+            numerator = math.log(scalar_rational(ratio))
+        else:
+            # Integer log accepts arbitrary magnitudes without a float ratio.
+            numerator = math.log(ratio.numerator) - math.log(ratio.denominator)
+        order = numerator / math.log(scalar_rational(Fraction(big[0])/Fraction(big[1])))
     hmin = min(errs, key=lambda k: errs[k])
     return {"errors": errs, "valley_h": hmin, "valley_error": errs[hmin], "large_h_order": order}

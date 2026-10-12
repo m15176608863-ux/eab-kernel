@@ -70,6 +70,7 @@
 
 from __future__ import annotations
 from eab.construction import scalar_rational
+from eab.numeric_domain import ConstructionDomainError, exact_input
 
 import sys
 import math
@@ -112,13 +113,30 @@ def coordinate_magnitude(*bodies: Polyhedron) -> float:
 
 def rounding_floor(*bodies: Polyhedron) -> float:
     """c·eps·max(C, L)：顶点坐标自身的舍入，以及由它引起的有符号距离、间隙的舍入量级。"""
-    return ROUNDING_C * _EPS * max(coordinate_magnitude(*bodies), characteristic_length(*bodies))
+    return scalar_rational(_rounding_floor_exact(*bodies), quantity="rounding_floor result")
+
+
+def _rounding_floor_exact(*bodies: Polyhedron) -> Fraction:
+    """Internal comparison window; no binary64 threshold is constructed.
+
+    Uses the declared displayed characteristic length and exact selected
+    coordinate magnitude as data. Public rounding_floor separately checks
+    whether this complete nonzero quantity can be displayed as binary64.
+    """
+    return (Fraction(ROUNDING_C) * Fraction(_EPS) *
+            max(Fraction(coordinate_magnitude(*bodies)), Fraction(characteristic_length(*bodies))))
 
 
 def effective_geom_tol(A: Polyhedron, B: Polyhedron, geom_tol: float | None = None) -> float:
     """相触分辨率：geom_tol=None 时 max(1e-9·L, 64·eps·C)；显式给出时按绝对长度，但不低于舍入地板。"""
-    base = REL_GEOM_TOL * characteristic_length(A, B) if geom_tol is None else scalar_rational(geom_tol)
-    return max(base, rounding_floor(A, B))
+    return scalar_rational(_effective_geom_tol_exact(A, B, geom_tol), quantity="effective_geom_tol result")
+
+
+def _effective_geom_tol_exact(A: Polyhedron, B: Polyhedron, geom_tol=None) -> Fraction:
+    """Complete nominal-report window for exact internal extent/tie branches."""
+    base = (Fraction(REL_GEOM_TOL) * Fraction(characteristic_length(A, B)) if geom_tol is None
+            else exact_input(geom_tol, "effective_geom_tol.geom_tol"))
+    return max(base, _rounding_floor_exact(A, B))
 
 
 def _tie_groups(items: list, keys: list, window: float) -> list:
@@ -146,7 +164,7 @@ def cover_witness(c) -> tuple[float, Vec3 | None] | None:
     """
     if c.point_a is None or c.point_b is None:
         return None
-    v = sub(c.point_a, c.point_b)
+    v = _exact.sub(_exact.vector(c.point_a), _exact.vector(c.point_b))
     d = norm(v)
     if c.in_extent and c.exact_gap_sign is not None and c.normal is not None:
         # For an in-extent cover, its exact signed gap orients the exact-source
@@ -199,7 +217,19 @@ def _witnesses(A: Polyhedron, B: Polyhedron, tol: float, *, exact_surface=False)
     for c in enumerate_covers3(A, B, window=float("inf"), tol=tol):
         if not c.in_extent:
             continue
-        w = cover_witness(c)
+        try:
+            w = cover_witness(c)
+        except ConstructionDomainError:
+            # This private display is accompanied by the source cover and,
+            # in _resolve, exact_distance_squared. Do not let its RN-zero
+            # cell block an exact membership predicate. The public bare
+            # cover_witness tuple still fails loudly for the same input.
+            v = _exact.sub(_exact.vector(c.point_a), _exact.vector(c.point_b))
+            square = _exact.dot(v, v)
+            if not 0 < square <= Fraction(2)**-2150:
+                raise
+            n = tuple(c.exact_gap_sign*x for x in c.normal) if c.normal is not None and c.exact_gap_sign else None
+            w = (0.0, n)
         if w is not None:
             if exact_surface:
                 if c.a_feature[0] == "face":
@@ -217,7 +247,8 @@ def contact_resolution(A: Polyhedron, B: Polyhedron, geom_tol: float | None = No
     Pass this value explicitly as contact_window to request old contact reports.
     """
     diag = max(A.metrics()[1], B.metrics()[1])
-    return max(effective_geom_tol(A, B, geom_tol), 1e-12 * diag) + rounding_floor(A, B)
+    return scalar_rational(max(Fraction(effective_geom_tol(A, B, geom_tol)),
+                               Fraction(1e-12) * Fraction(diag)) + Fraction(rounding_floor(A, B)))
 
 
 def _contact_window(contact_window):
@@ -492,8 +523,9 @@ def boundary_band(A: Polyhedron, B: Polyhedron, atol: float | None = None) -> fl
 
     Callers wanting the old delta band may explicitly pass atol=boundary_band(A,B).
     """
-    base = REL_BOUNDARY_TOL * characteristic_length(A, B) if atol is None else scalar_rational(atol)
-    return max(base, rounding_floor(A, B))
+    base = (Fraction(REL_BOUNDARY_TOL) * Fraction(characteristic_length(A, B)) if atol is None
+            else exact_input(atol, "boundary_band.atol"))
+    return scalar_rational(max(base, _rounding_floor_exact(A, B)), quantity="boundary_band result")
 
 
 def inflated_membership(A: Polyhedron, B: Polyhedron, *, delta: float, tol: float = 1e-9,

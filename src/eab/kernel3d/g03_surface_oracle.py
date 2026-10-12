@@ -3,6 +3,8 @@
 Only coordinates and face rings enter. No production geometry or predicates are
 imported: integer face-plane/winding and edge parameters determine separation;
 rational squared distances use the independent midpoint-certified reference boundary.
+Support-domain policy: docs/exact_predicates_plan.md (R13FIXb). Exact rational
+outputs remain unrestricted; final float displays reject unrepresentable values.
 """
 from fractions import Fraction as F
 from functools import lru_cache
@@ -10,9 +12,23 @@ from math import gcd, lcm
 from ..kernel2d.g0_oracle import sqrt_display
 
 
-def minus(a,b):return tuple(x-y for x,y in zip(a,b))
-def dot(a,b):return sum(x*y for x,y in zip(a,b))
-def cross(a,b):return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
+def _lift_binary64(values):
+    return tuple(F(x) if isinstance(x,float) else x for x in values) if any(isinstance(x,float) for x in values) else values
+
+
+def minus(a,b):
+    a,b=_lift_binary64(a),_lift_binary64(b)
+    return tuple(x-y for x,y in zip(a,b))
+
+
+def dot(a,b):
+    a,b=_lift_binary64(a),_lift_binary64(b)
+    return sum(x*y for x,y in zip(a,b))
+
+
+def cross(a,b):
+    a,b=_lift_binary64(a),_lift_binary64(b)
+    return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 def bounds(v):return tuple((min(p[i] for p in v),max(p[i] for p in v)) for i in range(3))
 def boxes_disjoint(a,b):return any(x[1]<y[0] or y[1]<x[0] for x,y in zip(a,b))
 

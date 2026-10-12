@@ -1,0 +1,39 @@
+[
+  {
+    "case": "in_domain_mixed_cancellation",
+    "expected": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "before": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "after": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  {
+    "case": "outside_output_mixed_overflow",
+    "before": "(inf, inf, inf)",
+    "after": null,
+    "error": {
+      "type": "ConstructionDomainError",
+      "message": "scalar_rational result: exact scalar is outside finite binary64 range"
+    }
+  },
+  {
+    "case": "extended_face_noise",
+    "expected": 1.4210854715202004e-14,
+    "before": null,
+    "before_error": {
+      "type": "ConstructionDomainError",
+      "message": "sqrt_rational result: exact root is outside finite binary64 range"
+    },
+    "after": 1.4210854715202004e-14
+  }
+]

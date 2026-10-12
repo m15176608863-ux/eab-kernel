@@ -1,0 +1,108 @@
+........................................................................ [  3%]
+........................................................................ [  6%]
+........................................................................ [ 10%]
+........................................................................ [ 13%]
+........................................................................ [ 17%]
+........................................................................ [ 20%]
+........................................................................ [ 23%]
+........................................................................ [ 27%]
+........................................................................ [ 30%]
+........................................................................ [ 34%]
+........................................................................ [ 37%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 47%]
+........................................................................ [ 51%]
+........................................................................ [ 54%]
+........................................................................ [ 58%]
+........................................................................ [ 61%]
+........................................................................ [ 65%]
+........................................................................ [ 68%]
+........................................................................ [ 71%]
+........................................................................ [ 75%]
+........................................................................ [ 78%]
+........................................................................ [ 82%]
+...........................F............................................ [ 85%]
+........................................................................ [ 88%]
+........................................................................ [ 92%]
+........................................................................ [ 95%]
+..................................................................F..... [ 99%]
+................                                                         [100%]
+================================== FAILURES ===================================
+_ test_escape_reporting_does_not_construct_an_unrepresentable_intermediate_face_area[subnormal] _
+
+scale = Fraction(1, 1265014083170691364703095916993233169059729061025888239730633487671439622299970918074752398133982028094919...4546566785125467714043293663631459728072472271300628532022423097020838413451906408261645469290375391456731733818343424)
+
+    @pytest.mark.parametrize("scale", (F(2)**-1070, F(1), F(2)**508),
+                             ids=("subnormal", "ordinary", "area_upper_edge"))
+    def test_escape_reporting_does_not_construct_an_unrepresentable_intermediate_face_area(scale):
+        # Regression for the additional scan finding: face_noise used to call
+        # face_area, whose underflow aborted an otherwise representable height.
+        a, b = _slab(0, 2*scale, scale), _slab(-scale, scale, scale)
+>       result = I.escape_height_covers(a, b, (scale/4, 0, scale/4))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r13fix_event_bindings.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\kernel3d\interlock.py:291: in escape_height_covers
+    gtol=effective_geom_tol(report_A,B,geom_tol)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\margin.py:122: in effective_geom_tol
+    base = scalar_rational(Fraction(REL_GEOM_TOL) * Fraction(characteristic_length(A, B))) if geom_tol is None else scalar_rational(geom_tol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(265963680315218435, 97875723988555311155251829950729162894617301989505278480312636113471516473747133314858982...7424770114500800365518397471517996221945996841656250431969808731337118835799400739730701352692234849894550672754343936)
+
+    def scalar_rational(value, *, allow_underflow=False, quantity="scalar_rational result"):
+        """Correctly rounded rational scalar, with explicit output-range checks."""
+        exact = exact_input(value, quantity)
+        try:
+            result = float(exact)
+        except OverflowError:
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range") from None
+        if not math.isfinite(result):
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range")
+        if exact and result == 0 and not allow_underflow:
+>           raise ConstructionDomainError(quantity, "nonzero exact scalar is below binary64 output range")
+E           eab.numeric_domain.ConstructionDomainError: scalar_rational result: nonzero exact scalar is below binary64 output range
+
+src\eab\construction.py:26: ConstructionDomainError
+______ test_normalized_difference_float_nn_mutant_hits_target_assertion _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000008BE51F0>
+
+    def test_normalized_difference_float_nn_mutant_hits_target_assertion(monkeypatch):
+        source=inspect.getsource(production.normalized_difference_rational)
+        old="c, nn, offset = Fraction(c), Fraction(nn), Fraction(offset)"
+>       assert source.count(old)==1
+E       assert 0 == 1
+E        +  where 0 = <built-in method count of str object at 0x00000000144D4120>('c, nn, offset = Fraction(c), Fraction(nn), Fraction(offset)')
+E        +    where <built-in method count of str object at 0x00000000144D4120> = 'def normalized_difference_rational(c, nn, offset, *, allow_underflow=False):\n    """Round c/sqrt(nn)-offset once; ex...ed_difference_rational result", "nonzero exact frozen difference is below binary64 output range")\n    return result\n'.count
+
+tests\test_r9fix_normalized_input.py:35: AssertionError
+============================ slowest 20 durations =============================
+124.22s call     tests/test_r13fix_static_lifecycle.py::test_repository_scan_rejects_all_three_new_lifecycle_sources_without_waivers
+66.84s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[drop_VE_subset]
+50.44s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[no_EV_covers]
+33.49s call     tests/test_bb52_g1.py::test_g0_exit_completeness_is_blind_to_vv_by_construction
+33.39s call     tests/test_bb52_g1.py::test_g0_exit_completeness_has_teeth[strict_cone_only]
+31.89s setup    tests/test_bb52_g1.py::test_geometry_reconstruction
+23.63s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[no_VV_covers]
+15.96s call     tests/test_bb52_g1.py::test_g0_distance_completeness_has_teeth[strict_cone_only]
+14.83s call     tests/test_bb52_g1.py::test_g0_rerun_replays_the_original_1186_translations
+13.21s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[1000.0-4]
+12.43s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[100000.0-4]
+11.27s call     tests/test_interlock_walls.py::test_vertical_walls_do_not_hijack_the_escape_height[10000.0-1]
+8.41s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[0.001-0.0]
+7.62s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-100000.0]
+7.50s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1000.0-100000.0]
+6.21s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[1000.0-4]
+5.93s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[100000.0-4]
+5.43s call     tests/test_interlock_walls.py::test_clearance_keeps_jittered_walls_from_controlling_height[10000.0-1]
+4.47s call     tests/test_margin_exact.py::test_content_cache_is_value_identical_to_the_uncached_exact_path
+4.39s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-0.0]
+=========================== short test summary info ===========================
+FAILED tests/test_r13fix_event_bindings.py::test_escape_reporting_does_not_construct_an_unrepresentable_intermediate_face_area[subnormal]
+FAILED tests/test_r9fix_normalized_input.py::test_normalized_difference_float_nn_mutant_hits_target_assertion
+2 failed, 2102 passed in 594.93s (0:09:54)

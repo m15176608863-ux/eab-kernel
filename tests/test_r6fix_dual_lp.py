@@ -13,6 +13,7 @@ import textwrap
 import pytest
 
 from eab.dual import Dual, atan2
+from eab.numeric_domain import ConstructionDomainError
 import eab.dual as dual_module
 import eab.lp as lp
 
@@ -53,6 +54,14 @@ def test_r6fix07_atan2_matches_independent_fraction_derivative(y, x, dy, dx):
 ])
 def test_r6fix07_quotient_with_two_active_inputs_matches_fraction(u, v, du, dv):
     q = (F(du) * F(v) - F(u) * F(dv)) / F(v) ** 2
+    primal = F(u)/F(v)
+    if primal and abs(primal) <= F(2)**-1075:
+        # R13FIXb owner contract: a nonzero primal in the RN-zero cell is
+        # unsupported, even when the old derivative-only regression is valid.
+        with pytest.raises(ConstructionDomainError):
+            Dual(u, (du,)) / Dual(v, (dv,))
+        assert dual_module._ratio_derivative(u,v,du,dv) == scalar_exact(q)
+        return
     got = Dual(u, (du,)) / Dual(v, (dv,))
     assert got.v == u / v
     assert got.e == (scalar_exact(q),), (got.e, scalar_exact(q))
@@ -65,6 +74,14 @@ def test_r6fix07_quotient_with_two_active_inputs_matches_fraction(u, v, du, dv):
 ])
 def test_r6fix07_related_product_derivative_avoids_intermediate_range_loss(u, v, du, dv):
     expected = scalar_exact(F(du) * F(v) + F(u) * F(dv))
+    primal = F(u)*F(v)
+    if primal and abs(primal) <= F(2)**-1075:
+        # Same two assertions survive: the full public jet now rejects its
+        # unrepresentable primal; its representable derivative stays exact.
+        with pytest.raises(ConstructionDomainError):
+            Dual(u, (du,)) * Dual(v, (dv,))
+        assert dual_module._product_derivative(u,v,du,dv) == expected
+        return
     r = Dual(u, (du,)) * Dual(v, (dv,))
     assert r.e == (expected,), (r, expected)
 

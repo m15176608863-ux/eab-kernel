@@ -1,0 +1,667 @@
+[
+  {
+    "api": "eab.dual.Dual.const",
+    "status": "covered",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_seed_constructor_unrepresentable_primal_is_named"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "The exact supplied value is checked and rounded once; derivative seeds are exact 0/1.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.seed",
+    "status": "covered",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_seed_constructor_unrepresentable_primal_is_named"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "The exact supplied value is checked and rounded once; derivative seeds are exact 0/1.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.width",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_access_predicates_preserve_arbitrary_rational_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Returns existing primal/channels, exact zero channels, channel count, or bool. No derived nonzero construction. Scalar val/zero predicates now preserve int/Fraction rather than coercing float.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.is_exact_zero",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_access_predicates_preserve_arbitrary_rational_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Returns existing primal/channels, exact zero channels, channel count, or bool. No derived nonzero construction. Scalar val/zero predicates now preserve int/Fraction rather than coercing float.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__add__",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_algebra_each_channel_matches_independent_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_dual_mixed_scalar_is_not_rounded_before_arithmetic",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Raw Fraction primal and derivative expressions, independent bit-cell scalar rounding. Unary negation is exact sign reversal and needs no domain restriction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__neg__",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_algebra_each_channel_matches_independent_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_dual_mixed_scalar_is_not_rounded_before_arithmetic",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Raw Fraction primal and derivative expressions, independent bit-cell scalar rounding. Unary negation is exact sign reversal and needs no domain restriction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__sub__",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_algebra_each_channel_matches_independent_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_dual_mixed_scalar_is_not_rounded_before_arithmetic",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Raw Fraction primal and derivative expressions, independent bit-cell scalar rounding. Unary negation is exact sign reversal and needs no domain restriction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__rsub__",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_algebra_each_channel_matches_independent_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_dual_mixed_scalar_is_not_rounded_before_arithmetic",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Raw Fraction primal and derivative expressions, independent bit-cell scalar rounding. Unary negation is exact sign reversal and needs no domain restriction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__mul__",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_algebra_each_channel_matches_independent_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_dual_mixed_scalar_is_not_rounded_before_arithmetic",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Raw Fraction primal and derivative expressions, independent bit-cell scalar rounding. Unary negation is exact sign reversal and needs no domain restriction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__truediv__",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_algebra_each_channel_matches_independent_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_dual_mixed_scalar_is_not_rounded_before_arithmetic",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Raw Fraction primal and derivative expressions, independent bit-cell scalar rounding. Unary negation is exact sign reversal and needs no domain restriction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__rtruediv__",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_algebra_each_channel_matches_independent_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_dual_mixed_scalar_is_not_rounded_before_arithmetic",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_dual_product_early_rounding_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Raw Fraction primal and derivative expressions, independent bit-cell scalar rounding. Unary negation is exact sign reversal and needs no domain restriction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.Dual.__pow__",
+    "status": "gap",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_integer_and_half_power_complete_values",
+      "tests/test_r13fixb_dual_margin.py::test_dual_unrepresentable_output_is_a_named_domain_error"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Integer and half-integer branches have exact rational/root references.",
+    "limits": "General noninteger power retains libm primal plus Decimal precision-80 derivative coefficient without a proved full-domain error bound; exponent conversion and general Decimal failures are not fully named-domain audited."
+  },
+  {
+    "api": "eab.dual.val",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_access_predicates_preserve_arbitrary_rational_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Returns existing primal/channels, exact zero channels, channel count, or bool. No derived nonzero construction. Scalar val/zero predicates now preserve int/Fraction rather than coercing float.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.grad",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_access_predicates_preserve_arbitrary_rational_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Returns existing primal/channels, exact zero channels, channel count, or bool. No derived nonzero construction. Scalar val/zero predicates now preserve int/Fraction rather than coercing float.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.is_exact_zero",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_access_predicates_preserve_arbitrary_rational_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Returns existing primal/channels, exact zero channels, channel count, or bool. No derived nonzero construction. Scalar val/zero predicates now preserve int/Fraction rather than coercing float.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.sqrt",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_dual_angular_and_sqrt_derivatives_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1022]",
+    "proof": "导数有理参考；非代数primal不承诺全域正确舍入",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.dual.sin",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_trig_derivative_follows_declared_coefficient_model"
+    ],
+    "scales": "2^[-1074,-600,0,600,1022]",
+    "proof": "libm系数已给定的导数积模型，非真超越函数全域舍入证明",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.dual.cos",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_trig_derivative_follows_declared_coefficient_model"
+    ],
+    "scales": "2^[-1074,-600,0,600,1022]",
+    "proof": "libm系数已给定的导数积模型，非真超越函数全域舍入证明",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.dual.atan2",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_dual_angular_and_sqrt_derivatives_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1022]",
+    "proof": "导数有理参考；非代数primal不承诺全域正确舍入",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.dual.lift",
+    "status": "covered",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_seed_constructor_unrepresentable_primal_is_named"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "The exact supplied value is checked and rounded once; derivative seeds are exact 0/1.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.seeded",
+    "status": "covered",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_dual_public_seed_constructors_and_accessors",
+      "tests/test_r13fixb_dual_margin.py::test_dual_seed_constructor_unrepresentable_primal_is_named"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "The exact supplied value is checked and rounded once; derivative seeds are exact 0/1.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.central_difference",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_public_difference_reports_against_independent_sample_model",
+      "tests/test_r13fixb_dual_margin.py::test_public_difference_input_domain_fails_loudly",
+      "tests/test_r13fixb_dual_margin.py::test_difference_nonfinite_callback_is_a_named_domain_error",
+      "tests/test_r13fixb_dual_margin.py::test_difference_early_sample_rounding_mutant_fails_value_assertion",
+      "tests/test_r13fixb_dual_margin.py::test_difference_domain_guard_removal_fails_rejection_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Given the actual sampled callback outputs, form (fp-fm)/(2h) in Fraction; the model is not the exact analytic derivative of an arbitrary callback.",
+    "limits": ""
+  },
+  {
+    "api": "eab.dual.convergence_order",
+    "status": "gap",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_public_difference_reports_against_independent_sample_model",
+      "tests/test_r13fixb_dual_margin.py::test_public_difference_input_domain_fails_loudly",
+      "tests/test_r13fixb_dual_margin.py::test_convergence_report_does_not_overflow_the_intermediate_error_ratio"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Per-h errors from rational differences of the displayed sample derivative and supplied analytic value; complete report checked on a cubic with exact order 2. Extreme report ratio has independent log2 order 1600.",
+    "limits": "Per-h errors/valley and constructed power-of-two cases are checked. No proved general error bound for the mathematical logarithmic convergence-order value; a libm-coefficient relabeling is not sufficient for the owner contract."
+  },
+  {
+    "api": "eab.limit.wrench",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_wrench_and_power_each_value_matches_rational_reference"
+    ],
+    "scales": "2^[-1074,-600,0,600,1022]",
+    "proof": "独立有理公式逐值核对；有限构造族，不等于全输入域证明",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.limit.friction_generators",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_friction_generators_round_complete_component",
+      "tests/test_r13fix_mechanics_differential.py::test_public_3d_friction_generators_follow_exact_given_coefficient_model"
+    ],
+    "scales": "mu=minsub/0.5/nextafter(1,0)/2^1022；3D两k×四mu",
+    "proof": "二维完整分量公式；三维按给定libm系数模型逐棱分量，不承诺真超越函数正确舍入",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.limit.contacts_from_covers",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_contact_adapters_each_field_against_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_adapter_unrepresentable_midpoint_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_adapter_early_midpoint_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "All returned contact fields compared; 3-4-5 normal independent rational reference; midpoint exact before conversion; multi ownership checked. Side a/b retains exact supplied points.",
+    "limits": ""
+  },
+  {
+    "api": "eab.limit.limit_load",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_limit_single_and_multi_match_analytic_sliding_capacity"
+    ],
+    "scales": "2^[-1073,-600,0,600,1021]",
+    "proof": "独立解析滑移承载族，不覆盖所有活跃集",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.limit.mechanism_power",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_wrench_and_power_each_value_matches_rational_reference"
+    ],
+    "scales": "2^[-1074,-600,0,600,1022]",
+    "proof": "独立有理公式逐值核对；有限构造族，不等于全输入域证明",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.limit.mechanism_is_admissible",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_duality_reports_have_independent_analytic_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Returns all(...) boolean of exact signed rational powers; no quantity in public return.",
+    "limits": ""
+  },
+  {
+    "api": "eab.limit.check_duality",
+    "status": "covered",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_duality_reports_have_independent_analytic_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Old inventory categorized as nonconstruction, but report includes scalar quantities. Added every-field independent analytic certificate case.",
+    "limits": "Existing certificate-backed display convention remains; full unrepresentable report range audit is outside the original 138 list."
+  },
+  {
+    "api": "eab.limit_multi.contacts_from_covers_multi",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_contact_adapters_each_field_against_rational_reference",
+      "tests/test_r13fixb_dual_margin.py::test_adapter_unrepresentable_midpoint_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_adapter_early_midpoint_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "All returned contact fields compared; 3-4-5 normal independent rational reference; midpoint exact before conversion; multi ownership checked. Side a/b retains exact supplied points.",
+    "limits": ""
+  },
+  {
+    "api": "eab.limit_multi.limit_load_multi",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_mechanics_differential.py::test_public_limit_single_and_multi_match_analytic_sliding_capacity"
+    ],
+    "scales": "2^[-1073,-600,0,600,1021]",
+    "proof": "独立解析滑移承载族，不覆盖所有多体活跃集",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.limit_multi.check_duality_multi",
+    "status": "covered",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_duality_reports_have_independent_analytic_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Old inventory categorized as nonconstruction, but report includes scalar quantities. Added every-field independent analytic certificate case.",
+    "limits": "Existing certificate-backed display convention remains; full unrepresentable report range audit is outside the original 138 list."
+  },
+  {
+    "api": "eab.limit_multi.mechanism_is_admissible_multi",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_duality_reports_have_independent_analytic_values"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Returns all(...) boolean of exact signed rational powers; no quantity in public return.",
+    "limits": ""
+  },
+  {
+    "api": "eab.margin.characteristic_length",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_margin_public_diagnostics_each_value_against_rational_report_model",
+      "tests/test_r13fixb_dual_margin.py::test_margin_quantitative_output_outside_range_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_contact_resolution_rounds_after_both_report_terms",
+      "tests/test_r13fixb_dual_margin.py::test_resolution_early_product_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Independent 3-4-12 box yields exact diagonal 13*s. Report model uses displayed binary64 lengths/metrics as given data, then completed rational expression before sole final rounding.",
+    "limits": "Full finite rational input retained when constituent report lengths and outputs are representable. No +/-400 restriction added."
+  },
+  {
+    "api": "eab.margin.coordinate_magnitude",
+    "status": "non_constructing",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_margin_public_diagnostics_each_value_against_rational_report_model"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "max(abs(c)) only selects an exact absolute input scalar; int/Fraction remain exact and no float conversion occurs.",
+    "limits": ""
+  },
+  {
+    "api": "eab.margin.rounding_floor",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_margin_public_diagnostics_each_value_against_rational_report_model",
+      "tests/test_r13fixb_dual_margin.py::test_margin_quantitative_output_outside_range_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_contact_resolution_rounds_after_both_report_terms",
+      "tests/test_r13fixb_dual_margin.py::test_resolution_early_product_mutant_fails_value_assertion",
+      "tests/test_r13fixb_dual_margin.py::test_subnormal_escape_keeps_internal_thresholds_exact_and_public_reports_strict",
+      "tests/test_r13fixb_dual_margin.py::test_public_max_window_does_not_construct_a_rejected_smaller_operand",
+      "tests/test_r13fixb_dual_margin.py::test_subnormal_internal_threshold_early_rounding_mutant_is_caught"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Independent 3-4-12 box yields exact diagonal 13*s. Report model uses displayed binary64 lengths/metrics as given data, then completed rational expression before sole final rounding. Internal nominal branch windows remain Fraction, distinct from strict public binary64 reports; max is completed before public conversion.",
+    "limits": "Full finite rational input retained when constituent report lengths and outputs are representable. No +/-400 restriction added."
+  },
+  {
+    "api": "eab.margin.effective_geom_tol",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_margin_public_diagnostics_each_value_against_rational_report_model",
+      "tests/test_r13fixb_dual_margin.py::test_margin_quantitative_output_outside_range_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_contact_resolution_rounds_after_both_report_terms",
+      "tests/test_r13fixb_dual_margin.py::test_resolution_early_product_mutant_fails_value_assertion",
+      "tests/test_r13fixb_dual_margin.py::test_subnormal_escape_keeps_internal_thresholds_exact_and_public_reports_strict",
+      "tests/test_r13fixb_dual_margin.py::test_public_max_window_does_not_construct_a_rejected_smaller_operand",
+      "tests/test_r13fixb_dual_margin.py::test_subnormal_internal_threshold_early_rounding_mutant_is_caught"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Independent 3-4-12 box yields exact diagonal 13*s. Report model uses displayed binary64 lengths/metrics as given data, then completed rational expression before sole final rounding. Internal nominal branch windows remain Fraction, distinct from strict public binary64 reports; max is completed before public conversion.",
+    "limits": "Full finite rational input retained when constituent report lengths and outputs are representable. No +/-400 restriction added."
+  },
+  {
+    "api": "eab.margin.cover_witness",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_cover_witness_final_distance_and_direction",
+      "tests/test_r13fixb_dual_margin.py::test_margin_quantitative_output_outside_range_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_witness_and_adapter_keep_domain_internal_cancellation",
+      "tests/test_r13fixb_dual_margin.py::test_cover_witness_early_difference_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "3-4-5 exact distance and unit direction; given cover normal sign branch checked. Original points rationalized before subtraction, preserving mixed rational/binary64 cancellation.",
+    "limits": ""
+  },
+  {
+    "api": "eab.margin.contact_resolution",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_margin_public_diagnostics_each_value_against_rational_report_model",
+      "tests/test_r13fixb_dual_margin.py::test_margin_quantitative_output_outside_range_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_contact_resolution_rounds_after_both_report_terms",
+      "tests/test_r13fixb_dual_margin.py::test_resolution_early_product_mutant_fails_value_assertion"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Independent 3-4-12 box yields exact diagonal 13*s. Report model uses displayed binary64 lengths/metrics as given data, then completed rational expression before sole final rounding.",
+    "limits": "Full finite rational input retained when constituent report lengths and outputs are representable. No +/-400 restriction added."
+  },
+  {
+    "api": "eab.margin.body_distance",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_frozen_margin_differential.py::test_margin_public_distance_projection_normal_and_gap_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1018]",
+    "proof": "闭盒保单位面积；点凸包3-4-5独立投影",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.margin.MarginContact.closed",
+    "status": "non_constructing",
+    "was_r13_gap": false,
+    "original_status": "非浮点主构造；已有契约/拓扑门另审",
+    "tests": [],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Property returns a boolean; no numerical construction.",
+    "limits": ""
+  },
+  {
+    "api": "eab.margin.margin_contacts",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_frozen_margin_differential.py::test_margin_public_distance_projection_normal_and_gap_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1018]",
+    "proof": "闭盒保单位面积；点凸包3-4-5独立投影",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.margin.boundary_band",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_margin_public_diagnostics_each_value_against_rational_report_model",
+      "tests/test_r13fixb_dual_margin.py::test_margin_quantitative_output_outside_range_is_named",
+      "tests/test_r13fixb_dual_margin.py::test_contact_resolution_rounds_after_both_report_terms",
+      "tests/test_r13fixb_dual_margin.py::test_resolution_early_product_mutant_fails_value_assertion",
+      "tests/test_r13fixb_dual_margin.py::test_subnormal_escape_keeps_internal_thresholds_exact_and_public_reports_strict",
+      "tests/test_r13fixb_dual_margin.py::test_public_max_window_does_not_construct_a_rejected_smaller_operand",
+      "tests/test_r13fixb_dual_margin.py::test_subnormal_internal_threshold_early_rounding_mutant_is_caught"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Independent 3-4-12 box yields exact diagonal 13*s. Report model uses displayed binary64 lengths/metrics as given data, then completed rational expression before sole final rounding. Internal nominal branch windows remain Fraction, distinct from strict public binary64 reports; max is completed before public conversion.",
+    "limits": "Full finite rational input retained when constituent report lengths and outputs are representable. No +/-400 restriction added."
+  },
+  {
+    "api": "eab.margin.inflated_membership",
+    "status": "non_constructing",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Public return is exclusively INSIDE/OUTSIDE/ON_BOUNDARY integer labels. Source branches compare exact squared distance and exact rational delta/band. No quantitative return.",
+    "limits": "Calls quantitative witness self-checks internally; does not establish all-domain predicate execution free of downstream construction exceptions."
+  },
+  {
+    "api": "eab.margin.entrance_block_convex",
+    "status": "covered",
+    "was_r13_gap": true,
+    "original_status": "未确认完整独立极尺度差分门（缺口/待逐项审查）",
+    "tests": [
+      "tests/test_r13fixb_dual_margin.py::test_entrance_block_is_exact_rational_geometry_not_float_construction"
+    ],
+    "scales": "low/ordinary/high: 2^-400 vicinity, 1, 2^400 vicinity; full exact constructors also +/-1100",
+    "proof": "Every tetrahedron difference hull vertex independently compared to raw Fraction b-a; result coordinates remain Fraction even at 2^+/-1100. No binary64 report or artificial restricted domain.",
+    "limits": ""
+  },
+  {
+    "api": "eab.margin.nearest_point_on_convex_entrance",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_frozen_margin_differential.py::test_margin_public_distance_projection_normal_and_gap_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1018]",
+    "proof": "闭盒保单位面积；点凸包3-4-5独立投影",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.margin.distance_to_convex_entrance",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_frozen_margin_differential.py::test_margin_public_distance_projection_normal_and_gap_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1018]",
+    "proof": "闭盒保单位面积；点凸包3-4-5独立投影",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.margin.inflated_normal",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_frozen_margin_differential.py::test_margin_public_distance_projection_normal_and_gap_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1018]",
+    "proof": "闭盒保单位面积；点凸包3-4-5独立投影",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  },
+  {
+    "api": "eab.margin.margin_gap_from_frozen_cover",
+    "status": "previously_covered",
+    "was_r13_gap": false,
+    "original_status": "新增差分门",
+    "tests": [
+      "tests/test_r13fix_frozen_margin_differential.py::test_margin_public_distance_projection_normal_and_gap_are_value_bound"
+    ],
+    "scales": "2^[-1074,-600,0,600,1018]",
+    "proof": "闭盒保单位面积；点凸包3-4-5独立投影",
+    "limits": "No new full-API claim beyond preserved R13FIX evidence."
+  }
+]

@@ -28,6 +28,9 @@ feature_b 的命名（G6 第二轮 minor）：与内核同一约定——边以�
 状态字段只来自 df22（G6 第二轮 minor）：某 (step, contact) 没有 df22 行时 mode = UNKNOWN、raw_mode/gap/shear 留空，
 contacts.csv 的转移态只进 mode_init / gap_ref / slip_ref——旧版把转移态抄进状态字段，studio/sensor 第 2 步
 54/54 条记录把上一步的携带值报成本步状态，且无任何标记。
+Numeric boundary: docs/exact_predicates_plan.md (R13FIXb). Readers retain
+all finite representable binary64 values; exact decimal conversion rejects
+nonzero underflow and finite overflow with ConstructionDomainError.
 """
 
 from __future__ import annotations
@@ -36,6 +39,7 @@ import csv
 from dataclasses import dataclass
 from pathlib import Path
 
+from ..construction import scalar_rational
 from ..contact_record import BDDA_COVER, BDDA_MODE, ContactRecord, CoverType, Feature, Mode
 from .bdda_geom import load_step_geometries
 
@@ -55,9 +59,20 @@ class Df22Judgment:
     w0: float
 
 
-def _read_csv(path: Path) -> list[dict[str, str]]:
+def _read_csv(path: Path, *, validate_numeric=True) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+        rows = list(csv.DictReader(fh))
+    # All fields in these dumps are numeric. Parse exact decimal values at the
+    # checked construction boundary before any float conversion below. Integer
+    # identity fields stay arbitrary-precision and are not dimensional values.
+    integer_fields = {"step", "contact", "oc_iter", "mtype", "p1", "p2", "p3",
+                      "m4", "m5", "m6", "m0_0", "m0_1", "m0_2", "m0_prev", "m0_new",
+                      "block", "block_i", "block_j", "vidx", "jj", "k5"}
+    for row in rows if validate_numeric else ():
+        for name, value in row.items():
+            if name not in integer_fields and value not in (None, ""):
+                scalar_rational(value, quantity=f"{path.name}.{name}")
+    return rows
 
 
 def read_contacts_csv(path: Path) -> dict[tuple[int, int], dict[str, float]]:
@@ -66,7 +81,9 @@ def read_contacts_csv(path: Path) -> dict[tuple[int, int], dict[str, float]]:
     out: dict[tuple[int, int], dict[str, float]] = {}
     for raw in _read_csv(path):
         key = (int(raw["step"]), int(raw["contact"]))
-        out[key] = {k: float(v) for k, v in raw.items() if k not in ("step", "contact")}
+        ids = {"mtype", "p1", "p2", "p3", "m4", "m5", "m6", "m0_0", "m0_1", "m0_2"}
+        out[key] = {k: int(v) if k in ids else float(v)
+                    for k, v in raw.items() if k not in ("step", "contact")}
     return out
 
 
@@ -75,7 +92,9 @@ def read_df18_csv(path: Path) -> dict[tuple[int, int], dict[str, str]]:
 
     out: dict[tuple[int, int], dict[str, str]] = {}
     counts: dict[tuple[int, int], int] = {}
-    for raw in _read_csv(path):
+    # This API transports strings, not binary64 constructions; do not narrow
+    # otherwise exact passthrough data to a floating output range.
+    for raw in _read_csv(path, validate_numeric=False):
         key = (int(raw["step"]), int(raw["contact"]))
         counts[key] = counts.get(key, 0) + 1
         out[key] = raw
@@ -212,6 +231,10 @@ def load_records(dump_dir: Path) -> list[ContactRecord]:
         params: tuple[float, ...] = ()
         length = None
         if g:
+            for name in ("x1", "y1", "x2", "y2", "x3", "y3", "cs3", "b1",
+                         *(f"s{i}" for i in range(1, 31))):
+                if name in g:
+                    scalar_rational(g[name], quantity=f"bdda_df.df18.{name}")
             ref_points = ((float(g["x1"]), float(g["y1"])), (float(g["x2"]), float(g["y2"])),
                           (float(g["x3"]), float(g["y3"])))
             params = (float(g["cs3"]),)

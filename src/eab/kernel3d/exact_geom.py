@@ -2,6 +2,8 @@
 
 No distance or angular tolerance changes a sign in this module.  A nonplanar
 polygon is the deterministic projected-ear triangulation, not a fitted plane.
+Support-domain policy: docs/exact_predicates_plan.md (R13FIXb). Exact rational
+outputs remain unrestricted; final float displays reject unrepresentable values.
 """
 from __future__ import annotations
 
@@ -77,35 +79,47 @@ def _vector_cached(p):
 
 
 # Compatibility name; shared checked construction is dimension independent.
-from eab.construction import sqrt_rational
+from eab.construction import sqrt_rational, scalar_rational
+from eab.numeric_domain import float_algebra
 
 
 def sub(a, b):
-    return tuple(x - y for x, y in zip(a, b))
+    if float_algebra((*a,*b)):
+        return tuple(scalar_rational(F(x)-F(y)) for x,y in zip(a,b))
+    return tuple(x-y for x,y in zip(a,b))
 
 
 def add(a, b):
-    return tuple(x + y for x, y in zip(a, b))
+    if float_algebra((*a,*b)):
+        return tuple(scalar_rational(F(x)+F(y)) for x,y in zip(a,b))
+    return tuple(x+y for x,y in zip(a,b))
 
 
 def mul(a, s):
-    return tuple(x * s for x in a)
+    if float_algebra((*a,s)):
+        return tuple(scalar_rational(F(x)*F(s)) for x in a)
+    return tuple(x*s for x in a)
 
 
 def dot(a, b):
     if _rational3.fraction_vectors(a, b):
         return _rational3.dot(a, b)
-    return sum(x * y for x, y in zip(a, b))
+    if float_algebra((*a,*b)):
+        return scalar_rational(sum((F(x)*F(y) for x,y in zip(a,b)),F(0)))
+    return sum(x*y for x,y in zip(a,b))
 
 
 def cross(a, b):
     if _rational3.fraction_vectors(a, b):
         return _rational3.cross(a, b)
+    if float_algebra((*a,*b)):
+        return tuple(scalar_rational(x) for x in _rational3.cross(vector(a),vector(b)))
     return (a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0])
 
 
 def normal(pts):
     """Unnormalised exact Newell vector; callers must not treat a folded face as a plane."""
+    pts = tuple(vector(p) for p in pts)
     o = pts[0]
     n = (F(0), F(0), F(0))
     for a, b in zip(pts, pts[1:] + pts[:1]):
@@ -116,6 +130,7 @@ def normal(pts):
 
 
 def orient2(a, b, p):
+    a,b,p = vector(a),vector(b),vector(p)
     return (b[0]-a[0])*(p[1]-a[1]) - (b[1]-a[1])*(p[0]-a[0])
 
 
@@ -198,7 +213,8 @@ def polygon_locate_fraction(p,vertices,tol=0):
 
 def triangle_locate(p, a, b, c, known_normal=None):
     """-1 outside, 0 on an edge, 1 in the relative interior, including plane check."""
-    n = known_normal if known_normal is not None else cross(sub(b, a), sub(c, a))
+    p,a,b,c = vector(p),vector(a),vector(b),vector(c)
+    n = vector(known_normal) if known_normal is not None else cross(sub(b, a), sub(c, a))
     if not any(n) or dot(n, sub(p, a)) != 0:
         return -1
     vals = [dot(n, cross(sub(v, u), sub(p, u)))
@@ -262,7 +278,8 @@ def triangles(P):
 
 def segment_triangle(p, q, tri):
     """Intersection point and exact segment parameter, or None; coplanar is separate."""
-    a,b,c = tri
+    p, q = vector(p), vector(q)
+    a,b,c = (vector(v) for v in tri)
     n = cross(sub(b,a),sub(c,a))
     dp,dq = dot(n,sub(p,a)),dot(n,sub(q,a))
     if dp == dq or (dp > 0 and dq > 0) or (dp < 0 and dq < 0):
@@ -487,6 +504,7 @@ def triangle_intersection(first, second):
 
 
 def point_segment_distance_squared(p,a,b):
+    p,a,b = vector(p),vector(a),vector(b)
     d,w=sub(b,a),sub(p,a)
     dd=dot(d,d)
     t=max(F(0),min(F(1),dot(w,d)/dd)) if dd else F(0)

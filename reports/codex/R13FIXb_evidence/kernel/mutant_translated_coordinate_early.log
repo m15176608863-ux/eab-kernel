@@ -1,0 +1,30 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+___________ test_exact_surface_constructions_and_intersections[s0] ____________
+tests\test_r13fixb_kernel_numeric.py:110: in test_exact_surface_constructions_and_intersections
+    assert moved.verts==[tuple(x+y for x,y in zip(p,delta)) for p in P.verts]
+E   AssertionError: assert [(Fraction(25...917248)), ...] == [(Fraction(1,...480128)), ...]
+E     
+E     At index 0 diff: (Fraction(2573485501354569, 46517678354918840995156723704832290198633047083988355858015372747560914439257467092876227245680868195888801382801035387746214504231337984), Fraction(-3275345183542179, 93035356709837681990313447409664580397266094167976711716030745495121828878514934185752454491361736391777602765602070775492429008462675968), Fraction(6004799503160661, 23258839177459420497578361852416145099316523541994177929007686373780457219628733546438113622840434097944400691400517693873107252115668992)) != (Fraction(1, 1807574914660836012759143420402108312030...
+E     
+E     ...Full output truncated (2 lines hidden), use '-vv' to show
+___________ test_exact_surface_constructions_and_intersections[s1] ____________
+tests\test_r13fixb_kernel_numeric.py:110: in test_exact_surface_constructions_and_intersections
+    assert moved.verts==[tuple(x+y for x,y in zip(p,delta)) for p in P.verts]
+E   assert [(Fraction(25...685248)), ...] == [(Fraction(1,...(11, 3)), ...]
+E     
+E     At index 0 diff: (Fraction(2573485501354569, 18014398509481984), Fraction(-3275345183542179, 36028797018963968), Fraction(6004799503160661, 9007199254740992)) != (Fraction(1, 7), Fraction(-1, 11), Fraction(2, 3))
+E     Use -v to get more diff
+___________ test_exact_surface_constructions_and_intersections[s2] ____________
+tests\test_r13fixb_kernel_numeric.py:110: in test_exact_surface_constructions_and_intersections
+    assert moved.verts==[tuple(x+y for x,y in zip(p,delta)) for p in P.verts]
+E   AssertionError: assert [(Fraction(46...576, 1)), ...] == [(Fraction(32...392, 3)), ...]
+E     
+E     At index 0 diff: (Fraction(46111604965837650827004565582563257118810711365156959161524063098626381936027477374052957102675666554638278617676644352, 1), Fraction(-29343748614623962060542624110144847865543849670675459235492218955107190213823777562170286716423728222999806325729263616, 1), Fraction(215187489840575703859354639385295199887783319704065809420445627793589782368128227745580466479153110588311966882491006976, 1)) != (Fraction(322781234760863573706989896500376484291213224103652939103832419567580952752105149328705669160017228929487896496593436672, 7), Fraction(-32278...
+E     
+E     ...Full output truncated (2 lines hidden), use '-vv' to show
+=========================== short test summary info ===========================
+FAILED tests/test_r13fixb_kernel_numeric.py::test_exact_surface_constructions_and_intersections[s0]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_exact_surface_constructions_and_intersections[s1]
+FAILED tests/test_r13fixb_kernel_numeric.py::test_exact_surface_constructions_and_intersections[s2]
+3 failed in 0.19s

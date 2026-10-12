@@ -346,22 +346,30 @@ def shortest_exit3(A: Polyhedron, B: Polyhedron, x0: Vec3, *, tol: float = 1e-9,
 
 def first_entrance_brute(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, t_max: float, steps: int = 400,
                          geom_tol: float | None = None) -> float | None:
-    """共用生产重叠谓词的抽样佐证（不是独立主 oracle）。把 [0, t_max] 均分扫描，找到第一个 `polyhedra_overlap` ≥ 0 的步，再在前一步与它之间二分到
-    1e-10·L。扫描步长必须小于 A 沿 d 穿过 B 的最短时间（否则跳过一次穿越）——这是 oracle 的前提，由测试负责（steps 取大）。
-    返回 None 表示扫描内不触及；x0 已相触/相交时返回 0。"""
-    At = A.translated(x0)
-    gtol = effective_geom_tol(At, B, geom_tol)
-    L = characteristic_length(At, B)
+    """Exact-translation sampling corroboration, not an independent oracle.
 
-    def state(t: float) -> int:
-        return polyhedra_overlap(A.translated(add(x0, mul(d, t))), B, gtol)
+    The step must resolve each overlap interval; isolated tangencies can be
+    missed. The first bracket is bisected until endpoint displays are equal or
+    adjacent binary64 values (at most one ulp above its first contact). No
+    geometric noise floor changes membership; geom_tol remains compatibility.
+    Construction range/exception contract: docs/exact_predicates_plan.md.
+    """
+    from math import nextafter, inf
+    from .exact_sweep import translate_exact
+    if steps <= 0 or t_max < 0 or not isfinite(t_max):
+        raise ValueError("steps must be positive and t_max finite and nonnegative")
+    X, D = tuple(Fraction(x) for x in x0), tuple(Fraction(x) for x in d)
+    bound = Fraction(t_max)
 
-    if state(0.0) >= 0:
+    def state(t):
+        shift = tuple(x+t*v for x,v in zip(X,D))
+        return polyhedra_overlap(translate_exact(A,shift),B,0)
+
+    if state(Fraction(0)) >= 0:
         return 0.0
-    prev = 0.0
-    hit = None
+    prev, hit = Fraction(0), None
     for k in range(1, steps + 1):
-        t = t_max * k / steps
+        t = bound * k / steps
         if state(t) >= 0:
             hit = t
             break
@@ -369,11 +377,12 @@ def first_entrance_brute(A: Polyhedron, B: Polyhedron, x0: Vec3, d: Vec3, *, t_m
     if hit is None:
         return None
     lo, up = prev, hit
-    ztol = max(1e-10 * L, 8.0 * 2.220446049250313e-16 * t_max)
-    while up - lo > ztol:
-        mid = 0.5 * (lo + up)
+    while (scalar_rational(lo,allow_underflow=True) != scalar_rational(up,allow_underflow=True)
+           and nextafter(scalar_rational(lo,allow_underflow=True),inf)
+           < scalar_rational(up,allow_underflow=True)):
+        mid = (lo+up)/2
         if state(mid) >= 0:
             up = mid
         else:
             lo = mid
-    return up
+    return scalar_rational(up)
