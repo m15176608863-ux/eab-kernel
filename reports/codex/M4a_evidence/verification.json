@@ -1,0 +1,40 @@
+{
+  "cases": 15,
+  "steps": 45,
+  "categories": {
+    "ANGULAR_WINDOW_COVER_NOT_SELECTED": 167,
+    "EXACT_LOCAL_COVER_NOT_SELECTED": 469,
+    "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 98,
+    "MATCH": 1939,
+    "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 434,
+    "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 58,
+    "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 9
+  },
+  "unclassified": 0,
+  "mutations": [
+    {
+      "name": "drop_domain_window",
+      "injected": "eab.kernel2d.covers.enumerate_covers",
+      "status": "KILLED",
+      "assertion": "('unclassified differences', [(1, 'UNCLASSIFIED_EAB_MISSING_VALID_COVER', 11), (2, 'UNCLASSIFIED_EAB_MISSING_VALID_COVER', 19), (3, 'UNCLASSIFIED_EAB_MISSING_VALID_COVER', 20)])",
+      "raw_red_log": "mutation_drop_domain_window_red.txt",
+      "restored_baseline": "PASS"
+    },
+    {
+      "name": "misclassify_difference",
+      "injected": "m4_bdda_shadow.classify_extra",
+      "status": "KILLED",
+      "assertion": "('pinned shadow tally', 'bb52_N3', 1, 'counts', {'ANGULAR_WINDOW_COVER_NOT_SELECTED': 32, 'LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE': 1, 'MATCH': 53}, {'ANGULAR_WINDOW_COVER_NOT_SELECTED': 6, 'EXACT_LOCAL_COVER_NOT_SELECTED': 26, 'LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE': 1, 'MATCH': 53})",
+      "raw_red_log": "mutation_misclassify_difference_red.txt",
+      "restored_baseline": "PASS"
+    },
+    {
+      "name": "legacy_column_shift",
+      "injected": "eab.readers.bdda_df._read_csv",
+      "status": "KILLED",
+      "assertion": "legacy p1 column misread",
+      "raw_red_log": "mutation_legacy_column_shift_red.txt",
+      "restored_baseline": "PASS"
+    }
+  ]
+}

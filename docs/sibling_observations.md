@@ -2,6 +2,27 @@
 
 按 AGENTS.md §1.4：在姊妹仓库发现的缺陷或限制记在这里，由所有者转交。
 
+## WO-M4a · 15 例三步沙箱影子核验（2026-10-12 执行；决定日期 2026-10-12（工单原误写 10-17，已订正））
+
+本节只记录，不改 b-DDA；证据与原始数据见 `reports/codex/M4a_evidence/family_manifest.json`、
+`docs/m4_bdda_seam_map.md`、`docs/m4_difference_ledger.md`。所有 exe 都复制到本树沙箱后才运行。
+
+- **原始主参考重复**：v01、v01/v01a、v02、v02/v02a 首步分别出现 3、2、2、2 组二重主参考，合计 9 条额外记录。
+  每组的原始 p1/p2/p3 相同而 m4/m5/m6 不同；不是 reader 人为重复，也不删行。精确组号与字段见
+  `legacy_duplicate_primary_references.json`，看护为 `test_readers_roundtrip.py::_primary_unique_records` 和
+  `test_m4_bdda_shadow.py::test_fifteen_family_three_steps_have_only_pinned_classified_differences`。
+  目前只证明主特征不唯一；第二参考会影响历史装配/继承，**不能仅凭几何重复就断言 legacy 物理错误或可安全去重**。
+- **新确认不可复现状态列**：两次独立捕获的 df22 首步 o4 共 570 格不同，逐格满足 `mtype==1 or m0_new==0`。
+  `D:/b-DDA/df/df.c:3994` 跳过 `:4030` 的切向量重算，`:4072-4075` 仍无条件导出，故初始残值可流到 df22。
+  原有 contacts/df18 首步 o3/o4 分别有 975/967 格差异。仅豁免这些明确列与分支，其他保留单元格逐文本一致；
+  原始 CSV 未清洗，新增溯源逐文件记明。M4 检测对账不消费这些状态残值。
+- **静态检测与运动首入不是一回事**：df04/df05 按静态距离、角度和平局规则选参考；contacts 是 df06/df07 后的记录，
+  并非原始盖集合。45 帧中 434 条 VE 的投影落在有限边外（超出本单显式 seg_tol=1e-9），98 条 VV 的点间方向不在开放公共法锥内。
+  独立有理几何确认上述几何事实，但不把 legacy 的有序弹簧参考当成无序局部盖的同一合同；是否物理错误**无法判定**，需后续活动参考/装配核验。
+- **不是 legacy 缺陷的订正**：本仓库旧 VV reader 固定取 p2 错把参考端点当角点，造成虚假的“距离窗外”差异。
+  真实 VV 是两组三点经 alias 后共享的两个角点；M4 已在本树修复并配门。修复后本轮 `LEGACY_OUTSIDE_DISTANCE_WINDOW` 为 0。
+  不能把旧 reader 的假象转交为 b-DDA 缺陷。
+
 ## 2026-09-18 · Phase 0 读取器落地时的观察
 
 ### 3DDA（tf.cpp）

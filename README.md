@@ -1,8 +1,12 @@
 # eab-kernel
 
-> **WO-R10FIX（2026-10-12，未提交、待独立 G6）**：G6J-J01～J05 的修复、同类扫描及验证见 [R10FIX 报告](reports/codex/R10FIX_report.md) 与 [设计同步](docs/r10fix_design_sync.md)。本树结果不构成 M0 退出；外部设计正本保持只读。
+> **WO-M4a / M0 所有者决定（决定日期 2026-10-12；工单原误写 10-17，已订正）**：M0 按“连续四轮独立复审无 critical”口径退出，转入 M4。第六至十轮 critical/major/minor 分别为 **1/7/4、0/9/2、0/6/0、0/4/2、0/4/1**；剩余 major 在独立复审线上继续修。本单不重新核验这些轮次、不触碰 `cx-e2`/`g6*`。这是所有者调整的 M0 退出口径，不等于原 G6 的 0 critical / 0 major；下面保留历史状态。M4a 只做离线影子数据与接缝核验，不修改 b-DDA。结果见 [M4a 报告](file:///D:/eab-wt/cx-m4/reports/codex/M4a_report.md)。
 
-> **WO-R9FIX（2026-10-12，工作树未提交、待独立 G6）**：处置 G6I-01～06：二维共线链首入先核有限源特征域；实体凸性/凹棱及公共法锥按声明三角拓扑；壳方向按嵌套分量核验；精确到浮点统一构造并有独立中点证书与 AST 门。源单盖描述符仍是独立窄域，不等于折面实体完整法锥。设计同步见 `docs/r9fix_design_sync.md`；红绿/变异/全套见 `reports/codex/R9FIX_report.md`。本单未新建 worktree，不是独立六路 G6，不宣称 M0 退出。
+> **M4a 实测（2026-10-12）**：15 输入配对 × 3 步、45 帧离线影子；未知分类 0，三处必需内部变异均被目标断言捕获；全套 `10923 passed in 1191.84s (0:19:51)`。门为 `tests/test_m4_bdda_shadow.py`，VV 读取身份修复由 `tests/test_m4_bdda_vv_reader.py` 看护。使用显式域窗口内的静态局部盖，不是本步真实运动首入，不是力学轨迹等价；`BDDA_DETECT` 只提案、未改姊妹，也未执行新鲜 worktree/独立 G6。差异见 [台账](file:///D:/eab-wt/cx-m4/docs/m4_difference_ledger.md)。
+
+> **WO-R10FIX（2026-10-12，已验收合入 `5591702`）**：G6J-J01～J05 的修复、同类扫描及验证见 [R10FIX 报告](reports/codex/R10FIX_report.md) 与 [设计同步](docs/r10fix_design_sync.md)。外部设计正本保持只读。
+
+> **WO-R9FIX（2026-10-12，已验收合入 `0e9ef93`）**：处置 G6I-01～06：二维共线链首入先核有限源特征域；实体凸性/凹棱及公共法锥按声明三角拓扑；壳方向按嵌套分量核验；精确到浮点统一构造并有独立中点证书与 AST 门。源单盖描述符仍是独立窄域，不等于折面实体完整法锥。设计同步见 `docs/r9fix_design_sync.md`；红绿/变异/全套见 `reports/codex/R9FIX_report.md`。本单未新建 worktree，不是独立六路 G6，不宣称 M0 退出。
 
 
 > **WO-R8FIX（2026-10-12，修复留树，待独立 G6）**：本轮 G6H 确认 6 条 major；逐条红绿、内部变异、旧门对照、同类扫描和全套实测见 [R8FIX 报告](file:///D:/eab-wt/cx-e2/reports/codex/R8FIX_report.md)。当前合同补充见 [R8FIX 设计同步](file:///D:/eab-wt/cx-e2/docs/r8fix_design_sync.md)。本树同步不等于只读外部正本已回写；M0 退出状态不升级。

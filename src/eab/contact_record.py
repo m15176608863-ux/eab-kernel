@@ -11,10 +11,12 @@
   因为三家的 "3" 含义不同：b-DDA 3 = v-v 第二参考闭合，bdda3d 3 = 键合，tf.cpp 3 = 受拉。
 - `extra` 装下一切不入正式字段的列，读取器**不许丢信息**。
 - 典范序键 `canonical_key()` 与来源的枚举顺序无关（块序交换不变），用于跨引擎集合同构比较。
-  它的分辨率取决于来源给了多少特征身份（审查 C20）：bdda_df（有 verts.csv）与 bdda3d 逐步唯一；
+  它的分辨率取决于来源给了多少特征身份（审查 C20）：bdda3d 逐步唯一；bdda_df 在旧夹具唯一，
+  M4 的 v01/v02 四例首步却有 9 条主特征重复，须另记 multiplicity/第二参考，不能无声去重；
   tf 探针不带特征，键只到 (块对, 盖类) 级；bdda_df 缺 verts.csv 时块号未知的记录同样只到块对级。
   bdda_df 的顶点号在有 verts.csv 时已经 alias 规范化到载入后的多边形（G6 minor 30），与由同一多边形造出的
-  内核盖同名；缺 verts.csv 时是原始号。bdda3d 的面身份是 legacy 的三角顶点三元组，归约到几何面要几何
+  内核盖同名；缺 verts.csv 时是原始号。bdda_df 的 VV 顶点来自两组三点参考的共享顶点，不是固定 p1/p2
+  （tests/test_m4_bdda_vv_reader.py）；半交换只改参考次序，不改顶点身份。bdda3d 的面身份是 legacy 的三角顶点三元组，归约到几何面要几何
   （tools/g2_bdda3d.py），所以跨引擎比较 bdda3d 仍须经那一步，不能直接比 canonical_key。
   这几条由 tests/test_readers_roundtrip.py 在真实夹具上断言。
 """

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m4_verify_evidence.py", line 69, in verify
+    gate._gate_case("bb52_N3")
+  File "D:\eab-wt\cx-m4\tests\test_m4_bdda_shadow.py", line 55, in _gate_case
+    _legacy_identity_gate(path, legacy)
+  File "D:\eab-wt\cx-m4\tests\test_m4_bdda_shadow.py", line 46, in _legacy_identity_gate
+    assert r.extra["raw_p1"] == int(row["p1"]), "legacy p1 column misread"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: legacy p1 column misread

@@ -29,6 +29,8 @@ EXCEPTIONS = {
         "Generates supplied predicate inputs from the actual rounded engineering-coordinate endpoints, as required by the test's documented data model.",
     ("tests/test_filtered_predicates.py", "test_orient3d_filter_has_a_real_fast_path", "direct-float"):
         "Exercises float and Fraction supplied input types using only exactly representable 0/1 coordinates; no derived construction or expected-value conversion.",
+    ("src/eab/adapters/bdda2d.py", "load_window", "direct-float"):
+        "Legacy detparams CSV string parsing at the explicit L5 input boundary; not a derived exact construction.",
     ("src/eab/construction.py", "normalized_difference_rational", "subtract-rounded"):
         "Untrusted initial candidate only; exact algebraic comparisons bracket it and certify the final midpoint or perform full bit search.",
     ("src/eab/margin.py", "_resolve", "subtract-rounded"):
