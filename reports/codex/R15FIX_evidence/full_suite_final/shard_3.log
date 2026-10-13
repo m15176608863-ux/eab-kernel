@@ -1,0 +1,85 @@
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  6%]
+........................................................................ [  8%]
+........................................................................ [ 10%]
+........................................................................ [ 12%]
+........................................................................ [ 14%]
+........................................................................ [ 16%]
+........................................................................ [ 18%]
+........................................................................ [ 20%]
+........................................................................ [ 23%]
+........................................................................ [ 25%]
+........................................................................ [ 27%]
+........................................................................ [ 29%]
+........................................................................ [ 31%]
+........................................................................ [ 33%]
+........................................................................ [ 35%]
+........................................................................ [ 37%]
+........................................................................ [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 44%]
+........................................................................ [ 46%]
+........................................................................ [ 48%]
+........................................................................ [ 50%]
+........................................................................ [ 52%]
+........................................................................ [ 54%]
+........................................................................ [ 56%]
+.........F.............................................................. [ 58%]
+........................................................................ [ 60%]
+........................................................................ [ 62%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+........................................................................ [ 69%]
+........................................................................ [ 71%]
+........................................................................ [ 73%]
+........................................................................ [ 75%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 81%]
+........................................................................ [ 83%]
+........................................................................ [ 86%]
+........................................................................ [ 88%]
+........................................................................ [ 90%]
+........................................................................ [ 92%]
+........................................................................ [ 94%]
+........................................................................ [ 96%]
+........................................................................ [ 98%]
+.............................................                            [100%]
+================================== FAILURES ===================================
+_______ test_canon_current_static_summary_matches_r12fixb_local_policy ________
+
+    def test_canon_current_static_summary_matches_r12fixb_local_policy():
+        text = (Path(__file__).resolve().parents[1] / "docs/canon_map.md").read_text(encoding="utf-8")
+        summary = text.splitlines()[2]
+        assert "全 src/tests/tools 原字节依赖图钉住" not in summary, "obsolete whole-repository pin in current canon summary"
+        assert "自动算术证明仅限纯整数字面量" not in summary, "obsolete integer-literal-only proof in current canon summary"
+>       assert "局部" in summary and "Fraction" in summary, "current local AST/source and Fraction flow contract"
+E       AssertionError: current local AST/source and Fraction flow contract
+E       assert ('局部' in '> **WO-R15FIX 当前补充（2026-10-13，待独立复审）**：[显示与完整构造合同](r15fix_design_sync.md) 订正 R14 的 JSON 词法预拒收及未标记向上 infinity；合力、骨形 jet、贯入证书与 profile 精确差分由新增 R15 门看护。逐条红绿/变异及原门保留情况见 [报告](../reports/codex/R15FIX_report.md)。外部设计正本只读未回写，M0/M4a 管理边界不变。')
+
+tests\test_r13fix_docs.py:15: AssertionError
+============================ slowest 20 durations =============================
+146.14s call     tests/test_r13fix_static_lifecycle.py::test_repository_scan_rejects_all_three_new_lifecycle_sources_without_waivers
+7.94s call     tests/test_lp_certificates.py::test_accuracy_against_the_exact_rational_optimum[1-1149]
+7.58s call     tests/test_invariance_interlock.py::test_dilatancy_profile_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1.0]
+6.09s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1000.0]
+5.96s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-0.001]
+5.95s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1.0]
+5.75s call     tests/test_lp_certificates.py::test_accuracy_against_the_exact_rational_optimum[1-1455]
+5.69s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-1.0]
+5.36s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-0.0-1000.0]
+5.20s call     tests/test_invariance_interlock.py::test_dilatancy_profile_is_rigid_motion_and_unit_invariant[z0.7-100000.0-0.001]
+5.18s call     tests/test_g4_multistep.py::test_static_prior_verdict_under_the_df22_truth
+5.10s call     tests/test_limit.py::test_three_d_cone_error_depends_on_frame_alignment_not_monotone_in_k
+4.88s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-100000.0-1000.0]
+4.56s call     tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[I-0.0-0.001]
+4.55s call     tests/test_margin_exact.py::test_content_cache_is_value_identical_to_the_uncached_exact_path
+4.49s call     tests/test_invariance_interlock.py::test_brute_oracle_is_exact_zero_at_rest_and_scales[z0.7-1000.0-0.001]
+4.36s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[z0.7-1000.0-0.001]
+4.31s call     tests/test_invariance_interlock.py::test_escape_height_is_rigid_motion_and_unit_invariant[I-0.0-0.001]
+4.22s call     tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-1.0]
+3.99s call     tests/test_invariance_interlock.py::test_escape_tied_set_is_invariant_up_to_the_declared_resolution[z0.7-0.0-0.001]
+=========================== short test summary info ===========================
+FAILED tests/test_r13fix_docs.py::test_canon_current_static_summary_matches_r12fixb_local_policy
+1 failed, 3428 passed in 556.76s (0:09:16)

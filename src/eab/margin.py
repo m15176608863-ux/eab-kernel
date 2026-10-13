@@ -477,21 +477,28 @@ def margin_contacts(A: Polyhedron, B: Polyhedron, *, delta: float, band: float =
                     contact_window: float | None = None) -> list[MarginContact]:
     """Generalized contacts with exact squared-distance inclusion <= delta+band.
 
-    Default penetration returns one closed sentinel; explicit contact_window
+    Default penetration returns one sentinel (closed for nonnegative delta); explicit contact_window
     accepts certified local penetration thickness and separated distances <= w.
     This is not a Euclidean whole-body PD threshold; see body_distance.
     Accepted contact distances are zero, normal is None, margin_gap=-delta.
     margin_gap rounds the exact distance-minus-delta expression, not the
     subtraction of two display floats. Display underflow is accompanied by
-    exact_distance_squared and the separately exact closed classification.
+    exact_distance_squared and the separately exact closed classification,
+    including the penetration sentinel (distance squared zero). Nonfinite
+    inputs and overflowing gap displays raise ConstructionDomainError.
+    Gate: test_r15_o03_penetration_early_return_has_exact_display_certificate.
     Gate: test_margin_contact_difference_is_constructed_before_display_rounding.
     Default ordering uses exact squared distances. Window-mode tie reporting
     retains the historical convention, not distances from rounded global points.
     Gate: test_window_contact_distance_rounds_exact_scalar_not_global_witness_points.
     """
+    delta = exact_input(delta, "margin_contacts.delta")
+    band = exact_input(band, "margin_contacts.band")
     ctol, rnd, wits, contact, minimum2 = _resolved(A, B, tol, geom_tol, contact_window)
     if wits is None:
-        return [MarginContact((PENETRATING,), 0.0, 0.0 - delta, None, None, None)]
+        gap = scalar_rational(-delta, allow_underflow=True, quantity="margin_contacts.margin_gap")
+        return [MarginContact((PENETRATING,), 0.0, gap, None, None, None,
+                              delta >= 0, Fraction(0))]
     out: list[MarginContact] = []
     ranked = []
     nearest2 = min((row[3] for row in wits), default=None)

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "O03",
+    "function": "eab.margin.margin_contacts",
+    "removed": "return [MarginContact((PENETRATING,), 0.0, gap, None, None, None,\n                              delta >= 0, Fraction(0))]",
+    "inserted": "return [MarginContact((PENETRATING,), 0.0, 0.0 - delta, None, None, None)]",
+    "mutation_killed": true,
+    "failed_assertion": "penetration output must carry exact distance/closed certificates",
+    "error_type": "AssertionError",
+    "actual_error": "('penetration output must carry exact distance/closed certificates', (0.0, None, None))"
+  },
+  {
+    "id": "O05",
+    "function": "eab.kernel3d.interlock.escape_height_covers",
+    "removed": "height_display_overflow=math.isinf(display)",
+    "inserted": "height_display_overflow=False",
+    "mutation_killed": true,
+    "failed_assertion": "finite exact root needs explicit upward-display overflow marker",
+    "error_type": "AssertionError",
+    "actual_error": "('finite exact root needs explicit upward-display overflow marker', inf, Fraction(1, 1))"
+  },
+  {
+    "id": "SCAN_BRUTE",
+    "function": "eab.kernel3d.interlock.escape_height_brute",
+    "removed": "if result.height_display_overflow:",
+    "inserted": "if False:",
+    "mutation_killed": true,
+    "failed_assertion": "DID NOT RAISE",
+    "error_type": "Failed",
+    "actual_error": "DID NOT RAISE <class 'eab.numeric_domain.ConstructionDomainError'>"
+  },
+  {
+    "id": "SCAN_PROFILE_CERTIFICATE",
+    "function": "eab.kernel3d.interlock.dilatancy_profile",
+    "removed": "\"height_display_overflow\": sol.height_display_overflow",
+    "inserted": "\"height_display_overflow\": False",
+    "mutation_killed": true,
+    "failed_assertion": "profile must propagate exact root and overflow certificate",
+    "error_type": "AssertionError",
+    "actual_error": "('profile must propagate exact root and overflow certificate', {'delta': Fraction(-1, 16), 'h': inf, 'cover': ('EE', ('edge', 1, 2), ('edge', 5, 7)), 'n_covers': 0, 'exact_height': Fraction(179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858369, 1), 'height_display_overflow': False, 'tan_psi': None})"
+  },
+  {
+    "id": "SCAN_PROFILE_DIFFERENCE",
+    "function": "eab.kernel3d.interlock.dilatancy_profile",
+    "removed": "F(out[i + 1]['exact_height']) - F(out[i - 1]['exact_height'])",
+    "inserted": "F(out[i + 1]['h']) - F(out[i - 1]['h'])",
+    "mutation_killed": true,
+    "failed_assertion": "affine top-plane slope survives common-height cancellation",
+    "error_type": "AssertionError",
+    "actual_error": "('affine top-plane slope survives common-height cancellation', [{'delta': Fraction(-1, 16), 'h': 1.1529215046068472e+18, 'cover': ('EE', ('edge', 1, 2), ('edge', 5, 7)), 'n_covers': 0, 'exact_height': Fraction(18446744073709551617, 16), 'height_display_overflow': False, 'tan_psi': None}, {'delta': Fraction(0, 1), 'h': 1.1529215046068472e+18, 'cover': ('EE', ('edge', 0, 1), ('edge', 5, 7)), 'n_covers': 0, 'exact_height': Fraction(9223372036854775809, 8), 'height_display_overflow': False, 'tan_psi': 0.0}, {'delta': Fraction(1, 16), 'h': 1.1529215046068472e+18, 'cover': ('VF', ('vertex', 1), ('face', 1)), 'n_covers': 0, 'exact_height': Fraction(18446744073709551619, 16), 'height_display_overflow': False, 'tan_psi': None}])"
+  },
+  {
+    "id": "SCAN_PROFILE_OFFSET",
+    "function": "eab.kernel3d.interlock.dilatancy_profile",
+    "removed": "off = tuple(F(d) * F(component) for component in direction)",
+    "inserted": "off = tuple(d * component for component in direction)",
+    "mutation_killed": true,
+    "failed_assertion": "exact offset product must not collapse distinct sample points",
+    "error_type": "AssertionError",
+    "actual_error": "('exact offset product must not collapse distinct sample points', [{'delta': Fraction(79228162514264337593543950335, 1267650600228229401496703205376), 'h': 1.1529215046068472e+18, 'cover': ('VF', ('vertex', 1), ('face', 1)), 'n_covers': 0, 'exact_height': Fraction(18446744073709551619, 16), 'height_display_overflow': False, 'tan_psi': None}, {'delta': Fraction(1, 16), 'h': 1.1529215046068472e+18, 'cover': ('VF', ('vertex', 1), ('face', 1)), 'n_covers': 0, 'exact_height': Fraction(18446744073709551619, 16), 'height_display_overflow': False, 'tan_psi': 0.0}, {'delta': Fraction(79228162514264337593543950337, 1267650600228229401496703205376), 'h': 1.1529215046068472e+18, 'cover': ('VF', ('vertex', 1), ('face', 1)), 'n_covers': 0, 'exact_height': Fraction(18446744073709551619, 16), 'height_display_overflow': False, 'tan_psi': None}])"
+  }
+]

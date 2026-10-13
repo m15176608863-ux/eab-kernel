@@ -5,7 +5,9 @@ value is finite and nonzero: 2**-1075 < abs(q) < 2**1024 - 2**970.
 Rounding within that range is deliberate; this is not the narrower D400
 engineering construction envelope. Integer identities remain exact, without
 a magnitude bound. Strings retained as source evidence are not constructed.
-Gate: tests/test_r14_readers.py; no nonstandard JSON NaN/Infinity sentinel.
+Gates: tests/test_r14_readers.py and tests/test_r15fix_numeric_decode.py.
+No nonstandard JSON NaN/Infinity sentinel; parse_float only retains exact
+decimal values and signed zero, never applies a continuous-field range gate.
 """
 from fractions import Fraction
 import json
@@ -16,8 +18,8 @@ from ..numeric_domain import ConstructionDomainError, exact_input
 
 def _decimal(token):
     q = Fraction(token)
-    # Check before any conversion can erase nonzero/finite source information.
-    scalar_rational(q, quantity="JSON numeric literal")
+    # Token transport is schema-free: integer identities have no binary64
+    # magnitude bound. Continuous fields apply scalar() after dispatch.
     # JSON real negative-zero tokens carry an existing binary64 sign bit;
     # integer -0 keeps json's original integer-zero semantics (parse_int).
     if not q and token.startswith("-"):

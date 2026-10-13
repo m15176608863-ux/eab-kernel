@@ -1,5 +1,7 @@
 # eab-kernel
 
+> **WO-R15FIX（2026-10-13，工作树修复，待独立复审）**：G6O 实际确认 O01～O05 五条（0 critical / 3 major / 2 minor）。合力与具名骨形 jet 完整求值后舍入；贯入早返回补精确显示证书；JSON 按字段分派数值域；向上高度 infinity 例外显式标记并传递。根因、同类扩展修复、红绿/内部变异、完整测试实测见 [R15FIX 报告](reports/codex/R15FIX_report.md)；当前合同见 [本树设计同步](docs/r15fix_design_sync.md)。保留 M4a 门，不重开或重宣 M0，不把本树绿说成独立 G6／新鲜树验收。
+
 > **WO-R14FIX（2026-10-13，待独立复审）**：5 条 G6N major 的修复与同类扫描见 [报告](reports/codex/R14FIX_report.md)。现行支持域按 [物理量分项](docs/r14fix_design_sync.md)：摩擦 μ∈[0,2^20]，最终射线独立认证圆锥包含；精确角度/一般幂参数先检查无损 binary64，文本先精确解析再查 RN 输出域。撤回一般承载相对余弦界，保留有条件的理想模型集合夹逼。M0 所有者决定、M4a 离线边界不变，不宣称独立 G6 通过。
 
 > **WO-R13FIXb 数值支持域（2026-10-13）**：判定继续对任意有限 binary64 / int / Fraction 精确；构造按声明域保证 RN-even 或所列误差界，超域须抛含量名的 `ConstructionDomainError`。基础近似输入域为非零 `[2^-400, 2^400]`，但仍需核输出范围；已有全域正确的代数构造不收窄。合同与推导见 [支持域定义](docs/exact_predicates_plan.md#r13fixb-numeric-domain)，实现未闭合项见 [138 项清单](docs/r13fix_construction_inventory.md) / [R13FIXb 报告](reports/codex/R13FIXb_report.md)；不能据此声称全 API 已满足该合同。

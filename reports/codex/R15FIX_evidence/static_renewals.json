@@ -1,0 +1,17 @@
+{
+  "renewed": [
+    {
+      "id": "R15-L0027",
+      "path": "tests/test_r15fix_force_reports.py",
+      "function": "test_contact_force_report_rounds_complete_exact_sum",
+      "rule": "direct-float",
+      "node": "Call(func=Name(id='float', ctx=Load()), args=[Name(id='x', ctx=Load())], keywords=[])",
+      "context": "1a1ad16f2c2501dde361732cf7a4df7ab0af9c3c8dfebd1b831533ae30a1b27d",
+      "category": "RUNTIME_TEST_ORACLE_REVIEW",
+      "reason": "Specific node: float(x). Standard float rounds only completed independent expected Fraction resultant / exact power-of-two weight. No production output is rounded to weaken assertion; tuples are compared exactly. R15 local renewal: Standard float rounds only completed independent expected Fraction resultant / exact power-of-two weight. No production output is rounded to weaken assertion; tuples are compared exactly.",
+      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+    }
+  ],
+  "removed": [],
+  "imports_added": []
+}

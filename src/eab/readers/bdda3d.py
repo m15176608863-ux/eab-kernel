@@ -25,6 +25,18 @@ _KNOWN = {"etype", "bi", "bj", "refs", "owner", "nsign", "t1", "t2", "d1", "area
 
 def record_from_entrance(c: dict[str, Any], *, step: int = 0, index: int = 0,
                          verts: dict[str, Any] | None = None) -> ContactRecord:
+    # Classify all known fields before generic evidence-tree decoding. In
+    # particular, integer flags are not continuous, while an integer spelling
+    # does not exempt d1/material coefficients or an unpaired t1/t2 from their
+    # continuous output boundary. Keep the caller's source dictionary unchanged.
+    c = dict(c)
+    for name in ("t1", "t2", "d1", "fa", "coh", "tens"):
+        if c.get(name) is not None:
+            c[name] = scalar_rational(c[name], quantity=f"bdda3d.{name}")
+    if c.get("nsign") is not None:
+        c["nsign"] = integer(c["nsign"], "bdda3d.nsign")
+    if c.get("owner") is not None:
+        c["owner"] = [integer(v, "bdda3d.owner") for v in c["owner"]]
     etype = str(c.get("etype", ""))
     cover = BDDA3D_COVER.get(etype, CoverType.UNKNOWN)
     bi, bj = integer(c["bi"], "bdda3d.bi"), integer(c["bj"], "bdda3d.bj")

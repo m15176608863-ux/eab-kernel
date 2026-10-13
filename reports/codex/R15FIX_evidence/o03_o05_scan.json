@@ -1,0 +1,1155 @@
+{
+  "scope": [
+    "src/eab/margin.py",
+    "src/eab/kernel3d/__init__.py",
+    "src/eab/kernel3d/covers3.py",
+    "src/eab/kernel3d/entrance3.py",
+    "src/eab/kernel3d/entrance_topology.py",
+    "src/eab/kernel3d/exact_geom.py",
+    "src/eab/kernel3d/exact_sweep.py",
+    "src/eab/kernel3d/frozen.py",
+    "src/eab/kernel3d/g03.py",
+    "src/eab/kernel3d/g03_exact.py",
+    "src/eab/kernel3d/g03_surface_oracle.py",
+    "src/eab/kernel3d/geom3.py",
+    "src/eab/kernel3d/interlock.py"
+  ],
+  "method": "AST return/call inventory plus manual full read margin/interlock; selected covers3, entrance3, geom3 construction branches and all escape consumer call sites. Not a proof for arbitrary geometry.",
+  "records": [
+    {
+      "path": "src/eab/margin.py",
+      "function": "characteristic_length",
+      "line": 99,
+      "returns": [
+        {
+          "line": 106,
+          "expression": "out"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "coordinate_magnitude",
+      "line": 109,
+      "returns": [
+        {
+          "line": 111,
+          "expression": "max(abs(c) for P in bodies for v in P.verts for c in v)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "rounding_floor",
+      "line": 114,
+      "returns": [
+        {
+          "line": 116,
+          "expression": "scalar_rational(_rounding_floor_exact(*bodies), quantity=\"rounding_floor result\")"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_rounding_floor_exact",
+      "line": 119,
+      "returns": [
+        {
+          "line": 126,
+          "expression": "Fraction(ROUNDING_C) * Fraction(_EPS) *\n            max(Fraction(coordinate_magnitude(*bodies)), Fraction(characteristic_length(*bodies)))"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "effective_geom_tol",
+      "line": 130,
+      "returns": [
+        {
+          "line": 132,
+          "expression": "scalar_rational(_effective_geom_tol_exact(A, B, geom_tol), quantity=\"effective_geom_tol result\")"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_effective_geom_tol_exact",
+      "line": 135,
+      "returns": [
+        {
+          "line": 139,
+          "expression": "max(base, _rounding_floor_exact(A, B))"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_tie_groups",
+      "line": 142,
+      "returns": [
+        {
+          "line": 153,
+          "expression": "out"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "cover_witness",
+      "line": 158,
+      "returns": [
+        {
+          "line": 176,
+          "expression": "d, n"
+        },
+        {
+          "line": 166,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_surface_view",
+      "line": 179,
+      "returns": [
+        {
+          "line": 182,
+          "expression": "Polyhedron(list(vertices), list(faces)), labels"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_surface_payload",
+      "line": 186,
+      "returns": [
+        {
+          "line": 208,
+          "expression": "vertices, tuple(out), tuple(labels)"
+        },
+        {
+          "line": 196,
+          "expression": "vertices, faces, tuple((\"face\", fi) for fi in range(len(faces)))"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_witnesses",
+      "line": 211,
+      "returns": [
+        {
+          "line": 240,
+          "expression": "out"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "contact_resolution",
+      "line": 243,
+      "returns": [
+        {
+          "line": 250,
+          "expression": "scalar_rational(max(Fraction(effective_geom_tol(A, B, geom_tol)),\n                               Fraction(1e-12) * Fraction(diag)) + Fraction(rounding_floor(A, B)))"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_contact_window",
+      "line": 254,
+      "returns": [
+        {
+          "line": 260,
+          "expression": "Fraction(contact_window)"
+        },
+        {
+          "line": 257,
+          "expression": "Fraction(0)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_witness_squared",
+      "line": 264,
+      "returns": [
+        {
+          "line": 269,
+          "expression": "_witness_squared(vertices_b, faces_b, vertices_a, faces_a, (\"VF\", fb, fa))"
+        },
+        {
+          "line": 271,
+          "expression": "_witness_squared(vertices_b, faces_b, vertices_a, faces_a, (\"VE3\", fb, fa))"
+        },
+        {
+          "line": 276,
+          "expression": "h*h/_exact.dot(n, n)"
+        },
+        {
+          "line": 280,
+          "expression": "h*h/_exact.dot(n, n)"
+        },
+        {
+          "line": 284,
+          "expression": "_exact.dot(n, n)/_exact.dot(u, u)"
+        },
+        {
+          "line": 287,
+          "expression": "_exact.dot(d, d)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_surface_feature_squared",
+      "line": 292,
+      "returns": [
+        {
+          "line": 304,
+          "expression": "_witness_squared(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces), label)"
+        },
+        {
+          "line": 296,
+          "expression": "_surface_feature_squared(B, A, (\"VF\", fb, fa))"
+        },
+        {
+          "line": 302,
+          "expression": "min(_exact.point_triangle_distance_squared(point, tuple(_exact.vector(B.verts[i]) for i in tri))\n                       for tri in pieces)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_repair_folded_construction",
+      "line": 307,
+      "returns": [
+        {
+          "line": 334,
+          "expression": "target, n"
+        },
+        {
+          "line": 311,
+          "expression": "w, n"
+        },
+        {
+          "line": 315,
+          "expression": "w, n"
+        },
+        {
+          "line": 319,
+          "expression": "w, n"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 309,
+          "call": "_exact.sqrt_rational(squared, allow_underflow=True)"
+        },
+        {
+          "line": 333,
+          "call": "unit(direction, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_penetration_within_window",
+      "line": 336,
+      "returns": [
+        {
+          "line": 351,
+          "expression": "any(polyhedra_overlap(ca, cb, 0) <= 0\n               for _, ca, cb in contact_models(A, B, window))"
+        },
+        {
+          "line": 349,
+          "expression": "False"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_resolve",
+      "line": 355,
+      "returns": [
+        {
+          "line": 401,
+          "expression": "ctol, rnd, wits, minimum2 is not None and minimum2 <= ctol*ctol, minimum2"
+        },
+        {
+          "line": 367,
+          "expression": "ctol, 0.0, None, True, Fraction(0)"
+        },
+        {
+          "line": 376,
+          "expression": "ctol, rnd, wits, True, Fraction(0)"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 381,
+          "call": "_exact.sqrt_rational(truth2, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_resolved",
+      "line": 404,
+      "returns": [
+        {
+          "line": 411,
+          "expression": "ctol, rnd, fresh, contact, minimum2"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "_resolved_cached",
+      "line": 415,
+      "returns": [
+        {
+          "line": 427,
+          "expression": "ctol, rnd, payload, contact, minimum2"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "body_distance",
+      "line": 430,
+      "returns": [
+        {
+          "line": 453,
+          "expression": "(0.0 if contact else _exact.sqrt_rational(d2)), c.label()"
+        },
+        {
+          "line": 444,
+          "expression": "0.0, (PENETRATING,)"
+        },
+        {
+          "line": 446,
+          "expression": "(0.0 if contact else float(\"inf\")), None"
+        },
+        {
+          "line": 449,
+          "expression": "(0.0 if contact else _exact.sqrt_rational(d2)), c.label()"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "margin_contacts",
+      "line": 475,
+      "returns": [
+        {
+          "line": 525,
+          "expression": "_tie_groups(out, [m.margin_gap for m in out], rnd)"
+        },
+        {
+          "line": 500,
+          "expression": "[MarginContact((PENETRATING,), 0.0, gap, None, None, None,\n                              delta >= 0, Fraction(0))]"
+        },
+        {
+          "line": 524,
+          "expression": "[m for _, m in sorted(ranked, key=lambda item: item[0])]"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 499,
+          "call": "scalar_rational(-delta, allow_underflow=True, quantity=\"margin_contacts.margin_gap\")"
+        },
+        {
+          "line": 516,
+          "call": "_normalized_difference(d2, d2 or Fraction(1), Fraction(delta), allow_underflow=True)"
+        },
+        {
+          "line": 510,
+          "call": "_exact.sqrt_rational(d2, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "boundary_band",
+      "line": 528,
+      "returns": [
+        {
+          "line": 535,
+          "expression": "scalar_rational(max(base, _rounding_floor_exact(A, B)), quantity=\"boundary_band result\")"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "inflated_membership",
+      "line": 538,
+      "returns": [
+        {
+          "line": 573,
+          "expression": "ON_BOUNDARY"
+        },
+        {
+          "line": 556,
+          "expression": "INSIDE"
+        },
+        {
+          "line": 559,
+          "expression": "entrance_membership3(A, B)"
+        },
+        {
+          "line": 561,
+          "expression": "ON_BOUNDARY if contact and delta == 0 else (INSIDE if contact else OUTSIDE)"
+        },
+        {
+          "line": 570,
+          "expression": "INSIDE"
+        },
+        {
+          "line": 572,
+          "expression": "OUTSIDE"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "entrance_block_convex",
+      "line": 578,
+      "returns": [
+        {
+          "line": 586,
+          "expression": "convex_hull_3d(pts)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "nearest_point_on_convex_entrance",
+      "line": 589,
+      "returns": [
+        {
+          "line": 600,
+          "expression": "point if exact else tuple(scalar_rational(_mapped_value) for _mapped_value in point)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "distance_to_convex_entrance",
+      "line": 603,
+      "returns": [
+        {
+          "line": 606,
+          "expression": "_exact.sqrt_rational(_exact.dot(displacement, displacement))"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "inflated_normal",
+      "line": 609,
+      "returns": [
+        {
+          "line": 621,
+          "expression": "unit(v)"
+        },
+        {
+          "line": 620,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "margin_gap_from_frozen_cover",
+      "line": 626,
+      "returns": [
+        {
+          "line": 640,
+          "expression": "frozen_gap(A, B, label, x, ee_sign=ee_sign, delta=delta)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/margin.py",
+      "function": "closed",
+      "line": 471,
+      "returns": [
+        {
+          "line": 472,
+          "expression": "self.margin_gap <= 0.0 if self._exact_closed is None else self._exact_closed"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "function": "_float_vector",
+      "line": 93,
+      "returns": [
+        {
+          "line": 94,
+          "expression": "vector_rational(v, allow_underflow=True)"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 94,
+          "call": "vector_rational(v, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "function": "_signed_gap",
+      "line": 468,
+      "returns": [
+        {
+          "line": 471,
+          "expression": "-magnitude if numerator < 0 else magnitude"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 470,
+          "call": "sqrt_rational(squared, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "function": "vf_cover",
+      "line": 487,
+      "returns": [
+        {
+          "line": 498,
+          "expression": "Cover3(\"VF\", (\"vertex\", ia), (\"face\", fb), _qunit(n, allow_underflow=True), g, a, wit, (),\n                  sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,\n                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4, n)"
+        },
+        {
+          "line": 492,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 498,
+          "call": "_qunit(n, allow_underflow=True)"
+        },
+        {
+          "line": 499,
+          "call": "sqrt_rational(nn/4, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "function": "fv_cover",
+      "line": 503,
+      "returns": [
+        {
+          "line": 514,
+          "expression": "Cover3(\"FV\", (\"face\", fa), (\"vertex\", ib), neg(_qunit(n, allow_underflow=True)), g, wit, b, (),\n                  sqrt_rational(nn/4, allow_underflow=True), side == 1, inside,\n                  numerator*numerator/nn, (numerator > 0)-(numerator < 0), nn/4, neg(n))"
+        },
+        {
+          "line": 508,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 515,
+          "call": "sqrt_rational(nn/4, allow_underflow=True)"
+        },
+        {
+          "line": 514,
+          "call": "_qunit(n, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "function": "ee_cover",
+      "line": 547,
+      "returns": [
+        {
+          "line": 586,
+          "expression": "None"
+        },
+        {
+          "line": 554,
+          "expression": "None"
+        },
+        {
+          "line": 582,
+          "expression": "Cover3(\"EE\", (\"edge\", *ea), (\"edge\", *eb), unit_normal, gap,\n                      _float_vector(qa), _float_vector(qb), (scalar_rational(s, allow_underflow=True), scalar_rational(t, allow_underflow=True)), None,\n                      sb == 1 and sa == 1, inside,\n                      numerator*numerator/nn, (numerator > 0)-(numerator < 0), None, candidate, (s, t))"
+        },
+        {
+          "line": 566,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 571,
+          "call": "_qunit(candidate, allow_underflow=True)"
+        },
+        {
+          "line": 583,
+          "call": "scalar_rational(s, allow_underflow=True)"
+        },
+        {
+          "line": 583,
+          "call": "scalar_rational(t, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "function": "ve3_cover",
+      "line": 592,
+      "returns": [
+        {
+          "line": 606,
+          "expression": "Cover3(\"VE3\", (\"vertex\", ia), (\"edge\", *eb), _qunit(v, allow_underflow=True), sqrt_rational(vv, allow_underflow=True),\n                  A.verts[ia], _float_vector(add(p0, mul(d, _qclamp(s)))), (scalar_rational(s, allow_underflow=True),), None,\n                  sb == 1 and sa == 1, _qparameter_in_extent(s, d, extent_tol), vv, 1, None, v, (s,))"
+        },
+        {
+          "line": 601,
+          "expression": "None"
+        },
+        {
+          "line": 604,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 606,
+          "call": "_qunit(v, allow_underflow=True)"
+        },
+        {
+          "line": 606,
+          "call": "sqrt_rational(vv, allow_underflow=True)"
+        },
+        {
+          "line": 607,
+          "call": "scalar_rational(s, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "function": "vv3_cover",
+      "line": 623,
+      "returns": [
+        {
+          "line": 633,
+          "expression": "Cover3(\"VV3\", (\"vertex\", ia), (\"vertex\", ib), _qunit(v, allow_underflow=True), sqrt_rational(vv, allow_underflow=True),\n                  a, b, (), None, True, active, vv, 1, None, v)"
+        },
+        {
+          "line": 626,
+          "expression": "None"
+        },
+        {
+          "line": 630,
+          "expression": "Cover3(\"VV3\", (\"vertex\", ia), (\"vertex\", ib), None, 0.0, a, b, (), None, True, True, Fraction(0), 0)"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 633,
+          "call": "_qunit(v, allow_underflow=True)"
+        },
+        {
+          "line": 633,
+          "call": "sqrt_rational(vv, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/entrance3.py",
+      "function": "first_entrance_brute",
+      "line": 347,
+      "returns": [
+        {
+          "line": 388,
+          "expression": "scalar_rational(up)"
+        },
+        {
+          "line": 366,
+          "expression": "polyhedra_overlap(translate_exact(A,shift),B,0)"
+        },
+        {
+          "line": 369,
+          "expression": "0.0"
+        },
+        {
+          "line": 378,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 380,
+          "call": "scalar_rational(lo,allow_underflow=True)"
+        },
+        {
+          "line": 380,
+          "call": "scalar_rational(up,allow_underflow=True)"
+        },
+        {
+          "line": 382,
+          "call": "scalar_rational(up,allow_underflow=True)"
+        },
+        {
+          "line": 381,
+          "call": "scalar_rational(lo,allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/exact_geom.py",
+      "function": "_iv",
+      "line": 17,
+      "returns": [
+        {
+          "line": 25,
+          "expression": "(math.nextafter(f,-math.inf),math.nextafter(f,math.inf))"
+        },
+        {
+          "line": 24,
+          "expression": "(f,f)"
+        },
+        {
+          "line": 22,
+          "expression": "(-math.inf,math.inf)"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 25,
+          "call": "math.nextafter(f,-math.inf)"
+        },
+        {
+          "line": 25,
+          "call": "math.nextafter(f,math.inf)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/exact_geom.py",
+      "function": "_ia",
+      "line": 28,
+      "returns": [
+        {
+          "line": 29,
+          "expression": "(math.nextafter(a[0]+b[0],-math.inf),math.nextafter(a[1]+b[1],math.inf))"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 29,
+          "call": "math.nextafter(a[0]+b[0],-math.inf)"
+        },
+        {
+          "line": 29,
+          "call": "math.nextafter(a[1]+b[1],math.inf)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/exact_geom.py",
+      "function": "_is",
+      "line": 32,
+      "returns": [
+        {
+          "line": 33,
+          "expression": "(math.nextafter(a[0]-b[1],-math.inf),math.nextafter(a[1]-b[0],math.inf))"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 33,
+          "call": "math.nextafter(a[0]-b[1],-math.inf)"
+        },
+        {
+          "line": 33,
+          "call": "math.nextafter(a[1]-b[0],math.inf)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/exact_geom.py",
+      "function": "_im",
+      "line": 36,
+      "returns": [
+        {
+          "line": 40,
+          "expression": "(math.nextafter(min(vals),-math.inf),math.nextafter(max(vals),math.inf))"
+        },
+        {
+          "line": 39,
+          "expression": "(-math.inf,math.inf)"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 40,
+          "call": "math.nextafter(min(vals),-math.inf)"
+        },
+        {
+          "line": 40,
+          "call": "math.nextafter(max(vals),math.inf)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/exact_geom.py",
+      "function": "polygon_locate",
+      "line": 145,
+      "returns": [
+        {
+          "line": 188,
+          "expression": "1 if wn else -1"
+        },
+        {
+          "line": 167,
+          "expression": "0"
+        },
+        {
+          "line": 174,
+          "expression": "0"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 161,
+          "call": "math.nextafter(min(ai[j][0],bi[j][0])-ti[1],-math.inf)"
+        },
+        {
+          "line": 162,
+          "call": "math.nextafter(max(ai[j][1],bi[j][1])+ti[1],math.inf)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/geom3.py",
+      "function": "angle_between",
+      "line": 120,
+      "returns": [
+        {
+          "line": 133,
+          "expression": "atan2(sine, ratio_rational(d, scale, allow_underflow=True))"
+        },
+        {
+          "line": 129,
+          "expression": "0.0"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 133,
+          "call": "ratio_rational(d, scale, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/geom3.py",
+      "function": "dihedral_turn",
+      "line": 369,
+      "returns": [
+        {
+          "line": 400,
+          "expression": "atan2(-sine if triple < 0 else sine,\n                     -cosine_value if cosine < 0 else cosine_value)"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 399,
+          "call": "_eg.sqrt_rational(cosine*cosine/scale2, allow_underflow=True)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "escape_height_brute",
+      "line": 49,
+      "returns": [
+        {
+          "line": 66,
+          "expression": "result.height"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_normal_noise",
+      "line": 90,
+      "returns": [
+        {
+          "line": 109,
+          "expression": "0.0"
+        },
+        {
+          "line": 95,
+          "expression": "B.face_noise(bf[1])"
+        },
+        {
+          "line": 97,
+          "expression": "A.face_noise(af[1])"
+        },
+        {
+          "line": 108,
+          "expression": "(A.edge_noise(ea) + B.edge_noise(eb)) / sine"
+        },
+        {
+          "line": 107,
+          "expression": "float(\"inf\")"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_cover_escape_z",
+      "line": 112,
+      "returns": [
+        {
+          "line": 123,
+          "expression": "-cover.gap / nz, nz"
+        },
+        {
+          "line": 119,
+          "expression": "None"
+        },
+        {
+          "line": 122,
+          "expression": "None"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_cover_at",
+      "line": 126,
+      "returns": [
+        {
+          "line": 135,
+          "expression": "None"
+        },
+        {
+          "line": 130,
+          "expression": "vf_cover(Az, af[1], B, bf[1], tol, extent_tol)"
+        },
+        {
+          "line": 132,
+          "expression": "fv_cover(Az, af[1], B, bf[1], tol, extent_tol)"
+        },
+        {
+          "line": 134,
+          "expression": "ee_cover(Az, (af[1], af[2]), B, (bf[1], bf[2]), tol, extent_tol)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_candidates",
+      "line": 144,
+      "returns": [
+        {
+          "line": 165,
+          "expression": "list(rows), r"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_candidates_cached",
+      "line": 169,
+      "returns": [
+        {
+          "line": 174,
+          "expression": "tuple(rows), r"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_candidates_uncached",
+      "line": 177,
+      "returns": [
+        {
+          "line": 209,
+          "expression": "out, r"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "escape_candidates",
+      "line": 212,
+      "returns": [
+        {
+          "line": 220,
+          "expression": "[(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_nonpenetrating_at",
+      "line": 223,
+      "returns": [
+        {
+          "line": 226,
+          "expression": "polyhedra_overlap(translate_exact(A,displacement),B,0)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_prior_intervals",
+      "line": 229,
+      "returns": [],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_exact_escape",
+      "line": 237,
+      "returns": [
+        {
+          "line": 238,
+          "expression": "_exact_escape_cached(tuple(A.verts),tuple(A.faces),tuple(B.verts),tuple(B.faces),\n                                tuple(F(_mapped_value) for _mapped_value in offset),cap,_nonpenetrating_at,_prior_intervals,surface_events)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_exact_escape_cached",
+      "line": 243,
+      "returns": [
+        {
+          "line": 248,
+          "expression": "F(0),None,(),initial,()"
+        },
+        {
+          "line": 265,
+          "expression": "height,witness,tuple(proof),state,events"
+        },
+        {
+          "line": 267,
+          "expression": "None,None,(),1,events"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "escape_height_covers",
+      "line": 271,
+      "returns": [
+        {
+          "line": 334,
+          "expression": "EscapeSolution(display,lab,len(cands),tied,root,\n                          (F(offset[0]),F(offset[1]),F(offset[2])+root),proof,state,name,\n                          event.label if event is not None else None,\n                          tuple(-n for n in event.normal) if event is not None and event.normal[2]<0\n                          else (event.normal if event is not None else ()),\n                          height_display_overflow=math.isinf(display))"
+        }
+      ],
+      "underflow_or_directed_rounding": [
+        {
+          "line": 322,
+          "call": "math.nextafter(display,math.inf)"
+        }
+      ]
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "_escape_solution",
+      "line": 342,
+      "returns": [
+        {
+          "line": 353,
+          "expression": "EscapeSolution(z, win, len(cands), tied)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "escape_height_from_frozen_cover",
+      "line": 356,
+      "returns": [
+        {
+          "line": 369,
+          "expression": "frozen_lift(A, B, label, offset, ee_sign)"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    },
+    {
+      "path": "src/eab/kernel3d/interlock.py",
+      "function": "dilatancy_profile",
+      "line": 372,
+      "returns": [
+        {
+          "line": 400,
+          "expression": "out"
+        }
+      ],
+      "underflow_or_directed_rounding": []
+    }
+  ],
+  "confirmed_additional_repairs": [
+    "escape_height_brute loses overflow marker in bare-float return",
+    "dilatancy_profile loses exact/overflow certificate",
+    "dilatancy_profile differences rounded display heights",
+    "dilatancy_profile rounds Fraction times float direction before exact sweep"
+  ],
+  "reviewed_nonfindings": [
+    "margin _resolve penetration distance=0 is a documented sentinel; certificate Fraction(0) retained internally",
+    "margin body_distance contact zero is a documented sentinel; separated distance strict sqrt_rational rejects underflow",
+    "margin inflated_membership early returns only integer topology states, no display scalar",
+    "margin regular contacts retain exact squared distance and exact closed before allow_underflow",
+    "covers3 VF/FV/EE/VE3/EV3/VV3 underflow displays accompanied by exact gap squared/sign/direction/params as applicable; exact-zero VV3 early return has exact gap zero",
+    "entrance3 first_entrance_brute underflow allowed only in internal bracketing; final scalar_rational(up) is strict",
+    "geom3 brute_feature_distance surface intersection returns exact zero sentinel; final nonzero sqrt strict unless caller explicitly retains squared certificate",
+    "exact_geom nextafter infinities are interval enclosure filter bounds, not public physical scalar displays",
+    "tools/tia_sensitivity shapes have existing D400 construction envelope; no observed accessible overflow root from bounded geometric spans"
+  ]
+}

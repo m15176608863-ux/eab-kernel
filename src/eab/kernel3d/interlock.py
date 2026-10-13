@@ -20,6 +20,7 @@ tests/test_interlock_walls.py, tests/test_e5a2_interlock_bridge.py.
 
 from __future__ import annotations
 from eab.construction import scalar_rational
+from eab.numeric_domain import ConstructionDomainError
 
 import sys
 import math
@@ -54,10 +55,14 @@ def escape_height_brute(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     Therefore it now uses the complete exact event partition; tol/geom_tol are
     accepted for compatibility but cannot change the root. This is a secondary
     check, not an independent oracle (it shares the exact surface predicate).
+    This bare-float API rejects upward display overflow; escape_height_covers
+    instead returns the exact root with an explicit overflow marker.
     """
     result=escape_height_covers(A,B,offset,geom_tol=geom_tol,contact_window=contact_window)
     if result.exact_height>F(hi):
         raise ValueError(f"still intruding at z={hi}; raise hi")
+    if result.height_display_overflow:
+        raise ConstructionDomainError("escape_height_brute.height", "upward binary64 display overflows; use escape_height_covers for its exact certificate")
     return result.height
 
 
@@ -78,6 +83,8 @@ class EscapeSolution:
     window_core: str | None = None
     exact_contact_label: tuple | None = None
     exact_contact_normal: tuple = ()
+    # A finite exact root whose RN is finite but upward binary64 bound is +inf.
+    height_display_overflow: bool = False
 
 
 def _normal_noise(A: Polyhedron, B: Polyhedron, cover) -> float:
@@ -267,7 +274,12 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     """Exact first nonpenetrating affine lift, plus floating display and labels.
 
     exact_height/exact_offset are the decision data. height is a binary64 display
-    rounded upward; it is not a substituted topology predicate. Every preceding
+    rounded upward; it is not a substituted topology predicate. If a finite
+    exact root has finite RN-even but exceeds maxfloat, this upward display is
+    +inf and height_display_overflow=True explicitly marks the exception;
+    exact_height remains authoritative. RN-even overflow still raises
+    ConstructionDomainError. Gate: test_r15_o05_finite_escape_root_marks_upward_display_overflow.
+    Every preceding
     open event interval is certified penetrating, and the exact root itself is
     independently tested nonpenetrating. No near-vertical event is suppressed.
 
@@ -323,7 +335,8 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
                           (F(offset[0]),F(offset[1]),F(offset[2])+root),proof,state,name,
                           event.label if event is not None else None,
                           tuple(-n for n in event.normal) if event is not None and event.normal[2]<0
-                          else (event.normal if event is not None else ()))
+                          else (event.normal if event is not None else ()),
+                          height_display_overflow=math.isinf(display))
 
 
 def _escape_solution(z: float, nz: float, cands: list[tuple], gtol: float, r: float) -> EscapeSolution:
@@ -363,18 +376,25 @@ def dilatancy_profile(A: Polyhedron, B: Polyhedron, *, direction: Vec3 = (1.0, 0
     tanψ 在无摩擦极限下即横向承载与法向压力之比（Rowe 剪胀关系）。
     `deltas` 是模型单位下的横移量（默认 0.02·i 只适合 lx≈2 的示例块；换尺度请传缩放后的 δ），
     `direction` 应为单位向量。h ×s、tanψ 不变（门：tests/test_invariance_interlock.py）。
+    h 保留向上显示；exact_height 与 height_display_overflow 同时传递其证书。
+    tan_psi 在精确根上完成中心差分后才舍入，不能对两个显示 h 作差。
+    门：test_r15_scan_profile_differences_exact_roots_before_rounding。
     """
     if deltas is None:
         deltas = [i * 0.02 for i in range(1, 16)]
     out = []
     for d in deltas:
-        off = (d * direction[0], d * direction[1], d * direction[2])
+        off = tuple(F(d) * F(component) for component in direction)
         sol = escape_height_covers(A, B, off, tol=tol)
         out.append({"delta": d, "h": sol.height, "cover": sol.cover_label,
-                    "n_covers": sol.n_candidates})
+                    "n_covers": sol.n_candidates, "exact_height": sol.exact_height,
+                    "height_display_overflow": sol.height_display_overflow})
     for i, row in enumerate(out):
         if 0 < i < len(out) - 1:
-            row["tan_psi"] = (out[i + 1]["h"] - out[i - 1]["h"]) / (out[i + 1]["delta"] - out[i - 1]["delta"])
+            row["tan_psi"] = scalar_rational(
+                (F(out[i + 1]['exact_height']) - F(out[i - 1]['exact_height'])) /
+                (F(out[i + 1]['delta']) - F(out[i - 1]['delta'])),
+                quantity="dilatancy_profile.tan_psi")
         else:
             row["tan_psi"] = None
     return out

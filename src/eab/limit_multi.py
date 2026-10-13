@@ -40,6 +40,7 @@ from .limit import (_FLIP, _SELF_CHECK, _UNCERTAIN, LimitContact, _build_columns
                     _exact_wrench, _fl, _live_uncertainty, _norm, _twist_back, _twist_forward,
                     _wrench_rounding, wrench)
 from .limit import _ExactFloat, _rational, _lp_values, _check_columns, _exact_duality_report
+from .construction import scalar_rational
 from .lp import OPTIMAL, UNBOUNDED, maximize
 
 Vec = tuple[float, ...]
@@ -74,6 +75,8 @@ class MultiLimitResult:
     uncertainty: float = 0.0
     resolvability: str = "not_applicable"  # resolved / nearby_infeasible / unresolved; never changes status/alpha
     resolvability_statuses: tuple[str, ...] = ()  # exact statuses after minus/plus input-rounding perturbation
+    exact_contact_forces: tuple[tuple[Fraction, ...], ...] = ()  # exact selected-column sums
+    contact_force_display_underflow: bool = False  # nonzero component displayed as signed zero
 
 
 def contacts_from_covers_multi(covers, body_a: int, body_b: int | None, *, mu: float, side: str = "a") -> list[BodyContact]:
@@ -253,20 +256,26 @@ def limit_load_multi(bodies: list[LimitBody], contacts: list[BodyContact], *, di
     alpha = _ExactFloat(rx[ia])
     raw = rx[:ncols]
     lam = [_ExactFloat(v / capx[rj] if rj is not None else v) for v, rj in zip(raw, C.row_of)]
-    fvec = [tuple(raw[j] * C.cols[j][i] for i in range(dim)) for j in range(ncols)]
-    fmag = [_norm(f) for f in fvec]
-    fmax = max(fmag, default=0.0)
-    on = [fm > tol * fmax for fm in fmag]
-    forces: list[Vec] = [tuple(0.0 for _ in range(dim)) for _ in contacts]
+    fvec = [tuple(raw[j] * Fraction(C.cols[j][i]) for i in range(dim)) for j in range(ncols)]
+    # Compare exact squared magnitudes; columns need not fit binary64 before cancellation.
+    fmag2 = [sum(x*x for x in f) for f in fvec]
+    fmax2 = max(fmag2, default=Fraction(0))
+    on = [(fm2 > Fraction(tol)**2 * fmax2 if tol >= 0 else fmax2 > 0) for fm2 in fmag2]
+    forces = [tuple(Fraction(0) for _ in range(dim)) for _ in contacts]
     for j, ci in enumerate(C.owner):
         if on[j]:
             forces[ci] = tuple(forces[ci][i] + fvec[j][i] for i in range(dim))
+    exact_forces = tuple(forces)
+    forces = [tuple(scalar_rational(v, allow_underflow=True, quantity="contact force") for v in force) for force in exact_forces]
+    force_underflow = any(bool(v) and display == 0 for row, shown in zip(exact_forces, forces)
+                          for v, display in zip(row, shown))
     active = sorted({cts[C.owner[j]].label for j in range(ncols) if on[j] and cts[C.owner[j]].label is not None})
     dx = tuple(Fraction(oc[i])-Fraction(origin[i]) for i in range(dim))
     mechs = [[_ExactFloat(v) for v in _twist_back(y, dx, dim)] for y in ys]
     row_duals = [_ExactFloat(yv * cap) for yv, cap in zip(ry[nb * nw:], capx)]
     res = MultiLimitResult(OPTIMAL, alpha, lam, mechs, forces, active, r.iterations + its, row_duals=row_duals,
-                           uncertainty=U,resolvability=resolution,resolvability_statuses=statuses)
+                           uncertainty=U,resolvability=resolution,resolvability_statuses=statuses,
+                      exact_contact_forces=exact_forces, contact_force_display_underflow=force_underflow)
     d = check_duality_multi(res, bodies, contacts, dim=dim, origin=origin, k=k, tol=_SELF_CHECK)
     if not d["ok"]:
         raise RuntimeError(f"limit_load_multi self-check failed: "

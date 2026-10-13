@@ -1,0 +1,88 @@
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 13%]
+........................................................................ [ 17%]
+........................................................................ [ 21%]
+........................................................................ [ 26%]
+........................................................................ [ 30%]
+........................................................................ [ 34%]
+........................................................................ [ 39%]
+........................................................................ [ 43%]
+........................................................................ [ 47%]
+........................................................................ [ 52%]
+........................................................................ [ 56%]
+........................................................................ [ 60%]
+........................................................................ [ 65%]
+..........................F............................................. [ 69%]
+........................................................................ [ 73%]
+........................................................................ [ 78%]
+........................................................................ [ 82%]
+........................................................................ [ 86%]
+........................................................................ [ 91%]
+........................................................................ [ 95%]
+........................................................................ [ 99%]
+.....                                                                    [100%]
+================================== FAILURES ===================================
+__ test_public_limit_single_and_multi_match_analytic_sliding_capacity[-1073] __
+
+exponent = -1073
+
+    @pytest.mark.parametrize("exponent", [-1073, -600, 0, 600, 1021])
+    def test_public_limit_single_and_multi_match_analytic_sliding_capacity(exponent):
+        s = math.ldexp(1.0, exponent)
+        contacts = [limit.LimitContact((x, 0), (0, 1), 0.5) for x in (-1, 1)]
+        dead, live = [0, -s, 0], [1, 0, 0]
+        expected = F(s)/2
+>       single = limit.limit_load(contacts, dead, live, dim=2)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_r13fix_mechanics_differential.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\eab\limit.py:679: in limit_load
+    forces = [tuple(scalar_rational(v, quantity="contact force") for v in force) for force in forces]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\eab\limit.py:679: in <genexpr>
+    forces = [tuple(scalar_rational(v, quantity="contact force") for v in force) for force in forces]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = Fraction(-1, 404804506614621236704990693437834614099113299528284236713802716054860679135990693783920767402874248990374...5490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568)
+
+    def scalar_rational(value, *, allow_underflow=False, quantity="scalar_rational result"):
+        """Correctly rounded rational scalar, with explicit output-range checks."""
+        exact = exact_input(value, quantity)
+        try:
+            result = float(exact)
+        except OverflowError:
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range") from None
+        if not math.isfinite(result):
+            raise ConstructionDomainError(quantity, "exact scalar is outside finite binary64 range")
+        if exact and result == 0 and not allow_underflow:
+>           raise ConstructionDomainError(quantity, "nonzero exact scalar is below binary64 output range")
+E           eab.numeric_domain.ConstructionDomainError: contact force: nonzero exact scalar is below binary64 output range
+
+src\eab\construction.py:26: ConstructionDomainError
+============================ slowest 20 durations =============================
+249.90s call     tests/test_r12fixb_maintenance.py::test_unrelated_source_comment_keeps_real_repository_gate_green
+136.95s call     tests/test_r9fix_construction_static.py::test_all_source_and_test_oracles_use_reviewed_construction_boundary
+8.70s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[0.001-0.0]
+8.06s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-0.0]
+7.97s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1.0-100000.0]
+7.55s call     tests/test_interlock_sensitivity.py::test_steep_profile_kink_is_flagged_consistently_with_the_predicate[1000.0-100000.0]
+4.47s call     tests/test_kernel2d_entrance.py::test_every_legacy_vertex_edge_contact_of_bb52_is_a_first_entrance_along_its_edge_normal
+2.83s call     tests/test_r10_static_construction.py::test_j01_removing_keyword_step_inside_gate_trips_real_cone_assertion
+2.20s call     tests/test_interlock_sensitivity.py::test_escape_profile_is_a_symmetric_ramp_with_peak_at_amplitude
+1.88s call     tests/test_geom3_face_polygon.py::test_probes_in_front_of_osteomorphic_side_faces[1-False]
+1.86s call     tests/test_geom3_face_polygon.py::test_probes_in_front_of_osteomorphic_side_faces[-1-False]
+1.80s call     tests/test_geom3_face_polygon.py::test_probes_in_front_of_osteomorphic_side_faces[-1-True]
+1.79s call     tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[map_fraction_barrier]
+1.71s call     tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[augmented_subtraction]
+1.71s call     tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[local_append]
+1.69s call     tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[norm_keyword]
+1.69s call     tests/test_geom3_face_polygon.py::test_probes_in_front_of_osteomorphic_side_faces[1-True]
+1.65s call     tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[local_loop]
+1.62s call     tests/test_r10_static_construction.py::test_j01_seven_mutations_inside_real_cone_path_are_rejected[sqrt_keyword]
+1.32s call     tests/test_interlock_sensitivity.py::test_dilatancy_ratio_equals_twice_amplitude_closed_form
+=========================== short test summary info ===========================
+FAILED tests/test_r13fix_mechanics_differential.py::test_public_limit_single_and_multi_match_analytic_sliding_capacity[-1073]
+1 failed, 1660 passed in 538.30s (0:08:58)

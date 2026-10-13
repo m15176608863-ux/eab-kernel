@@ -1,5 +1,7 @@
 # 换路：精确谓词、浮点只做构造（2026-10-10，G6 第五轮之后）
 
+> **R15FIX 显示补充（2026-10-13）**：完整精确汇总后最终构造、JSON schema 后验域、贯入显示下溢证书，以及 `EscapeSolution.height_display_overflow` 的专属向上 infinity 例外，统一以 [R15FIX 设计同步](r15fix_design_sync.md) 为准。此例外不代表精确根无限；裸 float 包装不能丢失证书。
+
 > **R14FIX 分项优先规则（2026-10-13）**：下文 D400 仅是已显式选入的近似尺度诊断域，不是摩擦/角度/指数/文本的统一上限。当前逐物理量范围、入口检查、无损 binary64 位数推导、RN 文本端点和圆锥安全证明见 [R14FIX 数值合同](r14fix_design_sync.md)。旧全有限精确谓词/代数支持域保留；一般超越误差证明仍不是本轮结论。
 
 <a id="r13fixb-numeric-domain"></a>
