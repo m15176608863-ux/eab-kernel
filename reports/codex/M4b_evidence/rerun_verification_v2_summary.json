@@ -1,0 +1,93 @@
+{
+  "commands": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/bdda/verify_m4b_shadow.py",
+        "baseline",
+        "--evidence-dir",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\rerun_verification_v2"
+      ],
+      "rc": 0
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/bdda/verify_m4b_shadow.py",
+        "compare",
+        "--evidence-dir",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\rerun_verification_v2"
+      ],
+      "rc": 0
+    }
+  ],
+  "cases": [
+    {
+      "case": "52",
+      "hashes_equal": true
+    },
+    {
+      "case": "12",
+      "hashes_equal": true
+    },
+    {
+      "case": "50",
+      "hashes_equal": true
+    },
+    {
+      "case": "51",
+      "hashes_equal": true
+    },
+    {
+      "case": "03",
+      "hashes_equal": true
+    },
+    {
+      "case": "05",
+      "hashes_equal": true
+    },
+    {
+      "case": "06",
+      "hashes_equal": true
+    },
+    {
+      "case": "09",
+      "hashes_equal": true
+    },
+    {
+      "case": "10",
+      "hashes_equal": true
+    },
+    {
+      "case": "v01",
+      "hashes_equal": true
+    },
+    {
+      "case": "v01/v01a",
+      "hashes_equal": true
+    },
+    {
+      "case": "v02",
+      "hashes_equal": true
+    },
+    {
+      "case": "v02/v02a",
+      "hashes_equal": true
+    },
+    {
+      "case": "F038",
+      "hashes_equal": true
+    },
+    {
+      "case": "S038",
+      "hashes_equal": true
+    }
+  ],
+  "script_sha256": "bc66898ea0372d59c33213bc92c9e60789d2142d05165f6679203ee33950e497",
+  "junction_negative_evidence_sha256": "aa1ab16f6b84563ba562b885393d007c2c04bb889744ddc50f09a3f1b194450f",
+  "all_pass": true
+}

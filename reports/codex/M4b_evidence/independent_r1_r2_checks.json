@@ -1,0 +1,195 @@
+{
+  "reviewer": "baseline_gates (did not implement bdda production changes)",
+  "production_solver_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+  "R1_modes": [
+    {
+      "mode": null,
+      "rc": 0,
+      "stderr": "step 1: iters=2 conv=1 contacts=54 ratio=0.1761 tt=0.1\r\nstep 2: iters=2 conv=1 contacts=54 ratio=0.02025 tt=0.1\r\nstep 3: iters=2 conv=1 contacts=54 ratio=0.01797 tt=0.1\r\n",
+      "outputs_present": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "shadow_present": false
+    },
+    {
+      "mode": "legacy",
+      "rc": 0,
+      "stderr": "step 1: iters=2 conv=1 contacts=54 ratio=0.1761 tt=0.1\r\nstep 2: iters=2 conv=1 contacts=54 ratio=0.02025 tt=0.1\r\nstep 3: iters=2 conv=1 contacts=54 ratio=0.01797 tt=0.1\r\n",
+      "outputs_present": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "shadow_present": false
+    },
+    {
+      "mode": "eab",
+      "rc": 2,
+      "stderr": "detection configuration error: BDDA_DETECT=eab: \u672a\u83b7\u6240\u6709\u8005\u6279\u51c6 (not approved by owner)\r\n",
+      "outputs_present": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "shadow_present": false
+    },
+    {
+      "mode": "",
+      "rc": 2,
+      "stderr": "detection configuration error: invalid BDDA_DETECT value: \r\n",
+      "outputs_present": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "shadow_present": false
+    },
+    {
+      "mode": "SHADOW",
+      "rc": 2,
+      "stderr": "detection configuration error: invalid BDDA_DETECT value: SHADOW\r\n",
+      "outputs_present": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "shadow_present": false
+    },
+    {
+      "mode": "Legacy",
+      "rc": 2,
+      "stderr": "detection configuration error: invalid BDDA_DETECT value: Legacy\r\n",
+      "outputs_present": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "shadow_present": false
+    },
+    {
+      "mode": "unexpected",
+      "rc": 2,
+      "stderr": "detection configuration error: invalid BDDA_DETECT value: unexpected\r\n",
+      "outputs_present": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "shadow_present": false
+    }
+  ],
+  "R2_geometry_and_planes": [
+    {
+      "case": "52",
+      "steps": 50,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 7700,
+      "steps_with_actual_df06_tuple_rewrite": 49
+    },
+    {
+      "case": "12",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 8100,
+      "steps_with_actual_df06_tuple_rewrite": 99
+    },
+    {
+      "case": "50",
+      "steps": 50,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 4000,
+      "steps_with_actual_df06_tuple_rewrite": 49
+    },
+    {
+      "case": "51",
+      "steps": 50,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 7700,
+      "steps_with_actual_df06_tuple_rewrite": 49
+    },
+    {
+      "case": "03",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 8200,
+      "steps_with_actual_df06_tuple_rewrite": 99
+    },
+    {
+      "case": "05",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 2400,
+      "steps_with_actual_df06_tuple_rewrite": 78
+    },
+    {
+      "case": "06",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 2400,
+      "steps_with_actual_df06_tuple_rewrite": 31
+    },
+    {
+      "case": "09",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 7000,
+      "steps_with_actual_df06_tuple_rewrite": 99
+    },
+    {
+      "case": "10",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 8600,
+      "steps_with_actual_df06_tuple_rewrite": 99
+    },
+    {
+      "case": "v01",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 15500,
+      "steps_with_actual_df06_tuple_rewrite": 99
+    },
+    {
+      "case": "v01/v01a",
+      "steps": 400,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 62000,
+      "steps_with_actual_df06_tuple_rewrite": 399
+    },
+    {
+      "case": "v02",
+      "steps": 100,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 10800,
+      "steps_with_actual_df06_tuple_rewrite": 99
+    },
+    {
+      "case": "v02/v02a",
+      "steps": 400,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 43200,
+      "steps_with_actual_df06_tuple_rewrite": 399
+    },
+    {
+      "case": "F038",
+      "steps": 30,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 360,
+      "steps_with_actual_df06_tuple_rewrite": 0
+    },
+    {
+      "case": "S038",
+      "steps": 30,
+      "geometry_rows_exactly_equal_to_preedit_unchanged_geom_csv": 360,
+      "steps_with_actual_df06_tuple_rewrite": 0
+    }
+  ],
+  "R2_failure_isolation": {
+    "steps": 50,
+    "rc": 0,
+    "legacy_byte_equal": {
+      "out.csv": true,
+      "state.csv": true,
+      "force.csv": true,
+      "geom.csv": true
+    },
+    "stderr": "SHADOW_AUDIT_RED: ios_base::failbit set: iostream stream error\r\nstep 1: iters=2 conv=1 contacts=54 ratio=0.1761 tt=0.1\r\nstep 2: iters=2 conv=1 contacts=54 ratio=0.02025 tt=0.1\r\nstep 3: iters=2 conv=1 contacts=54 ratio=0.01797 tt=0.1\r\nstep 4: iters=2 conv=1 contacts=54 ratio=0.01762 tt=0.1\r\nstep 5: iters=2 conv=1 contacts=54 ratio=0.01718 tt=0.1\r\nstep 6: iters=1 conv=1 contacts=54 ratio=0.01685 tt=0.1\r\nstep 7: iters=2 conv=1 contacts=54 ratio=0.01675 tt=0.1\r\nstep 8: iters=2 conv=1 contacts=54 ratio=0.01658 tt=0.1\r\nstep 9: iters=2 conv=1 contacts=54 ratio=0.01641 tt=0.1\r\nstep 10: iters=1 conv=1 contacts=54 ratio=0.01601 tt=0.1\r\nstep 11: iters=1 conv=1 contacts=54 ratio=0.01576 tt=0.1\r\nstep 12: iters=2 conv=1 contacts=54 ratio=0.01561 tt=0.1\r\nstep 13: iters=1 conv=1 contacts=54 ratio=0.01539 tt=0.1\r\nstep 14: iters=1 conv=1 contacts=54 ratio=0.01519 tt=0.1\r\nstep 15: iters=1 conv=1 contacts=54 ratio=0.01498 tt=0.1\r\nstep 16: iters=1 conv=1 contacts=54 ratio=0.01501 tt=0.1\r\nstep 17: iters=1 conv=1 contacts=54 ratio=0.01626 tt=0.1\r\nstep 18: iters=1 conv=1 contacts=54 ratio=0.01488 tt=0.1\r\nstep 19: iters=2 conv=1 contacts=54 ratio=0.01471 tt=0.1\r\nstep 20: iters=2 conv=1 contacts=54 ratio=0.01443 tt=0.1\r\nstep 21: iters=1 conv=1 contacts=54 ratio=0.01489 tt=0.1\r\nstep 22: iters=1 conv=1 contacts=54 ratio=0.01467 tt=0.1\r\nstep 23: iters=1 conv=1 contacts=54 ratio=0.01457 tt=0.1\r\nstep 24: iters=1 conv=1 contacts=54 ratio=0.01448 tt=0.1\r\nstep 25: iters=1 conv=1 contacts=54 ratio=0.01439 tt=0.1\r\nstep 26: iters=1 conv=1 contacts=54 ratio=0.0143 tt=0.1\r\nstep 27: iters=1 conv=1 contacts=54 ratio=0.01421 tt=0.1\r\nstep 28: iters=1 conv=1 contacts=54 ratio=0.01413 tt=0.1\r\nstep 29: iters=1 conv=1 contacts=54 ratio=0.01404 tt=0.1\r\nstep 30: iters=1 conv=1 contacts=54 ratio=0.01396 tt=0.1\r\nstep 31: iters=1 conv=1 contacts=54 ratio=0.01386 tt=0.1\r\nstep 32: iters=1 conv=1 contacts=54 ratio=0.01378 tt=0.1\r\nstep 33: iters=1 conv=1 contacts=54 ratio=0.0136 tt=0.1\r\nstep 34: iters=1 conv=1 contacts=54 ratio=0.01365 tt=0.1\r\nstep 35: iters=1 conv=1 contacts=54 ratio=0.01358 tt=0.1\r\nstep 36: iters=1 conv=1 contacts=54 ratio=0.01351 tt=0.1\r\nstep 37: iters=2 conv=1 contacts=54 ratio=0.01332 tt=0.1\r\nstep 38: iters=1 conv=1 contacts=54 ratio=0.01346 tt=0.1\r\nstep 39: iters=2 conv=1 contacts=54 ratio=0.01289 tt=0.1\r\nstep 40: iters=1 conv=1 contacts=54 ratio=0.01333 tt=0.1\r\nstep 41: iters=1 conv=1 contacts=54 ratio=0.01317 tt=0.1\r\nstep 42: iters=1 conv=1 contacts=54 ratio=0.01309 tt=0.1\r\nstep 43: iters=1 conv=1 contacts=54 ratio=0.01303 tt=0.1\r\nstep 44: iters=1 conv=1 contacts=54 ratio=0.01297 tt=0.1\r\nstep 45: iters=1 conv=1 contacts=54 ratio=0.01291 tt=0.1\r\nstep 46: iters=1 conv=1 contacts=54 ratio=0.01285 tt=0.1\r\nstep 47: iters=1 conv=1 contacts=54 ratio=0.0128 tt=0.1\r\nstep 48: iters=1 conv=1 contacts=54 ratio=0.01274 tt=0.1\r\nstep 49: iters=1 conv=1 contacts=54 ratio=0.01269 tt=0.1\r\nstep 50: iters=1 conv=1 contacts=54 ratio=0.01263 tt=0.1\r\n"
+  },
+  "review_harness_correction": "initial probe reused Legacy/legacy directory names on case-insensitive Windows; rerun in index-unique fresh directories; no production defect",
+  "all_pass": true
+}

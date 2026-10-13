@@ -1,0 +1,1126 @@
+{
+  "schema": "eab.m4b-projection.v1",
+  "steps_per_case": 30,
+  "rationale": "30 steps match the shortest FAMILY default horizon (F038/S038), extend M4a tenfold, and bound independent Fraction geometry-audit cost. Byte equivalence still uses the full default horizon; steps after 30 are not retained in the compact frozen fixture; full default-horizon audits are separately recorded under reports/codex/M4b_evidence/full_replay.",
+  "retention": "Only step-start geometry, explicit domain parameters, raw df05 and post df06 Tuple7 tables; no solver outputs or state columns. Lossless deterministic gzip (mtime=0).",
+  "cases": {
+    "bb52": {
+      "file": "bb52.jsonl.gz",
+      "sha256": "167bd8a66f31be4512ca5cff17d0fce2547133a60f883ac30b1b044c811aee52",
+      "bytes": 76670,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\52_52\\shadow\\shadow.jsonl",
+      "source_sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+      "source_bytes": 492950,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 50,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 50,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "c1644362ea3ca9fb6aeeb1ccf387b71443a45e9b7898919e019fb445789b7685",
+      "steps": 30,
+      "m4a_fixture": "bb52_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 190,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 58,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 355,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 30,
+          "MATCH": 1235
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 174,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 28,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 309,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 30,
+          "MATCH": 1281
+        }
+      },
+      "frames_sha256": "8b4eae02762b43ec6e188d2b62181fbe62a48d37ddac3bcace0e6cc44fffe035",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "b54dbc4dfe98c9d36c67804ab50ece232951cc3f42108814c52267fc3a475465",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb12": {
+      "file": "bb12.jsonl.gz",
+      "sha256": "a56606fc093eb294b3551ec25278a17144ebe9fffb2fa9a233822821292652e6",
+      "bytes": 37612,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\12_12\\shadow\\shadow.jsonl",
+      "source_sha256": "71e7a00391d528a610f803a53ae3438f91c869d2651c084cbec694e57a5ce430",
+      "source_bytes": 588617,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "9b3a079beb6dc31ed953e413f721b914f45975440622dbaa781c5b8a9597a264",
+      "steps": 30,
+      "m4a_fixture": "bb12_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 160,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 134,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 392,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 19,
+          "MATCH": 1102
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 32,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 61,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 191,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 19,
+          "MATCH": 1303
+        }
+      },
+      "frames_sha256": "237a8d61c92c7100a1039b9e77586240fa67832a728ee23164c3f3f7cd9fa755",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "b66741b64ed212f2a7749d070e092089074dae937ca3a98db5cc48220da66faa",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb12": "e6a6decd1a14a67d709f9e5c9ba007dbd69484b7c286197ca95396b2c2644f63",
+        "df\\db12": "853898a9bb1ea6318e13b73cc3c87fe6404315cc7f1ae0b6689ff689a3e2b5c2"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb50": {
+      "file": "bb50.jsonl.gz",
+      "sha256": "bd3369d504ba95e778f14bed55d6b6e3b922e5629ea6155ab5b06353074d64ff",
+      "bytes": 41988,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\50_50\\shadow\\shadow.jsonl",
+      "source_sha256": "194f0c7cfa77f8381f0999f0aa47f62d149dc1c6987c4871ecff825705153a5c",
+      "source_bytes": 194426,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 50,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 50,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "960ac1233f1aa522f38225d9b09de150991a0f39ae640e2935334c39725ed009",
+      "steps": 30,
+      "m4a_fixture": "bb50_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 7,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 31,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 29,
+          "MATCH": 27
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 7,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 2,
+          "MATCH": 56
+        }
+      },
+      "frames_sha256": "05a4b6b16f826b87ee68451228e5cad9b899a05b17c5b5620e3f9fce57b96312",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "7676a958a2b2f3c348c694ef9ab8f6dbd9ea13b424b9975033706403cfba3d74",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb50": "27df744606e791ff6c3bab6a729a0d82ee31136d789fb8d24f98986364be12ae",
+        "df\\db50": "3f5d2e834b0f5fb380cc9cf434d24c5cb23a9cedcb59bbde2a9c1ece040a0a8d"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb51": {
+      "file": "bb51.jsonl.gz",
+      "sha256": "9ab010e139020e12631edb166c7ab51107a418064e5fa4dc90fc7c497cb589d4",
+      "bytes": 76927,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\51_51\\shadow\\shadow.jsonl",
+      "source_sha256": "eb56cab45400eefc0094395d77b0edd452f4c5874a5504b1a547c51ea3cc59ae",
+      "source_bytes": 493282,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 50,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 50,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "b682c994d38abae8ed74e9dce737c4bfbc27fbe62a34737cda5d2cc0a752b4a6",
+      "steps": 30,
+      "m4a_fixture": "bb51_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 199,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 312,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 584,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 60,
+          "MATCH": 976
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 113,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 210,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 396,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 60,
+          "MATCH": 1164
+        }
+      },
+      "frames_sha256": "d5220bb79682f88cffdfe6b70bb398f6453cf60ff439349cf3982e371ada4a32",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "4085e7ba1ecc653e6218e74dbd740eb398612aa1e788642f3e0aaa972cbe3c05",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb51": "b1344c74771171205c3001b5927fb19ccbcd90281a31e4189491486882178f6e",
+        "df\\db51": "91ffb304a11b7c4f5110c02be5aab79f12b6b881d77a478d8aa46c992b6917ce"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb03": {
+      "file": "bb03.jsonl.gz",
+      "sha256": "4187bd2864f4d732a1c6e4abf193d67c2893d5c88ce713d0b921c962fd15c837",
+      "bytes": 37734,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\03_03\\shadow\\shadow.jsonl",
+      "source_sha256": "ab36403a011f088d5dca727c6f839786eb280dfe7e6012dd44cb0517b4240ea8",
+      "source_bytes": 571258,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "d0cc84451c357fe8880381f32b2bb76df1c81713b60fe3e76bc1c62b9b33de6d",
+      "steps": 30,
+      "m4a_fixture": "bb03_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 122,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 118,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 292,
+          "MATCH": 908
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 2,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 21,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 75,
+          "MATCH": 1125
+        }
+      },
+      "frames_sha256": "62f2acfeaf496d0f34f405cdcd29db256dfe13482d3bebba7be514874a88f08e",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "064b8559422228d936a47747b7780f8c9bc09b82ff442f63bba6234dccc50b76",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb03": "f0f40397668f150660ab74e831c2e31656b2c34720d6d02a72617075b4dce377",
+        "df\\db03": "8e6679ef6429f85e49a4913b9a783ebde7098b9bed4c23d36dbf46023e585170"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb05": {
+      "file": "bb05.jsonl.gz",
+      "sha256": "254dd3443fbde5b9f3bcfdf3fd7f3fb5366aeb7ba0d347b4c24d39acf08b155d",
+      "bytes": 11305,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\05_05\\shadow\\shadow.jsonl",
+      "source_sha256": "261d4776232c5bc4553e57b1c391016e312df19bbc3a209ea7e86c3430094a46",
+      "source_bytes": 174919,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "edcc293a4aa0fe6a7a2cf15d233e31634acf7d4965e3f7588e4b06f527e03b62",
+      "steps": 30,
+      "m4a_fixture": "bb05_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 66,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 54,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 116,
+          "MATCH": 184
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 1,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 3,
+          "MATCH": 300
+        }
+      },
+      "frames_sha256": "0d159b205cbcf9efc9b6e7474f2900fbe0c2d1e58eb89634ae938fc538da768a",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "b5b9948df1ffcf5543adfb2c9bb1115201a9b36c16ce6a3e5459237fb1e46724",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb05": "4dd029cf6521c240b042f051ad31a144a577e0a46391f3cac8d8929ea36f7e41",
+        "df\\db05": "e9bded20c047fd7699b5a2c392c503ef2964f6a0008d367b4d51c5fec0993a68"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb06": {
+      "file": "bb06.jsonl.gz",
+      "sha256": "90466c5139172dad668e0aa9e6df25a89ce1c8052a8906576ff7f3f7a323aca7",
+      "bytes": 11422,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\06_06\\shadow\\shadow.jsonl",
+      "source_sha256": "4ea37a46ca2ef4541d0764d70786930ae0950ec9578df4a2fe4cdd9f9dfa305e",
+      "source_bytes": 165050,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "56e6256965bde4fc9d7622e71150f15889dbb614144778dd5f9dd629fa124c47",
+      "steps": 30,
+      "m4a_fixture": "bb06_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 22,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 47,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 65,
+          "MATCH": 228
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 1,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 3,
+          "MATCH": 293
+        }
+      },
+      "frames_sha256": "632b2c2d313e7cc32b8ea872d705827c9dff748ba153b25c0a033aa045dc620c",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "5aef8dbd1ab83db2a952ab05ba5a26037e501f7c73b6c13353bb28c970e66ecd",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb06": "4dd029cf6521c240b042f051ad31a144a577e0a46391f3cac8d8929ea36f7e41",
+        "df\\db06": "ac77b5d3f88c74103c51a7ac3cba7a89b84b635145c47078510c4201dd62ab85"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb09": {
+      "file": "bb09.jsonl.gz",
+      "sha256": "702f8942a9424c50a4e5a11a107b6e074dc6c111afe89b29712f59d2514ec58b",
+      "bytes": 29976,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\09_09\\shadow\\shadow.jsonl",
+      "source_sha256": "232b46ab63346fb74713392f1646c3fb913a54326d9a6399e0b16251263b3318",
+      "source_bytes": 574759,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "b2244e6854e1da4bef0f82aca21d9c2d162223268f6d3376985d57093188141d",
+      "steps": 30,
+      "m4a_fixture": "bb09_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 470,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 705,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 578,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 236,
+          "MATCH": 832,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 120
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 177,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 420,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 236,
+          "MATCH": 1410,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 120
+        }
+      },
+      "frames_sha256": "e5cb18e89ae16cb915c9d3651e76e2a6218d0b663428791e804b7b3a832e4e33",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "d293dfafc455b6f2a3549439f0624dde346f329109b42e99b2647163491e356c",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb09": "d69723aa81e5caa7edef9667585749936cae9cca44bc4c819760f0bad6774bfc",
+        "df\\db09": "ce65afb070f72ceb9a4c81144c74e7bed58897b4d297ce44eb48bd2f7e67bff4"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bb10": {
+      "file": "bb10.jsonl.gz",
+      "sha256": "055e1ef3bd7e5f48c18ed36cb0505f11045755ef2af17b3482d3c7885d35ca94",
+      "bytes": 40583,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\10_10\\shadow\\shadow.jsonl",
+      "source_sha256": "09bb5803cfaec9293d74b7c27df3cd199438797ac5fe611b6a494b044ceb3378",
+      "source_bytes": 708263,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "6359612a8de0fd0ef8f69d889134297b3af2ff268d7377631eaccd65fb7386ae",
+      "steps": 30,
+      "m4a_fixture": "bb10_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 429,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 693,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 851,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 222,
+          "MATCH": 1003,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 151
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 149,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 339,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 217,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 222,
+          "MATCH": 1637,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 151
+        }
+      },
+      "frames_sha256": "aedf83859fa6e0a1a7bf05fb8619b51f82bfbba3edad248a0bd5e6626a828253",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "cd195385d5cd18f4e85779fc7d7cf680c2d6b7f6ac6eadefde69e3854f140e39",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bb10": "87027e70ae89322d061d47d2b16a2d957ae9b5e654ab29bc3eb153ebd7ab8400",
+        "df\\db10": "9484ca7b652d99659e1a50bf734b3d17fb2c3315b6e7529317f541e7cd23b794"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bbv01": {
+      "file": "bbv01.jsonl.gz",
+      "sha256": "fd808bc13db5a2c16f03c216f90f7423fc4685aedd864fecea035658c8a32a9c",
+      "bytes": 49418,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\v01_v01\\shadow\\shadow.jsonl",
+      "source_sha256": "58e9aad44fc0b8dc49cb607b96ba6dda47684dc952f473cbc4d92a12067c6660",
+      "source_bytes": 1409613,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "a1bfb5077edc85cb8d0724b0495eac211f8ede0ca31b43966d12e168a46840fe",
+      "steps": 30,
+      "m4a_fixture": "bbv01_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 554,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 312,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 90,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 1728,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 148,
+          "MATCH": 2682,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 358,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 195,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 3,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 1502,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 148,
+          "MATCH": 2995,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        }
+      },
+      "frames_sha256": "04f959ae6592509920782a496357e457d8cd0ad2af6201466857c48bfa366f56",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "1148fa1a4b26981109bb1015fb7d788299b7a8120dcd786e095a24f3d74e5c1a",
+      "m4a_identical_steps": [
+        1,
+        2
+      ],
+      "m4a_changed_keys": 2,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bbv01": "f595fe7d4058947475cf91795f660ab0796fd73b77b280ffc368df16b110f2a9",
+        "df\\dbv01": "499cf94080b2ff0de529371cd1c1b219ec5bf2f3285644e3aecc1d0f1223d5ba"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bbv01_dbv01a": {
+      "file": "bbv01_dbv01a.jsonl.gz",
+      "sha256": "29ba05829d968bf8e4fd739b11b624ef03f958ea7e9ef2e5710bed2088c48598",
+      "bytes": 66328,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\v01_v01a\\shadow\\shadow.jsonl",
+      "source_sha256": "7b5f3d42157054639f6cf86a0dce950e367396c4aba02e4f95b7bc8c72a26bca",
+      "source_bytes": 5464300,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 400,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 400,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "91cb08da14a40f9eed74d37ed30d143112c65a39777ae8c5f8ffc81d4d063016",
+      "steps": 30,
+      "m4a_fixture": "bbv01_dbv01a_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 399,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 349,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 60,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 2075,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 118,
+          "MATCH": 2335,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 221,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 91,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 2,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 1697,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 118,
+          "MATCH": 2771,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        }
+      },
+      "frames_sha256": "dcee11ffd09c36009623c109612b2b7b468c13ecd4b64e11bc82497e421b5c5d",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "c1f1568db8f182415166abbc08e27d2fd11d6b2f1e22bb6b04c5a7f02254d007",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bbv01": "f595fe7d4058947475cf91795f660ab0796fd73b77b280ffc368df16b110f2a9",
+        "df\\dbv01a": "df0799871872f1347bd750f167f88231222d89876b31c489a1ce4a085590fdcb"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bbv02": {
+      "file": "bbv02.jsonl.gz",
+      "sha256": "e253d2c89b8492fee942a35215bd51fd4358c2babf558cabc80c002f658ae247",
+      "bytes": 37695,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\v02_v02\\shadow\\shadow.jsonl",
+      "source_sha256": "b28b97512002a35432809d7819b10d314c7288b9494ad047070a238ea1b0f090",
+      "source_bytes": 869501,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 100,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 100,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "2936371352ab92cafc07f2e0b953e7463faa93a495973a64986501b96183e616",
+      "steps": 30,
+      "m4a_fixture": "bbv02_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 210,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 165,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 60,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 1101,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 118,
+          "MATCH": 1329,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 95,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 79,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 2,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 958,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 118,
+          "MATCH": 1530,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        }
+      },
+      "frames_sha256": "a5b187c860c0cae15bb96904febc0d90410c82622473ca4571c449b18d28c053",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "a22c13c2d6cf1e860bef2a5fe72753355677860bdec783c6d57a8af734349a01",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bbv02": "c27a7bb42e24eba8089f408bb85c7a0eb4ae97b9d0e2ec9818641bdf68e4e4d5",
+        "df\\dbv02": "6e1fb203e3bd05afa4ab70e36eddb90c5d81a194886d1cc3d46156c1ab08af16"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bbv02_dbv02a": {
+      "file": "bbv02_dbv02a.jsonl.gz",
+      "sha256": "a075c0426d7d565de0b85285b73f3adb66a996b7149fd758bde9981557881c87",
+      "bytes": 49457,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\v02_v02a\\shadow\\shadow.jsonl",
+      "source_sha256": "bb0947407cd49b5b6d061705d42b6942fbc8a796decdefbf3bb47bdee9866c65",
+      "source_bytes": 3333672,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 400,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 400,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "7c165d8e82a5ff64ae87ec303d4dd3ca8780b382efb400809dbed3a2aa0fe2fa",
+      "steps": 30,
+      "m4a_fixture": "bbv02_dbv02a_N3",
+      "counts": {
+        "raw_df05": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 184,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 190,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 60,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 1105,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 118,
+          "MATCH": 1325,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        },
+        "post_df06": {
+          "ANGULAR_WINDOW_COVER_NOT_SELECTED": 94,
+          "EXACT_LOCAL_COVER_NOT_SELECTED": 77,
+          "LEGACY_DUPLICATE_PRIMARY_REFERENCE": 2,
+          "LEGACY_OUTSIDE_FINITE_EDGE_WINDOW": 960,
+          "LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE": 118,
+          "MATCH": 1528,
+          "VV_IDENTITY_MATCH_TWO_REFERENCE_NORMAL": 32
+        }
+      },
+      "frames_sha256": "bab17a5b65985295a9049750770e4434e72526213975b03ade07e4260590b6f3",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "5d66d12dc771516071c59e78818e4ae939607b3102bb859c7de88c6b4b744f9e",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bbv02": "c27a7bb42e24eba8089f408bb85c7a0eb4ae97b9d0e2ec9818641bdf68e4e4d5",
+        "df\\dbv02a": "d6c54277841a885aa26decb0a821f50247f7ee1c0e5e6a4e0ef29d15734199fd"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bbF038": {
+      "file": "bbF038.jsonl.gz",
+      "sha256": "adc0b0180e73d7e02196ec5e3066a7e7447219a143034adbf55a54c87f8f2c66",
+      "bytes": 5613,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\F038_F038\\shadow\\shadow.jsonl",
+      "source_sha256": "daa73736d2dd2a08d65a1f539e36d980bf413665e61e421ac6d82f8a91f907a7",
+      "source_bytes": 26437,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 30,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 30,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "c8f2ab305162f30c7d8952915c287578026480144d10f58cc3c65ce23dc2d111",
+      "steps": 30,
+      "m4a_fixture": "bbF038_N3",
+      "counts": {
+        "raw_df05": {
+          "MATCH": 60
+        },
+        "post_df06": {
+          "MATCH": 60
+        }
+      },
+      "frames_sha256": "6649ae0ad0446e784ab4a54fbccdfc53c6bb067005a8a045efe558b1c8977c7f",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "65b2cf7dec3e448555bc09b390593cd6e15b1d68524c9cadd46143137380be0d",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bench\\bbF038": "80c3d0e30c8035b5ad6bbd56fd4a91f209a590f54d1079ff6ea8d6d77104612e",
+        "df\\bench\\dbF038": "486b1d885d0ae72fb784c0ac97216a2b45785d18e40cc64fcb8e754b9dc03497"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    },
+    "bbS038": {
+      "file": "bbS038.jsonl.gz",
+      "sha256": "39d645daf343a0bc80de0683ad1a749341ea85fe6d97df1a1e563e07511c46a8",
+      "bytes": 5617,
+      "source": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\modified_runs\\S038_S038\\shadow\\shadow.jsonl",
+      "source_sha256": "908b43a214b0c668dc1975f982fb795d84b4aada478f115d5614b9694bc65446",
+      "source_bytes": 26438,
+      "source_header": {
+        "kind": "header",
+        "schema": "bdda2.detect-shadow",
+        "version": 1,
+        "mode": "shadow",
+        "detector": "legacy-df04-df05",
+        "requested_steps": 30,
+        "screen": {
+          "max_x": 2560,
+          "max_y": 1355
+        },
+        "geometry_columns": [
+          "block",
+          "vidx",
+          "x",
+          "y"
+        ],
+        "tuple_columns": [
+          "mtype",
+          "p1",
+          "p2",
+          "p3",
+          "m4",
+          "m5",
+          "m6"
+        ]
+      },
+      "source_end": {
+        "kind": "end",
+        "completed_steps": 30,
+        "status": "ok"
+      },
+      "projection": "prefix steps 1..30; only header.requested_steps and end.completed_steps changed to 30",
+      "projected_step_payload_sha256": "7f3216900abe23f8154f46ae3ac69cb564f6974bf8a81276b5963fb2be35afce",
+      "steps": 30,
+      "m4a_fixture": "bbS038_N3",
+      "counts": {
+        "raw_df05": {
+          "MATCH": 60
+        },
+        "post_df06": {
+          "MATCH": 60
+        }
+      },
+      "frames_sha256": "6649ae0ad0446e784ab4a54fbccdfc53c6bb067005a8a045efe558b1c8977c7f",
+      "m4a_comparison_audit": "EXPLAINED",
+      "audit_sha256": "936bb40fb307be75374b6e950c504718da4d69d708738f9df5b4689d926599c7",
+      "m4a_identical_steps": [
+        1,
+        2,
+        3
+      ],
+      "m4a_changed_keys": 0,
+      "producer_exe_sha256": "75c178aed1b0a528e667d6bd0659483aefb405375640620bb96533c066d08650",
+      "input_sha256": {
+        "df\\bench\\bbS038": "80c3d0e30c8035b5ad6bbd56fd4a91f209a590f54d1079ff6ea8d6d77104612e",
+        "df\\bench\\dbS038": "64fe2a48971fbe21f1d83b187e9f7921d3d868f2f245b3c389eeb5c69eaf0f16"
+      },
+      "byte_evidence_sha256": "7b983ec9bb5e0856cdeda055c4684482127c6ddffe7c882e052d9ff23c5770ad"
+    }
+  },
+  "audit": "GREEN",
+  "failures": []
+}

@@ -1,0 +1,4194 @@
+{
+  "schema": "m4b-timing-v1",
+  "protocol": "sequential rotated order; fresh process; all four CSV exports",
+  "quiet_machine_confirmed": true,
+  "repetitions": 7,
+  "runs": [
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0285075,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0271281,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0263877,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0466924,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_0_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0292942,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0258894,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0428726,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_1_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0273127,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0250429,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0424501,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0262076,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_2_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0260342,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0407804,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0268357,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0287529,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_3_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0280543,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0281366,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0284691,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0259408,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0471103,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_4_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0262538,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0284369,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.041265,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_5_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0331027,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0296469,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.043136,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0257867,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_6_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0266639,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0410648,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_shadow\\shadow.jsonl",
+        "sha256": "d7cedca49813ee84fdfd574263ac01a7280d06152b198aef3eb3317d3af1b057",
+        "bytes": 492950,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 50,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0303356,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0267524,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "case": "52",
+      "steps": 50,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bb52",
+        "D:\\bdda-wt\\shadow\\df\\db52",
+        "50",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\52_7_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "842115a9cb9dd317a552adf22cb9c313d24fdde1aeefa005cad6910361ee4b74",
+          "bytes": 80722
+        },
+        "state.csv": {
+          "sha256": "44833ff5845c367f69f7c56965479ac9f62af6cc8ad539db6d753c947c943276",
+          "bytes": 463152
+        },
+        "force.csv": {
+          "sha256": "33dab2886702c03f25b93177a24722407049076c9b1ed9af33fb19e87ead214e",
+          "bytes": 379155
+        },
+        "geom.csv": {
+          "sha256": "676b098f44f1df5824b70b3fa188281e4dca04c190bc96502019584810f8823d",
+          "bytes": 456684
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "104ac5a63476affcc7c67b5277c9f1dfe3937979f567e2971968ab454d5f8d7d",
+          "bytes": 2887
+        }
+      },
+      "inputs": {
+        "df\\bb52": "926ae2e403a41b3dd04a099d16043c8deb1a2762b391011ee7a95c5c6c1c9e4b",
+        "df\\db52": "944732f47cc12437e299f2cec95b4265f5eea507c0f8407039961864c591299a"
+      },
+      "wall_seconds": 0.0278039,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2983374,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2998767,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3103813,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3346685,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_0_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": true,
+      "iteration": 0
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2879491,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2915312,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3293948,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_1_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2998645,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2942368,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3373245,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.294089,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_2_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3055066,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3282956,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3085733,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2919488,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_3_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2929861,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.308685,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2932776,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2937185,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3287977,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_4_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2962683,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3013972,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3327519,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_5_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2984832,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3061228,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3269828,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3004032,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_6_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3074964,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "shadow",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_shadow\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_shadow\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_shadow\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_shadow\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_shadow",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.3360008,
+      "timing_admissible": true,
+      "shadow": {
+        "path": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_shadow\\shadow.jsonl",
+        "sha256": "34f69f45a762cad73730db083321fb9b26d20dc64786441e783f50965d073932",
+        "bytes": 1018093,
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": {
+          "kind": "end",
+          "completed_steps": 20,
+          "status": "ok"
+        }
+      },
+      "label": "shadow",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\baseline\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_baseline\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_baseline\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_baseline\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_baseline\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_baseline",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2875566,
+      "timing_admissible": true,
+      "label": "baseline",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "unset",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_unset\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_unset\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_unset\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_unset\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_unset",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2895993,
+      "timing_admissible": true,
+      "label": "unset",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "case": "W100",
+      "steps": 20,
+      "mode": "legacy",
+      "returncode": 0,
+      "command": [
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\bdda2_solver.exe",
+        "D:\\bdda-wt\\shadow\\df\\bench\\bbW100",
+        "D:\\bdda-wt\\shadow\\df\\bench\\dbW100",
+        "20",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_legacy\\out.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_legacy\\state.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_legacy\\force.csv",
+        "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_legacy\\geom.csv"
+      ],
+      "directory": "D:\\bdda-wt\\shadow\\bdda2\\build\\m4b\\timing_runs\\W100_7_legacy",
+      "artifacts": {
+        "out.csv": {
+          "sha256": "0f413164b276bc004c477af2e5b9c912980792cfd06543222c64193b17b0dc3a",
+          "bytes": 278797
+        },
+        "state.csv": {
+          "sha256": "5e7882f71d2fb304b8120af248626dd93f1d2de0907bd5ce156e00ac30827feb",
+          "bytes": 1695114
+        },
+        "force.csv": {
+          "sha256": "3aff4e06b473637d4e8463cd563ce1968cc95fe3a41d22731362313a6efb404a",
+          "bytes": 1565038
+        },
+        "geom.csv": {
+          "sha256": "378f5d24649bad0751655545bf629426046f35c62fb7d9cc5ead563bd49b69a3",
+          "bytes": 687487
+        },
+        "stdout.txt": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr.txt": {
+          "sha256": "54c99bc6b389f7fcde874bb790c60dfaa46810a31a6f498de2e2774e35627162",
+          "bytes": 1157
+        }
+      },
+      "inputs": {
+        "df\\bench\\bbW100": "7eda395d5d879293b6bec6805b898683b02db6cd9def504d6ae455458dd2e8ec",
+        "df\\bench\\dbW100": "27e343a02008c60476105d57f36128ca296e12c299b7fce2a18c8d6a4432c4a4"
+      },
+      "wall_seconds": 0.2887045,
+      "timing_admissible": true,
+      "label": "legacy",
+      "warmup": false,
+      "iteration": 7
+    }
+  ],
+  "summary": {
+    "52": {
+      "samples_seconds": {
+        "baseline": [
+          0.0273127,
+          0.0262076,
+          0.0268357,
+          0.0281366,
+          0.0331027,
+          0.0257867,
+          0.0303356
+        ],
+        "unset": [
+          0.0292942,
+          0.0260342,
+          0.0287529,
+          0.0284691,
+          0.0262538,
+          0.0266639,
+          0.0267524
+        ],
+        "legacy": [
+          0.0258894,
+          0.0250429,
+          0.0280543,
+          0.0259408,
+          0.0284369,
+          0.0296469,
+          0.0278039
+        ],
+        "shadow": [
+          0.0428726,
+          0.0424501,
+          0.0407804,
+          0.0471103,
+          0.041265,
+          0.043136,
+          0.0410648
+        ]
+      },
+      "median_seconds": {
+        "baseline": 0.0273127,
+        "unset": 0.0267524,
+        "legacy": 0.0278039,
+        "shadow": 0.0424501
+      },
+      "relative_to_baseline": {
+        "baseline": 1.0,
+        "unset": 0.9794857337429108,
+        "legacy": 1.017984307666397,
+        "shadow": 1.5542256898805318
+      }
+    },
+    "W100": {
+      "samples_seconds": {
+        "baseline": [
+          0.2998645,
+          0.294089,
+          0.3085733,
+          0.308685,
+          0.2984832,
+          0.3004032,
+          0.2875566
+        ],
+        "unset": [
+          0.2879491,
+          0.3055066,
+          0.2919488,
+          0.2932776,
+          0.2962683,
+          0.3074964,
+          0.2895993
+        ],
+        "legacy": [
+          0.2915312,
+          0.2942368,
+          0.2929861,
+          0.2937185,
+          0.3013972,
+          0.3061228,
+          0.2887045
+        ],
+        "shadow": [
+          0.3293948,
+          0.3373245,
+          0.3282956,
+          0.3287977,
+          0.3327519,
+          0.3269828,
+          0.3360008
+        ]
+      },
+      "median_seconds": {
+        "baseline": 0.2998645,
+        "unset": 0.2932776,
+        "legacy": 0.2937185,
+        "shadow": 0.3293948
+      },
+      "relative_to_baseline": {
+        "baseline": 1.0,
+        "unset": 0.9780337452416009,
+        "legacy": 0.9795040760076635,
+        "shadow": 1.098478812930507
+      }
+    }
+  }
+}
