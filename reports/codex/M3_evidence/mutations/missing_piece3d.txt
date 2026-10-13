@@ -1,0 +1,44 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______ test_mutated_implementation_must_preserve_the_specific_contract _______
+
+    def test_mutated_implementation_must_preserve_the_specific_contract():
+        kind = os.environ["M3_MUTANT"]
+        if kind == "remove_clipping":
+            T2.test_clipped_covers_are_exactly_boundary_and_cover_oracle_ray_exits("tight", T2.PIN, T2.U)
+        elif kind == "label_inversion":
+            T2._assert_states(GlobalEntrance2(T2.SQUARE, T2.THIN_L), [(0, 0)])
+        elif kind == "missing_piece":
+            T2._assert_states(GlobalEntrance2(T2.SQUARE, T2.THIN_L), [(0, 2)])
+        elif kind == "label_propagation":
+            T2._assert_states(GlobalEntrance2(T2.PIN, T2.U), [(0, 0)])
+        elif kind == "open_endpoint":
+            assert GlobalEntrance2(T2.SQUARE, T2.SQUARE).first_entrance((-2, 0), (1, 1)) is not None, "isolated closed contact"
+        elif kind == "local_exit":
+            T2.test_global_shortest_exit_distinguishes_tight_contact_seam()
+        elif kind == "open_union_join":
+            T3._assert_join_endpoint()
+        elif kind == "missing_piece3d":
+            _, A, B = T3._families()[0]
+>           T3._assert_states(G3.global_entrance(A, B), A, B, [(F(0), F(2), F(0))])
+
+reports\codex\M3_evidence\tmp\mutation_guards\test_m3_external_mutant_guards.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+model = GlobalEntrance3D(parts_a=(ConvexPart3D(vertices=((Fraction(-1, 4), Fraction(-6004799503160661, 18014398509481984), Fra... 2)), (Fraction(0, 1), Fraction(1, 1), Fraction(1, 2)))), interior=(Fraction(3, 2), Fraction(1, 2), Fraction(0, 1))),))
+A = Polyhedron(verts=[(-0.25, -0.3333333333333333, -0.2), (0.25, -0.3333333333333333, -0.2), (0.25, 0.3333333333333333, -0... 0.3333333333333333, 0.2)], faces=[(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)])
+B = Polyhedron(verts=[(Fraction(0, 1), Fraction(0, 1), Fraction(-1, 2)), (Fraction(3, 1), Fraction(0, 1), Fraction(-1, 2))..., 1, 0), (6, 7, 8, 9, 10, 11), (0, 1, 7, 6), (1, 2, 8, 7), (2, 3, 9, 8), (3, 4, 10, 9), (4, 5, 11, 10), (5, 0, 6, 11)])
+points = [(Fraction(0, 1), Fraction(2, 1), Fraction(0, 1))]
+
+    def _assert_states(model, A, B, points):
+        for q in points:
+            actual = G.GlobalEntrance3D.classify(model, q)
+            expected = geom3.polyhedra_overlap(_raw_shift(A, q), B, 0)
+>           assert actual == expected, ('global3d physical-state zero mismatch', q, actual, expected)
+E           AssertionError: ('global3d physical-state zero mismatch', (Fraction(0, 1), Fraction(2, 1), Fraction(0, 1)), -1, 1)
+E           assert -1 == 1
+
+tests\test_m3_global3d.py:92: AssertionError
+=========================== short test summary info ===========================
+FAILED reports/codex/M3_evidence/tmp/mutation_guards/test_m3_external_mutant_guards.py::test_mutated_implementation_must_preserve_the_specific_contract
+1 failed in 0.21s

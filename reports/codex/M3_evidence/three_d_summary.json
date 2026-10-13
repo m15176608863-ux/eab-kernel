@@ -1,0 +1,153 @@
+{
+  "status": "implementation_and_replay_complete",
+  "new_gate_count": 22,
+  "new_and_existing_exact_gates": "40 passed in 11.39s",
+  "zero_mismatch": {
+    "probes": 6110,
+    "mismatches": 0,
+    "families": 11,
+    "seconds": 34.78148489998421
+  },
+  "scope": "Exact convex-part union E/O and closed/open line sections; interlock decisions now query sections, no brute predicate.",
+  "apis": [
+    "convex_decomposition",
+    "ConvexPart3D.vertices",
+    "ConvexPart3D.faces",
+    "ConvexPart3D.interior",
+    "global_entrance",
+    "GlobalEntrance3D.parts_a",
+    "GlobalEntrance3D.parts_b",
+    "GlobalEntrance3D.classify",
+    "GlobalEntrance3D.line_sections",
+    "LineSections3D.closed",
+    "LineSections3D.opened",
+    "LineSections3D.classify",
+    "LineSections3D.first_nonpenetrating"
+  ],
+  "numeric_contract": {
+    "outputs": "Fraction only; no new binary64 constructions",
+    "three_tiers": [
+      "2^-400",
+      "1",
+      "2^400"
+    ],
+    "gate": "test_global3d_exact_construction_values_match_independent_cartesian_reference",
+    "static_issues": 0,
+    "waiver_increment": 0,
+    "differential_scope": "Independent Cartesian parts_a vertices/centre and ray endpoints only. parts_b fields and ordered face subsets not exhaustively three-tier compared; no independent three-tier value reference for every BSP Steiner branch."
+  },
+  "mutations": [
+    {
+      "change": "open union merges touching endpoints",
+      "injected_function": "_merge",
+      "gate": "test_open_interval_endpoint_mutation_is_killed_inside_union",
+      "expected_assertion": "open interval endpoint must remain physical contact"
+    },
+    {
+      "change": "convex decomposition drops final part after volume certificate",
+      "injected_function": "_decompose",
+      "gate": "test_omitted_convex_piece_mutation_is_killed_inside_decomposition",
+      "expected_assertion": "global3d physical-state zero mismatch"
+    },
+    {
+      "change": "escape bypasses global root label in favour of first local event",
+      "injected_function": "_exact_escape_cached",
+      "gate": "test_escape_local_event_fallback_mutation_is_killed_at_exact_root",
+      "expected_assertion": "global root not local cover event"
+    }
+  ],
+  "input_domain": "Closed consistently oriented embedded full-dimensional surfaces; deterministic projected-ear geometry for nonplanar rings. Closedness/orientation/nonzero-volume are checked, not a general self-intersection recognizer.",
+  "remaining": [
+    "No explicit 3D overlay mesh/cover clipping/strong completeness",
+    "All lazy convex-pair probes are covered, not the absent explicit 3D overlay intersections",
+    "Twisted-prism regression is not advertised as a proved Schonhardt example",
+    "Full-suite 15 percent performance threshold awaits root-run timing",
+    "BSP Steiner constructed coordinates have exact algebra and membership/volume checks, not a full independent three-tier per-value differential audit.",
+    "Rigid covariance theorem applies to a fixed triangulation or planar face rings; independently re-triangulating nonplanar rings after rotation may change the supplied-surface object."
+  ],
+  "complexity": "With f distinct source triangle planes, the BSP cell count is at most O(f^3); SAT union pairs are pA*pB, axes per pair O(fA+fB+eA*eB), each support projection O(vA+vB). Fraction bit-complexity is additional.",
+  "oracle_import_inventory": {
+    "src/eab/kernel3d/geom3.py": [
+      "from __future__ import annotations",
+      "from dataclasses import dataclass, field",
+      "from fractions import Fraction",
+      "from eab.numeric_domain import float_algebra",
+      "from eab import rational3 as _rational3",
+      "from eab.construction import norm_rational, ratio_rational, scalar_rational, unit_rational",
+      "from itertools import combinations",
+      "from functools import lru_cache",
+      "import math",
+      "from math import atan2, sqrt",
+      "from . import exact_geom as _eg",
+      "from eab.predicates import orient3d",
+      "from fractions import Fraction as F"
+    ],
+    "src/eab/kernel3d/exact_geom.py": [
+      "from __future__ import annotations",
+      "from fractions import Fraction as F",
+      "from eab import rational3 as _rational3",
+      "from functools import lru_cache",
+      "from itertools import count",
+      "import math",
+      "from eab.construction import sqrt_rational, scalar_rational",
+      "from eab.numeric_domain import float_algebra"
+    ],
+    "tests/e5b_wall_oracle.py": [
+      "from fractions import Fraction as F",
+      "from math import lcm",
+      "from functools import lru_cache",
+      "from e5a2_surface_oracle import _ring_triangles",
+      "from e5a2_surface_oracle import _tetrahedra",
+      "from itertools import combinations"
+    ],
+    "tests/e5a2_surface_oracle.py": [
+      "from fractions import Fraction as F",
+      "from itertools import combinations",
+      "from math import lcm"
+    ],
+    "src/eab/kernel3d/global_entrance.py": [
+      "from __future__ import annotations",
+      "from dataclasses import dataclass",
+      "from fractions import Fraction as F",
+      "from functools import lru_cache",
+      "from itertools import count",
+      "from math import gcd, lcm"
+    ]
+  },
+  "performance_diagnostic": {
+    "input": "test_invariance_interlock._ilock(z0.7,0,1e-3); first OFFSETS entry transformed by _vec",
+    "triangles_per_body": 68,
+    "bsp_cells_per_body": 58,
+    "merged_parts_per_body": 29,
+    "construction_seconds": 6.399874800001271,
+    "first_line_sections_seconds": 19.439686199999414,
+    "no_source_changes_for_diagnostic": true,
+    "note": "temporary in-memory wrappers measured original BSP and merge functions; this is one concurrent-load timing, not an isolated benchmark"
+  },
+  "replay": {
+    "count": 392,
+    "mismatch_count": 0,
+    "mismatches": [],
+    "new_brute_calls": 0,
+    "old_brute_calls": 10761,
+    "old_seconds": 176.68839680001838,
+    "new_seconds": 651.7570966000203,
+    "coverage": "392 explicitly enumerated actual inputs from existing wall/TIA/scale/rotation/window/reentry families; not a proof of coverage of every pytest node.",
+    "compared_fields": [
+      "input_sha256",
+      "exact_height",
+      "exact_offset",
+      "state"
+    ],
+    "field_comparison_count": 1568,
+    "case_by_case_evidence": "three_d_replay_comparison.json"
+  },
+  "source_sha256": {
+    "src\\eab\\kernel3d\\global_entrance.py": "64c96a6825f342d6c61e95968cc0649c01d435d894400804d3ac2198452d83a7",
+    "src\\eab\\kernel3d\\interlock.py": "f08bba9b25f78f8a93fb6c4e377dc038f0b4f79ad3b105885ec1e9fb05959592",
+    "tests\\test_m3_global3d.py": "90c3be9ad8acab50fa7189e178c1441458f53af26e4c489d0a17f116eb1d727b"
+  },
+  "duplicate_existing_subset_status": "pytest log completed with 607 passed in 838.46s (0:13:58); 607 collected by a fresh collect-only check. An interrupt was sent at wrapper completion and the outer PowerShell tool returned exit 1. Supplemental log only; authoritative full-suite result is root final_suite_r2.",
+  "duplicate_existing_subset_collected": 607,
+  "duplicate_existing_subset_log_passed": 607
+}

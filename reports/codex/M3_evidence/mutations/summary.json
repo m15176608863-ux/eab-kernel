@@ -1,0 +1,92 @@
+[
+  {
+    "mutant": "remove_clipping",
+    "exit_code": 1,
+    "expected_assertion": "cover clipping exposure mismatch",
+    "actual_assertion_lines": [
+      "E           AssertionError: cover clipping exposure mismatch\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.22s"
+  },
+  {
+    "mutant": "label_inversion",
+    "exit_code": 1,
+    "expected_assertion": "body label mismatch",
+    "actual_assertion_lines": [
+      "E           AssertionError: ('body label mismatch', (0, 0))\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.21s"
+  },
+  {
+    "mutant": "open_endpoint",
+    "exit_code": 1,
+    "expected_assertion": "isolated closed contact",
+    "actual_assertion_lines": [
+      "E           AssertionError: isolated closed contact\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.17s"
+  },
+  {
+    "mutant": "missing_piece",
+    "exit_code": 1,
+    "expected_assertion": "body label mismatch",
+    "actual_assertion_lines": [
+      "E           AssertionError: ('body label mismatch', (0, 2))\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.18s"
+  },
+  {
+    "mutant": "label_propagation",
+    "exit_code": 1,
+    "expected_assertion": "topological label mismatch",
+    "actual_assertion_lines": [
+      "E           AssertionError: ('topological label mismatch', (0, 0))\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.18s"
+  },
+  {
+    "mutant": "local_exit",
+    "exit_code": 1,
+    "expected_assertion": "global exit cannot return the local zero-gap seam",
+    "actual_assertion_lines": [
+      "E       AssertionError: global exit cannot return the local zero-gap seam\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.25s"
+  },
+  {
+    "mutant": "open_union_join",
+    "exit_code": 1,
+    "expected_assertion": "open interval endpoint must remain physical contact",
+    "actual_assertion_lines": [
+      "E       AssertionError: open interval endpoint must remain physical contact\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.21s"
+  },
+  {
+    "mutant": "missing_piece3d",
+    "exit_code": 1,
+    "expected_assertion": "global3d physical-state zero mismatch",
+    "actual_assertion_lines": [
+      "E           AssertionError: ('global3d physical-state zero mismatch', (Fraction(0, 1), Fraction(2, 1), Fraction(0, 1)), -1, 1)\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 0.21s"
+  },
+  {
+    "mutant": "local_escape",
+    "exit_code": 1,
+    "expected_assertion": "global root not local cover event",
+    "actual_assertion_lines": [
+      "E           AssertionError: global root not local cover event\r"
+    ],
+    "killed_at_expected_assertion": true,
+    "last_line": "1 failed in 1.75s"
+  }
+]

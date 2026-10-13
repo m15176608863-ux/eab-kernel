@@ -1,0 +1,34 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______ test_mutated_implementation_must_preserve_the_specific_contract _______
+
+    def test_mutated_implementation_must_preserve_the_specific_contract():
+        kind = os.environ["M3_MUTANT"]
+        if kind == "remove_clipping":
+            T2.test_clipped_covers_are_exactly_boundary_and_cover_oracle_ray_exits("tight", T2.PIN, T2.U)
+        elif kind == "label_inversion":
+            T2._assert_states(GlobalEntrance2(T2.SQUARE, T2.THIN_L), [(0, 0)])
+        elif kind == "missing_piece":
+>           T2._assert_states(GlobalEntrance2(T2.SQUARE, T2.THIN_L), [(0, 2)])
+
+reports\codex\M3_evidence\tmp\mutation_guards\test_m3_external_mutant_guards.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+g = <eab.kernel2d.global_entrance.GlobalEntrance2 object at 0x00000000030CAF60>
+probes = [(0, 2)]
+
+    def _assert_states(g: GlobalEntrance2, probes):
+        for p in probes:
+>           assert g.membership(p) == _oracle_state(g.A, g.B, p), ("body label mismatch", p)
+E           AssertionError: ('body label mismatch', (0, 2))
+E           assert -1 == 1
+E            +  where -1 = membership((0, 2))
+E            +    where membership = <eab.kernel2d.global_entrance.GlobalEntrance2 object at 0x00000000030CAF60>.membership
+E            +  and   1 = _oracle_state(((Fraction(0, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(0, 1), Fraction(1, 1))), ((Fraction(0, 1), Fraction(0, 1)), (Fraction(3, 1), Fraction(0, 1)), (Fraction(3, 1), Fraction(1, 10)), (Fraction(1, 10), Fraction(1, 10)), (Fraction(1, 10), Fraction(3, 1)), (Fraction(0, 1), Fraction(3, 1))), (0, 2))
+E            +    where ((Fraction(0, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(0, 1), Fraction(1, 1))) = <eab.kernel2d.global_entrance.GlobalEntrance2 object at 0x00000000030CAF60>.A
+E            +    and   ((Fraction(0, 1), Fraction(0, 1)), (Fraction(3, 1), Fraction(0, 1)), (Fraction(3, 1), Fraction(1, 10)), (Fraction(1, 10), Fraction(1, 10)), (Fraction(1, 10), Fraction(3, 1)), (Fraction(0, 1), Fraction(3, 1))) = <eab.kernel2d.global_entrance.GlobalEntrance2 object at 0x00000000030CAF60>.B
+
+tests\test_m3_global2d.py:56: AssertionError
+=========================== short test summary info ===========================
+FAILED reports/codex/M3_evidence/tmp/mutation_guards/test_m3_external_mutant_guards.py::test_mutated_implementation_must_preserve_the_specific_contract
+1 failed in 0.18s

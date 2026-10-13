@@ -38,6 +38,7 @@ from .geom3 import exact_edge_vector
 from .exact_geom import sqrt_rational
 from . import exact_geom as _exact
 from .exact_sweep import surface_events, translate_exact, star_core, contact_models
+from .global_entrance import global_entrance
 
 _EPS = sys.float_info.epsilon
 REL_BRUTE_GEOM_TOL = 1e-12         # oracle 的谓词容差：特征长度 L 的相对量
@@ -54,7 +55,7 @@ def escape_height_brute(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     A monotone bisection can skip a lower separated interval in nonconvex data.
     Therefore it now uses the complete exact event partition; tol/geom_tol are
     accepted for compatibility but cannot change the root. This is a secondary
-    check, not an independent oracle (it shares the exact surface predicate).
+    check, not an independent oracle (it shares the global convex-union labels and event partition).
     This bare-float API rejects upward display overflow; escape_height_covers
     instead returns the exact root with an explicit overflow marker.
     """
@@ -215,15 +216,20 @@ def escape_candidates(A: Polyhedron, B: Polyhedron, offset: Vec3, *, tol: float 
 
     Preserves the documented extent/normal report band for frozen derivatives.
     It is not the complete exact kinetic event list: use exact_sweep.surface_events
-    for that list. escape_height_covers uses the latter for all decisions."""
+    for that list. escape_height_covers uses those events as witnesses and exact global line sections for decisions."""
     gtol = _effective_geom_tol_exact(translate_exact(A, offset), B, geom_tol)
     return [(z, lab) for z, lab, _, _ in _candidates(A, B, offset, tol, gtol)[0]]
 
 
 def _nonpenetrating_at(A, B, offset, height):
-    """An exact certificate on the exact affine input, not a rounded probe."""
-    displacement=(F(offset[0]),F(offset[1]),F(offset[2])+height)
-    return polyhedra_overlap(translate_exact(A,displacement),B,0)
+    """M3 exact convex-union ray label, with zero brute-overlap calls.
+
+    The event partition remains for source-feature reports and legacy proof
+    certificates. Decisions now come from the global closed/open interval
+    unions, including isolated touching points between two open intervals.
+    Gate: test_escape_height_has_zero_brute_predicate_calls.
+    """
+    return global_entrance(A, B).line_sections(offset).classify(height)
 
 
 def _prior_intervals(times, height):
@@ -281,7 +287,7 @@ def escape_height_covers(A: Polyhedron, B: Polyhedron, offset: Vec3, *,
     ConstructionDomainError. Gate: test_r15_o05_finite_escape_root_marks_upward_display_overflow.
     Every preceding
     open event interval is certified penetrating, and the exact root itself is
-    independently tested nonpenetrating. No near-vertical event is suppressed.
+    checked against the exact global open-interval union. No near-vertical event is suppressed.
 
     Explicit contact_window is the local penetration-thickness reporting
     window, not Euclidean rigid-body penetration depth (PD). A rejected window

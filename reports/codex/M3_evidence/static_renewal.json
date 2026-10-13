@@ -1,0 +1,82 @@
+{
+  "waiver_count_before": 3103,
+  "waiver_count_after": 3103,
+  "new_exemptions": 0,
+  "renewed": [
+    {
+      "id": "R12b-L0106",
+      "old": {
+        "id": "R12b-L0106",
+        "path": "src/eab/kernel2d/entrance.py",
+        "function": "_first_entrance_concave",
+        "rule": "closed-rounded-call",
+        "node": "Call(func=Name(id='_contact_report', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='label', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
+        "context": "6f66f5522daabaae20f46c174f6ba3049e2a09d30d290872acced9760a3874e4",
+        "category": "PROOF_GAP_MANUAL_EXCLUSION",
+        "reason": "具体节点：_contact_report(A, B, label, x)。_first_entrance_concave 的 x=_at(X,D,t)，X/D 来自 _frpoint 且 t 为 Fraction 事件；_contact_report 的参数/参考点/平方 gap 都从这些 exact 源和原坐标构造，最后才 vector_rational/sqrt_rational。浮点 ctol 只作 near 报告选择，不先作用在 x 的几何构造上。",
+        "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
+      },
+      "new": {
+        "id": "R12b-L0106",
+        "path": "src/eab/kernel2d/entrance.py",
+        "function": "_first_entrance_concave",
+        "rule": "closed-rounded-call",
+        "node": "Call(func=Name(id='_contact_report', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='label', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
+        "context": "55248c72275be9e46215b45f6cfa9949b6e64dbc0fc8b6b69581e9fe70d24e41",
+        "category": "PROOF_GAP_MANUAL_EXCLUSION",
+        "reason": "具体节点：_contact_report(A, B, label, x)。_first_entrance_concave 的 x=_at(X,D,t)，X/D 来自 _frpoint 且 t 为 Fraction 事件；_contact_report 的参数/参考点/平方 gap 都从这些 exact 源和原坐标构造，最后才 vector_rational/sqrt_rational。浮点 ctol 只作 near 报告选择，不先作用在 x 的几何构造上。 M3 reviewed renewal: only body-state selection changed from polygons_overlap_exact to the exact global convex-cell union. Candidate labels, Fraction motion/event construction, contact report and final display sites are unchanged. This does not certify the new global algorithm via a waiver.",
+        "review_evidence": "reports/codex/M3_evidence/static_renewal.json"
+      }
+    },
+    {
+      "id": "R12b-L0107",
+      "old": {
+        "id": "R12b-L0107",
+        "path": "src/eab/kernel2d/entrance.py",
+        "function": "_first_entrance_concave",
+        "rule": "closed-rounded-construction",
+        "node": "Call(func=Name(id='_candidate_labels', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+        "context": "6f66f5522daabaae20f46c174f6ba3049e2a09d30d290872acced9760a3874e4",
+        "category": "PROOF_GAP_MANUAL_EXCLUSION",
+        "reason": "具体节点：_candidate_labels(A, B)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。",
+        "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      },
+      "new": {
+        "id": "R12b-L0107",
+        "path": "src/eab/kernel2d/entrance.py",
+        "function": "_first_entrance_concave",
+        "rule": "closed-rounded-construction",
+        "node": "Call(func=Name(id='_candidate_labels', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
+        "context": "55248c72275be9e46215b45f6cfa9949b6e64dbc0fc8b6b69581e9fe70d24e41",
+        "category": "PROOF_GAP_MANUAL_EXCLUSION",
+        "reason": "具体节点：_candidate_labels(A, B)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。 M3 reviewed renewal: only body-state selection changed from polygons_overlap_exact to the exact global convex-cell union. Candidate labels, Fraction motion/event construction, contact report and final display sites are unchanged. This does not certify the new global algorithm via a waiver.",
+        "review_evidence": "reports/codex/M3_evidence/static_renewal.json"
+      }
+    },
+    {
+      "id": "R12b-L0108",
+      "old": {
+        "id": "R12b-L0108",
+        "path": "src/eab/kernel2d/entrance.py",
+        "function": "_first_entrance_concave",
+        "rule": "closed-rounded-construction",
+        "node": "Call(func=Name(id='_contact_report', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='label', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
+        "context": "6f66f5522daabaae20f46c174f6ba3049e2a09d30d290872acced9760a3874e4",
+        "category": "PROOF_GAP_MANUAL_EXCLUSION",
+        "reason": "具体节点：_contact_report(A, B, label, x)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。",
+        "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      },
+      "new": {
+        "id": "R12b-L0108",
+        "path": "src/eab/kernel2d/entrance.py",
+        "function": "_first_entrance_concave",
+        "rule": "closed-rounded-construction",
+        "node": "Call(func=Name(id='_contact_report', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='label', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
+        "context": "55248c72275be9e46215b45f6cfa9949b6e64dbc0fc8b6b69581e9fe70d24e41",
+        "category": "PROOF_GAP_MANUAL_EXCLUSION",
+        "reason": "具体节点：_contact_report(A, B, label, x)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。 M3 reviewed renewal: only body-state selection changed from polygons_overlap_exact to the exact global convex-cell union. Candidate labels, Fraction motion/event construction, contact report and final display sites are unchanged. This does not certify the new global algorithm via a waiver.",
+        "review_evidence": "reports/codex/M3_evidence/static_renewal.json"
+      }
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 > **WO-R15FIX 当前补充（2026-10-13，待独立复审）**：静态工具仍是辅助检查，不是安全保证；局部 AST／源码 pin 与 Fraction 数据流合同不变。[显示与完整构造合同](r15fix_design_sync.md) 订正 R14 的 JSON 词法预拒收及未标记向上 infinity；合力、骨形 jet、贯入证书与 profile 精确差分由新增 R15 门看护。逐条红绿/变异及原门保留情况见 [报告](../reports/codex/R15FIX_report.md)。外部设计正本只读未回写，M0/M4a 管理边界不变。
 
+> **M3 文献指针订正（2026-10-14）**：第五轮只留原始 JSON（`reports/codex/inputs/g6e_findings_raw.json`）；原引用的第五轮 Markdown 报告不存在，不再把原始 JSON 称为完整报告。M3 的实现、证明状态与验证边界以 `reports/codex/M3_report.md` 为准，不预先升级 G6 退出状态。
+
 > **WO-R13FIX / R12FIXb 当前合同（2026-10-13，待独立复审）**：静态构造工具与子集准入是辅助代码检查，不是安全保证；主保证改为公开构造量对独立有理参考的运行时极端尺度差分。现行例外仅锁局部 AST 站点和最小封闭源码 SHA-256，不再锁全库依赖；已知 int/Fraction 变量可按数据流准入，不限整数字面量。本轮补类字段生命周期传播和返回事件端点绑定；覆盖范围、未补齐项与有限网格限制见 [R13FIX 设计同步](r13fix_design_sync.md)、[API 清单](r13fix_construction_inventory.md) 及 [报告](../reports/codex/R13FIX_report.md)。M0 所有者退出决定不变，不宣称新鲜 worktree 或独立 G6 已通过，M4a 离线合同与门保留。
 
 > **WO-R14FIX 当前补充（2026-10-13）**：[分项数值合同及数学订正](r14fix_design_sync.md) 优先于下文笼统 D400 描述。μ、角度/指数、文本连续量与整数身份分别检查；圆锥/黏聚方向独立精确认证。README 的一般相对余弦承载界已撤回，固定 μ=.2 数值门不升级成一般定理。完整执行与改写账见 [报告](../reports/codex/R14FIX_report.md)；M0/M4a 管理边界不变，仍待独立复审。
@@ -35,7 +37,7 @@
 
 代码口径：`D:\eab-kernel` main，HEAD `094861c`。数字先在 `8376ec2` 上跑出；其后 `094861c` 只改 `src/eab/limit.py` 模块文档一行（诚实条款改指 `test_failure_mode_is_read_off_invariants_of_the_dual_face`），全套仍 `1209 passed`（`python -X utf8 -m pytest -q -p no:cacheprovider`，主工作树与新鲜克隆各跑一遍）。表里每一个"有门"都在 `094861c` 上跑过，命令见第八节。
 
-**本表自身的状态**：本文件与本批 M0 收尾文档**一起提交**（HEAD `094861c` 上尚不存在）；它此后经过 G6 第二至第五轮的独立重审（第四轮 provenance-canon 镜头打开过 01、03 全文与 00 多节，第五轮核过第八节"07 对代码"），GAP3（正本对代码）已按各轮报告逐条处置（`reports/g6d_20261010.md`、`reports/g6e_20261010.md`）。按 README 的规矩，本表里任何比现有 README/报告更强的说法，都要等 G6 之后才能升级到那些文件里。
+**本表自身的状态**：本文件与本批 M0 收尾文档**一起提交**（HEAD `094861c` 上尚不存在）；它此后经过 G6 第二至第五轮的独立重审（第四轮 provenance-canon 镜头打开过 01、03 全文与 00 多节，第五轮核过第八节"07 对代码"），GAP3（正本对代码）已按各轮报告逐条处置（`reports/g6d_20261010.md`、`reports/codex/inputs/g6e_findings_raw.json`）。按 README 的规矩，本表里任何比现有 README/报告更强的说法，都要等 G6 之后才能升级到那些文件里。
 
 **E2 口径更新（2026-10-11，WO-E2）**：下文二维凸路径按本工作树的精确实现订正；只记录实现与定向门，不把历史 G6 覆盖移植到新代码上。全套结果、突变体和遗留问题见 `reports/codex/E2_report.md`。凹首入、已侵入后的局部最浅盖与局部单盖在 E3 补精确化，极限自校验在 E4 改有理数；新门、10 项源码突变和全套结果见 `reports/codex/E3E4_report.md`。不等于独立 G6 或新鲜 worktree 验证。
 
@@ -48,7 +50,7 @@
    在 A 沿 x 平移超过 3 时丢一个标签，全套照绿"——那是 68c311b 之前的状态，在现 HEAD 上同一变异让 2(i) 门与不变性门共 106 条红。
    2026-10-10 再订正：上一次订正把状态说低了。）
 2. **命题 4 的"一般位置"前提，代码的处理方式是"不另起退化类型"**：平行贴面、棱平行于面、平行棱-棱都用**非严格**的普通盖来表达，凸成员谓词改用 E 的全部支撑半空间（不再依赖一般位置）。成员、距离、票二、票三在退化输入上都有门。**把一个退化族收成一个盖只做了一半**：三维首入的 `entrance3.merge_degenerate`（M2 第一版）把同一法向、同一平面上的并列盖收成 `("FF", …)` / `("FE", …)` **标签元组**并保留展开成员；但 `Cover3.kind` 注释里的 `FF` / `FE` / `EEP` 与 `contact_record.CoverType` 里的 `FF` / `FE` / `EE_PAR` 仍没有任何构造点（`enumerate_covers3` 不产出、`CoverType.FF/FE/EE_PAR` 全仓零引用），`EEP` 连标签也没有；二维 `FF` 只在凸全局构造 `convex_entrance_block` 里出现（`covers.py:364 convex_entrance_block`（段内）），局部枚举不产出。
-3. **首入（命题 7）**：二维旧静态 `first_entrance_for_vertex` 对凹块分离时选错边，只保留作参考；二维、三维自 2026-10-10 起均有按运动方向定义的第一版（`kernel2d/entrance.py:140 first_entrance`、`entrance3.py:230 first_entrance3`，有门、未经独立重审，M2）。E2 的二维凸路径进一步精确化选路、初态与 E 的半空间射线裁剪（`test_kernel2d_convex_ray_exact.py`）；E3 凹对用局部盖 + 精确相交裁决，候选仿射根、各自时刻段内和前事件漏候选自检均用 Fraction；已侵入按精确平方距离选局部最浅盖（不等于一般凹对全局最小分离）。并列只取精确同时，接近项另报。bb52 的 53 条 legacy 窗口盖验证保留，精确初态为侵入的格子改核局部出口。门 `test_kernel2d_entrance_e3.py` 与原 bb52 门。
+3. **首入（命题 7）**：二维旧静态 `first_entrance_for_vertex` 对凹块分离时选错边，只保留作参考；二维、三维自 2026-10-10 起均有按运动方向定义的第一版（`kernel2d/entrance.py:141 first_entrance`、`entrance3.py:230 first_entrance3`，有门、未经独立重审，M2）。E2 的二维凸路径进一步精确化选路、初态与 E 的半空间射线裁剪（`test_kernel2d_convex_ray_exact.py`）；E3 凹对用局部盖 + 精确相交裁决，候选仿射根、各自时刻段内和前事件漏候选自检均用 Fraction；已侵入按精确平方距离选局部最浅盖（不等于一般凹对全局最小分离）。并列只取精确同时，接近项另报。bb52 的 53 条 legacy 窗口盖验证保留，精确初态为侵入的格子改核局部出口。门 `test_kernel2d_entrance_e3.py` 与原 bb52 门。
 4. **穿透深度（命题 3(ii)）、碰撞锥（命题 8）没有实现。**
 5. **`margin.py` 的"定理一到四"是本仓库自己编的号**，正本里没有这四个编号。但内容上一、二、四在正本都有出处（03 §1.1、01 命题 3(i)、03 §1.3 与 01 命题 6）；定理三的后半句（KKT 乘子 = 虚拟接触力）是 03 §1.2 的主张，代码没实现。真正属于本仓库的只有 Lipschitz 常数 2/δ 这个定量推论，而代码里给的一句理由不够，推导补在第三节。这一条与审查盲区 4（GAP3）"在 03 里没有对应""自创的定理"的说法相反，第三节开头是对审查的订正。
 6. **"局部盖不构成凹块的全局判据"这条实测结论，和正本对石根华机器"一般凹 + 可证完备"的定位有张力**：局部盖对凹块只做到"∂E 被盖住"（有门），做不到"盖就是 ∂E"——本表复核时构造了一个严格有效、间隙为 0 的盖恰好落在 int E 里的例子。缺的是 00 §3.3 提到、正本自己标着"未核实"的那一步：**盖之间的裁剪**。01 开头说"凹块情形单独说明"，全文其实没有这段说明。
@@ -83,8 +85,8 @@
 | **6(i)** 外侧光滑 | E 外距离函数可微，梯度 = (x − P_E(x))/d，局部 C^{1,1} | E 闭凸 | `margin.py:609 inflated_normal`（凸，显式 E）；冻结路径对平移 x 的导数（`frozen.py:186 frozen_normal`、`:252 frozen_gap`） | `test_margin.py::test_inflated_normal_is_lipschitz`、牙 `::test_lipschitz_gate_has_teeth`（随机/常向量/径向/局部反号四种错误实现全抓）、`::test_lipschitz_gate_global_pairs_have_their_own_teeth`、`test_frozen_lowdim.py::test_low_dim_frozen_gradient_is_the_inflated_normal_of_the_explicit_entrance_block` | 凸：**已实现+有门** |
 | **6(ii)** 内侧分片线性 | 侵入深度是有限个仿射函数的 min，在脊集上梯度跳 | a₀ ∈ int E，E 凸 | 无（依赖 3(ii)）。**类比**：L5 逃逸高度 h(δ) 也是"有限个盖的零间隙高度里取一个"的分片线性函数，拐点在并列切换处；`tools/tia_sensitivity.py:93 sensitivity_at` 在那里标 `differentiable=False`。方向固定为竖直，不是侵入深度，只是同类结构 | 类比部分：`test_interlock_sensitivity.py::test_phase_derivative_at_phase_zero_is_flagged_on_every_default_row`、`::test_differentiability_flag_agrees_with_one_sided_quotients` | **未实现**（正本意义下）；同类拐点在 L5 已被检测 |
 | **6(iii)** 边界集值 | ∂E 上法向在 facet 内唯一，在棱、顶点处集值 | E 凸 | 盖带维数标签（`VV`/`VV3` 零维、`VE3`/`EV3` 一维）；重合时法向给 `None`（`covers.py:240 vv_cover` vv_cover、`covers3.py:623 vv3_cover`（段内）） | `test_margin.py::test_inflation_turns_a_set_valued_normal_into_a_single_valued_one`（同一 E 顶点、两个法向；膨胀后单值且 \|n₁−n₂\| = \|x₁−x₂\|/δ 精确） | 凸：**已实现+有门** |
-| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `entrance.py:140 first_entrance`：E2 凸选路、初态与射线裁剪精确，浮点 gap 只作输出；E3 凹首入和已侵入后的 `shortest_exit` 采用精确有理数选择；后者只是局部最浅盖。旧静态 `covers.py:336 first_entrance_for_vertex` 仅作参考。三维 `entrance3.py:230 first_entrance3` + `shortest_exit3` + `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版） | 二维 `test_kernel2d_convex_ray_exact.py::test_convex_ray_time_matches_independent_fraction_sat`、`::test_convex_ray_decisions_do_not_use_constructed_facet_gaps`、`::test_corner_start_reports_both_exact_active_facets`；既有 `test_kernel2d_entrance.py` 含凹台阶、刚体运动、bb52 53 条 legacy v-e 对账。三维 `test_entrance3.py`、`test_entrance3_concave.py`、`test_entrance3_g2.py` | **二维、三维均有门·未经新一轮 G6**。二维 E3 精确门为 `test_kernel2d_entrance_e3.py`，brute 共用相交谓词仅作佐证，主 oracle 是闭式与测试内联 Fraction SAT；已知"凹 B + 分离选远边"指旧静态函数，不指新版运动首入（第四节 (b)） |
-| **8** 碰撞锥 / 速度障碍 | CC = 从 a₀ 看 E 的正锥；VO 是它平移到 v_B；推论：盖分解经中心投影给碰撞锥一个"首撞模态"分划 | 匀速相对运动 | 无。沿射线找首个 ∂E 点的计算只以两种特例存在：二维 `g0.py:254 brute_ray_exit`（oracle，不带盖标签）；三维 `interlock.py:212 escape_candidates` / `:271 escape_height_covers`（方向固定 +z，带盖标签） | — | **未实现** |
+| **7** 首入 | a₀ 首次触及 ∂E 的点定接触点与法向；已侵入取最短出口；是集值点上的确定性裁决 | 要有运动（"首次"） | 二维 `entrance.py:141 first_entrance`：E2 凸选路、初态与射线裁剪精确，浮点 gap 只作输出；E3 凹首入和已侵入后的 `shortest_exit` 采用精确有理数选择；后者只是局部最浅盖。旧静态 `covers.py:336 first_entrance_for_vertex` 仅作参考。三维 `entrance3.py:230 first_entrance3` + `shortest_exit3` + `merge_degenerate`（FF / FE 退化族，`members` 保留展开视图；M2 第一版） | 二维 `test_kernel2d_convex_ray_exact.py::test_convex_ray_time_matches_independent_fraction_sat`、`::test_convex_ray_decisions_do_not_use_constructed_facet_gaps`、`::test_corner_start_reports_both_exact_active_facets`；既有 `test_kernel2d_entrance.py` 含凹台阶、刚体运动、bb52 53 条 legacy v-e 对账。三维 `test_entrance3.py`、`test_entrance3_concave.py`、`test_entrance3_g2.py` | **二维、三维均有门·未经新一轮 G6**。二维 E3 精确门为 `test_kernel2d_entrance_e3.py`，brute 共用相交谓词仅作佐证，主 oracle 是闭式与测试内联 Fraction SAT；已知"凹 B + 分离选远边"指旧静态函数，不指新版运动首入（第四节 (b)） |
+| **8** 碰撞锥 / 速度障碍 | CC = 从 a₀ 看 E 的正锥；VO 是它平移到 v_B；推论：盖分解经中心投影给碰撞锥一个"首撞模态"分划 | 匀速相对运动 | 无。沿射线找首个 ∂E 点的计算只以两种特例存在：二维 `g0.py:254 brute_ray_exit`（oracle，不带盖标签）；三维 `interlock.py:213 escape_candidates` / `:277 escape_height_covers`（方向固定 +z，带盖标签） | — | **未实现** |
 
 ---
 
@@ -166,11 +168,11 @@
 
 ### (b) 首入（命题 7）
 
-- **二维现行运动首入**：`entrance.py:140 first_entrance`。E2 凸路径在 Fraction 上裁剪半空间射线：微小非零斜率不夹平，错过 E 或超过 t_max 不由 tol 放行；初始恰相触时 t=0，角点全部精确活动 facet 报入并列集。门 `test_kernel2d_convex_ray_exact.py`。E3 的 tied_labels 仅含精确同时/同距，near_labels 另作可分辨性报告，不反馈选择；输出法向/间隙/接触点仍为浮点构造。凹首入、最浅局部出口与 brute 已精确化（`test_kernel2d_entrance_e3.py`）；brute 有扫描分辨率限制且与生产共用精确相交，不能冒充独立 oracle。
+- **二维现行运动首入**：`entrance.py:141 first_entrance`。E2 凸路径在 Fraction 上裁剪半空间射线：微小非零斜率不夹平，错过 E 或超过 t_max 不由 tol 放行；初始恰相触时 t=0，角点全部精确活动 facet 报入并列集。门 `test_kernel2d_convex_ray_exact.py`。E3 的 tied_labels 仅含精确同时/同距，near_labels 另作可分辨性报告，不反馈选择；输出法向/间隙/接触点仍为浮点构造。凹首入、最浅局部出口与 brute 已精确化（`test_kernel2d_entrance_e3.py`）；brute 有扫描分辨率限制且与生产共用精确相交，不能冒充独立 oracle。
 - **二维旧静态实现**：`covers.py:336 first_entrance_for_vertex`。对 A 的一个顶点，在 B 的“投影落在边内的有效 VE 盖”里取间隙最大的一个；没有就退到活跃 VV。它不接收运动方向，库内没有调用者，只有测试用它。以下错误说明针对这个参考函数。
 - **什么情况下对**：B 凸时，单个顶点已侵入，"最大间隙"就是这个顶点到 B 边界的最短出口——与正本"已侵入取最短出口"在**单个顶点**的意义下一致（不是整个块对的穿透深度）。门只有一条：`test_first_entrance_picks_shallowest_penetration`（凸 B、已侵入、一个例子）。
 - **凹块分离情形：错**。docstring 自己写着（审查 r8，`covers.py:336 first_entrance_for_vertex` 的 docstring）。本表复核复现（附录 A.1）：细臂 L 块凹槽里放一个三角形顶点 (0.5, 0.3)，两块分离；边内有效 VE 盖有两个——到水平内边间隙 0.2、到竖直内边间隙 0.4。函数选了 **0.4 那条远边**，而最近的正间隙是 0.2。没有门看着这个错误（它是已知错误，不是回归）。
-- **三维：2026-10-10 起有第一版**（`src/eab/kernel3d/entrance3.py`，M2：沿运动方向的首入、最短出口、FF/FE 退化族合并；凹体上靠谓词裁决、局部规则到不了的位形抛错不静默）。此前零实现：三维里唯一"沿一个方向找第一个 ∂E 点"的计算是 L5 的逃逸高度（`interlock.py:212 escape_candidates`、`:271 escape_height_covers`），方向固定为 +z，而且是"离开"不是"进入"。
+- **三维：2026-10-10 起有第一版**（`src/eab/kernel3d/entrance3.py`，M2：沿运动方向的首入、最短出口、FF/FE 退化族合并；凹体上靠谓词裁决、局部规则到不了的位形抛错不静默）。此前零实现：三维里唯一"沿一个方向找第一个 ∂E 点"的计算是 L5 的逃逸高度（`interlock.py:213 escape_candidates`、`:277 escape_height_covers`），方向固定为 +z，而且是"离开"不是"进入"。
 - 三维首入 M2 第一版已落地（有门、未经 G6）；在独立重审之前 README 只记"有门·未经复核"，不打 ✔。
 
 ### (c) `margin.py` 的"定理一到四"
@@ -178,6 +180,10 @@
 见第三节。一句话：编号是本仓库的；一、二、四的内容在正本有出处；三的后半（KKT = 虚拟接触力）是 03 的主张、代码没实现；四的常数 2/δ 是本仓库加的，代码里的一句理由不够，需要"I − P 非扩张"，推导补在第三节，实测紧值是 1/δ。
 
 ### (d) "局部盖不构成凹块全局判据"与正本的张力
+**M3 当前分类（2026-10-14；工作树有门，非G6退出）**：
+- **已实现 + 有门**：二维全局E/O三态、0/1/2胞标签、凸胞并独立边界、VE/EV盖裁剪、距离、PD_closed全局出口及平移首入；三维精确BSP凸分解/闭开凸片对并和逃逸高度去暴力判决。门：`tests/test_m3_global2d.py`、`tests/test_m3_global3d.py`、`tests/test_m3_exit_oracle.py`。零失配与调用证据见`reports/codex/M3_report.md`。
+- **仅有限输入经验支撑 / 草稿**：原局部有效盖对所有简单凹环的弱覆盖证明仍是草稿；六家庭裁剪与独立全局边界精确相等，不自动升级全域证明。三维Steiner构造没有所有分支三档独立逐值参考。
+- **未实现或未完成验证**：三维显式∂E/盖裁剪/强完备、bb52全部巨大平面安排探针、Xbloc几何转写、完整自交输入认证、一般最小rho、独立G6。下文历史“未构造”描述以此当前分类为准，历史门仍不是全局成员证明。
 
 **实测结论**（都有门）：
 
@@ -200,7 +206,7 @@
 2. **命题 7 首入**：二维与三维的 M2 第一版（按运动方向定义，2026-10-10）待独立重审；二维旧静态版对凹块分离情形的错已被新版绕开（新版凹对靠谓词裁决）；EEP 退化族没有自己的合并规则（由 VF/FV 边界态表达）。
 3. **命题 8 碰撞锥 / 速度障碍 / 截断 VO**，以及"盖分解经中心投影成为碰撞锥分划"的推论。
 4. **命题 4 退化族作为一个盖**：三维 `FF`/`FE` 只在首入的退化合并里以标签元组产出（`entrance3.merge_degenerate`），枚举不产出；`EEP`（及 `CoverType` 的 `EE_PAR`）有类型名、无产出者；二维 `FF` 只由凸全局构造产出，局部枚举不产出（M2）。
-5. **凹块的全局 E、基于盖裁剪的成员判据、盖裁剪**（01 引言承诺的"凹块情形单独说明"、00 §3.3 的裁剪；M3）。二维已有一般多边形精确相交回退与闭式门，不等于这些全局结构已实现。
+5. **凹块全局 E / 裁剪的残余**：M3已实现二维全局E/O及裁剪、三维凸片并成员；成员来自全局胞并而不是min局部gap。三维显式边界/裁剪/强完备、一般rho未实现；二维局部盖全域覆盖证明仍为草稿，见第四节(d)当前分类。
 6. **03 §1.2 KKT 乘子 = 虚拟接触力**：裕度接触没有接进任何互补/LP 求解。
 7. **"DDA 开闭迭代 = 活动集方法"的形式化**：只有 G4 的统计实验。
 8. **K5 的"角的代数"**（01 归属表自己也标"正文未读，细节未核实"）。
@@ -208,7 +214,7 @@
 
 ## 六、"代码有、正本无"
 
-1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是本仓库在凹块上**唯一有门的 ∂E 命题**，正本没有。证明草稿在 `g0.py:254 brute_ray_exit`（段内）（出口完备性 docstring）与 `g0.py:215 g0_distance_completeness`（段内）（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:191 g0_distance_completeness3`。门见第四节 (d)。
+1. **距离完备性 / 出口完备性**："∂E ⊆ 有效盖平移线段之并"的两面。它是M3之前本仓库在凹块上**唯一有门的 ∂E 命题**；M3二维新增裁剪与全局边界门，但不把有限门提升为全域旧盖覆盖证明。正本没有同名命题。证明草稿在 `g0.py:254 brute_ray_exit`（段内）（出口完备性 docstring）与 `g0.py:215 g0_distance_completeness`（段内）（`brute_ray_exit` 的依据）；三维距离完备性在 `g03.py:191 g0_distance_completeness3`。门见第四节 (d)。
 2. **G0 三票的自证结构**（票一逐样本、票二局部 facet 集 vs 凸包 facet 集、票三 E 顶点 vs conv{b−a} 极点）：是检验方法，不是正本命题。
 3. **定理四的常数 2/δ**（第三节）。
 4. **贯入哨兵口径**：03 §1.1 说"三分判据、距离恒等式、首入准则全部原样继承"；代码在贯入时不继承距离（贯入时盖的见证距离是一个像深度的正数，不是 0），而是统一回答"已违约"（`margin.py` 模块文档「口径与边界」第二条，门 `test_margin_penetration.py`）。这是对正本的**必要限定**，不是矛盾。
@@ -223,7 +229,7 @@
 
 - **第一层（重新发现）**：E 本身、距离恒等式、二维 NFP 构造。代码把它们当标准结果实现（显式 conv{b−a}、定理二），这是对的；文档里不应把它们写成本仓库或石根华的贡献。
 - **第二层（可能新，须用对参照系）**：
-  - 第 1 条"带语义、可证完备的盖系统"：本仓库给出的是**弱完备**的门（第四节 (d)），强完备（凹块成员判定）缺裁剪，不能主张。
+  - 第 1 条"带语义、可证完备的盖系统"：M3已补二维裁剪与六家庭强完备门、全局E/O成员；一般局部盖覆盖仍是草稿、三维强完备未做，不能主张所有凹多面体已强完备，见第四节(d)。
   - 第 2 条"与开闭迭代衔接"：G4 已给出否定性数据（静态几何先验只抓到 61 个真翻转里的 5 个（09-27 按 df22 终判订正，原 5/82），03 砖一的 09-18 回写段仍是 82/39/60 的旧口径，订正只在本仓库 `reports/g4_multistep_first_datum.md`；正本只读、未回写），不能主张盖系统能预测活动集。
   - 第 4 条"接触不确定性的消解"= 首入：二维、三维自 2026-10-10 各有按运动方向定义的第一版（`kernel2d/entrance.py`、`kernel3d/entrance3.py`，有门、未经独立重审；三维 EEP 无合并规则、凹体靠谓词裁决），不能主张完整。
 - **第三层（红线）**：扫了 README、AGENTS、reports、docs 里的优先性措辞。`AGENTS.md:3` 在 HEAD 上原写"石根华入口块 E(A,B) 理论的**第一份实现**"——00 §3.3 引的 Zhao et al. 2020 就是更早的实现，所以这句不成立。本批已改为"一份独立实现"，订正见 `AGENTS.md:5-7`。R7FIX 也撤掉姊妹对账通道的序数性宣传，仅表述为独立对账通道。
@@ -402,7 +408,7 @@ for k in (5, 16):
 | §五 G4 活动集门（砖一，go/no-go） | 已做并**关闭**（5/61，09-27 订正） | 07 的 Phase 1 执行记录仍写 5/82 的旧口径（正本只读，未回写） | 本轮无增量；历史缺口不因 M4a 自动关闭。 |
 | §五 G5 差异台账 | 无 | 未开（tf05 的 az=2°、平行入口择一与盖理论的分歧没有逐条记录） | 已开 b-DDA M4a 局部台账 `docs/m4_difference_ledger.md` 与冻结逐条摘要 `docs/m4_shadow_expected.json`；未知类别/缺有效盖仍拒收。tf05 az=2° 等其他线差异仍待做。门 `tests/test_m4_bdda_shadow.py::test_unknown_difference_never_passes`。 |
 | §六 Phase 2 三维凸内核（三类 facet 盖、低维盖、退化盖、首入） | `kernel3d/covers3.py`（VF/FV/EE/VE3/EV3/VV3）、`entrance3.py`（首入 + FF/FE 合并，M2 第一版） | 退化盖只在首入合并里有，`enumerate_covers3` 仍不产出 FF/FE/EEP；首入未经 G6 | 本轮无增量；历史缺口不因 M4a 自动关闭。 |
-| §六 Phase 3 凹块局部角覆盖 | 无（M3） | 未动；凹块仍靠暴力谓词裁决（`interlock.py`） | 本轮无增量；历史缺口不因 M4a 自动关闭。 |
+| §六 Phase 3 凹块局部角覆盖 | M3：二维global_entrance、三维凸片并 | 二维裁剪/全局成员已实现；三维interlock判决已去暴力谓词。三维显式强完备未做、M3_PARTIAL | 门 `tests/test_m3_global2d.py`、`tests/test_m3_global3d.py`；非G6退出。 |
 | §六 Phase 4 可微与互补（Scalar 纪律、活动集方法、MLCP） | `dual.py`、`kernel3d/frozen.py`（冻结盖可微）；L3 极限分析 `limit.py` / `limit_multi.py`（07 未规划） | 开闭迭代改写为显式活动集方法、MLCP 交叉核对**未做**；极限分析是 07 之外加的一层（L3 互补层） | 本轮无增量；历史缺口不因 M4a 自动关闭。 |
 | §六 Phase 5 接缝与切换（bdda2 `BDDA_DETECT`、bdda3d 引入 eab、tf.cpp 只探针） | 无（M4） | 未动；按 README 规矩等 M0 退出 + M2 首入落地 | 已有离线适配器 `src/eab/adapters/bdda2d.py`、接缝地图及 BDDA_DETECT 提案；只消费冻结导出，不切姊妹默认路径，不实施在线检测/装配/继承/开闭求解。门 `tests/test_m4_bdda_adapter.py`、`tests/test_m4_bdda_shadow.py`。 |
 | §七 各仓库改动清单（姊妹仓库只读 / 只加接缝） | 本仓库从未改姊妹仓库（AGENTS 红线） | 一致 | 仍只读；本树编排复制 exe/输入到沙箱后捕获再冻结，不在姊妹源码运行或回写。R12FIX 仅消费既有夹具，不重捕获。 |

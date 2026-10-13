@@ -1994,10 +1994,10 @@
       "function": "_first_entrance_concave",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='_contact_report', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='label', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
-      "context": "6f66f5522daabaae20f46c174f6ba3049e2a09d30d290872acced9760a3874e4",
+      "context": "55248c72275be9e46215b45f6cfa9949b6e64dbc0fc8b6b69581e9fe70d24e41",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_contact_report(A, B, label, x)。_first_entrance_concave 的 x=_at(X,D,t)，X/D 来自 _frpoint 且 t 为 Fraction 事件；_contact_report 的参数/参考点/平方 gap 都从这些 exact 源和原坐标构造，最后才 vector_rational/sqrt_rational。浮点 ctol 只作 near 报告选择，不先作用在 x 的几何构造上。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
+      "reason": "具体节点：_contact_report(A, B, label, x)。_first_entrance_concave 的 x=_at(X,D,t)，X/D 来自 _frpoint 且 t 为 Fraction 事件；_contact_report 的参数/参考点/平方 gap 都从这些 exact 源和原坐标构造，最后才 vector_rational/sqrt_rational。浮点 ctol 只作 near 报告选择，不先作用在 x 的几何构造上。 M3 reviewed renewal: only body-state selection changed from polygons_overlap_exact to the exact global convex-cell union. Candidate labels, Fraction motion/event construction, contact report and final display sites are unchanged. This does not certify the new global algorithm via a waiver.",
+      "review_evidence": "reports/codex/M3_evidence/static_renewal.json"
     },
     {
       "id": "R12b-L0107",
@@ -2005,10 +2005,10 @@
       "function": "_first_entrance_concave",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_candidate_labels', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load())], keywords=[])",
-      "context": "6f66f5522daabaae20f46c174f6ba3049e2a09d30d290872acced9760a3874e4",
+      "context": "55248c72275be9e46215b45f6cfa9949b6e64dbc0fc8b6b69581e9fe70d24e41",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_candidate_labels(A, B)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：_candidate_labels(A, B)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。 M3 reviewed renewal: only body-state selection changed from polygons_overlap_exact to the exact global convex-cell union. Candidate labels, Fraction motion/event construction, contact report and final display sites are unchanged. This does not certify the new global algorithm via a waiver.",
+      "review_evidence": "reports/codex/M3_evidence/static_renewal.json"
     },
     {
       "id": "R12b-L0108",
@@ -2016,10 +2016,10 @@
       "function": "_first_entrance_concave",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_contact_report', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='label', ctx=Load()), Name(id='x', ctx=Load())], keywords=[])",
-      "context": "6f66f5522daabaae20f46c174f6ba3049e2a09d30d290872acced9760a3874e4",
+      "context": "55248c72275be9e46215b45f6cfa9949b6e64dbc0fc8b6b69581e9fe70d24e41",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_contact_report(A, B, label, x)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：_contact_report(A, B, label, x)。入口路径保留原 A/B，X/D 分别 Fraction；exact.entrance_block_exact 的 facet.start/direction 为 Fraction。_feature_data 的 g/length2、事件根与 exact_x 全程有理；_contact_report 最后 sqrt/vector 构造显示。tol/r/window（含 inf）仅标签/搜索窗，不是根或构造的坐标输入；不得全参数传染。 M3 reviewed renewal: only body-state selection changed from polygons_overlap_exact to the exact global convex-cell union. Candidate labels, Fraction motion/event construction, contact report and final display sites are unchanged. This does not certify the new global algorithm via a waiver.",
+      "review_evidence": "reports/codex/M3_evidence/static_renewal.json"
     },
     {
       "id": "R12b-L0109",
@@ -6108,10 +6108,10 @@
       "function": "escape_candidates",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load()), Name(id='tol', ctx=Load()), Name(id='gtol', ctx=Load())], keywords=[])",
-      "context": "2bcc6e8cfccffef5fe75f676b60790e729c68de4de349144f4aa733e3585aff0",
+      "context": "d51f0f29318675acde5cc7909bc6cd449942aa2257eb06d6237d590a97721921",
       "category": "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION",
-      "reason": "具体节点：_candidates(A, B, offset, tol, gtol)。_candidates_uncached 经 rounded cover gap/normal 提名 z，浮点 z-z_prev 聚类后在这个 nominal 位姿复验 extent；它只输出标签/导数报告，不是 exact events 全集。escape_height_covers 另用 surface_events/_exact_escape 求权威根，不能据缓存直调就称候选链无先舍入。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked.",
-      "review_evidence": "reports/codex/R13FIXb_evidence/root/static_review.json"
+      "reason": "具体节点：_candidates(A, B, offset, tol, gtol)。_candidates_uncached 经 rounded cover gap/normal 提名 z，浮点 z-z_prev 聚类后在这个 nominal 位姿复验 extent；它只输出标签/导数报告，不是 exact events 全集。escape_height_covers 另用 surface_events/_exact_escape 求权威根，不能据缓存直调就称候选链无先舍入。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0506",
@@ -6119,10 +6119,10 @@
       "function": "escape_candidates",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load()), Name(id='tol', ctx=Load()), Name(id='gtol', ctx=Load())], keywords=[])",
-      "context": "2bcc6e8cfccffef5fe75f676b60790e729c68de4de349144f4aa733e3585aff0",
+      "context": "d51f0f29318675acde5cc7909bc6cd449942aa2257eb06d6237d590a97721921",
       "category": "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION",
-      "reason": "具体节点：_candidates(A, B, offset, tol, gtol)。该调用属于 _candidates->_candidates_cached->_candidates_uncached 的 nominal report 链。At 初始平移确实 translate_exact，但 z/nz 从已构造 cover 显示得来，存在浮点 z-z_prev 分组、z 位姿的 extent 报告。因此不能称它是理想逃逸高度的精确候选全集；escape_candidates 明示报告用途，escape_height_covers 的权威 root 另由 _exact_escape/surface_events 的 exact 全事件与区间证书决定。这是范围排除，不是“无提前舍入”证明。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked.",
-      "review_evidence": "reports/codex/R13FIXb_evidence/root/static_review.json"
+      "reason": "具体节点：_candidates(A, B, offset, tol, gtol)。该调用属于 _candidates->_candidates_cached->_candidates_uncached 的 nominal report 链。At 初始平移确实 translate_exact，但 z/nz 从已构造 cover 显示得来，存在浮点 z-z_prev 分组、z 位姿的 extent 报告。因此不能称它是理想逃逸高度的精确候选全集；escape_candidates 明示报告用途，escape_height_covers 的权威 root 另由 _exact_escape/surface_events 的 exact 全事件与区间证书决定。这是范围排除，不是“无提前舍入”证明。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0508",
@@ -6130,10 +6130,10 @@
       "function": "escape_height_brute",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='escape_height_covers', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load())], keywords=[keyword(arg='geom_tol', value=Name(id='geom_tol', ctx=Load())), keyword(arg='contact_window', value=Name(id='contact_window', ctx=Load()))])",
-      "context": "539f96e4a9fba6870a739569dc187c63adbc1083cafb5ca3af5b127a89523664",
+      "context": "1a029f09bb8fda1778f2723acf823a9b57670cbf9e2fb683b58d0ec9268798d6",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：escape_height_covers(A,B,offset,geom_tol=geom_tol,contact_window=contact_window)。此兼容入口已直接委托 escape_height_covers 精确事件根，并非保留旧浮点二分；正常 A/B/offset 为给定输入模型。 R15 local renewal: Bare-float compatibility wrapper cannot propagate overflow certificate, so explicit flagged display overflow raises named domain error. Existing exact-root delegation is secondary oracle only.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：escape_height_covers(A,B,offset,geom_tol=geom_tol,contact_window=contact_window)。此兼容入口已直接委托 escape_height_covers 精确事件根，并非保留旧浮点二分；正常 A/B/offset 为给定输入模型。 R15 local renewal: Bare-float compatibility wrapper cannot propagate overflow certificate, so explicit flagged display overflow raises named domain error. Existing exact-root delegation is secondary oracle only. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0509",
@@ -6141,10 +6141,10 @@
       "function": "escape_height_covers",
       "rule": "closed-data-attribute",
       "node": "Attribute(value=Name(id='e', ctx=Load()), attr='label', ctx=Load())",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：e.label。event/e 来自 surface_events 返回的 SurfaceEvent 数据对象，time 是精确 Fraction 根，label 是来源特征 tuple。这里读属性作分组/输出标签，不执行属性值；不能把任意同名外部对象视为该类型。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：e.label。event/e 来自 surface_events 返回的 SurfaceEvent 数据对象，time 是精确 Fraction 根，label 是来源特征 tuple。这里读属性作分组/输出标签，不执行属性值；不能把任意同名外部对象视为该类型。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0510",
@@ -6152,10 +6152,10 @@
       "function": "escape_height_covers",
       "rule": "closed-data-attribute",
       "node": "Attribute(value=Name(id='event', ctx=Load()), attr='label', ctx=Load())",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：event.label。event/e 来自 surface_events 返回的 SurfaceEvent 数据对象，time 是精确 Fraction 根，label 是来源特征 tuple。这里读属性作分组/输出标签，不执行属性值；不能把任意同名外部对象视为该类型。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：event.label。event/e 来自 surface_events 返回的 SurfaceEvent 数据对象，time 是精确 Fraction 根，label 是来源特征 tuple。这里读属性作分组/输出标签，不执行属性值；不能把任意同名外部对象视为该类型。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0511",
@@ -6163,10 +6163,10 @@
       "function": "escape_height_covers",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load()), Name(id='tol', ctx=Load()), Name(id='gtol', ctx=Load())], keywords=[])",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION",
-      "reason": "具体节点：_candidates(A,B,offset,tol,gtol)。_candidates_uncached 经 rounded cover gap/normal 提名 z，浮点 z-z_prev 聚类后在这个 nominal 位姿复验 extent；它只输出标签/导数报告，不是 exact events 全集。escape_height_covers 另用 surface_events/_exact_escape 求权威根，不能据缓存直调就称候选链无先舍入。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：_candidates(A,B,offset,tol,gtol)。_candidates_uncached 经 rounded cover gap/normal 提名 z，浮点 z-z_prev 聚类后在这个 nominal 位姿复验 extent；它只输出标签/导数报告，不是 exact events 全集。escape_height_covers 另用 surface_events/_exact_escape 求权威根，不能据缓存直调就称候选链无先舍入。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0513",
@@ -6174,10 +6174,10 @@
       "function": "escape_height_covers",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_candidates', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load()), Name(id='tol', ctx=Load()), Name(id='gtol', ctx=Load())], keywords=[])",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION",
-      "reason": "具体节点：_candidates(A,B,offset,tol,gtol)。该调用属于 _candidates->_candidates_cached->_candidates_uncached 的 nominal report 链。At 初始平移确实 translate_exact，但 z/nz 从已构造 cover 显示得来，存在浮点 z-z_prev 分组、z 位姿的 extent 报告。因此不能称它是理想逃逸高度的精确候选全集；escape_candidates 明示报告用途，escape_height_covers 的权威 root 另由 _exact_escape/surface_events 的 exact 全事件与区间证书决定。这是范围排除，不是“无提前舍入”证明。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：_candidates(A,B,offset,tol,gtol)。该调用属于 _candidates->_candidates_cached->_candidates_uncached 的 nominal report 链。At 初始平移确实 translate_exact，但 z/nz 从已构造 cover 显示得来，存在浮点 z-z_prev 分组、z 位姿的 extent 报告。因此不能称它是理想逃逸高度的精确候选全集；escape_candidates 明示报告用途，escape_height_covers 的权威 root 另由 _exact_escape/surface_events 的 exact 全事件与区间证书决定。这是范围排除，不是“无提前舍入”证明。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0515",
@@ -6185,10 +6185,10 @@
       "function": "escape_height_covers",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='F', ctx=Load()), args=[Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=0), ctx=Load())], keywords=[]), op=Sub(), right=Name(id='root', ctx=Load()))",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：F(c[0])-root。root 是 exact event 根；display=scalar_rational(root) 后 nextafter 仅外向显示，同时保留 root/精确 witness/先前区间证书。nearest 差值采用 F(candidate)-root 只选择报告标签；gtol/r 候选预算不改 root。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：F(c[0])-root。root 是 exact event 根；display=scalar_rational(root) 后 nextafter 仅外向显示，同时保留 root/精确 witness/先前区间证书。nearest 差值采用 F(candidate)-root 只选择报告标签；gtol/r 候选预算不改 root。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0516",
@@ -6196,10 +6196,10 @@
       "function": "escape_height_covers",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='F', ctx=Load()), args=[Subscript(value=Name(id='offset', ctx=Load()), slice=Constant(value=2), ctx=Load())], keywords=[]), op=Add(), right=Name(id='root', ctx=Load()))",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：F(offset[2])+root。root 是 exact event 根；display=scalar_rational(root) 后 nextafter 仅外向显示，同时保留 root/精确 witness/先前区间证书。nearest 差值采用 F(candidate)-root 只选择报告标签；gtol/r 候选预算不改 root。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：F(offset[2])+root。root 是 exact event 根；display=scalar_rational(root) 后 nextafter 仅外向显示，同时保留 root/精确 witness/先前区间证书。nearest 差值采用 F(candidate)-root 只选择报告标签；gtol/r 候选预算不改 root。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0517",
@@ -6207,10 +6207,10 @@
       "function": "escape_height_covers",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='abs', ctx=Load()), args=[BinOp(left=Call(func=Name(id='F', ctx=Load()), args=[Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=0), ctx=Load())], keywords=[]), op=Sub(), right=Name(id='root', ctx=Load()))], keywords=[]), op=Mult(), right=Call(func=Name(id='F', ctx=Load()), args=[Subscript(value=Name(id='c', ctx=Load()), slice=Constant(value=2), ctx=Load())], keywords=[]))",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：abs(F(c[0])-root)*F(c[2])。root 是 exact event 根；display=scalar_rational(root) 后 nextafter 仅外向显示，同时保留 root/精确 witness/先前区间证书。nearest 差值采用 F(candidate)-root 只选择报告标签；gtol/r 候选预算不改 root。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "具体节点：abs(F(c[0])-root)*F(c[2])。root 是 exact event 根；display=scalar_rational(root) 后 nextafter 仅外向显示，同时保留 root/精确 witness/先前区间证书。nearest 差值采用 F(candidate)-root 只选择报告标签；gtol/r 候选预算不改 root。 R13FIXb local renewal: Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R12b-L0518",
@@ -29890,10 +29890,10 @@
       "function": "escape_candidates",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_effective_geom_tol_exact', ctx=Load()), args=[Call(func=Name(id='translate_exact', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='offset', ctx=Load())], keywords=[]), Name(id='B', ctx=Load()), Name(id='geom_tol', ctx=Load())], keywords=[])",
-      "context": "2bcc6e8cfccffef5fe75f676b60790e729c68de4de349144f4aa733e3585aff0",
+      "context": "d51f0f29318675acde5cc7909bc6cd449942aa2257eb06d6237d590a97721921",
       "category": "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW",
-      "reason": "Specific node: _effective_geom_tol_exact(translate_exact(A, offset), B, geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked.",
-      "review_evidence": "reports/codex/R13FIXb_evidence/root/static_review.json"
+      "reason": "Specific node: _effective_geom_tol_exact(translate_exact(A, offset), B, geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R13b-L0238",
@@ -29901,10 +29901,10 @@
       "function": "escape_height_covers",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_effective_geom_tol_exact', ctx=Load()), args=[Name(id='report_A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='geom_tol', ctx=Load())], keywords=[])",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW",
-      "reason": "Specific node: _effective_geom_tol_exact(report_A,B,geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "Specific node: _effective_geom_tol_exact(report_A,B,geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R13b-L0239",
@@ -29912,10 +29912,10 @@
       "function": "escape_height_brute",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='escape_height_covers', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='offset', ctx=Load())], keywords=[keyword(arg='geom_tol', value=Name(id='geom_tol', ctx=Load())), keyword(arg='contact_window', value=Name(id='contact_window', ctx=Load()))])",
-      "context": "539f96e4a9fba6870a739569dc187c63adbc1083cafb5ca3af5b127a89523664",
+      "context": "1a029f09bb8fda1778f2723acf823a9b57670cbf9e2fb683b58d0ec9268798d6",
       "category": "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW",
-      "reason": "Specific node: escape_height_covers(A,B,offset,geom_tol=geom_tol,contact_window=contact_window). Unchanged callers of escape_height_covers now transitively see the exact-window helper. Brute entry remains a shared-predicate secondary reference, not independent oracle; legacy dilatancy sampled-profile outer arithmetic is outside this repair and not newly certified by this site waiver. R15 local renewal: Bare-float compatibility wrapper cannot propagate overflow certificate, so explicit flagged display overflow raises named domain error. Existing exact-root delegation is secondary oracle only.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "Specific node: escape_height_covers(A,B,offset,geom_tol=geom_tol,contact_window=contact_window). Unchanged callers of escape_height_covers now transitively see the exact-window helper. Brute entry remains a shared-predicate secondary reference, not independent oracle; legacy dilatancy sampled-profile outer arithmetic is outside this repair and not newly certified by this site waiver. R15 local renewal: Bare-float compatibility wrapper cannot propagate overflow certificate, so explicit flagged display overflow raises named domain error. Existing exact-root delegation is secondary oracle only. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R13b-L0240",
@@ -29934,10 +29934,10 @@
       "function": "escape_candidates",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='_effective_geom_tol_exact', ctx=Load()), args=[Call(func=Name(id='translate_exact', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='offset', ctx=Load())], keywords=[]), Name(id='B', ctx=Load()), Name(id='geom_tol', ctx=Load())], keywords=[])",
-      "context": "2bcc6e8cfccffef5fe75f676b60790e729c68de4de349144f4aa733e3585aff0",
+      "context": "d51f0f29318675acde5cc7909bc6cd449942aa2257eb06d6237d590a97721921",
       "category": "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW",
-      "reason": "Specific node: _effective_geom_tol_exact(translate_exact(A, offset), B, geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked.",
-      "review_evidence": "reports/codex/R13FIXb_evidence/root/static_review.json"
+      "reason": "Specific node: _effective_geom_tol_exact(translate_exact(A, offset), B, geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R13b-L0242",
@@ -29945,10 +29945,10 @@
       "function": "escape_height_covers",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='_effective_geom_tol_exact', ctx=Load()), args=[Name(id='report_A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='geom_tol', ctx=Load())], keywords=[])",
-      "context": "2981b64154211fe09de2ba772e379a264b450c4f02ad6b7852c1e5163b79d3b0",
+      "context": "a59327025351120af4b6f0beb5847039c32010c6cd54aee7188f2bc208374368",
       "category": "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW",
-      "reason": "Specific node: _effective_geom_tol_exact(report_A,B,geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "Specific node: _effective_geom_tol_exact(report_A,B,geom_tol). Internal extent/tie windows remain exact Fraction, even below binary64, rather than constructing a zero tolerance. Comparisons form complete rational products/differences/ratios; exact sweep root and final height construction are unchanged. Cache includes the actually used helper identity. Public floating tolerance reports remain range checked. R15 local renewal: O05 authoritative rational escape root unchanged; upward nextafter display may reach positive infinity only with explicit height_display_overflow and exact_height. Finite RN conversion still checked. Existing event/interval certification calls unchanged. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R13b-L0243",
@@ -34378,10 +34378,10 @@
       "function": "escape_height_brute",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='ConstructionDomainError', ctx=Load()), args=[Constant(value='escape_height_brute.height'), Constant(value='upward binary64 display overflows; use escape_height_covers for its exact certificate')], keywords=[])",
-      "context": "539f96e4a9fba6870a739569dc187c63adbc1083cafb5ca3af5b127a89523664",
+      "context": "1a029f09bb8fda1778f2723acf823a9b57670cbf9e2fb683b58d0ec9268798d6",
       "category": "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW",
-      "reason": "Specific node: ConstructionDomainError(\"escape_height_brute.height\", \"upward binary64 display overflows; use escape_height_covers for its exact certificate\"). Bare-float compatibility wrapper cannot propagate overflow certificate, so explicit flagged display overflow raises named domain error. Existing exact-root delegation is secondary oracle only.",
-      "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+      "reason": "Specific node: ConstructionDomainError(\"escape_height_brute.height\", \"upward binary64 display overflows; use escape_height_covers for its exact certificate\"). Bare-float compatibility wrapper cannot propagate overflow certificate, so explicit flagged display overflow raises named domain error. Existing exact-root delegation is secondary oracle only. M3 documentation-only renewal: replace obsolete surface-predicate wording with exact global-union decision semantics; numeric expressions unchanged.",
+      "review_evidence": "reports/codex/M3_evidence/doc_only_renewal.json"
     },
     {
       "id": "R15-L0002",

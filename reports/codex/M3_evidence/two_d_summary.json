@@ -1,0 +1,118 @@
+{
+  "scope": "WO-M3 exact two-dimensional global entrance construction",
+  "new_module": "src/eab/kernel2d/global_entrance.py",
+  "test_module": "tests/test_m3_global2d.py",
+  "targeted_log": "reports/codex/M3_evidence/two_d_tests.log",
+  "static_violations": 0,
+  "new_static_waivers": 0,
+  "static_log": "reports/codex/M3_evidence/two_d_static.log",
+  "oracle_imports": [
+    "eab.oracle_construction",
+    "fractions",
+    "math"
+  ],
+  "geometry_primitives_shared_with_primary_oracle": [],
+  "public_structure": {
+    "E": "finite union of exact pairwise triangle-difference convex hulls",
+    "O": "union of the open convex-cell interiors",
+    "membership": "-1 exterior E; 0 E minus O; 1 O",
+    "topology": "-1 exterior E; 0 boundary E; 1 interior E",
+    "subdivision": "explicit relative-open vertices, edges and vertical faces inside a finite bounding rectangle; outside label -1",
+    "global_boundary": "split convex-cell edges with different adjacent closed-E labels; independent of local covers",
+    "local_clipping": "valid VE/EV finite segments split against convex-cell edges, retaining both exposed and hidden pieces",
+    "distance": "exact squared distance and rational witnesses; checked binary64 display properties",
+    "shortest_exit": "PD_closed infimum at boundary E, not nonpenetration rho=distance to complement O",
+    "ties": "Distance2.tied_exact_points is the full minimizer set; exact_point is the deterministic lexicographic representative, not rotation-covariant at a tie"
+  },
+  "production_callsite_changes": [
+    "exact.entrance_membership_exact delegates to cached global_entrance(A,B).topology(x)",
+    "entrance._first_entrance_concave uses global cell membership instead of polygons_overlap_exact",
+    "The legacy candidate-miss RuntimeError and local shortest_exit contract remain unchanged",
+    "first_entrance_brute retains brute predicate use explicitly as old scanning corroboration, not production global construction"
+  ],
+  "production_brute_calls_in_guard": 0,
+  "families_in_fast_gates": [
+    "thin_L",
+    "slot_wedge",
+    "interlock_section",
+    "tight_fit",
+    "pocket_hole",
+    "collinear",
+    "random_star_pair_three_scales"
+  ],
+  "all_subdivision_dimensions_fast_gates": [
+    "thin_L",
+    "tight_fit"
+  ],
+  "full_scan_note": "Parent evidence scan replays all family subdivisions and the historical 1260 bb52 translations; see scan evidence separately.",
+  "numeric_differential": {
+    "gate": "test_every_exact_construction_field_matches_an_analytic_hexagon",
+    "scales": [
+      "2^-400",
+      "1",
+      "2^397"
+    ],
+    "independent_model": "A=(0,0),(2,0),(0,1); B=(0,0),(3,0),(0,2); exact E hexagon from six hand-written inequalities",
+    "fields": [
+      "A",
+      "B",
+      "parts_a",
+      "parts_b",
+      "cells",
+      "cell_edges",
+      "boundary",
+      "CoverPiece2 all fields",
+      "side_probes",
+      "Subdivision2 all vertices/edges/faces coordinates, samples and labels",
+      "exterior_state",
+      "ray_intervals strict and closed",
+      "RayHit2 all fields and displays",
+      "Distance2 all fields, tie set and displays"
+    ]
+  },
+  "mutation_table": [
+    {
+      "mutation": "remove_clipping",
+      "internal_change": "exposed = True",
+      "expected_assertion": "cover clipping exposure mismatch"
+    },
+    {
+      "mutation": "label_inversion",
+      "internal_change": "interior cell returns -1",
+      "expected_assertion": "body label mismatch"
+    },
+    {
+      "mutation": "open_endpoint",
+      "internal_change": "drop singleton closed ray intervals",
+      "expected_assertion": "isolated closed contact"
+    },
+    {
+      "mutation": "missing_piece",
+      "internal_change": "construct only parts_b[:1]",
+      "expected_assertion": "body label mismatch"
+    },
+    {
+      "mutation": "label_propagation",
+      "internal_change": "skip tangent-cone seam classification",
+      "expected_assertion": "topological label mismatch"
+    },
+    {
+      "mutation": "local_exit",
+      "internal_change": "nearest exit considers unclipped local covers",
+      "expected_assertion": "global exit cannot return the local zero-gap seam"
+    }
+  ],
+  "mutation_execution": "All six compile altered source inside the actual production class method before invoking the normal gate; no fake output append.",
+  "honest_limits": [
+    "Finite regression coverage is not independent six-route G6 approval.",
+    "Subdivision vertical edges are coordinate-system dependent; semantic labels and represented sets, rather than artificial edge ordering, are covariant.",
+    "No separate PD_open implementation; exact strict ray intervals are exposed.",
+    "Global object memory caches hold 64 immutable-input constructions; polynomial arrangement construction remains potentially expensive.",
+    "Xbloc is not modeled here without verified published geometry."
+  ],
+  "integration_result": "361 passed in 18.37s",
+  "integration_log": "reports/codex/M3_evidence/two_d_integration.log",
+  "historical_targeted_result": "48 passed in 7.13s",
+  "current_new_gate_count": 50,
+  "later_change": "Root expanded strong completeness from 4 to all 6 families (+2 nodes); final suite is authoritative, initial 48-node log retained as history."
+}

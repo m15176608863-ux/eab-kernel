@@ -187,3 +187,25 @@
 2. `face_noise` 已换无指数限制尾数周长模型；原超长边遗留有回归与独立误差界，不再作为缺口。
 3. 混合int/float raw向量域内相消与域外范围均有门；任意第三方标量协议不纳入builtin输入合同。
 4. 静态0违例只与逐站点人工排除账一起解释，不是此表完成的替代。
+
+## M3 增量（2026-10-14；不改写上表历史138项计数）
+
+本节逐组覆盖新增公开API及其结果字段。`differential`仍只表示三档有限解析族的独立逐值对拍，不是全域证明。
+精确Fraction证书不先经过binary64转换；任何公开float显示只能使用construction.py。没有新增静态豁免。
+
+| 新API/公开构造量 | 处置 | 独立参考及门 |
+|---|---|---|
+| `kernel2d.global_entrance.GlobalEntrance2` / `global_entrance`；`A/B/parts_a/parts_b/cells` | differential | `test_m3_global2d.py::test_every_exact_construction_field_matches_an_analytic_hexagon`；2^-400/1/2^397，两直角三角形差的手推六边形，所有点和分片逐值，不调用被测hull/ear。 |
+| `GlobalEntrance2.cell_edges/boundary/clipped_covers`；`CoverPiece2.label/start/end/exposed/body_state/side_points/side_states` | differential | 同一三档六边形门手列6个带源标签边，全部字段及独立半空间事件双侧点逐值；一般凹体另有独立oracle强完备门。 |
+| `GlobalEntrance2.side_probes/ray_intervals/first_entrance`；`RayHit2.exact_time/exact_point/time/point` | differential | 同门手列半空间射线区间[2,7]、首点(-2,0)，闭/开interval及最终scalar/vector独立舍入参考；`test_public_api_rigid_motion_with_independently_varied_translation_scale`补大平移。 |
+| `GlobalEntrance2.subdivision`；`Subdivision2.vertices/edges/faces/exterior_state`；`Cell2.vertices/sample/state` | differential | 同门手列8个顶点、4个面、全部边和胞样本/标签；3档逐字段，不以查询membership代替存储标签核对。竖直剖分人工边不承诺旋转协变，代表集合与标签协变。 |
+| `GlobalEntrance2.distance_to_e/shortest_exit`；`Distance2.squared/exact_point/tied_exact_points/distance/point` | differential | 三档六边形闭式及`test_public_constructions_three_tiers_and_exact_motion_covariance`；距离独立有理参考，显示用oracle_construction；U槽/L并独立PD_closed门。多解只保证最优点集合协变，字典序代表无该保证。 |
+| `GlobalEntrance2.membership/topology` | nonconstructive | 返回离散-1/0/1，不输出坐标或距离。内部全Fraction；不是免除正确性门，零失配门和紧配语义门仍必跑。 |
+| `kernel3d.global_entrance.convex_decomposition/global_entrance`；`GlobalEntrance3D.parts_a/parts_b`；`ConvexPart3D.vertices/faces/interior` | partial differential | `test_m3_global3d.py::test_global3d_exact_construction_values_match_independent_cartesian_reference`；2^-400/1/2^400非立方盒，仅逐值核`parts_a[0].vertices/interior`。`faces`是这些exact顶点的有序选取、源码无新坐标算术，但没有逐面次序对拍；`parts_b`未独立三档逐字段核验。非凸Steiner胞另用独立原表面内点/闭覆盖验证，不称全部Steiner构造量已三档逐值手推。 |
+| `GlobalEntrance3D.line_sections`；`LineSections3D.closed/opened/first_nonpenetrating` | differential | 同三档Cartesian门，z区间±7s和第一端点7s逐Fraction；有理运动门，开端点相接门。 |
+| `GlobalEntrance3D.classify/LineSections3D.classify` | nonconstructive | 只返回实体三态；前者按SAT闭/严格半空间，后者按区间比较，不输出数值构造。 |
+
+数值支持域：2D简单非退化环，3D有效闭合定向且嵌入的曲面；非有限坐标、零方向、零体积/不闭合等显式报错。
+3D局部验证不是完整自交认证，故“所有域外输入必报错”的总合同仍是缺口。
+三维通用BSP产生的新Steiner点虽保持Fraction、具精确半空间/体积证书和独立表面门，未逐个构造分支做三档独立坐标参考；这是M3数值验收剩余项，不能用exact-only字样当nonconstructive豁免。
+静态更新既有19项局部scope指纹：3项因状态提供者改用全局构造（R12b-L0106/0107/0108），16项仅因三段docstring订正；3103项豁免总数不变。审查依据见`reports/codex/M3_evidence/static_renewal.json`、`doc_only_renewal.json`；没有新增豁免。

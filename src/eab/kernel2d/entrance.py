@@ -8,8 +8,9 @@
   · **凸对**（A、B 都凸 ⇒ E 凸）：E 有显式的 H 表示（`convex_entrance_block` 的 facet），每条 facet 的间隙沿平移仿射：
     g_i(t) = g_i(x0) + t·(n_i·d)。射线进入凸集的时刻是全部"进入型"facet（n_i·d < 0）时刻的**最大者** t_in，离开时刻是
     "离开型"facet 时刻的最小者 t_out，t_in ≤ t_out 才触及。闭式，不经谓词；取到最大值的支撑线经有限源特征域精确复核后才确定首入 facet。
-  · **凹对**：没有全局 E（M3 之前），用局部盖（VE/EV）给完备候选、在各自时刻重验"投影落在边内"、精确谓词 `polygons_overlap_exact`
-    裁决（t* 处相触或相交；t* 前全部原始接触事件及相邻事件中点分离，否则抛 RuntimeError——候选集漏了更早的首入，不静默）；与三维同一结构。
+  · **凹对**：M3 用精确全局凸胞并 `global_entrance` 裁决，不再调用暴力相交谓词。局部盖（VE/EV）仍给带源标签的候选、
+    在各自时刻重验"投影落在边内"；t* 前全部原始接触事件及相邻事件中点须分离，否则抛 RuntimeError，保留漏候选的兼容护栏。
+    无局部候选依赖的完整闭集射线首入另由 `GlobalEntrance2.first_entrance` 直接给出（`test_m3_global2d.py`）。
   · 集值点（首入点落在 E 的顶点上，两条 facet 精确同时被触及）：按枚举序取第一个作裁决，并列集如实报出（tied_labels）。
   · x0 已在拓扑 int(E) 内（含紧配接触内缝）：取**局部最短出口**——在程的 facet 型盖里取间隙最大者（侵入最浅）作接触法向与局部分离方向；不是一般凹对的全局穿透深度，内缝的局部 gap 可为 0。
 E2：凸选路、凸初态、半空间射线裁剪均用精确有理数；facet_gap/法向/接触点只作浮点输出，法向取 facet 自己的边。
@@ -295,6 +296,8 @@ def _candidate_labels(A, B):
 def _first_entrance_concave(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, r: float, t_max: float) -> Entrance2:
     """精确候选时刻/段内/相交裁决；t* 前全事件 + 相邻事件中点的精确自检。
     不能只退一个浮点分辨步：它可能跨过很窄的更早接触区间。"""
+    from .global_entrance import global_entrance
+    global_block = global_entrance(A, B)
     X, D = _frpoint(x0), _frpoint(d)
     bound = None if t_max == float("inf") else Fraction(t_max)
     raw = []
@@ -305,7 +308,7 @@ def _first_entrance_concave(A: Poly, B: Poly, x0: Point, d: Point, ctol: float, 
     raw.sort(key=lambda q: (q[0], q[1]))
 
     def state(t):
-        return polygons_overlap_exact(A, B, _at(X, D, t))
+        return global_block.membership(_at(X, D, t))
 
     for t, idx, label in raw:
         x = _at(X, D, t)
@@ -366,7 +369,7 @@ def shortest_exit(A: Poly, B: Poly, x0: Point, *, tol: float = 0.0) -> Entrance2
 
 def first_entrance_brute(A: Poly, B: Poly, x0: Point, d: Point, *, t_max: float, steps: int = 400,
                          tol: float = 0.0) -> float | None:
-    """精确谓词扫描/二分佐证（不是独立 oracle：与生产共用 polygons_overlap_exact）。
+    """旧暴力相交扫描/二分佐证，不属于 M3 全局构造路径，也不作为主 oracle。
     [0,t_max] 上所有平移在 Fraction 做；扫描步长仍须小于穿越区间，孤立切触可能漏采。
     二分到上下界舍入为同一/相邻 float，只控制输出分辨率，不以容差改变相交答案。tol 保留兼容、无判定作用。"""
     if steps <= 0 or t_max < 0 or t_max == float("inf"):
