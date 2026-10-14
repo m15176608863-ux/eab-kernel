@@ -1,0 +1,34 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______________ test_specific_contract_after_internal_injection _______________
+
+    def test_specific_contract_after_internal_injection():
+        kind = os.environ["M4C_MUTANT"]
+        guards = {
+            "wrong_quadratic_branch": motion_tests._assert_two_root_guard,
+            "open_endpoint": motion_tests._assert_endpoint_guard,
+            "lost_tie": motion_tests._assert_tie_guard,
+            "translation_bypass": motion_tests._assert_translation_guard,
+            "ledger_fold_into_match": replay_tests.test_guard_category_not_folded_into_match,
+            "step_pairing_shift": replay_tests.test_guard_step_pairing,
+        }
+>       guards[kind]()
+
+reports\codex\M4c_evidence\tmp\mutations_r4_guards\test_m4c_external_guards.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _assert_tie_guard():
+        A, B = moved(SQ, (F(1, 3), 2)), ((-2, -1), (3, -1), (3, 0), (-2, 0))
+        got = motion_first_entrance(A, B, moved(A, (0, -4)), B)
+>       assert set(got.features) == {("VE", 0, 2), ("VE", 1, 2)}, "complete simultaneous cover set"
+E       AssertionError: complete simultaneous cover set
+E       assert {('VE', 0, 2)} == {('VE', 0, 2), ('VE', 1, 2)}
+E         
+E         Extra items in the right set:
+E         ('VE', 1, 2)
+E         Use -v to get more diff
+
+tests\test_m4c_motion.py:404: AssertionError
+=========================== short test summary info ===========================
+FAILED reports/codex/M4c_evidence/tmp/mutations_r4_guards/test_m4c_external_guards.py::test_specific_contract_after_internal_injection
+1 failed in 0.15s

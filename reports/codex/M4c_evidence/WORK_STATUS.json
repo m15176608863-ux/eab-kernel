@@ -1,0 +1,56 @@
+{
+  "schema": "eab.m4c.work-status.v1",
+  "head": "870045c",
+  "stage": "PARTIAL_DELIVERED_ALL_HARD_GATES_GREEN",
+  "final_suite_started": true,
+  "invalid_runs": [
+    "baseline_suite",
+    "baseline_suite_r2",
+    "full_replay",
+    "full_replay_r2",
+    "full_replay_r3",
+    "frozen_replay",
+    "final_suite_r1"
+  ],
+  "baseline_policy": "historical M3 timing only, not identical-byte baseline",
+  "production_hashes": {
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "tools/m4c_motion_replay.py": "4d6689f52a084ee462f55c376050c5a93ec87541e14d54835d124f36452dcd7c"
+  },
+  "required_remaining": [],
+  "active_replay": {
+    "full": "full_replay_r4",
+    "frozen": "frozen_replay_r2",
+    "complete": true,
+    "full_steps": 1810,
+    "frozen_steps": 450
+  },
+  "active_suite": {
+    "name": "final_suite_r2",
+    "status": "GREEN",
+    "completed_shards": {
+      "1": "3244 passed in 769.96s (0:12:49)",
+      "2": "3244 passed in 761.16s (0:12:41)",
+      "3": "3243 passed in 761.02s (0:12:41)",
+      "4": "3243 passed in 1503.25s (0:25:03)"
+    },
+    "remaining_processes": false,
+    "collected": 12974,
+    "executed": 12974,
+    "skip_count": 0,
+    "elapsed_seconds": 1700.5836133000012,
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "independent_node_audit": "review_probes/runner_final_nodes.json"
+  },
+  "completed_full_steps": 1810,
+  "completed_frozen_steps": 450,
+  "new_component_gate": "416 passed in 13.94s (211 M4c + 205 provenance)",
+  "hard_gates_complete": true,
+  "partial_scope": [
+    "nonzero delta stability interval certificate not implemented",
+    "approximate 10 percent runtime increment lacks identical-byte baseline",
+    "full six-way G6 and post-commit fresh checkout exit incomplete",
+    "single-ring material input only"
+  ]
+}

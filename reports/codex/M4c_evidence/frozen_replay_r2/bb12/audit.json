@@ -1,0 +1,2672 @@
+{
+  "schema": "eab.m4c-replay.v1",
+  "audit": "GREEN",
+  "complete": true,
+  "case": "bb12",
+  "steps": 30,
+  "counts": {
+    "raw_df05": {
+      "FIRST_COVER_MATCH": 7,
+      "INITIAL_OVERLAP_PD_MATCH": 410,
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 794,
+      "INITIAL_TOUCH_COVER_MATCH": 40,
+      "INITIAL_TOUCH_OTHER_FEATURE": 2,
+      "NO_CONTACT_IN_STEP": 249,
+      "OTHER_FEATURE_FIRST": 11
+    },
+    "post_df06": {
+      "FIRST_COVER_MATCH": 8,
+      "INITIAL_OVERLAP_PD_MATCH": 475,
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 729,
+      "INITIAL_TOUCH_COVER_MATCH": 40,
+      "INITIAL_TOUCH_OTHER_FEATURE": 2,
+      "NO_CONTACT_IN_STEP": 249,
+      "OTHER_FEATURE_FIRST": 10
+    }
+  },
+  "secondary_counts": {
+    "raw_df05": {
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 19
+    },
+    "post_df06": {
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 19
+    }
+  },
+  "stats": {
+    "initial_overlap_pairs": 475,
+    "initial_separated_pairs": 168,
+    "initial_touch_pairs": 17,
+    "new_contact_pairs": 8,
+    "pd_evaluated_pairs": 475,
+    "prediction_different_cover": 3,
+    "prediction_same_cover": 164,
+    "prediction_unavailable": 1,
+    "swept_box_proven_no_contact_pairs": 990,
+    "translation_descriptive_different_cover": 42,
+    "translation_descriptive_same_cover": 126,
+    "translation_uncertified_nontranslation": 168
+  },
+  "input_hashes": {
+    "snapshot": "a56606fc093eb294b3551ec25278a17144ebe9fffb2fa9a233822821292652e6",
+    "terminal_source": "5c64df7f44298d9d20081d11a15850b60c62670103b621dd1d04c7d2b396e163"
+  },
+  "code_hashes": {
+    "tools\\m4c_motion_replay.py": "4d6689f52a084ee462f55c376050c5a93ec87541e14d54835d124f36452dcd7c",
+    "tools\\m4_shadow_replay.py": "7fd27c2963b886443751515afa0c77ab78cf3ab729d66c050163e11bcc2a71c4",
+    "tools\\m4_bdda_shadow.py": "ea9a1131d43a306f96d44ef70f3198a693e6ef8d4cf2eed405c028f4fd973bfc",
+    "src\\eab\\__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
+    "src\\eab\\adapters\\__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
+    "src\\eab\\adapters\\bdda2d.py": "3240e49c7cf5f546884a911828e300fe3cb2a3e44079d62a1b0e017be63299b3",
+    "src\\eab\\construction.py": "d99b3900c8406d1fc81cb0563770429313cf0691aaecf67ffc183f7477d9c9cc",
+    "src\\eab\\contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src\\eab\\dual.py": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5",
+    "src\\eab\\kernel2d\\__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src\\eab\\kernel2d\\covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
+    "src\\eab\\kernel2d\\entrance.py": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c",
+    "src\\eab\\kernel2d\\exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src\\eab\\kernel2d\\g0.py": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013",
+    "src\\eab\\kernel2d\\g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src\\eab\\kernel2d\\geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+    "src\\eab\\kernel2d\\global_entrance.py": "59e7bf190026dfa7a302f094b55f37ac484bade2dd9c307df11e44443a325db3",
+    "src\\eab\\kernel2d\\motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src\\eab\\kernel2d\\motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src\\eab\\kernel3d\\__init__.py": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a",
+    "src\\eab\\kernel3d\\covers3.py": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6",
+    "src\\eab\\kernel3d\\entrance3.py": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171",
+    "src\\eab\\kernel3d\\entrance_topology.py": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
+    "src\\eab\\kernel3d\\exact_geom.py": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
+    "src\\eab\\kernel3d\\exact_sweep.py": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5",
+    "src\\eab\\kernel3d\\frozen.py": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa",
+    "src\\eab\\kernel3d\\g03.py": "59bdc7fdbcc25cb2000c3053b49ced0f60c09f22c574024460f77177d6bb4a5a",
+    "src\\eab\\kernel3d\\g03_exact.py": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22",
+    "src\\eab\\kernel3d\\g03_surface_oracle.py": "ffb4c1c2d8d392414c77a1c95e1e77e70e4ecfa0591290bc5b39b82c67ba174c",
+    "src\\eab\\kernel3d\\geom3.py": "4256d31ca410923e9109c13e4436764c5459e077e9d1ef41d97a152730eb4ede",
+    "src\\eab\\kernel3d\\global_entrance.py": "64c96a6825f342d6c61e95968cc0649c01d435d894400804d3ac2198452d83a7",
+    "src\\eab\\kernel3d\\interlock.py": "8391f6481153a04637122f1cacee32b5108cf77739fd18ca078cc7fe318cfb7d",
+    "src\\eab\\limit.py": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f",
+    "src\\eab\\limit_multi.py": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65",
+    "src\\eab\\lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
+    "src\\eab\\margin.py": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720",
+    "src\\eab\\numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src\\eab\\oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src\\eab\\predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src\\eab\\rational3.py": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
+    "src\\eab\\readers\\__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src\\eab\\readers\\bdda3d.py": "dcdb41243f6745488721e627d7c901811986ebf9c16bdd879c309d0c376362e4",
+    "src\\eab\\readers\\bdda_df.py": "356cf4edf86fc3b026e799305416f999ac550805a2f5d1ef3c194363cc817a2f",
+    "src\\eab\\readers\\bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
+    "src\\eab\\readers\\numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
+    "src\\eab\\readers\\tf_probe.py": "cbc9b1a5ec4e2a8c51888903d57cba2003b2c539537520ed56f8a2206262cb3f"
+  },
+  "frame_sha256": [
+    "d6affd70284c1d6e1e4473d93c10220ed32d595773520b35a9e58438b27a0599",
+    "ff677c266da4528895bcb12b4a8fe899cef8f630e1e541239eb908605e052452",
+    "92baff984111f33e9f6a6abc1fe07700ebd5e18cc5e8edd11b34fd5090fb957c",
+    "5fcd2587f0f67f542c84889e941687439d269dcdbb18395697b1194ce40cd78f",
+    "7717d7b00395971d7266de330b98101a6e50c99c8c5653a11bd8ca5602eca3f6",
+    "7d3172ef6f24da1d1143ffc1103f512595649383b3f5c08972c161b56f1a631d",
+    "54eb51f15f6d8d463e259c43b86811796b75fa5dc5dd786cbca3e05d09a37b6d",
+    "c22c5e3bc5908147fb9ece3c1a0aa1e113ca6806a2b15d01f15c8c5dd3bd30fe",
+    "fc55e490fcae5c2ac4713c4f210387c17d5dc8ed29c8b629b6d75c5cf5a2cd3e",
+    "dc24629a19edbc07eed218cfac9f5638ded5c97329a86577cd68ba9db1546c76",
+    "fba8b65e404ca3590f3cc3354cfa59defa246bc31a0b3084fedc677a078248b8",
+    "5acd8de7fa189ce0b11685b4b07aa1632aa7a2f48901e9c25bd7c906f164cfc2",
+    "effa5919ee7ccd390e41aca6399a8f9d451e9ab54d97f1a18ba9a93f28479ddd",
+    "59b88f6b22c88cfe020ace1b772e76073437b41d1348d4ad604098f25c6edf66",
+    "b12e150ddf2c63839ff73a21ca4b402bb5b999708ed000ff0266a96ea16deb49",
+    "c7d3c3c5fa23da27fc99c4cc8d3186cf10ac0cc26d028482c49b61fb2808693d",
+    "9355703b276fc4155cddc0dcf699ccd286805e3d33fcfe3ef499e2d2aa8ebbfa",
+    "a965ef29f52465f7849c3a959b311530277bd4b335afb5ca2424cab9df493e3b",
+    "49fe612119360241297460ef43234030ad9bae119f0b2b60a513c3ce212fd4ba",
+    "cc75579c208a45bc7045910a791ab408f6395386eb566fa00f0dd03c30960b98",
+    "ecd72e10d388e94a0365b7915ffb6ec90166cc8973f57f8790f5558b8cf61643",
+    "15c346011626b06aa2c24751296fefcfee25d099269a2c49834bdbcb0c431814",
+    "0b70835bc5e6c229c308ac1191b20306ce728bbf919b42d924d883cca2f51c97",
+    "3b6e9bf7ff16c54a3f404101c8a92548f295b290e0f1c580236a2c412cfa6333",
+    "731119d85e101b25bb022166ae7a9a8bd3da17907779fa62139098726a4ead01",
+    "8c130b341d7343d11bca9ac501df1ecc8ac53a020f169c4e21a68ea625310e1f",
+    "b60460ff31ba809df7c45e988630e8f9ac0b23c371665ae0e66dfd17ea0917fe",
+    "4bfa858ed8f736cf6b7d25060a490709bbb48966b5da29993c7ab34f926b34cf",
+    "7a6dad56d10dce376e2dc20aaec846656b12f06a85fc528fbe590dc8638076cc",
+    "2eeac58c12dfd50d5d9195923c97697e7d4d642cf757b2c586cec60965db5f2c"
+  ],
+  "frames_sha256": "675a5d72df56930e71aa9744d60d84f5d7adebc2d8db7550f02697d601a60ec1",
+  "examples": {
+    "raw_df05:INITIAL_TOUCH_OTHER_FEATURE": {
+      "step": 1,
+      "legacy": {
+        "index": 1,
+        "tuple7": [
+          0,
+          15,
+          8,
+          7,
+          0,
+          14,
+          0
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "primary_reference": [
+          "VE",
+          15,
+          7,
+          8
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_TOUCH_OTHER_FEATURE",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          1,
+          2
+        ],
+        "initial_state": 0,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": "0",
+            "polynomial": null,
+            "branch": 0
+          },
+          "time_display": 0.0,
+          "features": [
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              8,
+              13,
+              14
+            ],
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              0,
+              8
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ]
+        },
+        "pd": null
+      },
+      "A0": [
+        [
+          10,
+          7
+        ],
+        [
+          6.8,
+          10.4
+        ],
+        [
+          6.8,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          10,
+          6
+        ]
+      ],
+      "A1": [
+        [
+          10.009528673282682,
+          6.986645758123429
+        ],
+        [
+          6.831195298806297,
+          10.39505831127307
+        ],
+        [
+          6.834059030931979,
+          10.99430714479312
+        ],
+        [
+          6.035418733468169,
+          10.997474435593793
+        ],
+        [
+          6.002008525335231,
+          4.006238044526532
+        ],
+        [
+          7.000308897164994,
+          4.002278931025693
+        ],
+        [
+          6.995536010288861,
+          3.0035308751589422
+        ],
+        [
+          7.993836382118623,
+          2.999571761658103
+        ],
+        [
+          10.00475578640655,
+          5.987897702256678
+        ]
+      ],
+      "B0": [
+        [
+          12,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          8.266667,
+          3.4
+        ],
+        [
+          11.4,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ]
+    },
+    "raw_df05:INITIAL_TOUCH_COVER_MATCH": {
+      "step": 1,
+      "legacy": {
+        "index": 2,
+        "tuple7": [
+          0,
+          14,
+          8,
+          7,
+          8,
+          15,
+          14
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "primary_reference": [
+          "VE",
+          14,
+          7,
+          8
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_TOUCH_COVER_MATCH",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          1,
+          2
+        ],
+        "initial_state": 0,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": "0",
+            "polynomial": null,
+            "branch": 0
+          },
+          "time_display": 0.0,
+          "features": [
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              8,
+              13,
+              14
+            ],
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              0,
+              8
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ]
+        },
+        "pd": null
+      },
+      "A0": [
+        [
+          10,
+          7
+        ],
+        [
+          6.8,
+          10.4
+        ],
+        [
+          6.8,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          10,
+          6
+        ]
+      ],
+      "A1": [
+        [
+          10.009528673282682,
+          6.986645758123429
+        ],
+        [
+          6.831195298806297,
+          10.39505831127307
+        ],
+        [
+          6.834059030931979,
+          10.99430714479312
+        ],
+        [
+          6.035418733468169,
+          10.997474435593793
+        ],
+        [
+          6.002008525335231,
+          4.006238044526532
+        ],
+        [
+          7.000308897164994,
+          4.002278931025693
+        ],
+        [
+          6.995536010288861,
+          3.0035308751589422
+        ],
+        [
+          7.993836382118623,
+          2.999571761658103
+        ],
+        [
+          10.00475578640655,
+          5.987897702256678
+        ]
+      ],
+      "B0": [
+        [
+          12,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          8.266667,
+          3.4
+        ],
+        [
+          11.4,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ]
+    },
+    "raw_df05:INITIAL_OVERLAP_PD_MATCH": {
+      "step": 1,
+      "legacy": {
+        "index": 17,
+        "tuple7": [
+          0,
+          24,
+          31,
+          30,
+          25,
+          0,
+          0
+        ],
+        "pair": [
+          3,
+          4
+        ],
+        "primary_reference": [
+          "VE",
+          24,
+          30,
+          31
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_OVERLAP_PD_MATCH",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          3,
+          4
+        ],
+        "initial_state": 1,
+        "actual": {
+          "status": "initial_overlap",
+          "time": null,
+          "time_display": null,
+          "features": [],
+          "incidences": []
+        },
+        "pd": {
+          "status": "EVALUATED",
+          "squared": "1028440346716118900878527730522761553659662908809/21140162715584939243484547599140698405069346587309811720781824",
+          "points": [
+            [
+              "-1979116799003484562082874641487958657395/9388118156465869665210165528508622758727385088",
+              "304479507538997546926559222615666308749/4694059078232934832605082764254311379363692544"
+            ]
+          ],
+          "features": [
+            [
+              "VE",
+              24,
+              30,
+              31
+            ]
+          ]
+        }
+      },
+      "A0": [
+        [
+          3,
+          6
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          4.6
+        ],
+        [
+          2.569231,
+          4.6
+        ]
+      ],
+      "A1": [
+        [
+          2.999152215231633,
+          5.999945288333765
+        ],
+        [
+          3.984597977557021e-05,
+          6.000014576645789
+        ],
+        [
+          7.928984717957918e-05,
+          4.599978368433387
+        ],
+        [
+          2.5685501137022855,
+          4.5999190292069905
+        ]
+      ],
+      "B0": [
+        [
+          6,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          2.2,
+          3.4
+        ],
+        [
+          6,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          5.99811424612805,
+          5.999475798934307
+        ],
+        [
+          2.999042103957755,
+          5.999499004523692
+        ],
+        [
+          2.199325234141417,
+          3.3999364827841
+        ],
+        [
+          5.998149947557122,
+          3.3999070890375465
+        ]
+      ]
+    },
+    "raw_df05:INITIAL_OVERLAP_PD_OTHER_FEATURE": {
+      "step": 1,
+      "legacy": {
+        "index": 18,
+        "tuple7": [
+          0,
+          30,
+          25,
+          24,
+          25,
+          31,
+          30
+        ],
+        "pair": [
+          3,
+          4
+        ],
+        "primary_reference": [
+          "VE",
+          30,
+          21,
+          24
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          3,
+          4
+        ],
+        "initial_state": 1,
+        "actual": {
+          "status": "initial_overlap",
+          "time": null,
+          "time_display": null,
+          "features": [],
+          "incidences": []
+        },
+        "pd": {
+          "status": "EVALUATED",
+          "squared": "1028440346716118900878527730522761553659662908809/21140162715584939243484547599140698405069346587309811720781824",
+          "points": [
+            [
+              "-1979116799003484562082874641487958657395/9388118156465869665210165528508622758727385088",
+              "304479507538997546926559222615666308749/4694059078232934832605082764254311379363692544"
+            ]
+          ],
+          "features": [
+            [
+              "VE",
+              24,
+              30,
+              31
+            ]
+          ]
+        }
+      },
+      "A0": [
+        [
+          3,
+          6
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          4.6
+        ],
+        [
+          2.569231,
+          4.6
+        ]
+      ],
+      "A1": [
+        [
+          2.999152215231633,
+          5.999945288333765
+        ],
+        [
+          3.984597977557021e-05,
+          6.000014576645789
+        ],
+        [
+          7.928984717957918e-05,
+          4.599978368433387
+        ],
+        [
+          2.5685501137022855,
+          4.5999190292069905
+        ]
+      ],
+      "B0": [
+        [
+          6,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          2.2,
+          3.4
+        ],
+        [
+          6,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          5.99811424612805,
+          5.999475798934307
+        ],
+        [
+          2.999042103957755,
+          5.999499004523692
+        ],
+        [
+          2.199325234141417,
+          3.3999364827841
+        ],
+        [
+          5.998149947557122,
+          3.3999070890375465
+        ]
+      ]
+    },
+    "post_df06:INITIAL_TOUCH_OTHER_FEATURE": {
+      "step": 1,
+      "legacy": {
+        "index": 1,
+        "tuple7": [
+          0,
+          15,
+          8,
+          7,
+          0,
+          14,
+          0
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "primary_reference": [
+          "VE",
+          15,
+          7,
+          8
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_TOUCH_OTHER_FEATURE",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          1,
+          2
+        ],
+        "initial_state": 0,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": "0",
+            "polynomial": null,
+            "branch": 0
+          },
+          "time_display": 0.0,
+          "features": [
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              8,
+              13,
+              14
+            ],
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              0,
+              8
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ]
+        },
+        "pd": null
+      },
+      "A0": [
+        [
+          10,
+          7
+        ],
+        [
+          6.8,
+          10.4
+        ],
+        [
+          6.8,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          10,
+          6
+        ]
+      ],
+      "A1": [
+        [
+          10.009528673282682,
+          6.986645758123429
+        ],
+        [
+          6.831195298806297,
+          10.39505831127307
+        ],
+        [
+          6.834059030931979,
+          10.99430714479312
+        ],
+        [
+          6.035418733468169,
+          10.997474435593793
+        ],
+        [
+          6.002008525335231,
+          4.006238044526532
+        ],
+        [
+          7.000308897164994,
+          4.002278931025693
+        ],
+        [
+          6.995536010288861,
+          3.0035308751589422
+        ],
+        [
+          7.993836382118623,
+          2.999571761658103
+        ],
+        [
+          10.00475578640655,
+          5.987897702256678
+        ]
+      ],
+      "B0": [
+        [
+          12,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          8.266667,
+          3.4
+        ],
+        [
+          11.4,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ]
+    },
+    "post_df06:INITIAL_TOUCH_COVER_MATCH": {
+      "step": 1,
+      "legacy": {
+        "index": 2,
+        "tuple7": [
+          0,
+          14,
+          8,
+          7,
+          8,
+          15,
+          14
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "primary_reference": [
+          "VE",
+          14,
+          7,
+          8
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_TOUCH_COVER_MATCH",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          1,
+          2
+        ],
+        "initial_state": 0,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": "0",
+            "polynomial": null,
+            "branch": 0
+          },
+          "time_display": 0.0,
+          "features": [
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              8,
+              13,
+              14
+            ],
+            [
+              "VE",
+              8,
+              14,
+              15
+            ],
+            [
+              "VE",
+              14,
+              0,
+              8
+            ],
+            [
+              "VE",
+              14,
+              7,
+              8
+            ],
+            [
+              "VV",
+              8,
+              14
+            ]
+          ]
+        },
+        "pd": null
+      },
+      "A0": [
+        [
+          10,
+          7
+        ],
+        [
+          6.8,
+          10.4
+        ],
+        [
+          6.8,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          10,
+          6
+        ]
+      ],
+      "A1": [
+        [
+          10.009528673282682,
+          6.986645758123429
+        ],
+        [
+          6.831195298806297,
+          10.39505831127307
+        ],
+        [
+          6.834059030931979,
+          10.99430714479312
+        ],
+        [
+          6.035418733468169,
+          10.997474435593793
+        ],
+        [
+          6.002008525335231,
+          4.006238044526532
+        ],
+        [
+          7.000308897164994,
+          4.002278931025693
+        ],
+        [
+          6.995536010288861,
+          3.0035308751589422
+        ],
+        [
+          7.993836382118623,
+          2.999571761658103
+        ],
+        [
+          10.00475578640655,
+          5.987897702256678
+        ]
+      ],
+      "B0": [
+        [
+          12,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          8.266667,
+          3.4
+        ],
+        [
+          11.4,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ]
+    },
+    "post_df06:INITIAL_OVERLAP_PD_MATCH": {
+      "step": 1,
+      "legacy": {
+        "index": 17,
+        "tuple7": [
+          0,
+          24,
+          31,
+          30,
+          25,
+          0,
+          0
+        ],
+        "pair": [
+          3,
+          4
+        ],
+        "primary_reference": [
+          "VE",
+          24,
+          30,
+          31
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_OVERLAP_PD_MATCH",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          3,
+          4
+        ],
+        "initial_state": 1,
+        "actual": {
+          "status": "initial_overlap",
+          "time": null,
+          "time_display": null,
+          "features": [],
+          "incidences": []
+        },
+        "pd": {
+          "status": "EVALUATED",
+          "squared": "1028440346716118900878527730522761553659662908809/21140162715584939243484547599140698405069346587309811720781824",
+          "points": [
+            [
+              "-1979116799003484562082874641487958657395/9388118156465869665210165528508622758727385088",
+              "304479507538997546926559222615666308749/4694059078232934832605082764254311379363692544"
+            ]
+          ],
+          "features": [
+            [
+              "VE",
+              24,
+              30,
+              31
+            ]
+          ]
+        }
+      },
+      "A0": [
+        [
+          3,
+          6
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          4.6
+        ],
+        [
+          2.569231,
+          4.6
+        ]
+      ],
+      "A1": [
+        [
+          2.999152215231633,
+          5.999945288333765
+        ],
+        [
+          3.984597977557021e-05,
+          6.000014576645789
+        ],
+        [
+          7.928984717957918e-05,
+          4.599978368433387
+        ],
+        [
+          2.5685501137022855,
+          4.5999190292069905
+        ]
+      ],
+      "B0": [
+        [
+          6,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          2.2,
+          3.4
+        ],
+        [
+          6,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          5.99811424612805,
+          5.999475798934307
+        ],
+        [
+          2.999042103957755,
+          5.999499004523692
+        ],
+        [
+          2.199325234141417,
+          3.3999364827841
+        ],
+        [
+          5.998149947557122,
+          3.3999070890375465
+        ]
+      ]
+    },
+    "post_df06:INITIAL_OVERLAP_PD_OTHER_FEATURE": {
+      "step": 1,
+      "legacy": {
+        "index": 18,
+        "tuple7": [
+          0,
+          30,
+          25,
+          24,
+          25,
+          31,
+          30
+        ],
+        "pair": [
+          3,
+          4
+        ],
+        "primary_reference": [
+          "VE",
+          30,
+          21,
+          24
+        ],
+        "secondary_reference": null,
+        "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          3,
+          4
+        ],
+        "initial_state": 1,
+        "actual": {
+          "status": "initial_overlap",
+          "time": null,
+          "time_display": null,
+          "features": [],
+          "incidences": []
+        },
+        "pd": {
+          "status": "EVALUATED",
+          "squared": "1028440346716118900878527730522761553659662908809/21140162715584939243484547599140698405069346587309811720781824",
+          "points": [
+            [
+              "-1979116799003484562082874641487958657395/9388118156465869665210165528508622758727385088",
+              "304479507538997546926559222615666308749/4694059078232934832605082764254311379363692544"
+            ]
+          ],
+          "features": [
+            [
+              "VE",
+              24,
+              30,
+              31
+            ]
+          ]
+        }
+      },
+      "A0": [
+        [
+          3,
+          6
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          4.6
+        ],
+        [
+          2.569231,
+          4.6
+        ]
+      ],
+      "A1": [
+        [
+          2.999152215231633,
+          5.999945288333765
+        ],
+        [
+          3.984597977557021e-05,
+          6.000014576645789
+        ],
+        [
+          7.928984717957918e-05,
+          4.599978368433387
+        ],
+        [
+          2.5685501137022855,
+          4.5999190292069905
+        ]
+      ],
+      "B0": [
+        [
+          6,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          2.2,
+          3.4
+        ],
+        [
+          6,
+          3.4
+        ]
+      ],
+      "B1": [
+        [
+          5.99811424612805,
+          5.999475798934307
+        ],
+        [
+          2.999042103957755,
+          5.999499004523692
+        ],
+        [
+          2.199325234141417,
+          3.3999364827841
+        ],
+        [
+          5.998149947557122,
+          3.3999070890375465
+        ]
+      ]
+    },
+    "raw_df05:NO_CONTACT_IN_STEP": {
+      "step": 2,
+      "legacy": {
+        "index": 1,
+        "tuple7": [
+          0,
+          15,
+          8,
+          7,
+          0,
+          14,
+          0
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "primary_reference": [
+          "VE",
+          15,
+          7,
+          8
+        ],
+        "secondary_reference": null,
+        "category": "NO_CONTACT_IN_STEP",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          1,
+          2
+        ],
+        "initial_state": -1,
+        "actual": {
+          "status": "no_contact",
+          "time": null,
+          "time_display": null,
+          "features": [],
+          "incidences": []
+        },
+        "pd": null,
+        "translation": {
+          "delta_linf": "541465777577593/20266198323167232",
+          "certificate": "UNCERTIFIED_NONTRANSLATION",
+          "same_first_cover_set": false,
+          "same_time": false,
+          "result": {
+            "status": "contact",
+            "time": {
+              "rational": "181551250435114610311974784632/253748211294920236772081318749",
+              "polynomial": null,
+              "branch": 0
+            },
+            "time_display": 0.7154779515829007,
+            "features": [
+              [
+                "VE",
+                8,
+                14,
+                15
+              ]
+            ],
+            "incidences": [
+              [
+                "VE",
+                8,
+                14,
+                15
+              ]
+            ]
+          }
+        },
+        "prediction": {
+          "status": "EVALUATED_PREVIOUS_DISPLACEMENT",
+          "same_first_cover_set": true,
+          "result": {
+            "status": "no_contact",
+            "time": null,
+            "time_display": null,
+            "features": [],
+            "incidences": []
+          }
+        }
+      },
+      "A0": [
+        [
+          10.009528673282682,
+          6.986645758123429
+        ],
+        [
+          6.831195298806297,
+          10.39505831127307
+        ],
+        [
+          6.834059030931979,
+          10.99430714479312
+        ],
+        [
+          6.035418733468169,
+          10.997474435593793
+        ],
+        [
+          6.002008525335231,
+          4.006238044526532
+        ],
+        [
+          7.000308897164994,
+          4.002278931025693
+        ],
+        [
+          6.995536010288861,
+          3.0035308751589422
+        ],
+        [
+          7.993836382118623,
+          2.999571761658103
+        ],
+        [
+          10.00475578640655,
+          5.987897702256678
+        ]
+      ],
+      "A1": [
+        [
+          10.020601477404606,
+          6.972274179642285
+        ],
+        [
+          6.8644056944625405,
+          10.389750018565016
+        ],
+        [
+          6.870204404437834,
+          10.988227671248652
+        ],
+        [
+          6.0729406195706535,
+          10.994753289677517
+        ],
+        [
+          6.005289003192242,
+          4.012514008368439
+        ],
+        [
+          7.0018687342762185,
+          4.004356985332357
+        ],
+        [
+          6.992204217650732,
+          3.0068942308596314
+        ],
+        [
+          7.988783948734708,
+          2.998737207823549
+        ],
+        [
+          10.010936960779121,
+          5.974811425169559
+        ]
+      ],
+      "B0": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ],
+      "B1": [
+        [
+          12.02093045332068,
+          5.99585236857217
+        ],
+        [
+          10.026161179207126,
+          5.995823721848657
+        ],
+        [
+          8.295275951912263,
+          3.397670168898461
+        ],
+        [
+          11.420414148895285,
+          3.397715048760524
+        ]
+      ]
+    },
+    "raw_df05:FIRST_COVER_MATCH": {
+      "step": 2,
+      "legacy": {
+        "index": 15,
+        "tuple7": [
+          0,
+          15,
+          78,
+          83,
+          78,
+          16,
+          15
+        ],
+        "pair": [
+          2,
+          9
+        ],
+        "primary_reference": [
+          "VE",
+          15,
+          77,
+          78
+        ],
+        "secondary_reference": null,
+        "category": "FIRST_COVER_MATCH",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          2,
+          9
+        ],
+        "initial_state": -1,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": null,
+            "polynomial": [
+              "-158246807936016428836055996/52567408152229869373381",
+              "213920408220075189974187315/52567408152229869373381",
+              "1"
+            ],
+            "branch": 1
+          },
+          "time_display": 0.7396117721346875,
+          "features": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ]
+        },
+        "pd": null,
+        "translation": {
+          "delta_linf": "23157734452907/6755399441055744",
+          "certificate": "UNCERTIFIED_NONTRANSLATION",
+          "same_first_cover_set": true,
+          "same_time": false,
+          "result": {
+            "status": "contact",
+            "time": {
+              "rational": "316493615872032857672111992/19112350500680551001306646523",
+              "polynomial": null,
+              "branch": 0
+            },
+            "time_display": 0.016559638536388456,
+            "features": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ],
+            "incidences": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ]
+          }
+        },
+        "prediction": {
+          "status": "EVALUATED_PREVIOUS_DISPLACEMENT",
+          "same_first_cover_set": false,
+          "result": {
+            "status": "no_contact",
+            "time": null,
+            "time_display": null,
+            "features": [],
+            "incidences": []
+          }
+        }
+      },
+      "A0": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ],
+      "A1": [
+        [
+          12.02093045332068,
+          5.99585236857217
+        ],
+        [
+          10.026161179207126,
+          5.995823721848657
+        ],
+        [
+          8.295275951912263,
+          3.397670168898461
+        ],
+        [
+          11.420414148895285,
+          3.397715048760524
+        ]
+      ],
+      "B0": [
+        [
+          16.200419832389315,
+          3.3988704509966454
+        ],
+        [
+          8.26606208293747,
+          3.398865757642009
+        ],
+        [
+          7.9993626330302545,
+          2.9991623509639487
+        ],
+        [
+          6.999233462925854,
+          2.9991617593646
+        ],
+        [
+          6.999238451668392,
+          1.9999036370695087
+        ],
+        [
+          15.80037514858711,
+          1.9999088431437781
+        ]
+      ],
+      "B1": [
+        [
+          16.200888613320675,
+          3.3976814911035236
+        ],
+        [
+          8.265400103586522,
+          3.3976756867421094
+        ],
+        [
+          7.998660146847214,
+          2.9982976320742742
+        ],
+        [
+          6.998388443928129,
+          2.9982969004320488
+        ],
+        [
+          6.9983871875856645,
+          1.999852251524555
+        ],
+        [
+          15.800778173273594,
+          1.9998586899761424
+        ]
+      ]
+    },
+    "raw_df05:OTHER_FEATURE_FIRST": {
+      "step": 2,
+      "legacy": {
+        "index": 16,
+        "tuple7": [
+          0,
+          16,
+          78,
+          83,
+          0,
+          15,
+          0
+        ],
+        "pair": [
+          2,
+          9
+        ],
+        "primary_reference": [
+          "VE",
+          16,
+          77,
+          78
+        ],
+        "secondary_reference": null,
+        "category": "OTHER_FEATURE_FIRST",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          2,
+          9
+        ],
+        "initial_state": -1,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": null,
+            "polynomial": [
+              "-158246807936016428836055996/52567408152229869373381",
+              "213920408220075189974187315/52567408152229869373381",
+              "1"
+            ],
+            "branch": 1
+          },
+          "time_display": 0.7396117721346875,
+          "features": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ]
+        },
+        "pd": null,
+        "translation": {
+          "delta_linf": "23157734452907/6755399441055744",
+          "certificate": "UNCERTIFIED_NONTRANSLATION",
+          "same_first_cover_set": true,
+          "same_time": false,
+          "result": {
+            "status": "contact",
+            "time": {
+              "rational": "316493615872032857672111992/19112350500680551001306646523",
+              "polynomial": null,
+              "branch": 0
+            },
+            "time_display": 0.016559638536388456,
+            "features": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ],
+            "incidences": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ]
+          }
+        },
+        "prediction": {
+          "status": "EVALUATED_PREVIOUS_DISPLACEMENT",
+          "same_first_cover_set": false,
+          "result": {
+            "status": "no_contact",
+            "time": null,
+            "time_display": null,
+            "features": [],
+            "incidences": []
+          }
+        }
+      },
+      "A0": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ],
+      "A1": [
+        [
+          12.02093045332068,
+          5.99585236857217
+        ],
+        [
+          10.026161179207126,
+          5.995823721848657
+        ],
+        [
+          8.295275951912263,
+          3.397670168898461
+        ],
+        [
+          11.420414148895285,
+          3.397715048760524
+        ]
+      ],
+      "B0": [
+        [
+          16.200419832389315,
+          3.3988704509966454
+        ],
+        [
+          8.26606208293747,
+          3.398865757642009
+        ],
+        [
+          7.9993626330302545,
+          2.9991623509639487
+        ],
+        [
+          6.999233462925854,
+          2.9991617593646
+        ],
+        [
+          6.999238451668392,
+          1.9999036370695087
+        ],
+        [
+          15.80037514858711,
+          1.9999088431437781
+        ]
+      ],
+      "B1": [
+        [
+          16.200888613320675,
+          3.3976814911035236
+        ],
+        [
+          8.265400103586522,
+          3.3976756867421094
+        ],
+        [
+          7.998660146847214,
+          2.9982976320742742
+        ],
+        [
+          6.998388443928129,
+          2.9982969004320488
+        ],
+        [
+          6.9983871875856645,
+          1.999852251524555
+        ],
+        [
+          15.800778173273594,
+          1.9998586899761424
+        ]
+      ]
+    },
+    "post_df06:NO_CONTACT_IN_STEP": {
+      "step": 2,
+      "legacy": {
+        "index": 1,
+        "tuple7": [
+          0,
+          15,
+          8,
+          7,
+          0,
+          14,
+          0
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "primary_reference": [
+          "VE",
+          15,
+          7,
+          8
+        ],
+        "secondary_reference": null,
+        "category": "NO_CONTACT_IN_STEP",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          1,
+          2
+        ],
+        "initial_state": -1,
+        "actual": {
+          "status": "no_contact",
+          "time": null,
+          "time_display": null,
+          "features": [],
+          "incidences": []
+        },
+        "pd": null,
+        "translation": {
+          "delta_linf": "541465777577593/20266198323167232",
+          "certificate": "UNCERTIFIED_NONTRANSLATION",
+          "same_first_cover_set": false,
+          "same_time": false,
+          "result": {
+            "status": "contact",
+            "time": {
+              "rational": "181551250435114610311974784632/253748211294920236772081318749",
+              "polynomial": null,
+              "branch": 0
+            },
+            "time_display": 0.7154779515829007,
+            "features": [
+              [
+                "VE",
+                8,
+                14,
+                15
+              ]
+            ],
+            "incidences": [
+              [
+                "VE",
+                8,
+                14,
+                15
+              ]
+            ]
+          }
+        },
+        "prediction": {
+          "status": "EVALUATED_PREVIOUS_DISPLACEMENT",
+          "same_first_cover_set": true,
+          "result": {
+            "status": "no_contact",
+            "time": null,
+            "time_display": null,
+            "features": [],
+            "incidences": []
+          }
+        }
+      },
+      "A0": [
+        [
+          10.009528673282682,
+          6.986645758123429
+        ],
+        [
+          6.831195298806297,
+          10.39505831127307
+        ],
+        [
+          6.834059030931979,
+          10.99430714479312
+        ],
+        [
+          6.035418733468169,
+          10.997474435593793
+        ],
+        [
+          6.002008525335231,
+          4.006238044526532
+        ],
+        [
+          7.000308897164994,
+          4.002278931025693
+        ],
+        [
+          6.995536010288861,
+          3.0035308751589422
+        ],
+        [
+          7.993836382118623,
+          2.999571761658103
+        ],
+        [
+          10.00475578640655,
+          5.987897702256678
+        ]
+      ],
+      "A1": [
+        [
+          10.020601477404606,
+          6.972274179642285
+        ],
+        [
+          6.8644056944625405,
+          10.389750018565016
+        ],
+        [
+          6.870204404437834,
+          10.988227671248652
+        ],
+        [
+          6.0729406195706535,
+          10.994753289677517
+        ],
+        [
+          6.005289003192242,
+          4.012514008368439
+        ],
+        [
+          7.0018687342762185,
+          4.004356985332357
+        ],
+        [
+          6.992204217650732,
+          3.0068942308596314
+        ],
+        [
+          7.988783948734708,
+          2.998737207823549
+        ],
+        [
+          10.010936960779121,
+          5.974811425169559
+        ]
+      ],
+      "B0": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ],
+      "B1": [
+        [
+          12.02093045332068,
+          5.99585236857217
+        ],
+        [
+          10.026161179207126,
+          5.995823721848657
+        ],
+        [
+          8.295275951912263,
+          3.397670168898461
+        ],
+        [
+          11.420414148895285,
+          3.397715048760524
+        ]
+      ]
+    },
+    "post_df06:FIRST_COVER_MATCH": {
+      "step": 2,
+      "legacy": {
+        "index": 15,
+        "tuple7": [
+          0,
+          15,
+          78,
+          83,
+          78,
+          16,
+          15
+        ],
+        "pair": [
+          2,
+          9
+        ],
+        "primary_reference": [
+          "VE",
+          15,
+          77,
+          78
+        ],
+        "secondary_reference": null,
+        "category": "FIRST_COVER_MATCH",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          2,
+          9
+        ],
+        "initial_state": -1,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": null,
+            "polynomial": [
+              "-158246807936016428836055996/52567408152229869373381",
+              "213920408220075189974187315/52567408152229869373381",
+              "1"
+            ],
+            "branch": 1
+          },
+          "time_display": 0.7396117721346875,
+          "features": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ]
+        },
+        "pd": null,
+        "translation": {
+          "delta_linf": "23157734452907/6755399441055744",
+          "certificate": "UNCERTIFIED_NONTRANSLATION",
+          "same_first_cover_set": true,
+          "same_time": false,
+          "result": {
+            "status": "contact",
+            "time": {
+              "rational": "316493615872032857672111992/19112350500680551001306646523",
+              "polynomial": null,
+              "branch": 0
+            },
+            "time_display": 0.016559638536388456,
+            "features": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ],
+            "incidences": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ]
+          }
+        },
+        "prediction": {
+          "status": "EVALUATED_PREVIOUS_DISPLACEMENT",
+          "same_first_cover_set": false,
+          "result": {
+            "status": "no_contact",
+            "time": null,
+            "time_display": null,
+            "features": [],
+            "incidences": []
+          }
+        }
+      },
+      "A0": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ],
+      "A1": [
+        [
+          12.02093045332068,
+          5.99585236857217
+        ],
+        [
+          10.026161179207126,
+          5.995823721848657
+        ],
+        [
+          8.295275951912263,
+          3.397670168898461
+        ],
+        [
+          11.420414148895285,
+          3.397715048760524
+        ]
+      ],
+      "B0": [
+        [
+          16.200419832389315,
+          3.3988704509966454
+        ],
+        [
+          8.26606208293747,
+          3.398865757642009
+        ],
+        [
+          7.9993626330302545,
+          2.9991623509639487
+        ],
+        [
+          6.999233462925854,
+          2.9991617593646
+        ],
+        [
+          6.999238451668392,
+          1.9999036370695087
+        ],
+        [
+          15.80037514858711,
+          1.9999088431437781
+        ]
+      ],
+      "B1": [
+        [
+          16.200888613320675,
+          3.3976814911035236
+        ],
+        [
+          8.265400103586522,
+          3.3976756867421094
+        ],
+        [
+          7.998660146847214,
+          2.9982976320742742
+        ],
+        [
+          6.998388443928129,
+          2.9982969004320488
+        ],
+        [
+          6.9983871875856645,
+          1.999852251524555
+        ],
+        [
+          15.800778173273594,
+          1.9998586899761424
+        ]
+      ]
+    },
+    "post_df06:OTHER_FEATURE_FIRST": {
+      "step": 2,
+      "legacy": {
+        "index": 16,
+        "tuple7": [
+          0,
+          16,
+          78,
+          83,
+          0,
+          15,
+          0
+        ],
+        "pair": [
+          2,
+          9
+        ],
+        "primary_reference": [
+          "VE",
+          16,
+          77,
+          78
+        ],
+        "secondary_reference": null,
+        "category": "OTHER_FEATURE_FIRST",
+        "secondary_category": null
+      },
+      "comparison": {
+        "pair": [
+          2,
+          9
+        ],
+        "initial_state": -1,
+        "actual": {
+          "status": "contact",
+          "time": {
+            "rational": null,
+            "polynomial": [
+              "-158246807936016428836055996/52567408152229869373381",
+              "213920408220075189974187315/52567408152229869373381",
+              "1"
+            ],
+            "branch": 1
+          },
+          "time_display": 0.7396117721346875,
+          "features": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ],
+          "incidences": [
+            [
+              "VE",
+              15,
+              77,
+              78
+            ]
+          ]
+        },
+        "pd": null,
+        "translation": {
+          "delta_linf": "23157734452907/6755399441055744",
+          "certificate": "UNCERTIFIED_NONTRANSLATION",
+          "same_first_cover_set": true,
+          "same_time": false,
+          "result": {
+            "status": "contact",
+            "time": {
+              "rational": "316493615872032857672111992/19112350500680551001306646523",
+              "polynomial": null,
+              "branch": 0
+            },
+            "time_display": 0.016559638536388456,
+            "features": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ],
+            "incidences": [
+              [
+                "VE",
+                15,
+                77,
+                78
+              ]
+            ]
+          }
+        },
+        "prediction": {
+          "status": "EVALUATED_PREVIOUS_DISPLACEMENT",
+          "same_first_cover_set": false,
+          "result": {
+            "status": "no_contact",
+            "time": null,
+            "time_display": null,
+            "features": [],
+            "incidences": []
+          }
+        }
+      },
+      "A0": [
+        [
+          12.010353457124477,
+          5.997946404869275
+        ],
+        [
+          10.01297079752912,
+          5.997924056391312
+        ],
+        [
+          8.280250557582969,
+          3.398881499472116
+        ],
+        [
+          11.409483058051919,
+          3.3989165120838662
+        ]
+      ],
+      "A1": [
+        [
+          12.02093045332068,
+          5.99585236857217
+        ],
+        [
+          10.026161179207126,
+          5.995823721848657
+        ],
+        [
+          8.295275951912263,
+          3.397670168898461
+        ],
+        [
+          11.420414148895285,
+          3.397715048760524
+        ]
+      ],
+      "B0": [
+        [
+          16.200419832389315,
+          3.3988704509966454
+        ],
+        [
+          8.26606208293747,
+          3.398865757642009
+        ],
+        [
+          7.9993626330302545,
+          2.9991623509639487
+        ],
+        [
+          6.999233462925854,
+          2.9991617593646
+        ],
+        [
+          6.999238451668392,
+          1.9999036370695087
+        ],
+        [
+          15.80037514858711,
+          1.9999088431437781
+        ]
+      ],
+      "B1": [
+        [
+          16.200888613320675,
+          3.3976814911035236
+        ],
+        [
+          8.265400103586522,
+          3.3976756867421094
+        ],
+        [
+          7.998660146847214,
+          2.9982976320742742
+        ],
+        [
+          6.998388443928129,
+          2.9982969004320488
+        ],
+        [
+          6.9983871875856645,
+          1.999852251524555
+        ],
+        [
+          15.800778173273594,
+          1.9998586899761424
+        ]
+      ]
+    }
+  },
+  "pd_edge_limit": 0,
+  "seconds": 7.788944300000367,
+  "partial": [
+    "Nonzero nontranslation first-cover stability is uncertified."
+  ],
+  "normalized_sha256": "c8775eeb01a2976c3d93ed0de076ff53d57469514d78830861b8cbc595f5a6a0"
+}

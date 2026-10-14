@@ -1,0 +1,31 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______________ test_specific_contract_after_internal_injection _______________
+
+    def test_specific_contract_after_internal_injection():
+        kind = os.environ["M4C_MUTANT"]
+        guards = {
+            "wrong_quadratic_branch": motion_tests._assert_two_root_guard,
+            "open_endpoint": motion_tests._assert_endpoint_guard,
+            "lost_tie": motion_tests._assert_tie_guard,
+            "translation_bypass": motion_tests._assert_translation_guard,
+            "ledger_fold_into_match": replay_tests.test_guard_category_not_folded_into_match,
+            "step_pairing_shift": replay_tests.test_guard_step_pairing,
+        }
+>       guards[kind]()
+
+reports\codex\M4c_evidence\tmp\mutations_r6_guards\test_m4c_external_guards.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _assert_endpoint_guard():
+        A, B = SQ, moved(SQ, (2, 2))
+        got = motion_first_entrance(A, B, A, moved(B, (-1, -1)))
+>       assert got.exact_time == 1 and ("VV", 2, 0) in got.features, "closed endpoint event lost"
+E       AssertionError: closed endpoint event lost
+E       assert (None == 1)
+E        +  where None = MotionEntrance2(initial_state=-1, status='no_contact', exact_time=None, incidences=(), features=()).exact_time
+
+tests\test_m4c_motion.py:398: AssertionError
+=========================== short test summary info ===========================
+FAILED reports/codex/M4c_evidence/tmp/mutations_r6_guards/test_m4c_external_guards.py::test_specific_contract_after_internal_injection
+1 failed in 0.16s

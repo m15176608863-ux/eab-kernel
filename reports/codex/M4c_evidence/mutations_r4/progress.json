@@ -1,0 +1,125 @@
+{
+  "complete": false,
+  "rows": [
+    {
+      "mutant_name": "wrong_quadratic_branch",
+      "expected_exception": "AssertionError",
+      "expected_assertion": "earliest quadratic branch",
+      "killed_at_expected_check": true,
+      "control": {
+        "exit_code": 0,
+        "last_line": "1 passed in 0.10s",
+        "expected_exception_lines": [],
+        "log": "wrong_quadratic_branch_control.txt"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "1 failed in 0.17s",
+        "expected_exception_lines": [
+          "E       AssertionError: earliest quadratic branch\r"
+        ],
+        "log": "wrong_quadratic_branch_mutant.txt"
+      }
+    },
+    {
+      "mutant_name": "open_endpoint",
+      "expected_exception": "AssertionError",
+      "expected_assertion": "closed endpoint event lost",
+      "killed_at_expected_check": true,
+      "control": {
+        "exit_code": 0,
+        "last_line": "1 passed in 0.10s",
+        "expected_exception_lines": [],
+        "log": "open_endpoint_control.txt"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "1 failed in 0.16s",
+        "expected_exception_lines": [
+          "E       AssertionError: closed endpoint event lost\r"
+        ],
+        "log": "open_endpoint_mutant.txt"
+      }
+    },
+    {
+      "mutant_name": "lost_tie",
+      "expected_exception": "AssertionError",
+      "expected_assertion": "complete simultaneous cover set",
+      "killed_at_expected_check": true,
+      "control": {
+        "exit_code": 0,
+        "last_line": "1 passed in 0.09s",
+        "expected_exception_lines": [],
+        "log": "lost_tie_control.txt"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "1 failed in 0.15s",
+        "expected_exception_lines": [
+          "E       AssertionError: complete simultaneous cover set\r"
+        ],
+        "log": "lost_tie_mutant.txt"
+      }
+    },
+    {
+      "mutant_name": "translation_bypass",
+      "expected_exception": "AssertionError",
+      "expected_assertion": "general event path translation consistency",
+      "killed_at_expected_check": true,
+      "control": {
+        "exit_code": 0,
+        "last_line": "1 passed in 0.09s",
+        "expected_exception_lines": [],
+        "log": "translation_bypass_control.txt"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "1 failed in 0.15s",
+        "expected_exception_lines": [
+          "E       AssertionError: general event path translation consistency\r"
+        ],
+        "log": "translation_bypass_mutant.txt"
+      }
+    },
+    {
+      "mutant_name": "ledger_fold_into_match",
+      "expected_exception": "AssertionError",
+      "expected_assertion": "motion category preserves earlier other feature",
+      "killed_at_expected_check": true,
+      "control": {
+        "exit_code": 0,
+        "last_line": "1 passed in 0.09s",
+        "expected_exception_lines": [],
+        "log": "ledger_fold_into_match_control.txt"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "1 failed in 0.15s",
+        "expected_exception_lines": [
+          "E       AssertionError: motion category preserves earlier other feature\r"
+        ],
+        "log": "ledger_fold_into_match_mutant.txt"
+      }
+    },
+    {
+      "mutant_name": "step_pairing_shift",
+      "expected_exception": "ValueError",
+      "expected_assertion": "motion geometry pairing mismatch",
+      "killed_at_expected_check": true,
+      "control": {
+        "exit_code": 0,
+        "last_line": "1 passed in 0.09s",
+        "expected_exception_lines": [],
+        "log": "step_pairing_shift_control.txt"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "1 failed in 0.17s",
+        "expected_exception_lines": [
+          "E           ValueError: motion geometry pairing mismatch\r"
+        ],
+        "log": "step_pairing_shift_mutant.txt"
+      }
+    }
+  ]
+}

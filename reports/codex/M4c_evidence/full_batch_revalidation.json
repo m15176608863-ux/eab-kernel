@@ -1,0 +1,192 @@
+{
+  "schema": "eab.m4c-batch-revalidation.v1",
+  "audit": "GREEN",
+  "complete": true,
+  "summary_sha256": "5f6158905e2e6d60a49e942aad018121b327fe66a08194d4e505340d776d2ca4",
+  "driver_sha256": "255e01c4520856a03f4b03f9e12ae5b13afee563947372e67ab9c7da270dbc8a",
+  "mode": "full",
+  "cases": {
+    "bb52": {
+      "steps": 50,
+      "audit_sha256": "93e4e19bf9327fae256ff9e2806bd8d09e20a098ec47b46f42b5b68450655e32",
+      "normalized_sha256": "87c2e697854e4edaf6ea462ef4ec55eed2d86d38417baa877393b0d7c6feefb9"
+    },
+    "bb12": {
+      "steps": 100,
+      "audit_sha256": "7a4187366659336cf7d027ca18c3b30d3069c94607530106c2c3efdf20c5a61a",
+      "normalized_sha256": "e1a32a0ca9ecc60d45c4a5e1f4a23fa95637c1b51b5c27d4af4a25cf0d8f1291"
+    },
+    "bb50": {
+      "steps": 50,
+      "audit_sha256": "e18925e08c6f07f7e3cb47b4b8518e0fba00f76dddfd88e24cb0aa61801271d6",
+      "normalized_sha256": "b05f8ea8d3c1fa99f2d75959dff56475ce1ce478a860d54ecabedd6f40bc8019"
+    },
+    "bb51": {
+      "steps": 50,
+      "audit_sha256": "b009500f9ce56b1c4550d335b273b25309335f208a879cb3ac8f0742722905ed",
+      "normalized_sha256": "98191f62ac6ce1f372b093fe0cc8082c7b272f2ad5dc5a4df9431479ee5bd8e6"
+    },
+    "bb03": {
+      "steps": 100,
+      "audit_sha256": "709718a67d76617ffbdf427a710ca55ce364d449fe17e291db7b33a28ac0d519",
+      "normalized_sha256": "5e9bfc9701470b9ac1a35842c46dbede0010f16dc54464b5d9676b5ae80e323b"
+    },
+    "bb05": {
+      "steps": 100,
+      "audit_sha256": "f15220ec06c5a734d8f0c000b1cf21b0c9199743aa837e9850c75744a99c1e2d",
+      "normalized_sha256": "814e4b12dc958fe650cf019a7791670e1310d074c97d136ba4edd90f2d0899c9"
+    },
+    "bb06": {
+      "steps": 100,
+      "audit_sha256": "32030149ff23253a9cc8a7330ecae27b1a0c12918ee465db6e64268b2468f7be",
+      "normalized_sha256": "abfca788cd6a1d95eee79c92d5204cbc93711c2e83db24982b3d6b2b0dbff997"
+    },
+    "bb09": {
+      "steps": 100,
+      "audit_sha256": "d484e29e67962381dff3563441edace8b684833119b01366625af28a169bdd50",
+      "normalized_sha256": "2ba5f4ff23219dcd997bc9fcc10e9bdb34ec69c26662a11240c2330b3ead7d69"
+    },
+    "bb10": {
+      "steps": 100,
+      "audit_sha256": "c0b73095aa90bf13c75f57aadbfdbd016f7c847709346d530ed6aadd3a7cd3fb",
+      "normalized_sha256": "5e850db3e4d132dae656dee812d8f446d407a2ed49924f875692695a8f0f8a04"
+    },
+    "bbv01": {
+      "steps": 100,
+      "audit_sha256": "ea90cea2b585c3153580a633f120c9ffb1694bef1bac8d1be3cb5cab7b6a3db0",
+      "normalized_sha256": "ea59b2e7dd06177afa9a5f81b8d5aa1192d1fcf9eb4ba1ceb97ec114ed31b9f4"
+    },
+    "bbv01_dbv01a": {
+      "steps": 400,
+      "audit_sha256": "a491f064e228b444e4566d1478756a0426d27ef19d5536fd16a25233d2cf08f8",
+      "normalized_sha256": "b7368b2c3d09b48a0806ea5238af4793bb4932fac5e711b1d9a294397a4842df"
+    },
+    "bbv02": {
+      "steps": 100,
+      "audit_sha256": "612441c8d81de5f6e3585c9fb1a1d5ee36c5f4260f6db828e337ee489174d264",
+      "normalized_sha256": "7553ae97e607d7c47f9202e98b42ff9517d13faf6511d3869f000a27b5b39822"
+    },
+    "bbv02_dbv02a": {
+      "steps": 400,
+      "audit_sha256": "5d782fa5776368d2dc694c2f8bef5a7d25b2bd09b6deb4a524acd1a83203935b",
+      "normalized_sha256": "3ec8b81f79b6038ccf8cee2e5ce1cbf6e87d0149d6eca8569ffaf80c0f588f4f"
+    },
+    "bbF038": {
+      "steps": 30,
+      "audit_sha256": "b47bdacba23c0e43cc25fa144a211f3877049e93c45954df2db8a7f580f9f38d",
+      "normalized_sha256": "78329edff3ab43a254adc9696881f72515edec313cba876c3c81db120df4a630"
+    },
+    "bbS038": {
+      "steps": 30,
+      "audit_sha256": "8dcc0233c2501a8a84744251eb1b4c181fa6f7ff5b0138a6ee16219a4205e6c0",
+      "normalized_sha256": "ef819ba2ead7e6e524fab4611407745576794300172dc7caf10bc8f10dab1438"
+    }
+  },
+  "failures": {},
+  "code_hashes": {
+    "tools\\m4c_motion_replay.py": "4d6689f52a084ee462f55c376050c5a93ec87541e14d54835d124f36452dcd7c",
+    "tools\\m4_shadow_replay.py": "7fd27c2963b886443751515afa0c77ab78cf3ab729d66c050163e11bcc2a71c4",
+    "tools\\m4_bdda_shadow.py": "ea9a1131d43a306f96d44ef70f3198a693e6ef8d4cf2eed405c028f4fd973bfc",
+    "src\\eab\\__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
+    "src\\eab\\adapters\\__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
+    "src\\eab\\adapters\\bdda2d.py": "3240e49c7cf5f546884a911828e300fe3cb2a3e44079d62a1b0e017be63299b3",
+    "src\\eab\\construction.py": "d99b3900c8406d1fc81cb0563770429313cf0691aaecf67ffc183f7477d9c9cc",
+    "src\\eab\\contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src\\eab\\dual.py": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5",
+    "src\\eab\\kernel2d\\__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src\\eab\\kernel2d\\covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
+    "src\\eab\\kernel2d\\entrance.py": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c",
+    "src\\eab\\kernel2d\\exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src\\eab\\kernel2d\\g0.py": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013",
+    "src\\eab\\kernel2d\\g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src\\eab\\kernel2d\\geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+    "src\\eab\\kernel2d\\global_entrance.py": "59e7bf190026dfa7a302f094b55f37ac484bade2dd9c307df11e44443a325db3",
+    "src\\eab\\kernel2d\\motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src\\eab\\kernel2d\\motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src\\eab\\kernel3d\\__init__.py": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a",
+    "src\\eab\\kernel3d\\covers3.py": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6",
+    "src\\eab\\kernel3d\\entrance3.py": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171",
+    "src\\eab\\kernel3d\\entrance_topology.py": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
+    "src\\eab\\kernel3d\\exact_geom.py": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
+    "src\\eab\\kernel3d\\exact_sweep.py": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5",
+    "src\\eab\\kernel3d\\frozen.py": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa",
+    "src\\eab\\kernel3d\\g03.py": "59bdc7fdbcc25cb2000c3053b49ced0f60c09f22c574024460f77177d6bb4a5a",
+    "src\\eab\\kernel3d\\g03_exact.py": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22",
+    "src\\eab\\kernel3d\\g03_surface_oracle.py": "ffb4c1c2d8d392414c77a1c95e1e77e70e4ecfa0591290bc5b39b82c67ba174c",
+    "src\\eab\\kernel3d\\geom3.py": "4256d31ca410923e9109c13e4436764c5459e077e9d1ef41d97a152730eb4ede",
+    "src\\eab\\kernel3d\\global_entrance.py": "64c96a6825f342d6c61e95968cc0649c01d435d894400804d3ac2198452d83a7",
+    "src\\eab\\kernel3d\\interlock.py": "8391f6481153a04637122f1cacee32b5108cf77739fd18ca078cc7fe318cfb7d",
+    "src\\eab\\limit.py": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f",
+    "src\\eab\\limit_multi.py": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65",
+    "src\\eab\\lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
+    "src\\eab\\margin.py": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720",
+    "src\\eab\\numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src\\eab\\oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src\\eab\\predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src\\eab\\rational3.py": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
+    "src\\eab\\readers\\__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src\\eab\\readers\\bdda3d.py": "dcdb41243f6745488721e627d7c901811986ebf9c16bdd879c309d0c376362e4",
+    "src\\eab\\readers\\bdda_df.py": "356cf4edf86fc3b026e799305416f999ac550805a2f5d1ef3c194363cc817a2f",
+    "src\\eab\\readers\\bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
+    "src\\eab\\readers\\numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
+    "src\\eab\\readers\\tf_probe.py": "cbc9b1a5ec4e2a8c51888903d57cba2003b2c539537520ed56f8a2206262cb3f"
+  },
+  "counts": {
+    "raw_df05": {
+      "FIRST_COVER_MATCH": 40,
+      "INITIAL_OVERLAP_PD_MATCH": 14197,
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 67012,
+      "INITIAL_TOUCH_COVER_MATCH": 661,
+      "INITIAL_TOUCH_OTHER_FEATURE": 53,
+      "NO_CONTACT_IN_STEP": 59490,
+      "OTHER_FEATURE_FIRST": 133,
+      "INITIAL_TOUCH_INCIDENCE_NOT_COVER": 8
+    },
+    "post_df06": {
+      "FIRST_COVER_MATCH": 59,
+      "INITIAL_OVERLAP_PD_MATCH": 16190,
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 65019,
+      "INITIAL_TOUCH_COVER_MATCH": 661,
+      "INITIAL_TOUCH_OTHER_FEATURE": 53,
+      "NO_CONTACT_IN_STEP": 59490,
+      "OTHER_FEATURE_FIRST": 114,
+      "INITIAL_TOUCH_INCIDENCE_NOT_COVER": 8
+    }
+  },
+  "secondary_counts": {
+    "raw_df05": {
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 1603,
+      "INITIAL_TOUCH_OTHER_FEATURE": 6,
+      "FIRST_COVER_MATCH": 9,
+      "INITIAL_OVERLAP_PD_MATCH": 398,
+      "NO_CONTACT_IN_STEP": 5704,
+      "OTHER_FEATURE_FIRST": 3,
+      "INITIAL_TOUCH_COVER_MATCH": 37,
+      "INITIAL_TOUCH_INCIDENCE_NOT_COVER": 8
+    },
+    "post_df06": {
+      "INITIAL_OVERLAP_PD_OTHER_FEATURE": 1603,
+      "INITIAL_TOUCH_OTHER_FEATURE": 6,
+      "FIRST_COVER_MATCH": 9,
+      "INITIAL_OVERLAP_PD_MATCH": 398,
+      "NO_CONTACT_IN_STEP": 5704,
+      "OTHER_FEATURE_FIRST": 3,
+      "INITIAL_TOUCH_COVER_MATCH": 37,
+      "INITIAL_TOUCH_INCIDENCE_NOT_COVER": 8
+    }
+  },
+  "stats": {
+    "initial_overlap_pairs": 16676,
+    "initial_separated_pairs": 17603,
+    "initial_touch_pairs": 213,
+    "new_contact_pairs": 68,
+    "pd_evaluated_pairs": 16676,
+    "prediction_same_cover": 17560,
+    "prediction_unavailable": 29,
+    "swept_box_proven_no_contact_pairs": 29518,
+    "translation_descriptive_different_cover": 790,
+    "translation_descriptive_same_cover": 16813,
+    "translation_uncertified_nontranslation": 17603,
+    "prediction_different_cover": 14
+  }
+}

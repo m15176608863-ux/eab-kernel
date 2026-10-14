@@ -1,0 +1,92 @@
+{
+  "schema": "eab.m4c.interruption-audit.v1",
+  "reported_interruption_local": "2026-10-14 08:53 Asia/Singapore (owner approximate)",
+  "reported_cause": "computer restart killed running children",
+  "baseline_status": "INVALIDATED_INTERRUPTED",
+  "summary_present": false,
+  "execution_records_present": 0,
+  "shard_logs": [
+    {
+      "name": "shard_1.txt",
+      "bytes": 0
+    },
+    {
+      "name": "shard_2.txt",
+      "bytes": 0
+    },
+    {
+      "name": "shard_3.txt",
+      "bytes": 0
+    },
+    {
+      "name": "shard_4.txt",
+      "bytes": 0
+    }
+  ],
+  "partial_results_reused": false,
+  "files": [
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/collection.txt",
+      "bytes": 1391962,
+      "sha256": "c6e24075c3ad3a549f1047b123651b0e326da5375e7a5720a37142d6ff9d6274"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/export_manifest.json",
+      "bytes": 931834,
+      "sha256": "050237ceb3ee8a8064986e0853b54e0c235ad0474acaae8ccb7f8fe3d220dde7"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/m4c_execution_plugin.py",
+      "bytes": 556,
+      "sha256": "4c97fe401a408f816de906763598223e5ac2da928868588d1775c406269d1d32"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_1.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_1_nodes.txt",
+      "bytes": 345829,
+      "sha256": "9f640ce0d93f7b170dbd62140af6b40253003c58e9fdf6d895fc2ce25d2bf034"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_2.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_2_nodes.txt",
+      "bytes": 347937,
+      "sha256": "9e89102e79b23668ecbe33d07f87b533e25eaa9b887110daae96c139583e04c2"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_3.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_3_nodes.txt",
+      "bytes": 346443,
+      "sha256": "af247a7050cc352740a2c41e12b05d3fe21e23f91d33285d3fc4441994d9a187"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_4.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/baseline_suite/shard_4_nodes.txt",
+      "bytes": 351719,
+      "sha256": "bc01f62782fea533a6add11c2a41516ca1d923c6cb6461f32919e273742d7b06"
+    }
+  ],
+  "rerun_directory": "baseline_suite_r2",
+  "source_artifacts_to_revalidate": [
+    "docs/m4c_motion_entrance_design.md",
+    "src/eab/kernel2d/motion.py",
+    "tools/m4c_run_gates.py",
+    "reports/codex/M4c_evidence/kinematics_audit.json"
+  ],
+  "known_document_error": "kinematics_audit.md contains literal question marks; must rewrite in UTF-8"
+}

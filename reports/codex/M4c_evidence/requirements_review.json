@@ -1,0 +1,295 @@
+{
+  "schema": "eab.m4c.requirements-review.v1",
+  "snapshot_utc": "2026-10-14T02:57:09.016343+00:00",
+  "review_status": "PROVISIONAL_NOT_FINAL_DELIVERY",
+  "reviewer_implemented_fast_pd": true,
+  "reviewer_is_not_independent_pd_reviewer": true,
+  "requirements": [
+    {
+      "id": "T1",
+      "requirement": "DDA six-DOF model and finite-rotation endpoint correction",
+      "state": "IMPLEMENTED_VERIFIED",
+      "evidence": [
+        "kinematics_audit.md",
+        "kinematics_audit.json"
+      ],
+      "qualification_or_remaining": "Endpoint chord is not a reconstructed continuous rotation path."
+    },
+    {
+      "id": "T2",
+      "requirement": "Motion first-contact definition and degree-two exact event theorem",
+      "state": "IMPLEMENTED_VERIFIED_IN_DOMAIN",
+      "evidence": [
+        "../../../docs/m4c_motion_entrance_design.md",
+        "review_kernel_pd.json"
+      ],
+      "qualification_or_remaining": "Conditional mathematical proof; valid simple single rings throughout [0,1], not formal program verification."
+    },
+    {
+      "id": "T3",
+      "requirement": "Initial-overlap comparison is global PD_closed with complete ties",
+      "state": "IMPLEMENTED_COMPONENT_VERIFIED_FULL_PENDING",
+      "evidence": [
+        "review_kernel_pd.json",
+        "motion_exit_static.json"
+      ],
+      "qualification_or_remaining": "Full-run initial-overlap counts await final uncapped batch."
+    },
+    {
+      "id": "T4",
+      "requirement": "Certified nontranslation perturbation preserves first cover",
+      "state": "SUBSTANTIVE_PARTIAL",
+      "evidence": [
+        "../../../docs/m4c_motion_entrance_design.md",
+        "../../../docs/m4c_difference_ledger.md"
+      ],
+      "qualification_or_remaining": "Only delta=0 is implemented as a cover-stability certificate; general nonzero-delta sufficient conditions are not executable."
+    },
+    {
+      "id": "T5",
+      "requirement": "Prospective prediction and field proposal",
+      "state": "IMPLEMENTED_WITH_SCOPE_LIMIT",
+      "evidence": [
+        "review_inputs_prediction.md",
+        "prediction_scope_review.json"
+      ],
+      "qualification_or_remaining": "Prior-displacement forecast exists only on initial-separated actual-swept/legacy candidate subset; all-pair predicted false positives unmeasured; initial velocity export absent."
+    },
+    {
+      "id": "I1",
+      "requirement": "Exact motion API, all simultaneous features, loud domain rejection",
+      "state": "IMPLEMENTED_COMPONENT_VERIFIED",
+      "evidence": [
+        "review_kernel_pd.json",
+        "kernel_component_gate.json"
+      ],
+      "qualification_or_remaining": "No multi-ring input holes; original positional vertex correspondence must be supplied consistently."
+    },
+    {
+      "id": "I2",
+      "requirement": "Adjacent accepted endpoint replay with terminal geometry and strict schema",
+      "state": "IMPLEMENTED_VERIFIED",
+      "evidence": [
+        "review_inputs_prediction.json"
+      ],
+      "qualification_or_remaining": "15 full sources admit 1810 intervals, 15 prefixes admit 450 intervals; this is input completeness, not finished replay."
+    },
+    {
+      "id": "I3",
+      "requirement": "Closed primary/secondary reference ledger and four research questions",
+      "state": "IMPLEMENTED_AGGREGATE_PENDING",
+      "evidence": [
+        "../../../docs/m4c_difference_ledger.md",
+        "review_inputs_prediction.json"
+      ],
+      "qualification_or_remaining": "Need complete final counts, explicit denominators, missing-pair depth observables and reproducible examples."
+    },
+    {
+      "id": "I4",
+      "requirement": "Run all 15 cases and all 1810 steps",
+      "state": "WAITING_MANDATORY",
+      "evidence": [
+        "full_replay_r3/summary.json (required, not yet complete)"
+      ],
+      "qualification_or_remaining": "No partial-progress sum or interrupted run may be called 1810-step completion."
+    },
+    {
+      "id": "G1",
+      "requirement": "Exact M3/M2 translation degeneration across required families and scales",
+      "state": "IMPLEMENTED_VERIFIED_IN_DOMAIN",
+      "evidence": [
+        "kernel_component_gate.json",
+        "review_kernel_pd.json"
+      ],
+      "qualification_or_remaining": "18 M3 and 9 M2 samples; holes means holes of E, not material multi-ring polygons."
+    },
+    {
+      "id": "G2",
+      "requirement": "Independent no-shared-primitive oracle and imports",
+      "state": "IMPLEMENTED_VERIFIED",
+      "evidence": [
+        "review_kernel_pd.json",
+        "kernel_component_gate.json"
+      ],
+      "qualification_or_remaining": "M3 comparisons are consistency only; analytic and independent grid/winding checks are primary within their stated cases."
+    },
+    {
+      "id": "G3",
+      "requirement": "Frozen 15 x 30 classifications, unknown red and malformed-input teeth",
+      "state": "WAITING_MANDATORY",
+      "evidence": [
+        "review_inputs_prediction.json",
+        "../../../docs/m4c_difference_ledger.md"
+      ],
+      "qualification_or_remaining": "Need new complete 450-frame result and expected artifact bound to final production hashes; routine pytest may validate frozen evidence but cannot replace its execution."
+    },
+    {
+      "id": "G4",
+      "requirement": "Certificate must fail closed when nontranslation residual grows",
+      "state": "IMPLEMENTED_VERIFIED_WITH_PARTIAL_SCOPE",
+      "evidence": [
+        "review_inputs_prediction.json"
+      ],
+      "qualification_or_remaining": "Passing conservative UNCERTIFIED gates does not supply a nonzero-delta stability certificate."
+    },
+    {
+      "id": "G5",
+      "requirement": "Rigid/unit invariance with set-valued outputs",
+      "state": "IMPLEMENTED_COMPONENT_VERIFIED",
+      "evidence": [
+        "review_kernel_pd.json",
+        "kernel_component_gate.json"
+      ],
+      "qualification_or_remaining": "Rational rotations, large translations and unit scales; no claim that a lexicographic representative rotates covariantly."
+    },
+    {
+      "id": "G6_NUMERIC",
+      "requirement": "Construction inventory, three tiers, full static zero, exemption accounting",
+      "state": "COMPONENT_VERIFIED_FULL_STATIC_PENDING",
+      "evidence": [
+        "../../../docs/r13fix_construction_inventory.md",
+        "motion_exit_static.json",
+        "kernel_component_gate.json"
+      ],
+      "qualification_or_remaining": "Final whole-repository AST zero and exemption evidence required after current small fixes; equality/hash issue is being fixed, not assumed permanent."
+    },
+    {
+      "id": "G7",
+      "requirement": "Six specified internal mutants fail their intended assertions",
+      "state": "WAITING_CURRENT_HASH_REVERIFICATION",
+      "evidence": [
+        "mutations_r3/summary.json"
+      ],
+      "qualification_or_remaining": "Prior six mutants were killed correctly; current source/test hashes no longer all match, so fresh bound evidence is required."
+    },
+    {
+      "id": "G8",
+      "requirement": "New gates add approximately no more than ten percent full-suite time",
+      "state": "SUBSTANTIVE_PARTIAL_OR_NEW_BASELINE_REQUIRED",
+      "evidence": [
+        "WORK_STATUS.json",
+        "review_kernel_pd.json"
+      ],
+      "qualification_or_remaining": "Interrupted baseline runs are invalid; component timing or historical M3 timing alone cannot establish controlled full-suite delta <=10%."
+    },
+    {
+      "id": "S1",
+      "requirement": "Fresh final four-shard whole suite, collected=executed, no skip",
+      "state": "WAITING_MANDATORY",
+      "evidence": [
+        "WORK_STATUS.json"
+      ],
+      "qualification_or_remaining": "Even M4c_PARTIAL requires the entire suite green, four verbatim final lines and exact node-set equality; fresh byte copy is not a git worktree."
+    },
+    {
+      "id": "S2",
+      "requirement": "Full six-route milestone G6 exit",
+      "state": "NOT_CLAIMED_NOT_COMPLETED",
+      "evidence": [
+        "review_kernel_pd.json",
+        "review_inputs_prediction.md"
+      ],
+      "qualification_or_remaining": "Focused independent reviews do not satisfy full-repository G6 or authorize replacement."
+    },
+    {
+      "id": "C1",
+      "requirement": "Only current tree modified, TEMP/TMP in workspace",
+      "state": "KNOWN_CONSTRAINT_DEVIATION",
+      "evidence": [
+        "environment_deviations.json"
+      ],
+      "qualification_or_remaining": "Early targeted tests wrote synthetic temporary files under user Temp; exact total bytes/directories unknown. Later correction does not erase the violation; disclose, do not delete outside scope."
+    },
+    {
+      "id": "C2",
+      "requirement": "No sibling execution/code changes, no solver replacement or git writes",
+      "state": "OBSERVED_SCOPE_PRESERVED",
+      "evidence": [
+        "kinematics_audit.md",
+        "environment_deviations.json"
+      ],
+      "qualification_or_remaining": "This review is not a whole-machine forensic audit; documented Temp deviation is separate from sibling trees."
+    },
+    {
+      "id": "D1",
+      "requirement": "Chinese final report with examples, timings, residuals, final token",
+      "state": "WAITING_MANDATORY",
+      "evidence": [
+        "../M4c_report.md"
+      ],
+      "qualification_or_remaining": "Report absent at this snapshot; require all work-order sections and final M4c_PARTIAL list after mandatory completion gates."
+    },
+    {
+      "id": "D2",
+      "requirement": "Depth magnitude for every missed new-contact pair",
+      "state": "PENDING_DATA_WITH_OBSERVABLE_LIMIT",
+      "evidence": [
+        "../../../docs/m4c_difference_ledger.md",
+        "review_inputs_prediction.md"
+      ],
+      "qualification_or_remaining": "Vertex-interior step-end witness is not global PD or peak transient penetration. Missing witness is unknown, not zero; remaining unquantified cases must be disclosed."
+    }
+  ],
+  "mandatory_waiting_ids": [
+    "I4",
+    "G3",
+    "G7",
+    "S1",
+    "D1"
+  ],
+  "substantive_partial_ids": [
+    "T4",
+    "G8"
+  ],
+  "conditional_scope_ids": [
+    "T2",
+    "T5",
+    "I1",
+    "G1",
+    "G4",
+    "D2"
+  ],
+  "known_constraint_deviation_ids": [
+    "C1"
+  ],
+  "full_progress_snapshot": {
+    "complete": false,
+    "completed_case_count": 13,
+    "may_count_as_final_evidence": false
+  },
+  "mutation_record_hashes_current": false,
+  "input_pairing_counts": {
+    "full": 1810,
+    "frozen": 450
+  },
+  "independent_kernel_review_findings": {
+    "critical": 0,
+    "major": 0,
+    "minor": 1
+  },
+  "final_status_recommendation": "M4c_PARTIAL only after final full/frozen audits, whole suite, static zero, performance disclosure and report are complete; never mark DONE from this snapshot.",
+  "evidence_hashes": {
+    "kinematics_audit.json": "d121125f9e739aca602b51a24de5c2d93b4fdf65f064f33c68b615dd0690b93d",
+    "review_inputs_prediction.json": "7bc6c9bb76d9d4bd7c93b6f98e713abaca8b5a223dc56b3537f81593bab77e1a",
+    "review_kernel_pd.json": "331de0f73742f96b920989f1202d92b73a3712f72ba20e234f24bf067ad7c8f6",
+    "kernel_component_gate.json": "10cd424969ec561627b806dbf21be364e844c22be4f59757082b9fba1a911614",
+    "motion_exit_static.json": "38389f3611ae1928f22a4e12df83acb7c1bd481a3226d149f28b61d37b4b8864",
+    "environment_deviations.json": "d0775755dd08f0840fe3dd117b13df3ac673b6c57314e432c4dbd27bb8bbe1b4",
+    "WORK_STATUS.json": "d344e1a2c8491c66f166fd7a395ea2cd7a1e586053cafea09cd82df9f86c7775",
+    "mutations_r3/summary.json": "f28a6fcc1bcc26c5fdfa6cd91f3f49b894dc5eccbc300b82af15f4fc89b888df"
+  },
+  "nonwaivable_acceptance": [
+    "complete 1810-step batch",
+    "complete and frozen 450-step current-source batch",
+    "four-shard whole-suite green, collected=executed, no skip",
+    "whole-repository static zero",
+    "closed ledger unknown=0",
+    "six internal mutations fail expected assertion",
+    "explicit scope and TEMP deviation disclosure"
+  ],
+  "latest_coordination_override": {
+    "full_replay_r2": "stopped and invalidated in entirety by parent",
+    "next_full_batch": "full_replay_r3 after small fail-closed and equality/hash fixes",
+    "small_fixes_state": "WAITING_FINAL_VERIFICATION_NOT_PERMANENT_RESIDUAL"
+  }
+}

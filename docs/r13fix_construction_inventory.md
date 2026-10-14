@@ -209,3 +209,23 @@
 3D局部验证不是完整自交认证，故“所有域外输入必报错”的总合同仍是缺口。
 三维通用BSP产生的新Steiner点虽保持Fraction、具精确半空间/体积证书和独立表面门，未逐个构造分支做三档独立坐标参考；这是M3数值验收剩余项，不能用exact-only字样当nonconstructive豁免。
 静态更新既有19项局部scope指纹：3项因状态提供者改用全局构造（R12b-L0106/0107/0108），16项仅因三段docstring订正；3103项豁免总数不变。审查依据见`reports/codex/M3_evidence/static_renewal.json`、`doc_only_renewal.json`；没有新增豁免。
+
+## M4c 增量（2026-10-14；不改写历史计数）
+
+新模块不改变既有构造器，也不新增静态豁免。这里登记**精确构造量和显示量**，
+不以“内部全 Fraction”为理由把坐标、平方距离、二次根误标为 nonconstructive。
+完成度与实际扫描证据见 `reports/codex/M4c_report.md`。
+
+| 新 API / 公开量 | 处置 | 独立参考及具名门 |
+|---|---|---|
+| `kernel2d.motion.QuadraticTime` 的 `rational/b/c/branch`、`certificate` | differential | `test_m4c_motion.py::test_every_public_motion_numeric_field_has_three_tier_independent_reference`：几何 2^-400 / 1 / 2^397，手推 t²+t−1 与 (t−1/4)(t−3/4)，逐系数、根支、精确有理根及序列化字符串核对。构造字段只收精确 int/Fraction，浮点/布尔根支及系数响亮拒绝；相应域外门在 `test_quadratic_constructor_rejects_inexact_and_boolean_fields`。 |
+| `QuadraticTime.time` / `MotionEntrance2.time` | differential | 同上三档几何；另 `test_m4c_numeric.py::test_quadratic_display_has_independent_midpoint_certificate_at_three_output_tiers` 在输出尺度 2^-1070 / 1 / 2^1022、正负两根，用独立多项式在 binary64 半格点的符号夹逼证明逐值舍入。`test_quadratic_display_underflow_remains_backed_by_exact_certificate_and_overflow_is_loud` 核精确证书支撑的显式显示下溢及溢出报错。只有 construction.scalar_rational / normalized_difference_rational 作最终显示转换。 |
+| `motion_first_entrance(A0,B0,A1,B1)` / `MotionEntrance2.exact_time` | differential | 三档闭式事件门逐根核对；`test_translation_is_exactly_m3_with_complete_features` 六族×三档及 `test_translation_convex_m2_has_exact_time_and_same_expanded_tied_set` 三凸族×三档逐值。M2/M3 是一致性佐证；主 oracle 为手推二次式和独立整数绕数，不共用运动事件原语。 |
+| `MotionEntrance2.initial_state/status/features/incidences`；`QuadraticTime.sign_polynomial`、比较/相等/哈希 | nonconstructive | 返回离散状态、原输入身份索引的集合或谓词，不返回新实数构造。`test_motion_matches_independent_closed_form_and_integer_oracle`、`test_quadratic_numbers_are_exact` 及独立根隔离/符号门验证正确性；多并列集合的有理刚体运动与单位缩放门防止单代表替代集合。 |
+| `kernel2d.motion_exit.shortest_exit_fast(A_or_model,B=None,x=(0,0))` 返回的 `Distance2.squared/exact_point/tied_exact_points` | differential | `test_m4c_exit.py::test_fast_exit_matches_independent_rectangle_and_tight_seam_formulas`：2^-400 / 1 / 2^397，独立笛卡尔矩形边距离、非对称查询点、边界零距、紧配槽闭式，全部最优点逐值；`test_fast_exit_equals_m3_complete_ties` 逐值对既有 M3。内部虽构造暴露端点，其公开结果不是 nonconstructive 豁免。 |
+| 同一 `shortest_exit_fast` 返回值的 `.distance/.point` | differential / reuse | 复用既有 `Distance2` construction.py 显示边界；上述三档紧配槽的坐标、距离都是可精确表示的 dyadic，独立手值逐字段核对。`test_fast_exit_is_rigid_and_unit_covariant` 比较全部最优点集合而非字典序代表。 |
+
+域：同一顶点对应的单简单环在整个 s∈[0,1] 均有效，不能只核端点；多环输入不支持。
+M3 的“带洞”一致性族指入口块 E 的洞，不表示本单支持带洞输入多环。
+二次根证书可精确表示不可显示量；显示有限域与明确异常仍按 construction.py 合同。
+一般非零转动/应变残差的首盖稳定性不是数值显示合同，不由三档门推出，另列 M4c 的未认证范围。

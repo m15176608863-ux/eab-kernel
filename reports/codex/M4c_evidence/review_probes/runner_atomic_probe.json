@@ -1,0 +1,127 @@
+{
+  "complete": true,
+  "seconds": 1.8884842000006756,
+  "cases": {
+    "transient": {
+      "exit_code": 0,
+      "progress_invocations": 3,
+      "telemetry": [
+        {
+          "complete": false,
+          "attempts": 3,
+          "delays": [
+            0.01,
+            0.02
+          ]
+        },
+        {
+          "complete": false,
+          "attempts": 3,
+          "delays": [
+            0.01,
+            0.02
+          ]
+        },
+        {
+          "complete": true,
+          "attempts": 3,
+          "delays": [
+            0.01,
+            0.02
+          ]
+        }
+      ],
+      "actual_collected": [
+        "test_one.py::test_one"
+      ],
+      "actual_executed": [
+        "test_one.py::test_one"
+      ],
+      "runner_would_be_green": true,
+      "execution_complete": true,
+      "plugin_exitstatus": 0,
+      "last_line": "1 passed in 0.04s"
+    },
+    "permanent": {
+      "exit_code": 1,
+      "progress_invocations": 2,
+      "telemetry": [
+        {
+          "complete": false,
+          "attempts": 12,
+          "delays": [
+            0.01,
+            0.02,
+            0.03,
+            0.04,
+            0.05,
+            0.06,
+            0.07,
+            0.08,
+            0.09,
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "complete": true,
+          "attempts": 12,
+          "delays": [
+            0.01,
+            0.02,
+            0.03,
+            0.04,
+            0.05,
+            0.06,
+            0.07,
+            0.08,
+            0.09,
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "actual_collected": [
+        "test_one.py::test_one"
+      ],
+      "actual_executed": [],
+      "runner_would_be_green": false,
+      "execution_complete": true,
+      "plugin_exitstatus": 3,
+      "last_line": "INTERNALERROR> PermissionError: [Errno 5] independent reviewer simulated sharing denial"
+    },
+    "other_error": {
+      "exit_code": 1,
+      "progress_invocations": 2,
+      "telemetry": [
+        {
+          "complete": false,
+          "attempts": 1,
+          "delays": []
+        },
+        {
+          "complete": true,
+          "attempts": 1,
+          "delays": []
+        }
+      ],
+      "actual_collected": [
+        "test_one.py::test_one"
+      ],
+      "actual_executed": [],
+      "runner_would_be_green": false,
+      "execution_complete": true,
+      "plugin_exitstatus": 3,
+      "last_line": "INTERNALERROR> FileNotFoundError: independent reviewer non-sharing I/O error"
+    }
+  },
+  "before_sha256": {
+    "tools/m4c_run_gates.py": "00cefefc2921f4e9b3a4952716096c7516f339be2cef5af9764c8f69dfdca845",
+    "tests/test_m4c_runner.py": "e17c20ca6e5c98bcebe0004dae886fdc8f7d39834ea9525e805b179618144bfd"
+  },
+  "after_sha256": {
+    "tools/m4c_run_gates.py": "00cefefc2921f4e9b3a4952716096c7516f339be2cef5af9764c8f69dfdca845",
+    "tests/test_m4c_runner.py": "e17c20ca6e5c98bcebe0004dae886fdc8f7d39834ea9525e805b179618144bfd"
+  },
+  "scope": "Actual pytest hooks of generated real PLUGIN; temporary Path.replace and sleep injection inside child only; not full suite"
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "eab.m4c-delivery.v1",
+  "complete": true,
+  "audit": "GREEN",
+  "full_steps": 1810,
+  "frozen_steps": 450,
+  "suite_nodes": 12974,
+  "skip_count": 0,
+  "full_run": "full_replay_r4",
+  "frozen_run": "frozen_replay_r2",
+  "suite_run": "final_suite_r2",
+  "mutation_run": "mutations_r6",
+  "final_lines": [
+    "3244 passed in 769.96s (0:12:49)",
+    "3244 passed in 761.16s (0:12:41)",
+    "3243 passed in 761.02s (0:12:41)",
+    "3243 passed in 1503.25s (0:25:03)"
+  ],
+  "static_last_line": "exact construction AST gate: 0 violation(s)",
+  "construction_waivers": 3103,
+  "construction_waiver_increment": 0,
+  "tested_file_hashes_verified": 481,
+  "changed_utf8_no_bom_files": 287,
+  "performance": {
+    "all_test_call_seconds": 3523.3706465000723,
+    "m4c_test_call_seconds": 19.838790699999663,
+    "m4c_nodes": 211,
+    "m4c_call_fraction": 0.005630628364264332,
+    "per_shard_m4c_call_seconds": [
+      2.8611720999979298,
+      3.766572200003793,
+      8.611558299997341,
+      4.599488100000599
+    ]
+  },
+  "baseline": "Historical M3 only; not identical-byte baseline; no strict before-after percentage claim",
+  "milestone_status": "PARTIAL; see report for nonzero-delta certification and independent G6 limitations",
+  "environment_deviation": "See environment_deviations.json; this is not a claim of zero out-of-tree temporary writes"
+}

@@ -1,0 +1,73 @@
+{
+  "schema": "m4c_summary_review_v1",
+  "date": "2026-10-14",
+  "status": "CODE_TARGETED_GATES_AND_COMPLETE_1810_STEP_ARTIFACT_RECOUNT_PASS",
+  "full_repository_G6": false,
+  "role": "Initially independent read-only reviewer; parent then authorized minimal summarizer/test repairs. Do not describe repaired-tool review as never-involved implementation independence.",
+  "open_code_findings": {"critical": 0, "major": 0, "minor": 0},
+  "fixed_findings": [
+    {"id": "SUM-01", "severity": "major", "problem": "Minimum example terminal geometry was not bound to audited geom.csv hash", "fixed": true, "mutation_expected_assertion": "summary must reject changed terminal source"},
+    {"id": "SUM-02", "severity": "minor", "problem": "Incidence-not-cover incorrectly merged under earlier-other-feature metric name", "fixed": true, "mutation_expected_assertion": "incidence is not an earlier other feature"},
+    {"id": "SUM-03", "severity": "minor", "problem": "VV secondary categories lacked distinct minimal examples", "fixed": true, "mutation_expected_assertion": "VV references require separate example identities"}
+  ],
+  "targeted_tests": {"passed": 9, "skip": 0, "last_line": "9 passed in 0.11s", "wall_seconds": 0.7002379000005021, "static_issues": [], "new_exemptions": 0, "artifact": "review_probes/summary_test_run.json"},
+  "source_sha256": {
+    "tools/m4c_summarize_evidence.py": "cb6175c8d15c366a22ebd67eeed9cf591cf8d4dec1f2c7e84011aef52849b5b8",
+    "tests/test_m4c_summary.py": "4f62922f63db15184678e2da8f65439003a0acdef5a71835b2d1fa86ed4b11ef",
+    "tools/m4c_motion_replay.py": "4d6689f52a084ee462f55c376050c5a93ec87541e14d54835d124f36452dcd7c"
+  },
+  "final_artifact_recount": {
+    "complete": true,
+    "full_batch": "full_replay_r4",
+    "frozen_batch_used_by_final_summary": "frozen_replay_r2",
+    "independent_normalized_recount_scope": "full_r4 only; frozen450 has separate batch revalidation and gates",
+    "steps": 1810,
+    "cases": 15,
+    "examples": 35,
+    "missing_new_contact_pairs": 0,
+    "wall_seconds": 1.4061409999994794,
+    "returncode": 0,
+    "independent_script": "review_probes/check_summary_artifacts.py",
+    "evidence": "review_probes/summary_artifacts.json",
+    "imports": "Python standard library only; no replay or summarizer imports",
+    "translation": {"descriptive_different": 790, "descriptive_same": 16813, "candidates": 17603, "certified": 0, "uncertified": 17603, "actual_contact": 68, "actual_contact_different": 20, "either_contact": 838, "either_contact_different": 790},
+    "new_contact_pair_statistics": {
+      "denominator": 68,
+      "raw_df05": {"at_least_one_primary_first_cover": 38, "at_least_one_primary_or_secondary_first_cover": 47, "no_any_first_cover": 21, "any_first_cover_plus_nonfirst_primary_rows": 45},
+      "post_df06": {"at_least_one_primary_first_cover": 57, "at_least_one_primary_or_secondary_first_cover": 66, "no_any_first_cover": 2, "any_first_cover_plus_nonfirst_primary_rows": 64}
+    },
+    "minimum_identity_without_any_first_cover": {"raw_df05": ["bb03", 15, [2, 6]], "post_df06": ["bb51", 2, [3, 9]]},
+    "warning": "133/173 and 114/173 nonfirst-primary-row rates are not pair failure rates; many pairs already have a first-cover row"
+  },
+  "evidence_sha256": {
+    "review_probes/timing_sensitivity.py": "22f577dcc0e0f6d42807662aff2013d0c7b8f90f87f937494d8796671b1438e2",
+    "review_probes/timing_sensitivity.json": "56454fe2bffca5dbfb6aca9b2d98a840731e5f3b86ae91662fee939fc0bb9199",
+    "review_probes/check_summary_artifacts.py": "5ec2db01be50a9a2280e8cd45c20be849547fbe7f68783c69f4ec98e8974d501",
+    "review_probes/summary_artifacts.json": "98eb593312d941021374dc51314ebc06aefe6490b9f3ad0612e9eea374871a63",
+    "review_probes/summary_test_run.json": "74291f43051458926f0ebfd455c6f930f90731a4af72dcd4f6b397c1d5a16099",
+    "full_summary.json": "5f6158905e2e6d60a49e942aad018121b327fe66a08194d4e505340d776d2ca4",
+    "frozen_summary.json": "bb9b1e4334d307d9813a252f00d5e61af7d3a7d80175cceffaf2cfce1853a887",
+    "four_questions.json": "e3cc108db861273e26efe51c56e65c68634ab6c174664a6e9af0a0f3ec929f43",
+    "minimal_examples.json": "38690436802d0b52026c4dcef158898a7260bb01ed6ae88805d23c2046217b7a",
+    "minimal_examples_reproduced.json": "6b226fe04fe93960f428c0e3418fb8a9724db886ce0024e7af68da36368413b1"
+  },
+  "exact_time_sensitivity": {
+    "complete": true,
+    "script": "review_probes/timing_sensitivity.py",
+    "evidence": "review_probes/timing_sensitivity.json",
+    "stored_same_time_checks": 17603,
+    "seconds": 1.0054462999996758,
+    "all_candidates": {"denominator": 17603, "exact_time_difference": 838, "status_cover_or_time_difference": 838, "same_status_cover_but_different_time": 48},
+    "given_actual_contact": {"denominator": 68, "exact_time_difference": 68, "status_cover_or_time_difference": 68, "same_status_cover_but_different_time": 48},
+    "given_either_contact": {"denominator": 838, "exact_time_difference": 838, "status_cover_or_time_difference": 838, "same_status_cover_but_different_time": 48},
+    "both_no_contact_null_times": 16765,
+    "both_contact": 49,
+    "only_one_contact": 789,
+    "minimum_same_cover_different_time_identity": ["bb03", 1, [1, 2]],
+    "minimum_one_contact_identity": ["bb03", 1, [10, 11]],
+    "interpretation_limit": "Exact certificate inequality is not a measure of engineering-size error; previous same-cover count16813 is not valuewise equality. Joint valuewise-equal count16765 consists of both-no-contact pairs."
+  },
+  "guarded_denominators": ["primary and secondary separately for raw/post", "actual-contact excludes NO_CONTACT", "all-separated includes NO_CONTACT", "incidence-not-cover separate from other-feature-first", "evaluated-PD excludes resource-not-evaluated", "descriptive candidate / actual-contact / either-contact ratios", "nonzero-delta uncertified never counted as certified same or different"],
+  "minimum_example_scope": "Lowest observed (total input vertices,case,step,blockA,blockB), not a globally minimized counterexample",
+  "residual_limits": ["Artifact recount is not geometry correctness proof", "Prediction/surrogate domain restricted to actual-swept-or-legacy candidates", "Depth witness is squared endpoint vertex clearance, not global PD or peak penetration", "Not full six-route G6"]
+}

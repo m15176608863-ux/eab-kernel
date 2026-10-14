@@ -1,0 +1,58 @@
+{
+  "schema": "m4c_runner_review_v1",
+  "date": "2026-10-14",
+  "status": "RUNNER_CODE_REAL_PLUGIN_AND_FINAL_SUITE_NODE_AUDIT_PASS",
+  "findings": {"critical": 0, "major": 0, "minor": 0},
+  "readonly_production_and_tests": true,
+  "full_suite_started_by_reviewer": false,
+  "full_repository_G6": false,
+  "retry_contract": {"caught_exception": "PermissionError only", "attempt_limit": 12, "sleep_limit": 11, "total_scheduled_backoff_seconds": 0.65, "other_exceptions_retried": false, "permanent_exception_swallowed": false},
+  "component_tests": {"complete": true, "last_line": "6 passed in 0.09s", "passed": 6, "skip": 0, "static_issues": [], "wall_seconds": 0.9545209999996587},
+  "real_pytest_plugin_probe": {
+    "complete": true,
+    "seconds": 1.8884842000006756,
+    "transient": {"progress_calls": 3, "attempts_each": 3, "delays_each": [0.01, 0.02], "process_exit_code": 0, "actual_collected": 1, "actual_executed": 1, "skip": 0, "runner_would_be_green": true},
+    "permanent_permission": {"progress_calls": 2, "attempts_each": 12, "delays_each_count": 11, "process_exit_code": 1, "plugin_exitstatus": 3, "execution_record_complete": true, "actual_executed": 0, "runner_would_be_green": false},
+    "other_error": {"exception": "FileNotFoundError", "progress_calls": 2, "attempts_each": 1, "delays_each_count": 0, "process_exit_code": 1, "plugin_exitstatus": 3, "execution_record_complete": true, "actual_executed": 0, "runner_would_be_green": false},
+    "injection_location": "Actual Path.replace called by exported real PLUGIN during genuine pytest hooks",
+    "initial_probe_harness_error": "First attempt assumed short node ID despite parent pytest root discovery; fixed explicit --rootdir and reran all cases in fresh tmp/review_runner_r2"
+  },
+  "false_green_guard": "All shard process exit codes zero AND execution complete AND dispatched, actual collected and actual call node multisets equal AND zero skipped; static process exit zero",
+  "final_suite_node_audit": {
+    "complete": true,
+    "audit": "GREEN",
+    "suite": "final_suite_r2",
+    "independent_checker": "review_probes/check_final_suite_nodes.py",
+    "evidence": "review_probes/runner_final_nodes.json",
+    "collected": 12974,
+    "actual_executed": 12974,
+    "global_node_multisets_equal": true,
+    "cross_shard_duplicates": 0,
+    "failed": 0,
+    "skip": 0,
+    "static_exit_code": 0,
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "suite_wall_seconds": 1700.5836133000012,
+    "shard_last_lines_verbatim": [
+      "3244 passed in 769.96s (0:12:49)",
+      "3244 passed in 761.16s (0:12:41)",
+      "3243 passed in 761.02s (0:12:41)",
+      "3243 passed in 1503.25s (0:25:03)"
+    ],
+    "reused_abandoned_final_suite_r1_results": false,
+    "fresh_git_worktree": false
+  },
+  "reviewed_sha256": {
+    "tools/m4c_run_gates.py": "00cefefc2921f4e9b3a4952716096c7516f339be2cef5af9764c8f69dfdca845",
+    "tests/test_m4c_runner.py": "e17c20ca6e5c98bcebe0004dae886fdc8f7d39834ea9525e805b179618144bfd"
+  },
+  "evidence_sha256": {
+    "final_suite_r2/summary.json": "7c81bdccc187294d349d4c8ad4a42b5bd6ef466fdc1444b385785a4a9083a91d",
+    "review_probes/runner_final_nodes.json": "533d8c696eff73bafde4c71f05d4129c4e569f84b9b6e4bc2f44a2021c74f9c9",
+    "review_probes/check_runner_atomic.py": "fdf6867bf38ab3f7ba38353f75e7a230f1f69b666e17cd2aafcab193e0d6de63",
+    "review_probes/runner_atomic_probe.json": "cc71f6b155eff48bcd02cd98d8d838d4f47154d9d9b591a976b7d6a77011b5cf",
+    "review_probes/runner_test_run.json": "a9758bd20d8411857c78e9f6ce6971a2278c0205e9679f7094e2c2dcbc98f3c8",
+    "review_probes/runner_test_stdout.txt": "7548474fb14d06939e7c5c04118884c7575e481e66341dcb60a44054161cc931",
+    "review_probes/check_final_suite_nodes.py": "361eb3b579d50a158515c8ac19086be02ae50e226b67cbdda404c34e5a0ec5b2"
+  }
+}
