@@ -42,10 +42,40 @@ file_hash = snapshot.file_hash
 write_json = snapshot.write_json
 
 
+# Static repository-local import closure of this replay, including package
+# initializers and imports inside functions. The AST gate in
+# test_m4c_fix_replay.py requires the list to stay exact when imports change.
+# Unrelated 3-D, LP, material and sensitivity modules do not bind this audit.
+REPLAY_SOURCE_FILES = (
+    "src/eab/__init__.py",
+    "src/eab/adapters/__init__.py",
+    "src/eab/adapters/bdda2d.py",
+    "src/eab/construction.py",
+    "src/eab/contact_record.py",
+    "src/eab/kernel2d/__init__.py",
+    "src/eab/kernel2d/covers.py",
+    "src/eab/kernel2d/exact.py",
+    "src/eab/kernel2d/g0_oracle.py",
+    "src/eab/kernel2d/geom.py",
+    "src/eab/kernel2d/global_entrance.py",
+    "src/eab/kernel2d/motion.py",
+    "src/eab/kernel2d/motion_exit.py",
+    "src/eab/numeric_domain.py",
+    "src/eab/oracle_construction.py",
+    "src/eab/predicates.py",
+    "src/eab/readers/__init__.py",
+    "src/eab/readers/bdda_df.py",
+    "src/eab/readers/bdda_geom.py",
+    "src/eab/readers/numeric_decode.py",
+    "tools/m4_bdda_shadow.py",
+    "tools/m4_shadow_replay.py",
+    "tools/m4c_motion_replay.py",
+)
+
+
 def code_hashes():
-    paths = [Path(__file__), ROOT / "tools/m4_shadow_replay.py", ROOT / "tools/m4_bdda_shadow.py",
-             *sorted((ROOT / "src/eab").rglob("*.py"))]
-    return {str(p.relative_to(ROOT)): file_hash(p) for p in paths}
+    paths = [ROOT / name for name in REPLAY_SOURCE_FILES]
+    return {p.relative_to(ROOT).as_posix(): file_hash(p) for p in paths}
 
 
 def _exact_poly(poly):
@@ -384,7 +414,9 @@ def frame_result(frame, sg, eg, previous=None, *, pd_edge_limit=24):
             # with only a point-point identity match.
             secondary = None
             secondary_category = None
-            if raw[0] == 1 and all(raw[k] for k in (4, 5, 6)):
+            # b-DDA bdda2/core/contacts.hpp::has_second: m4_[k] > 0.
+            # m5/m6 may be vertex 0: they are not presence sentinels.
+            if raw[0] == 1 and raw[4] > 0:
                 secondary = ("VE", sg.canon(raw[4]), *sorted((sg.canon(raw[5]), sg.canon(raw[6]))))
                 secondary_category = classify_reference(row["initial_state"], secondary, row["actual"], row["pd"])
                 require(secondary_category in CATEGORIES, "unclassified secondary motion ledger category")

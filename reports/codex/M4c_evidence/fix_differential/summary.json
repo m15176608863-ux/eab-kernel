@@ -1,0 +1,69 @@
+{
+  "status": "GREEN",
+  "timestamp_utc": "2026-10-14T05:04:02.007358+00:00",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\M4c_evidence\\tmp\\fix_differential\\pytest_evidence",
+    "--junitxml",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\M4c_evidence\\fix_differential\\pytest.xml",
+    "tests/test_m4c_fix_differential.py"
+  ],
+  "exit_code": 0,
+  "last_line": "124 passed in 1.22s",
+  "case_count": 123,
+  "random_nontranslation_cases": 108,
+  "structured_cases": 15,
+  "concave_input_cases": 63,
+  "status_counts": {
+    "no_contact": 57,
+    "contact": 35,
+    "initial_overlap": 31
+  },
+  "initial_state_counts": {
+    "-1": 82,
+    "0": 10,
+    "1": 31
+  },
+  "irrational_first_contacts": 11,
+  "multiple_cover_contacts": 18,
+  "g0_interval_state_counts": {
+    "-1": 718,
+    "1": 392,
+    "0": 3
+  },
+  "g0_samples_per_interval": 2,
+  "mismatches": 0,
+  "pytest_tests": 124,
+  "skip_count": 0,
+  "pytest_wall_seconds": 1.627376500000537,
+  "pytest_case_seconds_junit_rounded": 1.1,
+  "differential_evidence_wall_seconds": 1.0430832999991253,
+  "historical_full_suite_call_seconds": 3523.370647,
+  "historical_full_suite_wall_seconds": 1700.583613,
+  "pytest_case_to_historical_suite_call_percent": 0.031220104559155682,
+  "performance_caveat": "Historical denominator is not a same-run benchmark; final-suite timing is authoritative.",
+  "oracle_direct_imports": [
+    "dataclasses.dataclass",
+    "fractions.Fraction",
+    "math.isqrt",
+    "math.lcm",
+    "eab.kernel2d.g0_oracle.overlap"
+  ],
+  "static_issues_for_new_files": {
+    "tests/m4c_independent_oracle.py": [],
+    "tests/test_m4c_fix_differential.py": []
+  },
+  "added_waivers": 0,
+  "source_sha256": {
+    "tests/m4c_independent_oracle.py": "ddc86b31ec6efce3e538e8f7092de3ed327e6fc367ada2a14fe1aaa3ac8c088b",
+    "tests/test_m4c_fix_differential.py": "3987b4ffad3f97ce2bf2b0a38ef8bd56aa0cd820664e9732ad656f2bcc2a5369"
+  }
+}

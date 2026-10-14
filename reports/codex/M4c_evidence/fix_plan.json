@@ -1,0 +1,82 @@
+{
+  "target": "WO-M4c-fix 1-8 only",
+  "scope": "D:\\eab-wt\\cx-e2",
+  "non_goals": [
+    "sibling writes",
+    "git writes",
+    "solver semantics",
+    "online DDA replacement"
+  ],
+  "rollback_anchor": "2a7f4d0e46444268401d4851d67ae6edb2c7dd2c",
+  "backup": "reports/codex/M4c_evidence/tmp/fix_rollback",
+  "files": [
+    {
+      "path": "tools/m4c_motion_replay.py",
+      "sha256": "4d6689f52a084ee462f55c376050c5a93ec87541e14d54835d124f36452dcd7c"
+    },
+    {
+      "path": "tests/test_m4c_replay.py",
+      "sha256": "3587305f56e6e16234014392d050d88bc080836e845d423131878acd5b995fff"
+    },
+    {
+      "path": "fixtures/m4c_motion/expected.json",
+      "sha256": "6e23c30f15d3a757958191bd8ad12995a603f320b9cb82018dfe71691a1a2e91"
+    },
+    {
+      "path": "fixtures/PROVENANCE.json",
+      "sha256": "6c4ee3b23613bb8c09ea93293c20d979f47eaa0377f25e8ef2dddb2bfe2f619b"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/frozen_summary.json",
+      "sha256": "bb9b1e4334d307d9813a252f00d5e61af7d3a7d80175cceffaf2cfce1853a887"
+    },
+    {
+      "path": "docs/m4c_motion_entrance_design.md",
+      "sha256": "469666541211e241bc28e6c24f64708653236dad46ac6f34d51f4996da34f9f5"
+    },
+    {
+      "path": "docs/m4c_difference_ledger.md",
+      "sha256": "db84a26db990264df08ccab79ad8024d1a75a9bec70184a2924394b01eb439c5"
+    },
+    {
+      "path": "reports/codex/M4c_evidence/environment_deviations.json",
+      "sha256": "d0775755dd08f0840fe3dd117b13df3ac673b6c57314e432c4dbd27bb8bbe1b4"
+    }
+  ],
+  "success": [
+    "semantic internal mutation control-red-restored for 1/2/3",
+    "independent moderate fixed-seed differential",
+    "complete new 450 frames and differences",
+    "1810-step domain accounting",
+    "4 shards collected=executed 0 skip",
+    "static 0 violation waiver unchanged"
+  ],
+  "verification": [
+    "python -X utf8 tools/m4c_run_replays.py frozen --out reports/codex/M4c_evidence/fix_frozen_replay --jobs 4",
+    "python -X utf8 tools/m4c_run_gates.py --name fix_final_suite_r2"
+  ],
+  "status": "COMPLETE",
+  "plan": [
+    {
+      "step": 1,
+      "target": "semantic/internal mutation, differential, replay fixes",
+      "status": "complete"
+    },
+    {
+      "step": 2,
+      "target": "fresh 450 frames, differences, 1810-step domain",
+      "status": "complete"
+    },
+    {
+      "step": 3,
+      "target": "design, ledger, history integrity and Temp details",
+      "status": "complete"
+    },
+    {
+      "step": 4,
+      "target": "fresh byte-export four-shard final suite and static gate, final delivery",
+      "status": "complete"
+    }
+  ],
+  "final_verification": "fix_final_verification.json"
+}

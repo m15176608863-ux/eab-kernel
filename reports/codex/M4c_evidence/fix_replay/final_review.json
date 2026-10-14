@@ -1,0 +1,182 @@
+{
+  "schema": "eab.m4c-fix.final-replay-review.v1",
+  "scope": [
+    "WO-M4c-fix #2",
+    "#5",
+    "#6",
+    "#8",
+    "fixtures/PROVENANCE.json side effects",
+    "historical documentation"
+  ],
+  "method": "Read-only source/JSON/gzip/hash inspection, git show/ls-files/status/diff only; no full suite or production writes. Test scaffold repair was separately authorized and verified.",
+  "status": "PASS_WITH_DOCUMENTATION_FINDING",
+  "requirements": {
+    "2": {
+      "status": "PASS",
+      "guards": [
+        "test_pd_tied_nearest_points_have_complete_feature_union",
+        "test_pd_tied_nearest_points_are_all_classified_as_pd_match",
+        "test_pd_first_tie_only_internal_mutation_hits_both_semantic_guards"
+      ],
+      "exact_witness": "coincident unit squares; four nearest exits; 24 feature union; all four primary references are PD_MATCH in both phases",
+      "mutation": "compile [:1] inside production _pd loop; both named assertions fail; control and restore pass"
+    },
+    "5": {
+      "status": "PASS",
+      "source_closure": 23,
+      "old_hash_count": 46,
+      "package_initializers": 4,
+      "runtime_local_modules": 23,
+      "runtime_unbound": [],
+      "dynamic_import_candidates": [],
+      "keys": "as_posix",
+      "full_frozen_rerun": 450,
+      "case_count": 15,
+      "counts_stats_frame_gzip_differences": 0
+    },
+    "6": {
+      "status": "PASS",
+      "contract": "mtype == 1 and m4 > 0; m5/m6 may be vertex 0",
+      "read_only_source": "D:/b-DDA/bdda2/core/contacts.hpp:80",
+      "vertex_zero_grids": [
+        "m5=0 present",
+        "m6=0 present",
+        "m4=0 absent"
+      ],
+      "frozen_vv_count_each_phase_before_after": [
+        1468,
+        1468
+      ],
+      "frozen_rule_differences": 0
+    },
+    "8": {
+      "status": "PASS",
+      "marked_directories": {
+        "baseline_suite": [
+          "INVALIDATED.json"
+        ],
+        "baseline_suite_r2": [
+          "INVALIDATED.json"
+        ],
+        "final_suite_r1": [
+          "INVALIDATED.json"
+        ],
+        "replay_pilot": [
+          "INVALIDATED.json"
+        ],
+        "mutations_r1": [
+          "INVALIDATED.json"
+        ],
+        "mutations_r2": [
+          "SUPERSEDED.json"
+        ],
+        "mutations_r3": [
+          "SUPERSEDED.json"
+        ],
+        "mutations_r4": [
+          "SUPERSEDED.json"
+        ],
+        "mutations_r5": [
+          "SUPERSEDED.json"
+        ],
+        "frozen_replay": [
+          "INVALIDATED.json"
+        ],
+        "frozen_replay_r2": [
+          "SUPERSEDED.json"
+        ],
+        "full_replay": [
+          "INVALIDATED.json"
+        ],
+        "full_replay_r2": [
+          "INVALIDATED.json"
+        ],
+        "full_replay_r3": [
+          "INVALIDATED.json"
+        ],
+        "fix_final_suite": [
+          "INVALIDATED.json"
+        ]
+      },
+      "invalid_files_scanned": 9,
+      "unmarked_invalid_files": [],
+      "all_nul_count": 8,
+      "truncated_gzip_count": 1,
+      "historical_bytes_not_repaired": true,
+      "external_temp_audit": {
+        "directories": [
+          "pytest-1080",
+          "pytest-1081",
+          "pytest-1082"
+        ],
+        "files": 83,
+        "bytes": 533021,
+        "times": [
+          "09:10",
+          "09:13",
+          "10:43"
+        ],
+        "attribution": "Claude independent acceptance; later pytest retention rotation clearly recorded"
+      }
+    }
+  },
+  "provenance": {
+    "entries_before": 200,
+    "entries_after": 200,
+    "added_entries": [],
+    "removed_entries": [],
+    "changed_entries": [
+      "m4c_motion/expected.json"
+    ],
+    "duplicate_destinations": 0,
+    "all_current_ok_entry_size_hash_checks": "PASS",
+    "all_frozen_450_frame_and_15_gzip_hash_checks": "PASS",
+    "expected_fixture_only_change": "15 normalized_file pointers; classifications and frame hashes unchanged",
+    "max_new_frozen_file_bytes": 202125
+  },
+  "static_repair": {
+    "initial_problem": "helper functions contained driver/AST/filesystem scaffolding, flagged by closed construction scan",
+    "repair": "scaffolding moved into test functions, square exact oracle retained",
+    "production_changed": false,
+    "waivers_added": 0,
+    "targeted_scan_violations": 0,
+    "targeted_pytest_last_line": "8 passed in 0.23s",
+    "all_full_suite_results": "owned by parent; aborted fix_final_suite not reused"
+  },
+  "must_fix": [
+    {
+      "path": "docs/m4c_difference_ledger.md",
+      "lines": [
+        118,
+        123
+      ],
+      "issue": "Current-looking verify-batch examples reference old broad-hash batches and already-existing output files, so current CLI rejects them.",
+      "action": "Use fix_frozen_replay with a new output filename; explicitly label old full/frozen batch commands historical."
+    }
+  ],
+  "documentation_notes": [
+    {
+      "path": "reports/codex/M4c_report.md",
+      "line": 144,
+      "note": "Original all-production-source hash wording should explicitly be historical or scoped to the old work order."
+    },
+    {
+      "path": "reports/codex/M4c_evidence/replay_report.md",
+      "line": 10,
+      "note": "Paragraph is labelled historical, but fixture-points-to-frozen_replay_r2 wording should say former fixture; current expected.json points to fix_frozen_replay."
+    },
+    {
+      "path": "reports/codex/M4c_evidence/fixture_provenance_registration.json",
+      "note": "Original registration audit is correctly preserved as historical, not a current PROVENANCE hash claim."
+    }
+  ],
+  "reviewed_files_sha256": {
+    "tools/m4c_motion_replay.py": "cba9a02d534e06925916b7be6f83724887c5adeef20966ab07c98d974a62b3f1",
+    "tests/test_m4c_fix_replay.py": "7d10b97612c32d52cb9b1485ef2770d60dbd194fecfe6407dbaa0fc2c0beab8c",
+    "fixtures/PROVENANCE.json": "a610dbc613a4f8f4392a801175f643ed137448b5c17c3d6334a452327b8ed006",
+    "fixtures/m4c_motion/expected.json": "2248925d8252c329652762bd9132273391a377a971a6123f287f9b8e8cc3b982",
+    "reports/codex/M4c_evidence/frozen_summary.json": "3151a845e03b8a41d3f83bc9ddf8563eece72ea78d1b567b03d12b8a044024a7"
+  },
+  "mutation_evidence_refreshed_after_scaffold_repair": true,
+  "final_test_sha256": "7d10b97612c32d52cb9b1485ef2770d60dbd194fecfe6407dbaa0fc2c0beab8c"
+}

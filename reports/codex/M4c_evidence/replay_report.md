@@ -7,7 +7,7 @@
 - 两批均 `complete=true / GREEN`；全部PD无工作量截断。最终驱动再次逐例检查原始输入、终端源、audit、压缩记录、逐帧摘要、primary/secondary行数守恒和汇总。
 - [完整重审](full_batch_revalidation.json)、[冻结重审](frozen_batch_revalidation.json)、[完整摘要](full_summary.json)、[冻结摘要](frozen_summary.json)。
 - [回放门日志](replay_gates_final.log) 最后一行：`125 passed in 13.01s`。这是124个原回放门和1个相对路径发布门；不是根全套结果。
-- 当前源码绑定覆盖回放入口、既有影子读取工具以及全部 `src/eab` Python 源码。大完整记录保留在忽略目录；冻结规范化记录位于入库目录 `frozen_replay_r2/`，fixture指向该目录。
+- 本段为原 M4c 批次记录；WO-M4c-fix 将源码绑定收窄到回放本仓 import 闭包（23 文件，POSIX 键），并从头重跑 450 帧，见 [补门报告](../M4c_fix_report.md)。原源码绑定覆盖回放入口、既有影子读取工具以及全部 `src/eab` Python 源码。大完整记录保留在忽略目录；冻结规范化记录位于入库目录 `frozen_replay_r2/`，原 fixture 指向该目录；本单已改指 `fix_frozen_replay/`，旧 r2 保留并标记 SUPERSEDED。
 
 本单是**既有输出的二进制浮点值转精确有理数后的端点弦模型**，不将该弦冒充DDA连续有限转动路径。初态严格贯入比较冻结步初 `PD_closed` 全部最优出口盖，而不是接触力或动力学正确性。代码没有修改或运行b-DDA。
 
@@ -68,6 +68,6 @@ VV次参考每表7768行：新接触12条，首盖吻合9/12、另一特征3/12�
 
 两次系统中断以及r2/r3输入合同主动修复批次均作废不拼接。r4计算期间只修不参与几何的驱动聚合类型检查，完整r4原summary未覆写，最终driver只读重审通过。第一次frozen虽然450几何都算完，但末端expected发布遇相对路径错误，仍整体作废；修out.resolve后完整重跑r2，不复用任何旧子例。详见 [恢复记录](interruption_recovery.md)。
 
-[环境偏差](environment_deviations.json) 披露早期短pytest命令遗漏TEMP/TMP，曾在用户系统tmp产生测试文件；具体总量未知，未在树外清理掩盖。最终全部回放及本次125门均显式设TEMP/TMP到本树。
+[环境偏差](environment_deviations.json) 披露早期短pytest命令遗漏TEMP/TMP，曾在用户系统tmp产生测试文件；Claude 后续审计确认系统 Temp 的 pytest-1080/1081/1082 三目录共 83 文件、533,021 字节，后由验收侧并发全套触发 pytest 轮换删除；本单不在树外清理。最终全部回放及本次125门均显式设TEMP/TMP到本树。
 
 回放范围已完成，无PD资源未评估遗留；理论/范围仍保留一般非零δ稳定证书未给出、预测仅条件候选域、端点弦不等同连续DDA转动、一般回退协议不支持等边界。是否满足工单全部门和G6退出，由根报告统一判断，不能以本子报告GREEN替代。

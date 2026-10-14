@@ -1,0 +1,61 @@
+{
+  "schema": "m4c_fix_domain_document_readonly_review_v1",
+  "scope": [
+    "docs/m4c_motion_entrance_design.md section T2a",
+    "tools/m4c_fix_audit.py domain_audit",
+    "reports/codex/M4c_evidence/fix_domain_audit.json"
+  ],
+  "reviewed_sha256": {
+    "docs/m4c_motion_entrance_design.md": "c4ec283669107a33aee3d9bbb7cf4c191f42bb2f283e63b9d117df4af27b326d",
+    "reports/codex/M4c_evidence/fix_domain_audit.json": "566bd3458748adeb555424095dea3ef682de755e0a3238e40bb1e32abdbe8ef8",
+    "tools/m4c_fix_audit.py": "0648f0ef3df37227f5d4af440112e01906ebeca35abbcadf81adbc4b660b3800"
+  },
+  "critical": 0,
+  "major": 0,
+  "proof_checks": [
+    {
+      "claim": "First loss of simplicity is caught by a nonincident vertex-edge event",
+      "result": "PASS",
+      "reason": "After zero-length edges are excluded, a first nonadjacent transverse interior crossing is impossible because transverse crossings persist under small endpoint perturbations. Remaining contacts are endpoint-on-edge or collinear interval overlap, each containing a vertex-edge witness."
+    },
+    {
+      "claim": "Adjacent backtracking is covered",
+      "result": "PASS",
+      "reason": "At the first adjacent overlap beyond the shared vertex, the shorter edge remote endpoint lies on the longer edge. Equal edge lengths give coincident remote endpoints. The remote endpoint is not a combinatorial endpoint of the opposite edge, matching the implementation nonincident enumeration."
+    },
+    {
+      "claim": "Area-zero events do not require an additional root family",
+      "result": "PASS",
+      "reason": "A polygonal Jordan curve encloses a nonempty open bounded interior of strictly positive area; a simple oriented ring has signed area equal to that area up to orientation. Area zero therefore entails edge collapse or loss of simplicity already covered."
+    },
+    {
+      "claim": "Whole-window validity is conservative refusal",
+      "result": "PASS",
+      "reason": "T2a explicitly says post-contact degeneration causes whole-call out-of-domain, and out-of-domain is not no_contact or proof first contact does not exist."
+    },
+    {
+      "claim": "Audit zero has the requested post-contact-only implication",
+      "result": "PASS",
+      "reason": "The audit validates all 15220 step-block trajectories before any pair/broad-phase exclusion and finds zero invalid pairs among 64010. Post-contact-only rejections are a subset of all invalid pairs, so their count is rigorously zero without a separate prefix-contact solve."
+    }
+  ],
+  "audit_validation": {
+    "complete": true,
+    "cases": 15,
+    "steps": 1810,
+    "step_blocks": 15220,
+    "all_step_block_pairs": 64010,
+    "domain_rejected_step_block_pairs": 0,
+    "post_contact_only_domain_rejected_step_block_pairs": 0,
+    "case_totals_reconciled": true,
+    "current_code_hash_mismatches": [],
+    "review_did_not_repeat_226_second_audit": true,
+    "interpretation_limit": "This is production-contract recomputation on these stored trajectories, not an independent geometry oracle and not a universal claim that the conservative restriction never matters."
+  },
+  "documentation_followup": {
+    "explicit_zero_in_T2a": true,
+    "status": "RESOLVED",
+    "detail": "Parent added both explicit zero counts directly in T2a after the initial suggestion. The text now states 1810 steps, 15220 step-blocks, 64010 unordered step-block pairs, zero whole-step domain rejections, and zero post-contact-only conservative refusals."
+  },
+  "g6_boundary": "This scoped document/method review is not the independent six-route G6 exit review. Existing design section 6 explicitly distinguishes whole-suite completion from G6. Final M4c_fix_report.md was not yet present at review start; its G6 wording is not certified by this record."
+}

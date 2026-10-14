@@ -1,0 +1,265 @@
+{
+  "schema": "eab.m4c-fix.history-index.v1",
+  "history_deleted": false,
+  "partial_results_reused": false,
+  "markers": [
+    {
+      "directory": "baseline_suite",
+      "marker": "baseline_suite/INVALIDATED.json",
+      "sha256": "ec01c65ddb1e1e2850c0eaea2f94790315596cdc63807a4305f0b2b3184c20b5",
+      "details": {
+        "status": "INVALIDATED_INTERRUPTED",
+        "results_must_not_be_reused": true,
+        "audit": "../interruption_audit.json",
+        "M4c_fix_note": "Historical run is not current acceptance evidence; all historical files retained without byte repair.",
+        "invalid_files": [
+          {
+            "path": "baseline_suite/m4c_execution_plugin.py",
+            "reason": "ALL_NUL",
+            "bytes": 556,
+            "sha256": "4c97fe401a408f816de906763598223e5ac2da928868588d1775c406269d1d32"
+          }
+        ]
+      }
+    },
+    {
+      "directory": "baseline_suite_r2",
+      "marker": "baseline_suite_r2/INVALIDATED.json",
+      "sha256": "aa9e7d6c79741c38e530e5971d219029c2e7f06501f5e96b7d3911ed8966851a",
+      "details": {
+        "directory": "baseline_suite_r2",
+        "status": "INVALIDATED_INTERRUPTED_0916",
+        "final_summary_present": false,
+        "partial_results_reused": false,
+        "M4c_fix_note": "Historical run is not current acceptance evidence; all historical files retained without byte repair.",
+        "invalid_files": [
+          {
+            "path": "baseline_suite_r2/shard_1.progress.json",
+            "reason": "ALL_NUL",
+            "bytes": 543,
+            "sha256": "faf44053c5a5dbe024c505679647e158891bbe17e8082c64382606c363678107"
+          },
+          {
+            "path": "baseline_suite_r2/shard_2.progress.json",
+            "reason": "ALL_NUL",
+            "bytes": 543,
+            "sha256": "faf44053c5a5dbe024c505679647e158891bbe17e8082c64382606c363678107"
+          },
+          {
+            "path": "baseline_suite_r2/shard_2_node_progress.json",
+            "reason": "ALL_NUL",
+            "bytes": 341,
+            "sha256": "9f3a97071dc41574af5b54e44945fabef8d5da339d179476a78dbd624a60033e"
+          },
+          {
+            "path": "baseline_suite_r2/shard_3.progress.json",
+            "reason": "ALL_NUL",
+            "bytes": 542,
+            "sha256": "ffd311b0dff35ac69fd34d1613a2085903f3305a734b331b9896e5d494247d97"
+          },
+          {
+            "path": "baseline_suite_r2/shard_3_node_progress.json",
+            "reason": "ALL_NUL",
+            "bytes": 310,
+            "sha256": "6929dc871287c5e3a2d9e99399f4bf688c63dc15b1a627e6cc8da68b423a028c"
+          },
+          {
+            "path": "baseline_suite_r2/shard_4.progress.json",
+            "reason": "ALL_NUL",
+            "bytes": 550,
+            "sha256": "25778f162c4243167f8eaa876f1b0619e67afc158de7805600471a563ec5e8b7"
+          },
+          {
+            "path": "baseline_suite_r2/shard_4_node_progress.json",
+            "reason": "ALL_NUL",
+            "bytes": 333,
+            "sha256": "00a185412d1c84de6d4435346a8c98467c290dae87d908328ff0c0fb45fe5458"
+          }
+        ]
+      }
+    },
+    {
+      "directory": "replay_pilot",
+      "marker": "replay_pilot/INVALIDATED.json",
+      "sha256": "b5a551311ff1f704eb788de4021fc4ef90f893d8b0499f321548b7eadfdb6f8c",
+      "details": {
+        "status": "INVALIDATED",
+        "reason": "Pilot interrupted; bb52 normalized gzip lacks final trailer; not full evidence",
+        "replaced_by": "fix_frozen_replay",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "invalid_files": [
+          {
+            "path": "replay_pilot/bb52/normalized.jsonl.gz",
+            "reason": "EOFError: Compressed file ended before the end-of-stream marker was reached",
+            "bytes": 29126,
+            "sha256": "5d6909331197546d88e4b633661a3041e2f0044b69d4785087692fdce3149c90"
+          }
+        ]
+      }
+    },
+    {
+      "directory": "mutations_r1",
+      "marker": "mutations_r1/INVALIDATED.json",
+      "sha256": "bcfecd9beae5ca5afc2f42043a2fc8d71064affa1ea651289b7aabb7accc5a25",
+      "details": {
+        "status": "INVALIDATED_TOOL_ERROR",
+        "error": "summary row mutant key collision",
+        "partial_results_reused": false,
+        "rerun": "mutations_r2",
+        "M4c_fix_note": "Historical run is not current acceptance evidence; all historical files retained without byte repair.",
+        "invalid_files": []
+      }
+    },
+    {
+      "directory": "mutations_r2",
+      "marker": "mutations_r2/SUPERSEDED.json",
+      "sha256": "8ab0aeea3c394cb07591e64f85d6e2bc0e13a874b2e493381fbe4027a003e4ff",
+      "details": {
+        "status": "SUPERSEDED",
+        "reason": "Earlier mutation batch superseded by revised source/guards",
+        "replaced_by": "mutations_r6",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "invalid_files": []
+      }
+    },
+    {
+      "directory": "mutations_r3",
+      "marker": "mutations_r3/SUPERSEDED.json",
+      "sha256": "8ab0aeea3c394cb07591e64f85d6e2bc0e13a874b2e493381fbe4027a003e4ff",
+      "details": {
+        "status": "SUPERSEDED",
+        "reason": "Earlier mutation batch superseded by revised source/guards",
+        "replaced_by": "mutations_r6",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "invalid_files": []
+      }
+    },
+    {
+      "directory": "mutations_r4",
+      "marker": "mutations_r4/SUPERSEDED.json",
+      "sha256": "8ab0aeea3c394cb07591e64f85d6e2bc0e13a874b2e493381fbe4027a003e4ff",
+      "details": {
+        "status": "SUPERSEDED",
+        "reason": "Earlier mutation batch superseded by revised source/guards",
+        "replaced_by": "mutations_r6",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "invalid_files": []
+      }
+    },
+    {
+      "directory": "mutations_r5",
+      "marker": "mutations_r5/SUPERSEDED.json",
+      "sha256": "8ab0aeea3c394cb07591e64f85d6e2bc0e13a874b2e493381fbe4027a003e4ff",
+      "details": {
+        "status": "SUPERSEDED",
+        "reason": "Earlier mutation batch superseded by revised source/guards",
+        "replaced_by": "mutations_r6",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "invalid_files": []
+      }
+    },
+    {
+      "directory": "final_suite_r1",
+      "marker": "final_suite_r1/INVALIDATED.json",
+      "sha256": "0a8e8474493da1c3c2651dab3a41e17e935723fab5b5d8c037107734c94468bb",
+      "details": {
+        "status": "INVALIDATED_VERIFICATION_FAILURE",
+        "reused_results": false,
+        "reason": [
+          "new two fixture files missing central provenance entries",
+          "Windows progress atomic replace sharing violation caused pytest internal exit3"
+        ],
+        "time_unix": 1791949496.091949
+      }
+    },
+    {
+      "directory": "fix_final_suite",
+      "marker": "fix_final_suite/INVALIDATED.json",
+      "sha256": "8491720c587fd62f0efdbdde5bd9717bc3715eec9b558a47c2ecfd35b6d26636",
+      "details": {
+        "status": "INVALIDATED_VERIFICATION_PREFLIGHT",
+        "reason": "Targeted static construction scan found 44 new test scaffolding violations after suite start; scoped runner and its four child processes stopped. Move scaffolding inside test drivers without new waivers, then rerun ALL shards from a fresh export.",
+        "partial_results_reused": false,
+        "stopped_process_manifest": "../tmp/fix_final_stopped_processes.json",
+        "next_batch": "fix_final_suite_r2",
+        "static_evidence": "../fix_new_static.json"
+      }
+    },
+    {
+      "directory": "full_replay",
+      "marker": "full_replay/INVALIDATED.json",
+      "sha256": "0fd3e63df12ef44ac83b86e6d229eea362e66e2cb9a082b8279e23854ebb8f0b",
+      "details": {
+        "directory": "full_replay",
+        "status": "INVALIDATED_INTERRUPTED_0916",
+        "final_summary_present": false,
+        "partial_results_reused": false
+      }
+    },
+    {
+      "directory": "full_replay_r2",
+      "marker": "full_replay_r2/INVALIDATED.json",
+      "sha256": "1b54d120925c2361971d9d5a44da226c8e8b2aa2bad935d2a9e5cdd9bf842522",
+      "details": {
+        "status": "INVALIDATED",
+        "reason": "Actively stopped for gzip EOF audit boundary and public time-value contract repairs; no partial results reused.",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "replaced_by": "full_replay_r4"
+      }
+    },
+    {
+      "directory": "full_replay_r3",
+      "marker": "full_replay_r3/INVALIDATED.json",
+      "sha256": "cdfd93fc4db0dc6634acee140416782c3006baab573af1485a04e85253ab424d",
+      "details": {
+        "status": "INVALIDATED",
+        "reason": "Actively stopped for malformed input top-level audit boundary repair; no partial results reused.",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "replaced_by": "full_replay_r4"
+      }
+    },
+    {
+      "directory": "frozen_replay",
+      "marker": "frozen_replay/INVALIDATED.json",
+      "sha256": "e9aa1cc740b085442dcaaac1c4fb77caa7cc5beb2c6055fb68096e5d3b3d6260",
+      "details": {
+        "status": "INVALIDATED",
+        "reason": "All geometry computed but expected publication failed (relative path ValueError); replaced by a fresh complete batch, not repaired.",
+        "history_preserved": true,
+        "partial_results_reused": false,
+        "replaced_by": "frozen_replay_r2"
+      }
+    },
+    {
+      "directory": "frozen_replay_r2",
+      "marker": "frozen_replay_r2/SUPERSEDED.json",
+      "sha256": "ec7aa620487aa23c0c86bce90c980819d35ebfe03b655c1329882f4145144603",
+      "details": {
+        "status": "SUPERSEDED",
+        "reason": "Historical accepted 450-frame batch remains valid for its original broad source hash contract. WO-M4c-fix narrows import closure and aligns VV has_second; new full rerun binds current code. All result/frame hashes unchanged.",
+        "replaced_by": "../fix_frozen_replay",
+        "history_preserved": true
+      }
+    },
+    {
+      "directory": "final_suite_r2",
+      "marker": "final_suite_r2/SUPERSEDED.json",
+      "sha256": "73bfacb53d354edfbca740ef2098ee48aca4021b313589a3cd5039342be22ccc",
+      "details": {
+        "status": "SUPERSEDED",
+        "reason": "Historical accepted M4c suite retained; current WO-M4c-fix adds 136 nodes and updates replay maintenance contracts. New full four-shard run complete with 13110 nodes.",
+        "replaced_by": "../fix_final_suite_r2",
+        "historical_results_preserved": true,
+        "partial_results_reused": false
+      }
+    }
+  ],
+  "note": "Includes markers under historical ignored full-run directories so explanations remain present in a trackable small index; corruption source bytes were never repaired."
+}

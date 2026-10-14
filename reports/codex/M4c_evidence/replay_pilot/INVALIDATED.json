@@ -1,0 +1,15 @@
+{
+  "status": "INVALIDATED",
+  "reason": "Pilot interrupted; bb52 normalized gzip lacks final trailer; not full evidence",
+  "replaced_by": "fix_frozen_replay",
+  "history_preserved": true,
+  "partial_results_reused": false,
+  "invalid_files": [
+    {
+      "path": "replay_pilot/bb52/normalized.jsonl.gz",
+      "reason": "EOFError: Compressed file ended before the end-of-stream marker was reached",
+      "bytes": 29126,
+      "sha256": "5d6909331197546d88e4b633661a3041e2f0044b69d4785087692fdce3149c90"
+    }
+  ]
+}

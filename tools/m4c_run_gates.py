@@ -148,7 +148,8 @@ def main():
     python = [sys.executable, "-X", "utf8"]
     start = time.perf_counter()
     write_json(out / "run_state.json", dict(status="COLLECTING", complete=False, source=str(source)))
-    collection = run(python + ["-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"], source, env, out/"collection.txt")
+    collection = run(python + ["-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider",
+                              "--basetemp", str(temp/"collection")], source, env, out/"collection.txt")
     assert collection["exit_code"] == 0, collection
     nodes = [s for s in (out/"collection.txt").read_text(encoding="utf-8").splitlines()
              if s.startswith("tests/") and "::" in s]

@@ -25,6 +25,9 @@ raw-df05 / post-df06 分表，原有重复行不去重。VV 的第二参考三�
 | `INITIAL_OVERLAP_PD_OTHER_FEATURE` | 初态严格贯入；PD 已计算；参考键不在上述并集。 |
 | `INITIAL_OVERLAP_PD_NOT_EVALUATED_RESOURCE` | 初态严格贯入；显式确定性资源上限阻止 PD 计算。不能进入 PD 一致/不一致分母。 |
 
+整步域约束是保守拒答：首入之后才出现的环退化也会使整步报域外；域外不等于首入不存在，
+不能混入 `NO_CONTACT_IN_STEP`。1810 步的逐块复核及步—块对数见 [域审计](../reports/codex/M4c_evidence/fix_domain_audit.json)：1810 步、15220 个步—块、64010 个步—无序块对，整步域外步—块对为 **0**；其中“首入后才退化”的保守拒答也为 **0**。
+
 未知名字不是新豁免，一律 RED。分类顺序首先依据初态实体三态，再看首时刻/PD 集合。
 `MATCH` 不是一个可任意回退到的总类别；任何合并必须改变冻结摘要且命中专门的内部变异门。
 上述初态相触包括紧配内缝，不能据此宣称该点在 E 的真外边界。
@@ -80,7 +83,7 @@ PD 使用 [motion_exit.py](../src/eab/kernel2d/motion_exit.py) 的精确 cell �
 
 少列、列错位、步号跳跃/回退、未知 attempt 字段、重复身份、终端缺失、末端错配均 fail-closed。
 本单只认证已审计生产者无回退的现有路径；不声称可处理任意回退快照协议。
-每步输出规范化记录并 flush，progress 保存当前完成步数及输入/所有 src/eab Python 文件哈希。
+每步输出规范化记录并 flush，progress 保存当前完成步数及输入/运动回放本仓 import 闭包文件哈希（POSIX 路径键）。
 只有 final audit `complete=true`、全输入/代码末态哈希不变的批次可作为完成证据；中断目录保留但不得拼接成结果。
 
 ## 5. 门与复跑
@@ -96,7 +99,7 @@ PD 使用 [motion_exit.py](../src/eab/kernel2d/motion_exit.py) 的精确 cell �
 - `test_swept_contact_pair_is_detected_with_both_legacy_tables_empty`；
 - `test_frozen_all_thirty_frames_are_hashed_classified_and_conservative`，全部450规范化帧哈希/类别守恒；
 - `test_real_first_frame_per_family_recomputes_the_frozen_classification`，15例各1帧实际生产计算。
-- `test_frozen_full_computation_is_bound_to_current_production_sources`，450帧完整重算证据绑定当前所有生产源哈希；
+- `test_frozen_full_computation_is_bound_to_current_production_sources`，450帧完整重算证据绑定当前回放 import 闭包源哈希（23 文件，见 `REPLAY_SOURCE_FILES` 与新增 AST 闭包门）；
   生产源变化即红，必须显式重新执行全450帧审计，不允许旧结果加几帧采样冒充新代码已全量通过。
 
 为控制常规全套增量，pytest **不是重新计算全部450帧**。450帧完整重算是显式证据脚本：
@@ -115,9 +118,11 @@ python -X utf8 tools/m4c_run_replays.py full --out reports/codex/M4c_evidence/fu
 完成批次的只读复验命令如下；输出必须是新文件，原始 summary 不覆写，不把不同中断批次的子例拼接：
 
 ```powershell
-python -X utf8 tools/m4c_run_replays.py verify-batch --batch reports/codex/M4c_evidence/full_replay_r4 --out reports/codex/M4c_evidence/full_batch_revalidation.json
-python -X utf8 tools/m4c_run_replays.py verify-batch --batch reports/codex/M4c_evidence/frozen_replay_r2 --out reports/codex/M4c_evidence/frozen_batch_revalidation.json
+python -X utf8 tools/m4c_run_replays.py verify-batch --batch reports/codex/M4c_evidence/fix_frozen_replay --out reports/codex/M4c_evidence/fix_frozen_revalidation_rerun.json
 ```
+
+旧 `full_replay_r4` / `frozen_replay_r2` 的复验 JSON 是原源码绑定下的历史证据；当前 23 文件绑定会拒绝其旧 46 文件哈希映射，不能直接用当前 CLI 冒称重审通过。
+现行冻结为 `fix_frozen_replay`；本单 1810 步域审计和 VV 新旧规则逐行差分不冒充完整 PD 重跑。
 
 必须使用新输出目录；不能覆盖已有证据。批次计数、每例摘要、各类最小复现端点与耗时以
 [M4c报告](../reports/codex/M4c_report.md) 指向的最终 complete 批次为准；本台账不把未完成的 pilot 计数当结果。

@@ -1,0 +1,1740 @@
+{
+  "schema": "m4c_fix_differential_readonly_review_v1",
+  "reviewer": "semantic_gates agent, separate from oracle author",
+  "reviewed_sha256": {
+    "tests/m4c_independent_oracle.py": "ddc86b31ec6efce3e538e8f7092de3ed327e6fc367ada2a14fe1aaa3ac8c088b",
+    "tests/test_m4c_fix_differential.py": "3987b4ffad3f97ce2bf2b0a38ef8bd56aa0cd820664e9732ad656f2bcc2a5369"
+  },
+  "critical": 0,
+  "major": 0,
+  "findings": [],
+  "checks": [
+    {
+      "check": "runtime_independence",
+      "status": "PASS",
+      "detail": "All Python functions / lru-cache callables in eab.kernel2d.motion were replaced by a fail-loud sentinel while all 123 independent oracle answers were computed. No sentinel was invoked."
+    },
+    {
+      "check": "event_superset",
+      "status": "PASS",
+      "detail": "Every directed VE/EV supporting-line polynomial is reconstructed from exact samples -1,0,1. Persistent collinearity adds x/y endpoint-equality roots; roots plus 0,1 partition every possible segment-incidence change."
+    },
+    {
+      "check": "root_arithmetic_order",
+      "status": "PASS",
+      "detail": "Integer-discriminant quadratic formula reduces perfect squares to Fraction. Irrational Root key (h, sign(k), k^2*d) is canonical for its h+k*sqrt(d) algebraic number; dyadic separators sort distinct unit roots exactly. evaluate_sign reduces degree-two expressions in Q(sqrt(d))."
+    },
+    {
+      "check": "body_state_partition",
+      "status": "PASS",
+      "detail": "Each event interval has two strict rational interior samples checked by independent g0 overlap. Full supporting-line/collinear-endpoint superset certifies state cannot change between sampled roots. All intervals before the first incidence must be separated."
+    },
+    {
+      "check": "complete_incidences_covers",
+      "status": "PASS",
+      "detail": "All VE, EV, VV labels are enumerated. On-segment uses axis boxes rather than production dot products. Covers use convexity plus both neighboring vertices in opposing edge half-planes; valid flat vertices require opposite edge orientation. Complete sets are compared, not a representative."
+    },
+    {
+      "check": "domain_valid_by_construction",
+      "status": "PASS",
+      "detail": "Each random ring uses the same affine end map for its vertices. At s in [0,1], diagonal entries >=7/8 and off-diagonals <=1/8, so determinant >=3/4>0; initial CCW/simple rings, including concave L, remain valid. Fifteen structured probes are likewise valid."
+    },
+    {
+      "check": "requested_coverage",
+      "status": "PASS",
+      "detail": "Observed counters below prove concave rings, irrational first times and multiple tied features; 108 random cases truly deform rather than translate."
+    }
+  ],
+  "counters": {
+    "cases": 123,
+    "status_no_contact": 57,
+    "initial_-1": 82,
+    "with_concave_ring": 63,
+    "irrational_first_time": 11,
+    "multi_feature_first_contact": 18,
+    "intervals": 1113,
+    "rational_g0_interval_samples": 2226,
+    "general_nontranslation_cases": 111,
+    "interval_state_-1": 718,
+    "status_contact": 35,
+    "interval_state_1": 392,
+    "initial_0": 10,
+    "status_initial_overlap": 31,
+    "initial_1": 31,
+    "interval_state_0": 3
+  },
+  "case_details": [
+    {
+      "name": "random_000",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_001",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_002",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": true,
+      "features": 1,
+      "intervals": 18,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_003",
+      "initial": 0,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 2,
+      "intervals": 9,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_004",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 8,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_005",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 3,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_006",
+      "initial": 0,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 2,
+      "intervals": 25,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_007",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 10,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_008",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_009",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_010",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_011",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 21,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_012",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 8,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_013",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 3,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_014",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": true,
+      "features": 1,
+      "intervals": 19,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_015",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_016",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 9,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_017",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 17,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_018",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 8,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_019",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 3,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_020",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": true,
+      "features": 1,
+      "intervals": 33,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_021",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_022",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 7,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_023",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 8,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_024",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 4,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_025",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_026",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_027",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 9,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_028",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 8,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_029",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 13,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_030",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_031",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 2,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_032",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_033",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_034",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 7,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_035",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 1,
+      "intervals": 47,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_036",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 2,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_037",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_038",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 1,
+      "intervals": 21,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_039",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_040",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": true,
+      "features": 1,
+      "intervals": 8,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_041",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_042",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 4,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_043",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_044",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 13,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_045",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 17,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_046",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 16,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_047",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": true,
+      "features": 1,
+      "intervals": 13,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_048",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 8,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_049",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 1,
+      "intervals": 4,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_050",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 11,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_051",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": true,
+      "features": 1,
+      "intervals": 27,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_052",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 23,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_053",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 29,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_054",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 7,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_055",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_056",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 18,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_057",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 7,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_058",
+      "initial": 0,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 1,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_059",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 24,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_060",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": true,
+      "features": 1,
+      "intervals": 8,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_061",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 8,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_062",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 17,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_063",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 3,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_064",
+      "initial": 0,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 2,
+      "intervals": 8,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_065",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 4,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_066",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 7,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_067",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_068",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_069",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 1,
+      "intervals": 22,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_070",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 13,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_071",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 14,
+      "interval_states": [
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_072",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 1,
+      "intervals": 16,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_073",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_074",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 5,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_075",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 10,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_076",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 3,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_077",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_078",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 7,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_079",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 6,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_080",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 9,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_081",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": true,
+      "features": 1,
+      "intervals": 16,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_082",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 11,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_083",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 10,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_084",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 3,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_085",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 2,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_086",
+      "initial": 0,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 2,
+      "intervals": 4,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_087",
+      "initial": 0,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 4,
+      "intervals": 10,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_088",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 18,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_089",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 33,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_090",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 3,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_091",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 10,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_092",
+      "initial": 0,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 2,
+      "intervals": 6,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_093",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_094",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 2,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_095",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 17,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_096",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 11,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_097",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 4,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_098",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 28,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_099",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 10,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_100",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 4,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_101",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_102",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 14,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_103",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": false,
+      "irrational": false,
+      "features": 0,
+      "intervals": 7,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_104",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 2,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_105",
+      "initial": -1,
+      "status": "no_contact",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 12,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_106",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 19,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "random_107",
+      "initial": 1,
+      "status": "initial_overlap",
+      "concave": true,
+      "irrational": false,
+      "features": 0,
+      "intervals": 9,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "irrational_1/7",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": true,
+      "features": 1,
+      "intervals": 5,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "face_tie_1/7",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 6,
+      "intervals": 2,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "corner_tie_1/7",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 5,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "concave_slot_1/7",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 4,
+      "intervals": 6,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "initial_touch_slide_1/7",
+      "initial": 0,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 6,
+      "intervals": 1,
+      "interval_states": [
+        0
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "irrational_1",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": true,
+      "features": 1,
+      "intervals": 5,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "face_tie_1",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 6,
+      "intervals": 2,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "corner_tie_1",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 5,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "concave_slot_1",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 4,
+      "intervals": 6,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "initial_touch_slide_1",
+      "initial": 0,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 6,
+      "intervals": 1,
+      "interval_states": [
+        0
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "irrational_13",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": true,
+      "features": 1,
+      "intervals": 5,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": true
+    },
+    {
+      "name": "face_tie_13",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 6,
+      "intervals": 2,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "corner_tie_13",
+      "initial": -1,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 5,
+      "intervals": 1,
+      "interval_states": [
+        -1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "concave_slot_13",
+      "initial": -1,
+      "status": "contact",
+      "concave": true,
+      "irrational": false,
+      "features": 4,
+      "intervals": 6,
+      "interval_states": [
+        -1,
+        1
+      ],
+      "nontranslation": false
+    },
+    {
+      "name": "initial_touch_slide_13",
+      "initial": 0,
+      "status": "contact",
+      "concave": false,
+      "irrational": false,
+      "features": 6,
+      "intervals": 1,
+      "interval_states": [
+        0
+      ],
+      "nontranslation": false
+    }
+  ],
+  "wall_seconds": 0.8299303999992844,
+  "scope_limit": "CCW valid-domain test oracle, as declared; not a general replacement for production domain validation and not the milestone G6 six-route review.",
+  "pytest_review": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp=D:\\eab-wt\\cx-e2\\reports\\codex\\M4c_evidence\\tmp\\fix_semantics\\differential_review_pytest_final",
+      "tests/test_m4c_fix_differential.py"
+    ],
+    "returncode": 0,
+    "last_line": "124 passed in 1.20s",
+    "wall_seconds": 1.6143496999993658
+  },
+  "review_revision_note": "Final driver adds three persistent-touch sliding probes; original 120-case driver already had seven initially touching cases, but had no open interval in body state zero."
+}
