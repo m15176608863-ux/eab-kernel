@@ -1,0 +1,11 @@
+BASELINE_SEMANTIC_ASSERTION_PASS
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m3b_construction3d_evidence.py", line 153, in <module>
+    mutation(args.mutation)
+  File "D:\eab-wt\cx-m4\tools\m3b_construction3d_evidence.py", line 69, in mutation
+    check()  # Deliberately uncaught: child must exit red at the semantic assertion.
+    ^^^^^^^
+  File "D:\eab-wt\cx-m4\tools\m3b_construction3d_evidence.py", line 55, in check
+    assert model.classify((T.F(2), T.F(2), 0)) == -1, 'full-facet nonconvex merge filled independently excluded region'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: full-facet nonconvex merge filled independently excluded region

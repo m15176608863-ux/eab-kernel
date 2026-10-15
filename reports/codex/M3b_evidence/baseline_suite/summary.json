@@ -1,0 +1,126 @@
+{
+  "audit": "GREEN",
+  "collected": 13110,
+  "shards": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m3b_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_records\\shard_1_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_temp\\pytest_1"
+      ],
+      "exit_code": 0,
+      "seconds": 847.2591971000074,
+      "last_line": "3278 passed in 812.65s (0:13:32)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\baseline_suite\\shard_1.txt",
+      "dispatched": 3278,
+      "collected": 3278,
+      "executed": 3278,
+      "skip_count": 0,
+      "node_sets_equal": true
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m3b_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_records\\shard_2_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_temp\\pytest_2"
+      ],
+      "exit_code": 0,
+      "seconds": 807.5725474999927,
+      "last_line": "3278 passed in 785.04s (0:13:05)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\baseline_suite\\shard_2.txt",
+      "dispatched": 3278,
+      "collected": 3278,
+      "executed": 3278,
+      "skip_count": 0,
+      "node_sets_equal": true
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m3b_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_records\\shard_3_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_temp\\pytest_3"
+      ],
+      "exit_code": 0,
+      "seconds": 846.7806618000031,
+      "last_line": "3277 passed in 811.01s (0:13:31)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\baseline_suite\\shard_3.txt",
+      "dispatched": 3277,
+      "collected": 3277,
+      "executed": 3277,
+      "skip_count": 0,
+      "node_sets_equal": true
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m3b_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_records\\shard_4_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_temp\\pytest_4"
+      ],
+      "exit_code": 0,
+      "seconds": 1541.4339265000017,
+      "last_line": "3277 passed in 1514.91s (0:25:14)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\baseline_suite\\shard_4.txt",
+      "dispatched": 3277,
+      "collected": 3277,
+      "executed": 3277,
+      "skip_count": 0,
+      "node_sets_equal": true
+    }
+  ],
+  "static": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/check_exact_construction.py"
+    ],
+    "exit_code": 0,
+    "seconds": 145.4968724999926,
+    "last_line": "exact construction AST gate: 0 violation(s)",
+    "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\baseline_suite\\exact_construction.txt"
+  },
+  "elapsed_seconds": 1692.3861509000126,
+  "source": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_export",
+  "raw_records": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_records",
+  "fresh_git_checkout": false
+}

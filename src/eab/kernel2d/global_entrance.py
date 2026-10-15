@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction as F
 from functools import lru_cache
+from math import lcm
 
 from ..construction import scalar_rational, sqrt_rational, vector_rational
 
@@ -149,19 +150,87 @@ def _angular_compare(a, b):
     return -1 if c > 0 else (1 if c < 0 else 0)
 
 
+def _bbox(poly):
+    return tuple((min(p[k] for p in poly), max(p[k] for p in poly)) for k in (0, 1))
+
+
 def _split_segments(segments):
-    """Closed geometric segments split at every actual intersection."""
+    """All exact intersections; x-sweep rejects only disjoint closed AABBs.
+
+    Homogeneous integer lines avoid Fraction arithmetic inside determinants.
+    Gate: test_sweep_partition_matches_unpruned_all_pairs_including_collinear.
+    """
+    def line(a, b):
+        row = (a[1]-b[1], b[0]-a[0], a[0]*b[1]-a[1]*b[0])
+        denominator = lcm(*(v.denominator for v in row))
+        return tuple(int(v*denominator) for v in row)
+    ordered = sorted(((_bbox((a, b)), a, b, line(a, b)) for a, b in segments), key=lambda row: row[0][0][0])
+    points = [{a, b} for _, a, b, _ in ordered]
+    for i, (box, a, b, (ax, ay, ac)) in enumerate(ordered):
+        for j in range(i+1, len(ordered)):
+            other, c, d, (bx, by, bc) = ordered[j]
+            if other[0][0] > box[0][1]:
+                break
+            if other[1][0] > box[1][1] or box[1][0] > other[1][1]:
+                continue
+            determinant = ax*by-ay*bx
+            if determinant:
+                p = (F(ay*bc-ac*by, determinant), F(ac*bx-ax*bc, determinant))
+                if all(max(box[k][0], other[k][0]) <= p[k] <= min(box[k][1], other[k][1]) for k in (0, 1)):
+                    points[i].add(p)
+                    points[j].add(p)
+            elif ax*bc-ac*bx == 0 and ay*bc-ac*by == 0:
+                for p in (a, b, c, d):
+                    if all(max(box[k][0], other[k][0]) <= p[k] <= min(box[k][1], other[k][1]) for k in (0, 1)):
+                        points[i].add(p)
+                        points[j].add(p)
     out = set()
-    for a, b in segments:
-        values = {F(0), F(1)}
-        for c, d in segments:
-            values.update(_cuts(a, b, c, d))
-        direction = _sub(b, a)
-        ordered = sorted(values)
-        for lo, hi in zip(ordered, ordered[1:]):
-            p, q = _at(a, direction, lo), _at(a, direction, hi)
-            out.add(tuple(sorted((p, q))))
+    for cuts in points:
+        values = sorted(cuts)
+        out.update(zip(values, values[1:]))
     return tuple(sorted(out))
+
+
+def _area2(poly):
+    return sum((_cross(a, b) for a, b in _edges(poly)), F(0))
+
+
+def _merge_convex_parts(parts):
+    """Merge disjoint-interior pieces only with an exact equal-area hull proof.
+
+    A,B are closed and inside H=conv(A union B). With disjoint interiors,
+    area(H)=area(A)+area(B) excludes any missing open subset of H. Thus H is
+    exactly A union B. Induction preserves coverage and disjoint interiors.
+    Gate: test_certified_convex_merge_refuses_a_nonconvex_union.
+    """
+    parts = list(parts)
+    while True:
+        merged = False
+        for i, a in enumerate(parts):
+            for j in range(i+1, len(parts)):
+                b = parts[j]
+                if len(set(a) & set(b)) < 2:
+                    continue
+                hull = _hull(a+b)
+                if _area2(hull) == _area2(a)+_area2(b):
+                    parts[i] = hull
+                    del parts[j]
+                    merged = True
+                    break
+            if merged:
+                break
+        if not merged:
+            return tuple(parts)
+
+
+def _indexed_cell(cell):
+    rows = []
+    for a, b in _edges(cell):
+        dx, dy = _sub(b, a)
+        row = (-dy, dx, dy*a[0]-dx*a[1])
+        denominator = lcm(*(v.denominator for v in row))
+        rows.append(tuple(int(v*denominator) for v in row))
+    return _bbox(cell), tuple(rows)
 
 
 @dataclass(frozen=True)
@@ -230,12 +299,18 @@ class GlobalEntrance2:
     test_global_body_and_topology_match_independent_oracle_without_skip and
     test_clipped_covers_are_exactly_boundary_and_cover_oracle_ray_exits.
     """
-    def __init__(self: GlobalEntrance2, A, B):
+    def __init__(self: GlobalEntrance2, A, B, *, merge_convex=False, compact_subdivision=False):
         self.A, self.B = _ring(A), _ring(B)
+        self._compact_subdivision = compact_subdivision
+        self._contact_edges = None
         self.parts_a, self.parts_b = tuple(_triangulate(self.A)), tuple(_triangulate(self.B))
+        if merge_convex:
+            self.parts_a = _merge_convex_parts(self.parts_a)
+            self.parts_b = _merge_convex_parts(self.parts_b)
         self.cells = tuple(_hull(_sub(b, a) for a in pa for b in pb)
                            for pa in self.parts_a for pb in self.parts_b)
         self._cell_edges = tuple(sorted({tuple(sorted((a, b))) for cell in self.cells for a, b in _edges(cell)}))
+        self._indexed_cells = tuple(_indexed_cell(cell) for cell in self.cells)
         self._clipped_covers_cache = None
         self._boundary_cache = None
         self._subdivision_cache = None
@@ -245,13 +320,30 @@ class GlobalEntrance2:
     def membership(self: GlobalEntrance2, x=(0, 0)):
         """-1 outside E, 0 in E\\O, 1 in O; no body-intersection calls."""
         x = _point(x)
+        denominator = lcm(x[0].denominator, x[1].denominator)
+        xi, yi = int(x[0]*denominator), int(x[1]*denominator)
         state = -1
-        for cell in self.cells:
-            value = _cell_state(cell, x)
+        for box, rows in self._candidate_cells(x):
+            value = 1
+            for a, b, c in rows:
+                sign = a*xi+b*yi+c*denominator
+                if sign < 0:
+                    value = -1
+                    break
+                if sign == 0:
+                    value = 0
             if value == 1:
                 return 1
             state = max(state, value)
         return state
+
+    def _candidate_cells(self, x):
+        """Closed boxes: equality must not discard contact candidates.
+
+        Gate: test_spatial_index_never_omits_an_exact_contact_candidate.
+        """
+        return (row for row in self._indexed_cells
+                if all(lo <= x[k] <= hi for k, (lo, hi) in enumerate(row[0])))
 
     def topology(self: GlobalEntrance2, x=(0, 0)):
         """-1 outside E, 0 on boundary E, 1 in int E, including tight seams."""
@@ -297,7 +389,9 @@ class GlobalEntrance2:
         if direction == (0, 0):
             raise ValueError("side probes require a nonzero segment")
         step = F(1)
-        for p, q in self.cell_edges:
+        probe_edges = (tuple(cell.vertices for cell in self._subdivision_cache.edges)
+                       if self._compact_subdivision and self._subdivision_cache is not None else self.cell_edges)
+        for p, q in probe_edges:
             edge = _sub(q, p)
             h, slope = _cross(edge, _sub(middle, p)), _cross(edge, direction)
             if h and slope:
@@ -361,6 +455,8 @@ class GlobalEntrance2:
         """
         if self._subdivision_cache is not None:
             return self._subdivision_cache
+        if self._compact_subdivision:
+            return self._contact_subdivision()
         split = _split_segments(self.cell_edges)
         xs = sorted({p[0] for segment in split for p in segment})
         faces, face_edges = [], set()
@@ -407,6 +503,61 @@ class GlobalEntrance2:
         edges = tuple(Cell2((a, b), ((a[0]+b[0])/2, (a[1]+b[1])/2),
                             self.membership(((a[0]+b[0])/2, (a[1]+b[1])/2))) for a, b in segments)
         vertices = tuple(Cell2((p,), p, self.membership(p)) for p in sorted({p for e in segments for p in e}))
+        self._subdivision_cache = Subdivision2(vertices, edges, tuple(faces))
+        return self._subdivision_cache
+
+    def _contact_subdivision(self: GlobalEntrance2):
+        """Complete labelled subdivision after deleting strictly-overlap strata.
+
+        All VE/EV contact segments (not just locally valid ones) are arranged
+        before removing state-1 open edges; state-0 vertices are retained even
+        if isolated. No E\\O point is omitted: a nonpenetrating intersection is
+        a boundary contact, hence VE/EV or an endpoint of such a segment.
+        Gates: test_contact_skeleton_subdivision_checks_every_stratum and
+        test_contact_skeleton_preserves_an_isolated_tight_contact.
+        """
+        raw = set()
+        for a in self.A:
+            raw.update(tuple(sorted((_sub(b, a), _sub(c, a)))) for b, c in _edges(self.B))
+        for b in self.B:
+            raw.update(tuple(sorted((_sub(b, a), _sub(b, c)))) for a, c in _edges(self.A))
+        arranged = _split_segments(tuple(raw))
+        contacts = tuple((a, b) for a, b in arranged
+                         if self.membership(((a[0]+b[0])/2, (a[1]+b[1])/2)) == 0)
+        contact_points = {p for e in arranged for p in e if self.membership(p) == 0}
+        if not contacts:
+            raise ArithmeticError("contact skeleton has no boundary edges")
+        self._contact_edges = contacts
+        xs = sorted({p[0] for p in contact_points})
+        ymin = min(p[1] for p in contact_points)
+        ymax = max(p[1] for p in contact_points)
+        faces, face_edges = [], set()
+        for left, right in zip(xs, xs[1:]):
+            middle = (left+right)/2
+            levels = {ymin: (ymin, ymin), ymax: (ymax, ymax)}
+            for a, b in contacts:
+                if min(a[0], b[0]) < middle < max(a[0], b[0]):
+                    level = _y_at(a, b, middle)
+                    left_y, right_y = _y_at(a, b, left), _y_at(a, b, right)
+                    levels[level] = (left_y, right_y)
+            ordered = sorted(levels)
+            for low, high in zip(ordered, ordered[1:]):
+                lo, hi = levels[low], levels[high]
+                ring = ((left, lo[0]), (right, lo[1]), (right, hi[1]), (left, hi[0]))
+                ring = tuple(p for i, p in enumerate(ring) if p != ring[i-1])
+                sample = middle, (low+high)/2
+                faces.append(Cell2(ring, sample, self.membership(sample)))
+                face_edges.update(tuple(sorted((a, b))) for a, b in _edges(ring))
+        segments = _split_segments(tuple(face_edges))
+        # State-0 isolated points may be inside a vertical event wall; insert
+        # them explicitly, rather than silently regularizing O into int E.
+        split = []
+        for a, b in segments:
+            values = sorted({a, b} | {p for p in contact_points if _on(p, a, b)})
+            split.extend(zip(values, values[1:]))
+        edges = tuple(Cell2((a, b), ((a[0]+b[0])/2, (a[1]+b[1])/2),
+                            self.membership(((a[0]+b[0])/2, (a[1]+b[1])/2))) for a, b in split)
+        vertices = tuple(Cell2((p,), p, self.membership(p)) for p in sorted({p for e in split for p in e}))
         self._subdivision_cache = Subdivision2(vertices, edges, tuple(faces))
         return self._subdivision_cache
 

@@ -1,0 +1,1138 @@
+{
+  "status": "COMPLETE",
+  "scope": "separate exact sufficient-GP supplement; not merged into original 6733-probe scan",
+  "input_search": {
+    "seed": 314159265,
+    "attempts": 1,
+    "integer_range": [
+      -5,
+      5
+    ],
+    "note": "input selection only; every probe of selected pair is audited"
+  },
+  "inputs": {
+    "A": {
+      "verts": [
+        [
+          "4",
+          "-1",
+          "3"
+        ],
+        [
+          "4",
+          "0",
+          "4"
+        ],
+        [
+          "-5",
+          "-5",
+          "4"
+        ],
+        [
+          "4",
+          "3",
+          "-2"
+        ]
+      ],
+      "faces": [
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          2,
+          1
+        ],
+        [
+          3,
+          0,
+          2
+        ]
+      ]
+    },
+    "B": {
+      "verts": [
+        [
+          "-1",
+          "4",
+          "-5"
+        ],
+        [
+          "3",
+          "3",
+          "-3"
+        ],
+        [
+          "0",
+          "-5",
+          "-4"
+        ],
+        [
+          "-3",
+          "2",
+          "5"
+        ]
+      ],
+      "faces": [
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          2,
+          1
+        ],
+        [
+          3,
+          0,
+          2
+        ]
+      ]
+    }
+  },
+  "gp_feature_indexing": {
+    "edges": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "faces": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        0,
+        1,
+        3
+      ],
+      [
+        0,
+        2,
+        3
+      ],
+      [
+        1,
+        2,
+        3
+      ]
+    ]
+  },
+  "gp_conditions": {
+    "full_dimension": {
+      "count": 2,
+      "passed": 2,
+      "exact_witnesses": [
+        {
+          "body": "A",
+          "value": "-81",
+          "passed": true
+        },
+        {
+          "body": "B",
+          "value": "-380",
+          "passed": true
+        }
+      ]
+    },
+    "cross_face_face_nonparallel": {
+      "count": 16,
+      "passed": 16,
+      "exact_witnesses": [
+        {
+          "a_face": 0,
+          "b_face": 0,
+          "value": [
+            "333",
+            "328",
+            "143"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 0,
+          "b_face": 1,
+          "value": [
+            "486",
+            "-4",
+            "-274"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 0,
+          "b_face": 2,
+          "value": [
+            "288",
+            "-692",
+            "-852"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 0,
+          "b_face": 3,
+          "value": [
+            "135",
+            "-360",
+            "-435"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 1,
+          "b_face": 0,
+          "value": [
+            "0",
+            "-315",
+            "18"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 1,
+          "b_face": 1,
+          "value": [
+            "0",
+            "-90",
+            "396"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 1,
+          "b_face": 2,
+          "value": [
+            "0",
+            "-180",
+            "108"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 1,
+          "b_face": 3,
+          "value": [
+            "0",
+            "-405",
+            "-270"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 2,
+          "b_face": 0,
+          "value": [
+            "1503",
+            "-52",
+            "733"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 2,
+          "b_face": 1,
+          "value": [
+            "-1134",
+            "376",
+            "-974"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 2,
+          "b_face": 2,
+          "value": [
+            "468",
+            "3488",
+            "-4152"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 2,
+          "b_face": 3,
+          "value": [
+            "3105",
+            "3060",
+            "-2445"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 3,
+          "b_face": 0,
+          "value": [
+            "1836",
+            "591",
+            "858"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 3,
+          "b_face": 1,
+          "value": [
+            "-648",
+            "462",
+            "-1644"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 3,
+          "b_face": 2,
+          "value": [
+            "756",
+            "2976",
+            "-5112"
+          ],
+          "passed": true
+        },
+        {
+          "a_face": 3,
+          "b_face": 3,
+          "value": [
+            "3240",
+            "3105",
+            "-2610"
+          ],
+          "passed": true
+        }
+      ]
+    },
+    "a_edge_b_face_transverse": {
+      "count": 24,
+      "passed": 24,
+      "exact_witnesses": [
+        {
+          "a_edge": 0,
+          "b_face": 0,
+          "value": "-37",
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_face": 1,
+          "value": "-54",
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_face": 2,
+          "value": "-32",
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_face": 3,
+          "value": "-15",
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_face": 0,
+          "value": "-180",
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_face": 1,
+          "value": "220",
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_face": 2,
+          "value": "820",
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_face": 3,
+          "value": "420",
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_face": 0,
+          "value": "167",
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_face": 1,
+          "value": "-126",
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_face": 2,
+          "value": "52",
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_face": 3,
+          "value": "345",
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_face": 0,
+          "value": "-143",
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_face": 1,
+          "value": "274",
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_face": 2,
+          "value": "852",
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_face": 3,
+          "value": "435",
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_face": 0,
+          "value": "204",
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_face": 1,
+          "value": "-72",
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_face": 2,
+          "value": "84",
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_face": 3,
+          "value": "360",
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_face": 0,
+          "value": "347",
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_face": 1,
+          "value": "-346",
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_face": 2,
+          "value": "-768",
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_face": 3,
+          "value": "-75",
+          "passed": true
+        }
+      ]
+    },
+    "b_edge_a_face_transverse": {
+      "count": 24,
+      "passed": 24,
+      "exact_witnesses": [
+        {
+          "b_edge": 0,
+          "a_face": 0,
+          "value": "47",
+          "passed": true
+        },
+        {
+          "b_edge": 0,
+          "a_face": 1,
+          "value": "-36",
+          "passed": true
+        },
+        {
+          "b_edge": 0,
+          "a_face": 2,
+          "value": "37",
+          "passed": true
+        },
+        {
+          "b_edge": 0,
+          "a_face": 3,
+          "value": "120",
+          "passed": true
+        },
+        {
+          "b_edge": 1,
+          "a_face": 0,
+          "value": "95",
+          "passed": true
+        },
+        {
+          "b_edge": 1,
+          "a_face": 1,
+          "value": "-9",
+          "passed": true
+        },
+        {
+          "b_edge": 1,
+          "a_face": 2,
+          "value": "385",
+          "passed": true
+        },
+        {
+          "b_edge": 1,
+          "a_face": 3,
+          "value": "489",
+          "passed": true
+        },
+        {
+          "b_edge": 2,
+          "a_face": 0,
+          "value": "98",
+          "passed": true
+        },
+        {
+          "b_edge": 2,
+          "a_face": 1,
+          "value": "18",
+          "passed": true
+        },
+        {
+          "b_edge": 2,
+          "a_face": 2,
+          "value": "-302",
+          "passed": true
+        },
+        {
+          "b_edge": 2,
+          "a_face": 3,
+          "value": "-222",
+          "passed": true
+        },
+        {
+          "b_edge": 3,
+          "a_face": 0,
+          "value": "48",
+          "passed": true
+        },
+        {
+          "b_edge": 3,
+          "a_face": 1,
+          "value": "27",
+          "passed": true
+        },
+        {
+          "b_edge": 3,
+          "a_face": 2,
+          "value": "348",
+          "passed": true
+        },
+        {
+          "b_edge": 3,
+          "a_face": 3,
+          "value": "369",
+          "passed": true
+        },
+        {
+          "b_edge": 4,
+          "a_face": 0,
+          "value": "51",
+          "passed": true
+        },
+        {
+          "b_edge": 4,
+          "a_face": 1,
+          "value": "54",
+          "passed": true
+        },
+        {
+          "b_edge": 4,
+          "a_face": 2,
+          "value": "-339",
+          "passed": true
+        },
+        {
+          "b_edge": 4,
+          "a_face": 3,
+          "value": "-342",
+          "passed": true
+        },
+        {
+          "b_edge": 5,
+          "a_face": 0,
+          "value": "3",
+          "passed": true
+        },
+        {
+          "b_edge": 5,
+          "a_face": 1,
+          "value": "27",
+          "passed": true
+        },
+        {
+          "b_edge": 5,
+          "a_face": 2,
+          "value": "-687",
+          "passed": true
+        },
+        {
+          "b_edge": 5,
+          "a_face": 3,
+          "value": "-711",
+          "passed": true
+        }
+      ]
+    },
+    "cross_edge_edge_nonparallel": {
+      "count": 36,
+      "passed": 36,
+      "exact_witnesses": [
+        {
+          "a_edge": 0,
+          "b_edge": 0,
+          "value": [
+            "3",
+            "4",
+            "-4"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_edge": 1,
+          "value": [
+            "10",
+            "1",
+            "-1"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_edge": 2,
+          "value": [
+            "12",
+            "-2",
+            "2"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_edge": 3,
+          "value": [
+            "7",
+            "-3",
+            "3"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_edge": 4,
+          "value": [
+            "9",
+            "-6",
+            "6"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 0,
+          "b_edge": 5,
+          "value": [
+            "2",
+            "-3",
+            "3"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_edge": 0,
+          "value": [
+            "-7",
+            "22",
+            "25"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_edge": 1,
+          "value": [
+            "5",
+            "10",
+            "85"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_edge": 2,
+          "value": [
+            "-38",
+            "88",
+            "10"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_edge": 3,
+          "value": [
+            "12",
+            "-12",
+            "60"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_edge": 4,
+          "value": [
+            "-31",
+            "66",
+            "-15"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 1,
+          "b_edge": 5,
+          "value": [
+            "-43",
+            "78",
+            "-75"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_edge": 0,
+          "value": [
+            "3",
+            "-20",
+            "-16"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_edge": 1,
+          "value": [
+            "-41",
+            "-5",
+            "-4"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_edge": 2,
+          "value": [
+            "30",
+            "10",
+            "8"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_edge": 3,
+          "value": [
+            "-44",
+            "15",
+            "12"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_edge": 4,
+          "value": [
+            "27",
+            "30",
+            "24"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 2,
+          "b_edge": 5,
+          "value": [
+            "71",
+            "15",
+            "12"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_edge": 0,
+          "value": [
+            "-10",
+            "18",
+            "29"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_edge": 1,
+          "value": [
+            "-5",
+            "9",
+            "86"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_edge": 2,
+          "value": [
+            "-50",
+            "90",
+            "8"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_edge": 3,
+          "value": [
+            "5",
+            "-9",
+            "57"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_edge": 4,
+          "value": [
+            "-40",
+            "72",
+            "-21"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 3,
+          "b_edge": 5,
+          "value": [
+            "-45",
+            "81",
+            "-78"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_edge": 0,
+          "value": [
+            "0",
+            "-24",
+            "-12"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_edge": 1,
+          "value": [
+            "-51",
+            "-6",
+            "-3"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_edge": 2,
+          "value": [
+            "18",
+            "12",
+            "6"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_edge": 3,
+          "value": [
+            "-51",
+            "18",
+            "9"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_edge": 4,
+          "value": [
+            "18",
+            "36",
+            "18"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 4,
+          "b_edge": 5,
+          "value": [
+            "69",
+            "18",
+            "9"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_edge": 0,
+          "value": [
+            "10",
+            "-42",
+            "-41"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_edge": 1,
+          "value": [
+            "-46",
+            "-15",
+            "-89"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_edge": 2,
+          "value": [
+            "68",
+            "-78",
+            "-2"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_edge": 3,
+          "value": [
+            "-56",
+            "27",
+            "-48"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_edge": 4,
+          "value": [
+            "58",
+            "-36",
+            "39"
+          ],
+          "passed": true
+        },
+        {
+          "a_edge": 5,
+          "b_edge": 5,
+          "value": [
+            "114",
+            "-63",
+            "87"
+          ],
+          "passed": true
+        }
+      ]
+    }
+  },
+  "gp_total_conditions": 102,
+  "counts": {
+    "vertex": 11,
+    "edge": 22,
+    "face": 13,
+    "side": 26,
+    "arranged": 13,
+    "exposed": 13,
+    "local_atomic": 13
+  },
+  "total_probe_checks": 72,
+  "pairs": 1,
+  "candidate_facets": 13,
+  "arranged_with_multiplicity": 13,
+  "mismatches": 0,
+  "skipped": 0,
+  "source_sha256_before": {
+    "src/eab/__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
+    "src/eab/adapters/__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
+    "src/eab/adapters/bdda2d.py": "3240e49c7cf5f546884a911828e300fe3cb2a3e44079d62a1b0e017be63299b3",
+    "src/eab/construction.py": "d99b3900c8406d1fc81cb0563770429313cf0691aaecf67ffc183f7477d9c9cc",
+    "src/eab/contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src/eab/dual.py": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5",
+    "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src/eab/kernel2d/covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
+    "src/eab/kernel2d/entrance.py": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c",
+    "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src/eab/kernel2d/g0.py": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src/eab/kernel2d/geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+    "src/eab/kernel2d/global_entrance.py": "341ac55fff28a6e4af428dfa4842e802bbb1231cf0d773233229600bcd34ca40",
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src/eab/kernel3d/__init__.py": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a",
+    "src/eab/kernel3d/boundary.py": "e90832cbce16ce14b4a4c6440515dd81dd01cf628b52610c8d8661fe13c3e47d",
+    "src/eab/kernel3d/covers3.py": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6",
+    "src/eab/kernel3d/entrance3.py": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171",
+    "src/eab/kernel3d/entrance_topology.py": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
+    "src/eab/kernel3d/exact_geom.py": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
+    "src/eab/kernel3d/exact_sweep.py": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5",
+    "src/eab/kernel3d/frozen.py": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa",
+    "src/eab/kernel3d/g03.py": "be19d78c3cc409704b51b9647258e115172583b0876f5b430a6b1e54d122f6fe",
+    "src/eab/kernel3d/g03_exact.py": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22",
+    "src/eab/kernel3d/g03_exit_oracle.py": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220",
+    "src/eab/kernel3d/g03_surface_oracle.py": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0",
+    "src/eab/kernel3d/geom3.py": "4256d31ca410923e9109c13e4436764c5459e077e9d1ef41d97a152730eb4ede",
+    "src/eab/kernel3d/global_entrance.py": "222ed67b3c2bf7dc34bef5f2fc0ec9e96589b57e9f012a1d542aa13a68646c90",
+    "src/eab/kernel3d/interlock.py": "46b67ce960149606586446f226f1b33fdc6f033a4809e3805c0e3444b2531201",
+    "src/eab/limit.py": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f",
+    "src/eab/limit_multi.py": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65",
+    "src/eab/lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
+    "src/eab/margin.py": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src/eab/predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src/eab/rational3.py": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
+    "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src/eab/readers/bdda3d.py": "dcdb41243f6745488721e627d7c901811986ebf9c16bdd879c309d0c376362e4",
+    "src/eab/readers/bdda_df.py": "356cf4edf86fc3b026e799305416f999ac550805a2f5d1ef3c194363cc817a2f",
+    "src/eab/readers/bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
+    "src/eab/readers/numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
+    "src/eab/readers/tf_probe.py": "cbc9b1a5ec4e2a8c51888903d57cba2003b2c539537520ed56f8a2206262cb3f",
+    "tests/test_m3b_boundary3d.py": "3eb24f7db00cd43ad81896f81abb612b6337fb55ae131d20a71c86d663136c56",
+    "tests/test_m3_global3d.py": "90c3be9ad8acab50fa7189e178c1441458f53af26e4c489d0a17f116eb1d727b",
+    "tools/m3b_boundary3d_evidence.py": "7462594c163cd661cebf94884c2c3b6c01c610aaef85e380dfde61636fc06e8e",
+    "reports/codex/M3b_evidence/gp_boundary_probe.py": "960700c32b88112d8c02963e86e2773ce3d6b990e739dbd21b88e777cb12d44f"
+  },
+  "source_sha256_after": {
+    "src/eab/__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
+    "src/eab/adapters/__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
+    "src/eab/adapters/bdda2d.py": "3240e49c7cf5f546884a911828e300fe3cb2a3e44079d62a1b0e017be63299b3",
+    "src/eab/construction.py": "d99b3900c8406d1fc81cb0563770429313cf0691aaecf67ffc183f7477d9c9cc",
+    "src/eab/contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src/eab/dual.py": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5",
+    "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src/eab/kernel2d/covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
+    "src/eab/kernel2d/entrance.py": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c",
+    "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src/eab/kernel2d/g0.py": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src/eab/kernel2d/geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+    "src/eab/kernel2d/global_entrance.py": "341ac55fff28a6e4af428dfa4842e802bbb1231cf0d773233229600bcd34ca40",
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src/eab/kernel3d/__init__.py": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a",
+    "src/eab/kernel3d/boundary.py": "e90832cbce16ce14b4a4c6440515dd81dd01cf628b52610c8d8661fe13c3e47d",
+    "src/eab/kernel3d/covers3.py": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6",
+    "src/eab/kernel3d/entrance3.py": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171",
+    "src/eab/kernel3d/entrance_topology.py": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
+    "src/eab/kernel3d/exact_geom.py": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
+    "src/eab/kernel3d/exact_sweep.py": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5",
+    "src/eab/kernel3d/frozen.py": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa",
+    "src/eab/kernel3d/g03.py": "be19d78c3cc409704b51b9647258e115172583b0876f5b430a6b1e54d122f6fe",
+    "src/eab/kernel3d/g03_exact.py": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22",
+    "src/eab/kernel3d/g03_exit_oracle.py": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220",
+    "src/eab/kernel3d/g03_surface_oracle.py": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0",
+    "src/eab/kernel3d/geom3.py": "4256d31ca410923e9109c13e4436764c5459e077e9d1ef41d97a152730eb4ede",
+    "src/eab/kernel3d/global_entrance.py": "222ed67b3c2bf7dc34bef5f2fc0ec9e96589b57e9f012a1d542aa13a68646c90",
+    "src/eab/kernel3d/interlock.py": "46b67ce960149606586446f226f1b33fdc6f033a4809e3805c0e3444b2531201",
+    "src/eab/limit.py": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f",
+    "src/eab/limit_multi.py": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65",
+    "src/eab/lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
+    "src/eab/margin.py": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src/eab/predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src/eab/rational3.py": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
+    "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src/eab/readers/bdda3d.py": "dcdb41243f6745488721e627d7c901811986ebf9c16bdd879c309d0c376362e4",
+    "src/eab/readers/bdda_df.py": "356cf4edf86fc3b026e799305416f999ac550805a2f5d1ef3c194363cc817a2f",
+    "src/eab/readers/bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
+    "src/eab/readers/numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
+    "src/eab/readers/tf_probe.py": "cbc9b1a5ec4e2a8c51888903d57cba2003b2c539537520ed56f8a2206262cb3f",
+    "tests/test_m3b_boundary3d.py": "3eb24f7db00cd43ad81896f81abb612b6337fb55ae131d20a71c86d663136c56",
+    "tests/test_m3_global3d.py": "90c3be9ad8acab50fa7189e178c1441458f53af26e4c489d0a17f116eb1d727b",
+    "tools/m3b_boundary3d_evidence.py": "7462594c163cd661cebf94884c2c3b6c01c610aaef85e380dfde61636fc06e8e",
+    "reports/codex/M3b_evidence/gp_boundary_probe.py": "960700c32b88112d8c02963e86e2773ce3d6b990e739dbd21b88e777cb12d44f"
+  },
+  "source_unchanged": true,
+  "oracle_imports": {
+    "gp": [
+      "fractions.Fraction",
+      "itertools.combinations",
+      "random.Random (input selection only)"
+    ],
+    "audit_driver": "tools/m3b_boundary3d_evidence.py:audit imported from tests/test_m3b_boundary3d.py",
+    "membership": "geom3.polyhedra_overlap -> exact_geom; does not import boundary/global_entrance",
+    "local_atomic": "oracle_cover_union uses self-held Fraction 2D determinant/interpolation/membership"
+  },
+  "elapsed_seconds": 0.33132660000410397,
+  "limitations": "one finite GP pair; not a universal proof or G6 sign-off"
+}

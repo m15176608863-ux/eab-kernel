@@ -1,0 +1,886 @@
+{
+  "pair_count": 21,
+  "sample_count": 7113,
+  "mismatch_count": 0,
+  "skipped": 0,
+  "total_seconds": 56.06668860001082,
+  "source_sha256": {
+    "tools/m3b_scan2d.py": "3a8d3986c4763bc37b7e419b694bdbf24b3aef560e9243204240a42c7b700c01",
+    "src/eab/kernel2d/global_entrance.py": "e5a80af8833c239e05e4e55fc1d8f4fe8e6401110c1ff2b695604bcfd3b9d0e5",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "tools/bb52_g0.py": "70b619bae078548e353031010c4cec1af8a13ab206af1400af43d8a376b05d48",
+    "fixtures/bdda_df/studio_20260712/bdda_debug_verts.csv": "76d06cc322b57123ec5a9837fd591a9394d6e2d7c6c2011541d6d3efb7232679",
+    "reports/bb52_g1_g0.json": "8f92e8af1a7f279bd1171ab2c6abf5d987cec97400a1a82625b238b3f0058b06"
+  },
+  "source_unchanged_during_run": true,
+  "input_semantics": "exact rational values of original binary64 fixture loader",
+  "oracle_imports": [
+    "from eab.oracle_construction import sqrt_exact, scalar_exact",
+    "from fractions import Fraction as F",
+    "from math import lcm"
+  ],
+  "rows": [
+    {
+      "pair": [
+        1,
+        2
+      ],
+      "input_vertex_counts": [
+        50,
+        30
+      ],
+      "original_triangle_pairs": 1344,
+      "merged_body_parts": [
+        43,
+        25
+      ],
+      "convex_pairs": 1075,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 76,
+        "1": 132,
+        "2": 57
+      },
+      "probes_by_kind": {
+        "vertex": 76,
+        "edge_midpoint": 132,
+        "face_interior": 57,
+        "exact_edge_side": 264
+      },
+      "sample_count": 529,
+      "oracle_states": {
+        "-1": 342,
+        "0": 76,
+        "1": 111
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "2a465c0508abe794bd6560a95189850afa3a2d136c7e51409eea71d25f7324c9",
+      "construction_seconds": 0.3012124000088079,
+      "arrangement_seconds": 13.925088000003598,
+      "total_seconds": 28.405902500002412
+    },
+    {
+      "pair": [
+        1,
+        3
+      ],
+      "input_vertex_counts": [
+        50,
+        9
+      ],
+      "original_triangle_pairs": 336,
+      "merged_body_parts": [
+        43,
+        4
+      ],
+      "convex_pairs": 172,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 97,
+        "1": 168,
+        "2": 72
+      },
+      "probes_by_kind": {
+        "vertex": 97,
+        "edge_midpoint": 168,
+        "face_interior": 72,
+        "exact_edge_side": 336
+      },
+      "sample_count": 673,
+      "oracle_states": {
+        "-1": 433,
+        "0": 98,
+        "1": 142
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "706845c239e7232d65dd8a8cc8cfd485e75c9b10de13d0a671037360e0936dc3",
+      "construction_seconds": 0.12378629999875557,
+      "arrangement_seconds": 1.3599468000029447,
+      "total_seconds": 6.6132331999979215
+    },
+    {
+      "pair": [
+        1,
+        4
+      ],
+      "input_vertex_counts": [
+        50,
+        8
+      ],
+      "original_triangle_pairs": 288,
+      "merged_body_parts": [
+        43,
+        3
+      ],
+      "convex_pairs": 129,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 78,
+        "1": 135,
+        "2": 58
+      },
+      "probes_by_kind": {
+        "vertex": 78,
+        "edge_midpoint": 135,
+        "face_interior": 58,
+        "exact_edge_side": 270
+      },
+      "sample_count": 541,
+      "oracle_states": {
+        "-1": 344,
+        "0": 80,
+        "1": 117
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "47f60943222375fbfc638875d47e0f23d28349448f9ad897361c3b8f6cd5e185",
+      "construction_seconds": 0.10679429999436252,
+      "arrangement_seconds": 1.1764346999989357,
+      "total_seconds": 4.944591299994499
+    },
+    {
+      "pair": [
+        1,
+        9
+      ],
+      "input_vertex_counts": [
+        50,
+        5
+      ],
+      "original_triangle_pairs": 144,
+      "merged_body_parts": [
+        43,
+        2
+      ],
+      "convex_pairs": 86,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 72,
+        "1": 124,
+        "2": 53
+      },
+      "probes_by_kind": {
+        "vertex": 72,
+        "edge_midpoint": 124,
+        "face_interior": 53,
+        "exact_edge_side": 248
+      },
+      "sample_count": 497,
+      "oracle_states": {
+        "-1": 317,
+        "0": 74,
+        "1": 106
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "f2722d2981c96835fb58792976ce32aee77e0a9d69ac72a42bff681deabaae35",
+      "construction_seconds": 0.07222200000251178,
+      "arrangement_seconds": 0.5990295999945374,
+      "total_seconds": 2.6866811999934725
+    },
+    {
+      "pair": [
+        1,
+        10
+      ],
+      "input_vertex_counts": [
+        50,
+        4
+      ],
+      "original_triangle_pairs": 96,
+      "merged_body_parts": [
+        43,
+        1
+      ],
+      "convex_pairs": 43,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 46,
+        "1": 78,
+        "2": 33
+      },
+      "probes_by_kind": {
+        "vertex": 46,
+        "edge_midpoint": 78,
+        "face_interior": 33,
+        "exact_edge_side": 156
+      },
+      "sample_count": 313,
+      "oracle_states": {
+        "-1": 200,
+        "0": 48,
+        "1": 65
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "c7582f00ceb06073032c88ee72e291f6478cb49bc31879abe0c1e95e88a2063c",
+      "construction_seconds": 0.07961800000339281,
+      "arrangement_seconds": 0.5838461999956053,
+      "total_seconds": 1.7100113000051351
+    },
+    {
+      "pair": [
+        1,
+        11
+      ],
+      "input_vertex_counts": [
+        50,
+        6
+      ],
+      "original_triangle_pairs": 192,
+      "merged_body_parts": [
+        43,
+        2
+      ],
+      "convex_pairs": 86,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 54,
+        "1": 92,
+        "2": 39
+      },
+      "probes_by_kind": {
+        "vertex": 54,
+        "edge_midpoint": 92,
+        "face_interior": 39,
+        "exact_edge_side": 184
+      },
+      "sample_count": 369,
+      "oracle_states": {
+        "-1": 236,
+        "0": 56,
+        "1": 77
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "bffb27fb2a1fda436aa98d1bc765c653f88c881aee96ee961d3f70153fc7e16f",
+      "construction_seconds": 0.08337500000197906,
+      "arrangement_seconds": 0.8955109999951674,
+      "total_seconds": 2.7655269999959273
+    },
+    {
+      "pair": [
+        2,
+        3
+      ],
+      "input_vertex_counts": [
+        30,
+        9
+      ],
+      "original_triangle_pairs": 196,
+      "merged_body_parts": [
+        25,
+        4
+      ],
+      "convex_pairs": 100,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 69,
+        "1": 119,
+        "2": 51
+      },
+      "probes_by_kind": {
+        "vertex": 69,
+        "edge_midpoint": 119,
+        "face_interior": 51,
+        "exact_edge_side": 238
+      },
+      "sample_count": 477,
+      "oracle_states": {
+        "-1": 307,
+        "0": 70,
+        "1": 100
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "1f46b1aa12302d63a3a6e60942f082bb305511346082fb1c36d2d3c1a214b7a8",
+      "construction_seconds": 0.05916679999791086,
+      "arrangement_seconds": 0.3812999999936437,
+      "total_seconds": 2.502202899995609
+    },
+    {
+      "pair": [
+        2,
+        6
+      ],
+      "input_vertex_counts": [
+        30,
+        6
+      ],
+      "original_triangle_pairs": 112,
+      "merged_body_parts": [
+        25,
+        2
+      ],
+      "convex_pairs": 50,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 42,
+        "1": 71,
+        "2": 30
+      },
+      "probes_by_kind": {
+        "vertex": 42,
+        "edge_midpoint": 71,
+        "face_interior": 30,
+        "exact_edge_side": 142
+      },
+      "sample_count": 285,
+      "oracle_states": {
+        "-1": 175,
+        "0": 46,
+        "1": 64
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "57617084ceab2ddb455588afc2630124b4a87ac756bff36c5316c837ba2ab919",
+      "construction_seconds": 0.04100599999947008,
+      "arrangement_seconds": 0.21776909999607597,
+      "total_seconds": 1.089721099997405
+    },
+    {
+      "pair": [
+        2,
+        7
+      ],
+      "input_vertex_counts": [
+        30,
+        4
+      ],
+      "original_triangle_pairs": 56,
+      "merged_body_parts": [
+        25,
+        1
+      ],
+      "convex_pairs": 25,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 38,
+        "1": 65,
+        "2": 28
+      },
+      "probes_by_kind": {
+        "vertex": 38,
+        "edge_midpoint": 65,
+        "face_interior": 28,
+        "exact_edge_side": 130
+      },
+      "sample_count": 261,
+      "oracle_states": {
+        "-1": 164,
+        "0": 40,
+        "1": 57
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "75ec72291041f3ac7d10eae569fbba444435efeca845231a08879516fbaf7b50",
+      "construction_seconds": 0.0323843000078341,
+      "arrangement_seconds": 0.1437459000007948,
+      "total_seconds": 0.6884596000018064
+    },
+    {
+      "pair": [
+        2,
+        8
+      ],
+      "input_vertex_counts": [
+        30,
+        6
+      ],
+      "original_triangle_pairs": 112,
+      "merged_body_parts": [
+        25,
+        2
+      ],
+      "convex_pairs": 50,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 49,
+        "1": 84,
+        "2": 36
+      },
+      "probes_by_kind": {
+        "vertex": 49,
+        "edge_midpoint": 84,
+        "face_interior": 36,
+        "exact_edge_side": 168
+      },
+      "sample_count": 337,
+      "oracle_states": {
+        "-1": 217,
+        "0": 50,
+        "1": 70
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "b5773bada72661d03a41621bd6c26949a5762e047f3bd48661028bf2c2153a09",
+      "construction_seconds": 0.04104800001368858,
+      "arrangement_seconds": 0.24817379999149125,
+      "total_seconds": 1.2853628000011668
+    },
+    {
+      "pair": [
+        2,
+        11
+      ],
+      "input_vertex_counts": [
+        30,
+        6
+      ],
+      "original_triangle_pairs": 112,
+      "merged_body_parts": [
+        25,
+        2
+      ],
+      "convex_pairs": 50,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 61,
+        "1": 105,
+        "2": 45
+      },
+      "probes_by_kind": {
+        "vertex": 61,
+        "edge_midpoint": 105,
+        "face_interior": 45,
+        "exact_edge_side": 210
+      },
+      "sample_count": 421,
+      "oracle_states": {
+        "-1": 271,
+        "0": 62,
+        "1": 88
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "9a97b410de81d11aa9556fe18dfe23c303e012749b0f6747484c7d8a8b9b15a7",
+      "construction_seconds": 0.042163299993262626,
+      "arrangement_seconds": 0.2341549999982817,
+      "total_seconds": 1.4609330999956
+    },
+    {
+      "pair": [
+        3,
+        8
+      ],
+      "input_vertex_counts": [
+        9,
+        6
+      ],
+      "original_triangle_pairs": 28,
+      "merged_body_parts": [
+        4,
+        2
+      ],
+      "convex_pairs": 8,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 50,
+        "1": 85,
+        "2": 36
+      },
+      "probes_by_kind": {
+        "vertex": 50,
+        "edge_midpoint": 85,
+        "face_interior": 36,
+        "exact_edge_side": 170
+      },
+      "sample_count": 341,
+      "oracle_states": {
+        "-1": 218,
+        "0": 52,
+        "1": 71
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "efbaa820d2a455bd524255e2f0c9bb5e51ef938cac20ecfaa5b810a7e07a2bb5",
+      "construction_seconds": 0.0047445999953197315,
+      "arrangement_seconds": 0.029888400007621385,
+      "total_seconds": 0.36708889999135863
+    },
+    {
+      "pair": [
+        3,
+        9
+      ],
+      "input_vertex_counts": [
+        9,
+        5
+      ],
+      "original_triangle_pairs": 21,
+      "merged_body_parts": [
+        4,
+        2
+      ],
+      "convex_pairs": 8,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 41,
+        "1": 68,
+        "2": 28
+      },
+      "probes_by_kind": {
+        "vertex": 41,
+        "edge_midpoint": 68,
+        "face_interior": 28,
+        "exact_edge_side": 136
+      },
+      "sample_count": 273,
+      "oracle_states": {
+        "-1": 160,
+        "0": 48,
+        "1": 65
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "92f26fd94df35d7844b9ca99cbd6d8bb5078de282f51b8ee38b0d6fd38fc04d5",
+      "construction_seconds": 0.004245799995260313,
+      "arrangement_seconds": 0.02478289999999106,
+      "total_seconds": 0.27269640000304207
+    },
+    {
+      "pair": [
+        4,
+        5
+      ],
+      "input_vertex_counts": [
+        8,
+        4
+      ],
+      "original_triangle_pairs": 12,
+      "merged_body_parts": [
+        3,
+        1
+      ],
+      "convex_pairs": 3,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 39,
+        "1": 66,
+        "2": 28
+      },
+      "probes_by_kind": {
+        "vertex": 39,
+        "edge_midpoint": 66,
+        "face_interior": 28,
+        "exact_edge_side": 132
+      },
+      "sample_count": 265,
+      "oracle_states": {
+        "-1": 165,
+        "0": 42,
+        "1": 58
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "d1cef33d32ac1d154471e2b47d2b0c21b1181e634b8de5513be0632e2b64cf6d",
+      "construction_seconds": 0.0032433000014862046,
+      "arrangement_seconds": 0.028517300001112744,
+      "total_seconds": 0.21133710000140127
+    },
+    {
+      "pair": [
+        4,
+        9
+      ],
+      "input_vertex_counts": [
+        8,
+        5
+      ],
+      "original_triangle_pairs": 18,
+      "merged_body_parts": [
+        3,
+        2
+      ],
+      "convex_pairs": 6,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 41,
+        "1": 69,
+        "2": 29
+      },
+      "probes_by_kind": {
+        "vertex": 41,
+        "edge_midpoint": 69,
+        "face_interior": 29,
+        "exact_edge_side": 138
+      },
+      "sample_count": 277,
+      "oracle_states": {
+        "-1": 167,
+        "0": 46,
+        "1": 64
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "41803b50207ebbe5714ad2d438dfd2586c5cfd06a1aaa675f9d3143f76b2649b",
+      "construction_seconds": 0.004085799999302253,
+      "arrangement_seconds": 0.02668419999827165,
+      "total_seconds": 0.2554517999960808
+    },
+    {
+      "pair": [
+        4,
+        10
+      ],
+      "input_vertex_counts": [
+        8,
+        4
+      ],
+      "original_triangle_pairs": 12,
+      "merged_body_parts": [
+        3,
+        1
+      ],
+      "convex_pairs": 3,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 39,
+        "1": 66,
+        "2": 28
+      },
+      "probes_by_kind": {
+        "vertex": 39,
+        "edge_midpoint": 66,
+        "face_interior": 28,
+        "exact_edge_side": 132
+      },
+      "sample_count": 265,
+      "oracle_states": {
+        "-1": 165,
+        "0": 42,
+        "1": 58
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "1bd4095e1541f99b58c1149ec2c48c55727df91267f76191e00cf4b8593521cd",
+      "construction_seconds": 0.0031147000117925927,
+      "arrangement_seconds": 0.020458299986785278,
+      "total_seconds": 0.19687270000576973
+    },
+    {
+      "pair": [
+        5,
+        10
+      ],
+      "input_vertex_counts": [
+        4,
+        4
+      ],
+      "original_triangle_pairs": 4,
+      "merged_body_parts": [
+        1,
+        1
+      ],
+      "convex_pairs": 1,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 22,
+        "1": 36,
+        "2": 15
+      },
+      "probes_by_kind": {
+        "vertex": 22,
+        "edge_midpoint": 36,
+        "face_interior": 15,
+        "exact_edge_side": 72
+      },
+      "sample_count": 145,
+      "oracle_states": {
+        "-1": 92,
+        "0": 24,
+        "1": 29
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "9bc88e638c0cb5d52e06f78326fff141fb45c8336e1c4764639bfecf9fbf1933",
+      "construction_seconds": 0.0009003000013763085,
+      "arrangement_seconds": 0.00938309999764897,
+      "total_seconds": 0.05721280000580009
+    },
+    {
+      "pair": [
+        6,
+        7
+      ],
+      "input_vertex_counts": [
+        6,
+        4
+      ],
+      "original_triangle_pairs": 8,
+      "merged_body_parts": [
+        2,
+        1
+      ],
+      "convex_pairs": 2,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 29,
+        "1": 48,
+        "2": 20
+      },
+      "probes_by_kind": {
+        "vertex": 29,
+        "edge_midpoint": 48,
+        "face_interior": 20,
+        "exact_edge_side": 96
+      },
+      "sample_count": 193,
+      "oracle_states": {
+        "-1": 113,
+        "0": 34,
+        "1": 46
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "3af33bfad1dc954d1dcabab918b369078eece82b005617b356e95508a1ff66e7",
+      "construction_seconds": 0.0016758999990997836,
+      "arrangement_seconds": 0.015012600008049048,
+      "total_seconds": 0.11914550000801682
+    },
+    {
+      "pair": [
+        6,
+        11
+      ],
+      "input_vertex_counts": [
+        6,
+        6
+      ],
+      "original_triangle_pairs": 16,
+      "merged_body_parts": [
+        2,
+        2
+      ],
+      "convex_pairs": 4,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 39,
+        "1": 64,
+        "2": 26
+      },
+      "probes_by_kind": {
+        "vertex": 39,
+        "edge_midpoint": 64,
+        "face_interior": 26,
+        "exact_edge_side": 128
+      },
+      "sample_count": 257,
+      "oracle_states": {
+        "-1": 144,
+        "0": 48,
+        "1": 65
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "863d926b4510fca4e4554d8a54c8ae86e64e0fa2261738b2b4a12355bab7c827",
+      "construction_seconds": 0.00318620000325609,
+      "arrangement_seconds": 0.025920800006133504,
+      "total_seconds": 0.2035467000096105
+    },
+    {
+      "pair": [
+        7,
+        8
+      ],
+      "input_vertex_counts": [
+        4,
+        6
+      ],
+      "original_triangle_pairs": 8,
+      "merged_body_parts": [
+        1,
+        2
+      ],
+      "convex_pairs": 2,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 29,
+        "1": 48,
+        "2": 20
+      },
+      "probes_by_kind": {
+        "vertex": 29,
+        "edge_midpoint": 48,
+        "face_interior": 20,
+        "exact_edge_side": 96
+      },
+      "sample_count": 193,
+      "oracle_states": {
+        "-1": 113,
+        "0": 34,
+        "1": 46
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "90a2deb42c3a187fe60ef6a76abb01e2c967839b31e6013741fc0aa649ae2330",
+      "construction_seconds": 0.0019939000048907474,
+      "arrangement_seconds": 0.013552000003983267,
+      "total_seconds": 0.11320210000849329
+    },
+    {
+      "pair": [
+        10,
+        11
+      ],
+      "input_vertex_counts": [
+        4,
+        6
+      ],
+      "original_triangle_pairs": 8,
+      "merged_body_parts": [
+        1,
+        2
+      ],
+      "convex_pairs": 2,
+      "subdivision_kind": "complete_contact_skeleton_vertical_coarsening_not_triangle_pair_overlay",
+      "dimensions": {
+        "0": 30,
+        "1": 50,
+        "2": 21
+      },
+      "probes_by_kind": {
+        "vertex": 30,
+        "edge_midpoint": 50,
+        "face_interior": 21,
+        "exact_edge_side": 100
+      },
+      "sample_count": 201,
+      "oracle_states": {
+        "-1": 128,
+        "0": 32,
+        "1": 41
+      },
+      "mismatch_count": 0,
+      "mismatches": [],
+      "skipped": 0,
+      "probe_sha256": "41992196852c36c690f74199f5a722761b2e04d9a9f517fec5dec165aedeac5a",
+      "construction_seconds": 0.001448099996196106,
+      "arrangement_seconds": 0.01609390000521671,
+      "total_seconds": 0.11750860000029206
+    }
+  ],
+  "status": "COMPLETE"
+}

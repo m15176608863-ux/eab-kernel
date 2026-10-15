@@ -1,0 +1,11 @@
+BASELINE_SEMANTIC_ASSERTION_PASS
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m3b_construction3d_evidence.py", line 153, in <module>
+    mutation(args.mutation)
+  File "D:\eab-wt\cx-m4\tools\m3b_construction3d_evidence.py", line 69, in mutation
+    check()  # Deliberately uncaught: child must exit red at the semantic assertion.
+    ^^^^^^^
+  File "D:\eab-wt\cx-m4\tests\test_m3b_construction3d.py", line 250, in _candidate_assertion
+    assert line.closed == ((F(-1), F(1)), (F(2), F(4))), 'all exact box candidates are retained'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: all exact box candidates are retained

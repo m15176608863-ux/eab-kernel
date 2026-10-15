@@ -20,6 +20,8 @@ from .covers3 import local_facets3, membership_convex3
 from .geom3 import Polyhedron, Vec3, noise_floor, norm, sub, exact_convex_view
 from . import g03_exact as oracle
 from . import g03_surface_oracle as surface_oracle
+from . import global_entrance as global_model
+from . import g03_exit_oracle as exit_oracle
 
 
 @dataclass(slots=True)
@@ -191,13 +193,16 @@ def _display_witness_distance(point_a, point_b):
 def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, samples: int = 200,
                               seed: int = 0, base: Vec3 = (0.0, 0.0, 0.0), tol: float = 1e-9,
                               atol: float = 1e-9) -> DistanceReport3:
-    """Exact nonconvex separation and independent rational distance oracle.
+    """Exact separation distance and intersecting-side directional exit audit.
 
     Oracle primitives: integer planes/ring winding and generic-ray parity,
     rational vertex/face and edge/edge squared distances; zero production
     geometry is shared. No implicit band excludes a strict positive gap.
     Exact nearest-feature completeness has no tolerance or coordinate floor.
     Float witness construction separately retains the relative/rounding allowance.
+    Intersecting/contact samples test the complete closed-E ray exit against an
+    independent original-surface event oracle; they are never skipped.  This
+    exit is not claimed to be the shortest separating translation.
     """
     from .covers3 import enumerate_covers3
     from ..margin import _surface_view, _witness_squared
@@ -205,6 +210,7 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
         raise ValueError("atol must be finite and nonnegative")
     rng = random.Random(seed)
     rep = DistanceReport3()
+    exit_data = None
     L = max(A.metrics()[1], B.metrics()[1])
     drawn = 0
     while drawn < samples:
@@ -218,7 +224,19 @@ def g0_distance_completeness3(A: Polyhedron, B: Polyhedron, *, radius: float, sa
                          for v in A.verts], list(A.faces))
         truth2 = surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces, squared=True)
         if truth2 is None:
-            rep.skipped_intersecting += 1
+            if exit_data is None:
+                model = global_model.global_entrance(A, B)
+                planes = exit_oracle.contact_planes(A, B)
+                direction = exit_oracle.generic_direction(planes)
+                exit_data = model, planes, direction
+            model, planes, direction = exit_data
+            expected, _, _ = exit_oracle.closed_exit(A, B, x, planes=planes, direction=direction)
+            intervals = global_model.GlobalEntrance3D.line_sections(model, x, direction).closed
+            actual = next((hi for lo, hi in intervals if lo <= 0 <= hi), None)
+            rep.samples += 1
+            if actual != expected:
+                rep.completeness_failures.append((x, actual, expected))
+                rep.failures.append((x, actual, expected))
             continue
         truth = surface_oracle.sqrt_display(truth2)
         va,_ = _surface_view(tuple(At.verts),tuple(At.faces))

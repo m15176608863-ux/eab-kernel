@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\reports\codex\M3b_evidence\two_d_mutations.py", line 112, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-m4\reports\codex\M3b_evidence\two_d_mutations.py", line 87, in main
+    child(sys.argv[2])
+  File "D:\eab-wt\cx-m4\reports\codex\M3b_evidence\two_d_mutations.py", line 50, in child
+    assert g.membership((F(3, 2), F(3, 2))) == -1, EXPECTED[kind]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: nonconvex union must not be filled by convex merging

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction as F
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from itertools import count
 from math import gcd, lcm
 
@@ -145,6 +145,13 @@ class ConvexPart3D:
     vertices: tuple
     faces: tuple
     interior: tuple
+
+    @cached_property
+    def _hash(self):
+        return hash((self.vertices, self.faces, self.interior))
+
+    def __hash__(self):
+        return self._hash
 
 
 def _part(faces):
@@ -275,6 +282,124 @@ def _volume_six(triangles):
                for a, b, c in triangles)
 
 
+def _on_segment(p, a, b):
+    return (not any(_cross(_sub(p, a), _sub(b, a))) and
+            all(min(a[k], b[k]) <= p[k] <= max(a[k], b[k]) for k in range(3)))
+
+
+def _in_triangle(p, triangle, normal):
+    return (not _dot(normal, _sub(p, triangle[0])) and
+            all(_dot(normal, _cross(_sub(b, a), _sub(p, a))) >= 0
+                for a, b in zip(triangle, triangle[1:]+triangle[:1])))
+
+
+def _triangle_meeting(a, b):
+    """Vertices of the exact convex intersection, including coplanar contacts."""
+    na, nb = _normal(a), _normal(b)
+    points = set()
+    for source, target, normal in ((a, b, nb), (b, a, na)):
+        for p, q in zip(source, source[1:]+source[:1]):
+            dp, dq = (_dot(normal, _sub(x, target[0])) for x in (p, q))
+            if not dp and _in_triangle(p, target, normal):
+                points.add(p)
+            if dp*dq < 0:
+                t = dp/(dp-dq)
+                hit = tuple(p[k]+t*(q[k]-p[k]) for k in range(3))
+                if _in_triangle(hit, target, normal):
+                    points.add(hit)
+            if dp or dq:
+                continue
+            # This entire edge lies in the other triangle's plane. Its
+            # intersections with the three boundary edges also matter.
+            for r, s in zip(target, target[1:]+target[:1]):
+                u, v, w = _sub(q, p), _sub(s, r), _sub(r, p)
+                cross = _cross(u, v)
+                if not any(cross):
+                    points.update(x for x in (p, q, r, s)
+                                  if _on_segment(x, p, q) and _on_segment(x, r, s))
+                    continue
+                axis = next(k for k in range(3) if cross[k])
+                t = _cross(w, v)[axis]/cross[axis]
+                hit = tuple(p[k]+t*u[k] for k in range(3))
+                if 0 <= t <= 1 and _on_segment(hit, r, s):
+                    points.add(hit)
+    return points
+
+
+def _validate_embedded(vertices, faces, triangles):
+    """Exact embedded two-manifold and alternating shell orientation gate.
+
+    Triangle intersections must be precisely a shared vertex/edge or empty.
+    All tests are rational equalities/inequalities, with no tolerance. Tests:
+    test_invalid_surfaces_are_rejected_exactly and its internal mutation gate.
+    """
+    if len(set(vertices)) != len(vertices):
+        raise ValueError('global3d nonembedded duplicate geometric vertices')
+    # A closed edge incidence does not exclude two shells pinched at a vertex.
+    links = {}
+    for face in faces:
+        for k, v in enumerate(face):
+            first, second = face[k-1], face[(k+1) % len(face)]
+            graph = links.setdefault(v, {})
+            # Keep parallel link edges: a planar subdivision vertex may have
+            # only two incident polygons, giving a legitimate two-edge circle.
+            graph.setdefault(first, []).append(second)
+            graph.setdefault(second, []).append(first)
+    for graph in links.values():
+        pending = [min(graph)]
+        seen = set()
+        while pending:
+            q = pending.pop()
+            if q not in seen:
+                seen.add(q)
+                pending.extend(set(graph[q])-seen)
+        if len(seen) != len(graph) or any(len(row) != 2 for row in graph.values()):
+            raise ValueError('global3d nonmanifold vertex link')
+    boxes = [tuple((min(p[k] for p in tri), max(p[k] for p in tri))
+                   for k in range(3)) for tri in triangles]
+    for i, a in enumerate(triangles):
+        for j in range(i+1, len(triangles)):
+            b = triangles[j]
+            if any(boxes[i][k][1] < boxes[j][k][0] or
+                   boxes[j][k][1] < boxes[i][k][0] for k in range(3)):
+                continue
+            common = set(a) & set(b)
+            if len(common) == 3:
+                raise ValueError('global3d overlapping duplicate triangles')
+            meeting = _triangle_meeting(a, b)
+            if ((len(common) < 2 and any(p not in common for p in meeting)) or
+                (len(common) == 2 and any(not _on_segment(p, *sorted(common)) for p in meeting))):
+                raise ValueError('global3d self-intersecting surface')
+    # Disconnected shells alternate outward/inward by containment depth. A
+    # positive total signed volume alone could hide an inverted small shell.
+    remaining = set(range(len(triangles)))
+    components = []
+    by_vertex = {}
+    for i, tri in enumerate(triangles):
+        for p in tri:
+            by_vertex.setdefault(p, set()).add(i)
+    while remaining:
+        pending = [min(remaining)]
+        component = []
+        while pending:
+            i = pending.pop()
+            if i not in remaining:
+                continue
+            remaining.remove(i)
+            component.append(triangles[i])
+            for p in triangles[i]:
+                pending.extend(by_vertex[p] & remaining)
+        components.append(tuple(component))
+    for i, component in enumerate(components):
+        volume = _volume_six(component)
+        if not volume:
+            raise ValueError('global3d zero-volume shell')
+        depth = sum(_inside(component[0][0], other)
+                    for j, other in enumerate(components) if i != j)
+        if (volume > 0) != (depth % 2 == 0):
+            raise ValueError('global3d inconsistent shell orientation')
+
+
 def _merge_parts(parts):
     """Merge full-face neighbours only when every remaining face supports both.
 
@@ -311,16 +436,26 @@ def convex_decomposition(polyhedron):
     """Reproducible exact convex decomposition, using Steiner BSP if necessary.
 
     Gates: test_convex_decomposition_covers_nonstar_pocket_and_cavity and
-    test_global3d_support_domain_errors_are_loud. Local manifold checks do not
-    purport to certify absence of arbitrary self-intersections in an input mesh.
+    test_invalid_surfaces_are_rejected_exactly. The deterministic triangulated
+    interpretation is certified embedded, manifold and shell-oriented first.
+    Unreferenced vertex-buffer entries do not belong to that surface; they are
+    discarded before geometric construction (merge_coplanar retains such rows).
     """
     vertices = tuple(_point(p) for p in polyhedron.verts)
     faces = tuple(tuple(face) for face in polyhedron.faces)
     if not vertices:
         raise ValueError('global3d requires a closed positive-volume surface')
+    referenced = tuple(i for face in faces for i in face)
+    if not referenced or any(not isinstance(i, int) or i < 0 or i >= len(vertices) for i in referenced):
+        raise ValueError('global3d invalid or empty surface vertex references')
+    used = sorted(set(referenced))
+    index = {old: new for new, old in enumerate(used)}
+    vertices = tuple(vertices[i] for i in used)
+    faces = tuple(tuple(index[i] for i in face) for face in faces)
     anchor = vertices[0]
     local = tuple(_sub(p, anchor) for p in vertices)
-    return _translated_parts(_decompose(local, faces, _bsp_parts), anchor)
+    return _translated_parts(_decompose(local, faces, _bsp_parts,
+                                       _validate_embedded, _merge_parts), anchor)
 
 
 def _shift_part(part, offset):
@@ -342,7 +477,8 @@ def _local_part(part):
 
 
 @lru_cache(maxsize=128)
-def _decompose(vertices, faces, bsp_implementation):
+def _decompose(vertices, faces, bsp_implementation, validation_implementation,
+               merge_implementation):
     if len(vertices) < 4 or len(faces) < 4:
         raise ValueError('global3d requires a closed positive-volume surface')
     incidence = {}
@@ -353,6 +489,7 @@ def _decompose(vertices, faces, bsp_implementation):
            for rows in incidence.values()):
         raise ValueError('global3d requires a closed consistently oriented manifold')
     triangles = _triangulate(vertices, faces)
+    _validate_embedded(vertices, faces, triangles)
     volume = _volume_six(triangles)
     if volume <= 0:
         raise ValueError('global3d requires positive oriented volume')
@@ -488,19 +625,18 @@ class GlobalEntrance3D:
         start, direction = _point(start), _point(direction)
         if not any(direction):
             raise ValueError('global3d line direction must be nonzero')
-        return _line_sections(self, start, direction, _slab_interval, _merge)
+        return _line_sections(self, start, direction, _slab_interval, _merge, _line_candidate)
 
 
 @lru_cache(maxsize=512)
-def _line_sections(model, start, direction, interval_implementation, merge_implementation):
+def _line_sections(model, start, direction, interval_implementation, merge_implementation,
+                   candidate_implementation):
     closed, opened = [], []
     for a in model.parts_a:
         for b in model.parts_b:
-            # Exact coordinate slabs reject pairs before expensive feature SAT.
-            if any(not direction[k] and
-                   (max(p[k] for p in a.vertices)+start[k] < min(p[k] for p in b.vertices)
-                    or max(p[k] for p in b.vertices) < min(p[k] for p in a.vertices)+start[k])
-                   for k in range(3)):
+            # The Cartesian difference box contains B-A. A line missing it
+            # cannot meet the pair, for arbitrary (not only axial) directions.
+            if not _line_candidate(a, b, start, direction):
                 continue
             slabs = _pair_slabs(a, b)
             interval = _slab_interval(slabs, start, direction, False)
@@ -510,6 +646,30 @@ def _line_sections(model, start, direction, interval_implementation, merge_imple
             if interval is not None:
                 opened.append(interval)
     return LineSections3D(_merge(closed, False), _merge(opened, True))
+
+
+@lru_cache(maxsize=8192)
+def _bounds(part):
+    return tuple((min(p[k] for p in part.vertices), max(p[k] for p in part.vertices))
+                 for k in range(3))
+
+
+def _line_candidate(a, b, start, direction):
+    aa, bb = _bounds(a), _bounds(b)
+    lower = upper = None
+    for k in range(3):
+        lo, hi = bb[k][0]-aa[k][1]-start[k], bb[k][1]-aa[k][0]-start[k]
+        if not direction[k]:
+            if lo > 0 or hi < 0:
+                return False
+            continue
+        first, second = lo/direction[k], hi/direction[k]
+        first, second = min(first, second), max(first, second)
+        lower = first if lower is None else max(lower, first)
+        upper = second if upper is None else min(upper, second)
+        if lower > upper:
+            return False
+    return True
 
 
 def global_entrance(A, B):

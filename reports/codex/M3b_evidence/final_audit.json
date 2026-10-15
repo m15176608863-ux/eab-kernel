@@ -1,0 +1,2205 @@
+{
+  "status": "GREEN",
+  "generated_utc": "2026-10-15T10:14:21.798104+00:00",
+  "final_name": "final_suite_r4",
+  "contract": "Strict Counters: dispatch=collected=setup=call=teardown exactly once, all outcomes passed; no source-hash or missing-evidence shortcuts.",
+  "baseline_suite": {
+    "name": "baseline_suite",
+    "collected": 13110,
+    "shards": [
+      {
+        "shard": 1,
+        "last_line": "3278 passed in 812.65s (0:13:32)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3278,
+          "collected": 3278,
+          "setup": 3278,
+          "call": 3278,
+          "teardown": 3278
+        },
+        "report_count": 9834,
+        "skip_count": 0,
+        "all_phases_passed": true
+      },
+      {
+        "shard": 2,
+        "last_line": "3278 passed in 785.04s (0:13:05)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3278,
+          "collected": 3278,
+          "setup": 3278,
+          "call": 3278,
+          "teardown": 3278
+        },
+        "report_count": 9834,
+        "skip_count": 0,
+        "all_phases_passed": true
+      },
+      {
+        "shard": 3,
+        "last_line": "3277 passed in 811.01s (0:13:31)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3277,
+          "collected": 3277,
+          "setup": 3277,
+          "call": 3277,
+          "teardown": 3277
+        },
+        "report_count": 9831,
+        "skip_count": 0,
+        "all_phases_passed": true
+      },
+      {
+        "shard": 4,
+        "last_line": "3277 passed in 1514.91s (0:25:14)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3277,
+          "collected": 3277,
+          "setup": 3277,
+          "call": 3277,
+          "teardown": 3277
+        },
+        "report_count": 9831,
+        "skip_count": 0,
+        "all_phases_passed": true
+      }
+    ],
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "elapsed_seconds": 1692.3861509000126,
+    "frozen_source": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_export",
+    "raw_records": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\baseline_suite_records"
+  },
+  "final_suite": {
+    "name": "final_suite_r4",
+    "collected": 13187,
+    "shards": [
+      {
+        "shard": 1,
+        "last_line": "3297 passed in 1498.32s (0:24:58)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3297,
+          "collected": 3297,
+          "setup": 3297,
+          "call": 3297,
+          "teardown": 3297
+        },
+        "report_count": 9891,
+        "skip_count": 0,
+        "all_phases_passed": true
+      },
+      {
+        "shard": 2,
+        "last_line": "3297 passed in 615.52s (0:10:15)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3297,
+          "collected": 3297,
+          "setup": 3297,
+          "call": 3297,
+          "teardown": 3297
+        },
+        "report_count": 9891,
+        "skip_count": 0,
+        "all_phases_passed": true
+      },
+      {
+        "shard": 3,
+        "last_line": "3297 passed in 1003.62s (0:16:43)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3297,
+          "collected": 3297,
+          "setup": 3297,
+          "call": 3297,
+          "teardown": 3297
+        },
+        "report_count": 9891,
+        "skip_count": 0,
+        "all_phases_passed": true
+      },
+      {
+        "shard": 4,
+        "last_line": "3296 passed in 882.36s (0:14:42)",
+        "ok": true,
+        "issues": [],
+        "counts": {
+          "dispatch": 3296,
+          "collected": 3296,
+          "setup": 3296,
+          "call": 3296,
+          "teardown": 3296
+        },
+        "report_count": 9888,
+        "skip_count": 0,
+        "all_phases_passed": true
+      }
+    ],
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "elapsed_seconds": 1677.1713060000038,
+    "frozen_source": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\final_suite_r4_export",
+    "raw_records": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\final_suite_r4_records"
+  },
+  "suite_comparison": {
+    "baseline": 13110,
+    "final": 13187,
+    "added": 77,
+    "removed": 0,
+    "removed_sample": []
+  },
+  "final_manifest": {
+    "checked_files": 296,
+    "changed": [],
+    "excluded_auditor": "tools/m3b_finalize_evidence.py",
+    "exclusion_reason": "The independent final auditor may be created after source freeze; no other Python file is excluded."
+  },
+  "scans": {
+    "bb52": {
+      "samples": 7113,
+      "mismatches": 0,
+      "skipped": 0,
+      "source_hashes": {
+        "checked": 6,
+        "mismatches": []
+      }
+    },
+    "boundary3d": {
+      "samples": 6733,
+      "mismatches": 0,
+      "skipped": 0,
+      "source_hashes": {
+        "checked": 14,
+        "mismatches": []
+      }
+    }
+  },
+  "mutations": {
+    "two_d_mutations.json": {
+      "checked": 5,
+      "rows": [
+        {
+          "name": "nonconvex_merge",
+          "returncode": 1,
+          "final_exception": "AssertionError: nonconvex union must not be filled by convex merging",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "index_candidate_loss",
+          "returncode": 1,
+          "final_exception": "AssertionError: spatial index omitted a contributing cell",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "strict_only_local_cover",
+          "returncode": 1,
+          "final_exception": "AssertionError: nonstrict local weak cover omits boundary",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "drop_isolated_contact",
+          "returncode": 1,
+          "final_exception": "AssertionError: isolated contact vertex was regularized away",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "compact_probe_event_loss",
+          "returncode": 1,
+          "final_exception": "AssertionError: compact side probe left its adjacent open face",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        }
+      ]
+    },
+    "construction3d_mutations.json": {
+      "checked": 3,
+      "rows": [
+        {
+          "name": "self_intersection",
+          "returncode": 1,
+          "final_exception": "AssertionError: overlapping coplanar shells must be rejected before decomposition",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "spatial_omission",
+          "returncode": 1,
+          "final_exception": "AssertionError: all exact box candidates are retained",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "nonconvex_merge",
+          "returncode": 1,
+          "final_exception": "AssertionError: full-facet nonconvex merge filled independently excluded region",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        }
+      ]
+    },
+    "boundary3d_mutations.json": {
+      "checked": 3,
+      "rows": [
+        {
+          "name": "remove_clipping",
+          "returncode": 1,
+          "final_exception": "AssertionError: local cover clipping removes buried polygons",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "physical_zero_one_seam",
+          "returncode": 1,
+          "final_exception": "AssertionError: closed occupancy boundary not physical 0/1 seam",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "restore_intersecting_skip",
+          "returncode": 1,
+          "final_exception": "AssertionError: intersecting exit sample must execute",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        }
+      ]
+    },
+    "boundary3d_numeric_mutations.json": {
+      "checked": 2,
+      "rows": [
+        {
+          "name": "side_step_third",
+          "returncode": 1,
+          "final_exception": "AssertionError: independent exact canonical-plane side points",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        },
+        {
+          "name": "ee_normal_double",
+          "returncode": 1,
+          "final_exception": "AssertionError: independent every local VF/FV/EE label coordinate normal",
+          "semantic_red": true,
+          "hash_gate_disabled": true
+        }
+      ],
+      "parameter_outputs": {
+        "ok": true,
+        "count": 12,
+        "distinct_digests": 12,
+        "issues": []
+      }
+    }
+  },
+  "frozen_escape_replay": {
+    "comparison": {
+      "ok": true,
+      "count": 392,
+      "equal_fields": 1568,
+      "mismatch_count": 0,
+      "per_row_brute_calls_zero": true,
+      "issues": []
+    },
+    "source_hashes": {
+      "checked": 45,
+      "mismatches": []
+    },
+    "source_root": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\construction3d_frozen_r4_export",
+    "actual_imports": {
+      "module_count": 29,
+      "distinct_files_with_driver": 30,
+      "hashes": {
+        "checked": 30,
+        "mismatches": []
+      }
+    },
+    "final_suite_equivalence": {
+      "checked_files": 56,
+      "mismatches": [],
+      "artifacts": {
+        "checked": 5,
+        "mismatches": []
+      }
+    },
+    "single_invocation": true,
+    "before_after_equal": true,
+    "post_replay_non_src_changes": [
+      {
+        "path": "tests/test_m3b_2d.py",
+        "attested": "f95e3ae59c8cc7a0f5dda274e3ce53d087c07a996634dfa9d46f34f97784b594",
+        "current": "694ea27f20d7fa52cd138fc5ff493d175463a91da171bd777ef77c6a0ac48327"
+      },
+      {
+        "path": "tools/m3b_finalize_evidence.py",
+        "attested": "30269e30549913de0edfbabbef139d2abb51a7eccc421332e82238b638b2da23",
+        "current": "59e22aeaa2c5915c68b4b16542be8ec9a9092f1f6ce4521742b171c5fce2ba9a"
+      },
+      {
+        "path": "tools/m3b_scan2d.py",
+        "attested": "3a8d3986c4763bc37b7e419b694bdbf24b3aef560e9243204240a42c7b700c01",
+        "current": "504c0d91fe21b2f3755319a12dad5f9854912a3c77bc50bfa6a81ff27e84b530"
+      }
+    ],
+    "post_replay_added_tests_or_tools": [],
+    "scope_note": "This section compares every attested frozen src byte to current src. Subsequent tests/evidence-harness changes are listed, not silently treated as replayed; the selected final suite separately freezes and verifies all current src/tests/tools."
+  },
+  "gp_boundary_probe": {
+    "ok": true,
+    "exact_conditions": 102,
+    "probe_count": 72,
+    "local_atomic": 13,
+    "issues": [],
+    "source_hashes": {
+      "checked": 49,
+      "mismatches": []
+    },
+    "scope_note": "Separate 72-probe GP supplement; not added to the original 6733-probe family scan."
+  },
+  "m4c_compatibility_replay": {
+    "equal_frames": 450,
+    "gzip_byte_equal_cases": 15,
+    "source_hashes": {
+      "checked": 23,
+      "mismatches": []
+    },
+    "fixture_count": 201,
+    "cases": [
+      {
+        "case": "bb03",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb05",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb06",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb09",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb10",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb12",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb50",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb51",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bb52",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bbF038",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bbS038",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bbv01",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bbv01_dbv01a",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bbv02",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      },
+      {
+        "case": "bbv02_dbv02a",
+        "equal_frames": 30,
+        "gzip_bytes_equal": true
+      }
+    ],
+    "source_root": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3b_evidence\\tmp\\m4c_frozen_refresh_r2",
+    "scope_note": "450 fresh production frames compared by stdlib full-JSON equality to unchanged frozen results, not a substitute for an independent geometry oracle."
+  },
+  "missing": [],
+  "failure_count": 0,
+  "failures": [],
+  "checks": [
+    {
+      "scope": "baseline_suite",
+      "check": "summary_is_object",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "collection_summary_count_matches_nodes",
+      "passed": true,
+      "detail": {
+        "nodes": 13110,
+        "collection_summary": [
+          "13110"
+        ]
+      }
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "global_collection_unique_nonempty",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "declared_collection_count_matches_raw",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "exactly_four_shards",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_1",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "baseline_suite/shard_1",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_1",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_1",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_1",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_1",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_2",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "baseline_suite/shard_2",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_2",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_2",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_2",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_2",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_3",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "baseline_suite/shard_3",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_3",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_3",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_3",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_3",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_4",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "baseline_suite/shard_4",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_4",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_4",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_4",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite/shard_4",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "four_shard_dispatch_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13110,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "four_shard_collected_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13110,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "four_shard_setup_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13110,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "four_shard_call_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13110,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "four_shard_teardown_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13110,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "runner_declared_green",
+      "passed": true
+    },
+    {
+      "scope": "baseline_suite",
+      "check": "static_zero_and_raw_log_agrees",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "summary_is_object",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "collection_summary_count_matches_nodes",
+      "passed": true,
+      "detail": {
+        "nodes": 13187,
+        "collection_summary": [
+          "13187"
+        ]
+      }
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "global_collection_unique_nonempty",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "declared_collection_count_matches_raw",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "exactly_four_shards",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_1",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "final_suite_r4/shard_1",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_1",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_1",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_1",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_1",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_2",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "final_suite_r4/shard_2",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_2",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_2",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_2",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_2",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_3",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "final_suite_r4/shard_3",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_3",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_3",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_3",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_3",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_4",
+      "check": "strict_phase_counters_and_outcomes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "final_suite_r4/shard_4",
+      "check": "zero_exit_and_raw_log_pass_count",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_4",
+      "check": "last_line_exactly_matches_saved_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_4",
+      "check": "declared_counts_match_raw",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_4",
+      "check": "per_shard_summary_equals_suite_summary",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4/shard_4",
+      "check": "command_uses_audited_dispatch_no_cache_and_explicit_temp",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "four_shard_dispatch_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13187,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "four_shard_collected_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13187,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "four_shard_setup_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13187,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "four_shard_call_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13187,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "four_shard_teardown_counter_equals_global_collection",
+      "passed": true,
+      "detail": {
+        "total": 13187,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "runner_declared_green",
+      "passed": true
+    },
+    {
+      "scope": "final_suite_r4",
+      "check": "static_zero_and_raw_log_agrees",
+      "passed": true
+    },
+    {
+      "scope": "suites",
+      "check": "final_has_more_collected_nodes_than_baseline",
+      "passed": true,
+      "detail": {
+        "baseline": 13110,
+        "final": 13187,
+        "added": 77,
+        "removed": 0,
+        "removed_sample": []
+      }
+    },
+    {
+      "scope": "suites",
+      "check": "no_baseline_node_removed",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "final_export_manifest",
+      "check": "manifest_is_record_list",
+      "passed": true
+    },
+    {
+      "scope": "final_export_manifest",
+      "check": "frozen_and_current_file_inventory_equal",
+      "passed": true,
+      "detail": {
+        "missing_from_export": [],
+        "missing_now": []
+      }
+    },
+    {
+      "scope": "final_export_manifest",
+      "check": "frozen_paths_unique",
+      "passed": true
+    },
+    {
+      "scope": "final_export_manifest",
+      "check": "every_frozen_and_current_byte_hash_matches_manifest",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "bb52",
+      "check": "scan_schema",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "scan_complete_zero_mismatch_zero_skip",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "all_21_distinct_pairs",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "unchanged_source_run",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[1, 2]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[1, 2]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[1, 3]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[1, 3]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[1, 4]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[1, 4]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[1, 9]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[1, 9]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[1, 10]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[1, 10]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[1, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[1, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[2, 3]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[2, 3]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[2, 6]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[2, 6]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[2, 7]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[2, 7]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[2, 8]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[2, 8]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[2, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[2, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[3, 8]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[3, 8]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[3, 9]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[3, 9]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[4, 5]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[4, 5]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[4, 9]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[4, 9]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[4, 10]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[4, 10]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[5, 10]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[5, 10]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[6, 7]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[6, 7]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[6, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[6, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[7, 8]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[7, 8]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "complete_strata_count_[10, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "every_side_is_checked_in_its_adjacent_open_face_[10, 11]",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "aggregate_probe_count_matches_rows",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "critical_source_inventory_present",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "bb52",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "boundary3d",
+      "check": "scan_schema",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "scan_complete_zero_mismatch_zero_skip",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "distinct_nonempty_families",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "complete_strata_count_L",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "complete_strata_count_tight",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "complete_strata_count_cavity",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "complete_strata_count_general_tetra",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "aggregate_probe_count_matches_rows",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "critical_source_inventory_present",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "mutation_schema",
+      "passed": true
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "producer_marks_mutation_run_complete",
+      "passed": true
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "all_required_mutants_present_once",
+      "passed": true
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "uncaught_expected_semantic_red_nonconvex_merge",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: nonconvex union must not be filled by convex merging",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "uncaught_expected_semantic_red_index_candidate_loss",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: spatial index omitted a contributing cell",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "uncaught_expected_semantic_red_strict_only_local_cover",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: nonstrict local weak cover omits boundary",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "uncaught_expected_semantic_red_drop_isolated_contact",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: isolated contact vertex was regularized away",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "uncaught_expected_semantic_red_compact_probe_event_loss",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: compact side probe left its adjacent open face",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "two_d_mutations.json",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "mutation_schema",
+      "passed": true
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "producer_marks_mutation_run_complete",
+      "passed": true
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "all_required_mutants_present_once",
+      "passed": true
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "uncaught_expected_semantic_red_self_intersection",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: overlapping coplanar shells must be rejected before decomposition",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "producer_baseline_passed_self_intersection",
+      "passed": true
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "uncaught_expected_semantic_red_spatial_omission",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: all exact box candidates are retained",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "producer_baseline_passed_spatial_omission",
+      "passed": true
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "uncaught_expected_semantic_red_nonconvex_merge",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: full-facet nonconvex merge filled independently excluded region",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "construction3d_mutations.json",
+      "check": "producer_baseline_passed_nonconvex_merge",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "mutation_schema",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "producer_marks_mutation_run_complete",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "all_required_mutants_present_once",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "uncaught_expected_semantic_red_remove_clipping",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: local cover clipping removes buried polygons",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "uncaught_expected_semantic_red_physical_zero_one_seam",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: closed occupancy boundary not physical 0/1 seam",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "uncaught_expected_semantic_red_restore_intersecting_skip",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: intersecting exit sample must execute",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_mutations.json",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "mutation_schema",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "producer_marks_mutation_run_complete",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "all_required_mutants_present_once",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "uncaught_expected_semantic_red_side_step_third",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: independent exact canonical-plane side points",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "uncaught_expected_semantic_red_ee_normal_double",
+      "passed": true,
+      "detail": {
+        "returncode": 1,
+        "final_exception": "AssertionError: independent every local VF/FV/EE label coordinate normal",
+        "hash_gate_disabled": true
+      }
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "boundary3d_numeric_mutations.json",
+      "check": "twelve_actual_parameter_outputs_distinct",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "count": 12,
+        "distinct_digests": 12,
+        "issues": []
+      }
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "replay_record_schemas",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "392_unique_keys_1568_exact_fields_zero_brute",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "single_complete_nonspliced_invocation",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "pre_post_inventories_equal",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "attested_output_hash_matches_replay",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "replay_root_matches_attested_cwd",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "TEMP_stays_in_evidence_tmp",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "TMP_stays_in_evidence_tmp",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "attested_frozen_source_still_matches",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "all_current_src_files_attested",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "same_child_actual_import_inventory_complete",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "actual_imports_bound_to_attestation_and_frozen_bytes",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay/actual_imports_and_driver",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay/actual_imports_and_driver",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "final_suite_equivalence_inventory_complete",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "recomputed_three_way_actual_bytes_equal",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "frozen_escape_replay",
+      "check": "all_five_equivalence_artifacts_bound",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay/equivalence_artifacts",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "frozen_escape_replay/equivalence_artifacts",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "gp_boundary_probe",
+      "check": "object_schema",
+      "passed": true
+    },
+    {
+      "scope": "gp_boundary_probe",
+      "check": "102_nonzero_rational_witnesses_72_probes_13_local_atomic",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "exact_conditions": 102,
+        "probe_count": 72,
+        "local_atomic": 13,
+        "issues": []
+      }
+    },
+    {
+      "scope": "gp_boundary_probe",
+      "check": "pre_post_source_hashes_identical",
+      "passed": true
+    },
+    {
+      "scope": "gp_boundary_probe",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "gp_boundary_probe",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "summary_schemas",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "raw_artifacts_in_M3b_tmp",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "single_complete_450_invocation",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "new_summary_is_real_raw_batch_summary",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "stable_exact_source_binding",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "source_hash_inventory_nonempty",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "recorded_source_hashes_match_current_bytes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_fixture_and_PROVENANCE_bytes_unchanged",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "wrapper_and_batch_driver_bound",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_fifteen_cases_preserved",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb03",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb03",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb03",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb03",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb05",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb05",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb05",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb05",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb06",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb06",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb06",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb06",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb09",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb09",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb09",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb09",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb10",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb10",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb10",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb10",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb12",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb12",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb12",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb12",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb50",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb50",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb50",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb50",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb51",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb51",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb51",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb51",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bb52",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bb52",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bb52",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bb52",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bbF038",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bbF038",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bbF038",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bbF038",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bbS038",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bbS038",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bbS038",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bbS038",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bbv01",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bbv01",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bbv01",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bbv01",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bbv01_dbv01a",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bbv01_dbv01a",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bbv01_dbv01a",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bbv01_dbv01a",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bbv02",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bbv02",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bbv02",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bbv02",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "all_thirty_actual_frames_equal_bbv02_dbv02a",
+      "passed": true,
+      "detail": {
+        "ok": true,
+        "equal_frames": 30,
+        "expected_frames": 30,
+        "issues": []
+      }
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "normalized_gzip_bytes_equal_bbv02_dbv02a",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "real_new_case_audit_bound_bbv02_dbv02a",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "historic_semantics_equal_bbv02_dbv02a",
+      "passed": true
+    },
+    {
+      "scope": "m4c_compatibility_replay",
+      "check": "actual_complete_450_frames_15_byte_equal_gzips",
+      "passed": true
+    }
+  ],
+  "input_sha256": {
+    "reports/codex/M3b_evidence/baseline_suite/summary.json": "b167a34e7309b8a9c68fcbbbee55f5c24202eb77fa23e28d4aaa18805ca9e253",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/collection.txt": "97e06e787a70ac4484e9860acf7b61917685d83ffb412ae7dba7812fe50b8be5",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_1_nodes.txt": "35fd235805a6e134f5fd435cd46ce8d7227367958048580b8f047d5fbe8d7763",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_1_execution.json": "cf51bb7e762a77d55224d6f7af617289087f8b191e96fd78b5a976afc6a93b75",
+    "reports/codex/M3b_evidence/baseline_suite/shard_1.json": "9515bfcbc93299942a24661fa314bd5fdb33603f013d8ccbcf26696f90a90620",
+    "reports/codex/M3b_evidence/baseline_suite/shard_1.txt": "4dde03f4ef80b500e423c7cfc3505c6c0e5ef4cf806c274faf919cf3def7ec9c",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_2_nodes.txt": "74849b32980e12e1bbaffb83ad14bd17790c5f5227438bc041793e167c037576",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_2_execution.json": "eaabaafb7d82dbbf85c8f6dcb115318d3c4a9dcaf2ebb4e6e48defb9a1167480",
+    "reports/codex/M3b_evidence/baseline_suite/shard_2.json": "635386705dec0b2c8d5352d5cfad49966960cdf0827c630f3921a30815bd9662",
+    "reports/codex/M3b_evidence/baseline_suite/shard_2.txt": "02b5b242a306e2907a4870e7273e799d324b4b89e6b5bde092b5970824ca2d01",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_3_nodes.txt": "0821daface664fd0dc06be048a5cb8dbd9153242d3945816fc3beaa000c0a756",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_3_execution.json": "8ef09494659970bbd432512362fb16aa459e5d3ad786d81efb202935f5577429",
+    "reports/codex/M3b_evidence/baseline_suite/shard_3.json": "4d46baa2b16b396782df04af7cb3676ff76141ebb79a5299ccf8edce4ca99a68",
+    "reports/codex/M3b_evidence/baseline_suite/shard_3.txt": "5f6afa66f6828837581bbc6210acf923050e8ea537570320b25439990789f272",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_4_nodes.txt": "422804f60033a9b0b2848c0be6151f85ac13933d464c53daef9438c35e6adeff",
+    "reports/codex/M3b_evidence/tmp/baseline_suite_records/shard_4_execution.json": "a76cbef383da64d51c38d4099d4720e71c44217a02adbba14771e65cab93621b",
+    "reports/codex/M3b_evidence/baseline_suite/shard_4.json": "6cd5b9c631ffb17ecdd0ab7bf9a845aa57b7e4da0fa96cd7ac93f9a3c0ca6a94",
+    "reports/codex/M3b_evidence/baseline_suite/shard_4.txt": "9a77fc7a4a187c2e2d1ca57683906a8f59e8234d2cb6416b0fbdaba94ff6487c",
+    "reports/codex/M3b_evidence/baseline_suite/exact_construction.txt": "f6925af2f078baa9f6a8860f8c54a4d7f45adda8481e794958956d540dd12b26",
+    "reports/codex/M3b_evidence/final_suite_r4/summary.json": "e8255c6de45fbcd51facc9949d90ec360d04b631acd06e072c993f8be15d8de8",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/collection.txt": "bef05d657989ef97089301827edbd0aeaf6c1359b81a2e2dc56e038218bc1893",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_1_nodes.txt": "fa86726d77b61e891bf7c3c82045dd698c677b1db9e27404fbf16769a5c22403",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_1_execution.json": "fae297fc281fc579f2ea79c3eb2feb7e57d203ac8cb851c0432da12aa9ccdb0a",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_1.json": "ee97ce712f21890f42370a9821d295d4eb9a1809f554654fd3836139f9e249cf",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_1.txt": "a97c4ac8da21a2970e3ed664ff119e4aa5debcb320a552e45164a83faf1603c5",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_2_nodes.txt": "1dd2c0a01f688b27d21842e3b9b730eb91d7bef3877d06cdc7f4c89b374228f7",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_2_execution.json": "a61c720654f0445e01f2ab56e25d7c1da77df6ccd33b8c9a999ce239c7ea77db",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_2.json": "b2e377b79a545e9d2dd25e1c4a6abe02826df1b594841f39dd5c2039cdb83167",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_2.txt": "88a178d31407f130031c9104979c65b023e554de49198ea927d1f1ca48b1b842",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_3_nodes.txt": "e59e23f1e2d158627f8f5f53a08b2ecf5289e7f79f227c8ec454d1d6477a6cb4",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_3_execution.json": "a5816c17a3a01e99e805521e1b131de4d7f7891f464563cd0113b4761aa2ba07",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_3.json": "755277a020dfdeb8ab72b3b5a90448cd79421da3b37c6cfc03fc3ba0350fbbcc",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_3.txt": "81158d832dd78d8aa85b1fcf2903c11bb53a032a8e06ccc18a944ded1bd1704e",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_4_nodes.txt": "80127056fca17e92c088301ee72b9b23b9dfb85a2e53004eca8ed25768218107",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/shard_4_execution.json": "606e0b64eceea10a1a96c906270ea47add12e4bd3435a65516e1e2c236dffe18",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_4.json": "3ffc1da15e122a945cafd330f08f70ed2a23f7c0f97b2546bd7e88dbef2f65b5",
+    "reports/codex/M3b_evidence/final_suite_r4/shard_4.txt": "e2797477a6903da818330172e2686c187050bc6257abe49462a2d97b7f1dbb16",
+    "reports/codex/M3b_evidence/final_suite_r4/exact_construction.txt": "f6925af2f078baa9f6a8860f8c54a4d7f45adda8481e794958956d540dd12b26",
+    "reports/codex/M3b_evidence/tmp/final_suite_r4_records/export_manifest.json": "520c9fadc6323e2dcc71f8a86256292d784e6194a998b3f1d4125c08e0af4c27",
+    "reports/codex/M3b_evidence/two_d_bb52/summary.json": "c9c91e84468d47d35a9dc18ad6b9795a54749573cc5561a7315c68339053fa4b",
+    "reports/codex/M3b_evidence/boundary3d_scan.json": "dc93b7b59ca033ced43aec74a87433072e8370ce81e4d20e07d61942fc8697f4",
+    "reports/codex/M3b_evidence/two_d_mutations.json": "1a6314b5b52fdb5470bc26b2ecfa0dbd8e0332c12f80bafeb94defd0e055aefc",
+    "reports/codex/M3b_evidence/two_d_mutant_nonconvex_merge.txt": "ec3a45340b6667e9c297124ec294e6735335719fc4c39de6716959ae513b6ad7",
+    "reports/codex/M3b_evidence/two_d_mutant_index_candidate_loss.txt": "4e56f99d4d7760e5974f8c036ec966d99361c8d36bc9cb7b66ddcd17628d8974",
+    "reports/codex/M3b_evidence/two_d_mutant_strict_only_local_cover.txt": "a165c222cd6e87a2757879efbeaadce55dd6c4060222c18e55aec808bacb419f",
+    "reports/codex/M3b_evidence/two_d_mutant_drop_isolated_contact.txt": "6d8d2101846a28cadbb9fea76c32f12f36f5969b9862a0b250ed57c9e70cffc0",
+    "reports/codex/M3b_evidence/two_d_mutant_compact_probe_event_loss.txt": "74966f19974c9eadb4cfc81070ded08e50daf8dc707b67ca878130e3101382ef",
+    "reports/codex/M3b_evidence/construction3d_mutations.json": "a238c6f2e20aeb9d2bbd5ca043d929889b16c2ae9edba8cc14625eec89acbda7",
+    "reports/codex/M3b_evidence/construction3d_mutation_self_intersection.log": "e522da4b016d8b68552261706b756f32e29f5430430144ac8ef8f7cf4e9e6287",
+    "reports/codex/M3b_evidence/construction3d_mutation_spatial_omission.log": "d85fbf320a26f21fe9f8f0c4485af90a63a82d8f235479e17c988ea0ab552314",
+    "reports/codex/M3b_evidence/construction3d_mutation_nonconvex_merge.log": "4065324302ac2ac8f1b6b0d26c1a22628047cca9e010a29b81dbe5da831cf302",
+    "reports/codex/M3b_evidence/boundary3d_mutations.json": "28142512d09a97084b5368be1b669af949a656db32f0d0daf529f18207a4dced",
+    "reports/codex/M3b_evidence/boundary3d_mutation_remove_clipping.txt": "6cbff8c5edae971290a9820f0075dfc3f634bca787502c7682fc73f31bcd5789",
+    "reports/codex/M3b_evidence/boundary3d_mutation_physical_zero_one_seam.txt": "42f87ad7ab93cbf8321679aa9e3d363276a5574d2aa4278aff158ad04248626b",
+    "reports/codex/M3b_evidence/boundary3d_mutation_restore_intersecting_skip.txt": "0051e87160ea025ad07eb9ecfc280d5448b9a418f96c28af19e615ebba8525ec",
+    "reports/codex/M3b_evidence/boundary3d_numeric_mutations.json": "e8faf649589df7bb700128a32ec536cd64af43ab8fe103409cf1a6ed97e7c99b",
+    "reports/codex/M3b_evidence/boundary3d_numeric_mutation_side_step_third.txt": "0e22fb83d071dc45d723be23989a48313d30ef672527332225afd8bc1941266f",
+    "reports/codex/M3b_evidence/boundary3d_numeric_mutation_ee_normal_double.txt": "23dba2d83e10aed1f736a362c71e59cb1f2aadbdc4d71ff0305f658f27fd6647",
+    "reports/codex/M3b_evidence/construction3d_baseline_replay.json": "b1945fc3a59dd3618db68829f008359815cf6a971227b7e2b9850bed417061e9",
+    "reports/codex/M3b_evidence/construction3d_frozen_r4_replay.json": "6b77f36020cd361e46fb3b97568ce098208159184c3663d5359b0e60fb99d512",
+    "reports/codex/M3b_evidence/construction3d_frozen_r4_replay_attestation.json": "16ce2e941b8b3a13f2634ced91accfa474ef3d6b47059731ad0f60162e58e19a",
+    "reports/codex/M3b_evidence/construction3d_frozen_r4_actual_imports.json": "a25f07a10cd33c979b85b9db41ef407c19a31a0e6d7d7ccef43db5705a70a765",
+    "reports/codex/M3b_evidence/construction3d_frozen_r4_equivalence.json": "f006bb48fcf1375d222ccc336c9fcec86f303ae31c2e66c856b7f66f4a80452c",
+    "reports/codex/M3b_evidence/gp_boundary_probe.json": "938c8e3b5e940fcec9f4ec997a7a6a749a1eb676a551e18d7d82073db5a94bf5",
+    "reports/codex/M3b_evidence/m4c_refresh_attestation.json": "49206958472d652cef723f1ca6089779e073d5eb40c52e3a0508bafc42a37e57",
+    "reports/codex/M4c_evidence/frozen_summary.json": "50c5e1fafb3fa2bc71abec99dfa375b2b443ae978ce4458070685464665f4fed",
+    "reports/codex/M3b_evidence/m4c_frozen_summary_before_r2.json": "3d076437c270bd98a0e9664a3746c8b9fbd933a7af22cfbb8e36be8a1adb1043",
+    "fixtures/m4c_motion/expected.json": "2248925d8252c329652762bd9132273391a377a971a6123f287f9b8e8cc3b982",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/start.json": "5a4ae28396303e5589e8153bfdf39fcae8ba146e5bf4fd1987d51d31ff6978fd",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/summary.json": "50c5e1fafb3fa2bc71abec99dfa375b2b443ae978ce4458070685464665f4fed",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb03/audit.json": "6e844a94603de4fddae43d7644fc7c2572fcc684c1eb3dc1f98e6a9bcbc7bb6a",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb03/normalized.jsonl.gz": "796a3de10d8e5e39a0ff4cb73a006bec70de655cd2712affcc8321df02764f81",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb03/normalized.jsonl.gz": "796a3de10d8e5e39a0ff4cb73a006bec70de655cd2712affcc8321df02764f81",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb05/audit.json": "d3e1e84e0c16e8e78c8ad21976a5b3be5b5333b4e3f8391c6975810491799c3a",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb05/normalized.jsonl.gz": "26afd742076dc05b2c3c02a3c63221d7ffcb1958306341ec667b58d9613f22f3",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb05/normalized.jsonl.gz": "26afd742076dc05b2c3c02a3c63221d7ffcb1958306341ec667b58d9613f22f3",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb06/audit.json": "9a46581142ebd8815b0741b8b7b08442f261674be82e8d54c4d1f54aca9727af",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb06/normalized.jsonl.gz": "b886d718c722bf950eaf70fd704414ca285b6eded91000dc0e0b5822d5b42461",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb06/normalized.jsonl.gz": "b886d718c722bf950eaf70fd704414ca285b6eded91000dc0e0b5822d5b42461",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb09/audit.json": "c0a91e5cd0040e43c38a864d2638574b180eb7c040038aa11d97da3dd5fcb1f3",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb09/normalized.jsonl.gz": "e55697cb36387937ecaf5d0cb74a283399e0a914e164ff93222145a1e6879f5d",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb09/normalized.jsonl.gz": "e55697cb36387937ecaf5d0cb74a283399e0a914e164ff93222145a1e6879f5d",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb10/audit.json": "c7c0e44c0e09637786c21ca914b8b453efb7dd676e322f685b953ee6e1c305ab",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb10/normalized.jsonl.gz": "d4edf7308253fc368f90109955801ca6ac9898d2b8479296c3820851b340cf94",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb10/normalized.jsonl.gz": "d4edf7308253fc368f90109955801ca6ac9898d2b8479296c3820851b340cf94",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb12/audit.json": "0274f467025e2c8d7d4da1d41107c2f08583362ac7587bfb7f38d6fb7180a39f",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb12/normalized.jsonl.gz": "c8775eeb01a2976c3d93ed0de076ff53d57469514d78830861b8cbc595f5a6a0",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb12/normalized.jsonl.gz": "c8775eeb01a2976c3d93ed0de076ff53d57469514d78830861b8cbc595f5a6a0",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb50/audit.json": "eb7ce2ca7bea63d7ae7bbe386851cd14f6069cbc9c34fc1088463d3a3c814c2e",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb50/normalized.jsonl.gz": "59701c6842a4591883b810352e66d77b0cd3ac6087e595381ad98c839ef7124b",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb50/normalized.jsonl.gz": "59701c6842a4591883b810352e66d77b0cd3ac6087e595381ad98c839ef7124b",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb51/audit.json": "a2103a729c7491fa9dad3748e64327bec992314d0b22e5c3f7d0b8a01ed3670d",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb51/normalized.jsonl.gz": "2373e20ac91a99c4b60927465b1beff8eede2ce029e4606fdbd1d5d575e1cfd7",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb51/normalized.jsonl.gz": "2373e20ac91a99c4b60927465b1beff8eede2ce029e4606fdbd1d5d575e1cfd7",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb52/audit.json": "ba69e0086e722a9b400f285191d68a776d3b370f211b98b817da0ae13b39a22c",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bb52/normalized.jsonl.gz": "9282fc3866f1ff9925f1ff03c943dcbdacd40f591f3723ec5b7aad795848ac9f",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bb52/normalized.jsonl.gz": "9282fc3866f1ff9925f1ff03c943dcbdacd40f591f3723ec5b7aad795848ac9f",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbF038/audit.json": "bdf017ab34aafab51e1104240dbf2ed1b473469989afbd36ef1e0b81b47ed50a",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bbF038/normalized.jsonl.gz": "78329edff3ab43a254adc9696881f72515edec313cba876c3c81db120df4a630",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbF038/normalized.jsonl.gz": "78329edff3ab43a254adc9696881f72515edec313cba876c3c81db120df4a630",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbS038/audit.json": "10c697db5dd02037d4d80813d9a03180f9225b9cef944a96ecba098d0ae88074",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bbS038/normalized.jsonl.gz": "ef819ba2ead7e6e524fab4611407745576794300172dc7caf10bc8f10dab1438",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbS038/normalized.jsonl.gz": "ef819ba2ead7e6e524fab4611407745576794300172dc7caf10bc8f10dab1438",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv01/audit.json": "47980bbee2a5d6eab6ede1dfa016db5d5002af5d18f529455226ee3267c0a9bf",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bbv01/normalized.jsonl.gz": "415169dcecb4bd6c64f24154743fae34dcea6eb790601f6407850f517a19f08d",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv01/normalized.jsonl.gz": "415169dcecb4bd6c64f24154743fae34dcea6eb790601f6407850f517a19f08d",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv01_dbv01a/audit.json": "f0819626764bae3e0d7e1ba671c43ebaaefb0dfad1314151ce31ae835710c394",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bbv01_dbv01a/normalized.jsonl.gz": "e276ec2dd635690e4f63b262579fb22f086edc504ff87bc91edee3bb8228e382",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv01_dbv01a/normalized.jsonl.gz": "e276ec2dd635690e4f63b262579fb22f086edc504ff87bc91edee3bb8228e382",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv02/audit.json": "f60e3f176f50769bcda635265b64fd480195bdb4a391bd17f267bfb3723d14b7",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bbv02/normalized.jsonl.gz": "6cb86682566c37a9975fa5f9b23ec3637b59ac7651bb69e1f2c7f8523b63a77e",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv02/normalized.jsonl.gz": "6cb86682566c37a9975fa5f9b23ec3637b59ac7651bb69e1f2c7f8523b63a77e",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv02_dbv02a/audit.json": "815b344596e89d40471ae2eeeb959639066986a869fb07e1f33c71a11436a1bc",
+    "reports/codex/M4c_evidence/fix_frozen_replay/bbv02_dbv02a/normalized.jsonl.gz": "7f17f7582fcd191b58c99d51e438c309e5343e52a29402252c753a9c6433f040",
+    "reports/codex/M3b_evidence/tmp/m4c_frozen_refresh_r2/bbv02_dbv02a/normalized.jsonl.gz": "7f17f7582fcd191b58c99d51e438c309e5343e52a29402252c753a9c6433f040"
+  },
+  "limitations": [
+    "This audit verifies recorded local evidence, not an independent six-track G6 review.",
+    "Raw execution records stay in ignored tmp; only compact counts and bounded failure samples are emitted."
+  ]
+}

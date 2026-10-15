@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\reports\codex\M3b_evidence\two_d_mutations.py", line 112, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-m4\reports\codex\M3b_evidence\two_d_mutations.py", line 87, in main
+    child(sys.argv[2])
+  File "D:\eab-wt\cx-m4\reports\codex\M3b_evidence\two_d_mutations.py", line 82, in child
+    test_compact_side_probes_stay_in_adjacent_open_faces_before_every_event(0, "isolated_point")
+  File "D:\eab-wt\cx-m4\tests\test_m3b_2d.py", line 85, in test_compact_side_probes_stay_in_adjacent_open_faces_before_every_event
+    _assert_adjacent_open_face_probes(g)
+  File "D:\eab-wt\cx-m4\tests\test_m3b_2d.py", line 101, in _assert_adjacent_open_face_probes
+    assert inside_neighbor or outside_box, "compact side probe left its adjacent open face"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: compact side probe left its adjacent open face

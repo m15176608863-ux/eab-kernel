@@ -1,0 +1,51 @@
+{
+  "rows": [
+    {
+      "kind": "nonconvex_merge",
+      "returncode": 1,
+      "expected_assertion": "nonconvex union must not be filled by convex merging",
+      "semantic_red": true,
+      "source_hash_gate": "not_executed",
+      "traceback": "two_d_mutant_nonconvex_merge.txt"
+    },
+    {
+      "kind": "index_candidate_loss",
+      "returncode": 1,
+      "expected_assertion": "spatial index omitted a contributing cell",
+      "semantic_red": true,
+      "source_hash_gate": "not_executed",
+      "traceback": "two_d_mutant_index_candidate_loss.txt"
+    },
+    {
+      "kind": "strict_only_local_cover",
+      "returncode": 1,
+      "expected_assertion": "nonstrict local weak cover omits boundary",
+      "semantic_red": true,
+      "source_hash_gate": "not_executed",
+      "traceback": "two_d_mutant_strict_only_local_cover.txt"
+    },
+    {
+      "kind": "drop_isolated_contact",
+      "returncode": 1,
+      "expected_assertion": "isolated contact vertex was regularized away",
+      "semantic_red": true,
+      "source_hash_gate": "not_executed",
+      "traceback": "two_d_mutant_drop_isolated_contact.txt"
+    },
+    {
+      "kind": "compact_probe_event_loss",
+      "returncode": 1,
+      "expected_assertion": "compact side probe left its adjacent open face",
+      "semantic_red": true,
+      "source_hash_gate": "not_executed",
+      "traceback": "two_d_mutant_compact_probe_event_loss.txt"
+    }
+  ],
+  "all_semantic_red": true,
+  "source_sha256": {
+    "src/eab/kernel2d/global_entrance.py": "341ac55fff28a6e4af428dfa4842e802bbb1231cf0d773233229600bcd34ca40",
+    "tests/test_m3b_2d.py": "694ea27f20d7fa52cd138fc5ff493d175463a91da171bd777ef77c6a0ac48327",
+    "reports/codex/M3b_evidence/two_d_mutations.py": "dad87be6df0eb3006642ab076ff6c953eb007171369b56d9a43f38d8e94130f4"
+  },
+  "source_unchanged_during_run": true
+}

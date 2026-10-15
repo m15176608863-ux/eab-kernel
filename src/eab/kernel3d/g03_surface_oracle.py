@@ -1,4 +1,4 @@
-﻿"""Independent exact surface-distance oracle for concave G0.
+"""Independent exact surface-distance oracle for concave G0.
 
 Only coordinates and face rings enter. No production geometry or predicates are
 imported: integer face-plane/winding and edge parameters determine separation;
@@ -158,6 +158,11 @@ def separated_distance(av,af,bv,bf,*,squared=False):
     intersection, parity containment, rational vertex/face and edge/edge minima.
     Surface-contact distance zero is not mislabeled a separated sample.
     """
+    # Faces, not spare vertex-buffer capacity, define the physical surface.
+    # This independently remaps indices before parity's component traversal;
+    # a spare row must not become a fictitious isolated connected component.
+    av, af = _referenced_surface(av, af)
+    bv, bf = _referenced_surface(bv, bf)
     av=tuple(tuple(F(c) for c in p) for p in av)
     bv=tuple(tuple(F(c) for c in p) for p in bv)
     den=lcm(*(c.denominator for p in av+bv for c in p))
@@ -205,3 +210,10 @@ def separated_distance(av,af,bv,bf,*,squared=False):
     if best==0:return None
     result=best/F(den*den)
     return result if squared else sqrt_display(result)
+
+
+def _referenced_surface(vertices, faces):
+    used = sorted({i for face in faces for i in face})
+    indices = {old: new for new, old in enumerate(used)}
+    return (tuple(vertices[i] for i in used),
+            tuple(tuple(indices[i] for i in face) for face in faces))

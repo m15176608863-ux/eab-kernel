@@ -1,0 +1,1850 @@
+{
+  "schema": "eab.m3b-oracle-import-catalog.v1",
+  "files": [
+    {
+      "role": "2d_sut",
+      "path": "src/eab/kernel2d/global_entrance.py",
+      "existing_utf8_bom": false,
+      "sha256": "341ac55fff28a6e4af428dfa4842e802bbb1231cf0d773233229600bcd34ca40",
+      "imports": [
+        {
+          "line": 14,
+          "kind": "from",
+          "module": "__future__",
+          "names": [
+            {
+              "name": "annotations",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "from",
+          "module": "dataclasses",
+          "names": [
+            {
+              "name": "dataclass",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "from",
+          "module": "functools",
+          "names": [
+            {
+              "name": "lru_cache",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 19,
+          "kind": "from",
+          "module": "math",
+          "names": [
+            {
+              "name": "lcm",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 21,
+          "kind": "from",
+          "module": "..construction",
+          "names": [
+            {
+              "name": "scalar_rational",
+              "alias": null
+            },
+            {
+              "name": "sqrt_rational",
+              "alias": null
+            },
+            {
+              "name": "vector_rational",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 405,
+          "kind": "from",
+          "module": ".exact",
+          "names": [
+            {
+              "name": "ve_side_exact",
+              "alias": null
+            },
+            {
+              "name": "ev_side_exact",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "2d_oracle",
+      "path": "src/eab/kernel2d/g0_oracle.py",
+      "existing_utf8_bom": true,
+      "sha256": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+      "imports": [
+        {
+          "line": 8,
+          "kind": "from",
+          "module": "eab.oracle_construction",
+          "names": [
+            {
+              "name": "sqrt_exact",
+              "alias": null
+            },
+            {
+              "name": "scalar_exact",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 9,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "from",
+          "module": "math",
+          "names": [
+            {
+              "name": "lcm",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "2d_oracle",
+      "path": "src/eab/oracle_construction.py",
+      "existing_utf8_bom": false,
+      "sha256": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+      "imports": [
+        {
+          "line": 11,
+          "kind": "from",
+          "module": "decimal",
+          "names": [
+            {
+              "name": "Decimal",
+              "alias": null
+            },
+            {
+              "name": "DecimalException",
+              "alias": null
+            },
+            {
+              "name": "localcontext",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "from",
+          "module": "functools",
+          "names": [
+            {
+              "name": "lru_cache",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "math",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 15,
+          "kind": "import",
+          "names": [
+            {
+              "name": "struct",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "from",
+          "module": ".numeric_domain",
+          "names": [
+            {
+              "name": "ConstructionDomainError",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "3d_sut",
+      "path": "src/eab/kernel3d/global_entrance.py",
+      "existing_utf8_bom": false,
+      "sha256": "222ed67b3c2bf7dc34bef5f2fc0ec9e96589b57e9f012a1d542aa13a68646c90",
+      "imports": [
+        {
+          "line": 15,
+          "kind": "from",
+          "module": "__future__",
+          "names": [
+            {
+              "name": "annotations",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "from",
+          "module": "dataclasses",
+          "names": [
+            {
+              "name": "dataclass",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 19,
+          "kind": "from",
+          "module": "functools",
+          "names": [
+            {
+              "name": "cached_property",
+              "alias": null
+            },
+            {
+              "name": "lru_cache",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 20,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "count",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 21,
+          "kind": "from",
+          "module": "math",
+          "names": [
+            {
+              "name": "gcd",
+              "alias": null
+            },
+            {
+              "name": "lcm",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "3d_sut",
+      "path": "src/eab/kernel3d/boundary.py",
+      "existing_utf8_bom": false,
+      "sha256": "e90832cbce16ce14b4a4c6440515dd81dd01cf628b52610c8d8661fe13c3e47d",
+      "imports": [
+        {
+          "line": 10,
+          "kind": "from",
+          "module": "dataclasses",
+          "names": [
+            {
+              "name": "dataclass",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "from",
+          "module": ".",
+          "names": [
+            {
+              "name": "global_entrance",
+              "alias": "G"
+            }
+          ]
+        },
+        {
+          "line": 219,
+          "kind": "from",
+          "module": ".covers3",
+          "names": [
+            {
+              "name": "_qnormal",
+              "alias": null
+            },
+            {
+              "name": "_qvertex_contains",
+              "alias": null
+            },
+            {
+              "name": "_qedge",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "3d_oracle",
+      "path": "src/eab/kernel3d/geom3.py",
+      "existing_utf8_bom": false,
+      "sha256": "4256d31ca410923e9109c13e4436764c5459e077e9d1ef41d97a152730eb4ede",
+      "imports": [
+        {
+          "line": 17,
+          "kind": "from",
+          "module": "__future__",
+          "names": [
+            {
+              "name": "annotations",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 19,
+          "kind": "from",
+          "module": "dataclasses",
+          "names": [
+            {
+              "name": "dataclass",
+              "alias": null
+            },
+            {
+              "name": "field",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 20,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 21,
+          "kind": "from",
+          "module": "eab.numeric_domain",
+          "names": [
+            {
+              "name": "float_algebra",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 22,
+          "kind": "from",
+          "module": "eab",
+          "names": [
+            {
+              "name": "rational3",
+              "alias": "_rational3"
+            }
+          ]
+        },
+        {
+          "line": 23,
+          "kind": "from",
+          "module": "eab.construction",
+          "names": [
+            {
+              "name": "norm_rational",
+              "alias": null
+            },
+            {
+              "name": "ratio_rational",
+              "alias": null
+            },
+            {
+              "name": "scalar_rational",
+              "alias": null
+            },
+            {
+              "name": "unit_rational",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 24,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "combinations",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 25,
+          "kind": "from",
+          "module": "functools",
+          "names": [
+            {
+              "name": "lru_cache",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 26,
+          "kind": "import",
+          "names": [
+            {
+              "name": "math",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 27,
+          "kind": "from",
+          "module": "math",
+          "names": [
+            {
+              "name": "atan2",
+              "alias": null
+            },
+            {
+              "name": "sqrt",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 28,
+          "kind": "from",
+          "module": ".",
+          "names": [
+            {
+              "name": "exact_geom",
+              "alias": "_eg"
+            }
+          ]
+        },
+        {
+          "line": 47,
+          "kind": "from",
+          "module": "eab.predicates",
+          "names": [
+            {
+              "name": "orient3d",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 854,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "3d_oracle",
+      "path": "src/eab/kernel3d/exact_geom.py",
+      "existing_utf8_bom": false,
+      "sha256": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
+      "imports": [
+        {
+          "line": 8,
+          "kind": "from",
+          "module": "__future__",
+          "names": [
+            {
+              "name": "annotations",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "from",
+          "module": "eab",
+          "names": [
+            {
+              "name": "rational3",
+              "alias": "_rational3"
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "functools",
+          "names": [
+            {
+              "name": "lru_cache",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "count",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "math",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 82,
+          "kind": "from",
+          "module": "eab.construction",
+          "names": [
+            {
+              "name": "sqrt_rational",
+              "alias": null
+            },
+            {
+              "name": "scalar_rational",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 83,
+          "kind": "from",
+          "module": "eab.numeric_domain",
+          "names": [
+            {
+              "name": "float_algebra",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "3d_oracle",
+      "path": "src/eab/rational3.py",
+      "existing_utf8_bom": false,
+      "sha256": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
+      "imports": [
+        {
+          "line": 8,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 9,
+          "kind": "from",
+          "module": "math",
+          "names": [
+            {
+              "name": "gcd",
+              "alias": null
+            },
+            {
+              "name": "lcm",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "3d_oracle",
+      "path": "src/eab/kernel3d/g03_surface_oracle.py",
+      "existing_utf8_bom": false,
+      "sha256": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0",
+      "imports": [
+        {
+          "line": 9,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "from",
+          "module": "functools",
+          "names": [
+            {
+              "name": "lru_cache",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "from",
+          "module": "math",
+          "names": [
+            {
+              "name": "gcd",
+              "alias": null
+            },
+            {
+              "name": "lcm",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "..kernel2d.g0_oracle",
+          "names": [
+            {
+              "name": "sqrt_display",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "3d_oracle",
+      "path": "src/eab/kernel3d/g03_exit_oracle.py",
+      "existing_utf8_bom": false,
+      "sha256": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220",
+      "imports": [
+        {
+          "line": 8,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 9,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "count",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "from",
+          "module": ".",
+          "names": [
+            {
+              "name": "g03_surface_oracle",
+              "alias": "S"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "shared_scalar_domains_not_geometric_oracles",
+      "path": "src/eab/construction.py",
+      "existing_utf8_bom": false,
+      "sha256": "d99b3900c8406d1fc81cb0563770429313cf0691aaecf67ffc183f7477d9c9cc",
+      "imports": [
+        {
+          "line": 10,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "import",
+          "names": [
+            {
+              "name": "math",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "import",
+          "names": [
+            {
+              "name": "struct",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "from",
+          "module": ".numeric_domain",
+          "names": [
+            {
+              "name": "ConstructionDomainError",
+              "alias": null
+            },
+            {
+              "name": "exact_input",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "shared_scalar_domains_not_geometric_oracles",
+      "path": "src/eab/numeric_domain.py",
+      "existing_utf8_bom": false,
+      "sha256": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+      "imports": [
+        {
+          "line": 8,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 9,
+          "kind": "import",
+          "names": [
+            {
+              "name": "math",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "gates_with_input_and_oracle_roles",
+      "path": "tests/test_m3b_2d.py",
+      "existing_utf8_bom": false,
+      "sha256": "694ea27f20d7fa52cd138fc5ff493d175463a91da171bd777ef77c6a0ac48327",
+      "imports": [
+        {
+          "line": 8,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 9,
+          "kind": "import",
+          "names": [
+            {
+              "name": "inspect",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "from",
+          "module": "pathlib",
+          "names": [
+            {
+              "name": "Path",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "import",
+          "names": [
+            {
+              "name": "sys",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "import",
+          "names": [
+            {
+              "name": "textwrap",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "pytest",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "from",
+          "module": "eab.kernel2d",
+          "names": [
+            {
+              "name": "g0_oracle",
+              "alias": "oracle"
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "from",
+          "module": "eab.kernel2d",
+          "names": [
+            {
+              "name": "global_entrance",
+              "alias": "module"
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "from",
+          "module": "eab.kernel2d.global_entrance",
+          "names": [
+            {
+              "name": "GlobalEntrance2",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 250,
+          "kind": "from",
+          "module": "bb52_g0",
+          "names": [
+            {
+              "name": "load_blocks",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "gates_with_input_and_oracle_roles",
+      "path": "tests/test_m3b_construction3d.py",
+      "existing_utf8_bom": false,
+      "sha256": "6084b286530072cec69209a306784bf5b128b6ce6cc26abf91fd31872c201728",
+      "imports": [
+        {
+          "line": 9,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "combinations",
+              "alias": null
+            },
+            {
+              "name": "product",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "import",
+          "names": [
+            {
+              "name": "inspect",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "import",
+          "names": [
+            {
+              "name": "textwrap",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "pytest",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "global_entrance",
+              "alias": "G"
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "geom3",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "from",
+          "module": "test_m3_global3d",
+          "names": [
+            {
+              "name": "_combine",
+              "alias": null
+            },
+            {
+              "name": "_prism",
+              "alias": null
+            },
+            {
+              "name": "_twisted_prism",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "gates_with_input_and_oracle_roles",
+      "path": "tests/test_m3b_boundary3d.py",
+      "existing_utf8_bom": false,
+      "sha256": "3eb24f7db00cd43ad81896f81abb612b6337fb55ae131d20a71c86d663136c56",
+      "imports": [
+        {
+          "line": 9,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "import",
+          "names": [
+            {
+              "name": "inspect",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "import",
+          "names": [
+            {
+              "name": "textwrap",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "product",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "pytest",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "boundary",
+              "alias": "B"
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "global_entrance",
+              "alias": "G"
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "geom3",
+              "alias": null
+            },
+            {
+              "name": "g03",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 19,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "g03_surface_oracle",
+              "alias": "O"
+            }
+          ]
+        },
+        {
+          "line": 20,
+          "kind": "from",
+          "module": "test_m3_global3d",
+          "names": [
+            {
+              "name": "_prism",
+              "alias": null
+            },
+            {
+              "name": "_combine",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "gates_with_input_and_oracle_roles",
+      "path": "tests/test_m3b_boundary3d_fields.py",
+      "existing_utf8_bom": false,
+      "sha256": "5633cc7869d8812acee567582b5fdb8ac3703d522a88b6df085da43d32749cdd",
+      "imports": [
+        {
+          "line": 11,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "product",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "from",
+          "module": "math",
+          "names": [
+            {
+              "name": "lcm",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "random",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "import",
+          "names": [
+            {
+              "name": "pytest",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "boundary",
+              "alias": "B"
+            }
+          ]
+        },
+        {
+          "line": 19,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "global_entrance",
+              "alias": "G"
+            }
+          ]
+        },
+        {
+          "line": 20,
+          "kind": "from",
+          "module": "eab.kernel3d.geom3",
+          "names": [
+            {
+              "name": "Polyhedron",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "scans",
+      "path": "tools/m3b_scan2d.py",
+      "existing_utf8_bom": false,
+      "sha256": "504c0d91fe21b2f3755319a12dad5f9854912a3c77bc50bfa6a81ff27e84b530",
+      "imports": [
+        {
+          "line": 8,
+          "kind": "from",
+          "module": "__future__",
+          "names": [
+            {
+              "name": "annotations",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "import",
+          "names": [
+            {
+              "name": "argparse",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "import",
+          "names": [
+            {
+              "name": "ast",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "import",
+          "names": [
+            {
+              "name": "hashlib",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "import",
+          "names": [
+            {
+              "name": "json",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "os",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 15,
+          "kind": "from",
+          "module": "pathlib",
+          "names": [
+            {
+              "name": "Path",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "import",
+          "names": [
+            {
+              "name": "sys",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "import",
+          "names": [
+            {
+              "name": "time",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 21,
+          "kind": "from",
+          "module": "eab.kernel2d.global_entrance",
+          "names": [
+            {
+              "name": "GlobalEntrance2",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 22,
+          "kind": "from",
+          "module": "eab.kernel2d",
+          "names": [
+            {
+              "name": "g0_oracle",
+              "alias": "oracle"
+            }
+          ]
+        },
+        {
+          "line": 23,
+          "kind": "import",
+          "names": [
+            {
+              "name": "bb52_g0",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "scans",
+      "path": "tools/m3b_boundary3d_evidence.py",
+      "existing_utf8_bom": false,
+      "sha256": "7462594c163cd661cebf94884c2c3b6c01c610aaef85e380dfde61636fc06e8e",
+      "imports": [
+        {
+          "line": 6,
+          "kind": "import",
+          "names": [
+            {
+              "name": "json",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 7,
+          "kind": "import",
+          "names": [
+            {
+              "name": "sys",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 8,
+          "kind": "import",
+          "names": [
+            {
+              "name": "time",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 9,
+          "kind": "import",
+          "names": [
+            {
+              "name": "hashlib",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "import",
+          "names": [
+            {
+              "name": "subprocess",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "pathlib",
+          "names": [
+            {
+              "name": "Path",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "from",
+          "module": "test_m3b_boundary3d",
+          "names": [
+            {
+              "name": "audit",
+              "alias": null
+            },
+            {
+              "name": "pairs",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "from",
+          "module": "test_m3_global3d",
+          "names": [
+            {
+              "name": "_combine",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "geom3",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "scans",
+      "path": "tools/m3b_construction3d_evidence.py",
+      "existing_utf8_bom": false,
+      "sha256": "33e33c3395f15bc229f8f6c6962a3676a0c5fa17fac24b160dbde4b877049d8a",
+      "imports": [
+        {
+          "line": 7,
+          "kind": "import",
+          "names": [
+            {
+              "name": "argparse",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 8,
+          "kind": "import",
+          "names": [
+            {
+              "name": "hashlib",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 9,
+          "kind": "import",
+          "names": [
+            {
+              "name": "importlib.util",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 10,
+          "kind": "import",
+          "names": [
+            {
+              "name": "json",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 11,
+          "kind": "import",
+          "names": [
+            {
+              "name": "os",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "pathlib",
+          "names": [
+            {
+              "name": "Path",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "import",
+          "names": [
+            {
+              "name": "statistics",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "import",
+          "names": [
+            {
+              "name": "subprocess",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 15,
+          "kind": "import",
+          "names": [
+            {
+              "name": "sys",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "import",
+          "names": [
+            {
+              "name": "time",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 27,
+          "kind": "import",
+          "names": [
+            {
+              "name": "eab.kernel3d",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 38,
+          "kind": "import",
+          "names": [
+            {
+              "name": "inspect",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 39,
+          "kind": "import",
+          "names": [
+            {
+              "name": "textwrap",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 40,
+          "kind": "import",
+          "names": [
+            {
+              "name": "test_m3b_construction3d",
+              "alias": "T"
+            }
+          ]
+        },
+        {
+          "line": 93,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 94,
+          "kind": "from",
+          "module": "eab.kernel3d",
+          "names": [
+            {
+              "name": "global_entrance",
+              "alias": "G"
+            },
+            {
+              "name": "interlock",
+              "alias": "I"
+            }
+          ]
+        },
+        {
+          "line": 95,
+          "kind": "from",
+          "module": "eab.kernel3d.geom3",
+          "names": [
+            {
+              "name": "box",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 96,
+          "kind": "from",
+          "module": "test_interlock_exact",
+          "names": [
+            {
+              "name": "_wall",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 97,
+          "kind": "from",
+          "module": "osteomorphic",
+          "names": [
+            {
+              "name": "interlocking_pair",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "scans",
+      "path": "reports/codex/M3b_evidence/gp_boundary_probe.py",
+      "existing_utf8_bom": false,
+      "sha256": "960700c32b88112d8c02963e86e2773ce3d6b990e739dbd21b88e777cb12d44f",
+      "imports": [
+        {
+          "line": 12,
+          "kind": "from",
+          "module": "fractions",
+          "names": [
+            {
+              "name": "Fraction",
+              "alias": "F"
+            }
+          ]
+        },
+        {
+          "line": 13,
+          "kind": "from",
+          "module": "itertools",
+          "names": [
+            {
+              "name": "combinations",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 14,
+          "kind": "from",
+          "module": "pathlib",
+          "names": [
+            {
+              "name": "Path",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 15,
+          "kind": "import",
+          "names": [
+            {
+              "name": "hashlib",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 16,
+          "kind": "import",
+          "names": [
+            {
+              "name": "importlib.util",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 17,
+          "kind": "import",
+          "names": [
+            {
+              "name": "json",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 18,
+          "kind": "import",
+          "names": [
+            {
+              "name": "random",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 19,
+          "kind": "import",
+          "names": [
+            {
+              "name": "sys",
+              "alias": null
+            }
+          ]
+        },
+        {
+          "line": 20,
+          "kind": "import",
+          "names": [
+            {
+              "name": "time",
+              "alias": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Direct AST imports, including nested and conditional imports; not a dynamic import trace or complete transitive closure.",
+    "A test imports both SUT and input builders. Its expected-value independence is established by the gate docstring and reviewed call path, not by import disjointness alone."
+  ]
+}

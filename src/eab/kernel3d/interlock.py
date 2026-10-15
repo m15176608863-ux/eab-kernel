@@ -39,6 +39,7 @@ from .exact_geom import sqrt_rational
 from . import exact_geom as _exact
 from .exact_sweep import surface_events, translate_exact, star_core, contact_models
 from .global_entrance import global_entrance
+from . import global_entrance as _global3d
 
 _EPS = sys.float_info.epsilon
 REL_BRUTE_GEOM_TOL = 1e-12         # oracle 的谓词容差：特征长度 L 的相对量
@@ -229,7 +230,21 @@ def _nonpenetrating_at(A, B, offset, height):
     unions, including isolated touching points between two open intervals.
     Gate: test_escape_height_has_zero_brute_predicate_calls.
     """
-    return global_entrance(A, B).line_sections(offset).classify(height)
+    sections = _escape_sections(tuple(A.verts), tuple(A.faces), tuple(B.verts), tuple(B.faces),
+                                tuple(offset), global_entrance, _global3d._decompose,
+                                _global3d._slab_interval, _global3d._merge,
+                                _global3d._line_candidate, _global3d._validate_embedded,
+                                _global3d._merge_parts)
+    return _global3d.LineSections3D.classify(sections, height)
+
+
+@lru_cache(maxsize=512)
+def _escape_sections(av, af, bv, bf, offset, builder, decomposition, intervals, merge, candidates,
+                     validation, convex_merge):
+    # Raw surfaces are much smaller cache keys than Steiner cell face lists.
+    # Function identities keep semantic fault injection visible through caches.
+    model = global_entrance(Polyhedron(av, af), Polyhedron(bv, bf))
+    return _global3d.GlobalEntrance3D.line_sections(model, offset)
 
 
 def _prior_intervals(times, height):

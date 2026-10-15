@@ -229,3 +229,17 @@
 M3 的“带洞”一致性族指入口块 E 的洞，不表示本单支持带洞输入多环。
 二次根证书可精确表示不可显示量；显示有限域与明确异常仍按 construction.py 合同。
 一般非零转动/应变残差的首盖稳定性不是数值显示合同，不由三档门推出，另列 M4c 的未认证范围。
+
+## M3b 增量（2026-10-15；旧 M3/M4c 表为历史，不改计数）
+
+| 新增/补齐构造量 | 处置 | 独立逐值参考与范围 |
+|---|---|---|
+| `GlobalEntrance2` opt-in `merge_convex/compact_subdivision` 的 parts、V/E/F、胞样本/标签、整数半平面、侧探针 | differential | `test_m3b_2d.py::test_every_compact_subdivision_coordinate_has_an_independent_rectangle_value`，2^-400/1/2^400 独立矩形全字段手值；`test_compact_constructions_three_tiers_with_independent_rigid_motion` 补有理旋转与独立大平移。完整接触骨架保持 E/O（含孤立0点），不保持原人工内缝索引。 |
+| `GlobalEntrance3D.parts_a/parts_b`、`ConvexPart3D.vertices/faces/interior` | differential 补齐 | `test_both_parts_and_ordered_face_subsets_have_three_scale_exact_references`：三档非对称不同 A/B，逐顶点、逐面有序子集、逐内点参考。一般 BSP 见下一行。 |
+| 一般 BSP Steiner、斜平面两侧 `_split_cell` 点/面/内点 | differential | `test_general_bsp_steiner_values_match_independent_cramer_at_three_scales` / `test_general_plane_clip_both_sides_have_independent_exact_vertices`：独立原面方程+3×3 Cramer，全部极点被表示、所有含共线冗余的存储点有独立精确参考，并核面支撑/绕向。不是独立重演 BSP 分支/拓扑次序；覆盖另有原表面 oracle 门。 |
+| `ExplicitBoundary3D`、`BoundaryPatch3D`、`LocalCoverPatch3D` 的点/法向/双侧点、全部 planes/arrangement/probes、`shortest_exit` 平方与所有并列见证 | differential | `test_m3b_boundary3d_fields.py::test_all_boundary_fields_have_independent_cartesian_values`：真实公开入口的 2^-400/1/2^400 × 平移模长 0/1e3/1e5/1e6，seeded quaternion 一般有理 SO(3)，独立固定盒三角/支持值核全部冗余 SAT planes、每片坐标/法向/双侧点及状态/来源、所有 VF/FV/EE 及裁剪坐标/原法向、距离与全并列见证。环按坐标集加独立绕向而非字节次序。全字段仅认证此 box 分支，不声称一般裁剪 Steiner 坐标已被此门穷尽；一般凹/紧配另有完整安排/原子覆盖语义门。 |
+| `_bounds`、任意方向 `_line_candidate` 参数界；缓存线端点 | differential/reuse | 原始 Fraction 坐标 min/max 差界与闭区间交；`test_spatial_pruning_handles_nonaxial_lines_without_dropping_tangencies` 核切触不丢，遗漏候选真实变异；全部 392 逃逸重放另逐 Fraction 核对。 |
+| `g03_exit_oracle.closed_exit` 方向事件/出口参数 | differential | 原表面独立整数/有理平面事件超集；`test_intersecting_exit_is_checked_and_skip_mutation_is_killed` 对被测全局区间。给定方向下确界不是欧氏最短出口。 |
+| 精确嵌入认证结果、unused-buffer 重索引、结构 hash | nonconstructive | 离散认证/索引/缓存键，不输出新几何实数。非法交、流形、定向、零体积负例与刚体/单位门；缓存数值端点不因此豁免逐值检查。 |
+
+静态新增 39 项局部 AST 钉选：25 项测试变异/缓存隔离脚手架、3 项不可变结构 hash 缓存、11 项精确调用/报告输出的保守分析缺口；原 g03 scope 内 21 项及独立表面 oracle 的 2 项最终显示节点人工续签。每条具体节点、理由、上下文哈希在 `reports/codex/M3b_evidence/static_review.json`，全局白名单未扩张。零违例不是“零证明缺口”。

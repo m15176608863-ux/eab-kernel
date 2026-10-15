@@ -110,11 +110,11 @@
 
 **E5a 验收订正（WO-E5a2，2026-10-12）**：所有者明确系统临时目录不属于姊妹仓库/其他工作树保护红线，撤销“整单作废”的判断，将 E5a 按部分完成提交为 `5b09ea3`（所有者独立复跑 7907 passed / 1829 s）。旧报告保留作历史证据，不删除旧临时文件。本单在该提交上续作；具体修改、实测和未达项以 `reports/codex/E5a2_report.md` 为准，未过 G6。
 
-当前全套 **12761** 个测试节点全部通过（M3增加99项；起点12662项）。四分片实际执行、节点集合核对、零skip及耗时见 [M3报告](reports/codex/M3_report.md)；不是新鲜Git worktree或独立G6退出证据。
+M3 第一段历史全套 **12761** 个测试节点全部通过（M3增加99项；起点12662项）。四分片实际执行、节点集合核对、零skip及耗时见 [M3报告](reports/codex/M3_report.md)；不是新鲜Git worktree或独立G6退出证据。
 
 - **M4a**：45帧离线接缝核验，仍是静态局部盖影子，不是运动首入或力学等价。
 - **M4b**：据 [已存报告](reports/codex/M4b_report.md)，15例1810步legacy默认＋shadow只读旁路；真正eab替换未获批准。本单没有重跑或修改姊妹库。
-- **M3**：二维全局E/O、剖分、裁剪、距离/PD_closed和首入，三维凸并成员及逃逸去谓词已经实现并配门（`test_m3_global2d.py`、`test_m3_global3d.py`、`test_m3_theory.py`、`test_m3_exit_oracle.py`）；验收仍为 **PARTIAL**：bb52完整剖分探针、三维显式边界/强完备、完整构造量数值审计和独立G6未完成。原局部出口兼容API并未变成全局出口。
+- **M3 / M3b**：二维闭有效盖弱覆盖证明及 bb52 全 21 对完整语义剖分探针；三维显式边界片覆盖/局部盖裁剪、相交侧方向出口、嵌入输入认证及构造数值门已有实现。具名门为 `test_m3b_2d.py`、`test_m3b_boundary3d.py`、`test_m3b_construction3d.py`，具体证明条件与实测见 [M3b报告](reports/codex/M3b_report.md)。仍为 **PARTIAL，待独立 G6**：任意退化原始盖的普遍弱覆盖未证明，Xbloc 认证实体及完整逃逸冷启动提速未完成。完整语义粗化剖分不等于原三角胞全部人工内缝 overlay；方向出口不等于最短分离。
 **复核覆盖（2026-10-10，第四轮 claims-vs-code 镜头核对后逐文件如实列）**：下表里写着"未经复核·待 G6"的行，按两份报告的 coverage_notes
 实查——**有逐行读的记录**：`tests/test_margin.py`（g6b theory-fidelity，"most of"）、`tests/test_frozen_lowdim.py`（同上）、
 `tests/test_interlock_sensitivity.py`（只有陡折门）、`tests/test_end_to_end_cb2.py`（g6b gate-quality；g6c 只执行）；

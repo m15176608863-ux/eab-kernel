@@ -4557,10 +4557,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-method-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0346",
@@ -4568,10 +4568,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-method-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0347",
@@ -4579,10 +4579,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-method-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0348",
@@ -4590,10 +4590,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='sqrt_display', ctx=Load()), args=[Name(id='truth2', ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
+      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0349",
@@ -4601,10 +4601,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='_display_witness_distance', ctx=Load()), args=[Attribute(value=Name(id='c', ctx=Load()), attr='point_a', ctx=Load()), Attribute(value=Name(id='c', ctx=Load()), attr='point_b', ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0350",
@@ -4612,10 +4612,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='_witness_squared', ctx=Load()), args=[Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
+      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0351",
@@ -4623,10 +4623,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='enumerate_covers3', ctx=Load()), args=[Name(id='va', ctx=Load()), Name(id='vb', ctx=Load())], keywords=[keyword(arg='window', value=Call(func=Name(id='float', ctx=Load()), args=[Constant(value='inf')], keywords=[])), keyword(arg='tol', value=Name(id='tol', ctx=Load()))])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0352",
@@ -4634,10 +4634,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。rep.completeness_failures.append 保存 (x,minimum2,truth2) 精确差异证据，没有数值变换或构造；不因报告对象别处有显示误差字段而把这里当作数值函数。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。rep.completeness_failures.append 保存 (x,minimum2,truth2) 精确差异证据，没有数值变换或构造；不因报告对象别处有显示误差字段而把这里当作数值函数。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0353",
@@ -4645,10 +4645,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0354",
@@ -4656,10 +4656,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.failures.append((x, got, truth))。rep.failures.append((x,got,truth)) 仅保存精确 completeness 或显示构造检查的失败证据；got/truth 是显示值不作为此 append 的几何输入。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_round5_supplement_review.json"
+      "reason": "具体节点：rep.failures.append((x, got, truth))。rep.failures.append((x,got,truth)) 仅保存精确 completeness 或显示构造检查的失败证据；got/truth 是显示值不作为此 append 的几何输入。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0355",
@@ -4667,10 +4667,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_display_witness_distance', ctx=Load()), args=[Attribute(value=Name(id='c', ctx=Load()), attr='point_a', ctx=Load()), Attribute(value=Name(id='c', ctx=Load()), attr='point_b', ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0356",
@@ -4678,10 +4678,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='enumerate_covers3', ctx=Load()), args=[Name(id='va', ctx=Load()), Name(id='vb', ctx=Load())], keywords=[keyword(arg='window', value=Call(func=Name(id='float', ctx=Load()), args=[Constant(value='inf')], keywords=[])), keyword(arg='tol', value=Name(id='tol', ctx=Load()))])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0357",
@@ -4689,10 +4689,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='radius', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]))",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0358",
@@ -4700,10 +4700,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='base', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]), op=Add(), right=BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='radius', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[])))",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：Fraction(base[i]) + Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：Fraction(base[i]) + Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0359",
@@ -4711,10 +4711,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]), op=Add(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='x', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]))",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：Fraction(v[i]) + Fraction(x[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
+      "reason": "具体节点：Fraction(v[i]) + Fraction(x[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0360",
@@ -4722,10 +4722,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='separated_distance', ctx=Load()), args=[Attribute(value=Name(id='At', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='At', ctx=Load()), attr='faces', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='faces', ctx=Load())], keywords=[keyword(arg='squared', value=Constant(value=True))])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces, squared=True)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces, squared=True)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0361",
@@ -4733,10 +4733,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='sqrt_display', ctx=Load()), args=[Name(id='truth2', ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0362",
@@ -4744,10 +4744,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='_witness_squared', ctx=Load()), args=[Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0363",
@@ -4755,10 +4755,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0364",
@@ -4766,10 +4766,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0365",
@@ -4777,10 +4777,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0366",
@@ -4865,10 +4865,10 @@
       "function": "separated_distance",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='result', ctx=Load())], keywords=[])",
-      "context": "451e72e7215054c6314c0a79673582c1f245943db81ad686455c9fb47a3695e9",
+      "context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：sqrt_display(result)。separated_distance 先清输入 Fraction 的共同正分母，best 在整数/有理完整投影平方上比较；result=best/F(den*den)，squared=False 时才 sqrt_display(result)。循环/keep 闭包没有把 best 改为 float，需 CFG/source 摘要保持这个不变量。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
+      "reason": "具体节点：sqrt_display(result)。separated_distance 先清输入 Fraction 的共同正分母，best 在整数/有理完整投影平方上比较；result=best/F(den*den)，squared=False 时才 sqrt_display(result)。循环/keep 闭包没有把 best 改为 float，需 CFG/source 摘要保持这个不变量。 M3b local review: Independent face-reference index remapping removes unused buffer rows before integer scaling. Final sqrt_display(result) is unchanged and only used when squared=False; squared=True remains Fraction-only.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0374",
@@ -4876,10 +4876,10 @@
       "function": "separated_distance",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='result', ctx=Load())], keywords=[])",
-      "context": "451e72e7215054c6314c0a79673582c1f245943db81ad686455c9fb47a3695e9",
+      "context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：sqrt_display(result)。separated_distance 首先把所有坐标 F 转換并清共同正分母为整数，best 通过完整精确投影/边边距离比较更新，result=best/F(den*den)。squared=False 才在最终 sqrt_display 独立证书构造；不存在先 rounded 差再开方。",
-      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
+      "reason": "具体节点：sqrt_display(result)。separated_distance 首先把所有坐标 F 转換并清共同正分母为整数，best 通过完整精确投影/边边距离比较更新，result=best/F(den*den)。squared=False 才在最终 sqrt_display 独立证书构造；不存在先 rounded 差再开方。 M3b local review: Independent face-reference index remapping removes unused buffer rows before integer scaling. Final sqrt_display(result) is unchanged and only used when squared=False; squared=True remains Fraction-only.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     },
     {
       "id": "R12b-L0375",
@@ -35218,6 +35218,435 @@
       "category": "RUNTIME_TEST_ORACLE_REVIEW",
       "reason": "Specific node: float(-tiny). Independent exact selected-contact force is -tiny,10. The sole float(-tiny) is final expected display, with explicit exact certificate equality, iff-underflow flag and signed-zero assertions; original subnormal LP success gate stays unchanged.",
       "review_evidence": "reports/codex/R15FIX_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0001",
+      "path": "src/eab/kernel3d/global_entrance.py",
+      "function": "<module>",
+      "rule": "closed-import",
+      "node": "ImportFrom(module='functools', names=[alias(name='cached_property'), alias(name='lru_cache')], level=0)",
+      "context": "3c2a92311112c63f52dc96228ec364679acde52d0b0e744505097d49be731a97",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Standard functools cached_property/lru_cache import only; no numeric geometry is constructed. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0002",
+      "path": "src/eab/kernel3d/global_entrance.py",
+      "function": "ConvexPart3D._hash",
+      "rule": "closed-decorator",
+      "node": "Name(id='cached_property', ctx=Load())",
+      "context": "d7b037eaaa2170bf94007edceeb077b101c8caebf9c2e4af4f7d1ad4f679da24",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Memoized integer structural hash of immutable exact vertices/faces/interior. Equality and hash semantics unchanged; never a geometric predicate. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0003",
+      "path": "src/eab/kernel3d/global_entrance.py",
+      "function": "ConvexPart3D._hash",
+      "rule": "closed-callable-value",
+      "node": "Name(id='cached_property', ctx=Load())",
+      "context": "d7b037eaaa2170bf94007edceeb077b101c8caebf9c2e4af4f7d1ad4f679da24",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Memoized integer structural hash of immutable exact vertices/faces/interior. Equality and hash semantics unchanged; never a geometric predicate. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0004",
+      "path": "src/eab/kernel3d/boundary.py",
+      "function": "local_cover_candidates",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Name(id='_hull', ctx=Load()), args=[Name(id='differences', ctx=Load()), Name(id='exact_normal', ctx=Load())], keywords=[])",
+      "context": "74a9bfe78cbc78427e4cdbfd73c9b02f59ef0a2abcc71993536751a90a90f3db",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "EE-only reviewed calls: differences have explicit F(b)-F(a) channels and exact_normal explicit F channels. Planar hull is rational orientation and sorting; dataclass stores values. Independent three-tier Cartesian construction and atomic coverage gates support this finite manual review. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0005",
+      "path": "src/eab/kernel3d/boundary.py",
+      "function": "local_cover_candidates",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Name(id='_hull', ctx=Load()), args=[Name(id='differences', ctx=Load()), Name(id='exact_normal', ctx=Load())], keywords=[])",
+      "context": "74a9bfe78cbc78427e4cdbfd73c9b02f59ef0a2abcc71993536751a90a90f3db",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "EE-only reviewed calls: differences have explicit F(b)-F(a) channels and exact_normal explicit F channels. Planar hull is rational orientation and sorting; dataclass stores values. Independent three-tier Cartesian construction and atomic coverage gates support this finite manual review. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0006",
+      "path": "src/eab/kernel3d/boundary.py",
+      "function": "local_cover_candidates",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Name(id='LocalCoverPatch3D', ctx=Load()), args=[Tuple(elts=[Constant(value='EE'), Tuple(elts=[Constant(value='edge'), Starred(value=Name(id='ea', ctx=Load()), ctx=Load())], ctx=Load()), Tuple(elts=[Constant(value='edge'), Starred(value=Name(id='eb', ctx=Load()), ctx=Load())], ctx=Load())], ctx=Load()), Name(id='polygon', ctx=Load()), Name(id='exact_normal', ctx=Load())], keywords=[])",
+      "context": "74a9bfe78cbc78427e4cdbfd73c9b02f59ef0a2abcc71993536751a90a90f3db",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "EE-only reviewed calls: differences have explicit F(b)-F(a) channels and exact_normal explicit F channels. Planar hull is rational orientation and sorting; dataclass stores values. Independent three-tier Cartesian construction and atomic coverage gates support this finite manual review. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0007",
+      "path": "src/eab/kernel3d/boundary.py",
+      "function": "local_cover_candidates",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Name(id='LocalCoverPatch3D', ctx=Load()), args=[Tuple(elts=[Constant(value='EE'), Tuple(elts=[Constant(value='edge'), Starred(value=Name(id='ea', ctx=Load()), ctx=Load())], ctx=Load()), Tuple(elts=[Constant(value='edge'), Starred(value=Name(id='eb', ctx=Load()), ctx=Load())], ctx=Load())], ctx=Load()), Name(id='polygon', ctx=Load()), Name(id='exact_normal', ctx=Load())], keywords=[])",
+      "context": "74a9bfe78cbc78427e4cdbfd73c9b02f59ef0a2abcc71993536751a90a90f3db",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "EE-only reviewed calls: differences have explicit F(b)-F(a) channels and exact_normal explicit F channels. Planar hull is rational orientation and sorting; dataclass stores values. Independent three-tier Cartesian construction and atomic coverage gates support this finite manual review. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0008",
+      "path": "src/eab/kernel3d/g03_exit_oracle.py",
+      "function": "closed_exit",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='S', ctx=Load()), attr='separated_distance', ctx=Load()), args=[Name(id='vertices', ctx=Load()), Attribute(value=Name(id='A', ctx=Load()), attr='faces', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='faces', ctx=Load())], keywords=[keyword(arg='squared', value=Constant(value=True))])",
+      "context": "be42fb4d31845f6e453f6b89a61a6bdf972bb941c5ffaa1a5f85ce9cd8a53afb",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "Explicit squared=True independently computes None or a Fraction squared distance, never its optional display sqrt branch. Only None is tested to classify an event interval. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0009",
+      "path": "src/eab/kernel3d/g03_exit_oracle.py",
+      "function": "closed_exit",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Attribute(value=Name(id='S', ctx=Load()), attr='separated_distance', ctx=Load()), args=[Name(id='vertices', ctx=Load()), Attribute(value=Name(id='A', ctx=Load()), attr='faces', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='faces', ctx=Load())], keywords=[keyword(arg='squared', value=Constant(value=True))])",
+      "context": "be42fb4d31845f6e453f6b89a61a6bdf972bb941c5ffaa1a5f85ce9cd8a53afb",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "Explicit squared=True independently computes None or a Fraction squared distance, never its optional display sqrt branch. Only None is tested to classify an event interval. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0010",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unknown-member",
+      "node": "Call(func=Attribute(value=Name(id='exit_oracle', ctx=Load()), attr='closed_exit', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='x', ctx=Load())], keywords=[keyword(arg='planes', value=Name(id='planes', ctx=Load())), keyword(arg='direction', value=Name(id='direction', ctx=Load()))])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "New intersecting branch calls independent rational original-surface event oracle; result is exact exit parameter. Report list append preserves actual/expected without feeding geometry. Restore-skip mutation fails sample execution semantics. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0011",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-method-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='actual', ctx=Load()), Name(id='expected', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "New intersecting branch calls independent rational original-surface event oracle; result is exact exit parameter. Report list append preserves actual/expected without feeding geometry. Restore-skip mutation fails sample execution semantics. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0012",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='exit_oracle', ctx=Load()), attr='closed_exit', ctx=Load()), args=[Name(id='A', ctx=Load()), Name(id='B', ctx=Load()), Name(id='x', ctx=Load())], keywords=[keyword(arg='planes', value=Name(id='planes', ctx=Load())), keyword(arg='direction', value=Name(id='direction', ctx=Load()))])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "New intersecting branch calls independent rational original-surface event oracle; result is exact exit parameter. Report list append preserves actual/expected without feeding geometry. Restore-skip mutation fails sample execution semantics. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0013",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='actual', ctx=Load()), Name(id='expected', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "New intersecting branch calls independent rational original-surface event oracle; result is exact exit parameter. Report list append preserves actual/expected without feeding geometry. Restore-skip mutation fails sample execution semantics. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0014",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='actual', ctx=Load()), Name(id='expected', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "New intersecting branch calls independent rational original-surface event oracle; result is exact exit parameter. Report list append preserves actual/expected without feeding geometry. Restore-skip mutation fails sample execution semantics. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0015",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_clear_mutation_caches",
+      "rule": "closed-decorator",
+      "node": "Call(func=Attribute(value=Name(id='pytest', ctx=Load()), attr='fixture', ctx=Load()), args=[], keywords=[keyword(arg='autouse', value=Constant(value=True))])",
+      "context": "e1252eb685abb18cdd40127ec57316df24e047d72b38332ee6e14fe747beaa66",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test fixture yield and cache_clear isolate test state; no numeric coordinate constructed. Mutation cannot be concealed by stale decomposition/line caches. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0016",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_clear_mutation_caches",
+      "rule": "closed-syntax",
+      "node": "Yield()",
+      "context": "e1252eb685abb18cdd40127ec57316df24e047d72b38332ee6e14fe747beaa66",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test fixture yield and cache_clear isolate test state; no numeric coordinate constructed. Mutation cannot be concealed by stale decomposition/line caches. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0017",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_clear_mutation_caches",
+      "rule": "closed-unknown-member",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_decompose', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "e1252eb685abb18cdd40127ec57316df24e047d72b38332ee6e14fe747beaa66",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test fixture yield and cache_clear isolate test state; no numeric coordinate constructed. Mutation cannot be concealed by stale decomposition/line caches. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0018",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_clear_mutation_caches",
+      "rule": "closed-unknown-member",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_line_sections', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "e1252eb685abb18cdd40127ec57316df24e047d72b38332ee6e14fe747beaa66",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test fixture yield and cache_clear isolate test state; no numeric coordinate constructed. Mutation cannot be concealed by stale decomposition/line caches. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0019",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-method-call",
+      "node": "Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='count', ctx=Load()), args=[Name(id='before', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0020",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-dynamic-call",
+      "node": "Call(func=Name(id='vars', ctx=Load()), args=[Name(id='G', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0021",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-dynamic-call",
+      "node": "Call(func=Name(id='exec', ctx=Load()), args=[Call(func=Name(id='compile', ctx=Load()), args=[Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='replace', ctx=Load()), args=[Name(id='before', ctx=Load()), Name(id='after', ctx=Load())], keywords=[]), Constant(value='<M3b internal semantic mutation>'), Constant(value='exec')], keywords=[]), Name(id='namespace', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0022",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-dynamic-call",
+      "node": "Call(func=Name(id='compile', ctx=Load()), args=[Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='replace', ctx=Load()), args=[Name(id='before', ctx=Load()), Name(id='after', ctx=Load())], keywords=[]), Constant(value='<M3b internal semantic mutation>'), Constant(value='exec')], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0023",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-method-call",
+      "node": "Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='replace', ctx=Load()), args=[Name(id='before', ctx=Load()), Name(id='after', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0024",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-dynamic-call",
+      "node": "Call(func=Attribute(value=Name(id='monkeypatch', ctx=Load()), attr='setattr', ctx=Load()), args=[Name(id='G', ctx=Load()), Attribute(value=Name(id='function', ctx=Load()), attr='__name__', ctx=Load()), Subscript(value=Name(id='namespace', ctx=Load()), slice=Attribute(value=Name(id='function', ctx=Load()), attr='__name__', ctx=Load()), ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0025",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-runtime-reflection",
+      "node": "Attribute(value=Name(id='function', ctx=Load()), attr='__name__', ctx=Load())",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0026",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unknown-member",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_decompose', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0027",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unknown-member",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_line_sections', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0028",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_clear_mutation_caches",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_decompose', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "e1252eb685abb18cdd40127ec57316df24e047d72b38332ee6e14fe747beaa66",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test fixture yield and cache_clear isolate test state; no numeric coordinate constructed. Mutation cannot be concealed by stale decomposition/line caches. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0029",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_clear_mutation_caches",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_line_sections', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "e1252eb685abb18cdd40127ec57316df24e047d72b38332ee6e14fe747beaa66",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test fixture yield and cache_clear isolate test state; no numeric coordinate constructed. Mutation cannot be concealed by stale decomposition/line caches. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0030",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='inspect', ctx=Load()), attr='getsource', ctx=Load()), args=[Name(id='function', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0031",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='textwrap', ctx=Load()), attr='dedent', ctx=Load()), args=[Call(func=Attribute(value=Name(id='inspect', ctx=Load()), attr='getsource', ctx=Load()), args=[Name(id='function', ctx=Load())], keywords=[])], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0032",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='count', ctx=Load()), args=[Name(id='before', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0033",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Name(id='vars', ctx=Load()), args=[Name(id='G', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0034",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='replace', ctx=Load()), args=[Name(id='before', ctx=Load()), Name(id='after', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0035",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Name(id='compile', ctx=Load()), args=[Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='replace', ctx=Load()), args=[Name(id='before', ctx=Load()), Name(id='after', ctx=Load())], keywords=[]), Constant(value='<M3b internal semantic mutation>'), Constant(value='exec')], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0036",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Name(id='exec', ctx=Load()), args=[Call(func=Name(id='compile', ctx=Load()), args=[Call(func=Attribute(value=Name(id='source', ctx=Load()), attr='replace', ctx=Load()), args=[Name(id='before', ctx=Load()), Name(id='after', ctx=Load())], keywords=[]), Constant(value='<M3b internal semantic mutation>'), Constant(value='exec')], keywords=[]), Name(id='namespace', ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0037",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='monkeypatch', ctx=Load()), attr='setattr', ctx=Load()), args=[Name(id='G', ctx=Load()), Attribute(value=Name(id='function', ctx=Load()), attr='__name__', ctx=Load()), Subscript(value=Name(id='namespace', ctx=Load()), slice=Attribute(value=Name(id='function', ctx=Load()), attr='__name__', ctx=Load()), ctx=Load())], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0038",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_decompose', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "M3b-L0039",
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='G', ctx=Load()), attr='_line_sections', ctx=Load()), attr='cache_clear', ctx=Load()), args=[], keywords=[])",
+      "context": "8e3daa1752554bccea95eb650b2e3b7f8ce536ffabf21f4ad8a7c636bfb7a250",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     }
   ]
 }
