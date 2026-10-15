@@ -1,0 +1,29 @@
+{
+  "schema": "eab.m5c-combined-publisher-freeze.v1",
+  "ready": true,
+  "status": "FROZEN_PUBLISHED_AND_VERIFIED",
+  "files": {
+    "tools/m5c_publish_combined.py": "5ba129d7a26a1c622b3a05b725dcf4d7612f542aabb78daba5e9ab1c0d1e4669",
+    "tests/test_m5c_combined_evidence.py": "5029d72a98d2cf94eb8fdf9912f675828f387fbc8dc689f5b13e05ab10e58741"
+  },
+  "pytest_command": "python -m pytest -q -p no:cacheprovider --basetemp reports/codex/M5c_evidence/tmp/combined_false_compat_r2 tests/test_m5c_combined_evidence.py --deselect=tests/test_m5c_combined_evidence.py::test_frozen_combined_summary_has_complete_cohorts_current_sources_and_bound_upstream_summaries",
+  "last_line": "36 passed, 1 deselected in 0.97s",
+  "static_violations": 0,
+  "deselected": "only the exact frozen combined-summary artifact gate, pending actual publication",
+  "actual_research_exact_rows_recount": {
+    "rows": 68,
+    "certified_union": 19,
+    "by_case_matches_after_false_only_normalization": true
+  },
+  "true_boolean_count_accepted": false,
+  "production_or_research_closure_changed": false,
+  "run_command": "python tools/m5c_publish_combined.py --name combined_final_r1",
+  "publication_verification": {
+    "path": "reports/codex/M5c_evidence/combined_publication_verification.json",
+    "sha256": "fd9e21d321b48fade8b3b7bd877c565b5356c23d099bd6566e0047fff42eda0d",
+    "summary_sha256": "d2fcf50dab4a047fac9c9d1cf509b21027c742847d63528e4423f13d119806c6",
+    "last_line": "130 passed in 5.48s",
+    "skipped": 0,
+    "deselected": 0
+  }
+}

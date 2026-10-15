@@ -1,0 +1,28 @@
+{
+  "review_scope": "A6/A7 independent review",
+  "critical": 0,
+  "major": 0,
+  "status": "CODE_PASS_PENDING_FRESH_SUMMARY_RUN",
+  "selected": 26,
+  "executed": 26,
+  "deselected_pending_summary": 2,
+  "skipped": 0,
+  "pytest_last_line": "26 passed, 2 deselected in 2.06s",
+  "closure_counts": {
+    "endpoint": 29,
+    "robust": 21
+  },
+  "closed_findings": [
+    "Independent import-spec origin closure oracle added; source-body omission dies on set assertion",
+    "Current TEMP/TMP target verified M5c_evidence/tmp"
+  ],
+  "pending": [
+    "Both frozen summary tests require actual fresh whole-corpus publication; review does not replace that evidence"
+  ],
+  "source_hashes": {
+    "tools/m5c_source_binding.py": "6c32915bbb0de1e47f59a9eabe7f97f9aca4d23e559bf3ebf28578182ba788f5",
+    "tools/exact_construction_subset.py": "35e6262a7c36ea5f20679f047dd6f030feeb6fcbe8be7813573212829b503274",
+    "tests/test_m5c_policy_binding.py": "93ddc347175d78e148e782c361ebd5f35b27b76c0bfec9bb17f8d5f629d91f17",
+    "tests/test_m5b_policy_history.py": "c805cc45b365253835ad9fcb0b6f88c4cbb8a16a0190b1dae8ef7d51850eede7"
+  }
+}

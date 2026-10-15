@@ -1,0 +1,78 @@
+{
+  "schema": "eab.m5c-binding-work.v1",
+  "scope": [
+    "A6",
+    "A7"
+  ],
+  "policy_changed": false,
+  "new_admission_rows": 0,
+  "new_review_rows": 0,
+  "active_review_sha256": "cb2f1e7fe51137a61fcf9126f756af55fce22875beac487cedc27ec5e7b78cdc",
+  "fixed_rule_count": 13,
+  "fixed_mutation_file_count": 4,
+  "internal_semantic_mutants": [
+    {
+      "defect": "remove_fixed_rule_domain",
+      "production_function": "mutation_review_domain_is_bounded",
+      "result": "KILLED",
+      "assertion": "M5c an appended broader review must not discharge any diagnostic",
+      "source_hash_tripwire_invoked": false
+    },
+    {
+      "defect": "remove_production_path_boundary",
+      "production_function": "mutation_review_domain_is_bounded",
+      "result": "KILLED",
+      "assertion": "M5c an appended broader review must not discharge any diagnostic",
+      "source_hash_tripwire_invoked": false
+    },
+    {
+      "defect": "allow_unreviewed_test_path",
+      "production_function": "mutation_review_domain_is_bounded",
+      "result": "KILLED",
+      "assertion": "M5c an appended broader review must not discharge any diagnostic",
+      "source_hash_tripwire_invoked": false
+    },
+    {
+      "defect": "allow_parent_traversal_path",
+      "production_function": "mutation_review_domain_is_bounded",
+      "result": "KILLED",
+      "assertion": "M5c an appended broader review must not discharge any diagnostic",
+      "source_hash_tripwire_invoked": false
+    }
+  ],
+  "clean_process_runtime_closure_files": {
+    "endpoint": 29,
+    "robust": 21
+  },
+  "scratch_byte_mutation_probes": {
+    "endpoint": 29,
+    "robust": 21,
+    "all_rejected": true
+  },
+  "focused_pytest": {
+    "command": "python -m pytest -q -p no:cacheprovider --basetemp reports/codex/M5c_evidence/tmp/binding_unit_r2 tests/test_m5b_policy_history.py tests/test_m5c_policy_binding.py tests/test_m5b_int1_followup.py -k 'not frozen_summaries'",
+    "last_line": "34 passed, 2 deselected in 1.43s",
+    "passed": 34,
+    "deselected_waiting_for_real_replay": 2
+  },
+  "changed_test_file_static_violations": {
+    "tests/test_m5c_policy_binding.py": 0,
+    "tests/test_m5b_policy_history.py": 0,
+    "tests/test_m5b_endpoint.py": 0
+  },
+  "source_evidence_rehashed_without_replay": false,
+  "pending": [
+    "final full four shards and whole-tree static gate, coordinated by root"
+  ],
+  "final_published_verification": {
+    "command": "python -X utf8 -m pytest -q -p no:cacheprovider --basetemp reports/codex/M5c_evidence/tmp/binding_combined_actual_r1 tests/test_m5b_policy_history.py tests/test_m5c_policy_binding.py tests/test_m5b_int1_followup.py tests/test_m5c_combined_evidence.py tests/test_m5c_accounting_review.py tests/test_m5c_replay_scope.py tests/test_m5b_endpoint.py tests/test_m5b_replay.py",
+    "last_line": "130 passed in 5.48s",
+    "passed": 130,
+    "skipped": 0,
+    "deselected": 0,
+    "endpoint_sources": 29,
+    "robust_sources": 21,
+    "all_frozen_summary_gates_passed": true,
+    "minimal_examples_recomputed_and_verified": true
+  }
+}

@@ -82,6 +82,29 @@ def _read_policy(mtime, size):
     return json.loads((HERE / "exact_construction_policy.json").read_text(encoding="utf-8"))
 
 
+# Review records may renew byte pins, but cannot enlarge this proof domain.
+# A new numerical rule or arbitrary test/production file needs a code-reviewed
+# policy change, not merely another JSON record at the end of the history.
+MUTATION_RULES = frozenset({
+    "closed-unproved-call", "closed-runtime-reflection", "closed-dynamic-call",
+    "closed-method-call", "closed-unknown-member", "closed-data-attribute",
+    "closed-unknown-call", "closed-import", "closed-import-call",
+    "closed-callable-value", "closed-namespace-value", "closed-indirect-call",
+    "closed-syntax",
+})
+MUTATION_PATHS = frozenset({
+    "tests/mutation_support.py", "tests/test_int1_semantics.py",
+    "tests/test_m3b_construction3d.py", "tests/test_m5a2_exact.py",
+})
+
+
+def mutation_review_domain_is_bounded(review):
+    """Reject an entire appended review if its rules or paths exceed the domain."""
+    return (set(review.get("rules", ())) <= MUTATION_RULES
+            and all(row.get("path") in MUTATION_PATHS
+                    for row in review.get("scopes", ())))
+
+
 def instrumentation_scope(text, path, function, rule):
     """One immutable review domain for test mutation mechanics, never numerics.
 
@@ -93,7 +116,8 @@ def instrumentation_scope(text, path, function, rule):
     policy = _policy()
     history = policy.get("mutation_instrumentation_reviews", ())
     review = history[-1] if history else policy.get("mutation_instrumentation_review", {})
-    if rule not in review.get("rules", ()) or not path.startswith("tests/"):
+    if (not mutation_review_domain_is_bounded(review)
+            or rule not in review.get("rules", ()) or path not in MUTATION_PATHS):
         return False
     scopes = [row for row in review.get("scopes", ())
               if row.get("path") == path and row.get("function") == function]

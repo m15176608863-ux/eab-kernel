@@ -1,0 +1,41 @@
+{
+  "schema": "eab.m5c-combined-publisher-work.v1",
+  "status": "PUBLISHED_AND_VERIFIED",
+  "script": "tools/m5c_publish_combined.py",
+  "script_sha256": "5ba129d7a26a1c622b3a05b725dcf4d7612f542aabb78daba5e9ab1c0d1e4669",
+  "tests": "tests/test_m5c_combined_evidence.py",
+  "tests_sha256": "5029d72a98d2cf94eb8fdf9912f675828f387fbc8dc689f5b13e05ab10e58741",
+  "run_command": "python tools/m5c_publish_combined.py --name combined_final_r1",
+  "source_closures_modified": false,
+  "unit_last_line": "36 passed, 1 deselected in 0.97s",
+  "pending_test": null,
+  "static_test_violations": 0,
+  "independent_review_repairs": [
+    "conserve three physical reference totals per candidate/phase",
+    "reconstruct actual step block sets from hash-bound endpoint shards",
+    "forbid certified/unproved/no-contact ledger category overlap",
+    "research source map covers fresh runtime source map and explicit R3 core"
+  ],
+  "publication_contract": [
+    "no production solver/certificate imports",
+    "all 64010 historical/fresh exact status/features/time compared",
+    "case gzip hashes plus actual endpoint identity/all-pair coverage checked",
+    "exactly 68 fresh/compact/exact research keys",
+    "research/fresh source and input hash maps checked at start/end and current bytes",
+    "candidate R2 flag and global features agree",
+    "per-candidate references replaced with conserved physical totals",
+    "only new sufficient certificates move unproved to robust single",
+    "initial-overlap references are readable record counts; zero exit certificates",
+    "only complete batches; no overwrite; interrupted fresh progress directory invalidated",
+    "all sources and evidence files plus publisher source bound before and after"
+  ],
+  "research_counter_encoding_compatibility": "Only False in r2_pass/r3_pass/certified_union becomes integer 0; all True/candidates bool/floats rejected; exact-row case recount independently matches.",
+  "final_verification": {
+    "path": "reports/codex/M5c_evidence/combined_publication_verification.json",
+    "sha256": "fd9e21d321b48fade8b3b7bd877c565b5356c23d099bd6566e0047fff42eda0d",
+    "summary_sha256": "d2fcf50dab4a047fac9c9d1cf509b21027c742847d63528e4423f13d119806c6",
+    "last_line": "130 passed in 5.48s",
+    "skipped": 0,
+    "deselected": 0
+  }
+}

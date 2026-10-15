@@ -103,4 +103,9 @@ python -m pytest tests/test_m5b_endpoint.py -q -p no:cacheprovider --basetemp re
 1. 历史 1.101 与 2.8e-6 的原可执行定义没有随工单交付；本次定义、结果和差异均已明确，历史中点口径仍需对齐。
 2. 仿射端点匹配不证明未知真实物理步内轨迹。本文不给全时段 P1/P2/P3 首盖或扰动证书，相关结论由 M5b 主报告的独立路径给出。
 3. 没有把 27 个单文件门替代全套四分片或六路 G6；全套与静态逐站统计由主报告统一登记。
-4. 主端点摘要的源码绑定是直接的工具/affine/rigid-fit 文件表，**不是完整传递 import 闭包**；`fit_rigid` 间接使用的 `m4c_motion_replay._exact_poly/require`、`SE2Motion` 等未逐一列入该表。本轮这些间接实现未改，极值另经独立公式门复核；仍将传递绑定硬化列为 minor，不把 direct 表宣传为完整闭包。主全时程稳健回放另有完整 `src/eab` 绑定。
+4. **M5b 历史缺口（M5c 已关闭）：** 当时主端点摘要的源码绑定是直接的工具/affine/rigid-fit 文件表，**不是完整传递 import 闭包**；`fit_rigid` 间接使用的 `m4c_motion_replay._exact_poly/require`、`SE2Motion` 等未逐一列入该表。本轮这些间接实现未改，极值另经独立公式门复核；仍将传递绑定硬化列为 minor，不把 direct 表宣传为完整闭包。主全时程稳健回放另有完整 `src/eab` 绑定。
+
+
+## M5c 真实重算订正（2026-10-16）
+
+`endpoint_full_m5c_r1` 已实际从头重算 15220 块帧，121.192337 秒。所有精确极值与 M5b 相同；运行前后实际传递导入闭包均为 29 个源码文件，逐项字节哈希一致；输入 manifest 与分片另绑定。`source_hashes` 不再是上面的历史直接依赖表。pytest 逐一核验全部当前哈希，并对每个闭包文件做拒绝变异。旧摘要/最小例原字节保留在 M5c_evidence 的 *_before.json。详见 [M5c绑定记录](file:///D:/eab-wt/cx-e2/reports/codex/M5c_evidence/binding_work.md)。

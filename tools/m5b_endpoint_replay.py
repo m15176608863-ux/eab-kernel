@@ -26,7 +26,17 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "reports/codex/M5b_evidence"
 INPUTS = EVIDENCE / "endpoint_inputs"
-TMP = EVIDENCE / "tmp"
+TMP = ROOT / "reports/codex/M5c_evidence/tmp"
+
+
+def source_hashes():
+    # midpoint_discrepancy has lazy imports: load the exact same dependencies
+    # before the start snapshot, not after the closure has already been sealed.
+    sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
+    from eab.kernel2d.affine_motion import DDAAffineMotion, fit_affine
+    from m5a_se2_replay import fit_rigid
+    from m5c_source_binding import runtime_source_hashes
+    return runtime_source_hashes(ROOT, __file__)
 
 
 def sha(path):
@@ -354,11 +364,13 @@ def run(run_name, directory=INPUTS):
     destination.mkdir(parents=True)
     started = time.perf_counter()
     manifest_path = Path(directory) / "manifest.json"
-    initial = {"tool": sha(__file__), "manifest": sha(manifest_path),
-               "affine_motion": sha(ROOT / "src/eab/kernel2d/affine_motion.py"),
-               "rigid_fit": sha(ROOT / "tools/m5a_se2_replay.py")}
+    from m5c_source_binding import assert_current_sources
+    initial = source_hashes()
+    manifest_hash = sha(manifest_path)
     summary = {"schema": "eab.m5b-endpoint-reconstruction.v1", "complete": False,
-               "source_hashes": initial, "cases": {}, "block_frames": 0,
+               "source_hashes": initial, "input_hashes": {"manifest": manifest_hash},
+               "source_binding": "runtime-loaded-repository-closure-start-and-end.v1",
+               "cases": {}, "block_frames": 0,
                "grouped_binary64_coordinates": 0, "grouped_binary64_exact_matches": 0,
                "unit_definition": "U=ulp(max|coordinate|) over block-frame start and end; one spacing, not half spacing",
                "trig_contract": "Python binary64 candidates bounded against mathematical trig by exact rational alternating Taylor; historical CRT bit identity NOT asserted"}
@@ -396,15 +408,14 @@ def run(run_name, directory=INPUTS):
                 summary["elapsed_seconds"] = time.perf_counter()-started
                 write_json(destination / "progress.json", summary)
                 print("endpoint", summary["block_frames"], case, row["step"], flush=True)
-    final = {"tool": sha(__file__), "manifest": sha(manifest_path),
-             "affine_motion": sha(ROOT / "src/eab/kernel2d/affine_motion.py"),
-             "rigid_fit": sha(ROOT / "tools/m5a_se2_replay.py")}
-    if initial != final:
-        raise ValueError("bound source changed; discard run and restart")
+    final = source_hashes()
+    assert_current_sources(ROOT, initial, final)
+    if sha(manifest_path) != manifest_hash:
+        raise ValueError("bound input manifest changed; discard run and restart")
     # Re-read every frozen shard after the computation before publication.
     if sum(1 for _ in iter_inputs(directory)) != summary["block_frames"]:
         raise ValueError("input changed during endpoint replay")
-    summary.update(complete=True, seconds=time.perf_counter()-started,
+    summary.update(complete=True, source_hashes_end=final, seconds=time.perf_counter()-started,
                    maxima_exact={key: str(value) for key, value in global_max.items()},
                    maxima_display={key: float(value) for key, value in global_max.items()},
                    examples=examples, rows_sha256=sha(destination / "endpoint_rows.jsonl.gz"),

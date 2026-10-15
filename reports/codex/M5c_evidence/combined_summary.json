@@ -1,0 +1,2953 @@
+{
+  "schema": "eab.m5c-combined-full-history.v1",
+  "complete": true,
+  "full_history": true,
+  "scope": "Fresh 1810-step/64010-pair R2 replay exactly matches all historical P1/P2 status/features/time; exhaustive 68-candidate R3 recertification is joined by exact keys. NOT a second all-pairs P2 root solve.",
+  "counts": {
+    "pairs": 64010,
+    "MODEL_SENSITIVE_OR_UNPROVED": 25310,
+    "comparison_basis:EXPLICIT_TRAJECTORY": 14079,
+    "p1_p2_explicit_same": 14079,
+    "explicit_new_contact_pairs": 68,
+    "independent_initial_state_evaluations": 30968,
+    "production_initial_state_crosschecks": 14292,
+    "NO_SUFFICIENT_CERTIFICATE": 8634,
+    "ROBUST_NO_CONTACT": 38681,
+    "comparison_basis:CERTIFICATE_DIRECT": 33042,
+    "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 16676,
+    "INITIAL_EXIT_ORDER_UNCERTIFIED": 16676,
+    "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 213,
+    "ROBUST_SINGLE_FIRST_COVER": 19,
+    "steps": 1810,
+    "blocks": 15220
+  },
+  "r2_baseline_counts": {
+    "pairs": 64010,
+    "MODEL_SENSITIVE_OR_UNPROVED": 25327,
+    "comparison_basis:EXPLICIT_TRAJECTORY": 14079,
+    "p1_p2_explicit_same": 14079,
+    "explicit_new_contact_pairs": 68,
+    "independent_initial_state_evaluations": 30968,
+    "production_initial_state_crosschecks": 14292,
+    "NO_SUFFICIENT_CERTIFICATE": 8651,
+    "ROBUST_NO_CONTACT": 38681,
+    "comparison_basis:CERTIFICATE_DIRECT": 33042,
+    "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 16676,
+    "INITIAL_EXIT_ORDER_UNCERTIFIED": 16676,
+    "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 213,
+    "ROBUST_SINGLE_FIRST_COVER": 2,
+    "steps": 1810,
+    "blocks": 15220
+  },
+  "newly_certified": 17,
+  "references": {
+    "raw_df05:PRIMARY_REFERENCE_TOTAL": 141594,
+    "raw_df05:SECONDARY_REFERENCE_TOTAL": 7768,
+    "raw_df05:SHARED_EDGE_SLOT_TOTAL": 32075,
+    "raw_df05:UNPROVED_REFERENCE": 130113,
+    "raw_df05:UNPROVED_SECONDARY_REFERENCE": 3757,
+    "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 28695,
+    "post_df06:PRIMARY_REFERENCE_TOTAL": 141594,
+    "post_df06:SECONDARY_REFERENCE_TOTAL": 7768,
+    "post_df06:SHARED_EDGE_SLOT_TOTAL": 32075,
+    "post_df06:UNPROVED_REFERENCE": 130113,
+    "post_df06:UNPROVED_SECONDARY_REFERENCE": 3757,
+    "post_df06:UNPROVED_SHARED_EDGE_SLOT": 28695,
+    "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 11443,
+    "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 4011,
+    "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 3355,
+    "post_df06:ROBUST_NO_CONTACT_REFERENCE": 11443,
+    "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 4011,
+    "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 3355,
+    "raw_df05:OTHER_REFERENCE": 31,
+    "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 12,
+    "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 13,
+    "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 12,
+    "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 12,
+    "post_df06:FIRST_COVER_MATCH": 19,
+    "post_df06:OTHER_REFERENCE": 19,
+    "post_df06:SHARED_EDGE_OTHER_REFERENCE": 25,
+    "raw_df05:FIRST_COVER_MATCH": 7
+  },
+  "r2_baseline_references": {
+    "raw_df05:PRIMARY_REFERENCE_TOTAL": 141594,
+    "raw_df05:SECONDARY_REFERENCE_TOTAL": 7768,
+    "raw_df05:SHARED_EDGE_SLOT_TOTAL": 32075,
+    "raw_df05:UNPROVED_REFERENCE": 130147,
+    "raw_df05:UNPROVED_SECONDARY_REFERENCE": 3757,
+    "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 28718,
+    "post_df06:PRIMARY_REFERENCE_TOTAL": 141594,
+    "post_df06:SECONDARY_REFERENCE_TOTAL": 7768,
+    "post_df06:SHARED_EDGE_SLOT_TOTAL": 32075,
+    "post_df06:UNPROVED_REFERENCE": 130147,
+    "post_df06:UNPROVED_SECONDARY_REFERENCE": 3757,
+    "post_df06:UNPROVED_SHARED_EDGE_SLOT": 28718,
+    "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 11443,
+    "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 4011,
+    "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 3355,
+    "post_df06:ROBUST_NO_CONTACT_REFERENCE": 11443,
+    "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 4011,
+    "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 3355,
+    "raw_df05:OTHER_REFERENCE": 3,
+    "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 1,
+    "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+    "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 1,
+    "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 1,
+    "post_df06:FIRST_COVER_MATCH": 2,
+    "post_df06:OTHER_REFERENCE": 2,
+    "post_df06:SHARED_EDGE_OTHER_REFERENCE": 2,
+    "raw_df05:FIRST_COVER_MATCH": 1
+  },
+  "candidate_references": {
+    "scope": "68 new-contact pairs only",
+    "r2": {
+      "raw_df05:PRIMARY_REFERENCE_TOTAL": 173,
+      "raw_df05:SECONDARY_REFERENCE_TOTAL": 12,
+      "raw_df05:SHARED_EDGE_SLOT_TOTAL": 57,
+      "raw_df05:UNPROVED_REFERENCE": 169,
+      "raw_df05:UNPROVED_SECONDARY_REFERENCE": 12,
+      "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 55,
+      "post_df06:PRIMARY_REFERENCE_TOTAL": 173,
+      "post_df06:SECONDARY_REFERENCE_TOTAL": 12,
+      "post_df06:SHARED_EDGE_SLOT_TOTAL": 57,
+      "post_df06:UNPROVED_REFERENCE": 169,
+      "post_df06:UNPROVED_SECONDARY_REFERENCE": 12,
+      "post_df06:UNPROVED_SHARED_EDGE_SLOT": 55,
+      "raw_df05:OTHER_REFERENCE": 3,
+      "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 1,
+      "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+      "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 1,
+      "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 1,
+      "post_df06:FIRST_COVER_MATCH": 2,
+      "post_df06:OTHER_REFERENCE": 2,
+      "post_df06:SHARED_EDGE_OTHER_REFERENCE": 2,
+      "raw_df05:FIRST_COVER_MATCH": 1
+    },
+    "certified_union": {
+      "raw_df05:PRIMARY_REFERENCE_TOTAL": 173,
+      "raw_df05:SECONDARY_REFERENCE_TOTAL": 12,
+      "raw_df05:SHARED_EDGE_SLOT_TOTAL": 57,
+      "raw_df05:UNPROVED_REFERENCE": 135,
+      "raw_df05:UNPROVED_SECONDARY_REFERENCE": 12,
+      "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 32,
+      "post_df06:PRIMARY_REFERENCE_TOTAL": 173,
+      "post_df06:SECONDARY_REFERENCE_TOTAL": 12,
+      "post_df06:SHARED_EDGE_SLOT_TOTAL": 57,
+      "post_df06:UNPROVED_REFERENCE": 135,
+      "post_df06:UNPROVED_SECONDARY_REFERENCE": 12,
+      "post_df06:UNPROVED_SHARED_EDGE_SLOT": 32,
+      "raw_df05:OTHER_REFERENCE": 31,
+      "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 12,
+      "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 13,
+      "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 12,
+      "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 12,
+      "post_df06:FIRST_COVER_MATCH": 19,
+      "post_df06:OTHER_REFERENCE": 19,
+      "post_df06:SHARED_EDGE_OTHER_REFERENCE": 25,
+      "raw_df05:FIRST_COVER_MATCH": 7
+    }
+  },
+  "initial_overlap_references": {
+    "scope": "All initially penetrated pair records; readable primary/VV/common slots only, NOT shortest-exit matching certificates",
+    "pairs": 16676,
+    "references": {
+      "raw_df05:PRIMARY_REFERENCE_TOTAL": 81209,
+      "raw_df05:SECONDARY_REFERENCE_TOTAL": 2001,
+      "raw_df05:SHARED_EDGE_SLOT_TOTAL": 19785,
+      "raw_df05:UNPROVED_REFERENCE": 81209,
+      "raw_df05:UNPROVED_SECONDARY_REFERENCE": 2001,
+      "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 19785,
+      "post_df06:PRIMARY_REFERENCE_TOTAL": 81209,
+      "post_df06:SECONDARY_REFERENCE_TOTAL": 2001,
+      "post_df06:SHARED_EDGE_SLOT_TOTAL": 19785,
+      "post_df06:UNPROVED_REFERENCE": 81209,
+      "post_df06:UNPROVED_SECONDARY_REFERENCE": 2001,
+      "post_df06:UNPROVED_SHARED_EDGE_SLOT": 19785
+    },
+    "certified_exit_pairs": 0
+  },
+  "by_case": {
+    "bb03": {
+      "r2_counts": {
+        "pairs": 5500,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1419,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1084,
+        "p1_p2_explicit_same": 1084,
+        "explicit_new_contact_pairs": 9,
+        "independent_initial_state_evaluations": 2239,
+        "production_initial_state_crosschecks": 1094,
+        "NO_SUFFICIENT_CERTIFICATE": 274,
+        "ROBUST_NO_CONTACT": 4080,
+        "comparison_basis:CERTIFICATE_DIRECT": 3261,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1145,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1145,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 10,
+        "ROBUST_SINGLE_FIRST_COVER": 1,
+        "steps": 100,
+        "blocks": 1100
+      },
+      "combined_counts": {
+        "pairs": 5500,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1418,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1084,
+        "p1_p2_explicit_same": 1084,
+        "explicit_new_contact_pairs": 9,
+        "independent_initial_state_evaluations": 2239,
+        "production_initial_state_crosschecks": 1094,
+        "NO_SUFFICIENT_CERTIFICATE": 273,
+        "ROBUST_NO_CONTACT": 4080,
+        "comparison_basis:CERTIFICATE_DIRECT": 3261,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1145,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1145,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 10,
+        "ROBUST_SINGLE_FIRST_COVER": 2,
+        "steps": 100,
+        "blocks": 1100
+      },
+      "candidates": 9,
+      "r2_single_cover": 1,
+      "certified_union": 2,
+      "newly_certified": 1,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 4096,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 48,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1712,
+        "raw_df05:UNPROVED_REFERENCE": 3238,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 26,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1338,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 4096,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 48,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1712,
+        "post_df06:UNPROVED_REFERENCE": 3238,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 26,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1338,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 856,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 22,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 372,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 856,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 22,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 372,
+        "raw_df05:OTHER_REFERENCE": 2,
+        "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 1,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+        "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 1,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 1,
+        "post_df06:FIRST_COVER_MATCH": 1,
+        "post_df06:OTHER_REFERENCE": 1,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 2
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 4096,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 48,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1712,
+        "raw_df05:UNPROVED_REFERENCE": 3236,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 26,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1336,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 4096,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 48,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1712,
+        "post_df06:UNPROVED_REFERENCE": 3236,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 26,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1336,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 856,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 22,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 372,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 856,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 22,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 372,
+        "raw_df05:OTHER_REFERENCE": 4,
+        "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 2,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 2,
+        "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 2,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 2,
+        "post_df06:FIRST_COVER_MATCH": 2,
+        "post_df06:OTHER_REFERENCE": 2,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 4
+      }
+    },
+    "bb05": {
+      "r2_counts": {
+        "pairs": 600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 396,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 327,
+        "independent_initial_state_evaluations": 502,
+        "production_initial_state_crosschecks": 175,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 327,
+        "ROBUST_NO_CONTACT": 204,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 172,
+        "p1_p2_explicit_same": 172,
+        "explicit_new_contact_pairs": 8,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 3,
+        "NO_SUFFICIENT_CERTIFICATE": 69,
+        "comparison_basis:CERTIFICATE_DIRECT": 98,
+        "steps": 100,
+        "blocks": 400
+      },
+      "combined_counts": {
+        "pairs": 600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 393,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 327,
+        "independent_initial_state_evaluations": 502,
+        "production_initial_state_crosschecks": 175,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 327,
+        "ROBUST_NO_CONTACT": 204,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 172,
+        "p1_p2_explicit_same": 172,
+        "explicit_new_contact_pairs": 8,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 3,
+        "NO_SUFFICIENT_CERTIFICATE": 66,
+        "comparison_basis:CERTIFICATE_DIRECT": 98,
+        "steps": 100,
+        "blocks": 400,
+        "ROBUST_SINGLE_FIRST_COVER": 3
+      },
+      "candidates": 8,
+      "r2_single_cover": 0,
+      "certified_union": 3,
+      "newly_certified": 3,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 1010,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 241,
+        "raw_df05:UNPROVED_REFERENCE": 792,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 163,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 1010,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 241,
+        "post_df06:UNPROVED_REFERENCE": 792,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 163,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 218,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 78,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 218,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 78
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 1010,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 241,
+        "raw_df05:UNPROVED_REFERENCE": 786,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 157,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 1010,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 241,
+        "post_df06:UNPROVED_REFERENCE": 786,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 157,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 218,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 78,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 218,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 78,
+        "raw_df05:OTHER_REFERENCE": 6,
+        "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 3,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 3,
+        "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 3,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 3,
+        "post_df06:FIRST_COVER_MATCH": 3,
+        "post_df06:OTHER_REFERENCE": 3,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 6
+      }
+    },
+    "bb06": {
+      "r2_counts": {
+        "pairs": 600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 373,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 299,
+        "independent_initial_state_evaluations": 501,
+        "production_initial_state_crosschecks": 202,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 299,
+        "ROBUST_NO_CONTACT": 227,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 199,
+        "p1_p2_explicit_same": 199,
+        "explicit_new_contact_pairs": 3,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 3,
+        "NO_SUFFICIENT_CERTIFICATE": 74,
+        "comparison_basis:CERTIFICATE_DIRECT": 99,
+        "steps": 100,
+        "blocks": 400
+      },
+      "combined_counts": {
+        "pairs": 600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 372,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 299,
+        "independent_initial_state_evaluations": 501,
+        "production_initial_state_crosschecks": 202,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 299,
+        "ROBUST_NO_CONTACT": 227,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 199,
+        "p1_p2_explicit_same": 199,
+        "explicit_new_contact_pairs": 3,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 3,
+        "NO_SUFFICIENT_CERTIFICATE": 73,
+        "comparison_basis:CERTIFICATE_DIRECT": 99,
+        "steps": 100,
+        "blocks": 400,
+        "ROBUST_SINGLE_FIRST_COVER": 1
+      },
+      "candidates": 3,
+      "r2_single_cover": 0,
+      "certified_union": 1,
+      "newly_certified": 1,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 784,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 86,
+        "raw_df05:UNPROVED_REFERENCE": 677,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 63,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 784,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 86,
+        "post_df06:UNPROVED_REFERENCE": 677,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 63,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 107,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 23,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 107,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 23
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 784,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 86,
+        "raw_df05:UNPROVED_REFERENCE": 675,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 61,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 784,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 86,
+        "post_df06:UNPROVED_REFERENCE": 675,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 61,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 107,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 23,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 107,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 23,
+        "raw_df05:OTHER_REFERENCE": 2,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+        "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 1,
+        "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 1,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 1,
+        "post_df06:OTHER_REFERENCE": 1,
+        "post_df06:FIRST_COVER_MATCH": 1,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 2
+      }
+    },
+    "bb09": {
+      "r2_counts": {
+        "pairs": 6600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 2216,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 36,
+        "independent_initial_state_evaluations": 2619,
+        "production_initial_state_crosschecks": 967,
+        "NO_SUFFICIENT_CERTIFICATE": 564,
+        "ROBUST_NO_CONTACT": 4384,
+        "comparison_basis:CERTIFICATE_DIRECT": 3981,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1652,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1652,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 931,
+        "p1_p2_explicit_same": 931,
+        "explicit_new_contact_pairs": 9,
+        "steps": 100,
+        "blocks": 1200
+      },
+      "combined_counts": {
+        "pairs": 6600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 2213,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 36,
+        "independent_initial_state_evaluations": 2619,
+        "production_initial_state_crosschecks": 967,
+        "NO_SUFFICIENT_CERTIFICATE": 561,
+        "ROBUST_NO_CONTACT": 4384,
+        "comparison_basis:CERTIFICATE_DIRECT": 3981,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1652,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1652,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 931,
+        "p1_p2_explicit_same": 931,
+        "explicit_new_contact_pairs": 9,
+        "steps": 100,
+        "blocks": 1200,
+        "ROBUST_SINGLE_FIRST_COVER": 3
+      },
+      "candidates": 9,
+      "r2_single_cover": 0,
+      "certified_union": 3,
+      "newly_certified": 3,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 5452,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 912,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 2925,
+        "raw_df05:UNPROVED_REFERENCE": 3862,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 570,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2272,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 5452,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 912,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 2925,
+        "post_df06:UNPROVED_REFERENCE": 3862,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 570,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2272,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 1590,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 342,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 653,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 1590,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 342,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 653
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 5452,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 912,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 2925,
+        "raw_df05:UNPROVED_REFERENCE": 3856,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 570,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2268,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 5452,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 912,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 2925,
+        "post_df06:UNPROVED_REFERENCE": 3856,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 570,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2268,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 1590,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 342,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 653,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 1590,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 342,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 653,
+        "raw_df05:OTHER_REFERENCE": 6,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+        "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 3,
+        "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 3,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 3,
+        "post_df06:OTHER_REFERENCE": 3,
+        "post_df06:FIRST_COVER_MATCH": 3,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 4
+      }
+    },
+    "bb10": {
+      "r2_counts": {
+        "pairs": 6600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1949,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 36,
+        "independent_initial_state_evaluations": 2604,
+        "production_initial_state_crosschecks": 1255,
+        "NO_SUFFICIENT_CERTIFICATE": 600,
+        "ROBUST_NO_CONTACT": 4651,
+        "comparison_basis:CERTIFICATE_DIRECT": 3996,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1349,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1349,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1219,
+        "p1_p2_explicit_same": 1219,
+        "explicit_new_contact_pairs": 12,
+        "steps": 100,
+        "blocks": 1200
+      },
+      "combined_counts": {
+        "pairs": 6600,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1947,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 36,
+        "independent_initial_state_evaluations": 2604,
+        "production_initial_state_crosschecks": 1255,
+        "NO_SUFFICIENT_CERTIFICATE": 598,
+        "ROBUST_NO_CONTACT": 4651,
+        "comparison_basis:CERTIFICATE_DIRECT": 3996,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1349,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1349,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1219,
+        "p1_p2_explicit_same": 1219,
+        "explicit_new_contact_pairs": 12,
+        "steps": 100,
+        "blocks": 1200,
+        "ROBUST_SINGLE_FIRST_COVER": 2
+      },
+      "candidates": 12,
+      "r2_single_cover": 0,
+      "certified_union": 2,
+      "newly_certified": 2,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 6753,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 821,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 2813,
+        "raw_df05:UNPROVED_REFERENCE": 5029,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 421,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2328,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 6753,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 821,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 2813,
+        "post_df06:UNPROVED_REFERENCE": 5029,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 421,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2328,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 1724,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 400,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 485,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 1724,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 400,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 485
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 6753,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 821,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 2813,
+        "raw_df05:UNPROVED_REFERENCE": 5025,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 421,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2324,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 6753,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 821,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 2813,
+        "post_df06:UNPROVED_REFERENCE": 5025,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 421,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2324,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 1724,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 400,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 485,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 1724,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 400,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 485,
+        "raw_df05:OTHER_REFERENCE": 4,
+        "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 2,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 2,
+        "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 2,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 2,
+        "post_df06:FIRST_COVER_MATCH": 2,
+        "post_df06:OTHER_REFERENCE": 2,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 4
+      }
+    },
+    "bb12": {
+      "r2_counts": {
+        "pairs": 5500,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1998,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 17,
+        "independent_initial_state_evaluations": 1999,
+        "production_initial_state_crosschecks": 220,
+        "NO_SUFFICIENT_CERTIFICATE": 219,
+        "ROBUST_NO_CONTACT": 3501,
+        "comparison_basis:CERTIFICATE_DIRECT": 3501,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1779,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1779,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 203,
+        "p1_p2_explicit_same": 203,
+        "explicit_new_contact_pairs": 10,
+        "ROBUST_SINGLE_FIRST_COVER": 1,
+        "steps": 100,
+        "blocks": 1100
+      },
+      "combined_counts": {
+        "pairs": 5500,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1993,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 17,
+        "independent_initial_state_evaluations": 1999,
+        "production_initial_state_crosschecks": 220,
+        "NO_SUFFICIENT_CERTIFICATE": 214,
+        "ROBUST_NO_CONTACT": 3501,
+        "comparison_basis:CERTIFICATE_DIRECT": 3501,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1779,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1779,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 203,
+        "p1_p2_explicit_same": 203,
+        "explicit_new_contact_pairs": 10,
+        "ROBUST_SINGLE_FIRST_COVER": 6,
+        "steps": 100,
+        "blocks": 1100
+      },
+      "candidates": 10,
+      "r2_single_cover": 1,
+      "certified_union": 6,
+      "newly_certified": 5,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 4844,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 22,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1565,
+        "raw_df05:UNPROVED_REFERENCE": 4559,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 22,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1466,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 4844,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 22,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1565,
+        "post_df06:UNPROVED_REFERENCE": 4559,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 22,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1466,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 283,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 283,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "raw_df05:FIRST_COVER_MATCH": 1,
+        "raw_df05:OTHER_REFERENCE": 1,
+        "post_df06:FIRST_COVER_MATCH": 1,
+        "post_df06:OTHER_REFERENCE": 1
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 4844,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 22,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1565,
+        "raw_df05:UNPROVED_REFERENCE": 4549,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 22,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1463,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 4844,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 22,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1565,
+        "post_df06:UNPROVED_REFERENCE": 4549,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 22,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1463,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 283,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 283,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "raw_df05:FIRST_COVER_MATCH": 5,
+        "raw_df05:OTHER_REFERENCE": 7,
+        "post_df06:FIRST_COVER_MATCH": 6,
+        "post_df06:OTHER_REFERENCE": 6,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 2,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 3,
+        "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 1,
+        "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 1,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 1
+      }
+    },
+    "bb50": {
+      "r2_counts": {
+        "pairs": 50,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 1,
+        "independent_initial_state_evaluations": 50,
+        "production_initial_state_crosschecks": 50,
+        "NO_SUFFICIENT_CERTIFICATE": 1,
+        "ROBUST_NO_CONTACT": 49,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 49,
+        "p1_p2_explicit_same": 49,
+        "explicit_new_contact_pairs": 0,
+        "steps": 50,
+        "blocks": 100
+      },
+      "combined_counts": {
+        "pairs": 50,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 1,
+        "independent_initial_state_evaluations": 50,
+        "production_initial_state_crosschecks": 50,
+        "NO_SUFFICIENT_CERTIFICATE": 1,
+        "ROBUST_NO_CONTACT": 49,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 49,
+        "p1_p2_explicit_same": 49,
+        "explicit_new_contact_pairs": 0,
+        "steps": 50,
+        "blocks": 100,
+        "ROBUST_SINGLE_FIRST_COVER": 0
+      },
+      "candidates": 0,
+      "r2_single_cover": 0,
+      "certified_union": 0,
+      "newly_certified": 0,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 76,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 75,
+        "raw_df05:UNPROVED_REFERENCE": 2,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 76,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 75,
+        "post_df06:UNPROVED_REFERENCE": 2,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 74,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 73,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 74,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 73
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 76,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 75,
+        "raw_df05:UNPROVED_REFERENCE": 2,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 76,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 75,
+        "post_df06:UNPROVED_REFERENCE": 2,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 74,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 73,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 74,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 73
+      }
+    },
+    "bb51": {
+      "r2_counts": {
+        "pairs": 2750,
+        "MODEL_SENSITIVE_OR_UNPROVED": 796,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 16,
+        "independent_initial_state_evaluations": 1196,
+        "production_initial_state_crosschecks": 583,
+        "NO_SUFFICIENT_CERTIFICATE": 183,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 613,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 613,
+        "ROBUST_NO_CONTACT": 1954,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 567,
+        "p1_p2_explicit_same": 567,
+        "explicit_new_contact_pairs": 6,
+        "comparison_basis:CERTIFICATE_DIRECT": 1554,
+        "steps": 50,
+        "blocks": 550
+      },
+      "combined_counts": {
+        "pairs": 2750,
+        "MODEL_SENSITIVE_OR_UNPROVED": 795,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 16,
+        "independent_initial_state_evaluations": 1196,
+        "production_initial_state_crosschecks": 583,
+        "NO_SUFFICIENT_CERTIFICATE": 182,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 613,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 613,
+        "ROBUST_NO_CONTACT": 1954,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 567,
+        "p1_p2_explicit_same": 567,
+        "explicit_new_contact_pairs": 6,
+        "comparison_basis:CERTIFICATE_DIRECT": 1554,
+        "steps": 50,
+        "blocks": 550,
+        "ROBUST_SINGLE_FIRST_COVER": 1
+      },
+      "candidates": 6,
+      "r2_single_cover": 0,
+      "certified_union": 1,
+      "newly_certified": 1,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 2700,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 100,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1300,
+        "raw_df05:UNPROVED_REFERENCE": 2192,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 100,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1004,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 2700,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 100,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1300,
+        "post_df06:UNPROVED_REFERENCE": 2192,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 100,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1004,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 508,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 296,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 508,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 296
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 2700,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 100,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1300,
+        "raw_df05:UNPROVED_REFERENCE": 2190,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 100,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1003,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 2700,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 100,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1300,
+        "post_df06:UNPROVED_REFERENCE": 2190,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 100,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1003,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 508,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 296,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 508,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 296,
+        "raw_df05:OTHER_REFERENCE": 1,
+        "raw_df05:FIRST_COVER_MATCH": 1,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+        "post_df06:OTHER_REFERENCE": 1,
+        "post_df06:FIRST_COVER_MATCH": 1,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 1
+      }
+    },
+    "bb52": {
+      "r2_counts": {
+        "pairs": 2750,
+        "MODEL_SENSITIVE_OR_UNPROVED": 985,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 16,
+        "independent_initial_state_evaluations": 1214,
+        "production_initial_state_crosschecks": 345,
+        "NO_SUFFICIENT_CERTIFICATE": 116,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 869,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 869,
+        "ROBUST_NO_CONTACT": 1765,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 329,
+        "p1_p2_explicit_same": 329,
+        "explicit_new_contact_pairs": 2,
+        "comparison_basis:CERTIFICATE_DIRECT": 1536,
+        "steps": 50,
+        "blocks": 550
+      },
+      "combined_counts": {
+        "pairs": 2750,
+        "MODEL_SENSITIVE_OR_UNPROVED": 984,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 16,
+        "independent_initial_state_evaluations": 1214,
+        "production_initial_state_crosschecks": 345,
+        "NO_SUFFICIENT_CERTIFICATE": 115,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 869,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 869,
+        "ROBUST_NO_CONTACT": 1765,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 329,
+        "p1_p2_explicit_same": 329,
+        "explicit_new_contact_pairs": 2,
+        "comparison_basis:CERTIFICATE_DIRECT": 1536,
+        "steps": 50,
+        "blocks": 550,
+        "ROBUST_SINGLE_FIRST_COVER": 1
+      },
+      "candidates": 2,
+      "r2_single_cover": 0,
+      "certified_union": 1,
+      "newly_certified": 1,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 2700,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 50,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1252,
+        "raw_df05:UNPROVED_REFERENCE": 2553,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 50,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1156,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 2700,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 50,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1252,
+        "post_df06:UNPROVED_REFERENCE": 2553,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 50,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1156,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 147,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 96,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 147,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 96
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 2700,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 50,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1252,
+        "raw_df05:UNPROVED_REFERENCE": 2551,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 50,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1155,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 2700,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 50,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1252,
+        "post_df06:UNPROVED_REFERENCE": 2551,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 50,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1155,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 147,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 96,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 147,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 96,
+        "raw_df05:OTHER_REFERENCE": 1,
+        "raw_df05:FIRST_COVER_MATCH": 1,
+        "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+        "post_df06:OTHER_REFERENCE": 1,
+        "post_df06:FIRST_COVER_MATCH": 1,
+        "post_df06:SHARED_EDGE_OTHER_REFERENCE": 1
+      }
+    },
+    "bbF038": {
+      "r2_counts": {
+        "pairs": 30,
+        "MODEL_SENSITIVE_OR_UNPROVED": 30,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1,
+        "p1_p2_explicit_same": 1,
+        "explicit_new_contact_pairs": 1,
+        "independent_initial_state_evaluations": 30,
+        "production_initial_state_crosschecks": 1,
+        "NO_SUFFICIENT_CERTIFICATE": 1,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 29,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 29,
+        "steps": 30,
+        "blocks": 60
+      },
+      "combined_counts": {
+        "pairs": 30,
+        "MODEL_SENSITIVE_OR_UNPROVED": 30,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1,
+        "p1_p2_explicit_same": 1,
+        "explicit_new_contact_pairs": 1,
+        "independent_initial_state_evaluations": 30,
+        "production_initial_state_crosschecks": 1,
+        "NO_SUFFICIENT_CERTIFICATE": 1,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 29,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 29,
+        "steps": 30,
+        "blocks": 60,
+        "ROBUST_SINGLE_FIRST_COVER": 0
+      },
+      "candidates": 1,
+      "r2_single_cover": 0,
+      "certified_union": 0,
+      "newly_certified": 0,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 60,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 0,
+        "raw_df05:UNPROVED_REFERENCE": 60,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 0,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 60,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 0,
+        "post_df06:UNPROVED_REFERENCE": 60,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 0
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 60,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 0,
+        "raw_df05:UNPROVED_REFERENCE": 60,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 0,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 60,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 0,
+        "post_df06:UNPROVED_REFERENCE": 60,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 0
+      }
+    },
+    "bbS038": {
+      "r2_counts": {
+        "pairs": 30,
+        "MODEL_SENSITIVE_OR_UNPROVED": 30,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1,
+        "p1_p2_explicit_same": 1,
+        "explicit_new_contact_pairs": 1,
+        "independent_initial_state_evaluations": 30,
+        "production_initial_state_crosschecks": 1,
+        "NO_SUFFICIENT_CERTIFICATE": 1,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 29,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 29,
+        "steps": 30,
+        "blocks": 60
+      },
+      "combined_counts": {
+        "pairs": 30,
+        "MODEL_SENSITIVE_OR_UNPROVED": 30,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 1,
+        "p1_p2_explicit_same": 1,
+        "explicit_new_contact_pairs": 1,
+        "independent_initial_state_evaluations": 30,
+        "production_initial_state_crosschecks": 1,
+        "NO_SUFFICIENT_CERTIFICATE": 1,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 29,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 29,
+        "steps": 30,
+        "blocks": 60,
+        "ROBUST_SINGLE_FIRST_COVER": 0
+      },
+      "candidates": 1,
+      "r2_single_cover": 0,
+      "certified_union": 0,
+      "newly_certified": 0,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 60,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 0,
+        "raw_df05:UNPROVED_REFERENCE": 60,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 0,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 60,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 0,
+        "post_df06:UNPROVED_REFERENCE": 60,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 0
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 60,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 0,
+        "raw_df05:UNPROVED_REFERENCE": 60,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 0,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 60,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 0,
+        "post_df06:UNPROVED_REFERENCE": 60,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 0
+      }
+    },
+    "bbv01": {
+      "r2_counts": {
+        "pairs": 4500,
+        "ROBUST_NO_CONTACT": 2198,
+        "comparison_basis:CERTIFICATE_DIRECT": 1998,
+        "independent_initial_state_evaluations": 2502,
+        "production_initial_state_crosschecks": 918,
+        "MODEL_SENSITIVE_OR_UNPROVED": 2302,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 30,
+        "NO_SUFFICIENT_CERTIFICATE": 718,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 888,
+        "p1_p2_explicit_same": 888,
+        "explicit_new_contact_pairs": 0,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1584,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1584,
+        "steps": 100,
+        "blocks": 1000
+      },
+      "combined_counts": {
+        "pairs": 4500,
+        "ROBUST_NO_CONTACT": 2198,
+        "comparison_basis:CERTIFICATE_DIRECT": 1998,
+        "independent_initial_state_evaluations": 2502,
+        "production_initial_state_crosschecks": 918,
+        "MODEL_SENSITIVE_OR_UNPROVED": 2302,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 30,
+        "NO_SUFFICIENT_CERTIFICATE": 718,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 888,
+        "p1_p2_explicit_same": 888,
+        "explicit_new_contact_pairs": 0,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 1584,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 1584,
+        "steps": 100,
+        "blocks": 1000,
+        "ROBUST_SINGLE_FIRST_COVER": 0
+      },
+      "candidates": 0,
+      "r2_single_cover": 0,
+      "certified_union": 0,
+      "newly_certified": 0,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 15600,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 600,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 2900,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 15600,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 600,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 2900,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "raw_df05:UNPROVED_REFERENCE": 15303,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 402,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2801,
+        "post_df06:UNPROVED_REFERENCE": 15303,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 402,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2801
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 15600,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 600,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 2900,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 15600,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 600,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 2900,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "raw_df05:UNPROVED_REFERENCE": 15303,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 402,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 2801,
+        "post_df06:UNPROVED_REFERENCE": 15303,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 402,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 2801
+      }
+    },
+    "bbv01_dbv01a": {
+      "r2_counts": {
+        "pairs": 18000,
+        "ROBUST_NO_CONTACT": 9853,
+        "comparison_basis:CERTIFICATE_DIRECT": 8022,
+        "independent_initial_state_evaluations": 9978,
+        "production_initial_state_crosschecks": 5872,
+        "MODEL_SENSITIVE_OR_UNPROVED": 8147,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 23,
+        "NO_SUFFICIENT_CERTIFICATE": 4041,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 5849,
+        "p1_p2_explicit_same": 5849,
+        "explicit_new_contact_pairs": 5,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 4106,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 4106,
+        "steps": 400,
+        "blocks": 4000
+      },
+      "combined_counts": {
+        "pairs": 18000,
+        "ROBUST_NO_CONTACT": 9853,
+        "comparison_basis:CERTIFICATE_DIRECT": 8022,
+        "independent_initial_state_evaluations": 9978,
+        "production_initial_state_crosschecks": 5872,
+        "MODEL_SENSITIVE_OR_UNPROVED": 8147,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 23,
+        "NO_SUFFICIENT_CERTIFICATE": 4041,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 5849,
+        "p1_p2_explicit_same": 5849,
+        "explicit_new_contact_pairs": 5,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 4106,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 4106,
+        "steps": 400,
+        "blocks": 4000,
+        "ROBUST_SINGLE_FIRST_COVER": 0
+      },
+      "candidates": 5,
+      "r2_single_cover": 0,
+      "certified_union": 0,
+      "newly_certified": 0,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 57600,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 2478,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 10662,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 2946,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1425,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 617,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 57600,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 2478,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 10662,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 2946,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1425,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 617,
+        "raw_df05:UNPROVED_REFERENCE": 54654,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 1053,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 10045,
+        "post_df06:UNPROVED_REFERENCE": 54654,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 1053,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 10045
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 57600,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 2478,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 10662,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 2946,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1425,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 617,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 57600,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 2478,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 10662,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 2946,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1425,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 617,
+        "raw_df05:UNPROVED_REFERENCE": 54654,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 1053,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 10045,
+        "post_df06:UNPROVED_REFERENCE": 54654,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 1053,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 10045
+      }
+    },
+    "bbv02": {
+      "r2_counts": {
+        "pairs": 2100,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1102,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 11,
+        "independent_initial_state_evaluations": 1102,
+        "production_initial_state_crosschecks": 308,
+        "NO_SUFFICIENT_CERTIFICATE": 308,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 794,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 794,
+        "ROBUST_NO_CONTACT": 998,
+        "comparison_basis:CERTIFICATE_DIRECT": 998,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 297,
+        "p1_p2_explicit_same": 297,
+        "explicit_new_contact_pairs": 0,
+        "steps": 100,
+        "blocks": 700
+      },
+      "combined_counts": {
+        "pairs": 2100,
+        "MODEL_SENSITIVE_OR_UNPROVED": 1102,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 11,
+        "independent_initial_state_evaluations": 1102,
+        "production_initial_state_crosschecks": 308,
+        "NO_SUFFICIENT_CERTIFICATE": 308,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 794,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 794,
+        "ROBUST_NO_CONTACT": 998,
+        "comparison_basis:CERTIFICATE_DIRECT": 998,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 297,
+        "p1_p2_explicit_same": 297,
+        "explicit_new_contact_pairs": 0,
+        "steps": 100,
+        "blocks": 700,
+        "ROBUST_SINGLE_FIRST_COVER": 0
+      },
+      "candidates": 0,
+      "r2_single_cover": 0,
+      "certified_union": 0,
+      "newly_certified": 0,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 8800,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 500,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1500,
+        "raw_df05:UNPROVED_REFERENCE": 8503,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 302,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1401,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 8800,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 500,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1500,
+        "post_df06:UNPROVED_REFERENCE": 8503,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 302,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1401,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 8800,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 500,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1500,
+        "raw_df05:UNPROVED_REFERENCE": 8503,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 302,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1401,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 8800,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 500,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 1500,
+        "post_df06:UNPROVED_REFERENCE": 8503,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 302,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1401,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 297,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 198,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 99
+      }
+    },
+    "bbv02_dbv02a": {
+      "r2_counts": {
+        "pairs": 8400,
+        "MODEL_SENSITIVE_OR_UNPROVED": 3583,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 11,
+        "independent_initial_state_evaluations": 4402,
+        "production_initial_state_crosschecks": 2301,
+        "NO_SUFFICIENT_CERTIFICATE": 1482,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 2101,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 2101,
+        "ROBUST_NO_CONTACT": 4817,
+        "comparison_basis:CERTIFICATE_DIRECT": 3998,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 2290,
+        "p1_p2_explicit_same": 2290,
+        "explicit_new_contact_pairs": 2,
+        "steps": 400,
+        "blocks": 2800
+      },
+      "combined_counts": {
+        "pairs": 8400,
+        "MODEL_SENSITIVE_OR_UNPROVED": 3583,
+        "comparison_basis:CONSTRUCTED_INITIAL_CONTACT": 11,
+        "independent_initial_state_evaluations": 4402,
+        "production_initial_state_crosschecks": 2301,
+        "NO_SUFFICIENT_CERTIFICATE": 1482,
+        "comparison_basis:CONSTRUCTED_INITIAL_OVERLAP": 2101,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 2101,
+        "ROBUST_NO_CONTACT": 4817,
+        "comparison_basis:CERTIFICATE_DIRECT": 3998,
+        "comparison_basis:EXPLICIT_TRAJECTORY": 2290,
+        "p1_p2_explicit_same": 2290,
+        "explicit_new_contact_pairs": 2,
+        "steps": 400,
+        "blocks": 2800,
+        "ROBUST_SINGLE_FIRST_COVER": 0
+      },
+      "candidates": 2,
+      "r2_single_cover": 0,
+      "certified_union": 0,
+      "newly_certified": 0,
+      "r2_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 31059,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 2237,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 5044,
+        "raw_df05:UNPROVED_REFERENCE": 28663,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 811,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 4679,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 31059,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 2237,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 5044,
+        "post_df06:UNPROVED_REFERENCE": 28663,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 811,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 4679,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 2396,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1426,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 365,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 2396,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1426,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 365
+      },
+      "combined_references": {
+        "raw_df05:PRIMARY_REFERENCE_TOTAL": 31059,
+        "raw_df05:SECONDARY_REFERENCE_TOTAL": 2237,
+        "raw_df05:SHARED_EDGE_SLOT_TOTAL": 5044,
+        "raw_df05:UNPROVED_REFERENCE": 28663,
+        "raw_df05:UNPROVED_SECONDARY_REFERENCE": 811,
+        "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 4679,
+        "post_df06:PRIMARY_REFERENCE_TOTAL": 31059,
+        "post_df06:SECONDARY_REFERENCE_TOTAL": 2237,
+        "post_df06:SHARED_EDGE_SLOT_TOTAL": 5044,
+        "post_df06:UNPROVED_REFERENCE": 28663,
+        "post_df06:UNPROVED_SECONDARY_REFERENCE": 811,
+        "post_df06:UNPROVED_SHARED_EDGE_SLOT": 4679,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 2396,
+        "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1426,
+        "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 365,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 2396,
+        "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 1426,
+        "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 365
+      }
+    }
+  },
+  "candidate_join": [
+    {
+      "case": "bb03",
+      "step": 1,
+      "pair": [
+        1,
+        2
+      ],
+      "features": [
+        [
+          "VE",
+          3,
+          16,
+          17
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb03",
+      "step": 1,
+      "pair": [
+        1,
+        7
+      ],
+      "features": [
+        [
+          "VE",
+          8,
+          60,
+          61
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb03",
+      "step": 1,
+      "pair": [
+        10,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          91,
+          98,
+          99
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb03",
+      "step": 5,
+      "pair": [
+        8,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          73,
+          80,
+          81
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb03",
+      "step": 15,
+      "pair": [
+        2,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          21,
+          52,
+          53
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb03",
+      "step": 15,
+      "pair": [
+        8,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          97,
+          72,
+          73
+        ]
+      ],
+      "r2_pass": true,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": false
+    },
+    {
+      "case": "bb03",
+      "step": 26,
+      "pair": [
+        5,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          55,
+          45,
+          47
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb03",
+      "step": 36,
+      "pair": [
+        9,
+        10
+      ],
+      "features": [
+        [
+          "VE",
+          91,
+          78,
+          82
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb03",
+      "step": 68,
+      "pair": [
+        1,
+        10
+      ],
+      "features": [
+        [
+          "VE",
+          87,
+          7,
+          8
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb05",
+      "step": 3,
+      "pair": [
+        2,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          18,
+          11,
+          12
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb05",
+      "step": 3,
+      "pair": [
+        3,
+        4
+      ],
+      "features": [
+        [
+          "VE",
+          26,
+          17,
+          19
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb05",
+      "step": 8,
+      "pair": [
+        3,
+        4
+      ],
+      "features": [
+        [
+          "VE",
+          26,
+          17,
+          19
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb05",
+      "step": 9,
+      "pair": [
+        1,
+        4
+      ],
+      "features": [
+        [
+          "VE",
+          25,
+          2,
+          3
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb05",
+      "step": 11,
+      "pair": [
+        2,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          18,
+          11,
+          12
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb05",
+      "step": 16,
+      "pair": [
+        2,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          12,
+          17,
+          18
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb05",
+      "step": 20,
+      "pair": [
+        2,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          18,
+          11,
+          12
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb05",
+      "step": 77,
+      "pair": [
+        2,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          12,
+          17,
+          18
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb06",
+      "step": 3,
+      "pair": [
+        3,
+        4
+      ],
+      "features": [
+        [
+          "VE",
+          26,
+          17,
+          19
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb06",
+      "step": 4,
+      "pair": [
+        2,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          12,
+          17,
+          18
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb06",
+      "step": 97,
+      "pair": [
+        3,
+        4
+      ],
+      "features": [
+        [
+          "VE",
+          26,
+          17,
+          19
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb09",
+      "step": 4,
+      "pair": [
+        8,
+        12
+      ],
+      "features": [
+        [
+          "VE",
+          59,
+          86,
+          87
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb09",
+      "step": 32,
+      "pair": [
+        6,
+        12
+      ],
+      "features": [
+        [
+          "VE",
+          43,
+          87,
+          88
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb09",
+      "step": 68,
+      "pair": [
+        4,
+        8
+      ],
+      "features": [
+        [
+          "VE",
+          57,
+          26,
+          27
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb09",
+      "step": 69,
+      "pair": [
+        1,
+        5
+      ],
+      "features": [
+        [
+          "VE",
+          34,
+          0,
+          3
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb09",
+      "step": 71,
+      "pair": [
+        1,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          0,
+          41,
+          42
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb09",
+      "step": 71,
+      "pair": [
+        4,
+        7
+      ],
+      "features": [
+        [
+          "VE",
+          27,
+          50,
+          51
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb09",
+      "step": 76,
+      "pair": [
+        10,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          72,
+          79,
+          80
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb09",
+      "step": 91,
+      "pair": [
+        9,
+        10
+      ],
+      "features": [
+        [
+          "VE",
+          73,
+          66,
+          67
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb09",
+      "step": 94,
+      "pair": [
+        11,
+        12
+      ],
+      "features": [
+        [
+          "VE",
+          88,
+          79,
+          80
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 4,
+      "pair": [
+        1,
+        7
+      ],
+      "features": [
+        [
+          "VE",
+          3,
+          48,
+          49
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 7,
+      "pair": [
+        5,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          42,
+          32,
+          33
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 11,
+      "pair": [
+        1,
+        5
+      ],
+      "features": [
+        [
+          "VE",
+          34,
+          0,
+          3
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb10",
+      "step": 11,
+      "pair": [
+        4,
+        8
+      ],
+      "features": [
+        [
+          "VE",
+          57,
+          26,
+          27
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb10",
+      "step": 14,
+      "pair": [
+        7,
+        8
+      ],
+      "features": [
+        [
+          "VE",
+          59,
+          50,
+          51
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 57,
+      "pair": [
+        1,
+        7
+      ],
+      "features": [
+        [
+          "VE",
+          3,
+          48,
+          49
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 60,
+      "pair": [
+        4,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          26,
+          40,
+          43
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 67,
+      "pair": [
+        10,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          77,
+          88,
+          89
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 86,
+      "pair": [
+        7,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          48,
+          88,
+          89
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 99,
+      "pair": [
+        1,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          0,
+          41,
+          42
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 99,
+      "pair": [
+        4,
+        7
+      ],
+      "features": [
+        [
+          "VE",
+          27,
+          50,
+          51
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb10",
+      "step": 99,
+      "pair": [
+        6,
+        12
+      ],
+      "features": [
+        [
+          "VE",
+          43,
+          99,
+          100
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb12",
+      "step": 2,
+      "pair": [
+        2,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          15,
+          77,
+          78
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb12",
+      "step": 2,
+      "pair": [
+        9,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          81,
+          95,
+          96
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb12",
+      "step": 3,
+      "pair": [
+        5,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          39,
+          77,
+          78
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb12",
+      "step": 3,
+      "pair": [
+        8,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          68,
+          95,
+          96
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb12",
+      "step": 4,
+      "pair": [
+        1,
+        2
+      ],
+      "features": [
+        [
+          "VE",
+          8,
+          14,
+          15
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb12",
+      "step": 4,
+      "pair": [
+        6,
+        10
+      ],
+      "features": [
+        [
+          "VE",
+          87,
+          51,
+          52
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb12",
+      "step": 6,
+      "pair": [
+        1,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          7,
+          79,
+          80
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb12",
+      "step": 6,
+      "pair": [
+        10,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          89,
+          95,
+          96
+        ]
+      ],
+      "r2_pass": true,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": false
+    },
+    {
+      "case": "bb12",
+      "step": 31,
+      "pair": [
+        6,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          51,
+          77,
+          78
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb12",
+      "step": 55,
+      "pair": [
+        9,
+        10
+      ],
+      "features": [
+        [
+          "VE",
+          89,
+          77,
+          82
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb51",
+      "step": 2,
+      "pair": [
+        3,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          93,
+          149,
+          153
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb51",
+      "step": 5,
+      "pair": [
+        6,
+        11
+      ],
+      "features": [
+        [
+          "VE",
+          171,
+          124,
+          125
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb51",
+      "step": 7,
+      "pair": [
+        2,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          57,
+          124,
+          125
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb51",
+      "step": 21,
+      "pair": [
+        2,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          57,
+          124,
+          125
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb51",
+      "step": 37,
+      "pair": [
+        1,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          38,
+          93,
+          94
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb51",
+      "step": 47,
+      "pair": [
+        1,
+        3
+      ],
+      "features": [
+        [
+          "VE",
+          94,
+          38,
+          39
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bb52",
+      "step": 1,
+      "pair": [
+        2,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          57,
+          124,
+          125
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": true,
+      "certified_union": true,
+      "newly_certified": true
+    },
+    {
+      "case": "bb52",
+      "step": 1,
+      "pair": [
+        2,
+        7
+      ],
+      "features": [
+        [
+          "VE",
+          58,
+          133,
+          134
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbF038",
+      "step": 1,
+      "pair": [
+        1,
+        2
+      ],
+      "features": [
+        [
+          "VE",
+          10,
+          0,
+          3
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbS038",
+      "step": 1,
+      "pair": [
+        1,
+        2
+      ],
+      "features": [
+        [
+          "VE",
+          10,
+          0,
+          3
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbv01_dbv01a",
+      "step": 54,
+      "pair": [
+        2,
+        4
+      ],
+      "features": [
+        [
+          "VE",
+          60,
+          21,
+          22
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbv01_dbv01a",
+      "step": 61,
+      "pair": [
+        7,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          109,
+          135,
+          156
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbv01_dbv01a",
+      "step": 85,
+      "pair": [
+        1,
+        4
+      ],
+      "features": [
+        [
+          "VE",
+          65,
+          11,
+          12
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbv01_dbv01a",
+      "step": 150,
+      "pair": [
+        2,
+        8
+      ],
+      "features": [
+        [
+          "VE",
+          127,
+          24,
+          25
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbv01_dbv01a",
+      "step": 190,
+      "pair": [
+        8,
+        9
+      ],
+      "features": [
+        [
+          "VE",
+          130,
+          135,
+          136
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbv02_dbv02a",
+      "step": 58,
+      "pair": [
+        4,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          56,
+          82,
+          103
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    },
+    {
+      "case": "bbv02_dbv02a",
+      "step": 196,
+      "pair": [
+        5,
+        6
+      ],
+      "features": [
+        [
+          "VE",
+          77,
+          82,
+          83
+        ]
+      ],
+      "r2_pass": false,
+      "r3_pass": false,
+      "certified_union": false,
+      "newly_certified": false
+    }
+  ],
+  "exact_observation_pairs_compared": 64010,
+  "source_hashes": {
+    "tools/m5c_publish_combined.py": "5ba129d7a26a1c622b3a05b725dcf4d7612f542aabb78daba5e9ab1c0d1e4669"
+  },
+  "source_hashes_end": {
+    "tools/m5c_publish_combined.py": "5ba129d7a26a1c622b3a05b725dcf4d7612f542aabb78daba5e9ab1c0d1e4669"
+  },
+  "input_hashes": {
+    "reports/codex/M5c_evidence/robust_full_m5c_r2_robust_summary_before.json": "517a9ec44139f42f75effbf7beda1aaa150f0c83711953857c7e693244b7c1a3",
+    "reports/codex/M5b_evidence/robust_summary.json": "540bb44216e70227ba716fb7e85c0187b955aff6aa92e21c4586146a91e7a915",
+    "reports/codex/M5c_evidence/research_summary.json": "c5b842c84cb78f0dbea32533943bd9688c429a433783f62142fd693bafb896c0",
+    "reports/codex/M5c_evidence/research_diagnostics.json": "0dbd425a061a6417b0207bafc4309a8ee8de2e80063d6ecbdf80c0bfc5982b85",
+    "src/eab/__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
+    "src/eab/construction.py": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0",
+    "src/eab/contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src/eab/kernel2d/algebraic.py": "b5c4130b75005f0637104e806e54c14679b75769d742269e84329690ea23df38",
+    "src/eab/kernel2d/dda_motion.py": "0d70f0647b10a92313dad3370cc3b30bdfa0d3ef776980c3b6268adce315ccdd",
+    "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src/eab/kernel2d/geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+    "src/eab/kernel2d/global_entrance.py": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9",
+    "src/eab/kernel2d/model_robustness.py": "f3f059118201801234209cd4d3703342831269c23db78a6a87eb90f6736913ba",
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src/eab/readers/numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
+    "tools/m5b_endpoint_replay.py": "50be048c57c1b0fc04a6683291af6575c538e3278e309f6b01b833f899e246da",
+    "tools/m5b_robust_replay.py": "dbae24c32d167e274bf9d11f29e980485837b212e1e1ed561a93bf142b654a9f",
+    "tools/m5c_source_binding.py": "6c32915bbb0de1e47f59a9eabe7f97f9aca4d23e559bf3ebf28578182ba788f5",
+    "src/eab/kernel2d/m5c_certificates.py": "3ff979533170748023d2f94dd9911bb155bacc32824009003e8bedb5afe978b1",
+    "tools/m5c_diagnostics.py": "898ce1e2502997dd3056214f7804102fde768282a8a21f384f27e5ebdde20e77",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb03_0025.jsonl.gz": "cbee449edba55fdf86ee16366b104665513fac8c3ca993b181fb6f24ccb7daec",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb03_0050.jsonl.gz": "a83a88c601b12b639bf958cc3539452b9d5da10e937f27de737dd44cff18d578",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb03_0075.jsonl.gz": "20470037ee78c2e548170c230774457c8106daf2955e132a38d43c77442071f8",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb03_0100.jsonl.gz": "52b02aa911a4989929cd21801ae49f8811b4bead2e0e5f5a9886c791d1af819b",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb05_0025.jsonl.gz": "7dbf9a70353e7618f4a5de2f88ca0d91b81a9a049a4e9631be9d5a57f964c4d7",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb05_0050.jsonl.gz": "764db17708486f8012b6419e27fb2781adb1ecd62e9e207d7e54adfa95949977",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb05_0075.jsonl.gz": "c1d35ab8e2bab70ce9057a186f1ec38d54ba75c90b1cec308c56dfa75e143fa5",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb05_0100.jsonl.gz": "6a48a848106e0cce8e57494aabe4d2deb07bf20a91b33b06ac45f3671f9c74b9",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb06_0025.jsonl.gz": "aeff73dff32be4e2e316b2f83f324ab60a4233bd060b51a3fa32ba6f5c8c692a",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb06_0050.jsonl.gz": "2a070c5a2a5fc057f6980a560a1143229d82b5dfd9dd3f85e998d83010689107",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb06_0075.jsonl.gz": "b46c9407cf2b040753be1f38050918905eeb1f0d9eeb6693b25ea8106e9fcbf0",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb06_0100.jsonl.gz": "a7a9a4d68ca5bca5c72b1aa7e9e16d3acb8e1481be9419cbcd03713d06a554e2",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb09_0025.jsonl.gz": "fb2ab0893d239d6b0a132db5c97603fb01bf2344a5b5d3b7b5d3ed3e574eb2bf",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb09_0050.jsonl.gz": "097ef6d8a6e8d31ac204c1ce2a28d087828f217af831fac72630aa884694fe6c",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb09_0075.jsonl.gz": "aaeb4f213ea59ec9ba1a522eee2de334ff3214b6e47a97a776e02c6d52f92836",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb09_0100.jsonl.gz": "af7920bc3fa3ddeae0eb815cafd4a4b7510fd03a270767e54e5afd6ad4b91c72",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb10_0025.jsonl.gz": "47800783f7b64c69babff4b9559ffa91625f3f4ac6b28ee6fab4ed180a602449",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb10_0050.jsonl.gz": "47193b48184937b602759fd4dfd3428df8777ce86b052cc467187ad96ca09785",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb10_0075.jsonl.gz": "d88805526c0ad3fe150c8bb41ce0cd8ea50b63642a71f2a25074ef3efafc96c8",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb10_0100.jsonl.gz": "553615892e025bc4007b7c8fb4d1a37d4709d799c52bcbec4b587a7c72e7feb5",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb12_0025.jsonl.gz": "fd8342c5fd90cd5cd26d3be0daa4388a89b00cc3f1063e81a5f356636fbe4eb3",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb12_0050.jsonl.gz": "ee0d86e3b1ce78950cb4585cf3e3b438d1b18d972fbdb06bca62aa3ccb258567",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb12_0075.jsonl.gz": "46018ef4343e952e15017de5d923a96e2ae46916f7ca6e3f1e50f4158c2d9a08",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb12_0100.jsonl.gz": "6763033900776c579a6bc75329c5aa4537d7889b487a18e5dbbc7d9e70455768",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb50_0025.jsonl.gz": "e50c736d4f19f52a256f4e58cee8b6b3a1dd91437e8c51c4b4851d1aaa391199",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb50_0050.jsonl.gz": "b9bd52aff3325bff8af221b3435694b1e26e7e96cbad378076620aa02083aaa6",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb51_0025.jsonl.gz": "f30df3f92a855f6039777500db9412570f1f07e8b43425a940b9cb5ab7367c25",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb51_0050.jsonl.gz": "be07901c11379df5f126cb262d28d1f8260909180ec0c2bdda33f08f9f44b8e3",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb52_0025.jsonl.gz": "fbdea944284433bc80d9f2f4a9947e0e9df73e0ae577023f2638ffe52c34ecc2",
+    "reports/codex/M5b_evidence/endpoint_inputs/bb52_0050.jsonl.gz": "f74cfce2955c9e0d68f8a143e3cb54ca0cb949372b8f452ee401359927ce31f6",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbF038_0025.jsonl.gz": "6298906456558f472cba5e03a51a9f885ca37da100a0c47e67dffc9f01e87ef9",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbF038_0030.jsonl.gz": "266b2730af3f7f13978428dc29cc80a3e4733d19d7b0990fbec7273c1a935f51",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbS038_0025.jsonl.gz": "8a381a8513fd445155f2b193b3bba9b00a1faeac6876d00d278bab94cf90346d",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbS038_0030.jsonl.gz": "1106bb5ba33993d995ad0107f341454cd122b16282b3e473ae0b4397f4f1c1ca",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_0025.jsonl.gz": "edb1a7499340d958fb0005de9f9f231c343d99d1ffc5ee10b1541153e41f5267",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_0050.jsonl.gz": "755a0a515281281b4e6e6a5348e5071d9dfb5e2fd2ca383f7d049e7a659b288d",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_0075.jsonl.gz": "f467287e88cf13804c3a0d76b4a5c9ad75ea78429f134345625d4165e74e994a",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_0100.jsonl.gz": "911974c4de2e2d4111b78b9152458f217ec7b714d76d4821609f424419168c79",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0025.jsonl.gz": "b12b0bc0f85a796c08b771d8b4081ac615e060d801f25241481e8e8f08c09337",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0050.jsonl.gz": "ada1908ffa25889f296b5342eb66139860193f366a731e17d61bc8b068609e23",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0075.jsonl.gz": "da061fe7920f3072431b564855455245cb91fd2df61447393fa7991ed50061fa",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0100.jsonl.gz": "3c7932c7a83ceb41e0f9d2d3e555b238503e0b024e8f47594074857c5620aca6",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0125.jsonl.gz": "534a548bfaf54b45ce82ed77ffdd9972419657dcd84fdb8b6d3e4bf88b934921",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0150.jsonl.gz": "0b032022bdf0a8ec1b0a7cb1cd4cead15c964d487bf26fe0ae6be1f725b8bedb",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0175.jsonl.gz": "145ec9eceffd13e9ca267c2618a33c453f2bf926812866226316eff67299a366",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0200.jsonl.gz": "cbb988a175114f37baa7a6f049a8ff2540c2b1eaaf6ee5641a7605ef568b0544",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0225.jsonl.gz": "93fc85dda431720cb37eb97ffb4231b317cc8887af0fefbcce73a63cc3434812",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0250.jsonl.gz": "6ade4beffbbcef72491936b8056d95a967dd0517bd71dee01e9aaed7892e8ca2",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0275.jsonl.gz": "cdf9cb482a05ef3b3ab3e19098e9bf986f79f30f9b0e77b6b012008c46e06c9d",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0300.jsonl.gz": "552b71d5f5f7c1ab7a35506488592d5c5a0edda3138ec0c71f2072c8e0f10f44",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0325.jsonl.gz": "921cb6e620d49c8ab2f68e291cef5dd7483929bb85007965ea1d6b0baae90185",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0350.jsonl.gz": "a230c961266618afce18826350222fab2e306db75b8706aacca5d0c99675551d",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0375.jsonl.gz": "81d832c4711445dde67419d2a8c06652560eef489a1a9329bf82e9de883b1717",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv01_dbv01a_0400.jsonl.gz": "a17dc4668aae6ad388202ad1d80a460d17b843a046d90703df9de89190423a44",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_0025.jsonl.gz": "5e75943216675bec27fde62ace0c24119937a16bd59b27fe59810ec73f4f3a99",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_0050.jsonl.gz": "478066e73fa8c24978f24593077ae8019149c0bbeb22427cffea0cdcfaa92d60",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_0075.jsonl.gz": "99b0a6eae815ff6533f4504f32866a4d5b6b83ecf07a4f6c79bd51d8336761f0",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_0100.jsonl.gz": "91fa452d95070262f0167541b12d77a33ec30c78c78bb94167d36c43433598fe",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0025.jsonl.gz": "db13f065fb5e684f52a89d81cf0a8f2ae7a95c764486bc69fe7b5df009e218e1",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0050.jsonl.gz": "44b37d6b4a7afa01efa44b36299ef3cd44deb2fe0f71c09e7de57fb4b85f008e",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0075.jsonl.gz": "8f1ada442d30fb5a21284ba08ec37432eff5f185195ea56525b7eab7dc15b851",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0100.jsonl.gz": "7a872f2b65f2edf79f4d649642b208bfd1a189af65e1b72befc4809888878455",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0125.jsonl.gz": "075e5deb748f69ec22b387764f407e81b17a16ae0eb76632cad1eb4151a74e09",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0150.jsonl.gz": "b32bb9729eda4987c849dbdf13b9922dc8dff55fce6d7a13e291ac381af27c40",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0175.jsonl.gz": "091bd4ee84293e895819d675b0b0a448a29ec34f3cb911450fd42ed771fe8ba8",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0200.jsonl.gz": "478d9743a75b7d966d0487c944ebd4d20c15ba84533c353481ee2acfcf451db9",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0225.jsonl.gz": "ef5f7517d97ca4ab8d2d75584084f1ffe5a9d0d93f4bdf6a366b28cf8da2bb1f",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0250.jsonl.gz": "c0a5a5104f9278ef92e5cc66b534d4ce8f573000c4f1a65643146ba2f187afb6",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0275.jsonl.gz": "c0888144892c6d6ef67915fdbddd4712b3917fc48f880e9869d4b0525d9a9ab7",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0300.jsonl.gz": "be6e4041fa3aeca51920f62218df0067a35dab6c4c0c28c2a0ca185a70b44afc",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0325.jsonl.gz": "622b59c614dbb199bd67feec9fcddb16f8ae5295ec65d0a3fc542594cf1f2e98",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0350.jsonl.gz": "01f77c0edd7e6f0179ba28014bf273a0be367463aedeeecc98af5566e8c4e130",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0375.jsonl.gz": "5611dc02a32d05882a05137ae7ff4addf2938292dfb4b3b065624de483818db8",
+    "reports/codex/M5b_evidence/endpoint_inputs/bbv02_dbv02a_0400.jsonl.gz": "6ebde9db496dbed70d787e4e956356b4713394590c517152fd86fb42f37e96d7",
+    "reports/codex/M5b_evidence/endpoint_inputs/manifest.json": "38f2f86afffc64c13aeb731b1efb2a18374d2714e911ed0c8cf186f7ffbbce47",
+    "reports/codex/M5b_evidence/legacy_inputs/bb03.jsonl.gz": "09a11ed27eb90c1acd2fc51c5965c335c2f14272f723ddf635eac2e5b457414a",
+    "reports/codex/M5b_evidence/legacy_inputs/bb05.jsonl.gz": "e9889844997ed7dd576baf3ff82a4eaad69f85a7b714bd98173422396f51806d",
+    "reports/codex/M5b_evidence/legacy_inputs/bb06.jsonl.gz": "926d005442171888aa92ea6cdfd049533a4c85e389241423413de1a64783882a",
+    "reports/codex/M5b_evidence/legacy_inputs/bb09.jsonl.gz": "de0742ea73915ac19dbb89ce8df63a02ef1f0932df6582e7658a65ef49427768",
+    "reports/codex/M5b_evidence/legacy_inputs/bb10.jsonl.gz": "1e31fa502082070eae03d127eea2be14ca688aeb4a29e46278435679bd31499d",
+    "reports/codex/M5b_evidence/legacy_inputs/bb12.jsonl.gz": "33844d0c5b85f9df642ce74b01d79392c68a399686a70cd6aec43cbb0a7aed53",
+    "reports/codex/M5b_evidence/legacy_inputs/bb50.jsonl.gz": "921244b62ceda785c621913208771dabe739d437f0cc33c852347592bae9f778",
+    "reports/codex/M5b_evidence/legacy_inputs/bb51.jsonl.gz": "e8cbcc0121f13af134434be584f18724dcf46217539c6abb29611285c8be6da3",
+    "reports/codex/M5b_evidence/legacy_inputs/bb52.jsonl.gz": "94d1e8a7cda0d0e016d86894a057b9daf66ca490ab2bfeec2e5bda14db5b2dc9",
+    "reports/codex/M5b_evidence/legacy_inputs/bbF038.jsonl.gz": "eb6ac3f0218f184916e9ec383578f517a494a33d641fa75aa67cc9328c54a774",
+    "reports/codex/M5b_evidence/legacy_inputs/bbS038.jsonl.gz": "eb6ac3f0218f184916e9ec383578f517a494a33d641fa75aa67cc9328c54a774",
+    "reports/codex/M5b_evidence/legacy_inputs/bbv01.jsonl.gz": "290f3919a522df8baed04a99342a9c9f0522567184d117379d78d5917d551aca",
+    "reports/codex/M5b_evidence/legacy_inputs/bbv01_dbv01a.jsonl.gz": "b84b71d74dd4916cc40585844f0e10bebda96b73574ec89c3b6fbac5023fc256",
+    "reports/codex/M5b_evidence/legacy_inputs/bbv02.jsonl.gz": "a45e90bd76742280a532ce09de38a45d58da343306ca62e3be38ae086e6869d5",
+    "reports/codex/M5b_evidence/legacy_inputs/bbv02_dbv02a.jsonl.gz": "18399151246d43d2adbaf104d849da8843d91a17734419661dfd431f7f3918b2",
+    "reports/codex/M5b_evidence/legacy_inputs/manifest.json": "d6f5f17679bfb8063db2bad468d525ca8c3547cb9b632065af89fd11390fe42e",
+    "reports/codex/M5c_evidence/tmp/research_recert_r4/exact_diagnostics.jsonl.gz": "ab0a696f93a6497f8df63e62c58de6919d2b11b3dc41996fe156bd1948941f05",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb03/pairs.jsonl.gz": "5e621c12268c20bacf9ed18d85d5d73f1a22cb122d9d1b251a22ae296d6efe36",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb03/pairs.jsonl.gz": "cc4920fb171e7891a6587f7c7dfd091aef8d6135ea361a05a69eb65573e0a424",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb05/pairs.jsonl.gz": "abb51553e65356f9f0cc6cd2c313aa30c85559531000a79f9bd9ab5a84a85e5e",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb05/pairs.jsonl.gz": "64256e2e6927e3246fce10c1fa154069ff525ea63440a4052bbb14cb7be9ca91",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb06/pairs.jsonl.gz": "9ff58d3b5a657700e5187948a0724e473ba520576e10f9f72a6594ec6c24a000",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb06/pairs.jsonl.gz": "6fad7a67ffefa351ce64614aa0941c839a3cdd628dc319f49973bf5e82f441b2",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb09/pairs.jsonl.gz": "fbcd9b5b087577a6edb54952245df995692eab592c9d2a7ea8b13d0492430630",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb09/pairs.jsonl.gz": "c0fe9943e04dfaabafb445455bed5f71c6669f61fe4f49b7e2750d16ed6dc07d",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb10/pairs.jsonl.gz": "68937ea665656c784b029eb75b1997763e924caca3ed6268eb9872bf5ff4206a",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb10/pairs.jsonl.gz": "a37aac5a843afd014001cd0b34ef965a26f8e7a7216f79e4c8b09b7568731ecf",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb12/pairs.jsonl.gz": "3fe744283969a5ace219206a29d385c5308f0456b2fb71163c1da01c25b89c6f",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb12/pairs.jsonl.gz": "209f81887e32053654e64347e00bdfe1643b067626cc63301ab188270fc80326",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb50/pairs.jsonl.gz": "2adcdac0ea42d68fa6fa483f6bdad3b463b46a07885d08b77dc8de151ca63dc7",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb50/pairs.jsonl.gz": "81d1fd1f15b571aebe8c5dde5b8444d4083e055186a59d796b18659cf6d4b8d9",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb51/pairs.jsonl.gz": "d1beb044cc9cad859beaf1f1c3897e94948b86b3bd60860efd037a8721bb7840",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb51/pairs.jsonl.gz": "084247928cf9c29057875adcb4cce8250f0a9827697458e2b75ab2fe8277f48d",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bb52/pairs.jsonl.gz": "9cb3f7648c531e88807d1fd34b4e8c2f57c886bc9eed9f784df6d4c0728d0498",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bb52/pairs.jsonl.gz": "7dbb2ccee45182d7c2d06de0691b2744d3e8453dad43db965f3da0d170405dc9",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bbF038/pairs.jsonl.gz": "220367e5987ff209f68a39b6bb4fa675f37501833261361efc0e41cf9ee206b7",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bbF038/pairs.jsonl.gz": "06d51bbbc751924805d6bd91ad4324865ffc7113e7ea8d769ec19a02091b0538",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bbS038/pairs.jsonl.gz": "d8bb01d8c95d9fff428c353906e1954004002573d7640ecb1199a1b2e9ca69a9",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bbS038/pairs.jsonl.gz": "a9c43e168028a348b5de49a8f5c3625ac88da899e8606635b8bd8818ab6b6c22",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bbv01/pairs.jsonl.gz": "da4d3afdf312296f9b281289a56be55b0e4726d18b293d2dbeeb5f26728fbace",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bbv01/pairs.jsonl.gz": "d5a9358f778bf27cc32c67ddfe9eb887a42a4df3de9f5c8da8553fbf7ccfb405",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bbv01_dbv01a/pairs.jsonl.gz": "87228975e941bcf62b9686ca839264d7913a27de377bd623bf535ea65f2c0840",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bbv01_dbv01a/pairs.jsonl.gz": "d9f6fa61b1bb29f2ee6407a2e30785596cdf35478d19a4190e6f0e4f5b7020e2",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bbv02/pairs.jsonl.gz": "a3dcce5a4715ce51225d0fafb4aa644be7146d6ac1de456bd2d7de368b83d491",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bbv02/pairs.jsonl.gz": "3590526c372589b51a58447543f20dbe8ed55fb3c11781dd85982c75469e1c65",
+    "reports/codex/M5b_evidence/tmp/robust_full_r2/bbv02_dbv02a/pairs.jsonl.gz": "cf1f685fbb85be398f91b603d9f7bf0857ddb2f16825ce7585a20fadbf18be76",
+    "reports/codex/M5c_evidence/tmp/robust_full_m5c_r2/bbv02_dbv02a/pairs.jsonl.gz": "127e7eb619f9d29eb207a4671e1cbdf2205b2a8fdf1dd4f4ea9b55089177062b"
+  },
+  "source_dependency_contract": "All recorded source bytes/current start-end maps checked; research includes every fresh replay source plus R3 core. Actual closure completeness is additionally guarded by the independent A7 import-origin pytest gates.",
+  "evidence_roles": {
+    "historical": "reports/codex/M5c_evidence/robust_full_m5c_r2_robust_summary_before.json",
+    "fresh_r2": "reports/codex/M5b_evidence/robust_summary.json",
+    "research": "reports/codex/M5c_evidence/research_summary.json",
+    "compact_diagnostics": "reports/codex/M5c_evidence/research_diagnostics.json"
+  },
+  "seconds": 2.4753270000001066,
+  "limits": [
+    "Only the certified union subset supports first-cover reference conclusions; unproved pairs are not extrapolated",
+    "FORMAL_ALL means primary plus formal VV secondary; ALL additionally includes valid VE common-edge candidate slots",
+    "Positive-radius global shortest-exit ordering remains uncertified for every initially penetrated pair",
+    "R3 is a sufficient research certificate, not independent G6 acceptance"
+  ]
+}

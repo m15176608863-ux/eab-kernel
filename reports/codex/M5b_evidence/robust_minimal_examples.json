@@ -3,19 +3,12 @@
   "scope": "five independently reexecuted selected examples, not full-run completion",
   "source_hashes": {
     "src/eab/__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
-    "src/eab/adapters/__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
-    "src/eab/adapters/bdda2d.py": "3240e49c7cf5f546884a911828e300fe3cb2a3e44079d62a1b0e017be63299b3",
     "src/eab/construction.py": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0",
     "src/eab/contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
-    "src/eab/dual.py": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5",
     "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
-    "src/eab/kernel2d/affine_motion.py": "0b357b39707d27515ccb7271c95d765c6479b87580938dbc64e98725ac622bad",
     "src/eab/kernel2d/algebraic.py": "b5c4130b75005f0637104e806e54c14679b75769d742269e84329690ea23df38",
-    "src/eab/kernel2d/covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
     "src/eab/kernel2d/dda_motion.py": "0d70f0647b10a92313dad3370cc3b30bdfa0d3ef776980c3b6268adce315ccdd",
-    "src/eab/kernel2d/entrance.py": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c",
     "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
-    "src/eab/kernel2d/g0.py": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013",
     "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
     "src/eab/kernel2d/geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
     "src/eab/kernel2d/global_entrance.py": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9",
@@ -23,37 +16,38 @@
     "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
     "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
     "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
-    "src/eab/kernel3d/__init__.py": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a",
-    "src/eab/kernel3d/boundary.py": "e927f4297c0d756de0cfb6c683e402021b1acbd2edf1a2b5a78049347c54a102",
-    "src/eab/kernel3d/covers3.py": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6",
-    "src/eab/kernel3d/entrance3.py": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171",
-    "src/eab/kernel3d/entrance_topology.py": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
-    "src/eab/kernel3d/exact_geom.py": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
-    "src/eab/kernel3d/exact_sweep.py": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5",
-    "src/eab/kernel3d/frozen.py": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa",
-    "src/eab/kernel3d/g03.py": "be19d78c3cc409704b51b9647258e115172583b0876f5b430a6b1e54d122f6fe",
-    "src/eab/kernel3d/g03_exact.py": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22",
-    "src/eab/kernel3d/g03_exit_oracle.py": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220",
-    "src/eab/kernel3d/g03_surface_oracle.py": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0",
-    "src/eab/kernel3d/geom3.py": "4256d31ca410923e9109c13e4436764c5459e077e9d1ef41d97a152730eb4ede",
-    "src/eab/kernel3d/global_entrance.py": "222ed67b3c2bf7dc34bef5f2fc0ec9e96589b57e9f012a1d542aa13a68646c90",
-    "src/eab/kernel3d/interlock.py": "46b67ce960149606586446f226f1b33fdc6f033a4809e3805c0e3444b2531201",
-    "src/eab/limit.py": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f",
-    "src/eab/limit_multi.py": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65",
-    "src/eab/lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
-    "src/eab/margin.py": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720",
     "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
     "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
-    "src/eab/predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
-    "src/eab/rational3.py": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
     "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
-    "src/eab/readers/bdda3d.py": "dcdb41243f6745488721e627d7c901811986ebf9c16bdd879c309d0c376362e4",
-    "src/eab/readers/bdda_df.py": "356cf4edf86fc3b026e799305416f999ac550805a2f5d1ef3c194363cc817a2f",
-    "src/eab/readers/bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
     "src/eab/readers/numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
-    "src/eab/readers/tf_probe.py": "cbc9b1a5ec4e2a8c51888903d57cba2003b2c539537520ed56f8a2206262cb3f",
-    "tools/m5b_endpoint_replay.py": "effc3dcc6f8667231d09fa9e973f4f058aad0b0bd6d85f2b2c1a11ca22b9d4df",
-    "tools/m5b_robust_replay.py": "18857057176f75acad7ef84c205ffe13e3715841f3987d220a870947657c1b71"
+    "tools/m5b_endpoint_replay.py": "50be048c57c1b0fc04a6683291af6575c538e3278e309f6b01b833f899e246da",
+    "tools/m5b_minimal_examples.py": "80694ba781f52d8fd03a9a39742b9d65044639fe58cadde38027cba704813a59",
+    "tools/m5b_robust_replay.py": "dbae24c32d167e274bf9d11f29e980485837b212e1e1ed561a93bf142b654a9f",
+    "tools/m5c_source_binding.py": "6c32915bbb0de1e47f59a9eabe7f97f9aca4d23e559bf3ebf28578182ba788f5"
+  },
+  "source_hashes_end": {
+    "src/eab/__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
+    "src/eab/construction.py": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0",
+    "src/eab/contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src/eab/kernel2d/algebraic.py": "b5c4130b75005f0637104e806e54c14679b75769d742269e84329690ea23df38",
+    "src/eab/kernel2d/dda_motion.py": "0d70f0647b10a92313dad3370cc3b30bdfa0d3ef776980c3b6268adce315ccdd",
+    "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src/eab/kernel2d/geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+    "src/eab/kernel2d/global_entrance.py": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9",
+    "src/eab/kernel2d/model_robustness.py": "f3f059118201801234209cd4d3703342831269c23db78a6a87eb90f6736913ba",
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src/eab/readers/numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
+    "tools/m5b_endpoint_replay.py": "50be048c57c1b0fc04a6683291af6575c538e3278e309f6b01b833f899e246da",
+    "tools/m5b_minimal_examples.py": "80694ba781f52d8fd03a9a39742b9d65044639fe58cadde38027cba704813a59",
+    "tools/m5b_robust_replay.py": "dbae24c32d167e274bf9d11f29e980485837b212e1e1ed561a93bf142b654a9f",
+    "tools/m5c_source_binding.py": "6c32915bbb0de1e47f59a9eabe7f97f9aca4d23e559bf3ebf28578182ba788f5"
   },
   "input_hashes": {
     "reports/codex/M5b_evidence/endpoint_inputs/bb03_0025.jsonl.gz": "cbee449edba55fdf86ee16366b104665513fac8c3ca993b181fb6f24ccb7daec",
@@ -148,7 +142,7 @@
     "reports/codex/M5b_evidence/legacy_inputs/bbv02_dbv02a.jsonl.gz": "18399151246d43d2adbaf104d849da8843d91a17734419661dfd431f7f3918b2",
     "reports/codex/M5b_evidence/legacy_inputs/manifest.json": "d6f5f17679bfb8063db2bad468d525ca8c3547cb9b632065af89fd11390fe42e"
   },
-  "script_sha256": "65de78f96122b8f88d2db9c0b926b88e9513e3248461d424cb2782c64c3d71d3",
+  "script_sha256": "80694ba781f52d8fd03a9a39742b9d65044639fe58cadde38027cba704813a59",
   "examples": [
     {
       "case": "bb03",
@@ -371,7 +365,6 @@
       "expected": {
         "result": {
           "classification": "ROBUST_SINGLE_FIRST_COVER",
-          "reason": "NO_SUFFICIENT_CERTIFICATE",
           "same": true,
           "p1": {
             "status": "contact",
@@ -422,6 +415,8 @@
           },
           "initial_state": -1,
           "oracle_checked": true,
+          "comparison_basis": "EXPLICIT_TRAJECTORY",
+          "production_initial_crosschecked": true,
           "certificate": [
             {
               "kind": "ROBUST_SINGLE_FIRST_COVER",
@@ -560,10 +555,20 @@
           ]
         },
         "legacy_counts": {
+          "raw_df05:PRIMARY_REFERENCE_TOTAL": 2,
+          "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+          "raw_df05:SHARED_EDGE_SLOT_TOTAL": 2,
           "raw_df05:OTHER_REFERENCE": 2,
+          "raw_df05:SHARED_EDGE_FIRST_COVER_MATCH": 1,
+          "raw_df05:SHARED_EDGE_OTHER_REFERENCE": 1,
+          "raw_df05:FORMAL_ALL_FIRST_COVER_NOT_SELECTED": 1,
           "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 1,
+          "post_df06:PRIMARY_REFERENCE_TOTAL": 2,
+          "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+          "post_df06:SHARED_EDGE_SLOT_TOTAL": 2,
           "post_df06:FIRST_COVER_MATCH": 1,
-          "post_df06:OTHER_REFERENCE": 1
+          "post_df06:OTHER_REFERENCE": 1,
+          "post_df06:SHARED_EDGE_OTHER_REFERENCE": 2
         }
       }
     },
@@ -779,7 +784,6 @@
       "expected": {
         "result": {
           "classification": "ROBUST_SINGLE_FIRST_COVER",
-          "reason": "NO_SUFFICIENT_CERTIFICATE",
           "same": true,
           "p1": {
             "status": "contact",
@@ -830,6 +834,8 @@
           },
           "initial_state": -1,
           "oracle_checked": true,
+          "comparison_basis": "EXPLICIT_TRAJECTORY",
+          "production_initial_crosschecked": true,
           "certificate": [
             {
               "kind": "ROBUST_SINGLE_FIRST_COVER",
@@ -968,8 +974,14 @@
           ]
         },
         "legacy_counts": {
+          "raw_df05:PRIMARY_REFERENCE_TOTAL": 2,
+          "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+          "raw_df05:SHARED_EDGE_SLOT_TOTAL": 0,
           "raw_df05:FIRST_COVER_MATCH": 1,
           "raw_df05:OTHER_REFERENCE": 1,
+          "post_df06:PRIMARY_REFERENCE_TOTAL": 2,
+          "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+          "post_df06:SHARED_EDGE_SLOT_TOTAL": 0,
           "post_df06:FIRST_COVER_MATCH": 1,
           "post_df06:OTHER_REFERENCE": 1
         }
@@ -1200,11 +1212,23 @@
             ],
             "radius_sum": "13385940116113272448454180172156473692741851302630795334191462157463397708090363604777988518833801455702726500474852045191968410905490512599013164139359917889904068751401682946933211232461091068690659563565366618653973948245616474723317649714228001312498120986561769660231611369274097928113103983508880552750743246314694294265452886161180827084604126986119243737079217937780115603466583558256849/65176163510882438955392352885509685246394298721435156577527089116093030665419021710639683350963057158470866264518517521686545302350848616179762966222598096026647352246992529463688345977056513070684092025592816197108642680700960591233177281105852038648957031808345926079388002350285130835811341881913796215712642756924817143352216904472289869946731947788834111185408407471078366060239454319055937887797248000"
           },
-          "oracle_checked": false
+          "oracle_checked": false,
+          "comparison_basis": "CERTIFICATE_DIRECT",
+          "production_initial_crosschecked": false
         },
         "legacy_counts": {
+          "raw_df05:PRIMARY_REFERENCE_TOTAL": 0,
+          "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+          "raw_df05:SHARED_EDGE_SLOT_TOTAL": 0,
           "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 0,
-          "post_df06:ROBUST_NO_CONTACT_REFERENCE": 0
+          "raw_df05:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+          "raw_df05:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 0,
+          "post_df06:PRIMARY_REFERENCE_TOTAL": 0,
+          "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+          "post_df06:SHARED_EDGE_SLOT_TOTAL": 0,
+          "post_df06:ROBUST_NO_CONTACT_REFERENCE": 0,
+          "post_df06:ROBUST_NO_CONTACT_SECONDARY_REFERENCE": 0,
+          "post_df06:ROBUST_NO_CONTACT_SHARED_EDGE_SLOT": 0
         }
       }
     },
@@ -1553,11 +1577,23 @@
             "time": null
           },
           "initial_state": 1,
-          "oracle_checked": true
+          "oracle_checked": true,
+          "comparison_basis": "CONSTRUCTED_INITIAL_OVERLAP",
+          "production_initial_crosschecked": false
         },
         "legacy_counts": {
+          "raw_df05:PRIMARY_REFERENCE_TOTAL": 4,
+          "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+          "raw_df05:SHARED_EDGE_SLOT_TOTAL": 1,
           "raw_df05:UNPROVED_REFERENCE": 4,
-          "post_df06:UNPROVED_REFERENCE": 4
+          "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+          "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 1,
+          "post_df06:PRIMARY_REFERENCE_TOTAL": 4,
+          "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+          "post_df06:SHARED_EDGE_SLOT_TOTAL": 1,
+          "post_df06:UNPROVED_REFERENCE": 4,
+          "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+          "post_df06:UNPROVED_SHARED_EDGE_SLOT": 1
         }
       }
     },
@@ -1922,11 +1958,23 @@
             }
           },
           "initial_state": -1,
-          "oracle_checked": true
+          "oracle_checked": true,
+          "comparison_basis": "EXPLICIT_TRAJECTORY",
+          "production_initial_crosschecked": true
         },
         "legacy_counts": {
+          "raw_df05:PRIMARY_REFERENCE_TOTAL": 2,
+          "raw_df05:SECONDARY_REFERENCE_TOTAL": 0,
+          "raw_df05:SHARED_EDGE_SLOT_TOTAL": 0,
           "raw_df05:UNPROVED_REFERENCE": 2,
-          "post_df06:UNPROVED_REFERENCE": 2
+          "raw_df05:UNPROVED_SECONDARY_REFERENCE": 0,
+          "raw_df05:UNPROVED_SHARED_EDGE_SLOT": 0,
+          "post_df06:PRIMARY_REFERENCE_TOTAL": 2,
+          "post_df06:SECONDARY_REFERENCE_TOTAL": 0,
+          "post_df06:SHARED_EDGE_SLOT_TOTAL": 0,
+          "post_df06:UNPROVED_REFERENCE": 2,
+          "post_df06:UNPROVED_SECONDARY_REFERENCE": 0,
+          "post_df06:UNPROVED_SHARED_EDGE_SLOT": 0
         }
       }
     }

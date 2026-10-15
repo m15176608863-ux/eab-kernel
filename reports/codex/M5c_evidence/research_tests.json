@@ -1,0 +1,76 @@
+{
+  "complete": true,
+  "collect_command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\M5c_evidence\\tmp\\research_pytest_final",
+    "tests/test_m5c_certificates.py",
+    "--collect-only",
+    "-q"
+  ],
+  "run_command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\M5c_evidence\\tmp\\research_pytest_final",
+    "tests/test_m5c_certificates.py",
+    "-q",
+    "--junitxml",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\M5c_evidence\\tmp\\research_gates_final.xml"
+  ],
+  "collected": 14,
+  "executed": 14,
+  "failed": 0,
+  "skipped": 0,
+  "returncode": 0,
+  "seconds": 6.674496399999043,
+  "nodes": [
+    "tests/test_m5c_certificates.py::test_concave_single_cover_matches_closed_form_oracle",
+    "tests/test_m5c_certificates.py::test_common_translation_cancels_exactly",
+    "tests/test_m5c_certificates.py::test_near_ties_and_endpoint_ties_are_never_signed[radius0]",
+    "tests/test_m5c_certificates.py::test_near_ties_and_endpoint_ties_are_never_signed[radius1]",
+    "tests/test_m5c_certificates.py::test_relative_simple_certificate_rigid_unit_covariance[scale0-offset0-u0]",
+    "tests/test_m5c_certificates.py::test_relative_simple_certificate_rigid_unit_covariance[scale1-offset1-u1]",
+    "tests/test_m5c_certificates.py::test_relative_simple_certificate_rigid_unit_covariance[scale2-offset2-u2]",
+    "tests/test_m5c_certificates.py::test_nonlocal_edge_crossing_is_rejected_by_simple_ring_guard",
+    "tests/test_m5c_certificates.py::test_relative_separation_equality_mutation_fails_semantics",
+    "tests/test_m5c_certificates.py::test_removed_simplicity_internal_guard_fails_semantics",
+    "tests/test_m5c_certificates.py::test_r3_rejects_nonexact_coordinates_radii_and_windows[0.5]",
+    "tests/test_m5c_certificates.py::test_r3_rejects_nonexact_coordinates_radii_and_windows[True]",
+    "tests/test_m5c_certificates.py::test_r3_rejects_nonexact_coordinates_radii_and_windows[1/2]",
+    "tests/test_m5c_certificates.py::test_tangent_touch_and_invalid_indices_are_not_certified"
+  ],
+  "mutations": [
+    {
+      "function": "_separation",
+      "old": "gap > ra+rb",
+      "new": "gap >= ra+rb",
+      "test": "test_relative_separation_equality_mutation_fails_semantics",
+      "semantic_assertion": "equality is not separation",
+      "executed_passed": true
+    },
+    {
+      "function": "_simple",
+      "old": "return min(margins)",
+      "new": "return F(1)",
+      "test": "test_removed_simplicity_internal_guard_fails_semantics",
+      "semantic_assertion": "self-intersecting ring cannot receive first-cover certificate",
+      "executed_passed": true
+    }
+  ],
+  "mutation_hash_guard_bypass": "No frozen source-hash assertions are invoked by these semantic tests; internal function mutations are executed directly through public certificate APIs.",
+  "source_hashes": {
+    "src\\eab\\kernel2d\\m5c_certificates.py": "3ff979533170748023d2f94dd9911bb155bacc32824009003e8bedb5afe978b1",
+    "src\\eab\\kernel2d\\model_robustness.py": "f3f059118201801234209cd4d3703342831269c23db78a6a87eb90f6736913ba",
+    "tests\\test_m5c_certificates.py": "2a9da3ce82cfd64a2467d5ea28ca6d80c5a809a4a0664b316ebd93a4f31cb93a",
+    "tests\\mutation_support.py": "362b9afa9a1c223c831209d812edbd3ad64f949484d8f48fc3c887375a1ba547"
+  },
+  "junit_path": "reports/codex/M5c_evidence/tmp/research_gates_final.xml"
+}

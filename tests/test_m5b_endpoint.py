@@ -183,8 +183,8 @@ def test_frozen_endpoint_evidence_has_all_cases_and_recomputable_extrema():
     assert summary["complete"] and manifest["complete"]
     assert summary["block_frames"] == manifest["block_frames"] == 15220
     assert len(summary["cases"]) == len(manifest["cases"]) == 15
-    assert summary["source_hashes"]["tool"] == endpoint.sha(endpoint.__file__)
-    assert summary["source_hashes"]["manifest"] == endpoint.sha(endpoint.INPUTS / "manifest.json")
+    assert summary["source_hashes"]["tools/m5b_endpoint_replay.py"] == endpoint.sha(endpoint.__file__)
+    assert summary["input_hashes"]["manifest"] == endpoint.sha(endpoint.INPUTS / "manifest.json")
     assert sum(case["steps"] for case in manifest["cases"].values()) == 1810
     assert all(part["bytes"] < 1_000_000 for part in manifest["shards"])
     for field in ("binary_ratio", "ideal_ratio_upper"):

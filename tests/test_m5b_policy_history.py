@@ -68,3 +68,25 @@ def test_rule_site_audit_counts_identical_same_line_ast_occurrences_separately()
     sites = audit.diagnostic_occurrences(source, row)
     assert len(sites) == 2 and len({site["column"] for site in sites}) == 2, \
         "M5b per-site count must not collapse identical same-line AST occurrences into one admission row"
+
+
+def test_current_effective_shared_review_has_its_own_accepted_fingerprint(policy=None):
+    if policy is None:
+        policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    active = policy["mutation_instrumentation_reviews"][-1]
+    actual = hashlib.sha256(json.dumps(active, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    assert actual == "cb2f1e7fe51137a61fcf9126f756af55fce22875beac487cedc27ec5e7b78cdc", \
+        "M5c effective shared review must itself be explicitly accepted; append-only history is insufficient"
+
+
+def test_appending_a_wider_review_does_not_inherit_the_effective_fingerprint():
+    policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    active = policy["mutation_instrumentation_reviews"][-1]
+    bad = copy.deepcopy(active)
+    bad["rules"].append("closed-rounded-construction")
+    candidate = policy["mutation_instrumentation_reviews"] + [bad]
+    # Old prefix remains exact: this specifically defeats the former loophole.
+    assert candidate[:-1] == policy["mutation_instrumentation_reviews"]
+    policy["mutation_instrumentation_reviews"] = candidate
+    with pytest.raises(AssertionError, match="effective shared review must itself be explicitly accepted"):
+        test_current_effective_shared_review_has_its_own_accepted_fingerprint(policy)

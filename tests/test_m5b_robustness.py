@@ -10,6 +10,7 @@ from math import comb
 
 import pytest
 from mutation_support import replace_module_callable
+from m5c_teeth_oracle import translation_first_events
 from eab.kernel2d import model_robustness as rob
 
 
@@ -55,10 +56,12 @@ def test_single_cover_certificate_has_independent_closed_form_oracle():
     # Closed-form oracle, independent of all production predicates: rightmost
     # diamond vertex x=2s+da meets the wall x=1+db, away from both wall endpoints.
     for da, db in product((F(-1, 100), F(0), F(1, 100)), repeat=2):
-        t = (1+db-da)/2
-        assert F(2, 5) < t < F(3, 5)
-        assert all(x+2*t+da < 1+db for k, (x, _) in enumerate(a) if k != 2)
-        assert -2 < 0 < 2
+        shifted_a = tuple((x+da, y) for x, y in a)
+        shifted_b = tuple((x+db, y) for x, y in b)
+        t, labels = translation_first_events(shifted_a, shifted_b, (2, 0))
+        assert t == (1+db-da)/2
+        assert labels == (result["label"],), "independent oracle checks production label"
+        assert result["bracket"][0] < t < result["bracket"][1], "independent oracle checks production bracket"
     reverse = rob.single_cover_certificate(bb, aa, ("EV", 3, 2), (F(2, 5), F(3, 5)), F(1, 100), F(1, 100))
     assert reverse and reverse["label"] == ("EV", 3, 2)
 

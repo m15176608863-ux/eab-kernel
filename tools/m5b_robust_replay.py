@@ -22,13 +22,14 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
 import m5b_endpoint_replay as endpoint
+from m5c_source_binding import runtime_source_hashes, assert_current_sources
 from eab.kernel2d.dda_motion import dda_motion_from_z, p2_p3_bound, dda_first_entrance
 from eab.kernel2d.motion import motion_first_entrance
 from eab.kernel2d.model_robustness import chord_paths, dda_paths, swept_axis_bounds, separation_certificate, single_cover_certificate
 from eab.kernel2d.g0_oracle import overlap
 
 EVIDENCE = ROOT / "reports/codex/M5b_evidence"
-TMP = EVIDENCE / "tmp"
+TMP = ROOT / "reports/codex/M5c_evidence/tmp"
 LEGACY = EVIDENCE / "legacy_inputs"
 PHASES = ("raw_df05", "post_df06")
 
@@ -46,10 +47,7 @@ def sha(path):
 
 
 def source_hashes():
-    # Conservative complete production package closure; changes invalidate run.
-    paths = list((ROOT / "src/eab").rglob("*.py"))
-    paths += [Path(__file__), ROOT / "tools/m5b_endpoint_replay.py"]
-    return {p.relative_to(ROOT).as_posix(): sha(p) for p in sorted(paths)}
+    return runtime_source_hashes(ROOT, __file__)
 
 
 def input_hashes():
@@ -160,12 +158,14 @@ def compare_pair(a, b):
     empty = dict(status="no_contact", features=(), time=None)
     if min(gaps) > radius:
         return dict(classification="ROBUST_NO_CONTACT", same=True, p1=empty, p2=empty,
-                    certificate=dict(gap_lower=gaps, radius_sum=radius), oracle_checked=False)
+                    certificate=dict(gap_lower=gaps, radius_sum=radius), oracle_checked=False,
+                    comparison_basis="CERTIFICATE_DIRECT", production_initial_crosschecked=False)
     state = overlap(a["start"], b["start"])
     if state == 1:
         value = dict(status="initial_overlap", features=(), time=None)
         return dict(classification="MODEL_SENSITIVE_OR_UNPROVED", reason="INITIAL_EXIT_ORDER_UNCERTIFIED",
-                    same=True, p1=value, p2=value, initial_state=state, oracle_checked=True)
+                    same=True, p1=value, p2=value, initial_state=state, oracle_checked=True,
+                    comparison_basis="CONSTRUCTED_INITIAL_OVERLAP", production_initial_crosschecked=False)
     one = motion_first_entrance(a["start"], b["start"], a["end"], b["end"])
     two = dda_first_entrance(a["start"], b["start"], a["motion"], b["motion"])
     if one.initial_state != state or two.initial_state != state:
@@ -173,7 +173,9 @@ def compare_pair(a, b):
     p1, p2 = record(one, a, b), record(two, a, b)
     same = p1["status"] == p2["status"] and p1["features"] == p2["features"]
     result = dict(classification="MODEL_SENSITIVE_OR_UNPROVED", reason="NO_SUFFICIENT_CERTIFICATE",
-                  same=same, p1=p1, p2=p2, initial_state=state, oracle_checked=True)
+                  same=same, p1=p1, p2=p2, initial_state=state, oracle_checked=True,
+                  comparison_basis="EXPLICIT_TRAJECTORY" if state == -1 else "CONSTRUCTED_INITIAL_CONTACT",
+                  production_initial_crosschecked=True)
     if not same:
         result["reason"] = "OBSERVED_P1_P2_DIFFERENCE"
         return result
@@ -182,6 +184,7 @@ def compare_pair(a, b):
                         for key in ("paths1", "paths2")]
         if all(certificates):
             result.update(classification="ROBUST_NO_CONTACT", certificate=certificates)
+            result.pop("reason", None)
         return result
     if state != -1 or len(one.features) != 1 or one.features != two.features or one.features[0][0] == "VV":
         return result
@@ -193,27 +196,94 @@ def compare_pair(a, b):
                         for key in ("paths1", "paths2")]
         if all(certificates):
             result.update(classification="ROBUST_SINGLE_FIRST_COVER", certificate=certificates)
+            result.pop("reason", None)
             break
     return result
 
 
+def canonical_legacy_rows(rows, block_rows):
+    """Normalize both tuple7 slots from frozen consecutive padded vertex IDs.
+
+    Check the primary against its independently frozen canonical field. The two
+    wrap aliases follow the retained ring, as checked at input freezing.
+    """
+    aliases, owners, edges = {}, {}, set()
+    for block_index, block in enumerate(block_rows):
+        ids = block["vertex_ids"]
+        if ids != list(range(ids[0], ids[0]+len(ids))):
+            raise ValueError("frozen ring IDs must preserve the consecutive padded order")
+        aliases.update((v, v) for v in ids)
+        aliases.update(zip((ids[-1]+1, ids[-1]+2), ids[:2]))
+        owners.update((v, block_index) for v in ids)
+        edges.update(tuple(sorted((v, w))) for v, w in zip(ids, ids[1:]+ids[:1]))
+    normalized = []
+    for row in rows:
+        raw = row["raw"]
+        primary = ("VE", aliases[raw[1]], *sorted((aliases[raw[2]], aliases[raw[3]])))
+        if primary != tuple(row["primary"]):
+            raise AssertionError("primary alias reconstruction differs from frozen canonical reference")
+        secondary, shared_edge = None, None
+        # df.c uses m6>0 for the mtype=0 common-edge slot. Other VE rows use
+        # m4/m5 for lock-length hints, not a complete vertex-edge reference.
+        # VV uses has_second=m4>0; its m5/m6 may be the actual vertex ID zero.
+        present = (raw[0] == 1 and raw[4] > 0) or (raw[0] == 0 and raw[6] > 0)
+        if present:
+            slot = ("VE", aliases[raw[4]], *sorted((aliases[raw[5]], aliases[raw[6]])))
+            v, e0, e1 = slot[1:]
+            pair_owners = {owners[primary[1]], owners[primary[2]]}
+            if (e0 == e1 or (e0, e1) not in edges or owners[e0] != owners[e1]
+                    or owners[v] == owners[e0] or {owners[v], owners[e0]} != pair_owners):
+                raise ValueError("complete legacy slot is not an opposite-block vertex and nondegenerate adjacent edge")
+            if raw[0] == 1:
+                secondary = slot
+            else:
+                shared_edge = slot
+        normalized.append(dict(row, secondary=secondary, shared_edge=shared_edge))
+    return normalized
+
+
 def legacy_counts(result, rows):
-    """Partition robust references without calling a geometry oracle."""
+    """Count primary, VV secondary and common-edge slots separately.
+
+    ALL includes all valid slots; FORMAL_ALL excludes VE common-edge candidates.
+
+    Historical FIRST_COVER_NOT_SELECTED retains PRIMARY-only meaning. It is
+    never a missing-pair assertion; ALL_FIRST_COVER_NOT_SELECTED is separate.
+    """
     counts = Counter()
     for phase in PHASES:
         selected = rows[phase]
+        secondary = [tuple(row["secondary"]) for row in selected if row.get("secondary") is not None]
+        shared_edge = [tuple(row["shared_edge"]) for row in selected if row.get("shared_edge") is not None]
+        counts[phase+":PRIMARY_REFERENCE_TOTAL"] += len(selected)
+        counts[phase+":SECONDARY_REFERENCE_TOTAL"] += len(secondary)
+        counts[phase+":SHARED_EDGE_SLOT_TOTAL"] += len(shared_edge)
         if result["classification"] == "ROBUST_NO_CONTACT":
             counts[phase+":ROBUST_NO_CONTACT_REFERENCE"] += len(selected)
+            counts[phase+":ROBUST_NO_CONTACT_SECONDARY_REFERENCE"] += len(secondary)
+            counts[phase+":ROBUST_NO_CONTACT_SHARED_EDGE_SLOT"] += len(shared_edge)
         elif result["classification"] == "ROBUST_SINGLE_FIRST_COVER":
             features = set(result["p1"]["features"])
             for row in selected:
                 counts[phase+(":FIRST_COVER_MATCH" if tuple(row["primary"]) in features else ":OTHER_REFERENCE")] += 1
+            for feature in secondary:
+                counts[phase+(":SECONDARY_FIRST_COVER_MATCH" if feature in features else ":SECONDARY_OTHER_REFERENCE")] += 1
+            for feature in shared_edge:
+                counts[phase+(":SHARED_EDGE_FIRST_COVER_MATCH" if feature in features else ":SHARED_EDGE_OTHER_REFERENCE")] += 1
+            formal_features = [tuple(row["primary"]) for row in selected]+secondary
+            if not any(feature in features for feature in formal_features):
+                counts[phase+":FORMAL_ALL_FIRST_COVER_NOT_SELECTED"] += 1
+            all_features = formal_features+shared_edge
+            if not any(feature in features for feature in all_features):
+                counts[phase+":ALL_FIRST_COVER_NOT_SELECTED"] += 1
             if not selected:
                 counts[phase+":ROBUST_CONTACT_MISSING_PAIR"] += 1
             if not any(tuple(row["primary"]) in features for row in selected):
                 counts[phase+":ROBUST_FIRST_COVER_NOT_SELECTED"] += 1
         else:
             counts[phase+":UNPROVED_REFERENCE"] += len(selected)
+            counts[phase+":UNPROVED_SECONDARY_REFERENCE"] += len(secondary)
+            counts[phase+":UNPROVED_SHARED_EDGE_SLOT"] += len(shared_edge)
     return counts
 
 
@@ -240,13 +310,19 @@ def replay_case(case, out, expected_source, expected_inputs):
                 for idb in ids[index+1:]:
                     a, b = blocks[ida], blocks[idb]
                     result = compare_pair(a, b)
-                    selected = {phase: [r for r in legacy[step][phase] if r["pair"] == [ida, idb]] for phase in PHASES}
+                    selected = {phase: canonical_legacy_rows(
+                        [r for r in legacy[step][phase] if r["pair"] == [ida, idb]], block_rows) for phase in PHASES}
                     reference = legacy_counts(result, selected)
                     references.update(reference)
                     counts["pairs"] += 1
                     counts[result["classification"]] += 1
-                    counts["p1_p2_same" if result["same"] else "p1_p2_different"] += 1
-                    counts["independent_initial_state_checks"] += result["oracle_checked"]
+                    basis = result["comparison_basis"]
+                    counts["comparison_basis:"+basis] += 1
+                    if basis == "EXPLICIT_TRAJECTORY":
+                        counts["p1_p2_explicit_same" if result["same"] else "p1_p2_explicit_different"] += 1
+                        counts["explicit_new_contact_pairs"] += result["p1"]["status"] != "no_contact"
+                    counts["independent_initial_state_evaluations"] += result["oracle_checked"]
+                    counts["production_initial_state_crosschecks"] += result["production_initial_crosschecked"]
                     if result.get("reason") and result["classification"] == "MODEL_SENSITIVE_OR_UNPROVED":
                         counts[result["reason"]] += 1
                     packed = dict(case=case, step=step, pair=[ida, idb], result=result, legacy_counts=dict(reference))
@@ -258,10 +334,13 @@ def replay_case(case, out, expected_source, expected_inputs):
             counts["blocks"] += len(blocks)
             if step % 5 == 0 or step == len(frames):
                 write_json(directory / "progress.json", dict(complete=False, step=step, counts=dict(counts), seconds=time.perf_counter()-started))
-    if source_hashes() != expected_source or input_hashes() != expected_inputs:
-        raise AssertionError("replay inputs/source changed during worker")
+    final_sources = source_hashes()
+    assert_current_sources(ROOT, expected_source, final_sources)
+    if input_hashes() != expected_inputs:
+        raise AssertionError("replay inputs changed during worker")
     result = dict(case=case, complete=True, counts=dict(counts), references=dict(references), examples=examples,
-                  raw_sha256=sha(raw), seconds=time.perf_counter()-started)
+                  raw_sha256=sha(raw), seconds=time.perf_counter()-started,
+                  source_hashes=expected_source, source_hashes_end=final_sources)
     write_json(directory / "summary.json", result)
     write_json(directory / "progress.json", dict(complete=True, counts=dict(counts)))
     return result
@@ -272,6 +351,7 @@ def main():
     parser.add_argument("--freeze-legacy", action="store_true")
     parser.add_argument("--name")
     parser.add_argument("--cases", nargs="*")
+    parser.add_argument("--publish", action="store_true", help="archive previous bytes and publish a complete fresh batch")
     args = parser.parse_args()
     if args.freeze_legacy:
         freeze_legacy()
@@ -285,6 +365,16 @@ def main():
     cases = args.cases or sorted(manifest["cases"])
     if len(set(cases)) != len(cases) or any(case not in manifest["cases"] for case in cases):
         raise ValueError("unique known cases required")
+    target = EVIDENCE / "robust_summary.json"
+    previous = target.read_bytes() if target.exists() else None
+    backup = ROOT / "reports/codex/M5c_evidence" / (args.name+"_robust_summary_before.json")
+    if args.publish:
+        if set(cases) != set(manifest["cases"]):
+            raise ValueError("publication requires every case")
+        if backup.exists():
+            raise ValueError("publication backup exists; use a fresh run name")
+        if previous is not None:
+            backup.write_bytes(previous)
     sources, inputs = source_hashes(), input_hashes()
     started = time.perf_counter()
     results, counts, references = {}, Counter(), Counter()
@@ -298,8 +388,10 @@ def main():
             references.update(result["references"])
             write_json(out / "progress.json", dict(complete=False, completed=sorted(results), counts=dict(counts)))
             print(result["case"], result["counts"], flush=True)
-    if source_hashes() != sources or input_hashes() != inputs:
-        raise AssertionError("full batch source/input change invalidates result")
+    final_sources = source_hashes()
+    assert_current_sources(ROOT, sources, final_sources)
+    if input_hashes() != inputs:
+        raise AssertionError("full batch input change invalidates result")
     full = set(cases) == set(manifest["cases"])
     if full and (counts["steps"], counts["blocks"], counts["pairs"]) != (1810, 15220, 64010):
         raise AssertionError("full-history coverage mismatch")
@@ -307,17 +399,18 @@ def main():
         raise AssertionError("classification partition mismatch")
     result = dict(schema="eab.m5b-robust-model-replay.v1", complete=True, full_history=full,
                   counts=dict(counts), references=dict(references), cases=results,
-                  source_hashes=sources, input_hashes=inputs, seconds=time.perf_counter()-started,
+                  source_hashes=sources, source_hashes_end=final_sources,
+                  source_binding="runtime-loaded-repository-closure-start-and-end.v1",
+                  input_hashes=inputs, seconds=time.perf_counter()-started,
                   limits=["P3 compared by certified tube only, no transcendental root solving",
                           "positive-radius initial shortest-exit ordering is unproved",
                           "MODEL_SENSITIVE_OR_UNPROVED includes unknown, not measured sensitivity"],
                   raw_directory=out.relative_to(ROOT).as_posix())
     write_json(out / "summary.json", result)
     write_json(out / "progress.json", dict(complete=True, counts=dict(counts)))
-    if full:
-        target = EVIDENCE / "robust_summary.json"
-        if target.exists():
-            raise ValueError("refuse to overwrite frozen summary")
+    if full and args.publish:
+        if (target.read_bytes() if target.exists() else None) != previous:
+            raise ValueError("publication target changed during real recomputation")
         write_json(target, result)
     print("M5B_MODEL_REPLAY_COMPLETE", dict(counts), flush=True)
     return 0
