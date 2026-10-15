@@ -1,0 +1,199 @@
+FFFFFF                                                                   [100%]
+================================== FAILURES ===================================
+_ test_compact_public_output_fields_are_independent_of_call_order[side_probes--4] _
+
+exponent = -4, output = 'side_probes'
+
+    @pytest.mark.parametrize("exponent", [-4, 0, 4])
+    @pytest.mark.parametrize("output", ["side_probes", "clipped_covers"])
+    def test_compact_public_output_fields_are_independent_of_call_order(exponent, output):
+>       _assert_call_order_fields(exponent, output)
+
+tests\test_m3c_determinism.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+exponent = -4, output = 'side_probes'
+
+    def _assert_call_order_fields(exponent, output):
+        cold, warm = _model(exponent), _model(exponent)
+        subdivision = warm.subdivision
+        if output == "side_probes":
+            expected = tuple(warm.side_probes(*edge.vertices) for edge in subdivision.edges)
+            actual = tuple(cold.side_probes(*edge.vertices) for edge in subdivision.edges)
+>           assert actual == expected, "compact side_probes fields depend on public call order"
+E           AssertionError: compact side_probes fields depend on public call order
+E           assert (((Fraction(-...3, 64))), ...) == (((Fraction(-..., 128))), ...)
+E             
+E             At index 0 diff: ((Fraction(-96015, 32), Fraction(27999, 4)), (Fraction(-96013, 32), Fraction(27999, 4))) != ((Fraction(-6001, 2), Fraction(27999, 4)), (Fraction(-24003, 8), Fraction(27999, 4)))
+E             Use -v to get more diff
+
+tests\test_m3c_determinism.py:39: AssertionError
+_ test_compact_public_output_fields_are_independent_of_call_order[side_probes-0] _
+
+exponent = 0, output = 'side_probes'
+
+    @pytest.mark.parametrize("exponent", [-4, 0, 4])
+    @pytest.mark.parametrize("output", ["side_probes", "clipped_covers"])
+    def test_compact_public_output_fields_are_independent_of_call_order(exponent, output):
+>       _assert_call_order_fields(exponent, output)
+
+tests\test_m3c_determinism.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+exponent = 0, output = 'side_probes'
+
+    def _assert_call_order_fields(exponent, output):
+        cold, warm = _model(exponent), _model(exponent)
+        subdivision = warm.subdivision
+        if output == "side_probes":
+            expected = tuple(warm.side_probes(*edge.vertices) for edge in subdivision.edges)
+            actual = tuple(cold.side_probes(*edge.vertices) for edge in subdivision.edges)
+>           assert actual == expected, "compact side_probes fields depend on public call order"
+E           AssertionError: compact side_probes fields depend on public call order
+E           assert (((Fraction(-...23, 4))), ...) == (((Fraction(-...41, 8))), ...)
+E             
+E             At index 0 diff: ((Fraction(-6015, 2), Fraction(6996, 1)), (Fraction(-6013, 2), Fraction(6996, 1))) != ((Fraction(-3008, 1), Fraction(6996, 1)), (Fraction(-3006, 1), Fraction(6996, 1)))
+E             Use -v to get more diff
+
+tests\test_m3c_determinism.py:39: AssertionError
+_ test_compact_public_output_fields_are_independent_of_call_order[side_probes-4] _
+
+exponent = 4, output = 'side_probes'
+
+    @pytest.mark.parametrize("exponent", [-4, 0, 4])
+    @pytest.mark.parametrize("output", ["side_probes", "clipped_covers"])
+    def test_compact_public_output_fields_are_independent_of_call_order(exponent, output):
+>       _assert_call_order_fields(exponent, output)
+
+tests\test_m3c_determinism.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+exponent = 4, output = 'side_probes'
+
+    def _assert_call_order_fields(exponent, output):
+        cold, warm = _model(exponent), _model(exponent)
+        subdivision = warm.subdivision
+        if output == "side_probes":
+            expected = tuple(warm.side_probes(*edge.vertices) for edge in subdivision.edges)
+            actual = tuple(cold.side_probes(*edge.vertices) for edge in subdivision.edges)
+>           assert actual == expected, "compact side_probes fields depend on public call order"
+E           AssertionError: compact side_probes fields depend on public call order
+E           assert (((Fraction(-...92, 1))), ...) == (((Fraction(-...82, 1))), ...)
+E             
+E             At index 0 diff: ((Fraction(-3120, 1), Fraction(6936, 1)), (Fraction(-3104, 1), Fraction(6936, 1))) != ((Fraction(-3128, 1), Fraction(6936, 1)), (Fraction(-3096, 1), Fraction(6936, 1)))
+E             Use -v to get more diff
+
+tests\test_m3c_determinism.py:39: AssertionError
+_ test_compact_public_output_fields_are_independent_of_call_order[clipped_covers--4] _
+
+exponent = -4, output = 'clipped_covers'
+
+    @pytest.mark.parametrize("exponent", [-4, 0, 4])
+    @pytest.mark.parametrize("output", ["side_probes", "clipped_covers"])
+    def test_compact_public_output_fields_are_independent_of_call_order(exponent, output):
+>       _assert_call_order_fields(exponent, output)
+
+tests\test_m3c_determinism.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+exponent = -4, output = 'clipped_covers'
+
+    def _assert_call_order_fields(exponent, output):
+        cold, warm = _model(exponent), _model(exponent)
+        subdivision = warm.subdivision
+        if output == "side_probes":
+            expected = tuple(warm.side_probes(*edge.vertices) for edge in subdivision.edges)
+            actual = tuple(cold.side_probes(*edge.vertices) for edge in subdivision.edges)
+            assert actual == expected, "compact side_probes fields depend on public call order"
+            assert tuple(cold.side_probes(*edge.vertices) for edge in cold.subdivision.edges) == expected
+        else:
+            actual = cold.clipped_covers
+            expected = warm.clipped_covers
+            # Frozen CoverPiece2 equality covers label/start/end/exposed/body_state/
+            # side_points/side_states, not only labels or exposed flags.
+>           assert actual == expected, "compact clipped_covers fields depend on public call order"
+E           AssertionError: compact clipped_covers fields depend on public call order
+E           assert (CoverPiece2(...=(1, 1)), ...) == (CoverPiece2(...=(1, 1)), ...)
+E             
+E             At index 0 diff: CoverPiece2(label=('VE', 0, 1), start=(Fraction(-239981, 80), Fraction(560017, 80)), end=(Fraction(-239989, 80), Fraction(560023, 80)), exposed=True, body_state=0, side_points=((Fraction(-479973, 160), Fraction(280009, 40)), (Fraction(-479967, 160), Fraction(280011, 40))), side_states=(1, -1)) != CoverPiece2(label=('VE', 0, 1), start=(Fraction(-239981, 80), Fraction(560017, 80)), end=(Fraction(-239989, 80), Fraction(560023, 80)), exposed=True, body_state=0, side_points=((Fraction(-119993, 40), Fraction(210007, 30)), (Fraction(-14999, 5), Fraction(105004, 15))), side_states=(1, -1))
+E             Use -v to get more diff
+
+tests\test_m3c_determinism.py:46: AssertionError
+_ test_compact_public_output_fields_are_independent_of_call_order[clipped_covers-0] _
+
+exponent = 0, output = 'clipped_covers'
+
+    @pytest.mark.parametrize("exponent", [-4, 0, 4])
+    @pytest.mark.parametrize("output", ["side_probes", "clipped_covers"])
+    def test_compact_public_output_fields_are_independent_of_call_order(exponent, output):
+>       _assert_call_order_fields(exponent, output)
+
+tests\test_m3c_determinism.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+exponent = 0, output = 'clipped_covers'
+
+    def _assert_call_order_fields(exponent, output):
+        cold, warm = _model(exponent), _model(exponent)
+        subdivision = warm.subdivision
+        if output == "side_probes":
+            expected = tuple(warm.side_probes(*edge.vertices) for edge in subdivision.edges)
+            actual = tuple(cold.side_probes(*edge.vertices) for edge in subdivision.edges)
+            assert actual == expected, "compact side_probes fields depend on public call order"
+            assert tuple(cold.side_probes(*edge.vertices) for edge in cold.subdivision.edges) == expected
+        else:
+            actual = cold.clipped_covers
+            expected = warm.clipped_covers
+            # Frozen CoverPiece2 equality covers label/start/end/exposed/body_state/
+            # side_points/side_states, not only labels or exposed flags.
+>           assert actual == expected, "compact clipped_covers fields depend on public call order"
+E           AssertionError: compact clipped_covers fields depend on public call order
+E           assert (CoverPiece2(...=(1, 1)), ...) == (CoverPiece2(...=(1, 1)), ...)
+E             
+E             At index 0 diff: CoverPiece2(label=('VE', 0, 1), start=(Fraction(-14981, 5), Fraction(35017, 5)), end=(Fraction(-14989, 5), Fraction(35023, 5)), exposed=True, body_state=0, side_points=((Fraction(-29973, 10), Fraction(35018, 5)), (Fraction(-29967, 10), Fraction(35022, 5))), side_states=(1, -1)) != CoverPiece2(label=('VE', 0, 1), start=(Fraction(-14981, 5), Fraction(35017, 5)), end=(Fraction(-14989, 5), Fraction(35023, 5)), exposed=True, body_state=0, side_points=((Fraction(-14986, 5), Fraction(105056, 15)), (Fraction(-14984, 5), Fraction(105064, 15))), side_states=(1, -1))
+E             Use -v to get more diff
+
+tests\test_m3c_determinism.py:46: AssertionError
+_ test_compact_public_output_fields_are_independent_of_call_order[clipped_covers-4] _
+
+exponent = 4, output = 'clipped_covers'
+
+    @pytest.mark.parametrize("exponent", [-4, 0, 4])
+    @pytest.mark.parametrize("output", ["side_probes", "clipped_covers"])
+    def test_compact_public_output_fields_are_independent_of_call_order(exponent, output):
+>       _assert_call_order_fields(exponent, output)
+
+tests\test_m3c_determinism.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+exponent = 4, output = 'clipped_covers'
+
+    def _assert_call_order_fields(exponent, output):
+        cold, warm = _model(exponent), _model(exponent)
+        subdivision = warm.subdivision
+        if output == "side_probes":
+            expected = tuple(warm.side_probes(*edge.vertices) for edge in subdivision.edges)
+            actual = tuple(cold.side_probes(*edge.vertices) for edge in subdivision.edges)
+            assert actual == expected, "compact side_probes fields depend on public call order"
+            assert tuple(cold.side_probes(*edge.vertices) for edge in cold.subdivision.edges) == expected
+        else:
+            actual = cold.clipped_covers
+            expected = warm.clipped_covers
+            # Frozen CoverPiece2 equality covers label/start/end/exposed/body_state/
+            # side_points/side_states, not only labels or exposed flags.
+>           assert actual == expected, "compact clipped_covers fields depend on public call order"
+E           AssertionError: compact clipped_covers fields depend on public call order
+E           assert (CoverPiece2(...=(1, 1)), ...) == (CoverPiece2(...=(1, 1)), ...)
+E             
+E             At index 0 diff: CoverPiece2(label=('VE', 0, 1), start=(Fraction(-14696, 5), Fraction(35272, 5)), end=(Fraction(-14824, 5), Fraction(35368, 5)), exposed=True, body_state=0, side_points=((Fraction(-14784, 5), Fraction(35288, 5)), (Fraction(-14736, 5), Fraction(35352, 5))), side_states=(1, -1)) != CoverPiece2(label=('VE', 0, 1), start=(Fraction(-14696, 5), Fraction(35272, 5)), end=(Fraction(-14824, 5), Fraction(35368, 5)), exposed=True, body_state=0, side_points=((Fraction(-14776, 5), Fraction(105896, 15)), (Fraction(-14744, 5), Fraction(106024, 15))), side_states=(1, -1))
+E             Use -v to get more diff
+
+tests\test_m3c_determinism.py:46: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_m3c_determinism.py::test_compact_public_output_fields_are_independent_of_call_order[side_probes--4]
+FAILED tests/test_m3c_determinism.py::test_compact_public_output_fields_are_independent_of_call_order[side_probes-0]
+FAILED tests/test_m3c_determinism.py::test_compact_public_output_fields_are_independent_of_call_order[side_probes-4]
+FAILED tests/test_m3c_determinism.py::test_compact_public_output_fields_are_independent_of_call_order[clipped_covers--4]
+FAILED tests/test_m3c_determinism.py::test_compact_public_output_fields_are_independent_of_call_order[clipped_covers-0]
+FAILED tests/test_m3c_determinism.py::test_compact_public_output_fields_are_independent_of_call_order[clipped_covers-4]
+6 failed, 2 deselected in 0.70s

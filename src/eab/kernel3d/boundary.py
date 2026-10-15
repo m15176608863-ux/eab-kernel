@@ -210,11 +210,13 @@ def _edge_closed(P, edge, direction):
 
 
 def local_cover_candidates(A, B):
-    """Closed-valid VF/FV and nonparallel EE source-feature polygons.
+    """VF/FV necessary-condition candidates and closed-valid nonparallel EE.
 
     Planar simple face rings are required; nonplanar rings must first be
-    explicitly triangulated by the caller.  Reflex/flat cone boundaries are
-    retained; strictness is deliberately not a filter.
+    explicitly triangulated by the caller.  The incident-edge VF/FV test is
+    necessary, not a sufficiency claim for arbitrary concave source vertices;
+    its candidate superset is subsequently clipped to the global boundary.
+    EE uses closed edge wedges; strictness is deliberately not a filter.
     """
     from .covers3 import _qnormal, _qvertex_contains, _qedge
     # Use the cached exact input certificate at this public construction entry

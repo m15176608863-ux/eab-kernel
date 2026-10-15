@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 150, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 111, in main
+    child(args.case, args.mutant)
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 64, in child
+    t._assert_nonaxial_singleton_tangencies()
+  File "D:\eab-wt\cx-m4\tests\test_m3c_sections.py", line 125, in _assert_nonaxial_singleton_tangencies
+    assert line.closed == ((contact, contact),), 'nonaxial singleton tangency survives closed AABB pruning'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: nonaxial singleton tangency survives closed AABB pruning

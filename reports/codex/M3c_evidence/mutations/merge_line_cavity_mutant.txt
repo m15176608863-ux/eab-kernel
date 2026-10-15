@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 150, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 111, in main
+    child(args.case, args.mutant)
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 57, in child
+    t._assert_seam_line(family)
+  File "D:\eab-wt\cx-m4\tests\test_m3c_sections.py", line 70, in _assert_seam_line
+    assert line.closed == ((-end, end),), 'closed-E contact seam is not an interval endpoint'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: closed-E contact seam is not an interval endpoint

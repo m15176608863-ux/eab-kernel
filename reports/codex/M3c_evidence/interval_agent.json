@@ -1,0 +1,162 @@
+{
+  "status": "complete",
+  "items": [
+    2,
+    3,
+    4
+  ],
+  "test_file": "tests/test_m3c_sections.py",
+  "test_support": "tools/m3c_mutation_support.py",
+  "tests": 20,
+  "pytest_result": "20 passed in 0.76s",
+  "pytest_command": "python -m pytest -q -p no:cacheprovider --basetemp=reports/codex/M3c_evidence/tmp/sections_03 tests/test_m3c_sections.py",
+  "mutations": [
+    {
+      "name": "open_closed_merge_line_tight_pin",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "closed-E contact seam is not an interval endpoint",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_g03_tight_pin_contact",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "('g03 closed-E exit must cross the internal contact seam', 'tight_pin', [((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), Fraction(0, 1), Fraction(3, 4))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_g03_tight_pin_intersecting",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "('g03 closed-E exit must cross the internal contact seam', 'tight_pin', [((Fraction(-1, 8), Fraction(-1, 8), Fraction(-1, 8)), Fraction(1, 8), Fraction(7, 8))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_line_cavity",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "closed-E contact seam is not an interval endpoint",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_g03_cavity_contact",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "('g03 closed-E exit must cross the internal contact seam', 'cavity', [((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), Fraction(0, 1), Fraction(5, 2))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_g03_cavity_intersecting",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "('g03 closed-E exit must cross the internal contact seam', 'cavity', [((Fraction(-1, 8), Fraction(-1, 8), Fraction(-1, 8)), Fraction(1, 8), Fraction(21, 8))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_line_separated_slabs",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "closed-E contact seam is not an interval endpoint",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_g03_separated_slabs_contact",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "('g03 closed-E exit must cross the internal contact seam', 'separated_slabs', [((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), Fraction(0, 1), Fraction(5, 2))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "open_closed_merge_g03_separated_slabs_intersecting",
+      "source": "eab.kernel3d.global_entrance._merge",
+      "before": "lo <= result[-1][1]",
+      "after": "lo < result[-1][1]",
+      "semantic_assertion": "('g03 closed-E exit must cross the internal contact seam', 'separated_slabs', [((Fraction(-1, 8), Fraction(-1, 8), Fraction(-1, 8)), Fraction(1, 8), Fraction(21, 8))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "nonaxial_singleton_AABB",
+      "source": "eab.kernel3d.global_entrance._line_candidate",
+      "before": "if lower > upper:",
+      "after": "if lower >= upper:",
+      "semantic_assertion": "nonaxial singleton tangency survives closed AABB pruning",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "boundary_start_outward_upper",
+      "source": "eab.kernel3d.g03.g0_distance_completeness3",
+      "before": "lo <= 0 <= hi",
+      "after": "lo <= 0 < hi",
+      "semantic_assertion": "('g03 boundary-start zero belongs to the closed interval', (1, 0, 0), Fraction(0, 1), [((Fraction(1, 1), Fraction(0, 1), Fraction(0, 1)), None, Fraction(0, 1))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    },
+    {
+      "name": "boundary_start_inward_lower",
+      "source": "eab.kernel3d.g03.g0_distance_completeness3",
+      "before": "lo <= 0 <= hi",
+      "after": "lo < 0 <= hi",
+      "semantic_assertion": "('g03 boundary-start zero belongs to the closed interval', (-1, 0, 0), Fraction(1, 1), [((Fraction(-1, 1), Fraction(0, 1), Fraction(0, 1)), None, Fraction(1, 1))])",
+      "mutant": "RED_EXPECTED_SEMANTIC_ASSERTION",
+      "hash_tripwires": "excluded: in-memory function mutation; semantic assertions only",
+      "restored": "GREEN"
+    }
+  ],
+  "mutation_harness_seconds": 0.5291193000011845,
+  "static_scan": {
+    "issues": 0,
+    "new_exemptions": 0,
+    "new_admissions": 0
+  },
+  "independent_oracle_imports": [
+    "fractions.Fraction (analytic Cartesian expected results)",
+    "g03_exit_oracle: fractions, itertools, g03_surface_oracle",
+    "g03_surface_oracle: fractions, functools, math, kernel2d.g0_oracle.sqrt_display"
+  ],
+  "fixture_only_imports": [
+    "eab.kernel3d.geom3.Polyhedron",
+    "eab.kernel3d.geom3.box"
+  ],
+  "other_test_imports": [
+    "pytest",
+    "tools.m3c_mutation_support (inspect,textwrap: mutation scaffolding only)"
+  ],
+  "notes": [
+    "No on-disk source mutation; compiled source changes execute inside actual tested function.",
+    "Mutation red is caught by named assertions and every function is restored then rechecked.",
+    "Non-axis tangency scale/translation cases have distinct exact interval outputs.",
+    "g03 seam cases execute both strict overlap start (-1/8)^3 and internal contact start (0,0,0).",
+    "g03 contact-start face, edge, vertex outward samples exit at zero; negative x face also guards lower closed endpoint.",
+    "Pure geometric helper functions remain scanned; G0 report calls are actual collected test drivers, not oracle geometry hidden by renaming."
+  ]
+}

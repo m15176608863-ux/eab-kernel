@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 150, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 111, in main
+    child(args.case, args.mutant)
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 87, in child
+    t._semantic_checks(t.B.explicit_boundary(model), fixture, case[len("source_planes_"):])
+  File "D:\eab-wt\cx-m4\tests\test_m3c_boundary3d.py", line 106, in _semantic_checks
+    O.adjacent_sides(boxes, polygon, sides)
+  File "D:\eab-wt\cx-m4\tests\m3c_oracle3d.py", line 55, in adjacent_sides
+    assert not event or abs(event) > 1, 'independent adjacent-open-cell side probe crossed a support event'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: independent adjacent-open-cell side probe crossed a support event

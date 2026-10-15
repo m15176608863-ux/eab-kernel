@@ -1,0 +1,466 @@
+{
+  "status": "GREEN",
+  "complete": true,
+  "count": 19,
+  "rows": [
+    {
+      "case": "merge_line_tight_pin",
+      "semantic_assertion": "closed-E contact seam is not an interval endpoint",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_line_tight_pin",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: closed-E contact seam is not an interval endpoint",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_line_tight_pin",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_contact_tight_pin",
+      "semantic_assertion": "g03 closed-E exit must cross the internal contact seam",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_contact_tight_pin",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 closed-E exit must cross the internal contact seam', 'tight_pin', [((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), Fraction(0, 1), Fraction(3, 4))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_contact_tight_pin",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_overlap_tight_pin",
+      "semantic_assertion": "g03 closed-E exit must cross the internal contact seam",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_overlap_tight_pin",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 closed-E exit must cross the internal contact seam', 'tight_pin', [((Fraction(-1, 8), Fraction(-1, 8), Fraction(-1, 8)), Fraction(1, 8), Fraction(7, 8))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_overlap_tight_pin",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_line_cavity",
+      "semantic_assertion": "closed-E contact seam is not an interval endpoint",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_line_cavity",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: closed-E contact seam is not an interval endpoint",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_line_cavity",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_contact_cavity",
+      "semantic_assertion": "g03 closed-E exit must cross the internal contact seam",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_contact_cavity",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 closed-E exit must cross the internal contact seam', 'cavity', [((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), Fraction(0, 1), Fraction(5, 2))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_contact_cavity",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_overlap_cavity",
+      "semantic_assertion": "g03 closed-E exit must cross the internal contact seam",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_overlap_cavity",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 closed-E exit must cross the internal contact seam', 'cavity', [((Fraction(-1, 8), Fraction(-1, 8), Fraction(-1, 8)), Fraction(1, 8), Fraction(21, 8))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_overlap_cavity",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_line_separated_slabs",
+      "semantic_assertion": "closed-E contact seam is not an interval endpoint",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_line_separated_slabs",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: closed-E contact seam is not an interval endpoint",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_line_separated_slabs",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_contact_separated_slabs",
+      "semantic_assertion": "g03 closed-E exit must cross the internal contact seam",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_contact_separated_slabs",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 closed-E exit must cross the internal contact seam', 'separated_slabs', [((Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)), Fraction(0, 1), Fraction(5, 2))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_contact_separated_slabs",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "merge_overlap_separated_slabs",
+      "semantic_assertion": "g03 closed-E exit must cross the internal contact seam",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_overlap_separated_slabs",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 closed-E exit must cross the internal contact seam', 'separated_slabs', [((Fraction(-1, 8), Fraction(-1, 8), Fraction(-1, 8)), Fraction(1, 8), Fraction(21, 8))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN merge_overlap_separated_slabs",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "nonaxial_singleton",
+      "semantic_assertion": "nonaxial singleton tangency survives closed AABB pruning",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN nonaxial_singleton",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: nonaxial singleton tangency survives closed AABB pruning",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN nonaxial_singleton",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "start_right",
+      "semantic_assertion": "g03 boundary-start zero belongs to the closed interval",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN start_right",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 boundary-start zero belongs to the closed interval', (1, 0, 0), Fraction(0, 1), [((Fraction(1, 1), Fraction(0, 1), Fraction(0, 1)), None, Fraction(0, 1))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN start_right",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "start_left",
+      "semantic_assertion": "g03 boundary-start zero belongs to the closed interval",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN start_left",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: ('g03 boundary-start zero belongs to the closed interval', (-1, 0, 0), Fraction(1, 1), [((Fraction(-1, 1), Fraction(0, 1), Fraction(0, 1)), None, Fraction(1, 1))])",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN start_left",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "order_side_probes",
+      "semantic_assertion": "compact side_probes fields depend on public call order",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN order_side_probes",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: compact side_probes fields depend on public call order",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN order_side_probes",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "order_clipped_covers",
+      "semantic_assertion": "compact clipped_covers fields depend on public call order",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN order_clipped_covers",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: compact clipped_covers fields depend on public call order",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN order_clipped_covers",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "source_planes_sides",
+      "semantic_assertion": "independent adjacent-open-cell side probe crossed a support event",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN source_planes_sides",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: independent adjacent-open-cell side probe crossed a support event",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN source_planes_sides",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "source_planes_coverage",
+      "semantic_assertion": "independent ray boundary point has an exposed polygon",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN source_planes_coverage",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: independent ray boundary point has an exposed polygon",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN source_planes_coverage",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "source_planes_exit",
+      "semantic_assertion": "independent Cartesian-union shortest closed exit",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN source_planes_exit",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: independent Cartesian-union shortest closed exit",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN source_planes_exit",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "strict_ee",
+      "semantic_assertion": "T3L closed-only EE covers the independent exposed-face interior",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN strict_ee",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: T3L closed-only EE covers the independent exposed-face interior",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN strict_ee",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "case": "noncoplanar_clip",
+      "semantic_assertion": "clipped local cover must be a nondegenerate planar polygon",
+      "stages": [
+        {
+          "stage": "before",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN noncoplanar_clip",
+          "expected": true
+        },
+        {
+          "stage": "mutant",
+          "exit_code": 1,
+          "last_line": "AssertionError: clipped local cover must be a nondegenerate planar polygon",
+          "expected": true
+        },
+        {
+          "stage": "restored",
+          "exit_code": 0,
+          "last_line": "M3C_SEMANTIC_GREEN noncoplanar_clip",
+          "expected": true
+        }
+      ]
+    }
+  ],
+  "source_files_unchanged": true,
+  "source_hash_tripwires": "NOT EXECUTED: direct semantic entry only",
+  "seconds": 23.92038429999957
+}

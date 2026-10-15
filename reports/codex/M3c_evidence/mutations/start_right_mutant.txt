@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 150, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 111, in main
+    child(args.case, args.mutant)
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 70, in child
+    t.test_g03_boundary_face_edge_vertex_start_uses_closed_zero_membership((1, 0, 0) if right else (-1, 0, 0))
+  File "D:\eab-wt\cx-m4\tests\test_m3c_sections.py", line 156, in test_g03_boundary_face_edge_vertex_start_uses_closed_zero_membership
+    assert report.passed, ('g03 boundary-start zero belongs to the closed interval',
+           ^^^^^^^^^^^^^
+AssertionError: ('g03 boundary-start zero belongs to the closed interval', (1, 0, 0), Fraction(0, 1), [((Fraction(1, 1), Fraction(0, 1), Fraction(0, 1)), None, Fraction(0, 1))])

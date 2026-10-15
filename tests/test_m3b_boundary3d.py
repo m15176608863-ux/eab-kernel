@@ -91,6 +91,7 @@ def audit(name, A, C):
         assert boundary.contains(centre) == (truth[0] != truth[1]), 'closed occupancy boundary not physical 0/1 seam'
     candidates = B.local_cover_candidates(A, C)
     clipped = B.clip_local_covers(boundary, candidates)
+    assert_clipped_polygons_nondegenerate(clipped)
     # Every retained local polygon is a subset of the explicit boundary.
     for patch in clipped:
         centre = tuple(sum(p[k] for p in patch.polygon)/len(patch.polygon) for k in range(3))
@@ -102,6 +103,27 @@ def audit(name, A, C):
     for patch in boundary.patches:
         checked += oracle_cover_union(patch, clipped)
     return boundary, dict(counts, arranged=len(boundary.arrangement), exposed=len(boundary.patches), local_atomic=checked)
+
+
+def assert_clipped_polygons_nondegenerate(clipped):
+    """Semantic audit before centre/normal arithmetic; no production primitive.
+
+    Removing the coplanarity guard can make the projected hull empty even
+    though the intermediate noncoplanar clip was nonempty. Report that exact
+    contract failure, not ZeroDivisionError from a later centroid operation.
+    """
+    for patch in clipped:
+        polygon = patch.polygon
+        assert len(polygon) >= 3, 'clipped local cover must be a nondegenerate planar polygon'
+        origin = polygon[0]
+        crosses = []
+        for a, b in zip(polygon[1:], polygon[2:]):
+            u = tuple(a[k]-origin[k] for k in range(3))
+            v = tuple(b[k]-origin[k] for k in range(3))
+            crosses.append((u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0]))
+        assert any(any(n) for n in crosses), 'clipped local cover must be a nondegenerate planar polygon'
+        n = next(n for n in crosses if any(n))
+        assert all(sum(n[k]*(p[k]-origin[k]) for k in range(3)) == 0 for p in polygon), 'clipped local cover must be a nondegenerate planar polygon'
 
 
 def test_all_boundary_arrangement_vertices_edges_faces_and_sides_have_zero_mismatch():

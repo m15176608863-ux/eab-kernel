@@ -1,0 +1,175 @@
+{
+  "audit": "GREEN",
+  "complete": true,
+  "collected": 13221,
+  "shards": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m4c_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_1_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\tmp\\final_suite_temp\\pytest_1"
+      ],
+      "exit_code": 0,
+      "seconds": 980.285275000002,
+      "last_line": "3306 passed in 958.34s (0:15:58)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_1.txt",
+      "dispatched": 3306,
+      "collected": 3306,
+      "executed": 3306,
+      "skip_count": 0,
+      "execution_complete": true,
+      "node_sets_equal": true
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m4c_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_2_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\tmp\\final_suite_temp\\pytest_2"
+      ],
+      "exit_code": 0,
+      "seconds": 610.1709622000053,
+      "last_line": "3305 passed in 585.68s (0:09:45)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_2.txt",
+      "dispatched": 3305,
+      "collected": 3305,
+      "executed": 3305,
+      "skip_count": 0,
+      "execution_complete": true,
+      "node_sets_equal": true
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m4c_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_3_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\tmp\\final_suite_temp\\pytest_3"
+      ],
+      "exit_code": 0,
+      "seconds": 1460.4341029999923,
+      "last_line": "3305 passed in 1442.05s (0:24:02)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_3.txt",
+      "dispatched": 3305,
+      "collected": 3305,
+      "executed": 3305,
+      "skip_count": 0,
+      "execution_complete": true,
+      "node_sets_equal": true
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "m4c_execution_plugin",
+        "@D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_4_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\tmp\\final_suite_temp\\pytest_4"
+      ],
+      "exit_code": 0,
+      "seconds": 865.2439271000039,
+      "last_line": "3305 passed in 837.81s (0:13:57)",
+      "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\shard_4.txt",
+      "dispatched": 3305,
+      "collected": 3305,
+      "executed": 3305,
+      "skip_count": 0,
+      "execution_complete": true,
+      "node_sets_equal": true
+    }
+  ],
+  "static": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/check_exact_construction.py"
+    ],
+    "exit_code": 0,
+    "seconds": 130.0390927999979,
+    "last_line": "exact construction AST gate: 0 violation(s)",
+    "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite\\exact_construction.txt"
+  },
+  "elapsed_seconds": 1600.5282668,
+  "source": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\tmp\\final_suite_export",
+  "fresh_git_checkout": false,
+  "strict_phase_audit": [
+    {
+      "shard": 1,
+      "passed": true,
+      "dispatched": 3306,
+      "phases": {
+        "setup": 3306,
+        "call": 3306,
+        "teardown": 3306
+      }
+    },
+    {
+      "shard": 2,
+      "passed": true,
+      "dispatched": 3305,
+      "phases": {
+        "setup": 3305,
+        "call": 3305,
+        "teardown": 3305
+      }
+    },
+    {
+      "shard": 3,
+      "passed": true,
+      "dispatched": 3305,
+      "phases": {
+        "setup": 3305,
+        "call": 3305,
+        "teardown": 3305
+      }
+    },
+    {
+      "shard": 4,
+      "passed": true,
+      "dispatched": 3305,
+      "phases": {
+        "setup": 3305,
+        "call": 3305,
+        "teardown": 3305
+      }
+    }
+  ],
+  "strict_all_nodes_once": true,
+  "export_manifest_sha256": "62f8c1678cdeb916bb8b0ce3603f5ef03898e6d2e314c20ec644f1e3fd5b73b4",
+  "raw_records": "D:\\eab-wt\\cx-m4\\reports\\codex\\M3c_evidence\\tmp\\suites\\final_suite"
+}

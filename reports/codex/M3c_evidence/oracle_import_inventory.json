@@ -1,0 +1,208 @@
+[
+  {
+    "path": "tests/m3c_oracle3d.py",
+    "sha256": "b2fc9b8ddedc4b0439b51d595d46257ff45c9112e91ead513658d647639ce94a",
+    "imports": [
+      {
+        "line": 7,
+        "statement": "from fractions import Fraction as F"
+      },
+      {
+        "line": 8,
+        "statement": "from itertools import product"
+      }
+    ]
+  },
+  {
+    "path": "tests/test_m3c_boundary3d.py",
+    "sha256": "bfa051090bfa325cbdf8d47b611e54fc894475a3bf93ae6201370b004209a1b4",
+    "imports": [
+      {
+        "line": 10,
+        "statement": "from fractions import Fraction as F"
+      },
+      {
+        "line": 11,
+        "statement": "import inspect"
+      },
+      {
+        "line": 12,
+        "statement": "import random"
+      },
+      {
+        "line": 13,
+        "statement": "import textwrap"
+      },
+      {
+        "line": 15,
+        "statement": "import pytest"
+      },
+      {
+        "line": 17,
+        "statement": "from eab.kernel3d import boundary as B"
+      },
+      {
+        "line": 18,
+        "statement": "from eab.kernel3d import global_entrance as G"
+      },
+      {
+        "line": 19,
+        "statement": "from eab.kernel3d.geom3 import Polyhedron"
+      },
+      {
+        "line": 20,
+        "statement": "import m3c_oracle3d as O"
+      },
+      {
+        "line": 21,
+        "statement": "from test_m3b_boundary3d import oracle_cover_union, assert_clipped_polygons_nondegenerate"
+      },
+      {
+        "line": 22,
+        "statement": "from tools.m3c_mutation_support import mutate as _mutate"
+      }
+    ]
+  },
+  {
+    "path": "tests/test_m3c_sections.py",
+    "sha256": "938bc4bba5f6aa47c5c4dc1ad0da8531122298911b536c91d233a4412552c846",
+    "imports": [
+      {
+        "line": 14,
+        "statement": "from fractions import Fraction as F"
+      },
+      {
+        "line": 16,
+        "statement": "import pytest"
+      },
+      {
+        "line": 18,
+        "statement": "from eab.kernel3d import geom3, g03"
+      },
+      {
+        "line": 19,
+        "statement": "from eab.kernel3d import global_entrance as G"
+      },
+      {
+        "line": 20,
+        "statement": "from tools.m3c_mutation_support import mutate as _mutate"
+      }
+    ]
+  },
+  {
+    "path": "tests/test_m3c_determinism.py",
+    "sha256": "1c3801aa969aec661c31d349fc9e8b092b55134d2e010d14484afe471706473d",
+    "imports": [
+      {
+        "line": 9,
+        "statement": "from fractions import Fraction as F"
+      },
+      {
+        "line": 10,
+        "statement": "import inspect"
+      },
+      {
+        "line": 11,
+        "statement": "import textwrap"
+      },
+      {
+        "line": 13,
+        "statement": "import pytest"
+      },
+      {
+        "line": 15,
+        "statement": "from eab.kernel2d import global_entrance as module"
+      },
+      {
+        "line": 16,
+        "statement": "from eab.kernel2d.global_entrance import GlobalEntrance2"
+      }
+    ]
+  },
+  {
+    "path": "tests/test_m3b_boundary3d.py",
+    "sha256": "773e9f225e1dc9199866d21fc09acac6da56d2f404be4e1012fb29753542f5e6",
+    "imports": [
+      {
+        "line": 9,
+        "statement": "from fractions import Fraction as F"
+      },
+      {
+        "line": 10,
+        "statement": "import inspect"
+      },
+      {
+        "line": 11,
+        "statement": "import textwrap"
+      },
+      {
+        "line": 12,
+        "statement": "from itertools import product"
+      },
+      {
+        "line": 14,
+        "statement": "import pytest"
+      },
+      {
+        "line": 16,
+        "statement": "from eab.kernel3d import boundary as B"
+      },
+      {
+        "line": 17,
+        "statement": "from eab.kernel3d import global_entrance as G"
+      },
+      {
+        "line": 18,
+        "statement": "from eab.kernel3d import geom3, g03"
+      },
+      {
+        "line": 19,
+        "statement": "from eab.kernel3d import g03_surface_oracle as O"
+      },
+      {
+        "line": 20,
+        "statement": "from test_m3_global3d import _prism, _combine"
+      }
+    ]
+  },
+  {
+    "path": "src/eab/kernel3d/g03_exit_oracle.py",
+    "sha256": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220",
+    "imports": [
+      {
+        "line": 8,
+        "statement": "from fractions import Fraction as F"
+      },
+      {
+        "line": 9,
+        "statement": "from itertools import count"
+      },
+      {
+        "line": 10,
+        "statement": "from . import g03_surface_oracle as S"
+      }
+    ]
+  },
+  {
+    "path": "src/eab/kernel3d/g03_surface_oracle.py",
+    "sha256": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0",
+    "imports": [
+      {
+        "line": 9,
+        "statement": "from fractions import Fraction as F"
+      },
+      {
+        "line": 10,
+        "statement": "from functools import lru_cache"
+      },
+      {
+        "line": 11,
+        "statement": "from math import gcd, lcm"
+      },
+      {
+        "line": 12,
+        "statement": "from ..kernel2d.g0_oracle import sqrt_display"
+      }
+    ]
+  }
+]

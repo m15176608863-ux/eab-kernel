@@ -1,0 +1,44 @@
+{
+  "status": "DETERMINISM_AND_DOC_SUBTASK_VERIFIED",
+  "new_tests": 9,
+  "baseline_actual_source_red": {
+    "failed": 6,
+    "deselected": 2,
+    "assertions": [
+      "compact side_probes fields depend on public call order",
+      "compact clipped_covers fields depend on public call order"
+    ],
+    "hash_gates_called": false
+  },
+  "green_last_line": "9 passed in 1.80s",
+  "existing_targeted_last_line": "11 passed, 19 deselected in 0.28s",
+  "internal_mutants": [
+    "restore old lazy side_probes branch for direct public probes",
+    "restore old lazy side_probes branch for clipped_covers side_points"
+  ],
+  "renewed_old_review_evidence_count": 23,
+  "g03_surface_oracle_pre_m3b_bom": true,
+  "g03_surface_oracle_current_bom": false,
+  "files": [
+    "src/eab/kernel2d/global_entrance.py",
+    "src/eab/kernel3d/boundary.py",
+    "tests/test_m3c_determinism.py",
+    "docs/m3_global_entrance_design.md",
+    "docs/m3b_boundary3d_design.md",
+    "reports/codex/M3b_evidence/static_review.json",
+    "reports/codex/M3b_evidence/final_suite_r3/VOID.md",
+    "reports/codex/M3c_evidence/determinism_agent.md",
+    "reports/codex/M3c_evidence/determinism_baseline_red.txt",
+    "reports/codex/M3c_evidence/determinism_green.txt",
+    "reports/codex/M3c_evidence/determinism_existing.txt"
+  ],
+  "source_sha256": {
+    "src/eab/kernel2d/global_entrance.py": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9",
+    "src/eab/kernel3d/boundary.py": "e927f4297c0d756de0cfb6c683e402021b1acbd2edf1a2b5a78049347c54a102"
+  },
+  "pending_root_verification": [
+    "static construction audit",
+    "M4c real 450 frame replay",
+    "full suite four shards"
+  ]
+}

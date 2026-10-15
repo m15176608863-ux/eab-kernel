@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 150, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 111, in main
+    child(args.case, args.mutant)
+  File "D:\eab-wt\cx-m4\tools\m3c_mutation_evidence.py", line 76, in child
+    t._assert_call_order_fields(0, case[len("order_"):])
+  File "D:\eab-wt\cx-m4\tests\test_m3c_determinism.py", line 46, in _assert_call_order_fields
+    assert actual == expected, "compact clipped_covers fields depend on public call order"
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: compact clipped_covers fields depend on public call order

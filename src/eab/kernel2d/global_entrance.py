@@ -388,6 +388,10 @@ class GlobalEntrance2:
         direction = -e[1], e[0]
         if direction == (0, 0):
             raise ValueError("side probes require a nonzero segment")
+        # Public probe coordinates must not depend on earlier lazy accesses.
+        # Gate: test_compact_public_output_fields_are_independent_of_call_order.
+        if self._compact_subdivision and self._subdivision_cache is None:
+            self.subdivision
         step = F(1)
         probe_edges = (tuple(cell.vertices for cell in self._subdivision_cache.edges)
                        if self._compact_subdivision and self._subdivision_cache is not None else self.cell_edges)
