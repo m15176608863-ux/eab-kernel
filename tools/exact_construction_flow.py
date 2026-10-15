@@ -52,7 +52,7 @@ def dotted(node):
     return ""
 
 
-CONSTRUCTION = frozenset("scalar_rational vector_rational ratio_rational sqrt_rational norm_rational unit_rational normalized_difference_rational".split())
+CONSTRUCTION = frozenset("scalar_rational vector_rational ratio_rational sqrt_rational norm_rational unit_rational normalized_difference_rational scalar_algebraic".split())
 SINKS = frozenset("sqrt_rational norm_rational unit_rational normalized_difference_rational".split())
 DYNAMIC = frozenset("eval exec compile getattr setattr delattr hasattr globals locals vars dir __import__ callable partial reduce map filter iter".split())
 SCALAR_PURE = frozenset("abs min max sum round".split())

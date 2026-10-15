@@ -1,0 +1,41 @@
+.................................F..                                     [100%]
+================================== FAILURES ===================================
+_ test_internal_se2_mutations_hit_intended_semantic_assertions[rotation_sign] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000000004A46C00>
+mutation = 'rotation_sign'
+
+    @pytest.mark.parametrize("mutation", ("wrong_real_root", "rotation_sign", "translation_bypass", "endpoint_not_closed"))
+    def test_internal_se2_mutations_hit_intended_semantic_assertions(monkeypatch, mutation):
+        if mutation == "wrong_real_root":
+            _closed_form_guard()
+            old = module.roots_interval
+            monkeypatch.setattr(module, "roots_interval", lambda p: old(p)[-1:])
+            guard, message = _closed_form_guard, "earliest square-wall real root"
+        elif mutation == "rotation_sign":
+            _closed_form_guard()
+            old = module._rotation_numerators
+            def mutant(u, p):
+                x, y = old(u, p)
+                return (x[0], -x[1], x[2]), y
+            monkeypatch.setattr(module, "_rotation_numerators", mutant)
+            guard, message = _closed_form_guard, "square-wall exact angle equation"
+        elif mutation == "translation_bypass":
+            test_translation_semantic_guard()
+            old = module.roots_interval
+            monkeypatch.setattr(module, "roots_interval", lambda p: () if len(p) <= 2 else old(p))
+            guard, message = test_translation_semantic_guard, "general path must retain translation events"
+        else:
+            test_rotation_is_rigid_and_endpoints_close(F(1))
+            old = module.rotate_rational
+            monkeypatch.setattr(module, "rotate_rational", lambda p, u: old(p, u/2))
+            guard = lambda: test_rotation_is_rigid_and_endpoints_close(F(1))
+            message = "trajectory final endpoint closure"
+>       with pytest.raises(AssertionError, match=message):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'AssertionError'>
+
+tests\test_m5a_se2.py:237: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_m5a_se2.py::test_internal_se2_mutations_hit_intended_semantic_assertions[rotation_sign]
+1 failed, 35 passed in 2.09s

@@ -430,3 +430,20 @@ Phase 3/5 未动，Phase 4 走了 07 没规划的极限分析路线。07 的 Pha
 ## WO-E5a2 退出状态：PARTIAL（2026-10-12）
 
 本单指定底层门与整数化对拍通过，但完整测试未全绿，不构成里程碑退出。严格表面语义揭示旧 interlock 近竖直事件被噪声政策丢弃：原80个竖墙输入中7格存在独立认证的更低分离高度，当前返回约1.2不是最小逃逸。不能把原最小逃逸门改成只检查安全上界。另有旧并列窗口突变牙失效；加强草案只在证据中，未应用。完整失败清单、实测耗时、独立反证及 WO-E5b 交接以 `reports/codex/E5a2_report.md` 为准；竖墙证书见 `reports/codex/E5a2_evidence/a1/walls_handoff.md`。没有宣称全套≤900秒、正式G6、新worktree或全链精确化通过。
+
+
+## M5a 增量：从平移入口块到二维配置障碍（2026-10-15）
+
+本段只登记 M5a，不改写前述历史表。理论详见 [M5a 设计](m5a_se2_design.md)，
+证据及剩余项见 [报告](../reports/codex/M5a_report.md)；未经完整 G6，不主张学术优先性。
+
+| 原口径 / 延伸 | M5a 对应与具名门 | 限定 |
+|---|---|---|
+| 固定姿态 E=B−A | `se2_slice(A,B,u)` 在精确有理转动后复用 M3；`test_fixed_slice_is_m3` | 仅固定角切片；整个 C 不再是 R² 的单一 Minkowski 差。 |
+| 首入与 K3 集值确定性 | `se2_first_entrance` 枚举 VE/EV 五次实代数事件，输出全部有效盖与闭段关联；`test_random_complete_events_match_independent_sturm_and_g0` | 明示有理模型轨迹，不是从端点唯一恢复物理轨迹。 |
+| 平移退化合同 | `test_zero_rotation_is_exactly_m3_and_m4c_all_fields`：六族三档逐时刻/集合/初态核对 | 输入单环；带洞族指 E 的洞；不支持材料多环。 |
+| 步初贯入比较 | `test_initial_pd_is_frozen`；结果 `.pd_closed` 延迟计算同一 M3 冻结量 | PD_closed 不是运动脱离时刻、rho、弹簧深度或力学错误判据。 |
+| 有限转动端点 | `tools/m5a_se2_replay.py` 的独立块体有理拟合与精确 L∞ 残差 | δ=0 仅认证所选模型端点相容；δ>0 不认证首盖，不能借“误差小”并入认证统计。 |
+
+本阶段未构造完整三维配置空间 C 的曲面安排；每块一步路径暂限 |u1|≤1。
+跨 chart、多圈、材料多环、一般 δ>0 稳定证书、SE(3) 与正式 G6 均须另行闭合。

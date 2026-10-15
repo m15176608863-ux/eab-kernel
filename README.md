@@ -245,6 +245,10 @@ cc5d7cf 按原字节重新入库，`.gitattributes` 设 `* -text`，本仓库本
 - **M1** 多体极限分析 → **M2** 三维首入 + 退化盖合并 → **M3** 凹块全局入口块构造 → **M4** b-DDA 接缝 `BDDA_DETECT=legacy|eab` 影子运行
   → **M5** SE(2)/SE(3)（不承诺周期）→ **M6** 第二个域适配器（进来之前先搬两处层次违规）→ **M7** C++20 `eab2`（只在撞到性能墙时做）。
 
+M5a 研究材料（非里程碑退出声明）：[SE(2) 定义与限制](docs/m5a_se2_design.md)、
+[逐项验收与未完成项](reports/codex/M5a_report.md)。这里只提供研究材料入口，不声明正式 G6 通过、
+完整 SE(2)/SE(3) 支持、b-DDA 连续轨迹认证或在线替换。
+
 </details>
 
 <details>

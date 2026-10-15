@@ -1,0 +1,265 @@
+{
+  "complete": true,
+  "source_sha256": "05c21160cdbb6de5ff69a2cdc789a02d32be6f09067a9b436a1d6436a038bf83",
+  "code_hashes": {
+    "src/eab/__init__.py": "1ab90dc0659b1859a1de4925bbeb599990d2da735ee3894b4e1a85ac7b39ac12",
+    "src/eab/adapters/__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
+    "src/eab/adapters/bdda2d.py": "3240e49c7cf5f546884a911828e300fe3cb2a3e44079d62a1b0e017be63299b3",
+    "src/eab/construction.py": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0",
+    "src/eab/contact_record.py": "e6193303b9f61d8de8ffe3d323d6952ec349177fd75eaec4cb65a48dd02e5f5b",
+    "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src/eab/kernel2d/algebraic.py": "739cfae5d8f860bb272d055fe0b50cab90c5000bb448e98bd7c6db81c5241b20",
+    "src/eab/kernel2d/covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
+    "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src/eab/kernel2d/geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+    "src/eab/kernel2d/global_entrance.py": "59e7bf190026dfa7a302f094b55f37ac484bade2dd9c307df11e44443a325db3",
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src/eab/kernel2d/se2.py": "25ba64088f932457b563caa51aa6a435d5f94ec70eb4f4ce835ea951eb794d7b",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src/eab/predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src/eab/readers/bdda_df.py": "356cf4edf86fc3b026e799305416f999ac550805a2f5d1ef3c194363cc817a2f",
+    "src/eab/readers/bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
+    "src/eab/readers/numeric_decode.py": "cbf2ffbac05fcf3fa135a867c540172abcb14c4f9aced16427af34774033cde0",
+    "tools/ingest_fixtures.py": "b38246ccaf38d729ceddf674f92a642a7fd51002f2dc6391afd17d0cb490eec7",
+    "tools/m4_bdda_shadow.py": "ea9a1131d43a306f96d44ef70f3198a693e6ef8d4cf2eed405c028f4fd973bfc",
+    "tools/m4_shadow_replay.py": "7fd27c2963b886443751515afa0c77ab78cf3ab729d66c050163e11bcc2a71c4",
+    "tools/m4c_motion_replay.py": "cba9a02d534e06925916b7be6f83724887c5adeef20966ab07c98d974a62b3f1",
+    "tools/m5a_se2_replay.py": "2f817dba17c9e11620f0221bb9fe88fe16c99aa400e81d72eed41a34e9dcdc07"
+  },
+  "answers": {
+    "Q1_rotation_versus_chord": {
+      "case": "bb52",
+      "step": 1,
+      "pair": [
+        2,
+        6
+      ],
+      "rigid": {
+        "status": "no_contact",
+        "time": null,
+        "time_display": null,
+        "features": [],
+        "incidences": []
+      },
+      "fit_A": {
+        "u1": "-26526016/921297362793",
+        "center": [
+          "456514640534609279/135107988821114880",
+          "97630086564450417/22517998136852480"
+        ],
+        "translation": [
+          "58614326428649/67553994410557440",
+          "-17366720688559/33776997205278720"
+        ],
+        "delta_linf": "250845876276261007479286845687142109383/57339075971664019061047332775040070451200",
+        "delta_display": 0.0043747805841905215,
+        "certificate": "UNCERTIFIED_NONRIGID_ENDPOINTS"
+      },
+      "fit_B": {
+        "u1": "-122755309/1078677134883",
+        "center": [
+          "14047148699633705/2251799813685248",
+          "36896710472952487/6755399441055744"
+        ],
+        "translation": [
+          "2439003379601/3377699720527872",
+          "-1112223173189/3377699720527872"
+        ],
+        "delta_linf": "9775399110110924868192200791805310551/982525878737103820805710838701290946560",
+        "delta_display": 0.009949253573530093,
+        "certificate": "UNCERTIFIED_NONRIGID_ENDPOINTS"
+      },
+      "legacy": {
+        "raw_df05": [
+          {
+            "index": 22,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "OTHER_FEATURE_FIRST"
+          },
+          {
+            "index": 23,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "FIRST_COVER_MATCH"
+          }
+        ],
+        "post_df06": [
+          {
+            "index": 22,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "OTHER_FEATURE_FIRST"
+          },
+          {
+            "index": 23,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "FIRST_COVER_MATCH"
+          }
+        ]
+      },
+      "same_chord_status_and_cover": false
+    },
+    "Q2_legacy_reference": {
+      "case": "bb52",
+      "step": 1,
+      "pair": [
+        2,
+        6
+      ],
+      "rigid": {
+        "status": "no_contact",
+        "time": null,
+        "time_display": null,
+        "features": [],
+        "incidences": []
+      },
+      "fit_A": {
+        "u1": "-26526016/921297362793",
+        "center": [
+          "456514640534609279/135107988821114880",
+          "97630086564450417/22517998136852480"
+        ],
+        "translation": [
+          "58614326428649/67553994410557440",
+          "-17366720688559/33776997205278720"
+        ],
+        "delta_linf": "250845876276261007479286845687142109383/57339075971664019061047332775040070451200",
+        "delta_display": 0.0043747805841905215,
+        "certificate": "UNCERTIFIED_NONRIGID_ENDPOINTS"
+      },
+      "fit_B": {
+        "u1": "-122755309/1078677134883",
+        "center": [
+          "14047148699633705/2251799813685248",
+          "36896710472952487/6755399441055744"
+        ],
+        "translation": [
+          "2439003379601/3377699720527872",
+          "-1112223173189/3377699720527872"
+        ],
+        "delta_linf": "9775399110110924868192200791805310551/982525878737103820805710838701290946560",
+        "delta_display": 0.009949253573530093,
+        "certificate": "UNCERTIFIED_NONRIGID_ENDPOINTS"
+      },
+      "legacy": {
+        "raw_df05": [
+          {
+            "index": 22,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "OTHER_FEATURE_FIRST"
+          },
+          {
+            "index": 23,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "FIRST_COVER_MATCH"
+          }
+        ],
+        "post_df06": [
+          {
+            "index": 22,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "OTHER_FEATURE_FIRST"
+          },
+          {
+            "index": 23,
+            "category": "NO_CONTACT_IN_STEP",
+            "chord_category": "FIRST_COVER_MATCH"
+          }
+        ]
+      },
+      "same_chord_status_and_cover": false
+    },
+    "Q3_maximum_endpoint_residual": {
+      "case": "bbv02_dbv02a",
+      "step": 54,
+      "pair": [
+        2,
+        5
+      ],
+      "rigid": {
+        "status": "initial_overlap",
+        "time": null,
+        "time_display": null,
+        "features": [],
+        "incidences": []
+      },
+      "fit_A": {
+        "u1": "9572665/406316950471",
+        "center": [
+          "525080374421672893/1970324836974592",
+          "6794951459048205/7696581394432"
+        ],
+        "translation": [
+          "-1015919105211/1970324836974592",
+          "-3644574344287/123145302310912"
+        ],
+        "delta_linf": "17052968863173646338375558309292842211/162643876597452856645310834482176065536",
+        "delta_display": 0.10484851455785278,
+        "certificate": "UNCERTIFIED_NONRIGID_ENDPOINTS"
+      },
+      "fit_B": {
+        "u1": "-37608020/823369161557",
+        "center": [
+          "36144965790338369/87960930222080",
+          "88641644163215877/175921860444160"
+        ],
+        "translation": [
+          "563249890951/43980465111040",
+          "-1828813826947/35184372088832"
+        ],
+        "delta_linf": "2201011120905552493157656769684521651/11926389918197887131608482271392169984",
+        "delta_display": 0.18454965299659865,
+        "certificate": "UNCERTIFIED_NONRIGID_ENDPOINTS"
+      },
+      "legacy": {
+        "raw_df05": [
+          {
+            "index": 49,
+            "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+            "chord_category": "INITIAL_OVERLAP_PD_OTHER_FEATURE"
+          },
+          {
+            "index": 50,
+            "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+            "chord_category": "INITIAL_OVERLAP_PD_OTHER_FEATURE"
+          },
+          {
+            "index": 51,
+            "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+            "chord_category": "INITIAL_OVERLAP_PD_OTHER_FEATURE"
+          },
+          {
+            "index": 52,
+            "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+            "chord_category": "INITIAL_OVERLAP_PD_OTHER_FEATURE"
+          }
+        ],
+        "post_df06": [
+          {
+            "index": 49,
+            "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+            "chord_category": "INITIAL_OVERLAP_PD_OTHER_FEATURE"
+          },
+          {
+            "index": 50,
+            "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+            "chord_category": "INITIAL_OVERLAP_PD_OTHER_FEATURE"
+          },
+          {
+            "index": 51,
+            "category": "INITIAL_OVERLAP_PD_OTHER_FEATURE",
+            "chord_category": "INITIAL_OVERLAP_PD_OTHER_FEATURE"
+          },
+          {
+            "index": 52,
+            "category": "INITIAL_OVERLAP_PD_MATCH",
+            "chord_category": "INITIAL_OVERLAP_PD_MATCH"
+          }
+        ]
+      },
+      "same_chord_status_and_cover": true
+    }
+  }
+}

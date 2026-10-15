@@ -50,7 +50,7 @@ def scan_text(text, path="<injected>", *, repository_root=None):
                   "scalar_rational", "vector_rational", "scalar_exact", "vector_exact",
                   "ratio_rational", "ratio_exact", "sqrt_rational", "sqrt_exact",
                   "norm_rational", "norm_exact", "unit_rational", "unit_exact",
-                  "normalized_difference_rational"}
+                  "normalized_difference_rational", "scalar_algebraic"}
     passthrough = {"tuple", "list", "dict", "set", "sum", "min", "max", "abs",
                    "Fraction", "from_float", "zip", "enumerate", "reversed", "sorted",
                    "values", "items", "get", "copy", "__getitem__"}

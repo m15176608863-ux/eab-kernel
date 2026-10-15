@@ -1,0 +1,34 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_specific_contract_after_actual_source_mutation _____________
+
+    def test_specific_contract_after_actual_source_mutation():
+        kind = os.environ["M5A_MUTANT"]
+        if kind == "isolation_bit":
+            algebra_tests.test_one_isolation_bit_keeps_the_selected_root()
+        elif kind == "wrong_real_root":
+            se2_tests._closed_form_guard()
+        elif kind == "approximate_equality":
+            algebra_tests.test_adjacent_algebraic_roots_do_not_become_equal_at_a_float_tolerance()
+        elif kind == "rotation_sign":
+            se2_tests._closed_form_guard()
+        elif kind == "translation_bypass":
+            se2_tests.test_translation_semantic_guard()
+        elif kind == "endpoint_not_closed":
+            se2_tests.test_rotation_is_rigid_and_endpoints_close(F(1))
+        elif kind == "lost_degree_five":
+            a, b, ma, mb = oracle_tests.CASES[0]
+            expected = oracle_tests.first_contact(a, b, ma, mb)
+            actual = oracle_tests.se2_first_entrance(a, b, oracle_tests.SE2Motion(*ma), oracle_tests.SE2Motion(*mb))
+            assert actual.status == "contact", "degree-five mutant reaches semantic contact path"
+            got = oracle_tests.certificate_root(actual.exact_time.certificate)
+>           assert oracle_tests.compare(got, expected["root"]) == 0, "independent first-root identity rejects lost degree-five term"
+E           AssertionError: independent first-root identity rejects lost degree-five term
+E           assert -1 == 0
+E            +  where -1 = <function compare at 0x0000000004C67380>(<m5a_independent_oracle.Root object at 0x0000000004C0FA40>, <m5a_independent_oracle.Root object at 0x00000000046B7D40>)
+E            +    where <function compare at 0x0000000004C67380> = oracle_tests.compare
+
+tests\test_m5a_mutant_guard.py:27: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_m5a_mutant_guard.py::test_specific_contract_after_actual_source_mutation
+1 failed in 0.27s

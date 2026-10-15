@@ -229,3 +229,26 @@
 M3 的“带洞”一致性族指入口块 E 的洞，不表示本单支持带洞输入多环。
 二次根证书可精确表示不可显示量；显示有限域与明确异常仍按 construction.py 合同。
 一般非零转动/应变残差的首盖稳定性不是数值显示合同，不由三档门推出，另列 M4c 的未认证范围。
+
+
+## M5a 增量（2026-10-15；不改写历史登记）
+
+精确有理/代数对象仍是构造量，不以“没有 float”当 nonconstructive。
+新公开二进制显示只经过 `construction.scalar_algebraic` / 既有 `scalar_rational`；
+静态新增准入及逐条理由以 [静态审计](../reports/codex/M5a_evidence/static_admissions.json) 为准。
+此表登记 API 和具名门，不把有限输入测试当全输入形式证明。
+
+| API / 公开量 | 处置 | 参考与门 |
+|---|---|---|
+| `construction.scalar_algebraic(compare)`；`RealAlgebraic.time`；`SE2Entrance2.time` | differential | `test_algebraic_display_is_in_its_independent_binary64_midpoint_cell` 在 2^-1070 / 1 / 2^1022，正负平方根的独立有理半格；`test_algebraic_display_resolves_exact_ties_underflow_and_overflow` 看护 ties-to-even、下溢和溢出。 |
+| `kernel2d.algebraic.RealAlgebraic` 的 polynomial/lower/upper/rational/certificate；`roots_interval`、`from_rational`、`refine` | differential | `test_root_isolation_matches_independent_rational_bisection`；`test_algebraic_display_is_in_its_independent_binary64_midpoint_cell` 的三档精确证书；重复/公共/相邻根具名门及失真隔离位变异。隔离区间不承诺唯一字节形式，承诺选中同一根。 |
+| `p_add/p_sub/p_mul/p_scale/p_eval/p_derivative/p_divmod/p_gcd` | differential | `test_polynomial_arithmetic_has_independent_substitution_identities` 三档系数，独立展开与代入，商/余数/gcd 逐值；不是调用同一多项式函数生成期望值。 |
+| `RealAlgebraic.compare/sign_polynomial`、`sign_at`、比较和判等 | nonconstructive | 仅返回 -1/0/1 或 bool；独立有理区间、公共根、2^-90 近根同浮点不同代数值门。对象刻意不可哈希，避免非最小多项式表示破坏等值哈希合同。 |
+| `rotate_rational`；`SE2Motion.u1/translation/center/at/endpoint` | differential | `test_rotation_is_rigid_and_endpoints_close` 几何 2^-400 / 1 / 2^397，3-4-5 旋转独立坐标与距离；`test_two_rotating_translating_bodies_transform_with_their_reference_points` 另含大平移与单位协变。 |
+| `se2_slice` 返回的 GlobalEntrance2 | differential / reuse | `test_fixed_slice_is_m3` 三档独立转后坐标和 G0 状态；之后完整复用 M3 全球胞构造与既有数值合同，不新增另一套切片胞构造。 |
+| `se2_first_entrance` / `SE2Entrance2.exact_time` | differential | 三档杠杆闭式、方块转墙双根、六族三档 M3/M4c 退化；独立插值五次式 + 独立 Sturm + G0 逐区间核验另见 `test_m5a_oracle.py`。 |
+| `SE2Entrance2.initial_state/status/incidences/features/tied_features` | nonconstructive | 返回实体状态、字符串和原输入身份索引集合；初态三态、零配缝、顺时针身份与全并列集合具名门。 |
+| `SE2Entrance2.pd_closed` | differential / reuse | 同一 `shortest_exit_fast` 返回 `Distance2`，只对初贯入延迟求值；`test_initial_pd_is_frozen` 独立矩形闭式与 M3 逐值。沿用 M4c 三档平方距/全并列点/显示门，不新造 PD 算法。 |
+| replay 的 RigidFit 精确 u/center/translation/残差及 δ 字符串；delta_display、分位数显示 | differential | `test_m5a_replay.py` 的精确刚体、应变和三档残差门；显示均经 `scalar_rational` 且伴随 exact 字符串，不将显示值用于认证分支。 |
+
+一般非零 δ 首盖稳定性没有因精确显示而得到证明。接近 pi 的步内转动保守拒绝；固定角 `se2_slice` 可以消费任意有限有理半角参数。
