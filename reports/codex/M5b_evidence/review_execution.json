@@ -1,0 +1,370 @@
+{
+  "schema": 1,
+  "review": "R6 execution audit",
+  "status": "PASS_PUBLICATION_CONSISTENCY_WITH_DECLARED_PARTIAL",
+  "baseline": {
+    "status": "GREEN",
+    "run": "baseline_r1",
+    "collected": 13558,
+    "executed": 13558,
+    "skip_count": 0,
+    "report_count": 40674,
+    "global_collection_dispatch_collection_execution_identical": true,
+    "all_stages_exactly_once_and_passed": true,
+    "shards": [
+      {
+        "shard": 1,
+        "collected": 3390,
+        "executed": 3390,
+        "reports": 10170,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3390 passed in 747.01s (0:12:27)",
+        "error_markers": []
+      },
+      {
+        "shard": 2,
+        "collected": 3390,
+        "executed": 3390,
+        "reports": 10170,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3390 passed in 902.99s (0:15:02)",
+        "error_markers": []
+      },
+      {
+        "shard": 3,
+        "collected": 3389,
+        "executed": 3389,
+        "reports": 10167,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3389 passed in 764.00s (0:12:44)",
+        "error_markers": []
+      },
+      {
+        "shard": 4,
+        "collected": 3389,
+        "executed": 3389,
+        "reports": 10167,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3389 passed in 1330.80s (0:22:10)",
+        "error_markers": []
+      }
+    ],
+    "export_file_count": 6447,
+    "fresh_byte_export": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5b_evidence\\tmp\\baseline_r1_export",
+    "fresh_git_checkout": false,
+    "export_files_and_bytes_currently_match_manifest": true,
+    "before_after_integrity_empty": true,
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "call_seconds": 3500.2458604001267
+  },
+  "final": {
+    "status": "GREEN",
+    "run": "final_r1",
+    "collected": 13656,
+    "executed": 13656,
+    "skip_count": 0,
+    "report_count": 40968,
+    "global_collection_dispatch_collection_execution_identical": true,
+    "all_stages_exactly_once_and_passed": true,
+    "shards": [
+      {
+        "shard": 1,
+        "collected": 3414,
+        "executed": 3414,
+        "reports": 10242,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3414 passed in 729.01s (0:12:09)",
+        "error_markers": []
+      },
+      {
+        "shard": 2,
+        "collected": 3414,
+        "executed": 3414,
+        "reports": 10242,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3414 passed in 1249.87s (0:20:49)",
+        "error_markers": []
+      },
+      {
+        "shard": 3,
+        "collected": 3414,
+        "executed": 3414,
+        "reports": 10242,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3414 passed in 735.89s (0:12:15)",
+        "error_markers": []
+      },
+      {
+        "shard": 4,
+        "collected": 3414,
+        "executed": 3414,
+        "reports": 10242,
+        "all_three_phases_once": true,
+        "journal_equals_reports": true,
+        "last_line": "3414 passed in 826.19s (0:13:46)",
+        "error_markers": []
+      }
+    ],
+    "export_file_count": 6621,
+    "fresh_byte_export": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5b_evidence\\tmp\\final_r1_export",
+    "fresh_git_checkout": false,
+    "export_files_and_bytes_currently_match_manifest": true,
+    "before_after_integrity_empty": true,
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "call_seconds": 3291.0640830999746
+  },
+  "current_executable_closure": {
+    "export_path_count": 571,
+    "current_path_count": 571,
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  "publication": {
+    "suite_delta": {
+      "added": 98,
+      "removed": 0
+    },
+    "added_call_seconds": 2.944788900023923,
+    "added_over_baseline": 0.0008413091586907249,
+    "execution_audit_crosschecked": true,
+    "suite_delta_and_performance_files_crosschecked": true,
+    "negative_record_probes": [
+      {
+        "defect": "missing_call",
+        "result": "REJECTED",
+        "assertion": ""
+      },
+      {
+        "defect": "duplicate_call",
+        "result": "REJECTED",
+        "assertion": ""
+      },
+      {
+        "defect": "skipped_call",
+        "result": "REJECTED",
+        "assertion": "all setup/call/teardown must pass"
+      },
+      {
+        "defect": "failed_teardown",
+        "result": "REJECTED",
+        "assertion": "all setup/call/teardown must pass"
+      },
+      {
+        "defect": "nonzero_exit",
+        "result": "REJECTED",
+        "assertion": ""
+      },
+      {
+        "defect": "incomplete",
+        "result": "REJECTED",
+        "assertion": ""
+      }
+    ],
+    "main_report_exists": true,
+    "final_review": {
+      "status": "PASS",
+      "robust_summary_sha256": "517a9ec44139f42f75effbf7beda1aaa150f0c83711953857c7e693244b7c1a3",
+      "all_raw_records_recounted": 64010,
+      "source_hashes_checked": 52,
+      "input_hashes_checked": 91,
+      "case_checks": {
+        "bb05": {
+          "pairs": 600,
+          "steps": 100,
+          "blocks": 400,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb06": {
+          "pairs": 600,
+          "steps": 100,
+          "blocks": 400,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb12": {
+          "pairs": 5500,
+          "steps": 100,
+          "blocks": 1100,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb09": {
+          "pairs": 6600,
+          "steps": 100,
+          "blocks": 1200,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb03": {
+          "pairs": 5500,
+          "steps": 100,
+          "blocks": 1100,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb10": {
+          "pairs": 6600,
+          "steps": 100,
+          "blocks": 1200,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bbF038": {
+          "pairs": 30,
+          "steps": 30,
+          "blocks": 60,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bbS038": {
+          "pairs": 30,
+          "steps": 30,
+          "blocks": 60,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb50": {
+          "pairs": 50,
+          "steps": 50,
+          "blocks": 100,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb52": {
+          "pairs": 2750,
+          "steps": 50,
+          "blocks": 550,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bb51": {
+          "pairs": 2750,
+          "steps": 50,
+          "blocks": 550,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bbv01": {
+          "pairs": 4500,
+          "steps": 100,
+          "blocks": 1000,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bbv02": {
+          "pairs": 2100,
+          "steps": 100,
+          "blocks": 700,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bbv02_dbv02a": {
+          "pairs": 8400,
+          "steps": 400,
+          "blocks": 2800,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        },
+        "bbv01_dbv01a": {
+          "pairs": 18000,
+          "steps": 400,
+          "blocks": 4000,
+          "counts_and_references_exact": true,
+          "raw_sha256_checked": true
+        }
+      },
+      "counts": {
+        "pairs": 64010,
+        "MODEL_SENSITIVE_OR_UNPROVED": 25327,
+        "p1_p2_same": 64010,
+        "independent_initial_state_checks": 30968,
+        "INITIAL_EXIT_ORDER_UNCERTIFIED": 16676,
+        "ROBUST_NO_CONTACT": 38681,
+        "NO_SUFFICIENT_CERTIFICATE": 8651,
+        "steps": 1810,
+        "blocks": 15220,
+        "ROBUST_SINGLE_FIRST_COVER": 2
+      },
+      "references": {
+        "raw_df05:UNPROVED_REFERENCE": 130147,
+        "post_df06:UNPROVED_REFERENCE": 130147,
+        "raw_df05:ROBUST_NO_CONTACT_REFERENCE": 11443,
+        "post_df06:ROBUST_NO_CONTACT_REFERENCE": 11443,
+        "raw_df05:FIRST_COVER_MATCH": 1,
+        "raw_df05:OTHER_REFERENCE": 3,
+        "post_df06:FIRST_COVER_MATCH": 2,
+        "post_df06:OTHER_REFERENCE": 2,
+        "raw_df05:ROBUST_FIRST_COVER_NOT_SELECTED": 1
+      },
+      "endpoint_maxima": {
+        "delta": 2.257867693845113e-13,
+        "ideal_delta_upper": 2.460612092172561e-13,
+        "binary_ratio": 1.0044227048058703,
+        "ideal_ratio_upper": 1.278351617304262,
+        "trig_error_upper": 6.125351005406442e-17,
+        "trig_position_error_upper": 5.270712761762953e-14,
+        "midpoint_linf_upper": 9.626408698932884e-06,
+        "midpoint_l2_square_upper": 1.005451677266388e-10
+      },
+      "grouped_counts": {
+        "block_frames": 15220,
+        "coordinates": 315760,
+        "physical_order_matches": 315760,
+        "old_pad_order_matches": 314252
+      },
+      "site_counts": {
+        "old_per_site": 3558,
+        "old_shared": 104,
+        "current_per_site": 3618,
+        "current_shared": 77,
+        "net_delta": 33
+      },
+      "fresh_450_frame_attestation_checked": true,
+      "numeric_audit_binding_checked": true,
+      "limitations": [
+        "Recounts and integrity only; no rerun of nonlinear geometric roots in this publication audit.",
+        "Admission counts are compared to existing rule-site manifest; own earlier static work is not independent numeric proof."
+      ],
+      "report_path": "reports/codex/M5b_report.md",
+      "report_sha256": "152c83e155893855b3975cfec95f8e3d5d5c592e755d90d47f27b9b4662a14d2",
+      "report_utf8_without_bom": true,
+      "report_last_line": "M5b_PARTIAL：已贯入正扰动最短出口排序；legacy次参考；敏感子集P3首入与完整三模型比例；外部2.8e-6口径对齐；完整G6退出",
+      "case_rows_checked": 15,
+      "all_case_and_total_rows_match": true,
+      "reference_table_matches_primary_only_counts": true,
+      "four_raw_last_lines_exact": true,
+      "performance_rounding_and_uncontrolled_scope_match": true,
+      "admission_rule_site_counting_scope_match": true,
+      "endpoint_direct_dependency_and_signed_zero_limits_disclosed": true,
+      "all_report_file_links_exist": 26,
+      "partial_boundaries_match_evidence": true,
+      "is_full_g6_exit": false,
+      "critical": 0,
+      "major": 0
+    }
+  },
+  "tool_review": {
+    "wrapper_delegates_existing_runner": true,
+    "stderr_merged_into_logged_stdout": true,
+    "watchdog_covers_teardown_until_logfinish": true,
+    "fresh_export_not_git_checkout": true,
+    "finalizer_drift_check_only_checks_manifest_existing_paths": true,
+    "independent_review_additionally_checks_current_path_set": true
+  },
+  "limits": [
+    "Read-only audit; no src/tests/tools/policy or frozen-export file edited.",
+    "Finalizer generic drift loop omits current added paths; this independent set comparison closes that gap for this concrete run.",
+    "Publication checks completed for the pinned report SHA256; later edits require renewed review.",
+    "PASS concerns execution/publication consistency, not completion of the five declared M5b PARTIAL items or full G6 exit.",
+    "Endpoint summary pins direct dependencies only; current report discloses missing transitive-closure hardening."
+  ]
+}

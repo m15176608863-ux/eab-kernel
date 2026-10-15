@@ -1,8 +1,9 @@
-"""Exact degree-at-most-five real roots for the M5a trajectory contract.
+"""Exact degree-at-most-six real roots for the M5a/M5b trajectory contracts.
 
 Coefficients are rational and ordered from constant to leading coefficient.
 Squarefree Sturm isolation, gcd equality and rational interval signs implement
-the proofs in docs/m5a_se2_design.md, section 4. No floating value participates
+the proofs in docs/m5a_se2_design.md, section 4 (degree-six extension:
+docs/m5b_motion_theory.md, T4). No floating value participates
 in a predicate. The only binary64 output is ``RealAlgebraic.time``, through
 the checked construction boundary. Gates: tests/test_m5a_algebraic.py.
 """
@@ -203,8 +204,8 @@ class RealAlgebraic:
     def __post_init__(self):
         polynomial = _poly(self.polynomial)
         lower, upper = _rational(self.lower), _rational(self.upper)
-        if not 1 <= len(polynomial)-1 <= 5:
-            raise ValueError("defining polynomial degree must be between one and five")
+        if not 1 <= len(polynomial)-1 <= 6:
+            raise ValueError("defining polynomial degree must be between one and six")
         polynomial = _squarefree(polynomial)
         if lower > upper or _root_count(polynomial, lower, upper) != 1:
             raise ValueError("interval must isolate exactly one real root")
@@ -354,13 +355,13 @@ def roots_interval(poly, lower=0, upper=1):
 
     An identically zero polynomial has infinitely many roots and is rejected;
     persistent event constraints must be handled explicitly by their caller.
-    A nonzero constant has no roots. The unprocessed input degree is <=5.
+    A nonzero constant has no roots. The unprocessed input degree is <=6.
     """
     poly, lower, upper = _poly(poly), _rational(lower), _rational(upper)
     if not any(poly):
         raise ValueError("zero polynomial has infinitely many roots")
-    if len(poly) > 6:
-        raise ValueError("root isolation supports polynomial degree at most five")
+    if len(poly) > 7:
+        raise ValueError("root isolation supports polynomial degree at most six")
     if lower > upper:
         raise ValueError("root isolation interval is reversed")
     if len(poly) == 1:

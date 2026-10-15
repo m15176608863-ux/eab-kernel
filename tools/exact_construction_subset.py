@@ -90,7 +90,9 @@ def instrumentation_scope(text, path, function, rule):
     remain active. Every reviewed scope AND the common helper file are pinned;
     changing either expires the review instead of growing a name-based waiver.
     """
-    review = _policy().get("mutation_instrumentation_review", {})
+    policy = _policy()
+    history = policy.get("mutation_instrumentation_reviews", ())
+    review = history[-1] if history else policy.get("mutation_instrumentation_review", {})
     if rule not in review.get("rules", ()) or not path.startswith("tests/"):
         return False
     scopes = [row for row in review.get("scopes", ())
@@ -100,7 +102,15 @@ def instrumentation_scope(text, path, function, rule):
     helper = HERE.parent / "tests/mutation_support.py"
     if not helper.exists() or hashlib.sha256(helper.read_bytes()).hexdigest() != review.get("helper_sha256"):
         return False
-    return any(row.get("context") == site_contexts(text).get(function) for row in scopes)
+    contexts = site_contexts(text)
+    # Caller imports/aliases are outside a function's local pin. Pin the full
+    # module too: a direct def/class can shadow an import without appearing in
+    # the module's non-definition pin. Do not authorize a same-spelled helper.
+    # This is a finite source contract, not arbitrary Python name resolution.
+    return any(row.get("context") == contexts.get(function)
+               and row.get("module_context") == contexts.get("<module>")
+               and row.get("module_source_sha256") == _hash(text.replace("\r\n", "\n").replace("\r", "\n"))
+               for row in scopes)
 
 
 def closed_subset_issues(text, path="<injected>", *, apply_waivers=True, repository_root=None, analysis=None):

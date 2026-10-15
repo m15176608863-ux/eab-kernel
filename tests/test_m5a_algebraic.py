@@ -180,7 +180,7 @@ def test_algebraic_display_resolves_exact_ties_underflow_and_overflow():
 
 
 def test_invalid_algebraic_domains_fail_loudly():
-    for polynomial in ((0,), (1, 0, 0, 0, 0, 0, 1)):
+    for polynomial in ((0,), (1, 0, 0, 0, 0, 0, 0, 1)):
         with pytest.raises(ValueError):
             roots_interval(polynomial)
     assert roots_interval((3,)) == ()

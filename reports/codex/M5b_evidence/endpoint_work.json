@@ -1,0 +1,75 @@
+{
+  "schema": "eab.m5b-endpoint-work.v1",
+  "complete_reconstruction": true,
+  "status": "PARTIAL_HISTORICAL_MIDPOINT_SCOPE_ALIGNMENT",
+  "rows": 15220,
+  "steps": 1810,
+  "cases": 15,
+  "input_shards": 74,
+  "block_unit": "ulp(max absolute start/end coordinate)",
+  "primary_run": "endpoint_full_r2",
+  "seconds": 125.56658089999837,
+  "maxima_display": {
+    "delta": 2.257867693845113e-13,
+    "ideal_delta_upper": 2.460612092172561e-13,
+    "binary_ratio": 1.0044227048058703,
+    "ideal_ratio_upper": 1.278351617304262,
+    "trig_error_upper": 6.125351005406442e-17,
+    "trig_position_error_upper": 5.270712761762953e-14,
+    "midpoint_linf_upper": 9.626408698932884e-06,
+    "midpoint_l2_square_upper": 1.005451677266388e-10
+  },
+  "grouped_replay_counts": {
+    "block_frames": 15220,
+    "coordinates": 315760,
+    "physical_order_matches": 315760,
+    "old_pad_order_matches": 314252
+  },
+  "grouped_replay_seconds": 6.389601000000766,
+  "tests": {
+    "last_line": "27 passed in 0.10s",
+    "skip": 0,
+    "mutation_sites": 4,
+    "meta_parameter_cells": 12
+  },
+  "new_production_src_modules": 0,
+  "shared_domain_admissions": 0,
+  "historical_values": {
+    "endpoint": 1.101,
+    "midpoint": 2.8e-06,
+    "status": "external acceptance history retained; exact definition not independently aligned"
+  },
+  "mutations": [
+    {
+      "site": "area_centroid denominator",
+      "assertion": "area centroid must equal independent triangle integrals",
+      "semantic_red": true
+    },
+    {
+      "site": "endpoint_map cross coefficient sign",
+      "assertion": "endpoint must match independent displacement oracle",
+      "semantic_red": true
+    },
+    {
+      "site": "sin_cos_intervals alternating sign",
+      "assertion": "trig enclosure must contain independent Lagrange certificate",
+      "semantic_red": true
+    },
+    {
+      "site": "physical_order cyclic start (both endpoints)",
+      "assertion": "physical lo..hi summation start must replay observed binary64 endpoints",
+      "semantic_red": true
+    }
+  ],
+  "evidence_sha256": {
+    "endpoint_summary.json": "2b5d1c8f152524978c3eb7bfe1f6cb015adf4e9cdf0c69f12912b2d80eaaa2df",
+    "endpoint_grouped_summary.json": "cabd6e002ebcca9243b6ff73144fbf3cbd66a6b196269bea79b9d971ded55ef3",
+    "endpoint_minimal_examples.json": "31e81bd1c9d2f6e3bca29a5ab344b3f9bf8fc809cfb2a551cf4c42fd49a80993",
+    "endpoint_physical_ranges.json": "6aa38800f2900fc28fc6bf64844cc7245ee008f09de3b94d5a1aca4cc9f97468",
+    "manifest.json": "38f2f86afffc64c13aeb731b1efb2a18374d2714e911ed0c8cf186f7ffbbce47"
+  },
+  "grouped_equality_contract": "exact binary64 coordinate values; signed zeros merged by Fraction; not bitwise equality",
+  "minor_limitations": [
+    "Primary endpoint source hash table is direct, not a complete transitive import closure."
+  ]
+}

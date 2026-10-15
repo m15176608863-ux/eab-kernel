@@ -159,40 +159,6 @@ MUTATIONS = (
 )
 
 
-def semantic_guard(kind):
-    if kind == "quadratic_outside_interval":
-        test_quadratic_rational_branch_keeps_the_selected_se2_entrance()
-    elif kind == "swept_max_norm":
-        test_off_centroid_small_angle_bounds_preserve_real_contact(F(1, 100), F(1), (0, 0))
-    elif kind == "modular_leading_coefficient":
-        test_modular_no_root_filter_skips_primes_dividing_the_leading_coefficient(2)
-    elif kind.startswith("refinement_"):
-        test_rational_reconstruction_refines_large_denominator_away_from_farey_boundary(100000000000000000039)
-    elif kind == "closed_upper_endpoint":
-        test_public_algebraic_constructor_retains_closed_upper_endpoint_root()
-    elif kind == "affine_delta_l1":
-        test_affine_delta_is_linf_not_l1_for_two_component_residuals(F(1))
-    elif kind == "omitted_pair_stats":
-        test_focused_frame_stats_count_proven_separation_omissions()
-    elif kind == "initial_contact_reuse_stats":
-        test_focused_frame_stats_count_initial_contact_and_overlap_reuse(0, (2, 3), "contact")
-    elif kind == "initial_overlap_reuse_stats":
-        test_focused_frame_stats_count_initial_contact_and_overlap_reuse(1, (1, 2), "initial_overlap")
-    elif kind == "residual_correction_sign":
-        affine_gates.test_linear_residual_correction_closes_data_without_certification()
-    elif kind in ("affine_fit_cross_sign", "positive_affine_residual_certified"):
-        affine_gates.test_fit_matches_independent_three_point_and_normal_equation_oracles(affine_gates.POINTS, True)
-    else:
-        raise AssertionError("unknown INT1 semantic mutation")
-
-
-def mask_source_hashes(monkeypatch):
-    monkeypatch.setattr(replay, "code_hashes", lambda: {})
-    monkeypatch.setattr(replay, "file_hash", lambda path: "HASH_TRIPWIRE_DISABLED")
-    monkeypatch.setattr(affine_replay, "code_hashes", lambda: {})
-    monkeypatch.setattr(affine_replay, "file_hash", lambda path: "HASH_TRIPWIRE_DISABLED")
-
-
 def inject_semantic_mutation(kind, monkeypatch):
     if kind in ("quadratic_outside_interval", "modular_leading_coefficient",
                 "refinement_linear_denominator", "refinement_four_times_wider"):
@@ -241,6 +207,40 @@ def inject_semantic_mutation(kind, monkeypatch):
 
 @pytest.mark.parametrize("kind,message", MUTATIONS)
 def test_internal_int1_mutants_fail_the_designated_semantic_assertion(kind, message, monkeypatch):
+    # Assertion dispatch and hash masking are test drivers, not shared mutation mechanics.
+    def semantic_guard(kind):
+        if kind == "quadratic_outside_interval":
+            test_quadratic_rational_branch_keeps_the_selected_se2_entrance()
+        elif kind == "swept_max_norm":
+            test_off_centroid_small_angle_bounds_preserve_real_contact(F(1, 100), F(1), (0, 0))
+        elif kind == "modular_leading_coefficient":
+            test_modular_no_root_filter_skips_primes_dividing_the_leading_coefficient(2)
+        elif kind.startswith("refinement_"):
+            test_rational_reconstruction_refines_large_denominator_away_from_farey_boundary(100000000000000000039)
+        elif kind == "closed_upper_endpoint":
+            test_public_algebraic_constructor_retains_closed_upper_endpoint_root()
+        elif kind == "affine_delta_l1":
+            test_affine_delta_is_linf_not_l1_for_two_component_residuals(F(1))
+        elif kind == "omitted_pair_stats":
+            test_focused_frame_stats_count_proven_separation_omissions()
+        elif kind == "initial_contact_reuse_stats":
+            test_focused_frame_stats_count_initial_contact_and_overlap_reuse(0, (2, 3), "contact")
+        elif kind == "initial_overlap_reuse_stats":
+            test_focused_frame_stats_count_initial_contact_and_overlap_reuse(1, (1, 2), "initial_overlap")
+        elif kind == "residual_correction_sign":
+            affine_gates.test_linear_residual_correction_closes_data_without_certification()
+        elif kind in ("affine_fit_cross_sign", "positive_affine_residual_certified"):
+            affine_gates.test_fit_matches_independent_three_point_and_normal_equation_oracles(affine_gates.POINTS, True)
+        else:
+            raise AssertionError("unknown INT1 semantic mutation")
+
+
+    def mask_source_hashes(monkeypatch):
+        monkeypatch.setattr(replay, "code_hashes", lambda: {})
+        monkeypatch.setattr(replay, "file_hash", lambda path: "HASH_TRIPWIRE_DISABLED")
+        monkeypatch.setattr(affine_replay, "code_hashes", lambda: {})
+        monkeypatch.setattr(affine_replay, "file_hash", lambda path: "HASH_TRIPWIRE_DISABLED")
+
     mask_source_hashes(monkeypatch)
     semantic_guard(kind)
     inject_semantic_mutation(kind, monkeypatch)
