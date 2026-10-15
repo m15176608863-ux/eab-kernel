@@ -1,0 +1,42 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________________________ test_specific_semantic_guard _________________________
+
+    def test_specific_semantic_guard():
+>       run_guard('classifier_uses_chord', Path('D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\replay_mutations_r1\\classifier_uses_chord_mutant'))
+
+reports\codex\M5a2_evidence\tmp\replay_mutations_r1\classifier_uses_chord_mutant\test_replay_semantic_guard.py:4: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\m5a2_replay_mutations.py:95: in run_guard
+    gates.assert_ledger_semantics(*case, json.loads(readback))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'bb05', step = 4, pair = (1, 4)
+ledger = {'baseline_frame_sha256': 'e976ccc87f388c4a7858074a113a973ce4aa44c534ec6e207e4af45918f641de', 'blocks': {'1': {'center...5367154182510365/6238461572557176141273026635061875221186312317870666304993171079168', 'initial_state': -1, ...}], ...}
+
+    def assert_ledger_semantics(case, step, pair, ledger):
+        """Accept either original frozen data or freshly serialized mutant data."""
+        expected, phases = independent_expected(case, step, pair)
+        actual = next(r for r in ledger["pairs"] if tuple(r["pair"]) == pair)
+        assert set(actual) == set(expected), "M5a2 ledger pair field set"
+        for field in expected:
+            if field in ("rigid", "chord", "translation"):
+                _assert_record(actual[field], expected[field], field)
+            else:
+                assert actual[field] == expected[field], "M5a2 ledger pair "+field
+        for phase, references in phases.items():
+            rows = [r for r in ledger["phases"][phase]["records"] if tuple(r["pair"]) == pair]
+            assert len(rows) == len(references), "M5a2 ledger reference conservation"
+            for row, target in zip(rows, references):
+                for field, value in target.items():
+>                   assert row[field] == value, "M5a2 ledger independently classified "+field
+E                   AssertionError: M5a2 ledger independently classified category
+E                   assert 'NO_CONTACT_IN_STEP' == 'OTHER_FEATURE_FIRST'
+E                     
+E                     - OTHER_FEATURE_FIRST
+E                     + NO_CONTACT_IN_STEP
+
+tests\test_m5a2_replay.py:209: AssertionError
+=========================== short test summary info ===========================
+FAILED reports/codex/M5a2_evidence/tmp/replay_mutations_r1/classifier_uses_chord_mutant/test_replay_semantic_guard.py::test_specific_semantic_guard
+1 failed in 0.15s

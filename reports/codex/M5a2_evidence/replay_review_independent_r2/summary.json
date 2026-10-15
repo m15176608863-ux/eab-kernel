@@ -1,0 +1,260 @@
+{
+  "complete": true,
+  "audit": "GREEN",
+  "rows": [
+    {
+      "kind": "swapped_stat_buckets",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 frame independent stats",
+      "refrozen_before_guard": false,
+      "function": "m5a_se2_replay.frame_result",
+      "original_function_sha256": "8b35c69321bcbf177970d2480327b000ee4bb7276faa1cc0b2dbfe463c33e292",
+      "mutant_function_sha256": "cd22ea252d56bf923f83924cb190c32c777116eee5e43c959f61c8e9037a7097",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "\"separated_chord_same\" if record[\"same_chord_status_and_cover\"] else \"separated_chord_different\"",
+        "\"separated_chord_different\" if record[\"same_chord_status_and_cover\"] else \"separated_chord_same\""
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.14s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E           AssertionError: M5a2 frame independent stats"
+        ],
+        "last_line": "1 failed in 0.22s"
+      }
+    },
+    {
+      "kind": "wrong_block_center",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 frame independent blocks",
+      "refrozen_before_guard": false,
+      "function": "m5a_se2_replay.RigidFit.record",
+      "original_function_sha256": "1e7bc8aa42988cc07c568e5dffc4bf10ee75ebb0bdb7a55b401ea3ca0c8411e3",
+      "mutant_function_sha256": "1fc9cd69ded7edc203e375995fd5c9ab10087ee81d026abdedb8e65f9110163d",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "\"center\": list(map(str, self.motion.center))",
+        "\"center\": list(map(str, self.motion.translation))"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.13s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E           AssertionError: M5a2 frame independent blocks"
+        ],
+        "last_line": "1 failed in 0.21s"
+      }
+    },
+    {
+      "kind": "phase_counts_use_chord",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 frame independent phase counts",
+      "refrozen_before_guard": false,
+      "function": "m5a_se2_replay.frame_result",
+      "original_function_sha256": "8b35c69321bcbf177970d2480327b000ee4bb7276faa1cc0b2dbfe463c33e292",
+      "mutant_function_sha256": "82aeb6ed6020a97c3ed8766d37801923e2d347b525f910e98bf4d26fcdb031c3",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "counts[category] += 1",
+        "counts[row[\"category\"]] += 1"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.13s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E               AssertionError: M5a2 frame independent phase counts"
+        ],
+        "last_line": "1 failed in 0.23s"
+      }
+    },
+    {
+      "kind": "swapped_models",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 ledger rigid status",
+      "refrozen_before_guard": true,
+      "function": "m5a_se2_replay.frame_result",
+      "original_function_sha256": "8b35c69321bcbf177970d2480327b000ee4bb7276faa1cc0b2dbfe463c33e292",
+      "mutant_function_sha256": "c5de3f0500043bcb3f36a212fb0ca1f59ef8175f7e55f8d83d88ee716b00ac60",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "\"rigid\": result, \"chord\": baseline_result",
+        "\"rigid\": baseline_result, \"chord\": result"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.86s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E           AssertionError: M5a2 ledger rigid status"
+        ],
+        "last_line": "1 failed in 0.91s"
+      }
+    },
+    {
+      "kind": "chord_no_contact_shortcut",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 ledger rigid status",
+      "refrozen_before_guard": true,
+      "function": "m5a_se2_replay.frame_result",
+      "original_function_sha256": "8b35c69321bcbf177970d2480327b000ee4bb7276faa1cc0b2dbfe463c33e292",
+      "mutant_function_sha256": "ba46f5ce388b9dd9eae25491d1dfe16afd2968c9ce040b034fd2459af693ab5e",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "elif separation:",
+        "elif separation or (prior is not None and prior[\"actual\"][\"status\"] == \"no_contact\"):"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.83s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E           AssertionError: M5a2 ledger rigid status"
+        ],
+        "last_line": "1 failed in 0.58s"
+      }
+    },
+    {
+      "kind": "classifier_uses_chord",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 ledger independently classified category",
+      "refrozen_before_guard": true,
+      "function": "m5a_se2_replay.frame_result",
+      "original_function_sha256": "8b35c69321bcbf177970d2480327b000ee4bb7276faa1cc0b2dbfe463c33e292",
+      "mutant_function_sha256": "1a45acb29e7b7147f3783da4fb7e36ea21b502d48284b83390e1a5adc600ad1c",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "category = classify_reference(pair[\"initial_state\"], row[\"primary_reference\"], pair[\"rigid\"], pair[\"pd\"])",
+        "category = classify_reference(pair[\"initial_state\"], row[\"primary_reference\"], pair[\"chord\"], pair[\"pd\"])"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.81s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E                   AssertionError: M5a2 ledger independently classified category"
+        ],
+        "last_line": "1 failed in 0.89s"
+      }
+    },
+    {
+      "kind": "sweep_nine_fifths",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 small-angle swept bounds contain path",
+      "refrozen_before_guard": false,
+      "function": "eab.kernel2d.se2._swept_bounds",
+      "original_function_sha256": "ba7741662f740aa5c6306689065a89ed14c9f0ae06ac6468677ec64f0ab47d67",
+      "mutant_function_sha256": "22882d7242a670a6fd4a44284ff0316e821ff507d50e4e5434554707f147893a",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "2*abs(m.u1)",
+        "F(9, 5)*abs(m.u1)"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.06s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E                           AssertionError: M5a2 small-angle swept bounds contain path"
+        ],
+        "last_line": "1 failed in 0.13s"
+      }
+    },
+    {
+      "kind": "same_time_wrong_branch",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 same_time irrational matching branch",
+      "refrozen_before_guard": false,
+      "function": "m5a_se2_replay.same_time",
+      "original_function_sha256": "9858eff73c64c0f2267d35f5dac271e50a7129b4bb49c159516cb1754912ee33",
+      "mutant_function_sha256": "010ea291b25bf659ca7c31f1f5d84c486d3860310a049684f2f184bd08461a2e",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "certificate[\"branch\"] == -1",
+        "certificate[\"branch\"] == 1"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.07s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E           AssertionError: M5a2 same_time irrational matching branch"
+        ],
+        "last_line": "1 failed in 0.13s"
+      }
+    },
+    {
+      "kind": "same_time_ignores_polynomial",
+      "semantic_kill": true,
+      "expected_assertion": "M5a2 same_time rejects different irrational polynomial",
+      "refrozen_before_guard": false,
+      "function": "m5a_se2_replay.same_time",
+      "original_function_sha256": "9858eff73c64c0f2267d35f5dac271e50a7129b4bb49c159516cb1754912ee33",
+      "mutant_function_sha256": "0bcdddd3819f21dc692f5aa6cafb616729ed010c373b20428216be9b1620e387",
+      "hash_tripwire_masked_before_mutation": true,
+      "replacement": [
+        "if time.sign_polynomial(c, b, F(1)):",
+        "if False:"
+      ],
+      "control": {
+        "exit_code": 0,
+        "assertions": [],
+        "last_line": "1 passed in 0.05s"
+      },
+      "mutant": {
+        "exit_code": 1,
+        "assertions": [
+          "E           AssertionError: M5a2 same_time rejects different irrational polynomial"
+        ],
+        "last_line": "1 failed in 0.15s"
+      }
+    }
+  ],
+  "seconds": 18.76779169999645,
+  "source_files_modified": false,
+  "source_hashes": {
+    "tools/m5a2_replay_mutations.py": "4263aad902a04cfe06966d80b75d606ec943530f9e5cfe8dcf415cec126fba85",
+    "tests/test_m5a2_replay.py": "2802bc5ac4ea1e9414a8ac86b9f0f6cfa7e09408b9dbcd2055a8d4d114691af9",
+    "tools/m5a_se2_replay.py": "2f817dba17c9e11620f0221bb9fe88fe16c99aa400e81d72eed41a34e9dcdc07",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21"
+  },
+  "source_snapshot_unchanged_during_run": true,
+  "oracle_imports": [
+    "fractions.Fraction",
+    "math.isqrt",
+    "random.Random",
+    "gzip",
+    "json",
+    "pathlib.Path",
+    "functools.lru_cache",
+    "types.SimpleNamespace"
+  ],
+  "oracle_scope": "Replay semantics: directly recomputed kernels, independent test fit/id mapping/classification; not independent geometry verification"
+}

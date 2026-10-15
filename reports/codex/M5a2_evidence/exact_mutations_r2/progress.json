@@ -1,0 +1,118 @@
+{
+  "complete": true,
+  "audit": "GREEN",
+  "mutation_kind": "actual internal function body compiled in memory; no fake post-output data",
+  "hash_tripwire": "disabled before all controls and mutants",
+  "rows": [
+    {
+      "kind": "tiny_residual_zero",
+      "expected_semantic_assertion": "strictly positive exact residual must remain UNCERTIFIED",
+      "control": {
+        "exit_code": 0,
+        "last_line": "EXACT_SEMANTIC_GUARD_PASS",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": false
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "AssertionError: strictly positive exact residual must remain UNCERTIFIED",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": true
+      },
+      "semantic_kill": true
+    },
+    {
+      "kind": "rational_container_bypass",
+      "expected_semantic_assertion": "rational SE2 time equals the rational QuadraticTime protocol",
+      "control": {
+        "exit_code": 0,
+        "last_line": "EXACT_SEMANTIC_GUARD_PASS",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": false
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "AssertionError: rational SE2 time equals the rational QuadraticTime protocol",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": true
+      },
+      "semantic_kill": true
+    },
+    {
+      "kind": "rational_reconstruction_bypass",
+      "expected_semantic_assertion": "exact rational reconstruction returns the factored root",
+      "control": {
+        "exit_code": 0,
+        "last_line": "EXACT_SEMANTIC_GUARD_PASS",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": false
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "AssertionError: exact rational reconstruction returns the factored root",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": true
+      },
+      "semantic_kill": true
+    },
+    {
+      "kind": "rational_reconstruction_outside_interval",
+      "expected_semantic_assertion": "rational reconstruction must stay inside the selected root interval",
+      "control": {
+        "exit_code": 0,
+        "last_line": "EXACT_SEMANTIC_GUARD_PASS",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": false
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "AssertionError: rational reconstruction must stay inside the selected root interval",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": true
+      },
+      "semantic_kill": true
+    },
+    {
+      "kind": "closed_lower_endpoint_lost",
+      "expected_semantic_assertion": "closed lower endpoint root denotes that exact endpoint",
+      "control": {
+        "exit_code": 0,
+        "last_line": "EXACT_SEMANTIC_GUARD_PASS",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": false
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "AssertionError: closed lower endpoint root denotes that exact endpoint",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": true
+      },
+      "semantic_kill": true
+    },
+    {
+      "kind": "oracle_input_guard_removed",
+      "expected_semantic_assertion": "DID NOT RAISE",
+      "control": {
+        "exit_code": 0,
+        "last_line": "EXACT_SEMANTIC_GUARD_PASS",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": false
+      },
+      "mutant": {
+        "exit_code": 1,
+        "last_line": "Failed: DID NOT RAISE <class 'AssertionError'>",
+        "hash_tripwire_disabled": true,
+        "semantic_assertion_seen": true
+      },
+      "semantic_kill": true
+    }
+  ],
+  "seconds": 5.309684699997888,
+  "sources_sha256": {
+    "src/eab/kernel2d/algebraic.py": "7eaf5cae997b2472167d93cfcab7addc2dfd6bc658265549f5079927bea61ecd",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
+    "tests/m5a_independent_oracle.py": "5dd59e4930999f4afe7eb4fe0f15dca24cad04c1402be67ba5f05308810ff810",
+    "tests/test_m5a2_exact.py": "96753d7c583734eeeaa98a2c628cb616ff7e0f69b3ad638148992955fcaf6130",
+    "tools/m5a2_exact_mutations.py": "1f78f1e36ba5edc37bf4d9127e0e77bfe642a4115a0b81127e9ec0e15f3dadf3"
+  }
+}

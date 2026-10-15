@@ -1,0 +1,26 @@
+{
+  "target": "WO-M5a2 A complete; B evidence-based research may be PARTIAL",
+  "scope": "D:/eab-wt/cx-e2 only; M5 documents; new fixtures only",
+  "non_goals": [
+    "No sibling writes",
+    "No Git mutation",
+    "No solver changes",
+    "No unproved positive-residual certification"
+  ],
+  "success": [
+    "A1-A6 semantic gates and internal mutants",
+    "static gate zero violations; prior 3220 admissions unchanged",
+    "four process full suite: collected=executed, zero skip",
+    "Chinese report with B proof boundaries"
+  ],
+  "verification": [
+    "python tools/m5a2_run_gates.py --name final_suite_r1",
+    "python tools/check_exact_construction.py"
+  ],
+  "rollback_anchor": {
+    "head": "58733eb5f3ea9999615ab7a6d5a24c74ee7fa9c1",
+    "clean_initial_status": true,
+    "backups": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\rollback_58733eb"
+  },
+  "worktree_override": "User forbids worktree; fresh byte export is not fresh git checkout"
+}

@@ -1,0 +1,57 @@
+{
+  "audit": "GREEN",
+  "complete": true,
+  "collected": 13360,
+  "executed": 13360,
+  "skip_count": 0,
+  "call_seconds": 3370.4264257004106,
+  "new_gate_call_seconds": 3.0613311999768484,
+  "wall_seconds": 1496.5159172999993,
+  "shards": [
+    {
+      "shard": 1,
+      "collected": 3340,
+      "executed": 3340,
+      "last_line": "3340 passed in 772.64s (0:12:52)",
+      "execution_sha256": "1b9e5925739c3ad126041d00c52033f5ac1ef8d42eaa6d771c0dc17b6eb54304"
+    },
+    {
+      "shard": 2,
+      "collected": 3340,
+      "executed": 3340,
+      "last_line": "3340 passed in 1325.65s (0:22:05)",
+      "execution_sha256": "c1e30ca15a579a7768c13dbaeb95cdb48e0696a1e043f04c7c228acf6d2f462a"
+    },
+    {
+      "shard": 3,
+      "collected": 3340,
+      "executed": 3340,
+      "last_line": "3340 passed in 606.45s (0:10:06)",
+      "execution_sha256": "1fb3bcf5eb8f1abf8ef60160d9e4da1f9a2182fb513d01741f57313ce71cd6f6"
+    },
+    {
+      "shard": 4,
+      "collected": 3340,
+      "executed": 3340,
+      "last_line": "3340 passed in 928.20s (0:15:28)",
+      "execution_sha256": "82bf462b2f551b385d23bf81e22803226ab4bdbedea2d736bffb5eaab5d00061"
+    }
+  ],
+  "static": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/check_exact_construction.py"
+    ],
+    "exit_code": 0,
+    "process_timed_out": false,
+    "seconds": 130.0399330999935,
+    "last_line": "exact construction AST gate: 0 violation(s)",
+    "log": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\final_suite_r3\\exact_construction.txt"
+  },
+  "source": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\final_suite_r3_export",
+  "manifest": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\final_suite_r3_manifest.json",
+  "temp": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\final_suite_r3_temp",
+  "fresh_git_checkout": false
+}

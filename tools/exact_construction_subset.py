@@ -502,7 +502,8 @@ def stale_waiver_issues(text, path):
     Files absent from the scan cannot be checked here; repository inventory
     validation is separate from this source-local contract.
     """
-    rows = [row for row in _policy()["waivers"] if row["path"] == path]
+    policy = _policy()
+    rows = [row for row in policy["waivers"] if row["path"] == path]
     if not rows:
         return []
     contexts = site_contexts(text)
@@ -523,7 +524,15 @@ def stale_waiver_issues(text, path):
     issues = []
     for row in rows:
         fn = row["function"]
-        if contexts.get(fn) != row["context"] or row["node"] not in nodes:
+        # Historical admissions remain immutable. A separately reviewed renewal
+        # retires exactly this old row only at its newly pinned source context.
+        # It does NOT admit any current AST site: those need new waiver rows.
+        renewed = any(renewal.get("old_id") == row.get("id")
+                      and renewal.get("old_row_sha256") == _hash(json.dumps(row, sort_keys=True, ensure_ascii=False))
+                      and renewal.get("new_context") == contexts.get(fn)
+                      and renewal.get("reason", "").strip()
+                      for renewal in policy.get("renewals", ()))
+        if not renewed and (contexts.get(fn) != row["context"] or row["node"] not in nodes):
             issues.append((path, lines.get(fn, 1), fn, "closed-stale-waiver",
                            "Local review expired: " + row["rule"], row["node"],
                            contexts.get(fn, "<deleted-scope>")))

@@ -252,3 +252,9 @@ M3 的“带洞”一致性族指入口块 E 的洞，不表示本单支持带�
 | replay 的 RigidFit 精确 u/center/translation/残差及 δ 字符串；delta_display、分位数显示 | differential | `test_m5a_replay.py` 的精确刚体、应变和三档残差门；显示均经 `scalar_rational` 且伴随 exact 字符串，不将显示值用于认证分支。 |
 
 一般非零 δ 首盖稳定性没有因精确显示而得到证明。接近 pi 的步内转动保守拒绝；固定角 `se2_slice` 可以消费任意有限有理半角参数。
+
+## M5a2 increment (2026-10-15)
+
+See [M5a2 numerical inventory](m5a2_numeric_inventory.md) for new APIs, named gates,
+callback site admission and the explicit research-only certification boundary.
+The original 3103 + M5a 117 admission records are retained without modification.

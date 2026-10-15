@@ -1,0 +1,20 @@
+source_hash_tripwire=DISABLED
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 103, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 51, in main
+    return worker(args.worker, args.mutant)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 37, in worker
+    guard.exact_mutation_guard(kind)
+  File "D:\eab-wt\cx-e2\tests\test_m5a2_exact.py", line 161, in exact_mutation_guard
+    test_independent_oracle_rejects_nonexact_inputs_at_first_contact("parameter")
+  File "D:\eab-wt\cx-e2\tests\test_m5a2_exact.py", line 134, in test_independent_oracle_rejects_nonexact_inputs_at_first_contact
+    with pytest.raises(AssertionError, match="oracle inputs must be exact int/Fraction values"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\raises.py", line 710, in __exit__
+    fail(f"DID NOT RAISE {self.expected_exceptions[0]!r}")
+  File "C:\Users\m1517\AppData\Roaming\Python\Python312\site-packages\_pytest\outcomes.py", line 163, in __call__
+    raise Failed(msg=reason, pytrace=pytrace)
+Failed: DID NOT RAISE <class 'AssertionError'>

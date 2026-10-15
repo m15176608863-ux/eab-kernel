@@ -1,0 +1,16 @@
+source_hash_tripwire=DISABLED
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 103, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 51, in main
+    return worker(args.worker, args.mutant)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 37, in worker
+    guard.exact_mutation_guard(kind)
+  File "D:\eab-wt\cx-e2\tests\test_m5a2_exact.py", line 157, in exact_mutation_guard
+    test_rational_reconstruction_selects_only_the_root_in_the_closed_interval()
+  File "D:\eab-wt\cx-e2\tests\test_m5a2_exact.py", line 106, in test_rational_reconstruction_selects_only_the_root_in_the_closed_interval
+    assert value.as_rational() is None, "rational reconstruction must stay inside the selected root interval"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: rational reconstruction must stay inside the selected root interval

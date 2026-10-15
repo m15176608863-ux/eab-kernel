@@ -226,4 +226,17 @@ def test_frozen_family_products_are_distinct_and_bound_to_current_source():
     assert set(expected["cases"]) == set(replay.CASES)
     assert sum(c["steps"] for c in expected["cases"].values()) == 450
     assert len({c["frames_sha256"] for c in expected["cases"].values()}) >= 14, "frozen parameter products must differ"
-    assert expected["code_hashes"] == replay.code_hashes(), "SE2 production source changed: rerun full computational replay before freezing"
+    revalidated = json.loads((ROOT / "fixtures/m5a2/revalidation.json").read_text(encoding="utf-8"))
+    assert revalidated["complete"] and revalidated["audit"] == "GREEN"
+    assert revalidated["steps"] == 450 and set(revalidated["cases"]) == set(replay.CASES)
+    assert revalidated["prior_code_hashes"] == expected["code_hashes"], "M5a2 revalidation binds the unchanged historical model"
+    assert revalidated["code_hashes"] == replay.code_hashes(), "SE2 production source changed: rerun full frozen-prefix computational replay"
+    assert revalidated["all_historical_fixture_bytes_unchanged"] and revalidated["all_semantic_fields_equal"]
+    for path, digest in {**revalidated["input_hashes"], **revalidated["tool_hashes"]}.items():
+        assert replay.file_hash(ROOT / path) == digest, "M5a2 revalidation input/tool hash changed: "+path
+    for case in replay.CASES:
+        result = revalidated["cases"][case]
+        assert result["complete"] and result["steps"] == 30 and result["all_semantic_fields_equal"]
+        assert result["old_normalized_sha256"] == expected["cases"][case]["normalized_sha256"]
+        assert result["counts"] == expected["cases"][case]["counts"]
+        assert result["stats"] == expected["cases"][case]["stats"]

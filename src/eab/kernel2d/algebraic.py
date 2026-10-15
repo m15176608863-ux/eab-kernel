@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction as F
 from functools import lru_cache
-from math import comb, gcd, lcm
+from math import comb, gcd, isqrt, lcm
 
 from ..construction import scalar_algebraic
 
@@ -226,6 +226,48 @@ class RealAlgebraic:
     @property
     def rational(self):
         return self.lower if self.lower == self.upper else None
+
+    def as_rational(self):
+        """Return the exact rational root, or None with an exact exclusion.
+
+        Gate: test_rational_reconstruction_recognizes_nondyadic_roots.
+        A primitive integer polynomial's rational-root denominator divides its
+        leading coefficient B. Distinct rationals with denominators <= B are
+        separated by at least 1/B**2. A bracket narrower than 1/(2*B**2)
+        therefore identifies a rational root by nearest reconstruction and
+        exact substitution, without factoring integer coefficients. Quadratics
+        and modular no-root witnesses avoid costly refinement of generic
+        irrational roots. No display value or approximate-zero test is used.
+        """
+        if self.rational is not None:
+            return self.rational
+        if len(self.polynomial) == 3:
+            c, b, a = self.polynomial
+            d = b*b-4*a*c
+            n, q = isqrt(d.numerator), isqrt(d.denominator)
+            if n*n != d.numerator or q*q != d.denominator:
+                return None
+            square = F(n, q)
+            for value in ((-b-square)/(2*a), (-b+square)/(2*a)):
+                if self.lower <= value <= self.upper:
+                    return value
+            raise ArithmeticError("isolated quadratic root has no rational branch")
+        integers = tuple(x.numerator for x in _primitive(self.polynomial))
+        bound = abs(integers[-1])
+        # A rational root cannot disappear modulo a prime not dividing B.
+        for prime in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31):
+            if integers[-1] % prime == 0:
+                continue
+            if all(_evaluate(integers, value) % prime != 0 for value in range(prime)):
+                return None
+        lower, upper = self.lower, self.upper
+        quick = ((lower+upper)/2).limit_denominator(min(bound, 1 << 32))
+        if lower <= quick <= upper and not _evaluate(self.polynomial, quick):
+            return quick
+        while upper-lower >= F(1, 2*bound*bound):
+            lower, upper = _bisect_root(self.polynomial, lower, upper)
+        candidate = ((lower+upper)/2).limit_denominator(bound)
+        return candidate if lower <= candidate <= upper and not _evaluate(self.polynomial, candidate) else None
 
     def refine(self):
         """Return the same root with one exact bisection of its certificate."""

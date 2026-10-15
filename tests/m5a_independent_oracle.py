@@ -289,6 +289,10 @@ def normal_cone(time, ring, i, other, j, own_spec, other_spec):
 
 def first_contact(A, B, ma, mb):
     """Independent complete event partition plus G0 rational interval probes."""
+    inputs = tuple(x for ring in (A, B) for point in ring for x in point)
+    inputs += tuple(x for spec in (ma, mb) for x in (spec[0], *spec[1], *spec[2]))
+    assert all(isinstance(x, (int, F)) and not isinstance(x, bool) for x in inputs), \
+        "oracle inputs must be exact int/Fraction values"
     state = overlap(A, B)
     if state == 1:
         return {"initial": state, "status": "initial_overlap", "root": None,

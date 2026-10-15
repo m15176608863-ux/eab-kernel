@@ -1,0 +1,99 @@
+{
+  "schema": "eab.m5a2-independent-review.v1",
+  "route": "R6_report_evidence_consistency",
+  "content_review_complete": true,
+  "final_delivery_review_complete": true,
+  "verdict": "PASS_SCOPED_REVIEW",
+  "critical": 0,
+  "major": 0,
+  "minor_open": 0,
+  "report_path": "reports/codex/M5a2_report.md",
+  "report_sha256": "b7bc39ca1f9a8fd810f27c3fd61027345d9d5a4bd28b9e1a252b181db8d3d2fc",
+  "finite_mutation_counts": {
+    "replay": 9,
+    "exact": 6,
+    "static": 1,
+    "affine": 3
+  },
+  "finite_mutation_total": 19,
+  "mutation_semantic_kills_verified": true,
+  "affine_counts": {
+    "blocks": 15220,
+    "UNCERTIFIED_NONAFFINE_ENDPOINTS": 14720,
+    "nearest_gap_zero": 13726,
+    "orientation_sufficient": 15220,
+    "all_pairs": 64010,
+    "zero_affine_endpoint_residual_pairs": 100,
+    "positive_affine_residual_uncertified_pairs": 63910,
+    "physical_path_uncertified_pairs": 64010,
+    "steps": 1810,
+    "nearest_gap_positive": 1494,
+    "EXACT_AFFINE_ENDPOINTS": 500
+  },
+  "affine_differences": {
+    "all_m5a_chord_discrepancies": 937,
+    "endpoint_state_flip__affine_matches_snapshot": 933,
+    "same_endpoint_state__affine_matches_snapshot": 4
+  },
+  "affine_summary_sha256": "126f5be548e4e7eb6694b454489c395734b8ea1875fea378ef2f8b03a5a7cff4",
+  "minimal_examples_bind_current_summary": true,
+  "provenance_old_entries": 216,
+  "provenance_new_entries": 217,
+  "provenance_unchanged_old_values": true,
+  "provenance_only_addition": "m5a2/revalidation.json",
+  "policy_unchanged_prefix_count": 3220,
+  "policy_new_count": 170,
+  "historical_450_input_hashes_verified": 62,
+  "historical_450_current_code_hashes_verified": true,
+  "missing_report_links_pending_finalization": [],
+  "findings": [
+    {
+      "id": "R6-001",
+      "severity": "minor",
+      "status": "CLOSED",
+      "description": "Main report now accurately states the minimal example verifier also reads and hashes the frozen full summary."
+    }
+  ],
+  "pending": [],
+  "review_document_sha256": "1d58391924dda34b40234f0828b04c3e6471884d49eb0760689906ea468f29a0",
+  "minor_closed": 1,
+  "report_status_edit_scope": "Only the authorized R3/R4 and R6 section5 status cells were changed after independent final readback.",
+  "report_file_links_verified": 24,
+  "final_suite": "final_suite_r3",
+  "baseline_suite": "baseline_suite_r2",
+  "final_nodes_collected_executed": 13360,
+  "final_skip_count": 0,
+  "final_three_phases_each_node_exactly_once": true,
+  "final_static_last_line": "exact construction AST gate: 0 violation(s)",
+  "final_shard_last_lines": [
+    "3340 passed in 772.64s (0:12:52)",
+    "3340 passed in 1325.65s (0:22:05)",
+    "3340 passed in 606.45s (0:10:06)",
+    "3340 passed in 928.20s (0:15:28)"
+  ],
+  "final_suite_added_removed": [
+    106,
+    0
+  ],
+  "new_gate_percent_105_file_prefixed_nodes": 0.08601967244571337,
+  "performance_controlled_host": false,
+  "manifest_pre_review_all_existing_entries_matched": true,
+  "manifest_pre_review_files_checked": 398,
+  "manifest_post_review_refresh_needed": true,
+  "manifest_post_review_refresh_owner": "root; refresh artifact_manifest and independently read each row after this review without modifying the bound main report",
+  "artifact_manifest_final_hash_claimed": false,
+  "evidence_sha256": {
+    "review_report_readback.py": "2a65e23da9978f23d4ebd940e175dff82939500100cba24abf413350ca3b54db",
+    "review_report_readback.json": "114a8d73f43f802f633a86df85dc8a51e0871ed348ba804a0cbae196df77a42b",
+    "review_static_runner.json": "114f2893f4a84588e388563ecf21652c57a83a5c9c0858a71427caf000a0f0b7",
+    "review_static_runner.md": "ae0deafb6f7451bd2a83c8a133d92a3f5957e88f1ad516738dc7fb1098e21a5b",
+    "review_exact.json": "71f6aebfe6884df0b7969f5938adbbfbd53bf86c3f21f83ca49301ac9175572e",
+    "review_affine_replay.json": "7fd7d9012523196bc494117de308b57efd72e60426b6b5e57d6377a480ab9550",
+    "final_suite_r3/summary.json": "34ec25b633b84e94d831443686bf8d1e498f2832203568571e03312843ab86a8",
+    "baseline_suite_r2/summary.json": "b74ab73009c48c5e224ae49a3a4271ef5ee8e9e8c9e7f07b22e01fb4dd450fe3",
+    "node_identity_audit.json": "452698572088146aec5934c9d1699007682f367bf33392fae37424f9299c5c57",
+    "performance.json": "78fa169970b1470742cf33b5b5b71b942e74308858861688e581d7f1cb98e332",
+    "delivery_audit.json": "1324ae26fc9bdd69670f3aed34ffdc976d469e3b1bba3324a304f1df60e083ba",
+    "suite_delta.json": "057905284ac3e97ea7d2df81186731ab58797f2a737e54f66e314cf5bfb10af1"
+  }
+}

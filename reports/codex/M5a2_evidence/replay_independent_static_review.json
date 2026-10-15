@@ -1,0 +1,134 @@
+{
+  "complete": true,
+  "samples": {
+    "direct_parameter": "def f(compare):\n    return scalar_algebraic(compare)\n",
+    "attribute": "def f(obj):\n    return scalar_algebraic(obj.compare)\n",
+    "namespace": "import eab.construction as c\ndef f(compare):\n    return c.scalar_algebraic(compare)\n",
+    "default_alias": "def f(compare, convert=scalar_algebraic):\n    return convert(compare)\n",
+    "local_tuple": "def f(compare):\n    calls = (scalar_algebraic,)\n    return calls[0](compare)\n",
+    "local_attr": "def f(obj, compare):\n    obj.convert = scalar_algebraic\n    return obj.convert(compare)\n",
+    "factory": "def f(compare):\n    def factory():\n        return scalar_algebraic\n    return factory()(compare)\n",
+    "partial": "from functools import partial\ndef f(compare):\n    convert = partial(scalar_algebraic, compare)\n    return convert()\n",
+    "kwargs": "def f(compare):\n    return scalar_algebraic(**{\"compare\": compare})\n",
+    "stars": "def f(compare):\n    return scalar_algebraic(*[compare])\n",
+    "conditional_alias": "def f(compare, condition):\n    convert = scalar_algebraic if condition else scalar_rational\n    return convert(compare)\n",
+    "call_dunder": "def f(compare):\n    return scalar_algebraic.__call__(compare)\n",
+    "closure": "def f(compare):\n    convert = scalar_algebraic\n    def inner():\n        return convert(compare)\n    return inner()\n",
+    "import_alias": "from eab.construction import scalar_algebraic as convert\ndef f(compare):\n    return convert(compare)\n",
+    "module_literal": "x = scalar_algebraic(lambda q: 0)\n"
+  },
+  "results": {
+    "direct_parameter": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site"
+      ]
+    },
+    "attribute": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site"
+      ]
+    },
+    "namespace": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site"
+      ]
+    },
+    "default_alias": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-callable-value",
+        "closed-unknown-call"
+      ]
+    },
+    "local_tuple": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-callable-value",
+        "closed-indirect-call"
+      ]
+    },
+    "local_attr": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-callable-value",
+        "closed-method-call"
+      ]
+    },
+    "factory": {
+      "rejected": true,
+      "rules": [
+        "closed-callable-value",
+        "closed-indirect-call",
+        "closed-unproved-call"
+      ]
+    },
+    "partial": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-callable-value",
+        "closed-import",
+        "closed-import-call",
+        "closed-unknown-call"
+      ]
+    },
+    "kwargs": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-unpacked-call"
+      ]
+    },
+    "stars": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site"
+      ]
+    },
+    "conditional_alias": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-callable-value",
+        "closed-unknown-call"
+      ]
+    },
+    "call_dunder": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-dynamic-call",
+        "closed-runtime-reflection"
+      ]
+    },
+    "closure": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-callable-value",
+        "closed-unknown-call",
+        "closed-unproved-call"
+      ]
+    },
+    "import_alias": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site"
+      ]
+    },
+    "module_literal": {
+      "rejected": true,
+      "rules": [
+        "algebraic-comparator-site",
+        "closed-syntax"
+      ]
+    }
+  },
+  "zero_unrejected": true
+}

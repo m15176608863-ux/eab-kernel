@@ -276,6 +276,10 @@ def scan_text(text, path="<injected>", *, repository_root=None):
                 evaluated = {arg: self.evaluate(arg) for arg in [*node.args, *(k.value for k in node.keywords)]}
                 args = [evaluated[arg] for arg in arguments(node)]
                 names = {name.split(".")[-1] for name in function[1]}
+                # A callback boundary needs an individual source-pinned review;
+                # neither a parameter name nor an attribute proves exactness.
+                if "scalar_algebraic" in names:
+                    self.issue(node, "algebraic-comparator-site")
                 raw_args = args
                 args = [self.consume(arg) for arg in args]
                 sentinel = (len(node.args) == 1 and isinstance(node.args[0], ast.Constant)

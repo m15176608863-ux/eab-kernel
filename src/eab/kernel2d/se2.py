@@ -261,5 +261,6 @@ def se2_first_entrance(A0, B0, motion_a=SE2Motion(), motion_b=SE2Motion()):
     incidences, features = _features(time, a, b, events)
     # Preserve the existing exact rational time protocol without bypassing
     # the general event enumeration or its complete feature reconstruction.
-    public_time = QuadraticTime(time.rational) if time.rational is not None else time
+    rational = time.as_rational()
+    public_time = QuadraticTime(rational) if rational is not None else time
     return SE2Entrance2(state, "contact", public_time, incidences, features)
