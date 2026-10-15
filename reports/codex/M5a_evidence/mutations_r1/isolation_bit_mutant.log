@@ -1,0 +1,24 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_specific_contract_after_actual_source_mutation _____________
+
+    def test_specific_contract_after_actual_source_mutation():
+        kind = os.environ["M5A_MUTANT"]
+        if kind == "isolation_bit":
+>           algebra_tests.test_one_isolation_bit_keeps_the_selected_root()
+
+tests\test_m5a_mutant_guard.py:10: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def test_one_isolation_bit_keeps_the_selected_root():
+        root, = roots_interval((-1, 0, 2))
+        lower, upper = alg._bisect_root(root.polynomial, root.lower, root.upper)
+>       assert lower*lower < F(1, 2) < upper*upper, "isolation bit retains the selected root"
+E       AssertionError: isolation bit retains the selected root
+E       assert Fraction(1, 2) < (Fraction(1, 2) * Fraction(1, 2))
+E        +  where Fraction(1, 2) = F(1, 2)
+
+tests\test_m5a_algebraic.py:73: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_m5a_mutant_guard.py::test_specific_contract_after_actual_source_mutation
+1 failed in 0.21s

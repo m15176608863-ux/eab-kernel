@@ -1,0 +1,165 @@
+FFFFFFF                                                                  [100%]
+================================== FAILURES ===================================
+_ test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(compare)] _
+
+body = 'return scalar_algebraic(compare)'
+
+    @pytest.mark.parametrize("body", (
+        "return scalar_algebraic(compare)",
+        "return scalar_algebraic(compare=compare)",
+        "return scalar_algebraic(holder.compare)",
+        "return scalar_algebraic(lambda q: 0)",
+        "convert = scalar_algebraic\n    return convert(compare)",
+        "return scalar_algebraic.__call__(holder.compare)",
+        "from eab.construction import scalar_algebraic as convert\n    return convert(compare)",
+    ))
+    def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body):
+        issues = gate.scan_text("def bad(compare, holder):\n    " + body + "\n")
+>       assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+            "arbitrary comparator must not inherit exactness from the constructor name"
+E       AssertionError: arbitrary comparator must not inherit exactness from the constructor name
+E       assert False
+E        +  where False = any(<generator object test_arbitrary_algebraic_comparator_requires_individual_site_admission.<locals>.<genexpr> at 0x00000000047192F0>)
+
+tests\test_m5a2_static_runner.py:43: AssertionError
+_ test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(compare=compare)] _
+
+body = 'return scalar_algebraic(compare=compare)'
+
+    @pytest.mark.parametrize("body", (
+        "return scalar_algebraic(compare)",
+        "return scalar_algebraic(compare=compare)",
+        "return scalar_algebraic(holder.compare)",
+        "return scalar_algebraic(lambda q: 0)",
+        "convert = scalar_algebraic\n    return convert(compare)",
+        "return scalar_algebraic.__call__(holder.compare)",
+        "from eab.construction import scalar_algebraic as convert\n    return convert(compare)",
+    ))
+    def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body):
+        issues = gate.scan_text("def bad(compare, holder):\n    " + body + "\n")
+>       assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+            "arbitrary comparator must not inherit exactness from the constructor name"
+E       AssertionError: arbitrary comparator must not inherit exactness from the constructor name
+E       assert False
+E        +  where False = any(<generator object test_arbitrary_algebraic_comparator_requires_individual_site_admission.<locals>.<genexpr> at 0x0000000004719970>)
+
+tests\test_m5a2_static_runner.py:43: AssertionError
+_ test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(holder.compare)] _
+
+body = 'return scalar_algebraic(holder.compare)'
+
+    @pytest.mark.parametrize("body", (
+        "return scalar_algebraic(compare)",
+        "return scalar_algebraic(compare=compare)",
+        "return scalar_algebraic(holder.compare)",
+        "return scalar_algebraic(lambda q: 0)",
+        "convert = scalar_algebraic\n    return convert(compare)",
+        "return scalar_algebraic.__call__(holder.compare)",
+        "from eab.construction import scalar_algebraic as convert\n    return convert(compare)",
+    ))
+    def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body):
+        issues = gate.scan_text("def bad(compare, holder):\n    " + body + "\n")
+>       assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+            "arbitrary comparator must not inherit exactness from the constructor name"
+E       AssertionError: arbitrary comparator must not inherit exactness from the constructor name
+E       assert False
+E        +  where False = any(<generator object test_arbitrary_algebraic_comparator_requires_individual_site_admission.<locals>.<genexpr> at 0x0000000004595630>)
+
+tests\test_m5a2_static_runner.py:43: AssertionError
+_ test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(lambda q: 0)] _
+
+body = 'return scalar_algebraic(lambda q: 0)'
+
+    @pytest.mark.parametrize("body", (
+        "return scalar_algebraic(compare)",
+        "return scalar_algebraic(compare=compare)",
+        "return scalar_algebraic(holder.compare)",
+        "return scalar_algebraic(lambda q: 0)",
+        "convert = scalar_algebraic\n    return convert(compare)",
+        "return scalar_algebraic.__call__(holder.compare)",
+        "from eab.construction import scalar_algebraic as convert\n    return convert(compare)",
+    ))
+    def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body):
+        issues = gate.scan_text("def bad(compare, holder):\n    " + body + "\n")
+>       assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+            "arbitrary comparator must not inherit exactness from the constructor name"
+E       AssertionError: arbitrary comparator must not inherit exactness from the constructor name
+E       assert False
+E        +  where False = any(<generator object test_arbitrary_algebraic_comparator_requires_individual_site_admission.<locals>.<genexpr> at 0x000000000514B9F0>)
+
+tests\test_m5a2_static_runner.py:43: AssertionError
+_ test_arbitrary_algebraic_comparator_requires_individual_site_admission[convert = scalar_algebraic\n    return convert(compare)] _
+
+body = 'convert = scalar_algebraic\n    return convert(compare)'
+
+    @pytest.mark.parametrize("body", (
+        "return scalar_algebraic(compare)",
+        "return scalar_algebraic(compare=compare)",
+        "return scalar_algebraic(holder.compare)",
+        "return scalar_algebraic(lambda q: 0)",
+        "convert = scalar_algebraic\n    return convert(compare)",
+        "return scalar_algebraic.__call__(holder.compare)",
+        "from eab.construction import scalar_algebraic as convert\n    return convert(compare)",
+    ))
+    def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body):
+        issues = gate.scan_text("def bad(compare, holder):\n    " + body + "\n")
+>       assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+            "arbitrary comparator must not inherit exactness from the constructor name"
+E       AssertionError: arbitrary comparator must not inherit exactness from the constructor name
+E       assert False
+E        +  where False = any(<generator object test_arbitrary_algebraic_comparator_requires_individual_site_admission.<locals>.<genexpr> at 0x000000000514BAC0>)
+
+tests\test_m5a2_static_runner.py:43: AssertionError
+_ test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic.__call__(holder.compare)] _
+
+body = 'return scalar_algebraic.__call__(holder.compare)'
+
+    @pytest.mark.parametrize("body", (
+        "return scalar_algebraic(compare)",
+        "return scalar_algebraic(compare=compare)",
+        "return scalar_algebraic(holder.compare)",
+        "return scalar_algebraic(lambda q: 0)",
+        "convert = scalar_algebraic\n    return convert(compare)",
+        "return scalar_algebraic.__call__(holder.compare)",
+        "from eab.construction import scalar_algebraic as convert\n    return convert(compare)",
+    ))
+    def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body):
+        issues = gate.scan_text("def bad(compare, holder):\n    " + body + "\n")
+>       assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+            "arbitrary comparator must not inherit exactness from the constructor name"
+E       AssertionError: arbitrary comparator must not inherit exactness from the constructor name
+E       assert False
+E        +  where False = any(<generator object test_arbitrary_algebraic_comparator_requires_individual_site_admission.<locals>.<genexpr> at 0x0000000004718380>)
+
+tests\test_m5a2_static_runner.py:43: AssertionError
+_ test_arbitrary_algebraic_comparator_requires_individual_site_admission[from eab.construction import scalar_algebraic as convert\n    return convert(compare)] _
+
+body = 'from eab.construction import scalar_algebraic as convert\n    return convert(compare)'
+
+    @pytest.mark.parametrize("body", (
+        "return scalar_algebraic(compare)",
+        "return scalar_algebraic(compare=compare)",
+        "return scalar_algebraic(holder.compare)",
+        "return scalar_algebraic(lambda q: 0)",
+        "convert = scalar_algebraic\n    return convert(compare)",
+        "return scalar_algebraic.__call__(holder.compare)",
+        "from eab.construction import scalar_algebraic as convert\n    return convert(compare)",
+    ))
+    def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body):
+        issues = gate.scan_text("def bad(compare, holder):\n    " + body + "\n")
+>       assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+            "arbitrary comparator must not inherit exactness from the constructor name"
+E       AssertionError: arbitrary comparator must not inherit exactness from the constructor name
+E       assert False
+E        +  where False = any(<generator object test_arbitrary_algebraic_comparator_requires_individual_site_admission.<locals>.<genexpr> at 0x00000000051D2400>)
+
+tests\test_m5a2_static_runner.py:43: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_m5a2_static_runner.py::test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(compare)]
+FAILED tests/test_m5a2_static_runner.py::test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(compare=compare)]
+FAILED tests/test_m5a2_static_runner.py::test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(holder.compare)]
+FAILED tests/test_m5a2_static_runner.py::test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic(lambda q: 0)]
+FAILED tests/test_m5a2_static_runner.py::test_arbitrary_algebraic_comparator_requires_individual_site_admission[convert = scalar_algebraic\n    return convert(compare)]
+FAILED tests/test_m5a2_static_runner.py::test_arbitrary_algebraic_comparator_requires_individual_site_admission[return scalar_algebraic.__call__(holder.compare)]
+FAILED tests/test_m5a2_static_runner.py::test_arbitrary_algebraic_comparator_requires_individual_site_admission[from eab.construction import scalar_algebraic as convert\n    return convert(compare)]
+7 failed in 0.19s

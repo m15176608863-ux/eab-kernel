@@ -1,0 +1,21 @@
+{
+  "control": {
+    "exit_code": 0,
+    "last_line": "7 passed in 0.09s"
+  },
+  "mutant": {
+    "exit_code": 1,
+    "last_line": "7 failed in 0.19s"
+  },
+  "timeouts": {
+    "exit_code": 0,
+    "last_line": "2 passed in 1.16s",
+    "internal_defect": "RealAlgebraic.refine infinite loop",
+    "expected_child_exit": 124
+  },
+  "complete": true,
+  "audit": "GREEN",
+  "hash_tripwire": "not invoked; no source/fixture hash is an oracle",
+  "defect": "disable comparator-specific condition inside scan_text",
+  "witness": "named semantic assertion"
+}

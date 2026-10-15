@@ -1,0 +1,2260 @@
+{
+  "schema": "eab.m5a2-independent-review-static-runner.v1",
+  "review_complete": true,
+  "scope": [
+    "R3 static policy/callback/inventory",
+    "R4 runner/resource/path/evidence protocol"
+  ],
+  "code_review_status": "GREEN",
+  "critical": 0,
+  "major": 0,
+  "minor_open": 0,
+  "minor_closed": 3,
+  "final_full_suite_acceptance": "GREEN: baseline_suite_r2 and final_suite_r3 independently audited from raw collection/dispatch/actual collection/call records, all three phases, exact log last lines, static gate, full immutable export path set and bytes. No invalidated result reused.",
+  "code_hashes": {
+    "tools/check_exact_construction.py": "905bcf47e6382414141de3dc46fc6529553e2191607b85ccda0a3c027d6a4f54",
+    "tools/exact_construction_subset.py": "b869f7c6ab833ef33b0b2e8c33e04c5bb155dbfbcc30da0f293ffb674e67065a",
+    "tools/exact_construction_policy.json": "bf474851e4630262d14cc118c8dc2b9d7656ddcd6f365d7c53a8e82f5e49820c",
+    "tools/m5a2_run_gates.py": "99fab67e6d8b5da5b3df886a265700c09de935bd789c8a2c22d62001dcb1105b",
+    "tests/test_m5a2_static_runner.py": "704eda6ee1200553e68e4711de882cd022bf4d77d3c30d66e98a3b86b367c716",
+    "tools/m5a2_affine_replay.py": "7e6d91b0c6b4de5a059fe66893ffe681f9ed7b294465a9181545e2522ac6fc7c",
+    "docs/m5a2_numeric_inventory.md": "0d0b9c1ef4e0a6457a47b96bb5a9503eba5dbf8106725b384dd2ee1047281f92",
+    "reports/codex/M5a2_evidence/static_admissions.json": "2229fb35835ed8de105cc31dbd6ab86deb3fc0c9f44f98fee09d8509161c92ab"
+  },
+  "static_policy": {
+    "review": "R3 independent exact context/node audit",
+    "prefix_equal": true,
+    "base_count": 3220,
+    "new_count": 170,
+    "renewal_count": 23,
+    "base_nonwaiver_keys_unchanged": true,
+    "admission_manifest_matches_policy": true,
+    "renewal_manifest_matches_policy": true,
+    "entry_checks": [
+      {
+        "id": "M5A2-S0001",
+        "path": "src/eab/construction.py",
+        "function": "scalar_algebraic",
+        "rule": "algebraic-comparator-site",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0002",
+        "path": "src/eab/kernel2d/algebraic.py",
+        "function": "RealAlgebraic.as_rational",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0003",
+        "path": "src/eab/kernel2d/algebraic.py",
+        "function": "RealAlgebraic.as_rational",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0004",
+        "path": "src/eab/kernel2d/algebraic.py",
+        "function": "RealAlgebraic.as_rational",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0005",
+        "path": "src/eab/kernel2d/algebraic.py",
+        "function": "RealAlgebraic.as_rational",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0006",
+        "path": "src/eab/kernel2d/algebraic.py",
+        "function": "RealAlgebraic.as_rational",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0007",
+        "path": "src/eab/kernel2d/algebraic.py",
+        "function": "RealAlgebraic.as_rational",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0008",
+        "path": "src/eab/kernel2d/algebraic.py",
+        "function": "RealAlgebraic.time",
+        "rule": "algebraic-comparator-site",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0009",
+        "path": "src/eab/kernel2d/se2.py",
+        "function": "se2_first_entrance",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0010",
+        "path": "src/eab/kernel2d/se2.py",
+        "function": "se2_first_entrance",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0011",
+        "path": "src/eab/kernel2d/se2.py",
+        "function": "se2_first_entrance",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0012",
+        "path": "src/eab/kernel2d/se2.py",
+        "function": "se2_first_entrance",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0013",
+        "path": "src/eab/kernel2d/se2.py",
+        "function": "se2_first_entrance",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0014",
+        "path": "src/eab/kernel2d/se2.py",
+        "function": "se2_first_entrance",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0015",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0016",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-runtime-reflection",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0017",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0018",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0019",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0020",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "fit_affine",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0021",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "fit_affine",
+        "rule": "closed-callable-value",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0022",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "fit_affine",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0023",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0024",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-runtime-reflection",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0025",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0026",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0027",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0028",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0029",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0030",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0031",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0032",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0033",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0034",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0035",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "AffineFit.__post_init__",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0036",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "fit_affine",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0037",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "fit_affine",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0038",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0039",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0040",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0041",
+        "path": "src/eab/kernel2d/affine_motion.py",
+        "function": "DDAAffineMotion.__post_init__",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0042",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0043",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0044",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0045",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0046",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0047",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0048",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0049",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0050",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0051",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0052",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0053",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0054",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0055",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0056",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0057",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0058",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0059",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0060",
+        "path": "tests/m5a_independent_oracle.py",
+        "function": "first_contact",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0061",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "_lever",
+        "rule": "closed-import-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0062",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0063",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0064",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-callable-value",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0065",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0066",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-runtime-reflection",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0067",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0068",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-import-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0069",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0070",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0071",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0072",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0073",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0074",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-runtime-reflection",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0075",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0076",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "_lever",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0077",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "_lever",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0078",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation_guard",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0079",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation_guard",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0080",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation_guard",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0081",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation_guard",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0082",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation_guard",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0083",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation_guard",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0084",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0085",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0086",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0087",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0088",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0089",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0090",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0091",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0092",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0093",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0094",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0095",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0096",
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0097",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0098",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-context-protocol",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0099",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0100",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0101",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-context-protocol",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0102",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0103",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_fit_without_replay",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0104",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_fit_without_replay",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0105",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0106",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0107",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-callable-value",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0108",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0109",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-import-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0110",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_category",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0111",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_category",
+        "rule": "closed-callable-value",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0112",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_category",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0113",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-dynamic-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0114",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-callable-value",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0115",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unknown-member",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0116",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0117",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0118",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0119",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0120",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0121",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0122",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0123",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0124",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "real_inputs",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0125",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_fit_without_replay",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0126",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_fit_without_replay",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0127",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_fit_without_replay",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0128",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0129",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0130",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_exact_time",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0131",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_assert_record",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0132",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_assert_record",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0133",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0134",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0135",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0136",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0137",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0138",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0139",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0140",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0141",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0142",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0143",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0144",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0145",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0146",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0147",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0148",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0149",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0150",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0151",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0152",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0153",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "assert_ledger_semantics",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0154",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "assert_ledger_semantics",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0155",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "assert_ledger_semantics",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0156",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_independent_digest",
+        "rule": "closed-method-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0157",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_independent_digest",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0158",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_independent_digest",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0159",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "_independent_digest",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0160",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0161",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0162",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0163",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0164",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0165",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0166",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0167",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0168",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "independent_frame_expected",
+        "rule": "closed-rounded-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0169",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "assert_frame_semantics",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      },
+      {
+        "id": "M5A2-S0170",
+        "path": "tests/test_m5a2_replay.py",
+        "function": "assert_frame_semantics",
+        "rule": "closed-unproved-call",
+        "context_exact": true,
+        "node_in_exact_scope": true,
+        "reason_specific": true
+      }
+    ],
+    "renewal_checks": [
+      {
+        "id": "M5A-S0058",
+        "source_scope": "src/eab/kernel2d/se2.py::se2_first_entrance",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0068",
+        "source_scope": "src/eab/kernel2d/se2.py::se2_first_entrance",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0069",
+        "source_scope": "src/eab/kernel2d/se2.py::se2_first_entrance",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0070",
+        "source_scope": "src/eab/kernel2d/se2.py::se2_first_entrance",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0080",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0081",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0082",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0097",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0098",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0099",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0100",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0101",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0102",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0103",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0104",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0105",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0106",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0107",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0108",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0109",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0110",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0111",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      },
+      {
+        "id": "M5A-S0112",
+        "source_scope": "tests/m5a_independent_oracle.py::first_contact",
+        "old_hash_exact": true,
+        "new_context_exact": true
+      }
+    ],
+    "scope_counts": {
+      "src/eab/construction.py::scalar_algebraic": 1,
+      "src/eab/kernel2d/algebraic.py::RealAlgebraic.as_rational": 6,
+      "src/eab/kernel2d/algebraic.py::RealAlgebraic.time": 1,
+      "src/eab/kernel2d/se2.py::se2_first_entrance": 6,
+      "src/eab/kernel2d/affine_motion.py::AffineFit.__post_init__": 13,
+      "src/eab/kernel2d/affine_motion.py::fit_affine": 5,
+      "src/eab/kernel2d/affine_motion.py::DDAAffineMotion.__post_init__": 9,
+      "tests/m5a_independent_oracle.py::first_contact": 19,
+      "tests/test_m5a2_exact.py::_lever": 3,
+      "tests/test_m5a2_exact.py::exact_mutation": 27,
+      "tests/test_m5a2_exact.py::exact_mutation_guard": 6,
+      "tests/test_m5a2_replay.py::real_inputs": 15,
+      "tests/test_m5a2_replay.py::_fit_without_replay": 5,
+      "tests/test_m5a2_replay.py::_exact_time": 8,
+      "tests/test_m5a2_replay.py::_category": 3,
+      "tests/test_m5a2_replay.py::independent_expected": 23,
+      "tests/test_m5a2_replay.py::_assert_record": 2,
+      "tests/test_m5a2_replay.py::assert_ledger_semantics": 3,
+      "tests/test_m5a2_replay.py::_independent_digest": 4,
+      "tests/test_m5a2_replay.py::independent_frame_expected": 9,
+      "tests/test_m5a2_replay.py::assert_frame_semantics": 2
+    },
+    "issues_by_path": {
+      "src/eab/construction.py": [],
+      "src/eab/kernel2d/algebraic.py": [],
+      "src/eab/kernel2d/se2.py": [],
+      "src/eab/kernel2d/affine_motion.py": [],
+      "tests/m5a_independent_oracle.py": [],
+      "tests/test_m5a2_exact.py": [],
+      "tests/test_m5a2_replay.py": []
+    },
+    "targeted_violation_count": 0
+  },
+  "callback_adversarial_samples": {
+    "complete": true,
+    "samples": {
+      "direct_parameter": "def f(compare):\n    return scalar_algebraic(compare)\n",
+      "attribute": "def f(obj):\n    return scalar_algebraic(obj.compare)\n",
+      "namespace": "import eab.construction as c\ndef f(compare):\n    return c.scalar_algebraic(compare)\n",
+      "default_alias": "def f(compare, convert=scalar_algebraic):\n    return convert(compare)\n",
+      "local_tuple": "def f(compare):\n    calls = (scalar_algebraic,)\n    return calls[0](compare)\n",
+      "local_attr": "def f(obj, compare):\n    obj.convert = scalar_algebraic\n    return obj.convert(compare)\n",
+      "factory": "def f(compare):\n    def factory():\n        return scalar_algebraic\n    return factory()(compare)\n",
+      "partial": "from functools import partial\ndef f(compare):\n    convert = partial(scalar_algebraic, compare)\n    return convert()\n",
+      "kwargs": "def f(compare):\n    return scalar_algebraic(**{\"compare\": compare})\n",
+      "stars": "def f(compare):\n    return scalar_algebraic(*[compare])\n",
+      "conditional_alias": "def f(compare, condition):\n    convert = scalar_algebraic if condition else scalar_rational\n    return convert(compare)\n",
+      "call_dunder": "def f(compare):\n    return scalar_algebraic.__call__(compare)\n",
+      "closure": "def f(compare):\n    convert = scalar_algebraic\n    def inner():\n        return convert(compare)\n    return inner()\n",
+      "import_alias": "from eab.construction import scalar_algebraic as convert\ndef f(compare):\n    return convert(compare)\n",
+      "module_literal": "x = scalar_algebraic(lambda q: 0)\n"
+    },
+    "results": {
+      "direct_parameter": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site"
+        ]
+      },
+      "attribute": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site"
+        ]
+      },
+      "namespace": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site"
+        ]
+      },
+      "default_alias": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-callable-value",
+          "closed-unknown-call"
+        ]
+      },
+      "local_tuple": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-callable-value",
+          "closed-indirect-call"
+        ]
+      },
+      "local_attr": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-callable-value",
+          "closed-method-call"
+        ]
+      },
+      "factory": {
+        "rejected": true,
+        "rules": [
+          "closed-callable-value",
+          "closed-indirect-call",
+          "closed-unproved-call"
+        ]
+      },
+      "partial": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-callable-value",
+          "closed-import",
+          "closed-import-call",
+          "closed-unknown-call"
+        ]
+      },
+      "kwargs": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-unpacked-call"
+        ]
+      },
+      "stars": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site"
+        ]
+      },
+      "conditional_alias": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-callable-value",
+          "closed-unknown-call"
+        ]
+      },
+      "call_dunder": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-dynamic-call",
+          "closed-runtime-reflection"
+        ]
+      },
+      "closure": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-callable-value",
+          "closed-unknown-call",
+          "closed-unproved-call"
+        ]
+      },
+      "import_alias": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site"
+        ]
+      },
+      "module_literal": {
+        "rejected": true,
+        "rules": [
+          "algebraic-comparator-site",
+          "closed-syntax"
+        ]
+      }
+    },
+    "zero_unrejected": true
+  },
+  "runner_tests": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp=D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\review_r3r4_pytest_final",
+      "tests/test_m5a2_static_runner.py"
+    ],
+    "exit_code": 0,
+    "last_line": "18 passed in 1.43s",
+    "affine_boundary": [
+      {
+        "args": [
+          "--run-name",
+          "../escape"
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--run-name",
+          "C:/outside"
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--run-name",
+          "D:/outside"
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--run-name",
+          "."
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--run-name",
+          ".."
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--run-name",
+          "sub/dir"
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--run-name",
+          "x\\y"
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--run-name",
+          "D:escape"
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--workers",
+          "0"
+        ],
+        "exit_code": 2
+      },
+      {
+        "args": [
+          "--workers",
+          "5"
+        ],
+        "exit_code": 2
+      }
+    ]
+  },
+  "runner_control_probes": {
+    "pass": {
+      "exit_code": 0,
+      "audit": "GREEN",
+      "collected": 4,
+      "executed": 4,
+      "skip_count": 0,
+      "node_sets_equal": true,
+      "new_file_exists": false,
+      "output": "shard 2: 1 passed in 0.01s\nshard 1: 1 passed in 0.01s\nshard 4: 1 passed in 0.01s\nshard 3: 1 passed in 0.01s\nexact construction AST gate: 0 violation(s)\n"
+    },
+    "skip": {
+      "exit_code": 1,
+      "audit": "RED",
+      "collected": 4,
+      "executed": 4,
+      "skip_count": 1,
+      "node_sets_equal": true,
+      "new_file_exists": false,
+      "output": "shard 1: 1 passed in 0.01s\nshard 2: 1 passed in 0.01s\nshard 3: 1 passed in 0.01s\nshard 4: 1 skipped in 0.01s\nexact construction AST gate: 0 violation(s)\n"
+    },
+    "added_source": {
+      "exit_code": 0,
+      "audit": "GREEN",
+      "collected": 4,
+      "executed": 4,
+      "skip_count": 0,
+      "node_sets_equal": true,
+      "new_file_exists": true,
+      "output": "shard 1: 1 passed in 0.01s\nshard 2: 1 passed in 0.01s\nshard 4: 1 passed in 0.01s\nshard 3: 1 passed in 0.01s\nexact construction AST gate: 0 violation(s)\n"
+    }
+  },
+  "runner_added_source_fixed": {
+    "exit_code": 1,
+    "audit": "RED",
+    "collected": 4,
+    "executed": 4,
+    "skip_count": 0,
+    "after_mismatches": [
+      "src/added.py"
+    ]
+  },
+  "findings": [
+    {
+      "id": "R4-01",
+      "severity": "minor",
+      "status": "CLOSED",
+      "title": "Nonfinite timeouts bypass a finite deadline",
+      "before": "M5A2_PROCESS_TIMEOUT=nan/inf did not reject; owned children were stopped after bounded review parent expiry",
+      "fix": "math.isfinite and >0 guards in run(), plugin initialization and CLI before process/file creation",
+      "verification": "test_nonfinite_or_nonpositive_timeouts_are_rejected_before_start: nan inf -inf 0 -1"
+    },
+    {
+      "id": "R4-02",
+      "severity": "minor",
+      "status": "CLOSED",
+      "title": "Manifest checked known bytes but missed new source files",
+      "before": "Four passing tests added src/added.py; actual four-shard runner returned GREEN",
+      "fix": "export_mismatches compares final full file-name set with original manifest, then hashes shared files",
+      "verification": "review_runner_probe_added_fixed: four calls pass, zero skip, audit RED and after_mismatches=[src/added.py]"
+    },
+    {
+      "id": "R4-03",
+      "severity": "minor",
+      "status": "CLOSED",
+      "title": "Affine CLI output-name and workers not scoped",
+      "before": "output=TMP/args.run_name allowed absolute/traversal strings; worker count unconstrained; no outside write was attempted",
+      "fix": "run_directory validates portable single basename and resolved direct TMP child; workers choices=1..4",
+      "verification": "10 invalid path/worker inputs all reject with SystemExit2 before writes"
+    }
+  ],
+  "output_hygiene": {
+    "scanned_nonignored_new_files": 346,
+    "over_one_megabyte_files": [],
+    "utf8_bom_files": []
+  },
+  "limitations": [
+    "Static analysis is an explicitly documented closed-subset maintenance aid, not proof of arbitrary Python behavior",
+    "No sibling repository writes or Git mutation were performed by this review",
+    "Runner probes use a minimal four-node source and a literal-zero fake static script solely to test orchestration; they do not stand in for real source static verification",
+    "Fresh immutable byte exports, not a fresh Git checkout; worktree creation explicitly forbidden by owner.",
+    "Shared-host timings are not a controlled benchmark; direct new-node call cost is independently measured.",
+    "artifact_manifest.json must be regenerated after this review and final report updates."
+  ],
+  "review_outputs": [
+    "reports/codex/M5a2_evidence/review_static_runner.json",
+    "reports/codex/M5a2_evidence/review_static_runner.md"
+  ],
+  "policy_byte_refresh": {
+    "prior_review_sha256": "0de99d930a63eae4422efb4adc6f56d566b1e0116f4d55663c792c1894777a16",
+    "current_sha256": "bf474851e4630262d14cc118c8dc2b9d7656ddcd6f365d7c53a8e82f5e49820c",
+    "crlf_count": 0,
+    "lf_count": 38543,
+    "json_semantics_rechecked": {
+      "old_3220_equal_base": true,
+      "new_waivers": 170,
+      "renewals": 23
+    },
+    "reason": "Restore original LF bytes only; policy meanings unchanged"
+  },
+  "baseline_final_readback": {
+    "audit": "GREEN",
+    "name": "baseline_suite_r2",
+    "complete": true,
+    "global_collected": 13254,
+    "dispatched": 13254,
+    "actual_collected": 13254,
+    "actual_call": 13254,
+    "exact_global_node_multisets_equal": true,
+    "duplicate_node_count": 0,
+    "skip_count": 0,
+    "failed_count": 0,
+    "shards": [
+      {
+        "shard": 1,
+        "dispatched": 3314,
+        "collected": 3314,
+        "executed": 3314,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3314 passed in 804.77s (0:13:24)",
+        "execution_sha256": "9a5fa497eca002027d4bdfe953e9d0f6ee636f0c1a7f9c961e533fe4c1086049",
+        "dispatch_sha256": "4d8dacdfb08554e947cf5449f00518eab0a2c915ab879d888d411f5fde015915",
+        "call_seconds": 736.9912288005435
+      },
+      {
+        "shard": 2,
+        "dispatched": 3314,
+        "collected": 3314,
+        "executed": 3314,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3314 passed in 783.68s (0:13:03)",
+        "execution_sha256": "f8ae48cd1c07bd6d441524eadd54aaf4573918f995abbeb391224b0a94824d14",
+        "dispatch_sha256": "a0a349f05bb39477deac1da33f27bba17ce4df9382589a3004315880711b6227",
+        "call_seconds": 717.1110424001236
+      },
+      {
+        "shard": 3,
+        "dispatched": 3313,
+        "collected": 3313,
+        "executed": 3313,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3313 passed in 801.20s (0:13:21)",
+        "execution_sha256": "5d021d81c59f675f6b2476d260ddcb5831ba0c3bf471ec64c8596f34e799463d",
+        "dispatch_sha256": "af7a7a2a963fcbb6c66d2bbda6f8b90856ae8304430f9b817218f2730b088ddd",
+        "call_seconds": 735.0904004000913
+      },
+      {
+        "shard": 4,
+        "dispatched": 3313,
+        "collected": 3313,
+        "executed": 3313,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3313 passed in 1435.18s (0:23:55)",
+        "execution_sha256": "f2dd91f0b5675d91039d7dd94bc5d7741b4d805297ab2f90f1c5cbba628ba8d0",
+        "dispatch_sha256": "768bbc6101426f38a1600dc311007f52a7e056241798d3efd7a733b7463f5362",
+        "call_seconds": 1369.6806802000647
+      }
+    ],
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "static_exit_code": 0,
+    "source": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\baseline_suite_r2_export",
+    "export_files": 5588,
+    "export_added": [],
+    "export_deleted": [],
+    "export_changed": [],
+    "manifest_sha256": "b369a1f39930ce83f7093bb75ceb08308a80db4da2a445fcf0491b9fc054f6af",
+    "summary_sha256": "b74ab73009c48c5e224ae49a3a4271ef5ee8e9e8c9e7f07b22e01fb4dd450fe3",
+    "collection_sha256": "73a402e73b8957167959ca12d7b9de77a9ed647f1006b2fe5919deb9b9c1ef53",
+    "call_seconds": 3558.873351800823,
+    "wall_seconds": 1601.3730563999998
+  },
+  "invalidated_runs": {
+    "final_suite_r1": "Interrupted during independent review and invalidated; no result reuse",
+    "final_suite_r2": "Invalidated to restore policy original LF bytes; JSON semantics unchanged; no result reuse",
+    "baseline_suite_r1": "RED after intentional per-test watchdog cap; replaced by entire fresh baseline_suite_r2"
+  },
+  "final_suite_readback": {
+    "audit": "GREEN",
+    "name": "final_suite_r3",
+    "complete": true,
+    "global_collected": 13360,
+    "dispatched": 13360,
+    "actual_collected": 13360,
+    "actual_call": 13360,
+    "exact_global_node_multisets_equal": true,
+    "duplicate_node_count": 0,
+    "skip_count": 0,
+    "failed_count": 0,
+    "shards": [
+      {
+        "shard": 1,
+        "dispatched": 3340,
+        "collected": 3340,
+        "executed": 3340,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3340 passed in 772.64s (0:12:52)",
+        "execution_sha256": "1b9e5925739c3ad126041d00c52033f5ac1ef8d42eaa6d771c0dc17b6eb54304",
+        "dispatch_sha256": "4b113a54cc23bf026188a716b3e59f42fee523016164b1cb7973696721ab0827",
+        "call_seconds": 707.2741867001605
+      },
+      {
+        "shard": 2,
+        "dispatched": 3340,
+        "collected": 3340,
+        "executed": 3340,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3340 passed in 1325.65s (0:22:05)",
+        "execution_sha256": "c1e30ca15a579a7768c13dbaeb95cdb48e0696a1e043f04c7c228acf6d2f462a",
+        "dispatch_sha256": "4d8c1fd5b3f6c715dc45a78606b68e90b3bf68efa3e0f281a5fbaa6dfdb98217",
+        "call_seconds": 1259.2247411996796
+      },
+      {
+        "shard": 3,
+        "dispatched": 3340,
+        "collected": 3340,
+        "executed": 3340,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3340 passed in 606.45s (0:10:06)",
+        "execution_sha256": "1fb3bcf5eb8f1abf8ef60160d9e4da1f9a2182fb513d01741f57313ce71cd6f6",
+        "dispatch_sha256": "a36a5a985cca014829074bed8960acc83494fb94f940acee6f3016aa1bf7e5cb",
+        "call_seconds": 541.3698159002961
+      },
+      {
+        "shard": 4,
+        "dispatched": 3340,
+        "collected": 3340,
+        "executed": 3340,
+        "exact_node_multisets_equal": true,
+        "all_three_phases_pass": true,
+        "skip_count": 0,
+        "last_line": "3340 passed in 928.20s (0:15:28)",
+        "execution_sha256": "82bf462b2f551b385d23bf81e22803226ab4bdbedea2d736bffb5eaab5d00061",
+        "dispatch_sha256": "ec38ee933578b27164cbe3f0b3e134015679c0f39666a5326ff88082fc7e888b",
+        "call_seconds": 862.5576819002745
+      }
+    ],
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "static_exit_code": 0,
+    "source": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\final_suite_r3_export",
+    "export_files": 5941,
+    "export_added": [],
+    "export_deleted": [],
+    "export_changed": [],
+    "manifest_sha256": "7a8e117fa22f40e7bd9344fb433d0810e4e31559d24eee3a3c16b1a8604a2d71",
+    "summary_sha256": "34ec25b633b84e94d831443686bf8d1e498f2832203568571e03312843ab86a8",
+    "collection_sha256": "978e108d1efb31248fcd80ed7ee60a876e91d35bb860f17a3cc33507e2de8768",
+    "call_seconds": 3370.4264257004106,
+    "wall_seconds": 1496.5159172999993
+  },
+  "final_performance_readback": {
+    "baseline_nodes": 13254,
+    "final_nodes": 13360,
+    "added_nodes": 106,
+    "removed_nodes": 0,
+    "new_node_call_seconds": 3.061878499982413,
+    "named_m5a2_call_seconds": 3.0613311999768484,
+    "additional_provenance_node": "tests/test_fixture_provenance.py::test_fixture_bytes_match_provenance[m5a2/revalidation.json]",
+    "additional_provenance_call_seconds": 0.0005473000055644661,
+    "baseline_call_seconds": 3558.873351800823,
+    "final_call_seconds": 3370.4264257004106,
+    "new_fraction": 0.0008603505090826213,
+    "new_percent": 0.08603505090826213,
+    "call_ratio": 0.9470487124794547,
+    "wall_ratio": 0.9345204799837666,
+    "controlled_host": false
+  },
+  "current_source_closure": {
+    "audit": "GREEN",
+    "checked_non_generated_files": 5603,
+    "new_current_paths": [],
+    "deleted_current_paths": [],
+    "changed_current_bytes": []
+  },
+  "final_policy_byte_readback": {
+    "sha256": "bf474851e4630262d14cc118c8dc2b9d7656ddcd6f365d7c53a8e82f5e49820c",
+    "old_3220_unchanged": true,
+    "new_admissions": 170,
+    "explicit_renewals": 23,
+    "crlf": 0,
+    "lf": 38543
+  },
+  "final_readback_code_hash_changes": [],
+  "finalizer_raw_evidence_crosscheck": true,
+  "final_output_hygiene": {
+    "checked_nonignored_changed_files": 401,
+    "encoding_or_size_errors": []
+  }
+}

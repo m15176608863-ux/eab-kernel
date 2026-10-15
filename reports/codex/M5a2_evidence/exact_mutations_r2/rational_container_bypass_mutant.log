@@ -1,0 +1,16 @@
+source_hash_tripwire=DISABLED
+Traceback (most recent call last):
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 103, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 51, in main
+    return worker(args.worker, args.mutant)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\eab-wt\cx-e2\tools\m5a2_exact_mutations.py", line 37, in worker
+    guard.exact_mutation_guard(kind)
+  File "D:\eab-wt\cx-e2\tests\test_m5a2_exact.py", line 153, in exact_mutation_guard
+    test_rational_lever_time_has_one_container_mixed_equality_hash_and_sorting()
+  File "D:\eab-wt\cx-e2\tests\test_m5a2_exact.py", line 60, in test_rational_lever_time_has_one_container_mixed_equality_hash_and_sorting
+    assert t == expected and expected == t, "rational SE2 time equals the rational QuadraticTime protocol"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: rational SE2 time equals the rational QuadraticTime protocol

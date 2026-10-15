@@ -1,0 +1,34 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________________________ test_specific_semantic_guard _________________________
+
+    def test_specific_semantic_guard():
+>       run_guard('swapped_models', Path('D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\replay_mutations_r5\\swapped_models_mutant'))
+
+reports\codex\M5a2_evidence\tmp\replay_mutations_r5\swapped_models_mutant\test_replay_semantic_guard.py:4: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\m5a2_replay_mutations.py:155: in run_guard
+    gates.assert_ledger_semantics(*case, next(r for r in readback if r["step"] == case[1]))
+tests\test_m5a2_replay.py:209: in assert_ledger_semantics
+    _assert_record(actual[field], expected[field], field)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+actual = {'features': [], 'incidences': [], 'status': 'no_contact', 'time': None, ...}
+expected = {'features': [['VE', 24, 2, 3]], 'incidences': [['VE', 24, 2, 3]], 'status': 'contact', 'time': {'interval': ['0', '1'...87197635982887452025315225506168895719882/936542674307717748803403823466873549259710219', '1'], 'rational': None}, ...}
+model = 'rigid'
+
+    def _assert_record(actual, expected, model):
+        assert set(actual) == set(expected), "M5a2 ledger model field set"
+        for field in ("status", "time_display", "features", "incidences"):
+>           assert actual[field] == expected[field], "M5a2 ledger "+model+" "+field
+E           AssertionError: M5a2 ledger rigid status
+E           assert 'no_contact' == 'contact'
+E             
+E             - contact
+E             + no_contact
+E             ? +++
+
+tests\test_m5a2_replay.py:158: AssertionError
+=========================== short test summary info ===========================
+FAILED reports/codex/M5a2_evidence/tmp/replay_mutations_r5/swapped_models_mutant/test_replay_semantic_guard.py::test_specific_semantic_guard
+1 failed in 0.89s

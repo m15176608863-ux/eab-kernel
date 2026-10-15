@@ -27,6 +27,47 @@ def scalar_rational(value, *, allow_underflow=False, quantity="scalar_rational r
     return result
 
 
+def scalar_algebraic(compare, *, allow_underflow=False):
+    """Round a real given an exact rational comparison callback, once.
+
+    ``compare(q)`` is sign(real-q). Binary64 bit search brackets the real;
+    exact rational half-cell comparison implements round-to-nearest-even.
+    No floating approximation is used to choose the root or decide geometry.
+    Gate: test_m5a_algebraic.py (independent rational midpoint certificates).
+    """
+    sign = compare(Fraction(0))
+    if not sign:
+        return 0.0
+    if sign < 0:
+        return -scalar_algebraic(lambda q: -compare(-q), allow_underflow=allow_underflow)
+
+    def from_bits(bits):
+        return struct.unpack(">d", struct.pack(">Q", bits))[0]
+
+    lo, hi = 0, 0x7fefffffffffffff
+    maximum = from_bits(hi)
+    if compare(Fraction(maximum)) > 0:
+        midpoint = (Fraction(maximum)+Fraction(2)**1024)/2
+        if compare(midpoint) >= 0:
+            raise ConstructionDomainError("scalar_algebraic result", "exact real exceeds finite binary64 range")
+        return maximum
+    while lo < hi:
+        middle = (lo+hi+1)//2
+        if compare(Fraction(from_bits(middle))) >= 0:
+            lo = middle
+        else:
+            hi = middle-1
+    lower = from_bits(lo)
+    if not compare(Fraction(lower)):
+        return lower
+    upper = from_bits(lo+1)
+    order = compare((Fraction(lower)+Fraction(upper))/2)
+    result = lower if order < 0 or (order == 0 and lo % 2 == 0) else upper
+    if not result and not allow_underflow:
+        raise ConstructionDomainError("scalar_algebraic result", "nonzero exact real is below binary64 output range")
+    return result
+
+
 def ratio_rational(numerator, denominator, *, allow_underflow=False):
     """Divide exact inputs before the sole final scalar conversion."""
     return scalar_rational(exact_input(numerator, "ratio numerator")/exact_input(denominator, "ratio denominator"),

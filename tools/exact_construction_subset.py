@@ -26,7 +26,7 @@ analyze = _flow.analyze
 
 # No runtime introspection of builtins to enlarge the policy on a new Python.
 DIRECT = frozenset("abs all any bool dict enumerate filter float frozenset int isinstance issubclass len list max min next range repr reversed round set sorted str sum tuple type zip AssertionError ArithmeticError IndexError KeyError NotImplementedError OverflowError RuntimeError StopIteration TypeError ValueError ZeroDivisionError object super property staticmethod classmethod AttributeError FloatingPointError".split())
-CONSTRUCTORS = frozenset("Fraction scalar_rational vector_rational ratio_rational sqrt_rational norm_rational unit_rational scalar_exact vector_exact ratio_exact sqrt_exact norm_exact unit_exact normalized_difference_rational _float_vector".split())
+CONSTRUCTORS = frozenset("Fraction scalar_rational vector_rational ratio_rational sqrt_rational norm_rational unit_rational scalar_exact vector_exact ratio_exact sqrt_exact norm_exact unit_exact normalized_difference_rational scalar_algebraic _float_vector".split())
 INTRINSICS = DIRECT | CONSTRUCTORS | frozenset("from_float values items get copy __getitem__".split())
 FORBIDDEN = frozenset("map filter iter eval exec compile getattr setattr delattr hasattr globals locals vars dir __import__ callable breakpoint memoryview partial reduce".split())
 NODE_NAMES = frozenset("Module FunctionDef arguments arg ClassDef Return Delete Assign AugAssign AnnAssign For While If With withitem Raise Try ExceptHandler Assert Import ImportFrom alias Expr Pass Break Continue BoolOp BinOp UnaryOp IfExp Dict Set ListComp SetComp DictComp GeneratorExp comprehension Compare Call FormattedValue Constant Attribute Subscript Starred Name List Tuple Slice Load Store Del And Or Add Sub Mult MatMult Div Mod Pow LShift RShift BitOr BitXor BitAnd FloorDiv Invert Not UAdd USub Eq NotEq Lt LtE Gt GtE Is IsNot In NotIn keyword".split())
@@ -502,7 +502,8 @@ def stale_waiver_issues(text, path):
     Files absent from the scan cannot be checked here; repository inventory
     validation is separate from this source-local contract.
     """
-    rows = [row for row in _policy()["waivers"] if row["path"] == path]
+    policy = _policy()
+    rows = [row for row in policy["waivers"] if row["path"] == path]
     if not rows:
         return []
     contexts = site_contexts(text)
@@ -523,7 +524,15 @@ def stale_waiver_issues(text, path):
     issues = []
     for row in rows:
         fn = row["function"]
-        if contexts.get(fn) != row["context"] or row["node"] not in nodes:
+        # Historical admissions remain immutable. A separately reviewed renewal
+        # retires exactly this old row only at its newly pinned source context.
+        # It does NOT admit any current AST site: those need new waiver rows.
+        renewed = any(renewal.get("old_id") == row.get("id")
+                      and renewal.get("old_row_sha256") == _hash(json.dumps(row, sort_keys=True, ensure_ascii=False))
+                      and renewal.get("new_context") == contexts.get(fn)
+                      and renewal.get("reason", "").strip()
+                      for renewal in policy.get("renewals", ()))
+        if not renewed and (contexts.get(fn) != row["context"] or row["node"] not in nodes):
             issues.append((path, lines.get(fn, 1), fn, "closed-stale-waiver",
                            "Local review expired: " + row["rule"], row["node"],
                            contexts.get(fn, "<deleted-scope>")))

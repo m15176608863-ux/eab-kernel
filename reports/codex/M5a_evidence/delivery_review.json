@@ -1,0 +1,262 @@
+{
+  "schema": 1,
+  "review_status": "FINAL_ACTUAL_GREEN_PENDING_LAST_MANIFEST_REFRESH",
+  "reviewed_utc": "2026-10-15T09:18:51.327729+00:00",
+  "reviewer_scope": "Independent delivery scripts/evidence review; source and test files read-only. No numerical source changes.",
+  "reviewed_source_sha256": {
+    "tools/m5a_run_gates.py": "ef3cc3daa95e835d18d91c961300e298afc4d0d4326ca9e7602d96b6a834f58f",
+    "tools/m5a_finalize_evidence.py": "235c9d57dc186cabb2bba6f7fd20ecdaa5ba615e0c63f2210e039560d5b85006"
+  },
+  "findings": [
+    {
+      "id": "DEL-01",
+      "severity": "major",
+      "status": "CLOSED_BY_REREAD_OF_FROZEN_SCRIPTS",
+      "title": "Freshness gate omits executed-export post-run bytes and tested documents/config",
+      "evidence": "finalizer compares only src/tests/tools/fixtures manifest entries against ROOT, never export files after execution; tests/test_doc_pointers.py and tests/test_r13fix_docs.py read docs; tests/test_r14_cone.py reads README; tests/test_g2_bdda3d.py and M4 gates read reports.",
+      "requested_change": "Validate protected executed inputs in export before and after run and current delivery; include test/runtime configs, tested documents and frozen report inputs. Explicitly exclude only generated delivery evidence/report outputs.",
+      "resolution": "Runner validates existing manifest bytes before and after actual execution and folds post-run mismatch into GREEN. Finalizer validates all executed manifest bytes and current all non-generated inputs, including docs/config/reports and current files omitted from export. Only M5a evidence outputs/main report are explicitly excluded from current delivery comparison."
+    },
+    {
+      "id": "DEL-02",
+      "severity": "major",
+      "status": "CLOSED_BY_REREAD_OF_FROZEN_SCRIPTS",
+      "title": "One-pass candidate listing can miss newly generated delivery artifacts",
+      "evidence": "changed list is collected before delivery_audit.json/runtime_environment.json/artifact_manifest.json are created, and is reused for encoding/size checks and artifact inventory. First invocation can omit those files.",
+      "requested_change": "Refresh candidate set after artifact generation, run UTF-8/BOM/size audit over final candidates, and include all generated artifacts except explicitly self-excluded manifest.",
+      "resolution": "Finalizer generates node/performance/runtime outputs before the candidate audit, refreshes changed_files for the artifact manifest after delivery_audit exists, then audits encoding/size again including artifact_manifest. It asserts no new errors from generated outputs."
+    },
+    {
+      "id": "DEL-03",
+      "severity": "minor",
+      "status": "CURRENT_RUN_SCOPE_VERIFIED_NOT_GENERAL_ENV_IMMUNITY",
+      "title": "Inherited pytest selection can silently narrow full-suite collection",
+      "evidence": "runner inherits PYTEST_ADDOPTS/PYTEST_PLUGINS; current parent environment has no PYTEST_* keys. Counters prove executed=selected collection, not immunity to external -k/--ignore.",
+      "requested_change": "Clear inherited selection-changing addopts or fail loudly; record effective pytest environment/plugins.",
+      "resolution": "Current environment has no PYTEST_* selector; all baseline 13110 node IDs retained and all 144 new IDs are explained by four M5a modules plus sixteen fixture-provenance instances."
+    },
+    {
+      "id": "DEL-04",
+      "severity": "minor",
+      "status": "CLOSED_BY_DIRECT_FINAL_LOG_AND_RECORD_CHECK",
+      "title": "Final shard quote is currently copied from summary rather than verified against log",
+      "evidence": "suite_audit uses summary.shards[i].last_line. Independent audit read all four baseline shard logs and found exact equality.",
+      "requested_change": "For final evidence compare each literal last log line with summary before publishing it.",
+      "resolution": "All four final last lines read directly from shard logs and matched summary byte-for-byte as UTF8 strings; call multisets and every setup/call/teardown record independently validated."
+    }
+  ],
+  "baseline_actual_audit": {
+    "audit": "GREEN",
+    "collected": 13110,
+    "called": 13110,
+    "unique": 13110,
+    "skip_count": 0,
+    "phase_counts": {
+      "setup": 13110,
+      "call": 13110,
+      "teardown": 13110
+    },
+    "outcomes": {
+      "passed": 39330
+    },
+    "shards": [
+      {
+        "shard": 1,
+        "collected": 3278,
+        "executed_calls": 3278,
+        "last_line_read_directly": "3278 passed in 831.24s (0:13:51)",
+        "execution_sha256": "89186db51b35e35533520c5811742e3841250a9077b1ae7c276a43cbfa45f8c5"
+      },
+      {
+        "shard": 2,
+        "collected": 3278,
+        "executed_calls": 3278,
+        "last_line_read_directly": "3278 passed in 810.00s (0:13:30)",
+        "execution_sha256": "21c01ca9c42038e7c588e06d36665db603ac94e5237e2e8e9834742981c19279"
+      },
+      {
+        "shard": 3,
+        "collected": 3277,
+        "executed_calls": 3277,
+        "last_line_read_directly": "3277 passed in 827.50s (0:13:47)",
+        "execution_sha256": "5ba15f40860caa8935e556cb341b698636d66beed59c4727365b1c919fb83038"
+      },
+      {
+        "shard": 4,
+        "collected": 3277,
+        "executed_calls": 3277,
+        "last_line_read_directly": "3277 passed in 1527.86s (0:25:27)",
+        "execution_sha256": "3889755fb17ac5ba3a9ad01065dbf225623134936c074e33cecaef20b7cb9830"
+      }
+    ],
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "summary_sha256": "bc223641314633f8976cb9ae909ff78f50ae1723ef21717fcc6765135260df77",
+    "total_wall_seconds": 1710.5297657999909,
+    "call_duration_exact": "127210181261325/34359738368",
+    "m5a_call_duration_exact": "0"
+  },
+  "performance_limits": [
+    "Reported call_seconds sums per-test call wall durations across parallel shards; it is not CPU time and excludes setup/teardown and collection.",
+    "Total suite wall interval starts after export and includes collection, four concurrent shards, and trailing static gate.",
+    "test_m5a name-based added_gate_fraction excludes indirect overhead in old static gates and is not itself a complete 5 percent regression certificate.",
+    "controlled_environment=false is appropriate because the shared host has concurrent work."
+  ],
+  "fresh_checkout_limit": "Fresh byte export is correctly marked fresh_git_checkout=false. Owner forbids worktree/branch writes; do not represent this as the permanent D fresh committed worktree exit criterion.",
+  "pytest_environment_now": {},
+  "final_actual_audit": {
+    "audit": "GREEN",
+    "collected": 13254,
+    "called": 13254,
+    "unique": 13254,
+    "skip_count": 0,
+    "phase_counts": {
+      "setup": 13254,
+      "call": 13254,
+      "teardown": 13254
+    },
+    "outcomes": {
+      "passed": 39762
+    },
+    "shards": [
+      {
+        "shard": 1,
+        "collected": 3314,
+        "executed_calls": 3314,
+        "last_line_read_directly": "3314 passed in 739.15s (0:12:19)",
+        "execution_sha256": "315637630b9ad062fbf1b13f86faf7f0f43a28b4babe27a7480a7aa578605ba0"
+      },
+      {
+        "shard": 2,
+        "collected": 3314,
+        "executed_calls": 3314,
+        "last_line_read_directly": "3314 passed in 714.95s (0:11:54)",
+        "execution_sha256": "83af214ff559e9a30fe3af546319ea0035631c3e6e2d03cfb5376baaa35965a2"
+      },
+      {
+        "shard": 3,
+        "collected": 3313,
+        "executed_calls": 3313,
+        "last_line_read_directly": "3313 passed in 737.78s (0:12:17)",
+        "execution_sha256": "916dc5fd52d822579e3f5557be7941a6939f06c10d059f59ec01194bc7c408dc"
+      },
+      {
+        "shard": 4,
+        "collected": 3313,
+        "executed_calls": 3313,
+        "last_line_read_directly": "3313 passed in 1426.50s (0:23:46)",
+        "execution_sha256": "bcd3457c69fe664bf3c2f8aa990d793c53ff072d2e856f2c1bb66b083d66c8c0"
+      }
+    ],
+    "static_last_line": "exact construction AST gate: 0 violation(s)",
+    "summary_sha256": "c7cc459a935c7e2e1cbcecd0fd3d59d5b4cfb56f831cb71f84d19efcb65e3a70",
+    "total_wall_seconds": 1611.4062358999945,
+    "call_duration_exact": "229969334076193/68719476736",
+    "m5a_call_duration_exact": "756752731659/68719476736"
+  },
+  "reviewed_scripts_match_actual_export_manifest": true,
+  "remaining_actual_checks": [
+    "Parent must regenerate artifact_manifest.json after this final review and final report edits; reviewer will then check it read-only and report via message without rewriting these review files."
+  ],
+  "current_final_collection": {
+    "collected": 13254,
+    "dispatched": [
+      3314,
+      3314,
+      3313,
+      3313
+    ],
+    "not_yet_final": false
+  },
+  "collection_delta": {
+    "baseline": 13110,
+    "final": 13254,
+    "added": 144,
+    "removed": [],
+    "added_by_file": {
+      "tests/test_m5a_se2.py": 38,
+      "tests/test_fixture_provenance.py": 16,
+      "tests/test_m5a_replay.py": 49,
+      "tests/test_m5a_algebraic.py": 26,
+      "tests/test_m5a_oracle.py": 15
+    }
+  },
+  "source_actual_audit": {
+    "audit": "GREEN",
+    "export_files_checked": 5549,
+    "export_missing_or_modified": [],
+    "export_added_files": [],
+    "current_protected_inputs_checked": 5466,
+    "current_input_mismatches": [],
+    "current_input_missing_from_export": [],
+    "manifest_sha256": "76462b878a6fd30746781f3ee879d899b1fdaea68ea9493f651254cfda3d4e0a",
+    "generated_output_exclusions": [
+      "reports/codex/M5a_evidence/**",
+      "reports/codex/M5a_report.md"
+    ],
+    "runner_before_after_integrity_matches": true
+  },
+  "delivery_file_actual_audit": {
+    "audit": "GREEN",
+    "candidate_paths_examined": 159,
+    "encoding_errors": [],
+    "runtime_over_one_megabyte_in_commit_candidates": [],
+    "large_runtime_files_explicitly_ignored": [
+      {
+        "path": "reports/codex/M5a_evidence/final_suite_r1/collection.txt",
+        "bytes": 1443335,
+        "gitignored": true
+      },
+      {
+        "path": "reports/codex/M5a_evidence/final_suite_r1/export_manifest.json",
+        "bytes": 1036092,
+        "gitignored": true
+      },
+      {
+        "path": "reports/codex/M5a_evidence/final_suite_r1/shard_1_execution.json",
+        "bytes": 2751751,
+        "gitignored": true
+      },
+      {
+        "path": "reports/codex/M5a_evidence/final_suite_r1/shard_2_execution.json",
+        "bytes": 2726203,
+        "gitignored": true
+      },
+      {
+        "path": "reports/codex/M5a_evidence/final_suite_r1/shard_3_execution.json",
+        "bytes": 2737254,
+        "gitignored": true
+      },
+      {
+        "path": "reports/codex/M5a_evidence/final_suite_r1/shard_4_execution.json",
+        "bytes": 2729566,
+        "gitignored": true
+      }
+    ]
+  },
+  "performance_actual_audit": {
+    "reported_wall_ratio": 0.9420509763221585,
+    "independent_wall_ratio_exact": "110734993340175/117546710447128",
+    "reported_call_ratio": 0.903895159160933,
+    "independent_call_ratio_exact": "229969334076193/254420362522650",
+    "reported_added_gate_fraction": 0.002974418887527642,
+    "independent_added_gate_fraction_exact": "252250910553/84806787507550",
+    "new_call_fraction_below_five_percent": true,
+    "new_call_seconds_reported": 11.012201599936816,
+    "controlled_environment": false,
+    "controlled_five_percent_regression_proven": false,
+    "aggregation_checks": {
+      "baseline": {
+        "call_seconds_reported": 3702.3035477999656,
+        "call_seconds_independent_exact_rational": "127210181261325/34359738368",
+        "binary64_sum_difference": "0",
+        "forward_sum_error_bound": "833862738167985375/77371252455336267181195264"
+      },
+      "final": {
+        "call_seconds_reported": 3346.494254600737,
+        "call_seconds_independent_exact_rational": "229969334076193/68719476736",
+        "binary64_sum_difference": "0",
+        "forward_sum_error_bound": "1524006776922931011/154742504910672534362390528"
+      }
+    }
+  }
+}

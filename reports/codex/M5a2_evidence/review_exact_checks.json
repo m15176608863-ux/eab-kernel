@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "counts": {
+    "known_rational_factor_roots": 190,
+    "known_irrational_roots": 27,
+    "rational_lever_public_container": 36,
+    "exact_tiny_residuals": 5,
+    "closed_endpoint_roots": 95
+  },
+  "mismatches": 0,
+  "seconds": 1.3683534000010695,
+  "oracle_imports": [
+    "fractions.Fraction",
+    "random.Random (input generation only)"
+  ],
+  "oracle_logic": [
+    "explicit known polynomial factors",
+    "prime-exponent irrationality",
+    "2Lu*t/(1+(u*t)^2) lever height",
+    "centered x scaling exact residual"
+  ],
+  "source_hashes": {
+    "src/eab/kernel2d/algebraic.py": "7eaf5cae997b2472167d93cfcab7addc2dfd6bc658265549f5079927bea61ecd",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
+    "tools/m5a_se2_replay.py": "2f817dba17c9e11620f0221bb9fe88fe16c99aa400e81d72eed41a34e9dcdc07",
+    "tests/test_m5a2_exact.py": "96753d7c583734eeeaa98a2c628cb616ff7e0f69b3ad638148992955fcaf6130"
+  }
+}

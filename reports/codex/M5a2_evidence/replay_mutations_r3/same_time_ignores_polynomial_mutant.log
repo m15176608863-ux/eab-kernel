@@ -1,0 +1,31 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________________________ test_specific_semantic_guard _________________________
+
+    def test_specific_semantic_guard():
+>       run_guard('same_time_ignores_polynomial', Path('D:\\eab-wt\\cx-e2\\reports\\codex\\M5a2_evidence\\tmp\\replay_mutations_r3\\same_time_ignores_polynomial_mutant'))
+
+reports\codex\M5a2_evidence\tmp\replay_mutations_r3\same_time_ignores_polynomial_mutant\test_replay_semantic_guard.py:4: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\m5a2_replay_mutations.py:75: in run_guard
+    gates.test_same_time_irrational_uses_polynomial_and_correct_root_branch()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def test_same_time_irrational_uses_polynomial_and_correct_root_branch():
+        polynomial = (F(1, 8), -1, 1)
+        roots = (RealAlgebraic(polynomial, 0, F(1, 2)), RealAlgebraic(polynomial, F(1, 2), 1))
+        for index, root in enumerate(roots):
+            certificate = {"rational": None, "polynomial": ["1/8", "-1", "1"], "branch": (-1, 1)[index]}
+            assert replay.same_time(root, certificate), "M5a2 same_time irrational matching branch"
+            assert not replay.same_time(roots[1-index], certificate), "M5a2 same_time rejects opposite irrational branch"
+            unrelated = RealAlgebraic((F(1, 16), -1, 1), 0, F(1, 2))
+>           assert not replay.same_time(unrelated, certificate), "M5a2 same_time rejects different irrational polynomial"
+E           AssertionError: M5a2 same_time rejects different irrational polynomial
+E           assert not True
+E            +  where True = <function same_time at 0x00000000043B4180>(RealAlgebraic(polynomial=(Fraction(1, 16), Fraction(-1, 1), Fraction(1, 1)), lower=Fraction(0, 1), upper=Fraction(1, 2)), {'branch': -1, 'polynomial': ['1/8', '-1', '1'], 'rational': None})
+E            +    where <function same_time at 0x00000000043B4180> = replay.same_time
+
+tests\test_m5a2_replay.py:263: AssertionError
+=========================== short test summary info ===========================
+FAILED reports/codex/M5a2_evidence/tmp/replay_mutations_r3/same_time_ignores_polynomial_mutant/test_replay_semantic_guard.py::test_specific_semantic_guard
+1 failed in 0.09s
