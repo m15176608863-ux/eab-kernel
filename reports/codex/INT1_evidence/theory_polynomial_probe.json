@@ -1,0 +1,26 @@
+{
+  "schema": "eab.int1-affine-degree-probe.v1",
+  "status": "PASS",
+  "production_imports": [],
+  "seed": 20261015,
+  "checks": [
+    {
+      "rigid": false,
+      "exact_event_checks": 720,
+      "maximum_observed_degree": 6,
+      "zero_B_rotation_included": true,
+      "both_edge_endpoints": true,
+      "cross_and_projection_dot": true
+    },
+    {
+      "rigid": true,
+      "exact_event_checks": 720,
+      "maximum_observed_degree": 5,
+      "zero_B_rotation_included": true,
+      "both_edge_endpoints": true,
+      "cross_and_projection_dot": true
+    }
+  ],
+  "proof_scope": "finite coefficient cross-check, not the symbolic proof itself",
+  "script_sha256": "3ce9de1266cae39191e829c88d923cf6d4204c45dcbb2754808ab497a4195a13"
+}

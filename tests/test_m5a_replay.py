@@ -8,12 +8,12 @@ M4c records are identified comparison data, never a physical-motion oracle.
 from collections import Counter
 from fractions import Fraction as F
 import gzip
-import inspect
 import json
 from pathlib import Path
 import sys
 
 import pytest
+from mutation_support import replace_module_callable
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -102,12 +102,8 @@ def test_swept_projection_is_only_a_sufficient_separation_certificate():
 
 
 def test_swept_projection_padding_mutation_hits_its_semantic_containment_guard(monkeypatch):
-    source = inspect.getsource(replay.projected_sweep)
-    old = "pad = (abs(nx)+abs(ny))*radius"
-    assert source.count(old) == 1
-    namespace = dict(vars(replay))
-    exec(compile(source.replace(old, "pad = F(0)"), "<m5a-sweep-padding-mutant>", "exec"), namespace)
-    monkeypatch.setattr(replay, "projected_sweep", namespace["projected_sweep"])
+    replace_module_callable(monkeypatch, replay, "projected_sweep",
+                            [("pad = (abs(nx)+abs(ny))*radius", "pad = F(0)")])
     with pytest.raises(AssertionError, match="swept projection must contain every rigid path point"):
         test_projected_sweep_contains_independently_evaluated_rational_paths()
 

@@ -16,6 +16,7 @@ from random import Random
 from textwrap import dedent
 
 import pytest
+from mutation_support import mutated_function
 
 from eab.kernel2d import algebraic as alg
 from eab.kernel2d.algebraic import RealAlgebraic, roots_interval, sign_at
@@ -272,11 +273,7 @@ def test_semantic_algebra_mutants_fail_the_intended_value_assertion(monkeypatch,
         old, new = "return self.compare(other) == 0", "return abs(self.time-other.time) <= 1e-12"
         regression = test_adjacent_algebraic_roots_do_not_become_equal_at_a_float_tolerance
         message = "near roots are algebraically distinct"
-    source = dedent(inspect.getsource(original))
-    assert source.count(old) == 1, "mutation location must be unique"
-    namespace = dict(vars(alg))
-    exec(compile(source.replace(old, new), "<M5a semantic algebra mutant>", "exec"), namespace)
-    changed = namespace[original.__name__]
+    changed = mutated_function(original, alg, [(old, new)])
     if name == "approximate_equality":
         monkeypatch.setattr(RealAlgebraic, "__eq__", changed)
     else:

@@ -82,6 +82,27 @@ def _read_policy(mtime, size):
     return json.loads((HERE / "exact_construction_policy.json").read_text(encoding="utf-8"))
 
 
+def instrumentation_scope(text, path, function, rule):
+    """One immutable review domain for test mutation mechanics, never numerics.
+
+    Only enumerated closed-subset scaffolding rules may be discharged. Direct
+    rounding, algebraic comparator admission and all numerical provenance rules
+    remain active. Every reviewed scope AND the common helper file are pinned;
+    changing either expires the review instead of growing a name-based waiver.
+    """
+    review = _policy().get("mutation_instrumentation_review", {})
+    if rule not in review.get("rules", ()) or not path.startswith("tests/"):
+        return False
+    scopes = [row for row in review.get("scopes", ())
+              if row.get("path") == path and row.get("function") == function]
+    if not scopes:
+        return False
+    helper = HERE.parent / "tests/mutation_support.py"
+    if not helper.exists() or hashlib.sha256(helper.read_bytes()).hexdigest() != review.get("helper_sha256"):
+        return False
+    return any(row.get("context") == site_contexts(text).get(function) for row in scopes)
+
+
 def closed_subset_issues(text, path="<injected>", *, apply_waivers=True, repository_root=None, analysis=None):
     """Reject unanalysed syntax by default; no path-existence-based admission.
 
@@ -113,6 +134,8 @@ def closed_subset_issues(text, path="<injected>", *, apply_waivers=True, reposit
 
         def issue(self, node, rule):
             fn = ".".join(self.stack) or "<module>"
+            if apply_waivers and instrumentation_scope(text, path, fn, rule):
+                return
             if scaffold and (not self.stack or self.stack[0].startswith("test_")):
                 return
             # Admission is a proof about this source value/call, not a waiver

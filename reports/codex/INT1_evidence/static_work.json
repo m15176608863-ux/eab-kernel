@@ -1,0 +1,3976 @@
+{
+  "schema": "eab.int1-static-work.v1",
+  "status": "STATIC_GREEN_WITH_DISCLOSED_HYGIENE_REMAINDER",
+  "before": {
+    "count": 3429,
+    "categories": {
+      "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION": 422,
+      "INPUT_MODEL_OR_OUTPUT_BOUNDARY": 620,
+      "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW": 214,
+      "M5A2_LOCAL_REVIEW": 170,
+      "M5A_CLOSED_FORM_TEST_REVIEW": 5,
+      "M5A_DISCRETE_SET_REVIEW": 2,
+      "M5A_EXACT_RATIONAL_REVIEW": 33,
+      "M5A_EXACT_RECORD_REVIEW": 2,
+      "M5A_FINAL_DISPLAY_REVIEW": 17,
+      "M5A_FROZEN_COMPARISON_REVIEW": 2,
+      "M5A_FROZEN_INITIALIZATION": 14,
+      "M5A_INDEPENDENT_ORACLE_REVIEW": 42,
+      "PROOF_GAP_MANUAL_EXCLUSION": 640,
+      "PUBLIC_DIAGNOSTIC_CALLBACK": 5,
+      "R13_EXPLICIT_APPROXIMATE_INPUT_OR_DIAGNOSTIC": 98,
+      "R13_LOCAL_STRUCTURAL_OR_ANALYZER_PROOF_GAP": 10,
+      "RUNTIME_TEST_ORACLE_REVIEW": 498,
+      "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW": 299,
+      "TEST_EXECUTION_OR_INTENTIONAL_DEFECT": 320,
+      "UNFINISHED_NUMERICAL_DYNAMIC_REWRITE": 16
+    },
+    "rules": {
+      "algebraic-comparator-site": 2,
+      "closed-callable-value": 106,
+      "closed-callback": 10,
+      "closed-context-protocol": 7,
+      "closed-data-attribute": 24,
+      "closed-decorator": 6,
+      "closed-dynamic-call": 131,
+      "closed-import": 3,
+      "closed-import-call": 7,
+      "closed-indirect-call": 1,
+      "closed-indirect-write": 3,
+      "closed-method-call": 230,
+      "closed-modulo": 2,
+      "closed-namespace-value": 5,
+      "closed-reduction": 38,
+      "closed-rounded-call": 418,
+      "closed-rounded-construction": 398,
+      "closed-runtime-reflection": 37,
+      "closed-shadowed-intrinsic": 7,
+      "closed-syntax": 57,
+      "closed-unknown-call": 36,
+      "closed-unknown-member": 27,
+      "closed-unpacked-call": 24,
+      "closed-unproved-arithmetic": 578,
+      "closed-unproved-call": 1084,
+      "direct-float": 157,
+      "implicit-root": 2,
+      "rounded-root": 5,
+      "rounded-vector": 2,
+      "subtract-rounded": 22
+    }
+  },
+  "after": {
+    "count": 3452,
+    "categories": {
+      "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION": 422,
+      "INPUT_MODEL_OR_OUTPUT_BOUNDARY": 620,
+      "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW": 214,
+      "M5A2_LOCAL_REVIEW": 170,
+      "M5A_CLOSED_FORM_TEST_REVIEW": 5,
+      "M5A_DISCRETE_SET_REVIEW": 2,
+      "M5A_EXACT_RATIONAL_REVIEW": 33,
+      "M5A_EXACT_RECORD_REVIEW": 2,
+      "M5A_FINAL_DISPLAY_REVIEW": 17,
+      "M5A_FROZEN_COMPARISON_REVIEW": 2,
+      "M5A_FROZEN_INITIALIZATION": 14,
+      "M5A_INDEPENDENT_ORACLE_REVIEW": 42,
+      "PROOF_GAP_MANUAL_EXCLUSION": 655,
+      "PUBLIC_DIAGNOSTIC_CALLBACK": 5,
+      "R13_EXPLICIT_APPROXIMATE_INPUT_OR_DIAGNOSTIC": 98,
+      "R13_LOCAL_STRUCTURAL_OR_ANALYZER_PROOF_GAP": 10,
+      "RUNTIME_TEST_ORACLE_REVIEW": 498,
+      "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW": 307,
+      "TEST_EXECUTION_OR_INTENTIONAL_DEFECT": 320,
+      "UNFINISHED_NUMERICAL_DYNAMIC_REWRITE": 16
+    },
+    "rules": {
+      "algebraic-comparator-site": 2,
+      "closed-callable-value": 106,
+      "closed-callback": 10,
+      "closed-context-protocol": 7,
+      "closed-data-attribute": 24,
+      "closed-decorator": 6,
+      "closed-dynamic-call": 131,
+      "closed-import": 3,
+      "closed-import-call": 7,
+      "closed-indirect-call": 1,
+      "closed-indirect-write": 3,
+      "closed-method-call": 233,
+      "closed-modulo": 2,
+      "closed-namespace-value": 5,
+      "closed-reduction": 38,
+      "closed-rounded-call": 426,
+      "closed-rounded-construction": 400,
+      "closed-runtime-reflection": 37,
+      "closed-shadowed-intrinsic": 7,
+      "closed-syntax": 57,
+      "closed-unknown-call": 36,
+      "closed-unknown-member": 27,
+      "closed-unpacked-call": 24,
+      "closed-unproved-arithmetic": 581,
+      "closed-unproved-call": 1091,
+      "direct-float": 157,
+      "implicit-root": 2,
+      "rounded-root": 5,
+      "rounded-vector": 2,
+      "subtract-rounded": 22
+    }
+  },
+  "effective_before": {
+    "count": 3406,
+    "categories": {
+      "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION": 422,
+      "INPUT_MODEL_OR_OUTPUT_BOUNDARY": 620,
+      "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW": 214,
+      "M5A2_LOCAL_REVIEW": 170,
+      "M5A_CLOSED_FORM_TEST_REVIEW": 5,
+      "M5A_DISCRETE_SET_REVIEW": 2,
+      "M5A_EXACT_RATIONAL_REVIEW": 29,
+      "M5A_EXACT_RECORD_REVIEW": 2,
+      "M5A_FINAL_DISPLAY_REVIEW": 17,
+      "M5A_FROZEN_COMPARISON_REVIEW": 2,
+      "M5A_FROZEN_INITIALIZATION": 14,
+      "M5A_INDEPENDENT_ORACLE_REVIEW": 23,
+      "PROOF_GAP_MANUAL_EXCLUSION": 640,
+      "PUBLIC_DIAGNOSTIC_CALLBACK": 5,
+      "R13_EXPLICIT_APPROXIMATE_INPUT_OR_DIAGNOSTIC": 98,
+      "R13_LOCAL_STRUCTURAL_OR_ANALYZER_PROOF_GAP": 10,
+      "RUNTIME_TEST_ORACLE_REVIEW": 498,
+      "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW": 299,
+      "TEST_EXECUTION_OR_INTENTIONAL_DEFECT": 320,
+      "UNFINISHED_NUMERICAL_DYNAMIC_REWRITE": 16
+    },
+    "rules": {
+      "algebraic-comparator-site": 2,
+      "closed-callable-value": 106,
+      "closed-callback": 10,
+      "closed-context-protocol": 7,
+      "closed-data-attribute": 24,
+      "closed-decorator": 6,
+      "closed-dynamic-call": 131,
+      "closed-import": 3,
+      "closed-import-call": 7,
+      "closed-indirect-call": 1,
+      "closed-indirect-write": 3,
+      "closed-method-call": 227,
+      "closed-modulo": 2,
+      "closed-namespace-value": 5,
+      "closed-reduction": 38,
+      "closed-rounded-call": 410,
+      "closed-rounded-construction": 398,
+      "closed-runtime-reflection": 37,
+      "closed-shadowed-intrinsic": 7,
+      "closed-syntax": 57,
+      "closed-unknown-call": 36,
+      "closed-unknown-member": 26,
+      "closed-unpacked-call": 24,
+      "closed-unproved-arithmetic": 578,
+      "closed-unproved-call": 1073,
+      "direct-float": 157,
+      "implicit-root": 2,
+      "rounded-root": 5,
+      "rounded-vector": 2,
+      "subtract-rounded": 22
+    }
+  },
+  "effective_after": {
+    "count": 3360,
+    "categories": {
+      "APPROXIMATE_OR_NOMINAL_SCOPE_EXCLUSION": 422,
+      "INPUT_MODEL_OR_OUTPUT_BOUNDARY": 620,
+      "LOCAL_NUMERIC_OR_PROTOCOL_REVIEW": 214,
+      "M5A2_LOCAL_REVIEW": 143,
+      "M5A_CLOSED_FORM_TEST_REVIEW": 5,
+      "M5A_DISCRETE_SET_REVIEW": 2,
+      "M5A_EXACT_RATIONAL_REVIEW": 29,
+      "M5A_EXACT_RECORD_REVIEW": 2,
+      "M5A_FINAL_DISPLAY_REVIEW": 17,
+      "M5A_FROZEN_COMPARISON_REVIEW": 2,
+      "M5A_FROZEN_INITIALIZATION": 14,
+      "M5A_INDEPENDENT_ORACLE_REVIEW": 23,
+      "PROOF_GAP_MANUAL_EXCLUSION": 640,
+      "PUBLIC_DIAGNOSTIC_CALLBACK": 5,
+      "R13_EXPLICIT_APPROXIMATE_INPUT_OR_DIAGNOSTIC": 98,
+      "R13_LOCAL_STRUCTURAL_OR_ANALYZER_PROOF_GAP": 10,
+      "RUNTIME_TEST_ORACLE_REVIEW": 498,
+      "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW": 280,
+      "TEST_EXECUTION_OR_INTENTIONAL_DEFECT": 320,
+      "UNFINISHED_NUMERICAL_DYNAMIC_REWRITE": 16
+    },
+    "rules": {
+      "algebraic-comparator-site": 2,
+      "closed-callable-value": 105,
+      "closed-callback": 10,
+      "closed-context-protocol": 7,
+      "closed-data-attribute": 24,
+      "closed-decorator": 6,
+      "closed-dynamic-call": 121,
+      "closed-import": 3,
+      "closed-import-call": 6,
+      "closed-indirect-call": 1,
+      "closed-indirect-write": 3,
+      "closed-method-call": 222,
+      "closed-modulo": 2,
+      "closed-namespace-value": 5,
+      "closed-reduction": 38,
+      "closed-rounded-call": 410,
+      "closed-rounded-construction": 398,
+      "closed-runtime-reflection": 34,
+      "closed-shadowed-intrinsic": 7,
+      "closed-syntax": 57,
+      "closed-unknown-call": 36,
+      "closed-unknown-member": 23,
+      "closed-unpacked-call": 24,
+      "closed-unproved-arithmetic": 578,
+      "closed-unproved-call": 1050,
+      "direct-float": 157,
+      "implicit-root": 2,
+      "rounded-root": 5,
+      "rounded-vector": 2,
+      "subtract-rounded": 22
+    }
+  },
+  "single_review_records": 1,
+  "effective_after_including_single_review": 3361,
+  "effective_net_including_single_review": -45,
+  "convention_conversion_rows": [
+    "INT1-C0001",
+    "INT1-C0002",
+    "INT1-C0003",
+    "INT1-C0004",
+    "INT1-C0005",
+    "INT1-C0006",
+    "INT1-C0007",
+    "INT1-C0008",
+    "INT1-C0009",
+    "INT1-C0010",
+    "INT1-C0011",
+    "INT1-C0012",
+    "INT1-C0013",
+    "INT1-C0014",
+    "INT1-C0015",
+    "INT1-C0016",
+    "INT1-C0017",
+    "INT1-C0018",
+    "INT1-C0019",
+    "INT1-C0020",
+    "INT1-C0021",
+    "INT1-C0022",
+    "INT1-C0023"
+  ],
+  "immutable": {
+    "legacy_3103": 3103,
+    "m5a_and_m5a2": 287,
+    "m3b_accepted_line": 39,
+    "all_equal": true,
+    "m3b_matches_6c014f5": true
+  },
+  "retired_instrumentation_rows": [
+    "M5A2-S0062",
+    "M5A2-S0063",
+    "M5A2-S0064",
+    "M5A2-S0065",
+    "M5A2-S0066",
+    "M5A2-S0067",
+    "M5A2-S0068",
+    "M5A2-S0069",
+    "M5A2-S0070",
+    "M5A2-S0071",
+    "M5A2-S0072",
+    "M5A2-S0073",
+    "M5A2-S0074",
+    "M5A2-S0075",
+    "M5A2-S0084",
+    "M5A2-S0085",
+    "M5A2-S0086",
+    "M5A2-S0087",
+    "M5A2-S0088",
+    "M5A2-S0089",
+    "M5A2-S0090",
+    "M5A2-S0091",
+    "M5A2-S0092",
+    "M5A2-S0093",
+    "M5A2-S0094",
+    "M5A2-S0095",
+    "M5A2-S0096",
+    "M3b-L0019",
+    "M3b-L0020",
+    "M3b-L0021",
+    "M3b-L0022",
+    "M3b-L0023",
+    "M3b-L0024",
+    "M3b-L0025",
+    "M3b-L0026",
+    "M3b-L0027",
+    "M3b-L0030",
+    "M3b-L0031",
+    "M3b-L0032",
+    "M3b-L0033",
+    "M3b-L0034",
+    "M3b-L0035",
+    "M3b-L0036",
+    "M3b-L0037",
+    "M3b-L0038",
+    "M3b-L0039"
+  ],
+  "instrumentation_review": {
+    "id": "INT1-INSTRUMENTATION",
+    "category": "TEST_ONLY_SOURCE_MUTATION_PROTOCOL",
+    "helper_sha256": "362b9afa9a1c223c831209d812edbd3ad64f949484d8f48fc3c887375a1ba547",
+    "rules": [
+      "closed-unproved-call",
+      "closed-runtime-reflection",
+      "closed-dynamic-call",
+      "closed-method-call",
+      "closed-unknown-member",
+      "closed-data-attribute",
+      "closed-unknown-call",
+      "closed-import",
+      "closed-import-call",
+      "closed-callable-value",
+      "closed-namespace-value",
+      "closed-indirect-call",
+      "closed-syntax"
+    ],
+    "scopes": [
+      {
+        "path": "tests/mutation_support.py",
+        "function": "<module>",
+        "context": "ce31868352693c482585884d38e3a06a0b09c17495a0026d7b83a282e95c8c09"
+      },
+      {
+        "path": "tests/mutation_support.py",
+        "function": "mutated_function",
+        "context": "45c21930c8f4c5bc3d243c4dddc5ac4b58cde7f2c3e49d403b33be358704242c"
+      },
+      {
+        "path": "tests/mutation_support.py",
+        "function": "mutated_callable",
+        "context": "ae3639009b3e9cc36ccec010e055820bf00e450c38b0e8f985b5c04817aabc24"
+      },
+      {
+        "path": "tests/mutation_support.py",
+        "function": "replace_module_callable",
+        "context": "9720921a4d2249d46cb4ee4a6aebef5d1bd00d46cfb11ef1d3f3cfc9c8a112f2"
+      },
+      {
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed"
+      },
+      {
+        "path": "tests/test_m3b_construction3d.py",
+        "function": "_mutate",
+        "context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45"
+      },
+      {
+        "path": "tests/test_int1_semantics.py",
+        "function": "semantic_guard",
+        "context": "163cfd1b705ef00bcbe349d1d6f9d4cda87207359ede21f45331a78aca4696b0"
+      },
+      {
+        "path": "tests/test_int1_semantics.py",
+        "function": "mask_source_hashes",
+        "context": "02c6ee664fa6c3542e61737cb8c77dc5406668cb027e2680cd42d69487269777"
+      },
+      {
+        "path": "tests/test_int1_semantics.py",
+        "function": "inject_semantic_mutation",
+        "context": "c009105e500d08e8e8cd2620ae2e810af4a61a513b62b7df7233dda77b0cf963"
+      }
+    ],
+    "proof_domain": "Only pinned test source-body extraction, unique literal replacement, compilation in copied module globals, patch construction, fixed module selectors and cache invalidation. Numerical oracles, assertions, rounded provenance, arithmetic and algebraic comparator admission are NOT discharged. No source writes; return value is an instrumentation callable, never claimed numerically exact. closed-syntax is used only for the four literal hash-disable lambda callbacks in the pinned mask_source_hashes scope; changing those functions invalidates the review.",
+    "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+  },
+  "exec_inventory_before": [
+    {
+      "path": "tests/test_covers3_membership.py",
+      "function": "test_rotated_support_dimension_gate_catches_internal_degenerate_miscount",
+      "line": 456,
+      "expression": "exec(compile(source.replace(old, \"else:degenerate+=2\"), g03.__file__, \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_e5a2_bilinear_integer.py",
+      "function": "test_integer_bilinear_gate_kills_internal_arithmetic_mutation",
+      "line": 62,
+      "expression": "exec(compile(source.replace(old, new), '<E5a2 integer bilinear mutant>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_e5a2_surface.py",
+      "function": "test_coplanar_internal_mutation_is_killed_by_the_overlap_assertion",
+      "line": 62,
+      "expression": "exec(source.replace('elif loc == 0:','elif False and loc == 0:'),namespace)"
+    },
+    {
+      "path": "tests/test_e5a2_surface.py",
+      "function": "test_internal_fold_side_test_mutation_hits_the_tangent_assertion",
+      "line": 161,
+      "expression": "exec(source.replace(needle,'False'),namespace)"
+    },
+    {
+      "path": "tests/test_e5b_polyhedron_cache.py",
+      "function": "test_cache_vertex_signature_mutation_is_caught",
+      "line": 52,
+      "expression": "exec(compile(source.replace(needle, '()'), '<cache-key-without-vertices>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_e5b_surface_integer.py",
+      "function": "test_integer_parity_internal_boundary_mutant_is_killed",
+      "line": 98,
+      "expression": "exec(source.replace(needle,'False'),ns)"
+    },
+    {
+      "path": "tests/test_e5b_triangle_boolean.py",
+      "function": "test_boolean_internal_boundary_mutations_are_killed",
+      "line": 98,
+      "expression": "exec(compile(source.replace(needle,replacement),'<triangle-boolean-mutant>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_e5b_triangle_near.py",
+      "function": "test_triangle_near_unsafe_plane_threshold_mutation_is_killed_at_closed_boundary",
+      "line": 112,
+      "expression": "exec(source.replace(needle,'gap*gap >= window_squared*dot(normal,normal)'),namespace)"
+    },
+    {
+      "path": "tests/test_frozen_ee_sign.py",
+      "function": "test_exact_surface_cover_gate_kills_internal_source_ring_only_mutation",
+      "line": 237,
+      "expression": "exec(compile(source.replace('if exact_surface:', 'if False:'),\n                 '<mutant: folded surface expansion removed>', 'exec'),namespace)"
+    },
+    {
+      "path": "tests/test_frozen_surface_diagonal.py",
+      "function": "test_missing_diagonal_topology_internal_mutant_is_killed",
+      "line": 60,
+      "expression": "exec(compile(source.replace(needle,'return P'),'<omit-diagonal-topology>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "function": "_mutant_g2",
+      "line": 570,
+      "expression": "exec(compile(src.replace(old, new), mod.__file__, \"exec\"), mod.__dict__)"
+    },
+    {
+      "path": "tests/test_geom3_e5a.py",
+      "function": "test_g6e_near_parallel_legacy_parameter_mutation_is_killed",
+      "line": 193,
+      "expression": "exec(src.replace(old,'return _rounded_parameters(p1, p2, q1, q2)'),ns)"
+    },
+    {
+      "path": "tests/test_geom3_e5a.py",
+      "function": "test_segment_face_extent_mutation_is_killed_through_the_real_path",
+      "line": 207,
+      "expression": "exec(src.replace(old,'if False:'),ns)"
+    },
+    {
+      "path": "tests/test_geom3_face_polygon.py",
+      "function": "test_all_five_call_sites_route_through_the_single_helper",
+      "line": 240,
+      "expression": "exec(compile(source.replace(boundary, 'if False:').replace(ray, 'if True:'),\n                 '<integer-face-interior-disabled>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_geom3_merge.py",
+      "function": "test_rounded_mesh_exact_merge_certificate_has_teeth",
+      "line": 302,
+      "expression": "exec(source.replace(old, new, 1), namespace)"
+    },
+    {
+      "path": "tests/test_hull_robustness.py",
+      "function": "test_sliver_fallback_removes_the_middle_of_three_collinear_vertices",
+      "line": 145,
+      "expression": "exec(src,ns)"
+    },
+    {
+      "path": "tests/test_interlock_e5a.py",
+      "function": "test_normal_noise_rejects_nonzero_rounded_cross_fast_path",
+      "line": 50,
+      "expression": "exec(compile(source.replace(exact, 'sine = norm(cross(B.edge_dir(eb), A.edge_dir(ea)))'),\n                 '<r7fix-nonzero-rounded-cross-mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_kernel2d_review.py",
+      "function": "test_r7_third_vote_hull_vertices_match_and_catch_sign_flip",
+      "line": 118,
+      "expression": "exec(source.replace(step, \"numerator = -(direction[1]*v[0]-direction[0]*v[1])\"), scope)"
+    },
+    {
+      "path": "tests/test_kernel2d_review.py",
+      "function": "test_r7_third_vote_hull_vertices_match_and_catch_sign_flip",
+      "line": 128,
+      "expression": "exec(src.replace(\"worst = min(worst, s)\", \"worst = 1\"), namespace)"
+    },
+    {
+      "path": "tests/test_kernel3d_geom.py",
+      "function": "test_overlap_coplanar_crossing_gate_has_teeth",
+      "line": 185,
+      "expression": "exec(source.replace('return 0 if boundary else 1','return 0 if boundary else -1'),namespace)"
+    },
+    {
+      "path": "tests/test_limit_multi.py",
+      "function": "_mutant_module",
+      "line": 181,
+      "expression": "exec(compile(src.replace(old, new), LM.__file__, \"exec\"), mod.__dict__)"
+    },
+    {
+      "path": "tests/test_m3_global2d.py",
+      "function": "test_internal_mutants_fail_the_expected_assertion.mutated_method",
+      "line": 396,
+      "expression": "exec(compile(source.replace(old, new, 1), \"<M3 internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_open_interval_endpoint_mutation_is_killed_inside_union",
+      "line": 290,
+      "expression": "exec(compile(source.replace(before, after), '<M3 endpoint mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_omitted_convex_piece_mutation_is_killed_inside_decomposition",
+      "line": 304,
+      "expression": "exec(compile(source.replace(before, after), '<M3 lost-piece mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_escape_local_event_fallback_mutation_is_killed_at_exact_root",
+      "line": 321,
+      "expression": "exec(compile(source.replace(before, after), '<M3 local-event mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_2d.py",
+      "function": "test_internal_semantic_mutants_fail_without_source_hash_tripwires.mutate",
+      "line": 264,
+      "expression": "exec(compile(source.replace(old, new, 1), \"<M3b semantic mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_2d.py",
+      "function": "test_internal_semantic_mutants_fail_without_source_hash_tripwires",
+      "line": 279,
+      "expression": "exec(compile(source, \"<M3b strict local-cover mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_removing_local_clipping_is_killed_by_buried_polygon_assertion",
+      "line": 147,
+      "expression": "exec(compile(source.replace('out = []', 'return tuple(candidates)\\n    out = []'), '<semantic clipping mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_using_physical_zero_one_as_exterior_is_killed_on_tight_seam",
+      "line": 164,
+      "expression": "exec(compile(source.replace(before, 'model.classify(G._mean(piece)) != 0'), '<semantic physical 0/1 mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_intersecting_exit_is_checked_and_skip_mutation_is_killed",
+      "line": 185,
+      "expression": "exec(compile(source.replace(before, before+'\\n            rep.skipped_intersecting += 1\\n            continue'), '<semantic exit skip mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_construction3d.py",
+      "function": "_mutate",
+      "line": 219,
+      "expression": "exec(compile(source.replace(before, after), '<M3b internal semantic mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3c_boundary3d.py",
+      "function": "test_strict_only_ee_mutant_dies_at_t3l_semantic_coverage",
+      "line": 206,
+      "expression": "exec(compile(source.replace('>= 0', '> 0'), '<M3c strict EE mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3c_determinism.py",
+      "function": "test_old_lazy_order_internal_mutant_fails_semantic_fields_without_hash_gate",
+      "line": 73,
+      "expression": "exec(compile(source.replace(old, \"\", 1), \"<M3c old lazy order>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "function": "test_pd_first_tie_only_internal_mutation_hits_both_semantic_guards",
+      "line": 75,
+      "expression": "exec(compile(mutated, \"<m4c-pd-first-tie-only-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "function": "test_vv_all_nonzero_internal_mutation_loses_vertex_zero_reference",
+      "line": 122,
+      "expression": "exec(compile(source, \"<m4c-vv-all-nonzero-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_fix_semantics.py",
+      "function": "test_compiled_internal_mutation_fails_new_semantic_assertion_then_restores",
+      "line": 110,
+      "expression": "exec(compile(source.replace(old, new), function.__code__.co_filename + \"::M4cFIX-mutant\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_runner.py",
+      "function": "test_progress_atomic_replace_retries_only_permission_errors",
+      "line": 32,
+      "expression": "exec(compile(runner.PLUGIN, \"<real M4c progress plugin>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_summary.py",
+      "function": "test_summary_internal_category_defects_fail_their_expected_assertion",
+      "line": 121,
+      "expression": "exec(compile(source, \"<M4c summary internal mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m5a2_exact.py",
+      "function": "exact_mutation",
+      "line": 197,
+      "expression": "exec(compile(source.replace(before, after), \"<M5a2 exact source-body mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m5a2_static_runner.py",
+      "function": "test_comparator_site_rule_has_internal_mutation_teeth",
+      "line": 52,
+      "expression": "exec(compile(source.replace(old, \"if False:\"), \"<M5a2 callback rule mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m5a2_static_runner.py",
+      "function": "test_nonfinite_or_nonpositive_timeouts_are_rejected_before_start",
+      "line": 120,
+      "expression": "exec(compile(runner.PLUGIN, \"<invalid watchdog configuration>\", \"exec\"), {})"
+    },
+    {
+      "path": "tests/test_m5a_algebraic.py",
+      "function": "test_semantic_algebra_mutants_fail_the_intended_value_assertion",
+      "line": 278,
+      "expression": "exec(compile(source.replace(old, new), \"<M5a semantic algebra mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m5a_replay.py",
+      "function": "test_swept_projection_padding_mutation_hits_its_semantic_containment_guard",
+      "line": 109,
+      "expression": "exec(compile(source.replace(old, \"pad = F(0)\"), \"<m5a-sweep-padding-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_margin_exact.py",
+      "function": "test_margin_window_and_default_guards_have_internal_mutation_teeth.mutant",
+      "line": 68,
+      "expression": "exec(compile(source, \"<E5b internal margin mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_margin_penetration.py",
+      "function": "test_guard_is_not_a_vertex_inside_check",
+      "line": 226,
+      "expression": "exec(compile(source.replace(marker, \"if False:\"), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_margin_penetration.py",
+      "function": "test_contact_resolution_gate_has_teeth.compiled_mutant",
+      "line": 304,
+      "expression": "exec(compile(source, \"<E5a2 internal margin._resolve mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_2d_directions.py",
+      "function": "test_integer_ve_length_rescaling_mutation_has_teeth",
+      "line": 132,
+      "expression": "exec(compile(source.replace(needle, \"tol = Fraction(tol)\"), \"<PERF-VE-length-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_2d_directions.py",
+      "function": "test_integer_ve_strict_boundary_mutation_has_teeth",
+      "line": 143,
+      "expression": "exec(compile(source.replace(needle, \"return 1 if c1 >= 0 and c2 >= 0 else 0\"),\n                 \"<PERF-VE-strict-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_contact_window.py",
+      "function": "_mutant",
+      "line": 218,
+      "expression": "exec(compile(source, '<PERF window internal mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_perf_covers.py",
+      "function": "test_integer_simplex_support_tie_gate_has_internal_teeth",
+      "line": 137,
+      "expression": "exec(compile(mutant, \"<PERF-simplex-tie-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_covers.py",
+      "function": "test_integer_simplex_rescaling_gate_has_internal_teeth",
+      "line": 149,
+      "expression": "exec(compile(mutant, \"<PERF-simplex-scale-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_edge_frame.py",
+      "function": "test_integer_edge_direction_sign_mutation_has_teeth",
+      "line": 205,
+      "expression": "exec(compile(source.replace(needle, \"d = _integer_ray(tuple(abs(c) for c in d))\"),\n                 \"<PERF-edge-sign-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_edge_frame.py",
+      "function": "test_integer_edge_anisotropic_rescaling_mutation_has_teeth",
+      "line": 217,
+      "expression": "exec(compile(source.replace(needle, \"c.numerator\"), \"<PERF-edge-denominator-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_integer_geometry.py",
+      "function": "test_perf_integer_distance_scale_mutation_has_teeth",
+      "line": 137,
+      "expression": "exec(source.replace('min(values)/(den*den)', 'min(values)/den'), namespace)"
+    },
+    {
+      "path": "tests/test_perf_integer_geometry.py",
+      "function": "test_perf_integer_sat_boundary_mutation_has_teeth",
+      "line": 147,
+      "expression": "exec(source.replace('if gap > 0:', 'if gap >= 0:'), namespace)"
+    },
+    {
+      "path": "tests/test_perf_interlock.py",
+      "function": "test_candidate_cache_has_teeth_when_signature_omits_offset",
+      "line": 82,
+      "expression": "exec(source.replace(before, after), namespace)"
+    },
+    {
+      "path": "tests/test_perf_interlock.py",
+      "function": "test_exact_aabb_pruning_keeps_tangent_events_and_detects_strict_bound_mutation",
+      "line": 123,
+      "expression": "exec(source, namespace)"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_arrangement_aabb_is_closed_and_mutation_removing_boundary_has_teeth",
+      "line": 73,
+      "expression": "exec(mutated, namespace)"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_arrangement_source_plane_sign_mutation_is_caught_by_first_witness",
+      "line": 88,
+      "expression": "exec(mutated, namespace)"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_coplanar_grouping_keeps_the_plane_offset_not_only_its_direction",
+      "line": 105,
+      "expression": "exec(mutated, namespace)"
+    },
+    {
+      "path": "tests/test_r10_cone_contract.py",
+      "function": "test_reflex_strict_gate_kills_original_source_mutation",
+      "line": 62,
+      "expression": "exec(compile(source, \"<r10_original_reflex_mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_sqrt_source_rounded_primal_mutation_is_caught",
+      "line": 88,
+      "expression": "exec(compile(mutant, \"<r10-rounded-primal-sqrt>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_trig_source_unchecked_product_mutation_is_caught",
+      "line": 100,
+      "expression": "exec(compile(source.replace(needle, \"c * a\"), \"<r10-unchecked-trig>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_half_power_source_decimal_fallback_mutation_is_caught",
+      "line": 151,
+      "expression": "exec(compile(source.replace(needle, \"if False:\"), \"<r10-decimal-half-power>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_atan2_source_float_fast_path_mutation_is_caught",
+      "line": 162,
+      "expression": "exec(compile(source.replace(needle, \"u, v, a, b = (float(q) for q in (u, v, a, b))\"),\n                 \"<r10-angular-float-path>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_power_source_removed_range_check_mutation_is_caught",
+      "line": 180,
+      "expression": "exec(compile(mutated, \"<r10-unchecked-power-primal>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_initial_boundary.py",
+      "function": "test_initial_boundary_gate_kills_removal_inside_first_entrance",
+      "line": 146,
+      "expression": "exec(source.replace(needle,'if False:  # mutant: discard initial boundary'),namespace)"
+    },
+    {
+      "path": "tests/test_r10_initial_boundary.py",
+      "function": "test_initial_boundary_gate_kills_removal_of_finite_domain_filter",
+      "line": 158,
+      "expression": "exec(source.replace(needle,'if dot(n, p) == 0:'),namespace)"
+    },
+    {
+      "path": "tests/test_r10_static_construction.py",
+      "function": "test_j01_seven_mutations_inside_real_cone_path_are_rejected",
+      "line": 111,
+      "expression": "exec(compile(source.replace(old, REAL_MUTANTS[index]), \"<j01 real cone mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_static_construction.py",
+      "function": "test_j01_removing_keyword_step_inside_gate_trips_real_cone_assertion",
+      "line": 173,
+      "expression": "exec(compile(source.replace(step, \"return node.args\"), \"<j01 gate keyword rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_numeric_types.py",
+      "function": "test_numeric_type_gate_kills_reinstated_fraction_only_shortcut",
+      "line": 186,
+      "expression": "exec(compile(mutant, '<R11 K02 old Fraction-only type gate>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected",
+      "line": 47,
+      "expression": "exec(compile(function_source.replace(original, body), \"<k01 actual cone implant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "_mutant_scan",
+      "line": 202,
+      "expression": "exec(compile(source.replace(old, new), \"<k01 internal scanner rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "test_k01_removing_zero_path_join_trips_the_real_cone_assertion",
+      "line": 213,
+      "expression": "exec(compile(source.replace(original, \"new_head = backedge or head\"), \"<k01 zero-path rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_real_cone_higher_order_implants_change_answer_and_are_rejected",
+      "line": 46,
+      "expression": "exec(compile(function.replace(original, body), \"<l01 actual cone implant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_disabling_closed_pass_trips_real_cone_rejection_assertion",
+      "line": 125,
+      "expression": "exec(compile(mutant_scanner_source, \"<l01 internal closed-pass rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_runtime_annotation_and_reflection_cannot_hide_rounding",
+      "line": 292,
+      "expression": "exec(compile(source, \"<l01 executed annotation/reflection>\", \"exec\", dont_inherit=True), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_numeric_formatting_is_not_a_proved_exact_constructor",
+      "line": 317,
+      "expression": "exec(compile(source, \"<l01 numeric formatting>\", \"exec\", dont_inherit=True), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_implicit_binary64_arithmetic_requires_type_proof",
+      "line": 345,
+      "expression": "exec(compile(source, \"<l01 implicit builtin construction>\", \"exec\", dont_inherit=True), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_power_roots_reject_rounding_retained_by_real_control_flow",
+      "line": 47,
+      "expression": "exec(compile(source, \"<actual premature square before root>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_rounded_call_or_helper_return_survives_control_flow",
+      "line": 93,
+      "expression": "exec(compile(source, \"<actual rounded function result through CFG>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_nested_loop_transfer_cannot_erase_a_helper_return_summary",
+      "line": 126,
+      "expression": "exec(compile(source, \"<actual nested loop exit before clean overwrite>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_suppressed_exception_prefix_cannot_erase_a_helper_return_summary",
+      "line": 151,
+      "expression": "exec(compile(source, \"<actual suppressed exception before clean overwrite>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_flow_adversarial.py",
+      "function": "test_first_order_flow_does_not_hide_executed_rounding",
+      "line": 240,
+      "expression": "exec(compile(source, \"<R12FIXb actual premature-rounding source>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_g6m02_internal_return_start_mutant_is_rejected_by_the_migrated_3d_gate",
+      "line": 178,
+      "expression": "exec(compile(source.replace(needle, \"tuple(scalar_rational(_mapped_value) for _mapped_value in x0)\"),\n                 \"<r13-internal-3d-return-start>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_internal_return_start_mutant_is_rejected_by_the_migrated_2d_gate",
+      "line": 191,
+      "expression": "exec(compile(source.replace(needle, \"x = vector_rational(x0)\"),\n                 \"<r13-internal-2d-return-start>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_internal_concave_return_start_mutant_is_rejected",
+      "line": 203,
+      "expression": "exec(compile(source.replace(needle, 'return Entrance2(\"entrance\", scalar_rational(t), vector_rational(x0),'),\n                 \"<r13-internal-concave-return-start>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_escape_display_rounding_step_removal_is_rejected_in_the_real_function",
+      "line": 215,
+      "expression": "exec(compile(source.replace(needle, \"display=display\"),\n                 \"<r13-remove-escape-outward-rounding>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_escape_exact_offset_drop_height_mutant_is_rejected_in_the_real_function",
+      "line": 227,
+      "expression": "exec(compile(source.replace(needle, \"F(offset[2])\"),\n                 \"<r13-remove-escape-height-from-offset>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_frozen_margin_differential.py",
+      "function": "test_frozen_differential_gate_rejects_internal_early_raw_rounding",
+      "line": 121,
+      "expression": "exec(compile(source, \"<r13-unit-jet-rounded-raw>\", \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r13fix_geometry_differential.py",
+      "function": "test_geometry_differential_rejects_real_internal_early_sqrt_mutation",
+      "line": 326,
+      "expression": "exec(source.replace(old,\"return 0.5 * _eg.sqrt_rational(_eg.dot(n, n), allow_underflow=True)\"),scope)"
+    },
+    {
+      "path": "tests/test_r13fix_geometry_differential.py",
+      "function": "test_noise_differential_gate_rejects_internal_early_absolute_floor",
+      "line": 355,
+      "expression": "exec(source[:start]+old,scope)"
+    },
+    {
+      "path": "tests/test_r13fix_mechanics_differential.py",
+      "function": "test_friction_component_gate_rejects_internal_rounded_product",
+      "line": 196,
+      "expression": "exec(compile(source.replace(needle, \"normal[i] + mu * t[i]\"), \"<r13-friction-early-product>\", \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_lifecycle_rounding_reaches_construction_diagnostic",
+      "line": 84,
+      "expression": "exec(compile(source, \"<r13-runtime>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_related_lifecycle_shapes_preserve_field_rounding",
+      "line": 146,
+      "expression": "exec(compile(source, \"<r13-related-runtime>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_undecorated_subclass_inherits_generated_dataclass_initialization",
+      "line": 210,
+      "expression": "exec(compile(source, \"<r13-inherited-dataclass>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_domain_check_removal_is_caught_inside_the_real_input_guard",
+      "line": 165,
+      "expression": "exec(compile(source.replace(old, \"if False:\"), \"<R13FIXb removed guard>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_mixed_gate_rejects_real_internal_early_coercion",
+      "line": 175,
+      "expression": "exec(compile(source.replace(\"float_algebra((*a, *b))\", \"all(type(x) is float for x in (*a, *b))\"),\n                 \"<R13FIXb early coercion>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_scalar_output_guard_removal_is_caught",
+      "line": 187,
+      "expression": "exec(compile(source.replace(old, \"if False:\"), \"<R13FIXb underflow guard removed>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_face_noise_internal_early_edge_length_is_caught",
+      "line": 197,
+      "expression": "exec(compile(source.replace(\"_extended_edge_length(\", \"Fraction(norm(\" ).replace(\n        \"(f[i], f[(i+1)%len(f)])))\", \"(f[i], f[(i+1)%len(f)]))))\"),\n        \"<R13FIXb early edge length>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_dual_margin.py",
+      "function": "_internal_mutant",
+      "line": 306,
+      "expression": "exec(compile(source.replace(old,new), f\"<r13fixb-{name}-mutant>\", \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r13fixb_dual_margin.py",
+      "function": "test_subnormal_internal_threshold_early_rounding_mutant_is_caught",
+      "line": 432,
+      "expression": "exec(compile(source.replace(old,new),f\"<r13fixb-subnormal-{name}>\",\"exec\"),scope)"
+    },
+    {
+      "path": "tests/test_r13fixb_kernel_numeric.py",
+      "function": "_install_internal_expression_fault",
+      "line": 430,
+      "expression": "exec(compile(source.replace(old,new,1),'<r13fixb-internal-expression-fault>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_readers_oracles.py",
+      "function": "_mutate",
+      "line": 303,
+      "expression": "exec(compile(source, module.__file__, \"exec\"), mutant.__dict__)"
+    },
+    {
+      "path": "tests/test_r14_claims.py",
+      "function": "test_face_noise_strict_constant_gate_rejects_internal_eight_u_bias",
+      "line": 33,
+      "expression": "exec(source.replace(needle,replacement),scope)"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_exact_inward_certificate_has_teeth_when_removed",
+      "line": 77,
+      "expression": "exec(source.replace(needle,\"if True:\"),scope)"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_cohesion_projection_is_independently_checked_even_if_constructor_lies",
+      "line": 144,
+      "expression": "exec(source.replace(needle,\"projected = tuple(v)\"),scope)"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_two_d_neighbor_removal_is_caught_by_the_unchanged_near_lock_gate",
+      "line": 206,
+      "expression": "exec(source.replace(needle,\"if False:\"),scope)"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_angular_window_guard_has_an_internal_mutation_tooth",
+      "line": 42,
+      "expression": "exec(source.replace(needle, \"\"), scope)"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_shape_phase_guard_has_an_internal_mutation_tooth",
+      "line": 57,
+      "expression": "exec(source.replace(needle, \"\"), scope)"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_shape_complete_coordinate_rounding_has_an_internal_mutation_tooth",
+      "line": 91,
+      "expression": "exec(source.replace(needle,\"else float(value)\"),namespace)"
+    },
+    {
+      "path": "tests/test_r14_dual.py",
+      "function": "_mutated_function",
+      "line": 75,
+      "expression": "exec(compile(source.replace(old, new), \"<r14-internal-mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r14_readers.py",
+      "function": "_internal_mutant",
+      "line": 186,
+      "expression": "exec(compile(source.replace(old, new), \"<R14 reader internal mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r14_showcase.py",
+      "function": "_builder",
+      "line": 29,
+      "expression": "exec(compile(ast.Module(body=[node], type_ignores=[]), str(path), \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r14_tool_readers.py",
+      "function": "test_r14_ingest_child_checks_before_vertex_float",
+      "line": 101,
+      "expression": "exec(compile(ingest_bdda3d.CHILD, \"<local-export-child-stub>\", \"exec\"), {})"
+    },
+    {
+      "path": "tests/test_r15fix_force_reports.py",
+      "function": "test_force_report_internal_mutants_hit_resultant_or_domain_assertion",
+      "line": 106,
+      "expression": "exec(compile(source.replace(old, new), \"<O01 actual internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r15fix_geometry.py",
+      "function": "_mutate",
+      "line": 125,
+      "expression": "exec(compile(source.replace(before, after), original.__code__.co_filename, 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r15fix_numeric_decode.py",
+      "function": "_internal_mutant",
+      "line": 116,
+      "expression": "exec(compile(source.replace(old, new), \"<R15 reader internal mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r15fix_shape.py",
+      "function": "test_shape_pair_internal_premature_center_rounding_mutation_has_teeth",
+      "line": 148,
+      "expression": "exec(source.replace(needle,replacement),scope)"
+    },
+    {
+      "path": "tests/test_r6fix_construction.py",
+      "function": "test_g6f08_relative_projection_gate_has_teeth",
+      "line": 107,
+      "expression": "exec(source.replace(step, \"return tuple(scalar_rational(_mapped_value) for _mapped_value in point)\"), scope)"
+    },
+    {
+      "path": "tests/test_r6fix_dual_lp.py",
+      "function": "_mutant_function",
+      "line": 181,
+      "expression": "exec(compile(source.replace(old, new), function.__code__.co_filename, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f01_mutation_restoring_cached_alias_is_caught",
+      "line": 144,
+      "expression": "exec(compile(source, '<r6fix-mutation-cached-alias>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f01_mutation_returning_raw_topology_cache_is_caught",
+      "line": 154,
+      "expression": "exec(compile(source.replace('return list(self._edges)', 'return self._edges'),\n                 '<r6fix-mutation-topology-alias>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f09_mutation_rounding_nominal_report_before_exact_solve_is_caught",
+      "line": 252,
+      "expression": "exec(compile(source.replace('At = translate_exact(A, offset)', 'At = A.translated(offset)'),\n                 '<r6fix-mutation-rounded-nominal-body>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r7fix_dual.py",
+      "function": "test_g6g07_input_only_fast_path_mutation_is_caught",
+      "line": 63,
+      "expression": "exec(compile(source.replace(marker, injected), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r7fix_g03.py",
+      "function": "test_g03_missing_covers_never_pass_an_overflowed_acceptance_bound",
+      "line": 16,
+      "expression": "exec(compile(source.replace('out.append(c)','pass'),__file__,'exec'),scope)"
+    },
+    {
+      "path": "tests/test_r7fix_g03.py",
+      "function": "test_g03_a_finite_minimum_cannot_hide_a_nonfinite_candidate",
+      "line": 35,
+      "expression": "exec(compile(source,__file__,'exec'),scope)"
+    },
+    {
+      "path": "tests/test_r7fix_geom3.py",
+      "function": "_inject",
+      "line": 134,
+      "expression": "exec(compile(source.replace(old,new),'<r7fix-internal-mutation-'+name+'>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r7fix_geom3.py",
+      "function": "test_g6g05_internal_mutation_rounding_norm_before_halving_is_caught",
+      "line": 147,
+      "expression": "exec(compile(source.replace('_eg.sqrt_rational(_eg.dot(n, n) / 4)',\n                               '_eg.sqrt_rational(_eg.dot(n, n)) / 2'),'<r7fix-area-mutation>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r7fix_limit_construction.py",
+      "function": "test_limit_normal_early_rounding_mutation_is_caught",
+      "line": 52,
+      "expression": "exec(compile(source, '<internal LimitContact normalization mutant>', 'exec'), scope)"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "convex_view_mutant",
+      "line": 37,
+      "expression": "exec(compile(source.replace(anchor, replacement), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "reject_z_inside_cone_filter",
+      "line": 48,
+      "expression": "exec(compile(source, __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "all_branch_convex_view_mutant",
+      "line": 131,
+      "expression": "exec(compile(source,__file__,\"exec\"),scope)"
+    },
+    {
+      "path": "tests/test_r8fix_initial_state3.py",
+      "function": "test_3d_topology_gate_kills_internal_loss_of_noncentral_step_bound",
+      "line": 176,
+      "expression": "exec(source.replace(needle,'step = F(1)'),namespace)"
+    },
+    {
+      "path": "tests/test_r8fix_margin_gap_gate.py",
+      "function": "_arithmetic_fault_inside_margin_contacts",
+      "line": 25,
+      "expression": "exec(compile(source.replace(anchor, \"gap = \" + replacement), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r9fix_construction.py",
+      "function": "test_g6i03_real_internal_component_first_mutation_is_rejected",
+      "line": 69,
+      "expression": "exec(compile(source.replace(old, \"return norm(_float_vector(p)), noise\"),\n                 \"<G6I-03 internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_construction.py",
+      "function": "test_g6i04_real_internal_squared_first_mutation_is_rejected",
+      "line": 97,
+      "expression": "exec(compile(ast.fix_missing_locations(source), \"<G6I-04 internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_construction_helpers.py",
+      "function": "test_r9_support_oracle_internal_pre_rounding_mutation_is_rejected",
+      "line": 62,
+      "expression": "exec(compile(source.replace(old,bad),\"<R9 support oracle internal mutant>\",\"exec\"),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_construction_helpers.py",
+      "function": "test_r9_line_gap_oracle_internal_pre_normalization_mutation_is_rejected",
+      "line": 76,
+      "expression": "exec(compile(source.replace(old,bad),\"<R9 line gap oracle internal mutant>\",\"exec\"),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_g03_construction.py",
+      "function": "_bad_witness_report",
+      "line": 18,
+      "expression": "exec(compile(source, '<r9-g03-invalid-witness>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_g03_construction.py",
+      "function": "test_g03_display_validation_removal_mutant_is_caught",
+      "line": 42,
+      "expression": "exec(compile(source, '<r9-g03-no-display-validation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_mechanics_construction.py",
+      "function": "test_r9_tangent_intermediate_norm_mutant_is_caught",
+      "line": 67,
+      "expression": "exec(compile(source.replace(needle, mutant), '<r9-tangent-intermediate-norm>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_mechanics_construction.py",
+      "function": "test_r9_dual_sqrt_implicit_float_mutant_is_caught",
+      "line": 78,
+      "expression": "exec(compile(source.replace(needle, 'return math.sqrt(x)'), '<r9-implicit-root-float>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_normalized_input.py",
+      "function": "test_normalized_difference_float_nn_mutant_hits_target_assertion",
+      "line": 38,
+      "expression": "exec(compile(source.replace(old,\"nn\"),\n                 \"<R9 normalized nn rationalization removed>\",\"exec\"),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_oracle_helpers.py",
+      "function": "test_r9_oracle_witness_rounding_mutant_is_caught",
+      "line": 76,
+      "expression": "exec(compile(source.replace('exact=True', 'exact=False'), '<r9-rounded-witness>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_oracle_helpers.py",
+      "function": "test_r9_oracle_rounded_gap_height_mutant_is_caught",
+      "line": 88,
+      "expression": "exec(compile(source.replace(needle, defect), '<r9-rounded-height-ratio>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_solid_cones.py",
+      "function": "test_solid_cone_gate_rejects_internal_restoration_of_source_topology",
+      "line": 72,
+      "expression": "exec(compile(source,'<r9-solid-cone-mutant>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_topology.py",
+      "function": "test_g6i02_restoring_source_ring_topology_mutant_is_caught",
+      "line": 141,
+      "expression": "exec(compile(source.replace(needle, 'P = self'), '<r9-source-ring-topology>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_window_distance.py",
+      "function": "test_window_distance_gate_rejects_restored_display_construction",
+      "line": 37,
+      "expression": "exec(compile(source.replace(needle,'elif contact_window is None or not ctol:\\n            w = _exact.sqrt_rational(d2, allow_underflow=True)'),\n                 '<r9-window-distance-mutant>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_tf_reader.py",
+      "function": "_mutant_reader",
+      "line": 153,
+      "expression": "exec(compile(src.replace(old, new), tf_probe.__file__, \"exec\"), mod.__dict__)"
+    }
+  ],
+  "exec_inventory_after": [
+    {
+      "path": "tests/mutation_support.py",
+      "function": "mutated_function",
+      "line": 23,
+      "expression": "exec(compile(source, \"<internal source-body mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_covers3_membership.py",
+      "function": "test_rotated_support_dimension_gate_catches_internal_degenerate_miscount",
+      "line": 456,
+      "expression": "exec(compile(source.replace(old, \"else:degenerate+=2\"), g03.__file__, \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_e5a2_bilinear_integer.py",
+      "function": "test_integer_bilinear_gate_kills_internal_arithmetic_mutation",
+      "line": 62,
+      "expression": "exec(compile(source.replace(old, new), '<E5a2 integer bilinear mutant>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_e5a2_surface.py",
+      "function": "test_coplanar_internal_mutation_is_killed_by_the_overlap_assertion",
+      "line": 62,
+      "expression": "exec(source.replace('elif loc == 0:','elif False and loc == 0:'),namespace)"
+    },
+    {
+      "path": "tests/test_e5a2_surface.py",
+      "function": "test_internal_fold_side_test_mutation_hits_the_tangent_assertion",
+      "line": 161,
+      "expression": "exec(source.replace(needle,'False'),namespace)"
+    },
+    {
+      "path": "tests/test_e5b_polyhedron_cache.py",
+      "function": "test_cache_vertex_signature_mutation_is_caught",
+      "line": 52,
+      "expression": "exec(compile(source.replace(needle, '()'), '<cache-key-without-vertices>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_e5b_surface_integer.py",
+      "function": "test_integer_parity_internal_boundary_mutant_is_killed",
+      "line": 98,
+      "expression": "exec(source.replace(needle,'False'),ns)"
+    },
+    {
+      "path": "tests/test_e5b_triangle_boolean.py",
+      "function": "test_boolean_internal_boundary_mutations_are_killed",
+      "line": 98,
+      "expression": "exec(compile(source.replace(needle,replacement),'<triangle-boolean-mutant>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_e5b_triangle_near.py",
+      "function": "test_triangle_near_unsafe_plane_threshold_mutation_is_killed_at_closed_boundary",
+      "line": 112,
+      "expression": "exec(source.replace(needle,'gap*gap >= window_squared*dot(normal,normal)'),namespace)"
+    },
+    {
+      "path": "tests/test_frozen_ee_sign.py",
+      "function": "test_exact_surface_cover_gate_kills_internal_source_ring_only_mutation",
+      "line": 237,
+      "expression": "exec(compile(source.replace('if exact_surface:', 'if False:'),\n                 '<mutant: folded surface expansion removed>', 'exec'),namespace)"
+    },
+    {
+      "path": "tests/test_frozen_surface_diagonal.py",
+      "function": "test_missing_diagonal_topology_internal_mutant_is_killed",
+      "line": 60,
+      "expression": "exec(compile(source.replace(needle,'return P'),'<omit-diagonal-topology>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "function": "_mutant_g2",
+      "line": 570,
+      "expression": "exec(compile(src.replace(old, new), mod.__file__, \"exec\"), mod.__dict__)"
+    },
+    {
+      "path": "tests/test_geom3_e5a.py",
+      "function": "test_g6e_near_parallel_legacy_parameter_mutation_is_killed",
+      "line": 193,
+      "expression": "exec(src.replace(old,'return _rounded_parameters(p1, p2, q1, q2)'),ns)"
+    },
+    {
+      "path": "tests/test_geom3_e5a.py",
+      "function": "test_segment_face_extent_mutation_is_killed_through_the_real_path",
+      "line": 207,
+      "expression": "exec(src.replace(old,'if False:'),ns)"
+    },
+    {
+      "path": "tests/test_geom3_face_polygon.py",
+      "function": "test_all_five_call_sites_route_through_the_single_helper",
+      "line": 240,
+      "expression": "exec(compile(source.replace(boundary, 'if False:').replace(ray, 'if True:'),\n                 '<integer-face-interior-disabled>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_geom3_merge.py",
+      "function": "test_rounded_mesh_exact_merge_certificate_has_teeth",
+      "line": 302,
+      "expression": "exec(source.replace(old, new, 1), namespace)"
+    },
+    {
+      "path": "tests/test_hull_robustness.py",
+      "function": "test_sliver_fallback_removes_the_middle_of_three_collinear_vertices",
+      "line": 145,
+      "expression": "exec(src,ns)"
+    },
+    {
+      "path": "tests/test_interlock_e5a.py",
+      "function": "test_normal_noise_rejects_nonzero_rounded_cross_fast_path",
+      "line": 50,
+      "expression": "exec(compile(source.replace(exact, 'sine = norm(cross(B.edge_dir(eb), A.edge_dir(ea)))'),\n                 '<r7fix-nonzero-rounded-cross-mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_kernel2d_review.py",
+      "function": "test_r7_third_vote_hull_vertices_match_and_catch_sign_flip",
+      "line": 118,
+      "expression": "exec(source.replace(step, \"numerator = -(direction[1]*v[0]-direction[0]*v[1])\"), scope)"
+    },
+    {
+      "path": "tests/test_kernel2d_review.py",
+      "function": "test_r7_third_vote_hull_vertices_match_and_catch_sign_flip",
+      "line": 128,
+      "expression": "exec(src.replace(\"worst = min(worst, s)\", \"worst = 1\"), namespace)"
+    },
+    {
+      "path": "tests/test_kernel3d_geom.py",
+      "function": "test_overlap_coplanar_crossing_gate_has_teeth",
+      "line": 185,
+      "expression": "exec(source.replace('return 0 if boundary else 1','return 0 if boundary else -1'),namespace)"
+    },
+    {
+      "path": "tests/test_limit_multi.py",
+      "function": "_mutant_module",
+      "line": 181,
+      "expression": "exec(compile(src.replace(old, new), LM.__file__, \"exec\"), mod.__dict__)"
+    },
+    {
+      "path": "tests/test_m3b_2d.py",
+      "function": "test_internal_semantic_mutants_fail_without_source_hash_tripwires.mutate",
+      "line": 264,
+      "expression": "exec(compile(source.replace(old, new, 1), \"<M3b semantic mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_2d.py",
+      "function": "test_internal_semantic_mutants_fail_without_source_hash_tripwires",
+      "line": 279,
+      "expression": "exec(compile(source, \"<M3b strict local-cover mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_removing_local_clipping_is_killed_by_buried_polygon_assertion",
+      "line": 147,
+      "expression": "exec(compile(source.replace('out = []', 'return tuple(candidates)\\n    out = []'), '<semantic clipping mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_using_physical_zero_one_as_exterior_is_killed_on_tight_seam",
+      "line": 164,
+      "expression": "exec(compile(source.replace(before, 'model.classify(G._mean(piece)) != 0'), '<semantic physical 0/1 mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_intersecting_exit_is_checked_and_skip_mutation_is_killed",
+      "line": 185,
+      "expression": "exec(compile(source.replace(before, before+'\\n            rep.skipped_intersecting += 1\\n            continue'), '<semantic exit skip mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3c_boundary3d.py",
+      "function": "test_strict_only_ee_mutant_dies_at_t3l_semantic_coverage",
+      "line": 206,
+      "expression": "exec(compile(source.replace('>= 0', '> 0'), '<M3c strict EE mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3c_determinism.py",
+      "function": "test_old_lazy_order_internal_mutant_fails_semantic_fields_without_hash_gate",
+      "line": 73,
+      "expression": "exec(compile(source.replace(old, \"\", 1), \"<M3c old lazy order>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m3_global2d.py",
+      "function": "test_internal_mutants_fail_the_expected_assertion.mutated_method",
+      "line": 396,
+      "expression": "exec(compile(source.replace(old, new, 1), \"<M3 internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_open_interval_endpoint_mutation_is_killed_inside_union",
+      "line": 290,
+      "expression": "exec(compile(source.replace(before, after), '<M3 endpoint mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_omitted_convex_piece_mutation_is_killed_inside_decomposition",
+      "line": 304,
+      "expression": "exec(compile(source.replace(before, after), '<M3 lost-piece mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_escape_local_event_fallback_mutation_is_killed_at_exact_root",
+      "line": 321,
+      "expression": "exec(compile(source.replace(before, after), '<M3 local-event mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "function": "test_pd_first_tie_only_internal_mutation_hits_both_semantic_guards",
+      "line": 75,
+      "expression": "exec(compile(mutated, \"<m4c-pd-first-tie-only-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "function": "test_vv_all_nonzero_internal_mutation_loses_vertex_zero_reference",
+      "line": 122,
+      "expression": "exec(compile(source, \"<m4c-vv-all-nonzero-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_fix_semantics.py",
+      "function": "test_compiled_internal_mutation_fails_new_semantic_assertion_then_restores",
+      "line": 110,
+      "expression": "exec(compile(source.replace(old, new), function.__code__.co_filename + \"::M4cFIX-mutant\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_runner.py",
+      "function": "test_progress_atomic_replace_retries_only_permission_errors",
+      "line": 32,
+      "expression": "exec(compile(runner.PLUGIN, \"<real M4c progress plugin>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m4c_summary.py",
+      "function": "test_summary_internal_category_defects_fail_their_expected_assertion",
+      "line": 121,
+      "expression": "exec(compile(source, \"<M4c summary internal mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_m5a2_static_runner.py",
+      "function": "test_nonfinite_or_nonpositive_timeouts_are_rejected_before_start",
+      "line": 215,
+      "expression": "exec(compile(runner.PLUGIN, \"<invalid watchdog configuration>\", \"exec\"), {})"
+    },
+    {
+      "path": "tests/test_margin_exact.py",
+      "function": "test_margin_window_and_default_guards_have_internal_mutation_teeth.mutant",
+      "line": 68,
+      "expression": "exec(compile(source, \"<E5b internal margin mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_margin_penetration.py",
+      "function": "test_guard_is_not_a_vertex_inside_check",
+      "line": 226,
+      "expression": "exec(compile(source.replace(marker, \"if False:\"), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_margin_penetration.py",
+      "function": "test_contact_resolution_gate_has_teeth.compiled_mutant",
+      "line": 304,
+      "expression": "exec(compile(source, \"<E5a2 internal margin._resolve mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_2d_directions.py",
+      "function": "test_integer_ve_length_rescaling_mutation_has_teeth",
+      "line": 132,
+      "expression": "exec(compile(source.replace(needle, \"tol = Fraction(tol)\"), \"<PERF-VE-length-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_2d_directions.py",
+      "function": "test_integer_ve_strict_boundary_mutation_has_teeth",
+      "line": 143,
+      "expression": "exec(compile(source.replace(needle, \"return 1 if c1 >= 0 and c2 >= 0 else 0\"),\n                 \"<PERF-VE-strict-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_contact_window.py",
+      "function": "_mutant",
+      "line": 218,
+      "expression": "exec(compile(source, '<PERF window internal mutation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_perf_covers.py",
+      "function": "test_integer_simplex_support_tie_gate_has_internal_teeth",
+      "line": 137,
+      "expression": "exec(compile(mutant, \"<PERF-simplex-tie-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_covers.py",
+      "function": "test_integer_simplex_rescaling_gate_has_internal_teeth",
+      "line": 149,
+      "expression": "exec(compile(mutant, \"<PERF-simplex-scale-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_edge_frame.py",
+      "function": "test_integer_edge_direction_sign_mutation_has_teeth",
+      "line": 205,
+      "expression": "exec(compile(source.replace(needle, \"d = _integer_ray(tuple(abs(c) for c in d))\"),\n                 \"<PERF-edge-sign-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_edge_frame.py",
+      "function": "test_integer_edge_anisotropic_rescaling_mutation_has_teeth",
+      "line": 217,
+      "expression": "exec(compile(source.replace(needle, \"c.numerator\"), \"<PERF-edge-denominator-mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_perf_integer_geometry.py",
+      "function": "test_perf_integer_distance_scale_mutation_has_teeth",
+      "line": 137,
+      "expression": "exec(source.replace('min(values)/(den*den)', 'min(values)/den'), namespace)"
+    },
+    {
+      "path": "tests/test_perf_integer_geometry.py",
+      "function": "test_perf_integer_sat_boundary_mutation_has_teeth",
+      "line": 147,
+      "expression": "exec(source.replace('if gap > 0:', 'if gap >= 0:'), namespace)"
+    },
+    {
+      "path": "tests/test_perf_interlock.py",
+      "function": "test_candidate_cache_has_teeth_when_signature_omits_offset",
+      "line": 82,
+      "expression": "exec(source.replace(before, after), namespace)"
+    },
+    {
+      "path": "tests/test_perf_interlock.py",
+      "function": "test_exact_aabb_pruning_keeps_tangent_events_and_detects_strict_bound_mutation",
+      "line": 123,
+      "expression": "exec(source, namespace)"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_arrangement_aabb_is_closed_and_mutation_removing_boundary_has_teeth",
+      "line": 73,
+      "expression": "exec(mutated, namespace)"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_arrangement_source_plane_sign_mutation_is_caught_by_first_witness",
+      "line": 88,
+      "expression": "exec(mutated, namespace)"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_coplanar_grouping_keeps_the_plane_offset_not_only_its_direction",
+      "line": 105,
+      "expression": "exec(mutated, namespace)"
+    },
+    {
+      "path": "tests/test_r10_cone_contract.py",
+      "function": "test_reflex_strict_gate_kills_original_source_mutation",
+      "line": 62,
+      "expression": "exec(compile(source, \"<r10_original_reflex_mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_sqrt_source_rounded_primal_mutation_is_caught",
+      "line": 88,
+      "expression": "exec(compile(mutant, \"<r10-rounded-primal-sqrt>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_trig_source_unchecked_product_mutation_is_caught",
+      "line": 100,
+      "expression": "exec(compile(source.replace(needle, \"c * a\"), \"<r10-unchecked-trig>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_half_power_source_decimal_fallback_mutation_is_caught",
+      "line": 151,
+      "expression": "exec(compile(source.replace(needle, \"if False:\"), \"<r10-decimal-half-power>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_atan2_source_float_fast_path_mutation_is_caught",
+      "line": 162,
+      "expression": "exec(compile(source.replace(needle, \"u, v, a, b = (float(q) for q in (u, v, a, b))\"),\n                 \"<r10-angular-float-path>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_power_source_removed_range_check_mutation_is_caught",
+      "line": 180,
+      "expression": "exec(compile(mutated, \"<r10-unchecked-power-primal>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_initial_boundary.py",
+      "function": "test_initial_boundary_gate_kills_removal_inside_first_entrance",
+      "line": 146,
+      "expression": "exec(source.replace(needle,'if False:  # mutant: discard initial boundary'),namespace)"
+    },
+    {
+      "path": "tests/test_r10_initial_boundary.py",
+      "function": "test_initial_boundary_gate_kills_removal_of_finite_domain_filter",
+      "line": 158,
+      "expression": "exec(source.replace(needle,'if dot(n, p) == 0:'),namespace)"
+    },
+    {
+      "path": "tests/test_r10_static_construction.py",
+      "function": "test_j01_seven_mutations_inside_real_cone_path_are_rejected",
+      "line": 111,
+      "expression": "exec(compile(source.replace(old, REAL_MUTANTS[index]), \"<j01 real cone mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r10_static_construction.py",
+      "function": "test_j01_removing_keyword_step_inside_gate_trips_real_cone_assertion",
+      "line": 173,
+      "expression": "exec(compile(source.replace(step, \"return node.args\"), \"<j01 gate keyword rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_numeric_types.py",
+      "function": "test_numeric_type_gate_kills_reinstated_fraction_only_shortcut",
+      "line": 186,
+      "expression": "exec(compile(mutant, '<R11 K02 old Fraction-only type gate>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected",
+      "line": 47,
+      "expression": "exec(compile(function_source.replace(original, body), \"<k01 actual cone implant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "_mutant_scan",
+      "line": 202,
+      "expression": "exec(compile(source.replace(old, new), \"<k01 internal scanner rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "test_k01_removing_zero_path_join_trips_the_real_cone_assertion",
+      "line": 213,
+      "expression": "exec(compile(source.replace(original, \"new_head = backedge or head\"), \"<k01 zero-path rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_power_roots_reject_rounding_retained_by_real_control_flow",
+      "line": 47,
+      "expression": "exec(compile(source, \"<actual premature square before root>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_rounded_call_or_helper_return_survives_control_flow",
+      "line": 93,
+      "expression": "exec(compile(source, \"<actual rounded function result through CFG>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_nested_loop_transfer_cannot_erase_a_helper_return_summary",
+      "line": 126,
+      "expression": "exec(compile(source, \"<actual nested loop exit before clean overwrite>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_suppressed_exception_prefix_cannot_erase_a_helper_return_summary",
+      "line": 151,
+      "expression": "exec(compile(source, \"<actual suppressed exception before clean overwrite>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fixb_flow_adversarial.py",
+      "function": "test_first_order_flow_does_not_hide_executed_rounding",
+      "line": 240,
+      "expression": "exec(compile(source, \"<R12FIXb actual premature-rounding source>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_real_cone_higher_order_implants_change_answer_and_are_rejected",
+      "line": 46,
+      "expression": "exec(compile(function.replace(original, body), \"<l01 actual cone implant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_disabling_closed_pass_trips_real_cone_rejection_assertion",
+      "line": 125,
+      "expression": "exec(compile(mutant_scanner_source, \"<l01 internal closed-pass rollback>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_runtime_annotation_and_reflection_cannot_hide_rounding",
+      "line": 292,
+      "expression": "exec(compile(source, \"<l01 executed annotation/reflection>\", \"exec\", dont_inherit=True), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_numeric_formatting_is_not_a_proved_exact_constructor",
+      "line": 317,
+      "expression": "exec(compile(source, \"<l01 numeric formatting>\", \"exec\", dont_inherit=True), namespace)"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_implicit_binary64_arithmetic_requires_type_proof",
+      "line": 345,
+      "expression": "exec(compile(source, \"<l01 implicit builtin construction>\", \"exec\", dont_inherit=True), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_domain_check_removal_is_caught_inside_the_real_input_guard",
+      "line": 165,
+      "expression": "exec(compile(source.replace(old, \"if False:\"), \"<R13FIXb removed guard>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_mixed_gate_rejects_real_internal_early_coercion",
+      "line": 175,
+      "expression": "exec(compile(source.replace(\"float_algebra((*a, *b))\", \"all(type(x) is float for x in (*a, *b))\"),\n                 \"<R13FIXb early coercion>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_scalar_output_guard_removal_is_caught",
+      "line": 187,
+      "expression": "exec(compile(source.replace(old, \"if False:\"), \"<R13FIXb underflow guard removed>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_face_noise_internal_early_edge_length_is_caught",
+      "line": 197,
+      "expression": "exec(compile(source.replace(\"_extended_edge_length(\", \"Fraction(norm(\" ).replace(\n        \"(f[i], f[(i+1)%len(f)])))\", \"(f[i], f[(i+1)%len(f)]))))\"),\n        \"<R13FIXb early edge length>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_dual_margin.py",
+      "function": "_internal_mutant",
+      "line": 306,
+      "expression": "exec(compile(source.replace(old,new), f\"<r13fixb-{name}-mutant>\", \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r13fixb_dual_margin.py",
+      "function": "test_subnormal_internal_threshold_early_rounding_mutant_is_caught",
+      "line": 432,
+      "expression": "exec(compile(source.replace(old,new),f\"<r13fixb-subnormal-{name}>\",\"exec\"),scope)"
+    },
+    {
+      "path": "tests/test_r13fixb_kernel_numeric.py",
+      "function": "_install_internal_expression_fault",
+      "line": 430,
+      "expression": "exec(compile(source.replace(old,new,1),'<r13fixb-internal-expression-fault>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r13fixb_readers_oracles.py",
+      "function": "_mutate",
+      "line": 303,
+      "expression": "exec(compile(source, module.__file__, \"exec\"), mutant.__dict__)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_g6m02_internal_return_start_mutant_is_rejected_by_the_migrated_3d_gate",
+      "line": 178,
+      "expression": "exec(compile(source.replace(needle, \"tuple(scalar_rational(_mapped_value) for _mapped_value in x0)\"),\n                 \"<r13-internal-3d-return-start>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_internal_return_start_mutant_is_rejected_by_the_migrated_2d_gate",
+      "line": 191,
+      "expression": "exec(compile(source.replace(needle, \"x = vector_rational(x0)\"),\n                 \"<r13-internal-2d-return-start>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_internal_concave_return_start_mutant_is_rejected",
+      "line": 203,
+      "expression": "exec(compile(source.replace(needle, 'return Entrance2(\"entrance\", scalar_rational(t), vector_rational(x0),'),\n                 \"<r13-internal-concave-return-start>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_escape_display_rounding_step_removal_is_rejected_in_the_real_function",
+      "line": 215,
+      "expression": "exec(compile(source.replace(needle, \"display=display\"),\n                 \"<r13-remove-escape-outward-rounding>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_escape_exact_offset_drop_height_mutant_is_rejected_in_the_real_function",
+      "line": 227,
+      "expression": "exec(compile(source.replace(needle, \"F(offset[2])\"),\n                 \"<r13-remove-escape-height-from-offset>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_frozen_margin_differential.py",
+      "function": "test_frozen_differential_gate_rejects_internal_early_raw_rounding",
+      "line": 121,
+      "expression": "exec(compile(source, \"<r13-unit-jet-rounded-raw>\", \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r13fix_geometry_differential.py",
+      "function": "test_geometry_differential_rejects_real_internal_early_sqrt_mutation",
+      "line": 326,
+      "expression": "exec(source.replace(old,\"return 0.5 * _eg.sqrt_rational(_eg.dot(n, n), allow_underflow=True)\"),scope)"
+    },
+    {
+      "path": "tests/test_r13fix_geometry_differential.py",
+      "function": "test_noise_differential_gate_rejects_internal_early_absolute_floor",
+      "line": 355,
+      "expression": "exec(source[:start]+old,scope)"
+    },
+    {
+      "path": "tests/test_r13fix_mechanics_differential.py",
+      "function": "test_friction_component_gate_rejects_internal_rounded_product",
+      "line": 196,
+      "expression": "exec(compile(source.replace(needle, \"normal[i] + mu * t[i]\"), \"<r13-friction-early-product>\", \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_lifecycle_rounding_reaches_construction_diagnostic",
+      "line": 84,
+      "expression": "exec(compile(source, \"<r13-runtime>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_related_lifecycle_shapes_preserve_field_rounding",
+      "line": 146,
+      "expression": "exec(compile(source, \"<r13-related-runtime>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_undecorated_subclass_inherits_generated_dataclass_initialization",
+      "line": 210,
+      "expression": "exec(compile(source, \"<r13-inherited-dataclass>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r14_claims.py",
+      "function": "test_face_noise_strict_constant_gate_rejects_internal_eight_u_bias",
+      "line": 33,
+      "expression": "exec(source.replace(needle,replacement),scope)"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_exact_inward_certificate_has_teeth_when_removed",
+      "line": 77,
+      "expression": "exec(source.replace(needle,\"if True:\"),scope)"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_cohesion_projection_is_independently_checked_even_if_constructor_lies",
+      "line": 144,
+      "expression": "exec(source.replace(needle,\"projected = tuple(v)\"),scope)"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_two_d_neighbor_removal_is_caught_by_the_unchanged_near_lock_gate",
+      "line": 206,
+      "expression": "exec(source.replace(needle,\"if False:\"),scope)"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_angular_window_guard_has_an_internal_mutation_tooth",
+      "line": 42,
+      "expression": "exec(source.replace(needle, \"\"), scope)"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_shape_phase_guard_has_an_internal_mutation_tooth",
+      "line": 57,
+      "expression": "exec(source.replace(needle, \"\"), scope)"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_shape_complete_coordinate_rounding_has_an_internal_mutation_tooth",
+      "line": 91,
+      "expression": "exec(source.replace(needle,\"else float(value)\"),namespace)"
+    },
+    {
+      "path": "tests/test_r14_dual.py",
+      "function": "_mutated_function",
+      "line": 75,
+      "expression": "exec(compile(source.replace(old, new), \"<r14-internal-mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r14_readers.py",
+      "function": "_internal_mutant",
+      "line": 186,
+      "expression": "exec(compile(source.replace(old, new), \"<R14 reader internal mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r14_showcase.py",
+      "function": "_builder",
+      "line": 29,
+      "expression": "exec(compile(ast.Module(body=[node], type_ignores=[]), str(path), \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r14_tool_readers.py",
+      "function": "test_r14_ingest_child_checks_before_vertex_float",
+      "line": 101,
+      "expression": "exec(compile(ingest_bdda3d.CHILD, \"<local-export-child-stub>\", \"exec\"), {})"
+    },
+    {
+      "path": "tests/test_r15fix_force_reports.py",
+      "function": "test_force_report_internal_mutants_hit_resultant_or_domain_assertion",
+      "line": 106,
+      "expression": "exec(compile(source.replace(old, new), \"<O01 actual internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r15fix_geometry.py",
+      "function": "_mutate",
+      "line": 125,
+      "expression": "exec(compile(source.replace(before, after), original.__code__.co_filename, 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r15fix_numeric_decode.py",
+      "function": "_internal_mutant",
+      "line": 116,
+      "expression": "exec(compile(source.replace(old, new), \"<R15 reader internal mutation>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r15fix_shape.py",
+      "function": "test_shape_pair_internal_premature_center_rounding_mutation_has_teeth",
+      "line": 148,
+      "expression": "exec(source.replace(needle,replacement),scope)"
+    },
+    {
+      "path": "tests/test_r6fix_construction.py",
+      "function": "test_g6f08_relative_projection_gate_has_teeth",
+      "line": 107,
+      "expression": "exec(source.replace(step, \"return tuple(scalar_rational(_mapped_value) for _mapped_value in point)\"), scope)"
+    },
+    {
+      "path": "tests/test_r6fix_dual_lp.py",
+      "function": "_mutant_function",
+      "line": 181,
+      "expression": "exec(compile(source.replace(old, new), function.__code__.co_filename, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f01_mutation_restoring_cached_alias_is_caught",
+      "line": 144,
+      "expression": "exec(compile(source, '<r6fix-mutation-cached-alias>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f01_mutation_returning_raw_topology_cache_is_caught",
+      "line": 154,
+      "expression": "exec(compile(source.replace('return list(self._edges)', 'return self._edges'),\n                 '<r6fix-mutation-topology-alias>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f09_mutation_rounding_nominal_report_before_exact_solve_is_caught",
+      "line": 252,
+      "expression": "exec(compile(source.replace('At = translate_exact(A, offset)', 'At = A.translated(offset)'),\n                 '<r6fix-mutation-rounded-nominal-body>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r7fix_dual.py",
+      "function": "test_g6g07_input_only_fast_path_mutation_is_caught",
+      "line": 63,
+      "expression": "exec(compile(source.replace(marker, injected), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r7fix_g03.py",
+      "function": "test_g03_missing_covers_never_pass_an_overflowed_acceptance_bound",
+      "line": 16,
+      "expression": "exec(compile(source.replace('out.append(c)','pass'),__file__,'exec'),scope)"
+    },
+    {
+      "path": "tests/test_r7fix_g03.py",
+      "function": "test_g03_a_finite_minimum_cannot_hide_a_nonfinite_candidate",
+      "line": 35,
+      "expression": "exec(compile(source,__file__,'exec'),scope)"
+    },
+    {
+      "path": "tests/test_r7fix_geom3.py",
+      "function": "_inject",
+      "line": 134,
+      "expression": "exec(compile(source.replace(old,new),'<r7fix-internal-mutation-'+name+'>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r7fix_geom3.py",
+      "function": "test_g6g05_internal_mutation_rounding_norm_before_halving_is_caught",
+      "line": 147,
+      "expression": "exec(compile(source.replace('_eg.sqrt_rational(_eg.dot(n, n) / 4)',\n                               '_eg.sqrt_rational(_eg.dot(n, n)) / 2'),'<r7fix-area-mutation>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r7fix_limit_construction.py",
+      "function": "test_limit_normal_early_rounding_mutation_is_caught",
+      "line": 52,
+      "expression": "exec(compile(source, '<internal LimitContact normalization mutant>', 'exec'), scope)"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "convex_view_mutant",
+      "line": 37,
+      "expression": "exec(compile(source.replace(anchor, replacement), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "reject_z_inside_cone_filter",
+      "line": 48,
+      "expression": "exec(compile(source, __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "all_branch_convex_view_mutant",
+      "line": 131,
+      "expression": "exec(compile(source,__file__,\"exec\"),scope)"
+    },
+    {
+      "path": "tests/test_r8fix_initial_state3.py",
+      "function": "test_3d_topology_gate_kills_internal_loss_of_noncentral_step_bound",
+      "line": 176,
+      "expression": "exec(source.replace(needle,'step = F(1)'),namespace)"
+    },
+    {
+      "path": "tests/test_r8fix_margin_gap_gate.py",
+      "function": "_arithmetic_fault_inside_margin_contacts",
+      "line": 25,
+      "expression": "exec(compile(source.replace(anchor, \"gap = \" + replacement), __file__, \"exec\"), scope)"
+    },
+    {
+      "path": "tests/test_r9fix_construction.py",
+      "function": "test_g6i03_real_internal_component_first_mutation_is_rejected",
+      "line": 69,
+      "expression": "exec(compile(source.replace(old, \"return norm(_float_vector(p)), noise\"),\n                 \"<G6I-03 internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_construction.py",
+      "function": "test_g6i04_real_internal_squared_first_mutation_is_rejected",
+      "line": 97,
+      "expression": "exec(compile(ast.fix_missing_locations(source), \"<G6I-04 internal mutant>\", \"exec\"), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_construction_helpers.py",
+      "function": "test_r9_support_oracle_internal_pre_rounding_mutation_is_rejected",
+      "line": 62,
+      "expression": "exec(compile(source.replace(old,bad),\"<R9 support oracle internal mutant>\",\"exec\"),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_construction_helpers.py",
+      "function": "test_r9_line_gap_oracle_internal_pre_normalization_mutation_is_rejected",
+      "line": 76,
+      "expression": "exec(compile(source.replace(old,bad),\"<R9 line gap oracle internal mutant>\",\"exec\"),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_g03_construction.py",
+      "function": "_bad_witness_report",
+      "line": 18,
+      "expression": "exec(compile(source, '<r9-g03-invalid-witness>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_g03_construction.py",
+      "function": "test_g03_display_validation_removal_mutant_is_caught",
+      "line": 42,
+      "expression": "exec(compile(source, '<r9-g03-no-display-validation>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_mechanics_construction.py",
+      "function": "test_r9_tangent_intermediate_norm_mutant_is_caught",
+      "line": 67,
+      "expression": "exec(compile(source.replace(needle, mutant), '<r9-tangent-intermediate-norm>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_mechanics_construction.py",
+      "function": "test_r9_dual_sqrt_implicit_float_mutant_is_caught",
+      "line": 78,
+      "expression": "exec(compile(source.replace(needle, 'return math.sqrt(x)'), '<r9-implicit-root-float>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_normalized_input.py",
+      "function": "test_normalized_difference_float_nn_mutant_hits_target_assertion",
+      "line": 38,
+      "expression": "exec(compile(source.replace(old,\"nn\"),\n                 \"<R9 normalized nn rationalization removed>\",\"exec\"),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_oracle_helpers.py",
+      "function": "test_r9_oracle_witness_rounding_mutant_is_caught",
+      "line": 76,
+      "expression": "exec(compile(source.replace('exact=True', 'exact=False'), '<r9-rounded-witness>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_oracle_helpers.py",
+      "function": "test_r9_oracle_rounded_gap_height_mutant_is_caught",
+      "line": 88,
+      "expression": "exec(compile(source.replace(needle, defect), '<r9-rounded-height-ratio>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_solid_cones.py",
+      "function": "test_solid_cone_gate_rejects_internal_restoration_of_source_topology",
+      "line": 72,
+      "expression": "exec(compile(source,'<r9-solid-cone-mutant>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_topology.py",
+      "function": "test_g6i02_restoring_source_ring_topology_mutant_is_caught",
+      "line": 141,
+      "expression": "exec(compile(source.replace(needle, 'P = self'), '<r9-source-ring-topology>', 'exec'), namespace)"
+    },
+    {
+      "path": "tests/test_r9fix_window_distance.py",
+      "function": "test_window_distance_gate_rejects_restored_display_construction",
+      "line": 37,
+      "expression": "exec(compile(source.replace(needle,'elif contact_window is None or not ctol:\\n            w = _exact.sqrt_rational(d2, allow_underflow=True)'),\n                 '<r9-window-distance-mutant>','exec'),namespace)"
+    },
+    {
+      "path": "tests/test_tf_reader.py",
+      "function": "_mutant_reader",
+      "line": 153,
+      "expression": "exec(compile(src.replace(old, new), tf_probe.__file__, \"exec\"), mod.__dict__)"
+    }
+  ],
+  "exec_counts": {
+    "before": 150,
+    "after": 146,
+    "central_helper": 1,
+    "remaining_outside_helper": 145
+  },
+  "m3_policy": "39 M3b rows were first introduced on the independently accepted M3 line, not in common base 3bf5e95. Preserve exactly the accepted 6c014f5/f012d6a values, including four M3c internal renewals of M3b rows; henceforth append-only renewals. Do not retroactively restore a superseded intra-line implementation.",
+  "limitations": [
+    "The immutable archived waiver count necessarily rises by the 23 requested convention-conversion rows; no historical admission is deleted.",
+    "Pre-M3/M5 historical mutation scaffolding is inventoried, not comprehensively refactored. Remaining exec sites include intentional standalone generated-program/static-gate tests, not only interchangeable mutation wrappers.",
+    "The algebraic callback analysis is a finite conservative syntax/alias check, not sound proof for arbitrary Python reflection; documented supported higher-order forms have semantic mutation tests."
+  ],
+  "source_hashes": {
+    "tools/check_exact_construction.py": "cc6143a27369f1247718b2e48ae80f3afb7b5060b23de845437a53b5a0768517",
+    "tools/exact_construction_subset.py": "8245b35729d18abf9ab6b0643573fe97517592b2cf4fee4ea953cceb816b2408",
+    "tools/exact_construction_policy.json": "bb08de6b9076ce9a6fed5c69ff63f974435f28d83a8c7ab1ffc19c53291bf3f9",
+    "tests/mutation_support.py": "362b9afa9a1c223c831209d812edbd3ad64f949484d8f48fc3c887375a1ba547",
+    "tests/test_m5a2_static_runner.py": "15fcf6ca408e67a4f5a258adde0180931457f0af023483c87af3a8ad5bb3c03c"
+  },
+  "remaining_scaffold_classification": [
+    {
+      "path": "tests/test_covers3_membership.py",
+      "function": "test_rotated_support_dimension_gate_catches_internal_degenerate_miscount",
+      "line": 456,
+      "expression": "exec(compile(source.replace(old, \"else:degenerate+=2\"), g03.__file__, \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_e5a2_bilinear_integer.py",
+      "function": "test_integer_bilinear_gate_kills_internal_arithmetic_mutation",
+      "line": 62,
+      "expression": "exec(compile(source.replace(old, new), '<E5a2 integer bilinear mutant>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_e5a2_surface.py",
+      "function": "test_coplanar_internal_mutation_is_killed_by_the_overlap_assertion",
+      "line": 62,
+      "expression": "exec(source.replace('elif loc == 0:','elif False and loc == 0:'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_e5a2_surface.py",
+      "function": "test_internal_fold_side_test_mutation_hits_the_tangent_assertion",
+      "line": 161,
+      "expression": "exec(source.replace(needle,'False'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_e5b_polyhedron_cache.py",
+      "function": "test_cache_vertex_signature_mutation_is_caught",
+      "line": 52,
+      "expression": "exec(compile(source.replace(needle, '()'), '<cache-key-without-vertices>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_e5b_surface_integer.py",
+      "function": "test_integer_parity_internal_boundary_mutant_is_killed",
+      "line": 98,
+      "expression": "exec(source.replace(needle,'False'),ns)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_e5b_triangle_boolean.py",
+      "function": "test_boolean_internal_boundary_mutations_are_killed",
+      "line": 98,
+      "expression": "exec(compile(source.replace(needle,replacement),'<triangle-boolean-mutant>','exec'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_e5b_triangle_near.py",
+      "function": "test_triangle_near_unsafe_plane_threshold_mutation_is_killed_at_closed_boundary",
+      "line": 112,
+      "expression": "exec(source.replace(needle,'gap*gap >= window_squared*dot(normal,normal)'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_frozen_ee_sign.py",
+      "function": "test_exact_surface_cover_gate_kills_internal_source_ring_only_mutation",
+      "line": 237,
+      "expression": "exec(compile(source.replace('if exact_surface:', 'if False:'),\n                 '<mutant: folded surface expansion removed>', 'exec'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_frozen_surface_diagonal.py",
+      "function": "test_missing_diagonal_topology_internal_mutant_is_killed",
+      "line": 60,
+      "expression": "exec(compile(source.replace(needle,'return P'),'<omit-diagonal-topology>','exec'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_g2_bdda3d.py",
+      "function": "_mutant_g2",
+      "line": 570,
+      "expression": "exec(compile(src.replace(old, new), mod.__file__, \"exec\"), mod.__dict__)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 10,
+      "active_admission_ids": [
+        "R12b-L1175",
+        "R12b-L1176",
+        "R12b-L1177",
+        "R12b-L1178",
+        "R12b-L1179",
+        "R12b-L1180",
+        "R12b-L1181",
+        "R12b-L1182",
+        "R12b-L1183",
+        "R12b-L1184"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_geom3_e5a.py",
+      "function": "test_g6e_near_parallel_legacy_parameter_mutation_is_killed",
+      "line": 193,
+      "expression": "exec(src.replace(old,'return _rounded_parameters(p1, p2, q1, q2)'),ns)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_geom3_e5a.py",
+      "function": "test_segment_face_extent_mutation_is_killed_through_the_real_path",
+      "line": 207,
+      "expression": "exec(src.replace(old,'if False:'),ns)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_geom3_face_polygon.py",
+      "function": "test_all_five_call_sites_route_through_the_single_helper",
+      "line": 240,
+      "expression": "exec(compile(source.replace(boundary, 'if False:').replace(ray, 'if True:'),\n                 '<integer-face-interior-disabled>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_geom3_merge.py",
+      "function": "test_rounded_mesh_exact_merge_certificate_has_teeth",
+      "line": 302,
+      "expression": "exec(source.replace(old, new, 1), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_hull_robustness.py",
+      "function": "test_sliver_fallback_removes_the_middle_of_three_collinear_vertices",
+      "line": 145,
+      "expression": "exec(src,ns)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_interlock_e5a.py",
+      "function": "test_normal_noise_rejects_nonzero_rounded_cross_fast_path",
+      "line": 50,
+      "expression": "exec(compile(source.replace(exact, 'sine = norm(cross(B.edge_dir(eb), A.edge_dir(ea)))'),\n                 '<r7fix-nonzero-rounded-cross-mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_kernel2d_review.py",
+      "function": "test_r7_third_vote_hull_vertices_match_and_catch_sign_flip",
+      "line": 118,
+      "expression": "exec(source.replace(step, \"numerator = -(direction[1]*v[0]-direction[0]*v[1])\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_kernel2d_review.py",
+      "function": "test_r7_third_vote_hull_vertices_match_and_catch_sign_flip",
+      "line": 128,
+      "expression": "exec(src.replace(\"worst = min(worst, s)\", \"worst = 1\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_kernel3d_geom.py",
+      "function": "test_overlap_coplanar_crossing_gate_has_teeth",
+      "line": 185,
+      "expression": "exec(source.replace('return 0 if boundary else 1','return 0 if boundary else -1'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_limit_multi.py",
+      "function": "_mutant_module",
+      "line": 181,
+      "expression": "exec(compile(src.replace(old, new), LM.__file__, \"exec\"), mod.__dict__)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 12,
+      "active_admission_ids": [
+        "R12b-L1866",
+        "R12b-L1867",
+        "R12b-L1868",
+        "R12b-L1869",
+        "R12b-L1870",
+        "R12b-L1871",
+        "R12b-L1872",
+        "R12b-L1873",
+        "R12b-L1874",
+        "R12b-L1875",
+        "R12b-L1876",
+        "R12b-L1877"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3b_2d.py",
+      "function": "test_internal_semantic_mutants_fail_without_source_hash_tripwires.mutate",
+      "line": 264,
+      "expression": "exec(compile(source.replace(old, new, 1), \"<M3b semantic mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3b_2d.py",
+      "function": "test_internal_semantic_mutants_fail_without_source_hash_tripwires",
+      "line": 279,
+      "expression": "exec(compile(source, \"<M3b strict local-cover mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_removing_local_clipping_is_killed_by_buried_polygon_assertion",
+      "line": 147,
+      "expression": "exec(compile(source.replace('out = []', 'return tuple(candidates)\\n    out = []'), '<semantic clipping mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_using_physical_zero_one_as_exterior_is_killed_on_tight_seam",
+      "line": 164,
+      "expression": "exec(compile(source.replace(before, 'model.classify(G._mean(piece)) != 0'), '<semantic physical 0/1 mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3b_boundary3d.py",
+      "function": "test_intersecting_exit_is_checked_and_skip_mutation_is_killed",
+      "line": 185,
+      "expression": "exec(compile(source.replace(before, before+'\\n            rep.skipped_intersecting += 1\\n            continue'), '<semantic exit skip mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3c_boundary3d.py",
+      "function": "test_strict_only_ee_mutant_dies_at_t3l_semantic_coverage",
+      "line": 206,
+      "expression": "exec(compile(source.replace('>= 0', '> 0'), '<M3c strict EE mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3c_determinism.py",
+      "function": "test_old_lazy_order_internal_mutant_fails_semantic_fields_without_hash_gate",
+      "line": 73,
+      "expression": "exec(compile(source.replace(old, \"\", 1), \"<M3c old lazy order>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3_global2d.py",
+      "function": "test_internal_mutants_fail_the_expected_assertion.mutated_method",
+      "line": 396,
+      "expression": "exec(compile(source.replace(old, new, 1), \"<M3 internal mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_open_interval_endpoint_mutation_is_killed_inside_union",
+      "line": 290,
+      "expression": "exec(compile(source.replace(before, after), '<M3 endpoint mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_omitted_convex_piece_mutation_is_killed_inside_decomposition",
+      "line": 304,
+      "expression": "exec(compile(source.replace(before, after), '<M3 lost-piece mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m3_global3d.py",
+      "function": "test_escape_local_event_fallback_mutation_is_killed_at_exact_root",
+      "line": 321,
+      "expression": "exec(compile(source.replace(before, after), '<M3 local-event mutation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "function": "test_pd_first_tie_only_internal_mutation_hits_both_semantic_guards",
+      "line": 75,
+      "expression": "exec(compile(mutated, \"<m4c-pd-first-tie-only-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "function": "test_vv_all_nonzero_internal_mutation_loses_vertex_zero_reference",
+      "line": 122,
+      "expression": "exec(compile(source, \"<m4c-vv-all-nonzero-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m4c_fix_semantics.py",
+      "function": "test_compiled_internal_mutation_fails_new_semantic_assertion_then_restores",
+      "line": 110,
+      "expression": "exec(compile(source.replace(old, new), function.__code__.co_filename + \"::M4cFIX-mutant\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m4c_runner.py",
+      "function": "test_progress_atomic_replace_retries_only_permission_errors",
+      "line": 32,
+      "expression": "exec(compile(runner.PLUGIN, \"<real M4c progress plugin>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m4c_summary.py",
+      "function": "test_summary_internal_category_defects_fail_their_expected_assertion",
+      "line": 121,
+      "expression": "exec(compile(source, \"<M4c summary internal mutation>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_m5a2_static_runner.py",
+      "function": "test_nonfinite_or_nonpositive_timeouts_are_rejected_before_start",
+      "line": 215,
+      "expression": "exec(compile(runner.PLUGIN, \"<invalid watchdog configuration>\", \"exec\"), {})",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_margin_exact.py",
+      "function": "test_margin_window_and_default_guards_have_internal_mutation_teeth.mutant",
+      "line": 68,
+      "expression": "exec(compile(source, \"<E5b internal margin mutation>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual source review: nested test-driver compiler consumes outer function production-source mutation"
+    },
+    {
+      "path": "tests/test_margin_penetration.py",
+      "function": "test_guard_is_not_a_vertex_inside_check",
+      "line": 226,
+      "expression": "exec(compile(source.replace(marker, \"if False:\"), __file__, \"exec\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_margin_penetration.py",
+      "function": "test_contact_resolution_gate_has_teeth.compiled_mutant",
+      "line": 304,
+      "expression": "exec(compile(source, \"<E5a2 internal margin._resolve mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual source review: nested test-driver compiler consumes outer function production-source mutation"
+    },
+    {
+      "path": "tests/test_perf_2d_directions.py",
+      "function": "test_integer_ve_length_rescaling_mutation_has_teeth",
+      "line": 132,
+      "expression": "exec(compile(source.replace(needle, \"tol = Fraction(tol)\"), \"<PERF-VE-length-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_2d_directions.py",
+      "function": "test_integer_ve_strict_boundary_mutation_has_teeth",
+      "line": 143,
+      "expression": "exec(compile(source.replace(needle, \"return 1 if c1 >= 0 and c2 >= 0 else 0\"),\n                 \"<PERF-VE-strict-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_contact_window.py",
+      "function": "_mutant",
+      "line": 218,
+      "expression": "exec(compile(source, '<PERF window internal mutation>', 'exec'), namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 6,
+      "active_admission_ids": [
+        "R12b-L2079",
+        "R12b-L2080",
+        "R12b-L2081",
+        "R12b-L2082",
+        "R12b-L2083",
+        "R12b-L2084"
+      ],
+      "classification_basis": "manual source review: receives inspect.getsource-derived changed source from test caller, compiles in S.__dict__"
+    },
+    {
+      "path": "tests/test_perf_covers.py",
+      "function": "test_integer_simplex_support_tie_gate_has_internal_teeth",
+      "line": 137,
+      "expression": "exec(compile(mutant, \"<PERF-simplex-tie-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_covers.py",
+      "function": "test_integer_simplex_rescaling_gate_has_internal_teeth",
+      "line": 149,
+      "expression": "exec(compile(mutant, \"<PERF-simplex-scale-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_edge_frame.py",
+      "function": "test_integer_edge_direction_sign_mutation_has_teeth",
+      "line": 205,
+      "expression": "exec(compile(source.replace(needle, \"d = _integer_ray(tuple(abs(c) for c in d))\"),\n                 \"<PERF-edge-sign-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_edge_frame.py",
+      "function": "test_integer_edge_anisotropic_rescaling_mutation_has_teeth",
+      "line": 217,
+      "expression": "exec(compile(source.replace(needle, \"c.numerator\"), \"<PERF-edge-denominator-mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_integer_geometry.py",
+      "function": "test_perf_integer_distance_scale_mutation_has_teeth",
+      "line": 137,
+      "expression": "exec(source.replace('min(values)/(den*den)', 'min(values)/den'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_integer_geometry.py",
+      "function": "test_perf_integer_sat_boundary_mutation_has_teeth",
+      "line": 147,
+      "expression": "exec(source.replace('if gap > 0:', 'if gap >= 0:'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_interlock.py",
+      "function": "test_candidate_cache_has_teeth_when_signature_omits_offset",
+      "line": 82,
+      "expression": "exec(source.replace(before, after), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_interlock.py",
+      "function": "test_exact_aabb_pruning_keeps_tangent_events_and_detects_strict_bound_mutation",
+      "line": 123,
+      "expression": "exec(source, namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_arrangement_aabb_is_closed_and_mutation_removing_boundary_has_teeth",
+      "line": 73,
+      "expression": "exec(mutated, namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_arrangement_source_plane_sign_mutation_is_caught_by_first_witness",
+      "line": 88,
+      "expression": "exec(mutated, namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_perf_surface_witness.py",
+      "function": "test_coplanar_grouping_keeps_the_plane_offset_not_only_its_direction",
+      "line": 105,
+      "expression": "exec(mutated, namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_cone_contract.py",
+      "function": "test_reflex_strict_gate_kills_original_source_mutation",
+      "line": 62,
+      "expression": "exec(compile(source, \"<r10_original_reflex_mutation>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_sqrt_source_rounded_primal_mutation_is_caught",
+      "line": 88,
+      "expression": "exec(compile(mutant, \"<r10-rounded-primal-sqrt>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_trig_source_unchecked_product_mutation_is_caught",
+      "line": 100,
+      "expression": "exec(compile(source.replace(needle, \"c * a\"), \"<r10-unchecked-trig>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_half_power_source_decimal_fallback_mutation_is_caught",
+      "line": 151,
+      "expression": "exec(compile(source.replace(needle, \"if False:\"), \"<r10-decimal-half-power>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_atan2_source_float_fast_path_mutation_is_caught",
+      "line": 162,
+      "expression": "exec(compile(source.replace(needle, \"u, v, a, b = (float(q) for q in (u, v, a, b))\"),\n                 \"<r10-angular-float-path>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_dual_construction.py",
+      "function": "test_r10_power_source_removed_range_check_mutation_is_caught",
+      "line": 180,
+      "expression": "exec(compile(mutated, \"<r10-unchecked-power-primal>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_initial_boundary.py",
+      "function": "test_initial_boundary_gate_kills_removal_inside_first_entrance",
+      "line": 146,
+      "expression": "exec(source.replace(needle,'if False:  # mutant: discard initial boundary'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_initial_boundary.py",
+      "function": "test_initial_boundary_gate_kills_removal_of_finite_domain_filter",
+      "line": 158,
+      "expression": "exec(source.replace(needle,'if dot(n, p) == 0:'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_static_construction.py",
+      "function": "test_j01_seven_mutations_inside_real_cone_path_are_rejected",
+      "line": 111,
+      "expression": "exec(compile(source.replace(old, REAL_MUTANTS[index]), \"<j01 real cone mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r10_static_construction.py",
+      "function": "test_j01_removing_keyword_step_inside_gate_trips_real_cone_assertion",
+      "line": 173,
+      "expression": "exec(compile(source.replace(step, \"return node.args\"), \"<j01 gate keyword rollback>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r11fix_numeric_types.py",
+      "function": "test_numeric_type_gate_kills_reinstated_fraction_only_shortcut",
+      "line": 186,
+      "expression": "exec(compile(mutant, '<R11 K02 old Fraction-only type gate>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "test_k01_zero_iteration_alias_implants_change_real_cone_and_are_rejected",
+      "line": 47,
+      "expression": "exec(compile(function_source.replace(original, body), \"<k01 actual cone implant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "_mutant_scan",
+      "line": 202,
+      "expression": "exec(compile(source.replace(old, new), \"<k01 internal scanner rollback>\", \"exec\"), namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 6,
+      "active_admission_ids": [
+        "R12b-L2126",
+        "R12b-L2127",
+        "R12b-L2128",
+        "R12b-L2129",
+        "R12b-L2130",
+        "R12b-L2131"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r11fix_static_flow.py",
+      "function": "test_k01_removing_zero_path_join_trips_the_real_cone_assertion",
+      "line": 213,
+      "expression": "exec(compile(source.replace(original, \"new_head = backedge or head\"), \"<k01 zero-path rollback>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_power_roots_reject_rounding_retained_by_real_control_flow",
+      "line": 47,
+      "expression": "exec(compile(source, \"<actual premature square before root>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_rounded_call_or_helper_return_survives_control_flow",
+      "line": 93,
+      "expression": "exec(compile(source, \"<actual rounded function result through CFG>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_nested_loop_transfer_cannot_erase_a_helper_return_summary",
+      "line": 126,
+      "expression": "exec(compile(source, \"<actual nested loop exit before clean overwrite>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r12fixb_final_mechanism.py",
+      "function": "test_suppressed_exception_prefix_cannot_erase_a_helper_return_summary",
+      "line": 151,
+      "expression": "exec(compile(source, \"<actual suppressed exception before clean overwrite>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r12fixb_flow_adversarial.py",
+      "function": "test_first_order_flow_does_not_hide_executed_rounding",
+      "line": 240,
+      "expression": "exec(compile(source, \"<R12FIXb actual premature-rounding source>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_real_cone_higher_order_implants_change_answer_and_are_rejected",
+      "line": 46,
+      "expression": "exec(compile(function.replace(original, body), \"<l01 actual cone implant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_disabling_closed_pass_trips_real_cone_rejection_assertion",
+      "line": 125,
+      "expression": "exec(compile(mutant_scanner_source, \"<l01 internal closed-pass rollback>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_runtime_annotation_and_reflection_cannot_hide_rounding",
+      "line": 292,
+      "expression": "exec(compile(source, \"<l01 executed annotation/reflection>\", \"exec\", dont_inherit=True), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_numeric_formatting_is_not_a_proved_exact_constructor",
+      "line": 317,
+      "expression": "exec(compile(source, \"<l01 numeric formatting>\", \"exec\", dont_inherit=True), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r12fix_static_closed.py",
+      "function": "test_l01_implicit_binary64_arithmetic_requires_type_proof",
+      "line": 345,
+      "expression": "exec(compile(source, \"<l01 implicit builtin construction>\", \"exec\", dont_inherit=True), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_domain_check_removal_is_caught_inside_the_real_input_guard",
+      "line": 165,
+      "expression": "exec(compile(source.replace(old, \"if False:\"), \"<R13FIXb removed guard>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_mixed_gate_rejects_real_internal_early_coercion",
+      "line": 175,
+      "expression": "exec(compile(source.replace(\"float_algebra((*a, *b))\", \"all(type(x) is float for x in (*a, *b))\"),\n                 \"<R13FIXb early coercion>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_scalar_output_guard_removal_is_caught",
+      "line": 187,
+      "expression": "exec(compile(source.replace(old, \"if False:\"), \"<R13FIXb underflow guard removed>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fixb_domain.py",
+      "function": "test_face_noise_internal_early_edge_length_is_caught",
+      "line": 197,
+      "expression": "exec(compile(source.replace(\"_extended_edge_length(\", \"Fraction(norm(\" ).replace(\n        \"(f[i], f[(i+1)%len(f)])))\", \"(f[i], f[(i+1)%len(f)]))))\"),\n        \"<R13FIXb early edge length>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fixb_dual_margin.py",
+      "function": "_internal_mutant",
+      "line": 306,
+      "expression": "exec(compile(source.replace(old,new), f\"<r13fixb-{name}-mutant>\", \"exec\"), scope)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 16,
+      "active_admission_ids": [
+        "R13b-L0086",
+        "R13b-L0087",
+        "R13b-L0088",
+        "R13b-L0089",
+        "R13b-L0090",
+        "R13b-L0091",
+        "R13b-L0092",
+        "R13b-L0095",
+        "R13b-L0096",
+        "R13b-L0097",
+        "R13b-L0098",
+        "R13b-L0099",
+        "R13b-L0100",
+        "R13b-L0101",
+        "R13b-L0102",
+        "R13b-L0103"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fixb_dual_margin.py",
+      "function": "test_subnormal_internal_threshold_early_rounding_mutant_is_caught",
+      "line": 432,
+      "expression": "exec(compile(source.replace(old,new),f\"<r13fixb-subnormal-{name}>\",\"exec\"),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fixb_kernel_numeric.py",
+      "function": "_install_internal_expression_fault",
+      "line": 430,
+      "expression": "exec(compile(source.replace(old,new,1),'<r13fixb-internal-expression-fault>','exec'),namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 14,
+      "active_admission_ids": [
+        "R13b-L0211",
+        "R13b-L0212",
+        "R13b-L0213",
+        "R13b-L0214",
+        "R13b-L0215",
+        "R13b-L0216",
+        "R13b-L0217",
+        "R13b-L0218",
+        "R13b-L0219",
+        "R13b-L0220",
+        "R13b-L0221",
+        "R13b-L0222",
+        "R13b-L0223",
+        "R13b-L0224"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fixb_readers_oracles.py",
+      "function": "_mutate",
+      "line": 303,
+      "expression": "exec(compile(source, module.__file__, \"exec\"), mutant.__dict__)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 20,
+      "active_admission_ids": [
+        "R13b-L0145",
+        "R13b-L0146",
+        "R13b-L0147",
+        "R13b-L0148",
+        "R13b-L0152",
+        "R13b-L0153",
+        "R13b-L0198",
+        "R13b-L0200",
+        "R13b-L0201",
+        "R13b-L0202",
+        "R13b-L0203",
+        "R14-L0378",
+        "R14-L0379",
+        "R14-L0380",
+        "R14-L0381",
+        "R14-L0382",
+        "R14-L0383",
+        "R14-L0384",
+        "R14-L0385",
+        "R14-L0386"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_g6m02_internal_return_start_mutant_is_rejected_by_the_migrated_3d_gate",
+      "line": 178,
+      "expression": "exec(compile(source.replace(needle, \"tuple(scalar_rational(_mapped_value) for _mapped_value in x0)\"),\n                 \"<r13-internal-3d-return-start>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_internal_return_start_mutant_is_rejected_by_the_migrated_2d_gate",
+      "line": 191,
+      "expression": "exec(compile(source.replace(needle, \"x = vector_rational(x0)\"),\n                 \"<r13-internal-2d-return-start>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_internal_concave_return_start_mutant_is_rejected",
+      "line": 203,
+      "expression": "exec(compile(source.replace(needle, 'return Entrance2(\"entrance\", scalar_rational(t), vector_rational(x0),'),\n                 \"<r13-internal-concave-return-start>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_escape_display_rounding_step_removal_is_rejected_in_the_real_function",
+      "line": 215,
+      "expression": "exec(compile(source.replace(needle, \"display=display\"),\n                 \"<r13-remove-escape-outward-rounding>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_event_bindings.py",
+      "function": "test_escape_exact_offset_drop_height_mutant_is_rejected_in_the_real_function",
+      "line": 227,
+      "expression": "exec(compile(source.replace(needle, \"F(offset[2])\"),\n                 \"<r13-remove-escape-height-from-offset>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_frozen_margin_differential.py",
+      "function": "test_frozen_differential_gate_rejects_internal_early_raw_rounding",
+      "line": 121,
+      "expression": "exec(compile(source, \"<r13-unit-jet-rounded-raw>\", \"exec\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_geometry_differential.py",
+      "function": "test_geometry_differential_rejects_real_internal_early_sqrt_mutation",
+      "line": 326,
+      "expression": "exec(source.replace(old,\"return 0.5 * _eg.sqrt_rational(_eg.dot(n, n), allow_underflow=True)\"),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_geometry_differential.py",
+      "function": "test_noise_differential_gate_rejects_internal_early_absolute_floor",
+      "line": 355,
+      "expression": "exec(source[:start]+old,scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_mechanics_differential.py",
+      "function": "test_friction_component_gate_rejects_internal_rounded_product",
+      "line": 196,
+      "expression": "exec(compile(source.replace(needle, \"normal[i] + mu * t[i]\"), \"<r13-friction-early-product>\", \"exec\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_lifecycle_rounding_reaches_construction_diagnostic",
+      "line": 84,
+      "expression": "exec(compile(source, \"<r13-runtime>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_related_lifecycle_shapes_preserve_field_rounding",
+      "line": 146,
+      "expression": "exec(compile(source, \"<r13-related-runtime>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r13fix_static_lifecycle.py",
+      "function": "test_undecorated_subclass_inherits_generated_dataclass_initialization",
+      "line": 210,
+      "expression": "exec(compile(source, \"<r13-inherited-dataclass>\", \"exec\"), namespace)",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r14_claims.py",
+      "function": "test_face_noise_strict_constant_gate_rejects_internal_eight_u_bias",
+      "line": 33,
+      "expression": "exec(source.replace(needle,replacement),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_exact_inward_certificate_has_teeth_when_removed",
+      "line": 77,
+      "expression": "exec(source.replace(needle,\"if True:\"),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_cohesion_projection_is_independently_checked_even_if_constructor_lies",
+      "line": 144,
+      "expression": "exec(source.replace(needle,\"projected = tuple(v)\"),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_cone.py",
+      "function": "test_two_d_neighbor_removal_is_caught_by_the_unchanged_near_lock_gate",
+      "line": 206,
+      "expression": "exec(source.replace(needle,\"if False:\"),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_angular_window_guard_has_an_internal_mutation_tooth",
+      "line": 42,
+      "expression": "exec(source.replace(needle, \"\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_shape_phase_guard_has_an_internal_mutation_tooth",
+      "line": 57,
+      "expression": "exec(source.replace(needle, \"\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_domain.py",
+      "function": "test_shape_complete_coordinate_rounding_has_an_internal_mutation_tooth",
+      "line": 91,
+      "expression": "exec(source.replace(needle,\"else float(value)\"),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_dual.py",
+      "function": "_mutated_function",
+      "line": 75,
+      "expression": "exec(compile(source.replace(old, new), \"<r14-internal-mutation>\", \"exec\"), namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 13,
+      "active_admission_ids": [
+        "R14-L0226",
+        "R14-L0227",
+        "R14-L0228",
+        "R14-L0229",
+        "R14-L0230",
+        "R14-L0231",
+        "R14-L0234",
+        "R14-L0235",
+        "R14-L0236",
+        "R14-L0237",
+        "R14-L0238",
+        "R14-L0239",
+        "R14-L0240"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_readers.py",
+      "function": "_internal_mutant",
+      "line": 186,
+      "expression": "exec(compile(source.replace(old, new), \"<R14 reader internal mutation>\", \"exec\"), namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 11,
+      "active_admission_ids": [
+        "R14-L0243",
+        "R14-L0244",
+        "R14-L0245",
+        "R14-L0246",
+        "R14-L0247",
+        "R14-L0249",
+        "R14-L0250",
+        "R14-L0251",
+        "R14-L0252",
+        "R14-L0253",
+        "R14-L0254"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_showcase.py",
+      "function": "_builder",
+      "line": 29,
+      "expression": "exec(compile(ast.Module(body=[node], type_ignores=[]), str(path), \"exec\"), namespace)",
+      "classification": "intentional_ast_extraction_builder_not_mutation",
+      "active_admission_count": 20,
+      "active_admission_ids": [
+        "R14-L0351",
+        "R14-L0352",
+        "R14-L0353",
+        "R14-L0354",
+        "R14-L0355",
+        "R14-L0356",
+        "R14-L0357",
+        "R14-L0358",
+        "R14-L0359",
+        "R14-L0360",
+        "R14-L0361",
+        "R14-L0362",
+        "R14-L0363",
+        "R14-L0364",
+        "R14-L0365",
+        "R14-L0366",
+        "R14-L0367",
+        "R14-L0368",
+        "R14-L0369",
+        "R14-L0370"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r14_tool_readers.py",
+      "function": "test_r14_ingest_child_checks_before_vertex_float",
+      "line": 101,
+      "expression": "exec(compile(ingest_bdda3d.CHILD, \"<local-export-child-stub>\", \"exec\"), {})",
+      "classification": "intentional_dynamic_program_or_static_gate_test",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "manual review: executes intentionally generated Python case, runner.PLUGIN configuration, or ingest child; not a production function-body mutation clone"
+    },
+    {
+      "path": "tests/test_r15fix_force_reports.py",
+      "function": "test_force_report_internal_mutants_hit_resultant_or_domain_assertion",
+      "line": 106,
+      "expression": "exec(compile(source.replace(old, new), \"<O01 actual internal mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r15fix_geometry.py",
+      "function": "_mutate",
+      "line": 125,
+      "expression": "exec(compile(source.replace(before, after), original.__code__.co_filename, 'exec'), namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 15,
+      "active_admission_ids": [
+        "R15-L0034",
+        "R15-L0035",
+        "R15-L0036",
+        "R15-L0037",
+        "R15-L0038",
+        "R15-L0039",
+        "R15-L0040",
+        "R15-L0041",
+        "R15-L0047",
+        "R15-L0048",
+        "R15-L0049",
+        "R15-L0050",
+        "R15-L0051",
+        "R15-L0052",
+        "R15-L0053"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r15fix_numeric_decode.py",
+      "function": "_internal_mutant",
+      "line": 116,
+      "expression": "exec(compile(source.replace(old, new), \"<R15 reader internal mutation>\", \"exec\"), namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 11,
+      "active_admission_ids": [
+        "R15-L0055",
+        "R15-L0056",
+        "R15-L0057",
+        "R15-L0058",
+        "R15-L0059",
+        "R15-L0061",
+        "R15-L0062",
+        "R15-L0063",
+        "R15-L0064",
+        "R15-L0065",
+        "R15-L0066"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r15fix_shape.py",
+      "function": "test_shape_pair_internal_premature_center_rounding_mutation_has_teeth",
+      "line": 148,
+      "expression": "exec(source.replace(needle,replacement),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r6fix_construction.py",
+      "function": "test_g6f08_relative_projection_gate_has_teeth",
+      "line": 107,
+      "expression": "exec(source.replace(step, \"return tuple(scalar_rational(_mapped_value) for _mapped_value in point)\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r6fix_dual_lp.py",
+      "function": "_mutant_function",
+      "line": 181,
+      "expression": "exec(compile(source.replace(old, new), function.__code__.co_filename, \"exec\"), scope)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 12,
+      "active_admission_ids": [
+        "R12b-L2142",
+        "R12b-L2143",
+        "R12b-L2144",
+        "R12b-L2145",
+        "R12b-L2146",
+        "R12b-L2147",
+        "R12b-L2148",
+        "R12b-L2149",
+        "R12b-L2150",
+        "R12b-L2151",
+        "R12b-L2152",
+        "R12b-L2153"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f01_mutation_restoring_cached_alias_is_caught",
+      "line": 144,
+      "expression": "exec(compile(source, '<r6fix-mutation-cached-alias>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f01_mutation_returning_raw_topology_cache_is_caught",
+      "line": 154,
+      "expression": "exec(compile(source.replace('return list(self._edges)', 'return self._edges'),\n                 '<r6fix-mutation-topology-alias>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r6fix_geom3.py",
+      "function": "test_g6f09_mutation_rounding_nominal_report_before_exact_solve_is_caught",
+      "line": 252,
+      "expression": "exec(compile(source.replace('At = translate_exact(A, offset)', 'At = A.translated(offset)'),\n                 '<r6fix-mutation-rounded-nominal-body>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r7fix_dual.py",
+      "function": "test_g6g07_input_only_fast_path_mutation_is_caught",
+      "line": 63,
+      "expression": "exec(compile(source.replace(marker, injected), __file__, \"exec\"), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r7fix_g03.py",
+      "function": "test_g03_missing_covers_never_pass_an_overflowed_acceptance_bound",
+      "line": 16,
+      "expression": "exec(compile(source.replace('out.append(c)','pass'),__file__,'exec'),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r7fix_g03.py",
+      "function": "test_g03_a_finite_minimum_cannot_hide_a_nonfinite_candidate",
+      "line": 35,
+      "expression": "exec(compile(source,__file__,'exec'),scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r7fix_geom3.py",
+      "function": "_inject",
+      "line": 134,
+      "expression": "exec(compile(source.replace(old,new),'<r7fix-internal-mutation-'+name+'>','exec'),namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 16,
+      "active_admission_ids": [
+        "R12b-L2179",
+        "R12b-L2180",
+        "R12b-L2181",
+        "R12b-L2182",
+        "R12b-L2183",
+        "R12b-L2184",
+        "R12b-L2185",
+        "R12b-L2186",
+        "R12b-L2187",
+        "R12b-L2188",
+        "R12b-L2189",
+        "R12b-L2190",
+        "R12b-L2191",
+        "R12b-L2192",
+        "R12b-L2193",
+        "R12b-L2194"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r7fix_geom3.py",
+      "function": "test_g6g05_internal_mutation_rounding_norm_before_halving_is_caught",
+      "line": 147,
+      "expression": "exec(compile(source.replace('_eg.sqrt_rational(_eg.dot(n, n) / 4)',\n                               '_eg.sqrt_rational(_eg.dot(n, n)) / 2'),'<r7fix-area-mutation>','exec'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r7fix_limit_construction.py",
+      "function": "test_limit_normal_early_rounding_mutation_is_caught",
+      "line": 52,
+      "expression": "exec(compile(source, '<internal LimitContact normalization mutant>', 'exec'), scope)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "convex_view_mutant",
+      "line": 37,
+      "expression": "exec(compile(source.replace(anchor, replacement), __file__, \"exec\"), scope)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 13,
+      "active_admission_ids": [
+        "R12b-L2213",
+        "R12b-L2214",
+        "R12b-L2215",
+        "R12b-L2216",
+        "R12b-L2217",
+        "R12b-L2218",
+        "R12b-L2219",
+        "R12b-L2220",
+        "R12b-L2221",
+        "R12b-L2222",
+        "R12b-L2223",
+        "R12b-L2224",
+        "R12b-L2225"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "reject_z_inside_cone_filter",
+      "line": 48,
+      "expression": "exec(compile(source, __file__, \"exec\"), scope)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 13,
+      "active_admission_ids": [
+        "R12b-L2226",
+        "R12b-L2227",
+        "R12b-L2228",
+        "R12b-L2229",
+        "R12b-L2230",
+        "R12b-L2231",
+        "R12b-L2232",
+        "R12b-L2233",
+        "R12b-L2234",
+        "R12b-L2235",
+        "R12b-L2236",
+        "R12b-L2237",
+        "R12b-L2238"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r8fix_gate_teeth.py",
+      "function": "all_branch_convex_view_mutant",
+      "line": 131,
+      "expression": "exec(compile(source,__file__,\"exec\"),scope)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 17,
+      "active_admission_ids": [
+        "R12b-L2196",
+        "R12b-L2197",
+        "R12b-L2198",
+        "R12b-L2199",
+        "R12b-L2200",
+        "R12b-L2201",
+        "R12b-L2202",
+        "R12b-L2203",
+        "R12b-L2204",
+        "R12b-L2205",
+        "R12b-L2206",
+        "R12b-L2207",
+        "R12b-L2208",
+        "R12b-L2209",
+        "R12b-L2210",
+        "R12b-L2211",
+        "R12b-L2212"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r8fix_initial_state3.py",
+      "function": "test_3d_topology_gate_kills_internal_loss_of_noncentral_step_bound",
+      "line": 176,
+      "expression": "exec(source.replace(needle,'step = F(1)'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r8fix_margin_gap_gate.py",
+      "function": "_arithmetic_fault_inside_margin_contacts",
+      "line": 25,
+      "expression": "exec(compile(source.replace(anchor, \"gap = \" + replacement), __file__, \"exec\"), scope)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 13,
+      "active_admission_ids": [
+        "R12b-L2241",
+        "R12b-L2242",
+        "R12b-L2243",
+        "R12b-L2244",
+        "R12b-L2245",
+        "R12b-L2246",
+        "R12b-L2247",
+        "R12b-L2248",
+        "R12b-L2249",
+        "R12b-L2250",
+        "R12b-L2251",
+        "R12b-L2252",
+        "R12b-L2253"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_construction.py",
+      "function": "test_g6i03_real_internal_component_first_mutation_is_rejected",
+      "line": 69,
+      "expression": "exec(compile(source.replace(old, \"return norm(_float_vector(p)), noise\"),\n                 \"<G6I-03 internal mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_construction.py",
+      "function": "test_g6i04_real_internal_squared_first_mutation_is_rejected",
+      "line": 97,
+      "expression": "exec(compile(ast.fix_missing_locations(source), \"<G6I-04 internal mutant>\", \"exec\"), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_construction_helpers.py",
+      "function": "test_r9_support_oracle_internal_pre_rounding_mutation_is_rejected",
+      "line": 62,
+      "expression": "exec(compile(source.replace(old,bad),\"<R9 support oracle internal mutant>\",\"exec\"),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_construction_helpers.py",
+      "function": "test_r9_line_gap_oracle_internal_pre_normalization_mutation_is_rejected",
+      "line": 76,
+      "expression": "exec(compile(source.replace(old,bad),\"<R9 line gap oracle internal mutant>\",\"exec\"),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_g03_construction.py",
+      "function": "_bad_witness_report",
+      "line": 18,
+      "expression": "exec(compile(source, '<r9-g03-invalid-witness>', 'exec'), namespace)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 14,
+      "active_admission_ids": [
+        "R12b-L2280",
+        "R12b-L2281",
+        "R12b-L2282",
+        "R12b-L2283",
+        "R12b-L2284",
+        "R12b-L2285",
+        "R12b-L2286",
+        "R12b-L2287",
+        "R12b-L2288",
+        "R12b-L2289",
+        "R12b-L2290",
+        "R12b-L2291",
+        "R12b-L2292",
+        "R12b-L2293"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_g03_construction.py",
+      "function": "test_g03_display_validation_removal_mutant_is_caught",
+      "line": 42,
+      "expression": "exec(compile(source, '<r9-g03-no-display-validation>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_mechanics_construction.py",
+      "function": "test_r9_tangent_intermediate_norm_mutant_is_caught",
+      "line": 67,
+      "expression": "exec(compile(source.replace(needle, mutant), '<r9-tangent-intermediate-norm>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_mechanics_construction.py",
+      "function": "test_r9_dual_sqrt_implicit_float_mutant_is_caught",
+      "line": 78,
+      "expression": "exec(compile(source.replace(needle, 'return math.sqrt(x)'), '<r9-implicit-root-float>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_normalized_input.py",
+      "function": "test_normalized_difference_float_nn_mutant_hits_target_assertion",
+      "line": 38,
+      "expression": "exec(compile(source.replace(old,\"nn\"),\n                 \"<R9 normalized nn rationalization removed>\",\"exec\"),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_oracle_helpers.py",
+      "function": "test_r9_oracle_witness_rounding_mutant_is_caught",
+      "line": 76,
+      "expression": "exec(compile(source.replace('exact=True', 'exact=False'), '<r9-rounded-witness>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_oracle_helpers.py",
+      "function": "test_r9_oracle_rounded_gap_height_mutant_is_caught",
+      "line": 88,
+      "expression": "exec(compile(source.replace(needle, defect), '<r9-rounded-height-ratio>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_solid_cones.py",
+      "function": "test_solid_cone_gate_rejects_internal_restoration_of_source_topology",
+      "line": 72,
+      "expression": "exec(compile(source,'<r9-solid-cone-mutant>','exec'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_topology.py",
+      "function": "test_g6i02_restoring_source_ring_topology_mutant_is_caught",
+      "line": 141,
+      "expression": "exec(compile(source.replace(needle, 'P = self'), '<r9-source-ring-topology>', 'exec'), namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_r9fix_window_distance.py",
+      "function": "test_window_distance_gate_rejects_restored_display_construction",
+      "line": 37,
+      "expression": "exec(compile(source.replace(needle,'elif contact_window is None or not ctol:\\n            w = _exact.sqrt_rational(d2, allow_underflow=True)'),\n                 '<r9-window-distance-mutant>','exec'),namespace)",
+      "classification": "test_driver_source_body_mutation",
+      "active_admission_count": 0,
+      "active_admission_ids": [],
+      "classification_basis": "source acquisition inside exact exec scope"
+    },
+    {
+      "path": "tests/test_tf_reader.py",
+      "function": "_mutant_reader",
+      "line": 153,
+      "expression": "exec(compile(src.replace(old, new), tf_probe.__file__, \"exec\"), mod.__dict__)",
+      "classification": "historical_standalone_mutation_helper",
+      "active_admission_count": 17,
+      "active_admission_ids": [
+        "R12b-L2337",
+        "R12b-L2338",
+        "R12b-L2339",
+        "R12b-L2340",
+        "R12b-L2341",
+        "R12b-L2342",
+        "R12b-L2343",
+        "R12b-L2344",
+        "R12b-L2345",
+        "R12b-L2346",
+        "R12b-L2347",
+        "R12b-L2348",
+        "R12b-L2349",
+        "R12b-L2350",
+        "R12b-L2351",
+        "R12b-L2352",
+        "R12b-L2353"
+      ],
+      "classification_basis": "source acquisition inside exact exec scope"
+    }
+  ],
+  "remaining_classification_counts": {
+    "test_driver_source_body_mutation": 112,
+    "historical_standalone_mutation_helper": 19,
+    "intentional_dynamic_program_or_static_gate_test": 13,
+    "intentional_ast_extraction_builder_not_mutation": 1
+  },
+  "remaining_standalone_mutation_admissions": 249,
+  "static_gate": {
+    "status": "COMPLETE",
+    "complete": true,
+    "exit_code": 0,
+    "last_line": "exact construction AST gate: 0 violation(s)",
+    "seconds": 136.92919959999995,
+    "reused": false
+  },
+  "targeted_pytest": {
+    "last_line": "229 passed in 8.82s",
+    "log": "reports/codex/INT1_evidence/static_ready.txt"
+  },
+  "independent_review": "reports/codex/INT1_evidence/review_static.json",
+  "high_order_variants": 18,
+  "high_order_control_path_variants": 36,
+  "high_order_internal_mutants": 18,
+  "teardown_internal_mutants": 1,
+  "additional_tools_ast_parse_only": [
+    "tools/int1_run_gates.py",
+    "tools/int1_refresh_motion.py",
+    "tools/int1_revalidate_replay.py"
+  ],
+  "hygiene_status": "PARTIAL_NOT_MIGRATED_NOT_TECHNICALLY_BLOCKED",
+  "hygiene_remaining_required_work": "Migrate 19 historical standalone mutation helpers with 249 active per-site admissions and 112 driver-body mutation compilation sites into the common reviewed module; preserve 13 intentional generated-program cases and one AST builder. Technically feasible, not performed in this delivery.",
+  "line_ending_revalidation": {
+    "status": "COMPLETE_REEXECUTED_GREEN",
+    "repair_record": "reports/codex/INT1_evidence/line_ending_repair.json",
+    "affected_file": "tests/test_m5a2_static_runner.py",
+    "historical_source_hashes_preserved": true,
+    "historical_229_and_static_scope": "Complete runs on the prior LF bytes; retained as historical evidence, not claimed as final CRLF-byte verification.",
+    "before_sha256": "15fcf6ca408e67a4f5a258adde0180931457f0af023483c87af3a8ad5bb3c03c",
+    "after_sha256": "0c529b472d61621a66f3ea708e5511c1fe432741a012a258dca8864afc4eeaa9",
+    "ast_identical": true,
+    "production_replay_dependency_changed": false,
+    "independent_r3_expected": "reports/codex/INT1_evidence/review_static_eol_r1.json",
+    "final_suite": "reports/codex/INT1_evidence/final_suite_r2_postreboot",
+    "superseded_suite": "reports/codex/INT1_evidence/final_suite_r1_postreboot",
+    "not_a_hash_only_refresh": true,
+    "r3_complete": true,
+    "final_suite_complete": true,
+    "final_collected": 13558,
+    "final_static_last_line": "exact construction AST gate: 0 violation(s)",
+    "r3_sha256": "a64bded52861252138f9f90e2e2976bf7a88b07816e0c734f838506ed9d11285",
+    "final_summary_sha256": "e4d5ee478cdd3273e3dec460338d440bc0b7a1c85c9388131669a01ff057162b"
+  }
+}

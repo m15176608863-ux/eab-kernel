@@ -4557,10 +4557,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-method-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0346",
@@ -4568,10 +4568,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-method-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0347",
@@ -4579,10 +4579,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-method-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0348",
@@ -4590,10 +4590,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='sqrt_display', ctx=Load()), args=[Name(id='truth2', ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
     },
     {
       "id": "R12b-L0349",
@@ -4601,10 +4601,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='_display_witness_distance', ctx=Load()), args=[Attribute(value=Name(id='c', ctx=Load()), attr='point_a', ctx=Load()), Attribute(value=Name(id='c', ctx=Load()), attr='point_b', ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0350",
@@ -4612,10 +4612,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='_witness_squared', ctx=Load()), args=[Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
     },
     {
       "id": "R12b-L0351",
@@ -4623,10 +4623,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='enumerate_covers3', ctx=Load()), args=[Name(id='va', ctx=Load()), Name(id='vb', ctx=Load())], keywords=[keyword(arg='window', value=Call(func=Name(id='float', ctx=Load()), args=[Constant(value='inf')], keywords=[])), keyword(arg='tol', value=Name(id='tol', ctx=Load()))])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0352",
@@ -4634,10 +4634,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。rep.completeness_failures.append 保存 (x,minimum2,truth2) 精确差异证据，没有数值变换或构造；不因报告对象别处有显示误差字段而把这里当作数值函数。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。rep.completeness_failures.append 保存 (x,minimum2,truth2) 精确差异证据，没有数值变换或构造；不因报告对象别处有显示误差字段而把这里当作数值函数。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
     },
     {
       "id": "R12b-L0353",
@@ -4645,10 +4645,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0354",
@@ -4656,10 +4656,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.failures.append((x, got, truth))。rep.failures.append((x,got,truth)) 仅保存精确 completeness 或显示构造检查的失败证据；got/truth 是显示值不作为此 append 的几何输入。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.failures.append((x, got, truth))。rep.failures.append((x,got,truth)) 仅保存精确 completeness 或显示构造检查的失败证据；got/truth 是显示值不作为此 append 的几何输入。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_round5_supplement_review.json"
     },
     {
       "id": "R12b-L0355",
@@ -4667,10 +4667,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='_display_witness_distance', ctx=Load()), args=[Attribute(value=Name(id='c', ctx=Load()), attr='point_a', ctx=Load()), Attribute(value=Name(id='c', ctx=Load()), attr='point_b', ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0356",
@@ -4678,10 +4678,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-rounded-construction",
       "node": "Call(func=Name(id='enumerate_covers3', ctx=Load()), args=[Name(id='va', ctx=Load()), Name(id='vb', ctx=Load())], keywords=[keyword(arg='window', value=Call(func=Name(id='float', ctx=Load()), args=[Constant(value='inf')], keywords=[])), keyword(arg='tol', value=Name(id='tol', ctx=Load()))])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0357",
@@ -4689,10 +4689,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='radius', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]))",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0358",
@@ -4700,10 +4700,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='base', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]), op=Add(), right=BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='radius', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[])))",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：Fraction(base[i]) + Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：Fraction(base[i]) + Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0359",
@@ -4711,10 +4711,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-arithmetic",
       "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]), op=Add(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='x', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]))",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：Fraction(v[i]) + Fraction(x[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：Fraction(v[i]) + Fraction(x[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_numerical_review.json"
     },
     {
       "id": "R12b-L0360",
@@ -4722,10 +4722,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='separated_distance', ctx=Load()), args=[Attribute(value=Name(id='At', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='At', ctx=Load()), attr='faces', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='faces', ctx=Load())], keywords=[keyword(arg='squared', value=Constant(value=True))])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces, squared=True)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces, squared=True)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0361",
@@ -4733,10 +4733,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='sqrt_display', ctx=Load()), args=[Name(id='truth2', ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0362",
@@ -4744,10 +4744,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='_witness_squared', ctx=Load()), args=[Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0363",
@@ -4755,10 +4755,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0364",
@@ -4766,10 +4766,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0365",
@@ -4777,10 +4777,10 @@
       "function": "g0_distance_completeness3",
       "rule": "closed-unproved-call",
       "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
-      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "context": "aede9b48d0909237ae0a71fb0c1e7ebd9b341f2af8a44bf700c4eb2df1c4c7eb",
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
-      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0366",
@@ -4865,10 +4865,10 @@
       "function": "separated_distance",
       "rule": "closed-rounded-call",
       "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='result', ctx=Load())], keywords=[])",
-      "context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
+      "context": "451e72e7215054c6314c0a79673582c1f245943db81ad686455c9fb47a3695e9",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：sqrt_display(result)。separated_distance 先清输入 Fraction 的共同正分母，best 在整数/有理完整投影平方上比较；result=best/F(den*den)，squared=False 时才 sqrt_display(result)。循环/keep 闭包没有把 best 改为 float，需 CFG/source 摘要保持这个不变量。 M3b local review: Independent face-reference index remapping removes unused buffer rows before integer scaling. Final sqrt_display(result) is unchanged and only used when squared=False; squared=True remains Fraction-only.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：sqrt_display(result)。separated_distance 先清输入 Fraction 的共同正分母，best 在整数/有理完整投影平方上比较；result=best/F(den*den)，squared=False 时才 sqrt_display(result)。循环/keep 闭包没有把 best 改为 float，需 CFG/source 摘要保持这个不变量。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_final_supplement_review.json"
     },
     {
       "id": "R12b-L0374",
@@ -4876,10 +4876,10 @@
       "function": "separated_distance",
       "rule": "closed-unproved-call",
       "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='result', ctx=Load())], keywords=[])",
-      "context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
+      "context": "451e72e7215054c6314c0a79673582c1f245943db81ad686455c9fb47a3695e9",
       "category": "PROOF_GAP_MANUAL_EXCLUSION",
-      "reason": "具体节点：sqrt_display(result)。separated_distance 首先把所有坐标 F 转換并清共同正分母为整数，best 通过完整精确投影/边边距离比较更新，result=best/F(den*den)。squared=False 才在最终 sqrt_display 独立证书构造；不存在先 rounded 差再开方。 M3b local review: Independent face-reference index remapping removes unused buffer rows before integer scaling. Final sqrt_display(result) is unchanged and only used when squared=False; squared=True remains Fraction-only.",
-      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+      "reason": "具体节点：sqrt_display(result)。separated_distance 首先把所有坐标 F 转換并清共同正分母为整数，best 通过完整精确投影/边边距离比较更新，result=best/F(den*den)。squared=False 才在最终 sqrt_display 独立证书构造；不存在先 rounded 差再开方。",
+      "review_evidence": "reports/codex/R12FIXb_evidence/src_structural_review.json"
     },
     {
       "id": "R12b-L0375",
@@ -38804,6 +38804,259 @@
       "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
       "reason": "Test-only injector: inspect fixed function source, assert unique replacement site, compile/exec in copied module namespace, monkeypatch actual function and clear caches. Not production geometry. Independent subprocess logs show uncaught expected semantic AssertionError without hash tripwires. Exact AST site is pinned in node/context.",
       "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0001",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-method-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0002",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-method-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0003",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-method-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0004",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='sqrt_display', ctx=Load()), args=[Name(id='truth2', ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0005",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Name(id='_display_witness_distance', ctx=Load()), args=[Attribute(value=Name(id='c', ctx=Load()), attr='point_a', ctx=Load()), Attribute(value=Name(id='c', ctx=Load()), attr='point_b', ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0006",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Name(id='_witness_squared', ctx=Load()), args=[Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。truth2 是独立整数/有理 surface oracle 的完整平方距；sqrt_display 仅最终独立中点证书构造。_witness_squared 只读 va/vb 原特征坐标和 c.label 身份，逐 Fraction 后重建平方距，不使用 c 的 rounded witness/normal。随机采样模型与原几何 completeness 证书分开。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0007",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Name(id='enumerate_covers3', ctx=Load()), args=[Name(id='va', ctx=Load()), Name(id='vb', ctx=Load())], keywords=[keyword(arg='window', value=Call(func=Name(id='float', ctx=Load()), args=[Constant(value='inf')], keywords=[])), keyword(arg='tol', value=Name(id='tol', ctx=Load()))])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0008",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。rep.completeness_failures.append 保存 (x,minimum2,truth2) 精确差异证据，没有数值变换或构造；不因报告对象别处有显示误差字段而把这里当作数值函数。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0009",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0010",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.failures.append((x, got, truth))。rep.failures.append((x,got,truth)) 仅保存精确 completeness 或显示构造检查的失败证据；got/truth 是显示值不作为此 append 的几何输入。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0011",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-construction",
+      "node": "Call(func=Name(id='_display_witness_distance', ctx=Load()), args=[Attribute(value=Name(id='c', ctx=Load()), attr='point_a', ctx=Load()), Attribute(value=Name(id='c', ctx=Load()), attr='point_b', ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：_display_witness_distance(c.point_a, c.point_b)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0012",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-rounded-construction",
+      "node": "Call(func=Name(id='enumerate_covers3', ctx=Load()), args=[Name(id='va', ctx=Load()), Name(id='vb', ctx=Load())], keywords=[keyword(arg='window', value=Call(func=Name(id='float', ctx=Load()), args=[Constant(value='inf')], keywords=[])), keyword(arg='tol', value=Name(id='tol', ctx=Load()))])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：enumerate_covers3(va, vb, window=float(\"inf\"), tol=tol)。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0013",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-arithmetic",
+      "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='radius', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]))",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0014",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-arithmetic",
+      "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='base', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]), op=Add(), right=BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Name(id='radius', ctx=Load())], keywords=[]), op=Mult(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[])))",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：Fraction(base[i]) + Fraction(radius) * Fraction(v[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0015",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-arithmetic",
+      "node": "BinOp(left=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='v', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]), op=Add(), right=Call(func=Name(id='Fraction', ctx=Load()), args=[Subscript(value=Name(id='x', ctx=Load()), slice=Name(id='i', ctx=Load()), ctx=Load())], keywords=[]))",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：Fraction(v[i]) + Fraction(x[i])。随机给定样本经 Fraction(base/radius/v) 精确仿射生成 At；独立 surface_oracle squared 距离与 _witness_squared 直接比对。enumerate window=inf 仅搜索窗，构造误差失败记录是输出数据，不进入几何构造。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0016",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='separated_distance', ctx=Load()), args=[Attribute(value=Name(id='At', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='At', ctx=Load()), attr='faces', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='verts', ctx=Load()), Attribute(value=Name(id='B', ctx=Load()), attr='faces', ctx=Load())], keywords=[keyword(arg='squared', value=Constant(value=True))])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：surface_oracle.separated_distance(At.verts, At.faces, B.verts, B.faces, squared=True)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0017",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Name(id='surface_oracle', ctx=Load()), attr='sqrt_display', ctx=Load()), args=[Name(id='truth2', ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：surface_oracle.sqrt_display(truth2)。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0018",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Name(id='_witness_squared', ctx=Load()), args=[Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='va', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='verts', ctx=Load())], keywords=[]), Call(func=Name(id='tuple', ctx=Load()), args=[Attribute(value=Name(id='vb', ctx=Load()), attr='faces', ctx=Load())], keywords=[]), Call(func=Attribute(value=Name(id='c', ctx=Load()), attr='label', ctx=Load()), args=[], keywords=[])], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：_witness_squared(tuple(va.verts),tuple(va.faces),tuple(vb.verts),tuple(vb.faces),c.label())。g0_convex3 在被测凸包规范化前冻结 source_av/source_bv，独立 g03_exact oracle 用 Fraction/int 原坐标；距离门先精确构造平移，surface_oracle 的 truth2 为精确平方，sqrt_display 仅最终显示并有独立中点证书。_witness_squared 从原特征 Fraction 重建，不是 rounded witness 自证。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0019",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='completeness_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='minimum2', ctx=Load()), Name(id='truth2', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.completeness_failures.append((x,minimum2,truth2))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0020",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='construction_failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.construction_failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0021",
+      "path": "src/eab/kernel3d/g03.py",
+      "function": "g0_distance_completeness3",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Attribute(value=Attribute(value=Name(id='rep', ctx=Load()), attr='failures', ctx=Load()), attr='append', ctx=Load()), args=[Tuple(elts=[Name(id='x', ctx=Load()), Name(id='got', ctx=Load()), Name(id='truth', ctx=Load())], ctx=Load())], keywords=[])",
+      "context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "category": "STRUCTURAL_DATA_OR_PROTOCOL_REVIEW",
+      "reason": "具体节点：rep.failures.append((x, got, truth))。仅向 G0 报告 dataclass 的失败/差异列表追加结果；不把这些报告值回馈几何判据。节点内其他数值调用不能因此免于独立检查。 M3b local review: New exact exit branch leaves sampled Fraction affine construction, separated squared oracle and display/report nodes unchanged.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0022",
+      "path": "src/eab/kernel3d/g03_surface_oracle.py",
+      "function": "separated_distance",
+      "rule": "closed-rounded-call",
+      "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='result', ctx=Load())], keywords=[])",
+      "context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：sqrt_display(result)。separated_distance 先清输入 Fraction 的共同正分母，best 在整数/有理完整投影平方上比较；result=best/F(den*den)，squared=False 时才 sqrt_display(result)。循环/keep 闭包没有把 best 改为 float，需 CFG/source 摘要保持这个不变量。 M3b local review: Independent face-reference index remapping removes unused buffer rows before integer scaling. Final sqrt_display(result) is unchanged and only used when squared=False; squared=True remains Fraction-only.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
+    },
+    {
+      "id": "INT1-C0023",
+      "path": "src/eab/kernel3d/g03_surface_oracle.py",
+      "function": "separated_distance",
+      "rule": "closed-unproved-call",
+      "node": "Call(func=Name(id='sqrt_display', ctx=Load()), args=[Name(id='result', ctx=Load())], keywords=[])",
+      "context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
+      "category": "PROOF_GAP_MANUAL_EXCLUSION",
+      "reason": "具体节点：sqrt_display(result)。separated_distance 首先把所有坐标 F 转換并清共同正分母为整数，best 通过完整精确投影/边边距离比较更新，result=best/F(den*den)。squared=False 才在最终 sqrt_display 独立证书构造；不存在先 rounded 差再开方。 M3b local review: Independent face-reference index remapping removes unused buffer rows before integer scaling. Final sqrt_display(result) is unchanged and only used when squared=False; squared=True remains Fraction-only.",
+      "review_evidence": "reports/codex/M3b_evidence/static_review.json"
     }
   ],
   "renewals": [
@@ -38967,6 +39220,558 @@
       "new_context": "c5c8213692bc067d991c253609222da8ecdc502fa7e1873dd56fd7f9aea0b2c3",
       "reason": "Renewed unchanged independent interpolation/Sturm/G0 numerical body after adding the exact int/Fraction input assertion. Root objects and cover sets carry exact rational predicates or discrete feature identities; no production event/rotation primitive is imported.",
       "review_evidence": "reports/codex/M5a2_evidence/static_admissions.json"
+    },
+    {
+      "old_id": "R12b-L0345",
+      "old_row_sha256": "fdd8a18e2e29e214eba7de1d9fdf8a4fa6e9e287ad70c4fbf22ea8930a149e33",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0346",
+      "old_row_sha256": "c4e8691c4757a2b1e5a990850a0a0beb3444ef6e32dbd3e2436e493f9caf33ce",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0347",
+      "old_row_sha256": "edb899dbb6d7b2f4b2bbb0ca8d2d459bf1f84595cff360f0d59421b8e1f444bc",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0348",
+      "old_row_sha256": "188965a4ff20d51e5979a6b24905e6d7bdcec94ad126246e5f3124f105830082",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0349",
+      "old_row_sha256": "fc716920231aafdda4bd510dc00b0d6e6085a0ceaff36da2287a05f7f97e1ca0",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0350",
+      "old_row_sha256": "428aeb7711538d867359b8d970fae37e0f28245d5a49f0ec42b4d37cbb0f242b",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0351",
+      "old_row_sha256": "eb9782eb735e8f57f5b8a3c2afc97630fcad02bee257909895cc3d126826ff03",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0352",
+      "old_row_sha256": "f4dd3340fd1cf5192a059516b3d03a1ef19a68ea451ec7e424c24f2017d9d305",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0353",
+      "old_row_sha256": "3a6b1ee464a255a16d2de44aee325a758f4bfe0773af4521d7254dc7e76bf4e4",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0354",
+      "old_row_sha256": "14e2a344d51722a42cc76bff224a6279d8fb839d98b29d7609a8d41cbe878f2a",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0355",
+      "old_row_sha256": "3014ce70e3add2cd9c36a94988f50f0b2b1aff00d79d86ecc2e72f441b554c87",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0356",
+      "old_row_sha256": "5131b9f3feb5025d20228634d6886f31f43bf5e5cd654000d46f12634e69f683",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0357",
+      "old_row_sha256": "96b764437315f8b52f9aa8213cd6b354324c89c208c65bdd4a1cb0e684fa5041",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0358",
+      "old_row_sha256": "cdb56de41b3ac26773a45a02716934c7734e653af66cb5e68719ea924bb17832",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0359",
+      "old_row_sha256": "bea9b2071696414acc3551daecd708da72a1e5e14b77ddaa1b4fc007142777df",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0360",
+      "old_row_sha256": "f58e45620a6f4edd00d1501450b6e51c152bc9af428c063fcda5c605ab0b20ab",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0361",
+      "old_row_sha256": "09f3a58702b43a9fd59bc51cf5b85d89c3fdd5f969dbfd0709533199063cd9ab",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0362",
+      "old_row_sha256": "a5515933d498405132a4ec7f783fcd38ab061fad0414e914a2769c9389650eea",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0363",
+      "old_row_sha256": "e6cd994008badfe8597ce602ef628146f5972b9173c5b13ed704d08b6869753a",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0364",
+      "old_row_sha256": "eb9ff40b5a5595cf842302595a9db433dc5a5154ef835c2f5db53622e52bd9ee",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0365",
+      "old_row_sha256": "8f3b8086f2008f93e2d2e5b1c9929bfa8f82bafb5e05d453107347295d9c003e",
+      "new_context": "68ab274ce8952ef73ffd59ab6ce88bc94e276fefef46a7b67367a0bfb5a955b0",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0373",
+      "old_row_sha256": "27fa00b3a824f946b477b90bc44a99e4ca07866b6da922b52b5736d6e2989b90",
+      "new_context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "R12b-L0374",
+      "old_row_sha256": "fa84e98e483274f098ec3803fec9a938852c035404fdde6a25f07a3197339520",
+      "new_context": "f1b396c87409b5fd4cb6ebdedf9ec82469747ec34f79fb7a4e35b00e7e82d216",
+      "reason": "INT1 convention conversion: restore the immutable 3bf5e95 admission; the separately appended INT1-C row reviews the accepted M3 implementation, not this retired row.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0062",
+      "old_row_sha256": "22434572c090e4c1e8482ed9433245a2a8e886f75598333deefea4f503fa4c12",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0063",
+      "old_row_sha256": "1bd7d2e5a9d8dc6df1f632b2f9d5065593edf14ee62bccbfedcd3c86fd0d0fa6",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0064",
+      "old_row_sha256": "164049b5798407263d7e98e962c8805e4c2a8ce104cf1782ec5ddab74104808a",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0065",
+      "old_row_sha256": "b16fa6f8ecdea6e6e684a1fc2af8a3d24e8231509cfea7ea17d58ae32104f8fd",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0066",
+      "old_row_sha256": "d028fd9c0b55d484c397d41133bf4bb0bec9b3fc4d81b09ce61e3c2f71a14b06",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0067",
+      "old_row_sha256": "b178cd209bfca574559c93b5830c74acbeeb8b38e78ab1a694d4baa84a2d4510",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0068",
+      "old_row_sha256": "ac23cda5eb24ac41a931a0ed75fdd5ecd4d1527d5defbac751c21e3cb93f1fd3",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0069",
+      "old_row_sha256": "71d680179f69a34af338e749bf31c261c4e5c5b616dd9d152e15549d6c2a8b58",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0070",
+      "old_row_sha256": "70a21535455c244d1ddaa7066f44cb20a09c0c4bbbcef9ea87fd23a42952580b",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0071",
+      "old_row_sha256": "58fe6566441b48ef333dd1e590b43057c2cb643505b3cf726a64060d37694959",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0072",
+      "old_row_sha256": "090a69d34249d3958251f92050c577ba0747a10cfdd46c8b1c91b52d25678b6c",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0073",
+      "old_row_sha256": "5592a3ca9cfefddd53f6aab4fc967111619fcf28f8ff8add3f21cd861d5e957e",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0074",
+      "old_row_sha256": "1e725036113052aa5aecf326741fec17fa323e13d770a321b0d44a01969d8a49",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0075",
+      "old_row_sha256": "b9f681142ffac995e0ed65da3822a677f48a3f1e9c59dbe5dacf85e83829c60f",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0084",
+      "old_row_sha256": "76f20d68e79b0c3d1cba85960ed342de43af57228c868a94d0b70b940b585cf8",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0085",
+      "old_row_sha256": "db69b352c56788937c7a06c37c2981e72a857799b1c68d1991db5440b50c4f05",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0086",
+      "old_row_sha256": "d5bfc8209e01749196798f0471ba047f4b9f90bec0df0292f9d85af05d245834",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0087",
+      "old_row_sha256": "aaaa5346eadc0962a55ab8e15d0f689593d5f56c7de9ec4f94adbb261b0599b6",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0088",
+      "old_row_sha256": "21486f95ffc3a44f0843e524a2fa90d821d4788c49ae2706edece9cf20fe1674",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0089",
+      "old_row_sha256": "0e09102e3a0aae0e34463fcc3320193f7d4ab0ba1abd5dbe1c0383d77392d0a8",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0090",
+      "old_row_sha256": "b183d5826e7ece814786246904a0105a3f185fb71bae9469c8b19060c338ec27",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0091",
+      "old_row_sha256": "6da707b87196d758df61f6773ec3e29deb8f411656baedac85e8522e912633a9",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0092",
+      "old_row_sha256": "2c7c39341f985abfd2b9277446137be8da5ebd9d80d3bb7fc2473c1cd11e0274",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0093",
+      "old_row_sha256": "20e35d57a1ddd44023f8f24f99c21ec655c20937b082cb702794952900ec4538",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0094",
+      "old_row_sha256": "80b3e981522b55084c7ffef3f2cb6d072416f8b9cbf6f0563f92bb1f362231ca",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0095",
+      "old_row_sha256": "1d396a4799931efd15c24fb8a77b3ed4c0c3f4193be3295267bae875362bafb2",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M5A2-S0096",
+      "old_row_sha256": "3b3d8d20beec2ec73bd5a6ca60d7cee35ea99400c2fc4dc589292d94fe43084c",
+      "new_context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0019",
+      "old_row_sha256": "c3188ea16b96f298ec3d0fa6deed04d620b34818ba8634fa4a3451913c1c4f91",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0020",
+      "old_row_sha256": "ccf54e77d592f7fc8ec18a2aba420a58719606d6e2d2c23d26b84100daf00efa",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0021",
+      "old_row_sha256": "64865a5e974049446b22c78f8a0433cb1e14acd4fdc5c0c2e75f53485feb0c83",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0022",
+      "old_row_sha256": "e2a0f1ce47120836fafe05f42601b0ae9c734ac3700fbae4990c3e886bacd940",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0023",
+      "old_row_sha256": "fde4646213339e6bf4c3460653ecc89a6a1e0b0a36d8bc0fbee5490f2fc147c0",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0024",
+      "old_row_sha256": "700b53967b6b55e984392785cf9c62722770ae4dff149c47e96287488656aa02",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0025",
+      "old_row_sha256": "651b171aa01bd93feb29d14a3cf98909b742df225b2fd223062728e4c4b25e0d",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0026",
+      "old_row_sha256": "073296238c9b4c2acea56b8d28b739caa400f6cdc2ad97dfcdd74bc891a776eb",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0027",
+      "old_row_sha256": "03176ae296279f9ccc8c1a7096b46ad30081616d33b5779947b1f12693d95f55",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0030",
+      "old_row_sha256": "39e74098b627f860f91103a8c94856dd4b52f3e78bb5113e2c1ee4d1446a2820",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0031",
+      "old_row_sha256": "4435a3c84329bcb5f58bc76b12f5930c4265df4c6c2a597cf7d15a0a6dc655e8",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0032",
+      "old_row_sha256": "0664607fd0f5cc8fd2a086c0f0f8cb058a6bb84eb277e18d3d6ac821323d13fc",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0033",
+      "old_row_sha256": "6306401f62fe33fde8a3496950aaed1a0b4c962df9b0ad668156ea677c1a808b",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0034",
+      "old_row_sha256": "d03ce09f2ba8dfccfa4291ae0088a963093e05a30f17e9642bbcace1ad73f1ed",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0035",
+      "old_row_sha256": "e7d16794e9d0e63b217c8d0ba16fbd0a3f9ee011fa37539a49e2aa0088d83725",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0036",
+      "old_row_sha256": "53719e02313d7ef50fabb87f2b12bc3da8d135f599a8202ed38d9aa2577abae2",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0037",
+      "old_row_sha256": "2491bd18183580e648337dbe5ff258a6578939903bd7a0aec00a80787b1995ca",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0038",
+      "old_row_sha256": "25634d0b81b75fbb280f32072ae8c34b8df69e26a7cf496d958f02578e14b0bc",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+    },
+    {
+      "old_id": "M3b-L0039",
+      "old_row_sha256": "b41d11d92ff0541b8a0cd1c68c758f761b8141d80fdb6da34ec80b23261be966",
+      "new_context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45",
+      "reason": "INT1 consolidation retires the unchanged historical per-site instrumentation admission. The exact reviewed helper and selector scope replace repeated reflection/compiler machinery; no numerical oracle or construction assertion is in this review domain.",
+      "review_evidence": "reports/codex/INT1_evidence/static_work.json"
     }
-  ]
+  ],
+  "mutation_instrumentation_review": {
+    "id": "INT1-INSTRUMENTATION",
+    "category": "TEST_ONLY_SOURCE_MUTATION_PROTOCOL",
+    "helper_sha256": "362b9afa9a1c223c831209d812edbd3ad64f949484d8f48fc3c887375a1ba547",
+    "rules": [
+      "closed-unproved-call",
+      "closed-runtime-reflection",
+      "closed-dynamic-call",
+      "closed-method-call",
+      "closed-unknown-member",
+      "closed-data-attribute",
+      "closed-unknown-call",
+      "closed-import",
+      "closed-import-call",
+      "closed-callable-value",
+      "closed-namespace-value",
+      "closed-indirect-call",
+      "closed-syntax"
+    ],
+    "scopes": [
+      {
+        "path": "tests/mutation_support.py",
+        "function": "<module>",
+        "context": "ce31868352693c482585884d38e3a06a0b09c17495a0026d7b83a282e95c8c09"
+      },
+      {
+        "path": "tests/mutation_support.py",
+        "function": "mutated_function",
+        "context": "45c21930c8f4c5bc3d243c4dddc5ac4b58cde7f2c3e49d403b33be358704242c"
+      },
+      {
+        "path": "tests/mutation_support.py",
+        "function": "mutated_callable",
+        "context": "ae3639009b3e9cc36ccec010e055820bf00e450c38b0e8f985b5c04817aabc24"
+      },
+      {
+        "path": "tests/mutation_support.py",
+        "function": "replace_module_callable",
+        "context": "9720921a4d2249d46cb4ee4a6aebef5d1bd00d46cfb11ef1d3f3cfc9c8a112f2"
+      },
+      {
+        "path": "tests/test_m5a2_exact.py",
+        "function": "exact_mutation",
+        "context": "59ddb3abed2192a2b306b382d878f6df2a5af51e8dc5a0404bf494345f92dbed"
+      },
+      {
+        "path": "tests/test_m3b_construction3d.py",
+        "function": "_mutate",
+        "context": "5707023dbac88275e784723cb92d5a6e9223ea49afd83e5c24f8f16df6a84d45"
+      },
+      {
+        "path": "tests/test_int1_semantics.py",
+        "function": "semantic_guard",
+        "context": "163cfd1b705ef00bcbe349d1d6f9d4cda87207359ede21f45331a78aca4696b0"
+      },
+      {
+        "path": "tests/test_int1_semantics.py",
+        "function": "mask_source_hashes",
+        "context": "02c6ee664fa6c3542e61737cb8c77dc5406668cb027e2680cd42d69487269777"
+      },
+      {
+        "path": "tests/test_int1_semantics.py",
+        "function": "inject_semantic_mutation",
+        "context": "c009105e500d08e8e8cd2620ae2e810af4a61a513b62b7df7233dda77b0cf963"
+      }
+    ],
+    "proof_domain": "Only pinned test source-body extraction, unique literal replacement, compilation in copied module globals, patch construction, fixed module selectors and cache invalidation. Numerical oracles, assertions, rounded provenance, arithmetic and algebraic comparator admission are NOT discharged. No source writes; return value is an instrumentation callable, never claimed numerically exact. closed-syntax is used only for the four literal hash-disable lambda callbacks in the pinned mask_source_hashes scope; changing those functions invalidates the review.",
+    "review_evidence": "reports/codex/INT1_evidence/static_work.json"
+  }
 }

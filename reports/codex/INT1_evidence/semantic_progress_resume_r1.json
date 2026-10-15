@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "audit": "GREEN",
+  "mutation_count": 13,
+  "commands": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp\\semantic_pytest_resume_r1",
+        "tests/test_int1_semantics.py",
+        "--durations=5"
+      ],
+      "exit_code": 0,
+      "last_line": "29 passed in 0.32s",
+      "wall_seconds": 0.7240292000001318,
+      "log": "reports/codex/INT1_evidence/semantic_pytest_resume_r1.txt"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp\\semantic_regression_resume_r1",
+        "tests/test_int1_semantics.py",
+        "tests/test_m5a2_exact.py",
+        "tests/test_m5a2_affine.py",
+        "tests/test_m5a2_replay.py",
+        "--durations=5"
+      ],
+      "exit_code": 0,
+      "last_line": "116 passed in 1.59s",
+      "wall_seconds": 2.0022429000000557,
+      "log": "reports/codex/INT1_evidence/semantic_regression_resume_r1.txt"
+    }
+  ]
+}

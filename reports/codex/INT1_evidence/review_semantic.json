@@ -1,0 +1,90 @@
+{
+  "audit": "GREEN",
+  "reviewer": "static_admission independent cross-review",
+  "count": 13,
+  "results": [
+    {
+      "kind": "quadratic_outside_interval",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 quadratic SE2 entrance must be 1/3, never the out-of-window -1/2"
+    },
+    {
+      "kind": "swept_max_norm",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 off-centroid small-angle real contact cannot be broad-phase rejected"
+    },
+    {
+      "kind": "modular_leading_coefficient",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 primes dividing the leading coefficient cannot exclude a rational root"
+    },
+    {
+      "kind": "refinement_linear_denominator",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 quadratic-denominator refinement recovers the root away from a Farey tie"
+    },
+    {
+      "kind": "refinement_four_times_wider",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 quadratic-denominator refinement recovers the root away from a Farey tie"
+    },
+    {
+      "kind": "closed_upper_endpoint",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 closed upper endpoint denotes the endpoint root"
+    },
+    {
+      "kind": "affine_delta_l1",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 affine delta is coordinate L-infinity, not residual-vector L1"
+    },
+    {
+      "kind": "omitted_pair_stats",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 focused omitted-pair stats conserve the certified separated branch"
+    },
+    {
+      "kind": "initial_contact_reuse_stats",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 focused initial-geometry reuse stats conserve both contact and overlap"
+    },
+    {
+      "kind": "initial_overlap_reuse_stats",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "INT1 focused initial-geometry reuse stats conserve both contact and overlap"
+    },
+    {
+      "kind": "affine_fit_cross_sign",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "affine endpoint independent normal-equation oracle"
+    },
+    {
+      "kind": "positive_affine_residual_certified",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "positive residual must not receive endpoint-exact certificate"
+    },
+    {
+      "kind": "residual_correction_sign",
+      "control": "PASS",
+      "mutant": "KILLED_NAMED_SEMANTIC_ASSERTION",
+      "assertion": "corrected path exactly closes original snapshot endpoint"
+    }
+  ],
+  "shared_primitive_review": "Expected arithmetic uses explicit rational formula, factorizations, orthogonal normal-equation residuals; existing independent Cramer/components only for affine guards.",
+  "farey_boundary": "midpoint gap/8 strictly beyond nearest Farey midpoint; two non-Farey large denominators; both linear-denominator and four-times-wide mutations killed",
+  "sweep": "off-centroid arbitrary centers, u=1/100,1/1000,1/10000; scale=1,1e-6,1e6; real end-to-end no-contact mutant killed",
+  "hash_tripwires": "code_hashes/file_hash replaced before control and mutation; no frozen source fingerprint assertion is called",
+  "limitations": "Independent rerun of all 13 mutants in-process, not full shard suite."
+}

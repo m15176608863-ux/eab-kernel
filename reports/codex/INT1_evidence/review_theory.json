@@ -1,0 +1,52 @@
+{
+  "schema": "eab.int1-independent-theory-review.v1",
+  "complete": true,
+  "verdict": "PASS_SCOPED_REVIEW",
+  "critical": 0,
+  "major": 0,
+  "minor": 0,
+  "document_sha256": "5c4fc394754808e65e41221d9b747d3920164e3728fbb766d39b494242831ec2",
+  "production_files_changed": false,
+  "checks": {
+    "raw_affine_tables": 15,
+    "affine_rows": 15220,
+    "zero_triangle_rows": 500,
+    "nontriangle_positive_rows": 14720,
+    "independently_reaggregated_quantiles_exact": {
+      "min": "2951605095840766748822648272879291381738627055035402669/23808286629946736034989407099936016723444019269441809266683652616322361065472",
+      "median": "250655608074053997415781403511817446829744212116711223290241/4824274202572713207431956241289371844778359990529062817157551238389170176",
+      "p95": "2514439729075051614766108375994128491526196960318836254039888022685/15512639304595792596882128279548718740214916227701958631756088329171472190799872",
+      "max": "5422236838538652229659573565159182599516149641854779096978123539965/20949868377280953639266816325222734835590205773357896757632413988993284563795968"
+    },
+    "out_csv_files": 15,
+    "out_csv_rows": 15220,
+    "max_abs_z3_exact_decimal": "12526305557970911/2500000000000000000",
+    "readonly_bdda_source_hashes": 3,
+    "document_links_resolve": true,
+    "link_count": 3,
+    "utf8_no_bom": true,
+    "r4_summary_byte_identical": true
+  },
+  "proof_review": [
+    "Independent expansion modulo D_B: U=Q_B*v and N_Bj=Q_B*a_Bj. For dot and cross, beta(Q_B*v,Q_B*a)=D_B^2*beta(v,a). Thus D_B divides beta(U,N_Bj).",
+    "General U,N each degree<=3; reduced beta(U,NA)-D_A*(beta(U,NB)/D_B) degree<=6. Rigid U degree<=2 gives <=5.",
+    "u_B=0 independently gives degree<=4; positive D_B ensures no real root/sign change.",
+    "Inverse theta requires symmetric E and a specified arcsin branch; area-center translation correction has correct sign.",
+    "Three noncollinear point pairs yield exactly affine-fit zero residual; does not certify physical trajectory."
+  ],
+  "source_hashes": {
+    "docs/m5a2_affine_theory.md": "5c4fc394754808e65e41221d9b747d3920164e3728fbb766d39b494242831ec2",
+    "reports/codex/INT1_evidence/theory_data_audit.json": "b5496292af8c26ec711df2db45a9ba5009614721d14e1680066083696b3c9f2f",
+    "reports/codex/INT1_evidence/theory_polynomial_probe.json": "0d703053b570f7ed391284f50e5f944ad0a930b0d99594829a9a74042f916489",
+    "src/eab/kernel2d/algebraic.py": "7eaf5cae997b2472167d93cfcab7addc2dfd6bc658265549f5079927bea61ecd"
+  },
+  "not_independently_recomputed": [
+    "Claude <=1.101 rounding-unit endpoint reconstruction",
+    "Claude approx 2.8e-6 midpoint difference"
+  ],
+  "limitations": [
+    "Historical frozen 1810-step affine data is reaggregated, not recomputed on INT1 source.",
+    "Finite polynomial probe is support; acceptance rests on symbolic factor/divisibility reasoning, not sampling."
+  ],
+  "restart_protocol": "All data reread from scratch after restart; no partial output resumed. Prior unpublished link-regex check was invalidated because it parsed code-form matrix multiplication as a hyperlink."
+}

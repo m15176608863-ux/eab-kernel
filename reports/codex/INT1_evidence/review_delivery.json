@@ -1,0 +1,340 @@
+{
+  "schema": "eab.int1-independent-delivery-review.v1",
+  "verdict": "PASS_SCOPED_INTEGRITY_REVIEW_WITH_EXPLICIT_PARTIAL_TASK",
+  "complete": true,
+  "critical": 0,
+  "major": 0,
+  "open_minor": 0,
+  "reviewer": "theory_docs agent; not report/finalizer author",
+  "report_sha256": "ce14528fe857982d6e56d3271f029325bdcd2f304fd05156c16c44bced2f4d9f",
+  "report_cjk_characters": 4154,
+  "report_question_marks": 0,
+  "utf8_no_bom": true,
+  "report_final_line": "INT1_PARTIAL：第6条仍有19个历史独立变异helper／249条有效准入及112个无逐站点准入的驱动插桩点未集中；其余本单重算、准入约定、语义门、文档与最终全套验证已完成",
+  "baseline": {
+    "name": "baseline_suite_r2_postreboot",
+    "collection": 13471,
+    "calls": 13471,
+    "identity_equal": true,
+    "phase_counts": {
+      "setup:passed": 13471,
+      "call:passed": 13469,
+      "teardown:passed": 13471,
+      "call:failed": 2
+    },
+    "failures": [
+      {
+        "nodeid": "tests/test_m5a_replay.py::test_frozen_family_products_are_distinct_and_bound_to_current_source",
+        "when": "call",
+        "outcome": "failed"
+      },
+      {
+        "nodeid": "tests/test_m5a2_static_runner.py::test_all_3103_legacy_and_117_m5a_admissions_remain_unchanged",
+        "when": "call",
+        "outcome": "failed"
+      }
+    ],
+    "shards": [
+      {
+        "last_line": "3368 passed in 1373.89s (0:22:53)",
+        "calls": 3368,
+        "exit_code": 0,
+        "execution_sha256": "a30b2c67af1470bdb04868f0f440357f69146afe0dc74f5d9761686566deb4a5"
+      },
+      {
+        "last_line": "1 failed, 3367 passed in 726.31s (0:12:06)",
+        "calls": 3368,
+        "exit_code": 1,
+        "execution_sha256": "0eda9052d3d38af5bee8841785f4ccee193431a7e84dd3676a4002a74326c826"
+      },
+      {
+        "last_line": "1 failed, 3367 passed in 766.96s (0:12:46)",
+        "calls": 3368,
+        "exit_code": 1,
+        "execution_sha256": "2a17d6d2847edd49902adb270c03d26048807e384956b38e6a473e72bcbd2680"
+      },
+      {
+        "last_line": "3367 passed in 791.37s (0:13:11)",
+        "calls": 3367,
+        "exit_code": 0,
+        "execution_sha256": "56c8ac7e9bf74b1c442cd5ca8d1a1360ddcb63cff80108e8d460027000d1fe7d"
+      }
+    ],
+    "static_exit_code": 0,
+    "static_last_line": "exact construction AST gate: 0 violation(s)"
+  },
+  "final": {
+    "name": "final_suite_r2_postreboot",
+    "collection": 13558,
+    "calls": 13558,
+    "identity_equal": true,
+    "phase_counts": {
+      "setup:passed": 13558,
+      "call:passed": 13558,
+      "teardown:passed": 13558
+    },
+    "failures": [],
+    "shards": [
+      {
+        "last_line": "3390 passed in 757.74s (0:12:37)",
+        "calls": 3390,
+        "exit_code": 0,
+        "execution_sha256": "209187820ed757b70ebacc90cbbf236c5e81ff35e31246a4d91c3e59ce4ad0d0"
+      },
+      {
+        "last_line": "3390 passed in 916.95s (0:15:16)",
+        "calls": 3390,
+        "exit_code": 0,
+        "execution_sha256": "34f412da66c8249691520eb59d550de399e5d5843b36ece26532c121d56f83e3"
+      },
+      {
+        "last_line": "3389 passed in 777.79s (0:12:57)",
+        "calls": 3389,
+        "exit_code": 0,
+        "execution_sha256": "615ba8a841729351f8609ee44be151c7c976ef07c431615e70b5a518f9938aef"
+      },
+      {
+        "last_line": "3389 passed in 1334.00s (0:22:14)",
+        "calls": 3389,
+        "exit_code": 0,
+        "execution_sha256": "c2720d1afe0f69eae8b49408961683b16708ac3d4d8d067067edf61217267d84"
+      }
+    ],
+    "static_exit_code": 0,
+    "static_last_line": "exact construction AST gate: 0 violation(s)"
+  },
+  "added_nodes": 87,
+  "deleted_nodes": 0,
+  "performance_independently_recomputed": {
+    "baseline_call_seconds": 3420.8343042000097,
+    "final_call_seconds": 3532.7883834000213,
+    "added_gate_call_seconds": 2.96681099999887,
+    "added_gate_fraction": 0.0008672770254777608,
+    "total_call_ratio": 1.0327271271404632,
+    "total_wall_ratio": 0.9606694047694803
+  },
+  "performance_controlled_host": false,
+  "source_manifest_rows": 6416,
+  "source_manifest_sha256": "4df2c54e3d4f12b5b7a957e12e43ebcc86201beb45f9e75d609f987c64845309",
+  "executed_source_mismatches": [],
+  "current_source_mismatches": [],
+  "current_source_missing_from_export": [],
+  "baseline_m4c_bound_files": 23,
+  "baseline_m4c_binding_mismatches": 0,
+  "baseline_m5a2_binding_mismatches": [
+    "src/eab/kernel2d/global_entrance.py"
+  ],
+  "remaining_hygiene": {
+    "independent_helpers": 19,
+    "active_per_site_admissions": 249,
+    "test_driver_exec_points": 112,
+    "test_driver_per_site_admissions": 0
+  },
+  "restored_test_file_crlf": 235,
+  "oversized_non_tmp_evidence": [],
+  "resolved_minor": [
+    "report reproduction sequence now refreshes before fresh final and finalizes final_new",
+    "original CRLF test file style restored; whole r2 rerun instead of byte-only rebinding"
+  ],
+  "publication_protocol": "Root must refresh artifact_manifest after these reviewer files are frozen; this JSON does not claim a circular self-manifest hash.",
+  "file_links": [
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/final_suite_r2_postreboot/summary.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/node_identity_audit.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/delivery_audit.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/artifact_manifest.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/interruption_audit.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/baseline_suite/reboot_invalidation.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/line_ending_repair.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/baseline_suite_r2_postreboot/summary.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/baseline_diagnosis.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/baseline_source_binding_audit.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/motion_refresh_r2_attestation.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/se2_revalidation_r2_attestation.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/se2_revalidation_r2_comparison.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_replay.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_admission_contract.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/immutability_audit.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/semantic_work.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/semantic_work_resume_r1.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_semantic.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_static.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_static_eol_r1.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/static_work.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/tests/mutation_support.py",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/static_work.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/static_work.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/docs/m5a2_affine_theory.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/theory_data_audit.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/theory_polynomial_probe.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_theory.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/suite_delta.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/performance.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_report.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_delivery.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_evidence/review_delivery.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_delivery.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_evidence/review_delivery.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_replay.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_evidence/review_delivery.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_theory.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_evidence/review_delivery.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_static_eol_r1.json",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_evidence/review_delivery.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_semantic.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_evidence/review_delivery.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_admission_contract.md",
+      "exists": true
+    },
+    {
+      "document": "reports/codex/INT1_evidence/review_delivery.md",
+      "link": "file:///D:/eab-wt/cx-m4/reports/codex/INT1_evidence/review_delivery.json",
+      "exists": true
+    }
+  ],
+  "all_file_links_exist": true,
+  "report_file_link_count": 32,
+  "review_markdown_sha256": "6f911c671e8cd76aa52ef496eea87cedbab37f7b722d6642500b4597ffe65f46"
+}

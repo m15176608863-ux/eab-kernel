@@ -1,0 +1,114 @@
+{
+  "schema": "eab.int1-review-replay.v1",
+  "status": "PASS",
+  "reviewer": "theory_docs agent; not replay implementation author",
+  "critical": 0,
+  "major": 0,
+  "open_minor": 0,
+  "resolved_minor": [
+    "r1 atomic wording was not implemented; r2 uses same-directory replace",
+    "r1 wrapper hashes absent; r2 binds wrappers plus M4c validator and reran both complete batches"
+  ],
+  "checks": {
+    "motion_actual_summary_hash": true,
+    "motion_current_production_closure": true,
+    "motion_current_orchestration_closure": true,
+    "motion_old_m3c_and_m5a_lineage_unchanged": true,
+    "motion_historical_fixture_hashes": true,
+    "motion_full_deep_comparison_450": true,
+    "se2_current_production_closure": true,
+    "se2_current_tool_closure": true,
+    "se2_current_wrapper_hash": true,
+    "se2_input_closure": true,
+    "se2_manifest_attestation_hash": true,
+    "se2_representation_change_list_unchanged": true,
+    "se2_full_deep_comparison_450": true,
+    "provenance_exactly_one_existing_row_changed": true,
+    "other_provenance_values_unchanged": true,
+    "historical_fixture_bytes_unchanged": true
+  },
+  "cases": {
+    "bb52": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb12": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb50": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb51": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb03": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb05": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb06": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb09": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bb10": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bbv01": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bbv01_dbv01a": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bbv02": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bbv02_dbv02a": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bbF038": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    },
+    "bbS038": {
+      "motion_frames_exactly_equal": 30,
+      "se2_frames_exactly_equal_previous_m5a2": 30
+    }
+  },
+  "motion_frames": 450,
+  "se2_frames": 450,
+  "fixture_files_compared": 218,
+  "changed_fixture_files": [
+    "fixtures/PROVENANCE.json",
+    "fixtures/m5a2/revalidation.json"
+  ],
+  "provenance_entries": 217,
+  "changed_provenance_fields": [
+    "source",
+    "bytes",
+    "sha256"
+  ],
+  "audited_scripts": {
+    "tools/int1_refresh_motion.py": "fafaca457cf588c639d9fd00e0447863e05e7550564152398e2d087b78b95529",
+    "tools/int1_revalidate_replay.py": "3e76e46f33aaec76f8cd47a43417a58323621104d1b5a600ceb823f915e04e3f",
+    "tools/m5a2_revalidate_replay.py": "6af414a042f22a5bb13ff3ac27c2acf8cb064bf0856f994c7d2e4db038d80eb8",
+    "tools/m4c_run_replays.py": "255e01c4520856a03f4b03f9e12ae5b13afee563947372e67ab9c7da270dbc8a"
+  },
+  "r2_motion_attestation_sha256": "123731a6b6db7fbaa885690e7c12452c419fba61197041ba1701731506d45e00",
+  "r2_se2_attestation_sha256": "88abfa43b6e13e93f179786474101ca5749f8d3f7e3afeefdc1f5a466991165d",
+  "qualification": "Two-file manifest/provenance publication is not one transaction; source hash check is snapshot consistency, not hostile concurrent-writer immunity."
+}

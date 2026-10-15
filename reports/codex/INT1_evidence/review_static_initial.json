@@ -1,0 +1,66 @@
+{
+  "complete": true,
+  "major": 1,
+  "findings": [
+    {
+      "name": "reflection_variable",
+      "source": "def test_reflection(module, compare):\n    name = 'scalar_algebraic'\n    return getattr(module, name)(compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "reflection_concat",
+      "source": "def test_reflection(module, compare):\n    return getattr(module, 'scalar_'+'algebraic')(compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "reflection_dict",
+      "source": "def test_reflection(module, compare):\n    return module.__dict__['scalar_algebraic'](compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "reflection_globals",
+      "source": "def test_reflection(compare):\n    return globals()['scalar_algebraic'](compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "subclass_alias",
+      "source": "from eab.kernel2d.algebraic import RealAlgebraic\nBase=RealAlgebraic\nclass Liar(Base):\n    def compare(self,q):\n        return 0\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "reflection_getattr_alias",
+      "source": "def test_reflection(module, compare):\n    fetch = getattr\n    return fetch(module, 'scalar_algebraic')(compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "reflection_vars",
+      "source": "def test_reflection(module,compare):\n    return vars(module)['scalar_algebraic'](compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "reflection_attrgetter",
+      "source": "import operator\ndef test_reflection(module,compare):\n    return operator.attrgetter('scalar_algebraic')(module)(compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "reflection_attrgetter_alias",
+      "source": "from operator import attrgetter as getter\ndef test_reflection(module,compare):\n    return getter('scalar_algebraic')(module)(compare)\n",
+      "issues": [],
+      "zero_violations": true
+    },
+    {
+      "name": "nested_subclass_alias",
+      "source": "from eab.kernel2d.algebraic import RealAlgebraic\ndef test_override():\n    Base=RealAlgebraic\n    class Liar(Base):\n        def compare(self,q):\n            return 0\n    return Liar((0,1),0,0).time\n",
+      "issues": [],
+      "zero_violations": true
+    }
+  ]
+}

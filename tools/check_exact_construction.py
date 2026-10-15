@@ -34,6 +34,80 @@ def _name(node):
     return ""
 
 
+def _higher_order_comparator_sites(tree):
+    """Reject escapes of the algebraic boundary, including test drivers.
+
+    This is deliberately a positive subset, not arbitrary Python call-graph
+    inference. An escaped constructor or reflected lookup needs its own review;
+    an inherited reviewed display method does not bless an overridden compare.
+    """
+    aliases = {"scalar_algebraic"}
+    algebraic_types = {"RealAlgebraic"}
+    reflectors = {"getattr", "__getattribute__", "__getitem__", "attrgetter", "itemgetter"}
+    assignments = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom):
+            for item in node.names:
+                if item.name == "scalar_algebraic":
+                    aliases.add(item.asname or item.name)
+                if item.name == "RealAlgebraic":
+                    algebraic_types.add(item.asname or item.name)
+                if item.name in reflectors:
+                    reflectors.add(item.asname or item.name)
+        if isinstance(node, (ast.Assign, ast.AnnAssign)) and node.value is not None:
+            for target in node.targets if isinstance(node, ast.Assign) else (node.target,):
+                if isinstance(target, ast.Name):
+                    assignments.setdefault(target.id, []).append(node.value)
+
+    def spells(node, value, seen=frozenset()):
+        if isinstance(node, ast.Constant):
+            return node.value == value
+        if isinstance(node, ast.Name) and node.id not in seen:
+            return any(spells(rhs, value, seen | {node.id}) for rhs in assignments.get(node.id, ()))
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+            # The target spelling is fixed and short. Splitting it avoids an
+            # unbounded string abstract domain or evaluation of Python code.
+            return any(spells(node.left, value[:i], seen) and spells(node.right, value[i:], seen)
+                       for i in range(len(value)+1))
+        return False
+
+    classes = [node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
+    while True:
+        previous = (len(aliases), len(algebraic_types), len(reflectors))
+        for target, values in assignments.items():
+            for names in (aliases, algebraic_types, reflectors):
+                if any(_name(rhs).split(".")[-1] in names for rhs in values):
+                    names.add(target)
+        inherited = {node.name for node in classes
+                     if any(_name(base).split(".")[-1] in algebraic_types for base in node.bases)}
+        algebraic_types.update(inherited)
+        if previous == (len(aliases), len(algebraic_types), len(reflectors)):
+            break
+    result = []
+
+    def visit(node, stack=(), parent=None):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            stack = (*stack, node.name)
+        escape = (isinstance(node, (ast.Name, ast.Attribute))
+                  and isinstance(node.ctx, ast.Load)
+                  and _name(node).split(".")[-1] in aliases
+                  and not (isinstance(parent, ast.Call) and parent.func is node))
+        reflection = ((isinstance(node, ast.Call) and _name(node.func).split(".")[-1] in reflectors
+                       and any(spells(arg, "scalar_algebraic") for arg in node.args))
+                      or (isinstance(node, ast.Subscript) and spells(node.slice, "scalar_algebraic")))
+        override = (isinstance(node, ast.ClassDef) and node.name in algebraic_types
+                    and any(_name(base).split(".")[-1] in algebraic_types for base in node.bases)
+                    and any(isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef))
+                            and child.name == "compare" for child in node.body))
+        if escape or reflection or override:
+            result.append((node, stack))
+        for child in ast.iter_child_nodes(node):
+            visit(child, stack, node)
+
+    visit(tree)
+    return result
+
+
 def scan_text(text, path="<injected>", *, repository_root=None):
     """Finite, conservative intraprocedural may-analysis, not Python proof.
 
@@ -142,6 +216,8 @@ def scan_text(text, path="<injected>", *, repository_root=None):
 
         def issue(self, node, rule):
             function = ".".join(self.stack) or "<module>"
+            if _subset.instrumentation_scope(text, path, function, rule):
+                return
             driver = path.startswith("tests/test_") and (not self.stack or self.stack[0].startswith("test_"))
             if driver and rule.startswith("closed-"):
                 return
@@ -648,6 +724,9 @@ def scan_text(text, path="<injected>", *, repository_root=None):
     checker = Check()
     checker.expression_values = {}
     checker.block(tree.body)
+    for node, stack in _higher_order_comparator_sites(tree):
+        checker.stack = list(stack)
+        checker.issue(node, "algebraic-comparator-site")
     return list(dict.fromkeys(issues))
 
 

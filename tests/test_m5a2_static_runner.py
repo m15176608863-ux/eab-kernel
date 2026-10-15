@@ -14,6 +14,7 @@ import subprocess
 import sys
 
 import pytest
+from mutation_support import replace_module_callable
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -27,6 +28,29 @@ def test_all_3103_legacy_and_117_m5a_admissions_remain_unchanged():
     fingerprint = hashlib.sha256(json.dumps(prefix, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     assert len(prefix) == 3220 and fingerprint == "1e513fa6d8f8e7b991750d20060547dadfc434887ea105cf7a97b7fd9f540163", \
         "the 3103 legacy plus 117 M5a site admissions must remain byte-value identical"
+
+
+def test_all_287_m5a_and_m5a2_historical_admissions_remain_unchanged():
+    policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    rows = [row for row in policy["waivers"] if row["id"].startswith(("M5A-", "M5A2-"))]
+    fingerprint = hashlib.sha256(json.dumps(rows, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    assert len(rows) == 287 and fingerprint == "8c58d2cbd3c7051c972c46d742d824ca1d629ccf613f1d22587bbe11a061591c", \
+        "accepted M5a and M5a2 historical reviews are immutable, including retired instrumentation"
+
+
+def test_single_mutation_review_has_exact_scope_and_never_admits_numerics():
+    subset = gate._subset
+    text = (ROOT / "tests/mutation_support.py").read_text(encoding="utf-8")
+    assert subset.instrumentation_scope(text, "tests/mutation_support.py", "mutated_function", "closed-dynamic-call")
+    assert not subset.instrumentation_scope(text + "\ndef unreviewed():\n    return 0\n",
+                                            "tests/mutation_support.py", "unreviewed", "closed-dynamic-call")
+    changed = text.replace('source = dedent(inspect.getsource(function))', 'source = "unreviewed"')
+    assert not subset.instrumentation_scope(changed, "tests/mutation_support.py", "mutated_function", "closed-dynamic-call")
+    assert not subset.instrumentation_scope(text, "tests/arbitrary_helper.py", "mutated_function", "closed-dynamic-call")
+    for rule in ("direct-float", "closed-unproved-arithmetic", "closed-rounded-call",
+                 "closed-rounded-construction", "algebraic-comparator-site"):
+        assert not subset.instrumentation_scope(text, "tests/mutation_support.py", "mutated_function", rule), \
+            "mutation mechanics review cannot admit numerical construction or comparison"
 
 
 @pytest.mark.parametrize("body", (
@@ -45,14 +69,52 @@ def test_arbitrary_algebraic_comparator_requires_individual_site_admission(body)
 
 
 def test_comparator_site_rule_has_internal_mutation_teeth(monkeypatch):
-    source = inspect.getsource(gate.scan_text)
     old = 'if "scalar_algebraic" in names:'
-    assert source.count(old) == 1
-    namespace = dict(vars(gate))
-    exec(compile(source.replace(old, "if False:"), "<M5a2 callback rule mutant>", "exec"), namespace)
-    monkeypatch.setattr(gate, "scan_text", namespace["scan_text"])
+    replace_module_callable(monkeypatch, gate, "scan_text", [(old, "if False:")])
     with pytest.raises(AssertionError, match="arbitrary comparator must not inherit exactness"):
         test_arbitrary_algebraic_comparator_requires_individual_site_admission("return scalar_algebraic(holder.compare)")
+
+
+HIGHER_ORDER_COMPARATORS = (
+    "def test_reflection(module, compare):\n    name = 'scalar_algebraic'\n    return getattr(module, name)(compare)\n",
+    "def test_reflection(module, compare):\n    return getattr(module, 'scalar_'+'algebraic')(compare)\n",
+    "def test_reflection(module, compare):\n    return module.__dict__['scalar_algebraic'](compare)\n",
+    "def test_reflection(compare):\n    return globals()['scalar_algebraic'](compare)\n",
+    'from eab.kernel2d.algebraic import RealAlgebraic\nBase=RealAlgebraic\nclass Liar(Base):\n    def compare(self,q):\n        return 0\n',
+    "def test_reflection(module, compare):\n    fetch = getattr\n    return fetch(module, 'scalar_algebraic')(compare)\n",
+    "def test_reflection(module,compare):\n    return vars(module)['scalar_algebraic'](compare)\n",
+    "import operator\ndef test_reflection(module,compare):\n    return operator.attrgetter('scalar_algebraic')(module)(compare)\n",
+    "from operator import attrgetter as getter\ndef test_reflection(module,compare):\n    return getter('scalar_algebraic')(module)(compare)\n",
+    'from eab.kernel2d.algebraic import RealAlgebraic\ndef test_override():\n    Base=RealAlgebraic\n    class Liar(Base):\n        def compare(self,q):\n            return 0\n    return Liar((0,1),0,0).time\n',
+    "class Holder:\n    def convert(self):\n        return scalar_algebraic(self.compare)\n",
+    "def test_map(values):\n    return list(map(scalar_algebraic, values))\n",
+    "def test_reflection(module, compare):\n    return getattr(module, 'scalar_algebraic')(compare)\n",
+    "def factory():\n    return scalar_algebraic\ndef test_factory(compare):\n    return factory()(compare)\n",
+    "@scalar_algebraic\ndef compare(q):\n    return 0\n",
+    "from eab.kernel2d.algebraic import RealAlgebraic\nclass Liar(RealAlgebraic):\n    def compare(self, q):\n        return 0\n",
+    "from eab.kernel2d.algebraic import RealAlgebraic as Base\nclass First(Base):\n    pass\nclass Liar(First):\n    def compare(self, q):\n        return 0\n",
+    "def test_driver(compare):\n    return scalar_algebraic(compare)\n",
+)
+
+
+@pytest.mark.parametrize("source", HIGHER_ORDER_COMPARATORS)
+@pytest.mark.parametrize("path", ("<injected>", "tests/test_comparator_driver.py"))
+def test_higher_order_algebraic_callbacks_require_site_review_even_in_test_drivers(source, path):
+    issues = gate.scan_text(source, path)
+    assert any(row[3] == "algebraic-comparator-site" for row in issues), \
+        "higher-order comparator dispatch cannot inherit an exactness review"
+
+
+@pytest.mark.parametrize("source", HIGHER_ORDER_COMPARATORS)
+def test_higher_order_comparator_internal_mutants_hit_the_semantic_rule(source, monkeypatch):
+    # No policy/source fingerprint is consulted for the injected text. A defect
+    # in the checker itself removes precisely this rule, not a hash tripwire.
+    old = 'function = ".".join(self.stack) or "<module>"'
+    replace_module_callable(monkeypatch, gate, "scan_text", [(old, old +
+                            '\n            if rule == "algebraic-comparator-site":\n                return')])
+    with pytest.raises(AssertionError, match="higher-order comparator dispatch"):
+        test_higher_order_algebraic_callbacks_require_site_review_even_in_test_drivers(
+            source, "tests/test_comparator_driver.py")
 
 
 def test_per_test_watchdog_terminates_real_internal_nontermination(tmp_path):
@@ -82,6 +144,39 @@ def test_internal_nontermination(monkeypatch):
     assert record["when"] == "watchdog" and record["outcome"] == "failed"
     assert record["nodeid"].endswith("::test_internal_nontermination")
     assert not (tmp_path / "execution.json").exists(), "a timed out shard cannot claim completion"
+
+
+@pytest.mark.parametrize("cancel_at_call", (False, True))
+def test_watchdog_covers_teardown_and_internal_early_cancel_is_red(tmp_path, cancel_at_call):
+    plugin = runner.PLUGIN
+    if cancel_at_call:
+        old = "def pytest_runtest_logfinish(nodeid, location):"
+        assert plugin.count(old) == 1
+        # Real hook mutation cancels before fixture teardown, not after it.
+        plugin = plugin.replace(old, "def pytest_runtest_teardown(item, nextitem):", 1)
+    (tmp_path / "int1_teardown_plugin.py").write_text(plugin, encoding="utf-8")
+    case = tmp_path / "test_teardown.py"
+    case.write_text("import pytest\nimport time\n@pytest.fixture\ndef resource():\n    yield\n    time.sleep(0.7)\ndef test_teardown(resource):\n    assert True\n", encoding="utf-8")
+    env = dict(os.environ, PYTHONPATH=str(tmp_path), M5A2_TEST_TIMEOUT="0.25",
+               M5A2_TIMEOUT_RECORD=str(tmp_path / "timeout.json"),
+               M5A2_NODE_PROGRESS=str(tmp_path / "progress.json"),
+               M5A2_NODE_JOURNAL=str(tmp_path / "journal.jsonl"),
+               M5A2_EXECUTION_RECORD=str(tmp_path / "execution.json"),
+               TEMP=str(tmp_path), TMP=str(tmp_path), PYTHONDONTWRITEBYTECODE="1")
+    result = subprocess.run([sys.executable, "-X", "utf8", "-m", "pytest", "-q",
+                             "-p", "no:cacheprovider", "-p", "int1_teardown_plugin",
+                             str(case), "--basetemp", str(tmp_path / "pytest")],
+                            cwd=tmp_path, env=env, capture_output=True, text=True,
+                            encoding="utf-8", errors="replace", timeout=15)
+    if cancel_at_call:
+        with pytest.raises(AssertionError, match="teardown remains under watchdog"):
+            assert result.returncode == 124, "teardown remains under watchdog"
+        assert result.returncode == 0, result.stdout
+    else:
+        assert result.returncode == 124, "teardown remains under watchdog"
+        assert not (tmp_path / "execution.json").exists()
+        record = json.loads((tmp_path / "timeout.json").read_text(encoding="utf-8"))
+        assert record["nodeid"].endswith("::test_teardown") and record["when"] == "watchdog"
 
 
 def test_renewal_does_not_admit_a_changed_scope_or_an_unreviewed_site(monkeypatch):

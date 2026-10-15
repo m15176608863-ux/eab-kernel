@@ -1,0 +1,182 @@
+{
+  "schema": "eab.int1-semantic-teeth.v1",
+  "complete": true,
+  "audit": "GREEN",
+  "new_test_nodes": 29,
+  "mutations": [
+    {
+      "kind": "quadratic_outside_interval",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 quadratic SE2 entrance must be 1/3, never the out-of-window -1/2",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.016068800000084593
+    },
+    {
+      "kind": "swept_max_norm",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 off-centroid small-angle real contact cannot be broad-phase rejected",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.00771060000010948
+    },
+    {
+      "kind": "modular_leading_coefficient",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 primes dividing the leading coefficient cannot exclude a rational root",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.0011346999999659602
+    },
+    {
+      "kind": "refinement_linear_denominator",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 quadratic-denominator refinement recovers the root away from a Farey tie",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.002124500000036278
+    },
+    {
+      "kind": "refinement_four_times_wider",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 quadratic-denominator refinement recovers the root away from a Farey tie",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.0018259999999372667
+    },
+    {
+      "kind": "closed_upper_endpoint",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 closed upper endpoint denotes the endpoint root",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.0005478000000493921
+    },
+    {
+      "kind": "affine_delta_l1",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 affine delta is coordinate L-infinity, not residual-vector L1",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.0004320000000461732
+    },
+    {
+      "kind": "omitted_pair_stats",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 focused omitted-pair stats conserve the certified separated branch",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.05083239999999023
+    },
+    {
+      "kind": "initial_contact_reuse_stats",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 focused initial-geometry reuse stats conserve both contact and overlap",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.017224299999952564
+    },
+    {
+      "kind": "initial_overlap_reuse_stats",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "INT1 focused initial-geometry reuse stats conserve both contact and overlap",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.01721980000002077
+    },
+    {
+      "kind": "affine_fit_cross_sign",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "affine endpoint independent normal-equation oracle",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.0013093000000026223
+    },
+    {
+      "kind": "positive_affine_residual_certified",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "positive residual must not receive endpoint-exact certificate",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.0008221000000503409
+    },
+    {
+      "kind": "residual_correction_sign",
+      "control": "PASS",
+      "mutant": "KILLED",
+      "semantic_assertion": "corrected path exactly closes original snapshot endpoint",
+      "source_hash_tripwire_masked_before_control_and_mutant": true,
+      "injection": "actual function-body change via tests/mutation_support.py; restored by MonkeyPatch",
+      "seconds": 0.0017553999998654035
+    }
+  ],
+  "mutation_count": 13,
+  "commands": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp\\semantic_pytest_resume_r1",
+        "tests/test_int1_semantics.py",
+        "--durations=5"
+      ],
+      "exit_code": 0,
+      "last_line": "29 passed in 0.32s",
+      "wall_seconds": 0.7240292000001318,
+      "log": "reports/codex/INT1_evidence/semantic_pytest_resume_r1.txt"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp\\semantic_regression_resume_r1",
+        "tests/test_int1_semantics.py",
+        "tests/test_m5a2_exact.py",
+        "tests/test_m5a2_affine.py",
+        "tests/test_m5a2_replay.py",
+        "--durations=5"
+      ],
+      "exit_code": 0,
+      "last_line": "116 passed in 1.59s",
+      "wall_seconds": 2.0022429000000557,
+      "log": "reports/codex/INT1_evidence/semantic_regression_resume_r1.txt"
+    }
+  ],
+  "production_files_changed": [],
+  "source_hashes": {
+    "tests/test_int1_semantics.py": "c104566e0bd6004be5eed64d52c29d8e1768d85a88e8bfe5b527fd2d4cc6db70",
+    "tests/mutation_support.py": "362b9afa9a1c223c831209d812edbd3ad64f949484d8f48fc3c887375a1ba547",
+    "src/eab/kernel2d/algebraic.py": "7eaf5cae997b2472167d93cfcab7addc2dfd6bc658265549f5079927bea61ecd",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
+    "src/eab/kernel2d/affine_motion.py": "0b357b39707d27515ccb7271c95d765c6479b87580938dbc64e98725ac622bad",
+    "tools/m5a_se2_replay.py": "2f817dba17c9e11620f0221bb9fe88fe16c99aa400e81d72eed41a34e9dcdc07"
+  },
+  "temp": "D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp",
+  "tmp": "D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp",
+  "seconds": 2.8484141000001273,
+  "limitation": "Focused semantic gates, not the final four-shard integration run; parent reports final static admission and suite identity."
+}

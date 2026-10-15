@@ -8,10 +8,9 @@ unions decide candidate/merge probes; legacy replay is secondary corroboration.
 """
 from fractions import Fraction as F
 from itertools import combinations, product
-import inspect
-import textwrap
 
 import pytest
+from mutation_support import mutated_function
 
 from eab.kernel3d import global_entrance as G
 from eab.kernel3d import geom3
@@ -213,11 +212,7 @@ def test_spatial_pruning_handles_nonaxial_lines_without_dropping_tangencies(monk
 
 
 def _mutate(monkeypatch, function, before, after):
-    source = textwrap.dedent(inspect.getsource(function))
-    assert source.count(before) == 1, 'mutation site must be unambiguous'
-    namespace = dict(vars(G))
-    exec(compile(source.replace(before, after), '<M3b internal semantic mutation>', 'exec'), namespace)
-    monkeypatch.setattr(G, function.__name__, namespace[function.__name__])
+    monkeypatch.setattr(G, function.__name__, mutated_function(function, G, [(before, after)]))
     G._decompose.cache_clear()
     G._line_sections.cache_clear()
 

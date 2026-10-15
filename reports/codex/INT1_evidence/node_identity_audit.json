@@ -1,0 +1,65 @@
+{
+  "audit": "GREEN",
+  "complete": true,
+  "collected": 13558,
+  "executed": 13558,
+  "phase_counts": {
+    "setup:passed": 13558,
+    "call:passed": 13558,
+    "teardown:passed": 13558
+  },
+  "failures": [],
+  "shards": [
+    {
+      "shard": 1,
+      "collected": 3390,
+      "executed": 3390,
+      "exit_code": 0,
+      "last_line": "3390 passed in 757.74s (0:12:37)",
+      "execution_sha256": "209187820ed757b70ebacc90cbbf236c5e81ff35e31246a4d91c3e59ce4ad0d0"
+    },
+    {
+      "shard": 2,
+      "collected": 3390,
+      "executed": 3390,
+      "exit_code": 0,
+      "last_line": "3390 passed in 916.95s (0:15:16)",
+      "execution_sha256": "34f412da66c8249691520eb59d550de399e5d5843b36ece26532c121d56f83e3"
+    },
+    {
+      "shard": 3,
+      "collected": 3389,
+      "executed": 3389,
+      "exit_code": 0,
+      "last_line": "3389 passed in 777.79s (0:12:57)",
+      "execution_sha256": "615ba8a841729351f8609ee44be151c7c976ef07c431615e70b5a518f9938aef"
+    },
+    {
+      "shard": 4,
+      "collected": 3389,
+      "executed": 3389,
+      "exit_code": 0,
+      "last_line": "3389 passed in 1334.00s (0:22:14)",
+      "execution_sha256": "c2720d1afe0f69eae8b49408961683b16708ac3d4d8d067067edf61217267d84"
+    }
+  ],
+  "static": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/check_exact_construction.py"
+    ],
+    "exit_code": 0,
+    "process_timed_out": false,
+    "seconds": 135.03074330000072,
+    "last_line": "exact construction AST gate: 0 violation(s)",
+    "log": "D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\final_suite_r2_postreboot\\exact_construction.txt"
+  },
+  "call_seconds": 3532.7883834000213,
+  "wall_seconds": 1491.3643257999997,
+  "source": "D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp\\final_suite_r2_postreboot_export",
+  "manifest": "D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp\\final_suite_r2_postreboot_manifest.json",
+  "temp": "D:\\eab-wt\\cx-m4\\reports\\codex\\INT1_evidence\\tmp\\final_suite_r2_postreboot_temp",
+  "fresh_git_checkout": false
+}

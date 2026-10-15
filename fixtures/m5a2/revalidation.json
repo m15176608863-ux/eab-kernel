@@ -43,7 +43,7 @@
         "separated_chord_different": 2,
         "separated_chord_same": 203
       },
-      "seconds": 40.08516230000532
+      "seconds": 38.18455859999813
     },
     "bb12": {
       "complete": true,
@@ -88,7 +88,7 @@
         "separated_chord_different": 43,
         "separated_chord_same": 125
       },
-      "seconds": 3.8936315000028117
+      "seconds": 4.236212399991928
     },
     "bb50": {
       "complete": true,
@@ -116,7 +116,7 @@
         "initial_0_contact": 1,
         "separated_chord_same": 29
       },
-      "seconds": 0.4893921000038972
+      "seconds": 0.500846900002216
     },
     "bb51": {
       "complete": true,
@@ -163,7 +163,7 @@
         "separated_chord_different": 43,
         "separated_chord_same": 322
       },
-      "seconds": 66.68534460000228
+      "seconds": 63.472822700001416
     },
     "bb03": {
       "complete": true,
@@ -211,7 +211,7 @@
         "separated_chord_different": 89,
         "separated_chord_same": 282
       },
-      "seconds": 5.515706299993326
+      "seconds": 5.581206299990299
     },
     "bb05": {
       "complete": true,
@@ -256,7 +256,7 @@
         "separated_chord_different": 9,
         "separated_chord_same": 74
       },
-      "seconds": 0.5526337000046624
+      "seconds": 0.6025032000034116
     },
     "bb06": {
       "complete": true,
@@ -301,7 +301,7 @@
         "separated_chord_different": 1,
         "separated_chord_same": 85
       },
-      "seconds": 0.4494845000008354
+      "seconds": 0.487058500002604
     },
     "bb09": {
       "complete": true,
@@ -344,7 +344,7 @@
         "separated_chord_different": 193,
         "separated_chord_same": 390
       },
-      "seconds": 5.946263699996052
+      "seconds": 6.087710399995558
     },
     "bb10": {
       "complete": true,
@@ -389,7 +389,7 @@
         "separated_chord_different": 79,
         "separated_chord_same": 542
       },
-      "seconds": 8.017889099995955
+      "seconds": 8.137395300000207
     },
     "bbv01": {
       "complete": true,
@@ -435,7 +435,7 @@
         "separated_chord_different": 4,
         "separated_chord_same": 312
       },
-      "seconds": 29.7921645000024
+      "seconds": 27.979538300001877
     },
     "bbv01_dbv01a": {
       "complete": true,
@@ -481,7 +481,7 @@
         "separated_chord_different": 4,
         "separated_chord_same": 375
       },
-      "seconds": 48.014821700009634
+      "seconds": 44.30956300000253
     },
     "bbv02": {
       "complete": true,
@@ -527,7 +527,7 @@
         "separated_chord_different": 4,
         "separated_chord_same": 141
       },
-      "seconds": 14.496406699996442
+      "seconds": 13.597115099997609
     },
     "bbv02_dbv02a": {
       "complete": true,
@@ -573,7 +573,7 @@
         "separated_chord_different": 2,
         "separated_chord_same": 143
       },
-      "seconds": 15.157896000004257
+      "seconds": 14.725302700011525
     },
     "bbF038": {
       "complete": true,
@@ -607,7 +607,7 @@
         "rigid_new_contacts": 1,
         "separated_chord_same": 1
       },
-      "seconds": 0.08333069999935105
+      "seconds": 0.08209529999294318
     },
     "bbS038": {
       "complete": true,
@@ -641,7 +641,7 @@
         "rigid_new_contacts": 1,
         "separated_chord_same": 1
       },
-      "seconds": 0.07751470000948757
+      "seconds": 0.07861679999041371
     }
   },
   "code_hashes": {
@@ -656,7 +656,7 @@
     "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
     "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
     "src/eab/kernel2d/geom.py": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
-    "src/eab/kernel2d/global_entrance.py": "59e7bf190026dfa7a302f094b55f37ac484bade2dd9c307df11e44443a325db3",
+    "src/eab/kernel2d/global_entrance.py": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9",
     "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
     "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
     "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
@@ -774,8 +774,15 @@
   "all_semantic_fields_equal": true,
   "allowed_difference": "rigid.time certificate representation only, independently exactly equal",
   "time_representation_changes": [],
-  "seconds": 67.69928809998964,
-  "run_directory": "reports/codex/M5a2_evidence/tmp/revalidation_r1",
+  "seconds": 64.22736220000661,
+  "run_directory": "reports/codex/INT1_evidence/tmp/se2_revalidation_r2",
   "jobs": 4,
-  "scope": "15 x 30 frozen prefixes, not the full 1810-step historical run"
+  "scope": "15 x 30 frozen prefixes, not the full 1810-step historical run",
+  "int1_refresh": {
+    "orchestrator_sha256": "3e76e46f33aaec76f8cd47a43417a58323621104d1b5a600ceb823f915e04e3f",
+    "previous_manifest": "reports/codex/INT1_evidence/se2_revalidation_r2_before.json",
+    "previous_manifest_sha256": "5cfe5b7d0e65c70753f1c2607220870cd9e87dea1ca9ac2af62497ce64ef92a5",
+    "previous_m5a2_all_normalized_hashes_identical": true,
+    "comparison": "reports/codex/INT1_evidence/se2_revalidation_r2_comparison.json"
+  }
 }

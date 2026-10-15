@@ -8,14 +8,13 @@ rational roots are direct integer factorizations; the lever uses y=2*L*s /
 code manifest participates in these assertions.
 """
 from fractions import Fraction as F
-import inspect
 from pathlib import Path
 from random import Random
 import sys
-from textwrap import dedent
 from unittest.mock import patch
 
 import pytest
+from mutation_support import mutated_function
 
 from eab.kernel2d import algebraic as alg
 from eab.kernel2d import se2
@@ -168,34 +167,29 @@ def exact_mutation(kind):
     if kind == "tiny_residual_zero":
         original, owner, name = replay.RigidFit.certificate.fget, replay.RigidFit, "certificate"
         before, after = "self.delta == 0", "self.delta <= F(1, 2**52)"
-        namespace = dict(vars(replay))
+        module = replay
     elif kind == "rational_container_bypass":
         original, owner, name = se2.se2_first_entrance, se2, "se2_first_entrance"
         before, after = "rational = time.as_rational()", "rational = time.rational"
-        namespace = dict(vars(se2))
+        module = se2
     elif kind == "rational_reconstruction_bypass":
         original, owner, name = RealAlgebraic.as_rational, RealAlgebraic, "as_rational"
         before, after = "if self.rational is not None:", "if True:"
-        namespace = dict(vars(alg))
+        module = alg
     elif kind == "rational_reconstruction_outside_interval":
         original, owner, name = RealAlgebraic.as_rational, RealAlgebraic, "as_rational"
         before, after = "lower <= candidate <= upper and ", ""
-        namespace = dict(vars(alg))
+        module = alg
     elif kind == "closed_lower_endpoint_lost":
         original, owner, name = RealAlgebraic.__post_init__, RealAlgebraic, "__post_init__"
         before, after = "upper = lower", "lower = upper"
-        namespace = dict(vars(alg))
+        module = alg
     else:
         original, owner, name = oracle.first_contact, oracle, "first_contact"
         before = "assert all(isinstance(x, (int, F)) and not isinstance(x, bool) for x in inputs)"
         after = "assert True"
-        namespace = dict(vars(oracle))
-    source = dedent(inspect.getsource(original))
-    if kind == "tiny_residual_zero":
-        source = source.replace("@property\n", "", 1)
-    assert source.count(before) == 1, "mutation anchor must be unique"
-    exec(compile(source.replace(before, after), "<M5a2 exact source-body mutant>", "exec"), namespace)
-    changed = namespace[original.__name__]
+        module = oracle
+    changed = mutated_function(original, module, [(before, after)])
     return patch.object(owner, name, property(changed) if kind == "tiny_residual_zero" else changed)
 
 
