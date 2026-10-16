@@ -1,0 +1,558 @@
+{
+  "complete": true,
+  "scope": "R3 oracle/tests/proof, not six-way G6",
+  "critical": 0,
+  "major": 0,
+  "minor": 0,
+  "reviewed_hashes": {
+    "tests/m5d_r3_oracle.py": "e8a629da0de339872b4f9bb9df15340fcf457e8440aeb3c60e18a56b9dd8e0ae",
+    "tests/test_m5d_r3_semantics.py": "2491d4ed0f2d120f60540a077465c03055b714630c36f43a3c39f2774a7cad4f",
+    "docs/m5d_r3_theory.md": "e24a8957849078e77ac7d9acf0fdb3e460de525a7c91bb0a59f1f4c99b3e8631",
+    "tests/m5c_teeth_oracle.py": "7709897e6b4e9d4029b15ac3a1b74de0ee90c83ef5732d1c2948a118e84d23bb",
+    "src/eab/kernel2d/m5c_certificates.py": "3ff979533170748023d2f94dd9911bb155bacc32824009003e8bedb5afe978b1",
+    "tools/m5d_review_r3.py": "07ab95aca8d20ea8ca6b401a983eff15d0a1ae2e12b0ad661fef47e745c24f14"
+  },
+  "oracle_imports": [
+    "fractions",
+    "functools",
+    "math"
+  ],
+  "independent_closed_form_selfchecks": [
+    {
+      "name": "linear_translation",
+      "exact_time": "1/2",
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "disjoint_line_extension",
+      "exact_time": null,
+      "labels": []
+    },
+    {
+      "name": "four_incidence_corner",
+      "exact_time": "1/2",
+      "labels": [
+        [
+          "EV",
+          1,
+          3
+        ],
+        [
+          "EV",
+          2,
+          3
+        ],
+        [
+          "VE",
+          2,
+          2
+        ],
+        [
+          "VE",
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "double_root_tangency",
+      "exact_time": "1/2",
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "half_angle_rotation",
+      "defining_polynomial": [
+        4,
+        -8,
+        1
+      ],
+      "isolating_interval": [
+        "1/2",
+        "3/5"
+      ],
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "unequal_denominator_both_moving",
+      "defining_polynomial": [
+        4,
+        -8,
+        1
+      ],
+      "isolating_interval": [
+        "1/2",
+        "3/5"
+      ],
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ]
+    }
+  ],
+  "actual_internal_mutations": [
+    {
+      "id": "early_skip",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_complete_early_window_rejects_prebracket_contact",
+      "actual_red": "R3 complete early window rejects prebracket contact"
+    },
+    {
+      "id": "early_short_first_half",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_complete_early_window_rejects_prebracket_contact",
+      "actual_red": "R3 complete early window rejects prebracket contact"
+    },
+    {
+      "id": "early_only_second_half",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_complete_early_window_rejects_prebracket_contact",
+      "actual_red": "R3 complete early window rejects prebracket contact"
+    },
+    {
+      "id": "omit_ev",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_ev_competitor_precedes_nominated_ve",
+      "actual_red": "R3 EV competitor precedes nominated VE"
+    },
+    {
+      "id": "omit_projection_g",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_both_projection_sides_reject_line_extensions",
+      "actual_red": "R3 both projections reject a line extension"
+    },
+    {
+      "id": "omit_projection_h",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_both_projection_sides_reject_line_extensions",
+      "actual_red": "R3 both projections reject a line extension"
+    },
+    {
+      "id": "omit_last_panel",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_final_panel_rejects_departed_endpoint",
+      "actual_red": "R3 final panel rejects the departed endpoint"
+    },
+    {
+      "id": "linf_instead_l1",
+      "category": "actual_false_certificate_public_path",
+      "function": "_separation",
+      "gate": "test_r3_linf_tube_requires_l1_dual_normalization",
+      "actual_red": "R3 L1 dual normalization rejects overlapping coordinate tubes"
+    },
+    {
+      "id": "wrong_equal_denominator_branch",
+      "category": "actual_false_certificate_public_path",
+      "function": "_relative",
+      "gate": "test_r3_unequal_p2_denominators_reject_false_time_bracket",
+      "actual_red": "R3 unequal P2 denominators reject a false time bracket"
+    },
+    {
+      "id": "omit_endpoint_end_budget",
+      "category": "actual_false_certificate_public_path",
+      "function": "diagnose_single_cover",
+      "gate": "test_r3_endpoint_budget_prevents_actual_out_of_bracket_contact",
+      "actual_red": "R3 endpoint budget rejects actual out-of-bracket first contact"
+    },
+    {
+      "id": "omit_w_endpoint_error",
+      "category": "conservative_budget_public_contract",
+      "function": "_event",
+      "gate": "test_r3_endpoint_and_edge_error_budget_contract_refuses",
+      "actual_red": "R3 endpoint and edge error budget contract refuses"
+    },
+    {
+      "id": "omit_edge_length_error",
+      "category": "actual_false_certificate_public_path",
+      "function": "_event",
+      "gate": "test_r3_endpoint_budget_prevents_actual_out_of_bracket_contact",
+      "actual_red": "R3 endpoint budget rejects actual out-of-bracket first contact"
+    },
+    {
+      "id": "omit_edge_length_error_moving_B",
+      "category": "actual_false_certificate_public_path",
+      "function": "_event",
+      "gate": "test_r3_endpoint_budget_prevents_actual_out_of_bracket_contact",
+      "actual_red": "R3 endpoint budget rejects actual out-of-bracket first contact"
+    },
+    {
+      "id": "omit_mixed_error",
+      "category": "conservative_budget_public_contract",
+      "function": "_event",
+      "gate": "test_r3_endpoint_and_edge_error_budget_contract_refuses",
+      "actual_red": "R3 endpoint and edge error budget contract refuses"
+    },
+    {
+      "id": "reuse_wrong_endpoint_budget",
+      "category": "exact_budget_helper_contract",
+      "function": "_event",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "actual_red": "R3 V endpoint budget includes edge-length and mixed errors"
+    },
+    {
+      "id": "budget_w_0",
+      "category": "exact_budget_helper_contract",
+      "function": "_event",
+      "actual_red": "R3 W endpoint budget includes edge-length and mixed errors"
+    },
+    {
+      "id": "budget_w_1",
+      "category": "exact_budget_helper_contract",
+      "function": "_event",
+      "actual_red": "R3 W endpoint budget includes edge-length and mixed errors"
+    },
+    {
+      "id": "budget_w_2",
+      "category": "exact_budget_helper_contract",
+      "function": "_event",
+      "actual_red": "R3 W endpoint budget includes edge-length and mixed errors"
+    },
+    {
+      "id": "budget_v_0",
+      "category": "exact_budget_helper_contract",
+      "function": "_event",
+      "actual_red": "R3 V endpoint budget includes edge-length and mixed errors"
+    },
+    {
+      "id": "budget_v_1",
+      "category": "exact_budget_helper_contract",
+      "function": "_event",
+      "actual_red": "R3 V endpoint budget includes edge-length and mixed errors"
+    },
+    {
+      "id": "budget_v_2",
+      "category": "exact_budget_helper_contract",
+      "function": "_event",
+      "actual_red": "R3 V endpoint budget includes edge-length and mixed errors"
+    }
+  ],
+  "threshold_audit": {
+    "threshold_lower": "14711044003/4398046511104",
+    "threshold_upper": "29422088007/8796093022208",
+    "width": "1/8796093022208",
+    "edge_offset_to_uncertainty": "14711044003/8388608",
+    "false_unequal_p2_bracket": [
+      "3/10",
+      "2/5"
+    ],
+    "actual_first_time_after": "2/5",
+    "perturbations": [
+      {
+        "factor": "1/2",
+        "radius": "14711044003/8796093022208",
+        "index": 0,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "1/2",
+        "radius": "14711044003/8796093022208",
+        "index": 1,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "1/2",
+        "radius": "14711044003/8796093022208",
+        "index": 2,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "1/2",
+        "radius": "14711044003/8796093022208",
+        "index": 3,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "1/2",
+        "radius": "14711044003/8796093022208",
+        "index": 4,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "1/2",
+        "radius": "14711044003/8796093022208",
+        "index": 5,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "16777215/16777216",
+        "radius": "246810348112791645/73786976294838206464",
+        "index": 0,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "16777215/16777216",
+        "radius": "246810348112791645/73786976294838206464",
+        "index": 1,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "16777215/16777216",
+        "radius": "246810348112791645/73786976294838206464",
+        "index": 2,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "16777215/16777216",
+        "radius": "246810348112791645/73786976294838206464",
+        "index": 3,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "16777215/16777216",
+        "radius": "246810348112791645/73786976294838206464",
+        "index": 4,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      },
+      {
+        "factor": "16777215/16777216",
+        "radius": "246810348112791645/73786976294838206464",
+        "index": 5,
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "time_in_open_bracket": true,
+        "both_ring_shape_changes": true,
+        "both_ring_errors_time_varying": true
+      }
+    ]
+  },
+  "mutant_assertions_use_source_hash_or_snapshots": false,
+  "reviewed_source_bytes_checked_start_and_end": true,
+  "resolved_findings": [
+    "Theory document's question-mark corruption rewritten and UTF-8 verified",
+    "Equal W/V L1 lengths replaced by unequal lengths; real ev=ew mutation now caught"
+  ],
+  "limits": [
+    "Oracle denominator-factor optimization is reviewed for positive P2 quadratic denominators and their products",
+    "Conservative budget contract kills are not claimed as actual false first-label witnesses"
+  ],
+  "pytest_last_line": "41 passed in 28.36s",
+  "collected": 41,
+  "executed": 41,
+  "skipped": 0,
+  "long_evidence_audit": {
+    "complete": true,
+    "evidence_sha256": "60b1799a1fdde48591d1bfa9850c3472a25e59620541e255227d2ea79096898b",
+    "source_hashes_current_match": true,
+    "source_count": 8,
+    "nominal_configuration_count": 6,
+    "certified_configuration_count": 4,
+    "unproved_configuration_count": 2,
+    "independently_rebuilt_and_checked_trajectories": 256,
+    "per_radius_distinct_samples": 32,
+    "all_actual_first_times_in_recorded_root_intervals": true,
+    "all_first_times_in_open_certificate_brackets": true,
+    "both_rings_nonrigid_time_varying_for_every_trajectory": true,
+    "mutation_records_verified": 21,
+    "mutation_categories": {
+      "explicit_geometric_counterexample": 12,
+      "proof_budget_contract_only": 2,
+      "exact_budget_identity": 7
+    },
+    "minimum_edge_offset_to_threshold_uncertainty": "65052294357/16777216",
+    "configurations": [
+      {
+        "name": "diamond",
+        "status": "CERTIFIED",
+        "perturbations": 64,
+        "threshold_endpoints_checked": true,
+        "precision_ratio": "152599979211/16777216"
+      },
+      {
+        "name": "asymmetric_triangle",
+        "status": "CERTIFIED",
+        "perturbations": 64,
+        "threshold_endpoints_checked": true,
+        "precision_ratio": "194587653867/16777216"
+      },
+      {
+        "name": "near_corner",
+        "status": "UNPROVED",
+        "attempts_checked": 4,
+        "failed_conditions": [
+          [
+            "early_separation"
+          ],
+          [
+            "early_separation"
+          ],
+          [
+            "early_separation"
+          ],
+          [
+            "early_separation"
+          ]
+        ]
+      },
+      {
+        "name": "concave_notched",
+        "status": "CERTIFIED",
+        "perturbations": 64,
+        "threshold_endpoints_checked": true,
+        "precision_ratio": "152599979211/16777216"
+      },
+      {
+        "name": "skew_wall",
+        "status": "CERTIFIED",
+        "perturbations": 64,
+        "threshold_endpoints_checked": true,
+        "precision_ratio": "65052294357/16777216"
+      },
+      {
+        "name": "near_tied_tips",
+        "status": "UNPROVED",
+        "attempts_checked": 4,
+        "failed_conditions": [
+          [
+            "competitor_VE"
+          ],
+          [
+            "early_separation"
+          ],
+          [
+            "early_separation"
+          ],
+          [
+            "early_separation"
+          ]
+        ]
+      }
+    ],
+    "inventory_sha256": "6e710211d25b3dd5f0e5b2dbf4b96ac572b3f6e061b54ca020f902ef172b9c24",
+    "primary_oracle_imports": [
+      "fractions.Fraction",
+      "functools.lru_cache",
+      "math.comb"
+    ]
+  }
+}

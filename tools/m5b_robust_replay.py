@@ -225,7 +225,8 @@ def canonical_legacy_rows(rows, block_rows):
         secondary, shared_edge = None, None
         # df.c uses m6>0 for the mtype=0 common-edge slot. Other VE rows use
         # m4/m5 for lock-length hints, not a complete vertex-edge reference.
-        # VV uses has_second=m4>0; its m5/m6 may be the actual vertex ID zero.
+        # VV uses has_second=m4>0. Raw real IDs are >=1 (0 is a pad);
+        # canonical periodic normalization may map a positive raw edge ID to 0.
         present = (raw[0] == 1 and raw[4] > 0) or (raw[0] == 0 and raw[6] > 0)
         if present:
             slot = ("VE", aliases[raw[4]], *sorted((aliases[raw[5]], aliases[raw[6]])))

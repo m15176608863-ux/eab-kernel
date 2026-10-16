@@ -1,0 +1,145 @@
+{
+  "complete": true,
+  "scope": "A2 R1 two-path and A3 mild R2 semantic gates; not a six-way G6 exit",
+  "critical": 0,
+  "major": 0,
+  "minor": 0,
+  "pytest_last_line": "10 passed in 0.68s",
+  "collected": 10,
+  "executed": 10,
+  "skipped": 0,
+  "hash_or_snapshot_gates_invoked": false,
+  "internal_mutations": [
+    {
+      "function": "m5b_robust_replay.compare_pair",
+      "replacements": [
+        [
+          "panels=2)\n                        for key in (\"paths1\", \"paths2\")]",
+          "panels=2)\n                        for key in (\"paths1\",)]"
+        ]
+      ],
+      "gate": "test_replay_r1_requires_p2_tube_even_when_both_nominal_paths_are_separated",
+      "args": [],
+      "actual_red": "R1 both-path tube gate rejects P1-only certification"
+    },
+    {
+      "function": "eab.kernel2d.model_robustness.single_cover_certificate",
+      "replacements": [
+        [
+          "hi=lo, panels=panels)",
+          "hi=lo*F(99,100), panels=panels)"
+        ]
+      ],
+      "gate": "test_r2_mild_early_truncation_rejects_a_short_prior_penetration",
+      "args": [
+        "1/100"
+      ],
+      "actual_red": "R2 mild early-window shortening misses a prior different first cover"
+    },
+    {
+      "function": "eab.kernel2d.model_robustness.single_cover_certificate",
+      "replacements": [
+        [
+          "hi=lo, panels=panels)",
+          "hi=lo*F(999,1000), panels=panels)"
+        ]
+      ],
+      "gate": "test_r2_mild_early_truncation_rejects_a_short_prior_penetration",
+      "args": [
+        "1/10000"
+      ],
+      "actual_red": "R2 mild early-window shortening misses a prior different first cover"
+    },
+    {
+      "function": "m5b_robust_replay.compare_pair",
+      "replacements": [
+        [
+          "if all(certificates):\n            result.update(classification=\"ROBUST_SINGLE_FIRST_COVER\"",
+          "if any(certificates):\n            result.update(classification=\"ROBUST_SINGLE_FIRST_COVER\""
+        ]
+      ],
+      "gate": "test_replay_single_cover_keeps_both_tubes_and_the_full_radius_at_the_threshold",
+      "args": [],
+      "actual_red": "R2 replay single-cover wiring must retain both full-radius tubes"
+    },
+    {
+      "function": "m5b_robust_replay.compare_pair",
+      "replacements": [
+        [
+          "panels=4)\n                        for key in (\"paths1\", \"paths2\")]",
+          "panels=4)\n                        for key in (\"paths1\",)]"
+        ]
+      ],
+      "gate": "test_replay_single_cover_keeps_both_tubes_and_the_full_radius_at_the_threshold",
+      "args": [],
+      "actual_red": "R2 replay single-cover wiring must retain both full-radius tubes"
+    },
+    {
+      "function": "m5b_robust_replay.compare_pair",
+      "replacements": [
+        [
+          "a[\"radius\"], b[\"radius\"], panels=4)",
+          "a[\"radius\"]*F(99,100), b[\"radius\"]*F(99,100), panels=4)"
+        ]
+      ],
+      "gate": "test_replay_single_cover_keeps_both_tubes_and_the_full_radius_at_the_threshold",
+      "args": [],
+      "actual_red": "R2 replay single-cover wiring must retain both full-radius tubes"
+    }
+  ],
+  "independently_recomputed": {
+    "r1_midpoint": [
+      "16030/1601",
+      "1/3202"
+    ],
+    "r1_inside_witness": [
+      "1604601/160100",
+      "1/3202"
+    ],
+    "r2_early": [
+      {
+        "width": "1/100",
+        "first": "2393/4000",
+        "bracket_lo": "5999/10000",
+        "first_point": [
+          "33/32",
+          "-2"
+        ]
+      },
+      {
+        "width": "1/10000",
+        "first": "239993/400000",
+        "bracket_lo": "599999/1000000",
+        "first_point": [
+          "33/32",
+          "-2"
+        ]
+      }
+    ],
+    "r2_wiring": {
+      "lo": "519929/1048576",
+      "hi": "528385/1048576",
+      "p1_margin": "8198071/1048576000",
+      "p2_margin": "4097/524288",
+      "radius": "16392071/2097152000",
+      "allowed_p2_first_time": "2113544071/4194304000"
+    }
+  },
+  "reviewed_file_hashes": {
+    "tests/test_m5d_replay_semantics.py": "dd14446821c1780237a149cb9ec0ffc07f58393eac875e8ea0e926ce473973d3",
+    "docs/m5d_replay_teeth_theory.md": "e65aed6d556a7c7b7faeb825c2a0a57451f3cd7958fe518d3747e6e35605760e"
+  },
+  "qualification": "R2 wiring counterexample violates the certified time bracket; its first label remains unchanged, as correctly documented.",
+  "rerun": "python -m pytest -q -p no:cacheprovider --basetemp=reports/codex/M5d_evidence/tmp/review_replay_fresh tests/test_m5d_replay_semantics.py",
+  "revalidation": {
+    "reason": "Direct coordinate_polynomials input adapter refactor and expanded theory required fresh verification",
+    "actual_mutants_reexecuted": 6,
+    "adapter_closed_form_point_time_checks": 18,
+    "theory_new_exact_fraction_claims_verified": true,
+    "source_hashes_end": {
+      "tests/test_m5d_replay_semantics.py": "dd14446821c1780237a149cb9ec0ffc07f58393eac875e8ea0e926ce473973d3",
+      "docs/m5d_replay_teeth_theory.md": "e65aed6d556a7c7b7faeb825c2a0a57451f3cd7958fe518d3747e6e35605760e"
+    },
+    "only_hashes_rewritten": false
+  }
+}

@@ -1,0 +1,6330 @@
+{
+  "valid": true,
+  "seed": 5101626,
+  "mutation_count": 21,
+  "mutations": [
+    {
+      "name": "early_skip",
+      "internal_function": "diagnose_single_cover",
+      "before": "_separation(a, b, ra, rb, F(0), lo, panels)",
+      "after": "dict(gap_lower=F(1))",
+      "gate": "test_r3_complete_early_window_rejects_prebracket_contact",
+      "named_assertion": "R3 complete early window rejects prebracket contact",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "early_short_first_half",
+      "internal_function": "diagnose_single_cover",
+      "before": "F(0), lo, panels",
+      "after": "F(0), lo/2, panels",
+      "gate": "test_r3_complete_early_window_rejects_prebracket_contact",
+      "named_assertion": "R3 complete early window rejects prebracket contact",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "early_only_second_half",
+      "internal_function": "diagnose_single_cover",
+      "before": "F(0), lo, panels",
+      "after": "lo/2, lo, panels",
+      "gate": "test_r3_complete_early_window_rejects_prebracket_contact",
+      "named_assertion": "R3 complete early window rejects prebracket contact",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_ev",
+      "internal_function": "diagnose_single_cover",
+      "before": "((a, b, ra, rb, \"VE\"), (b, a, rb, ra, \"EV\"))",
+      "after": "((a, b, ra, rb, \"VE\"),)",
+      "gate": "test_r3_ev_competitor_precedes_nominated_ve",
+      "named_assertion": "R3 EV competitor precedes nominated VE",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_projection_g",
+      "internal_function": "diagnose_single_cover",
+      "before": "min(g[0]-ew, h[0]-ev)",
+      "after": "h[0]-ev",
+      "gate": "test_r3_both_projection_sides_reject_line_extensions",
+      "named_assertion": "R3 both projections reject a line extension",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_projection_h",
+      "internal_function": "diagnose_single_cover",
+      "before": "min(g[0]-ew, h[0]-ev)",
+      "after": "g[0]-ew",
+      "gate": "test_r3_both_projection_sides_reject_line_extensions",
+      "named_assertion": "R3 both projections reject a line extension",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_last_panel",
+      "internal_function": "diagnose_single_cover",
+      "before": "base._panels(lo, hi, panels):",
+      "after": "base._panels(lo, hi, panels)[:-1]:",
+      "gate": "test_r3_final_panel_rejects_departed_endpoint",
+      "named_assertion": "R3 final panel rejects the departed endpoint",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "linf_instead_l1",
+      "internal_function": "_separation",
+      "before": "abs(n[0])+abs(n[1])",
+      "after": "max(abs(n[0]),abs(n[1]))",
+      "gate": "test_r3_linf_tube_requires_l1_dual_normalization",
+      "named_assertion": "R3 L1 dual normalization rejects overlapping coordinate tubes",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "wrong_equal_denominator_branch",
+      "internal_function": "_relative",
+      "before": "if p[2] == q[2]:",
+      "after": "if True:",
+      "gate": "test_r3_unequal_p2_denominators_reject_false_time_bracket",
+      "named_assertion": "R3 unequal P2 denominators reject a false time bracket",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_endpoint_end_budget",
+      "internal_function": "diagnose_single_cover",
+      "before": "endpoint_end=end[0][0]-end[3]",
+      "after": "endpoint_end=end[0][0]",
+      "gate": "test_r3_endpoint_budget_prevents_actual_out_of_bracket_contact",
+      "named_assertion": "R3 endpoint budget rejects actual out-of-bracket first contact",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_w_endpoint_error",
+      "internal_function": "_event",
+      "before": "ew = du*_length1(w, lo, hi)+dw*_length1(u, lo, hi)+2*du*dw",
+      "after": "ew = dw*_length1(u, lo, hi)+2*du*dw",
+      "gate": "test_r3_endpoint_and_edge_error_budget_contract_refuses",
+      "named_assertion": "R3 endpoint and edge error budget contract refuses",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "proof_budget_contract_only"
+    },
+    {
+      "name": "omit_edge_length_error",
+      "internal_function": "_event",
+      "before": "ew = du*_length1(w, lo, hi)+dw*_length1(u, lo, hi)+2*du*dw",
+      "after": "ew = du*_length1(w, lo, hi)+2*du*dw",
+      "gate": "test_r3_endpoint_budget_prevents_actual_out_of_bracket_contact",
+      "named_assertion": "R3 endpoint budget rejects actual out-of-bracket first contact",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_edge_length_error_moving_B",
+      "internal_function": "_event",
+      "before": "ew = du*_length1(w, lo, hi)+dw*_length1(u, lo, hi)+2*du*dw",
+      "after": "ew = du*_length1(w, lo, hi)+2*du*dw",
+      "gate": "test_r3_endpoint_budget_prevents_actual_out_of_bracket_contact",
+      "named_assertion": "R3 endpoint budget rejects actual out-of-bracket first contact",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "explicit_geometric_counterexample"
+    },
+    {
+      "name": "omit_mixed_error",
+      "internal_function": "_event",
+      "before": "ew = du*_length1(w, lo, hi)+dw*_length1(u, lo, hi)+2*du*dw",
+      "after": "ew = du*_length1(w, lo, hi)+dw*_length1(u, lo, hi)",
+      "gate": "test_r3_endpoint_and_edge_error_budget_contract_refuses",
+      "named_assertion": "R3 endpoint and edge error budget contract refuses",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "proof_budget_contract_only"
+    },
+    {
+      "name": "reuse_wrong_endpoint_budget",
+      "internal_function": "_event",
+      "before": "ev = du*_length1(v, lo, hi)+dw*_length1(u, lo, hi)+2*du*dw",
+      "after": "ev = ew",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "named_assertion": "R3 V endpoint budget includes edge-length and mixed errors",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false,
+      "interpretation": "exact_budget_identity"
+    },
+    {
+      "name": "budget_w_0",
+      "internal_function": "_event",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "named_assertion": "R3 W endpoint budget includes edge-length and mixed errors",
+      "interpretation": "exact_budget_identity",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false
+    },
+    {
+      "name": "budget_w_1",
+      "internal_function": "_event",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "named_assertion": "R3 W endpoint budget includes edge-length and mixed errors",
+      "interpretation": "exact_budget_identity",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false
+    },
+    {
+      "name": "budget_w_2",
+      "internal_function": "_event",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "named_assertion": "R3 W endpoint budget includes edge-length and mixed errors",
+      "interpretation": "exact_budget_identity",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false
+    },
+    {
+      "name": "budget_v_0",
+      "internal_function": "_event",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "named_assertion": "R3 V endpoint budget includes edge-length and mixed errors",
+      "interpretation": "exact_budget_identity",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false
+    },
+    {
+      "name": "budget_v_1",
+      "internal_function": "_event",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "named_assertion": "R3 V endpoint budget includes edge-length and mixed errors",
+      "interpretation": "exact_budget_identity",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false
+    },
+    {
+      "name": "budget_v_2",
+      "internal_function": "_event",
+      "gate": "test_r3_bilinear_budgets_include_both_endpoints_and_all_terms",
+      "named_assertion": "R3 V endpoint budget includes edge-length and mixed errors",
+      "interpretation": "exact_budget_identity",
+      "source_hash_tripwire": false,
+      "frozen_snapshot_tripwire": false
+    }
+  ],
+  "production_geometry_imports_in_primary_oracle": [],
+  "oracle_direct_imports": [
+    "fractions.Fraction",
+    "functools.lru_cache",
+    "math.comb"
+  ],
+  "configurations": [
+    {
+      "name": "diamond",
+      "independent_nominal": {
+        "nominal_root": [
+          "517947/1048576",
+          "129487/262144"
+        ],
+        "attempts": []
+      },
+      "input_a": [
+        [
+          [
+            "-2",
+            "57/25",
+            "1/50",
+            "57/2500"
+          ],
+          [
+            "0",
+            "-31/100",
+            "0",
+            "9/10000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "191/80",
+            "1/100",
+            "183/8000"
+          ],
+          [
+            "-1/2",
+            "-23/200",
+            "1/200",
+            "17/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "0",
+            "23/10",
+            "0",
+            "23/1000"
+          ],
+          [
+            "0",
+            "1/10",
+            "0",
+            "1/1000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "877/400",
+            "1/100",
+            "917/40000"
+          ],
+          [
+            "1/2",
+            "-19/200",
+            "-1/200",
+            "21/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ]
+      ],
+      "input_b": [
+        [
+          [
+            "1",
+            "-499/1000",
+            "3/25",
+            "301/25000"
+          ],
+          [
+            "-2",
+            "473/1000",
+            "2/25",
+            "73/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "-529/1000",
+            "1/25",
+            "271/25000"
+          ],
+          [
+            "-2",
+            "-313/1000",
+            "2/25",
+            "87/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "1099/1000",
+            "1/25",
+            "299/25000"
+          ],
+          [
+            "2",
+            "-273/1000",
+            "-2/25",
+            "127/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "1",
+            "1129/1000",
+            "3/25",
+            "329/25000"
+          ],
+          [
+            "2",
+            "513/1000",
+            "-2/25",
+            "113/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ]
+      ],
+      "status": "CERTIFIED",
+      "label": [
+        "VE",
+        2,
+        3
+      ],
+      "bracket": [
+        "11900099/26214400",
+        "3499319/6553600"
+      ],
+      "threshold": {
+        "lower": "152599979211/8796093022208",
+        "upper": "38149994803/2199023255552",
+        "width": "1/8796093022208",
+        "bisection_count": 40
+      },
+      "seed": 5101626,
+      "perturbation_count": 64
+    },
+    {
+      "name": "asymmetric_triangle",
+      "independent_nominal": {
+        "nominal_root": [
+          "467877/1048576",
+          "233939/524288"
+        ],
+        "attempts": []
+      },
+      "input_a": [
+        [
+          [
+            "-3",
+            "133/50",
+            "3/100",
+            "113/5000"
+          ],
+          [
+            "-2",
+            "-111/200",
+            "1/50",
+            "9/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "1/10",
+            "2301/1000",
+            "-1/1000",
+            "2301/100000"
+          ],
+          [
+            "0",
+            "241/2000",
+            "0",
+            "201/200000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-2",
+            "189/100",
+            "1/50",
+            "229/10000"
+          ],
+          [
+            "2",
+            "-27/100",
+            "-1/50",
+            "13/10000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ]
+      ],
+      "input_b": [
+        [
+          [
+            "1",
+            "-499/1000",
+            "3/25",
+            "301/25000"
+          ],
+          [
+            "-2",
+            "473/1000",
+            "2/25",
+            "73/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "-529/1000",
+            "1/25",
+            "271/25000"
+          ],
+          [
+            "-2",
+            "-313/1000",
+            "2/25",
+            "87/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "1099/1000",
+            "1/25",
+            "299/25000"
+          ],
+          [
+            "2",
+            "-273/1000",
+            "-2/25",
+            "127/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "1",
+            "1129/1000",
+            "3/25",
+            "329/25000"
+          ],
+          [
+            "2",
+            "513/1000",
+            "-2/25",
+            "113/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ]
+      ],
+      "status": "CERTIFIED",
+      "label": [
+        "VE",
+        1,
+        3
+      ],
+      "bracket": [
+        "10648349/26214400",
+        "6372763/13107200"
+      ],
+      "threshold": {
+        "lower": "194587653867/8796093022208",
+        "upper": "48646913467/2199023255552",
+        "width": "1/8796093022208",
+        "bisection_count": 40
+      },
+      "seed": 5101627,
+      "perturbation_count": 64
+    },
+    {
+      "name": "near_corner",
+      "independent_nominal": {
+        "reason": "ZERO_RADIUS_UNCERTIFIED",
+        "labels": [
+          [
+            "VE",
+            2,
+            3
+          ]
+        ],
+        "attempts": [
+          {
+            "bracket": [
+              "24563449/26214400",
+              "1"
+            ],
+            "failed": [
+              "early_separation"
+            ]
+          },
+          {
+            "bracket": [
+              "25349881/26214400",
+              "12937097/13107200"
+            ],
+            "failed": [
+              "early_separation"
+            ]
+          },
+          {
+            "bracket": [
+              "25546489/26214400",
+              "12838793/13107200"
+            ],
+            "failed": [
+              "early_separation"
+            ]
+          },
+          {
+            "bracket": [
+              "25595641/26214400",
+              "12814217/13107200"
+            ],
+            "failed": [
+              "early_separation"
+            ]
+          }
+        ]
+      },
+      "input_a": [
+        [
+          [
+            "-2",
+            "3897/2000",
+            "1/50",
+            "4577/200000"
+          ],
+          [
+            "17/10",
+            "-69/250",
+            "-17/1000",
+            "31/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "257/125",
+            "1/100",
+            "287/12500"
+          ],
+          [
+            "6/5",
+            "-81/1000",
+            "-3/250",
+            "119/100000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "0",
+            "3937/2000",
+            "0",
+            "4617/200000"
+          ],
+          [
+            "17/10",
+            "67/500",
+            "-17/1000",
+            "67/50000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "1861/1000",
+            "1/100",
+            "2301/100000"
+          ],
+          [
+            "11/5",
+            "-61/1000",
+            "-11/500",
+            "139/100000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ]
+      ],
+      "input_b": [
+        [
+          [
+            "1",
+            "-499/1000",
+            "3/25",
+            "301/25000"
+          ],
+          [
+            "-2",
+            "473/1000",
+            "2/25",
+            "73/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "-529/1000",
+            "1/25",
+            "271/25000"
+          ],
+          [
+            "-2",
+            "-313/1000",
+            "2/25",
+            "87/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "1099/1000",
+            "1/25",
+            "299/25000"
+          ],
+          [
+            "2",
+            "-273/1000",
+            "-2/25",
+            "127/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "1",
+            "1129/1000",
+            "3/25",
+            "329/25000"
+          ],
+          [
+            "2",
+            "513/1000",
+            "-2/25",
+            "113/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ]
+      ],
+      "status": "UNPROVED"
+    },
+    {
+      "name": "concave_notched",
+      "independent_nominal": {
+        "nominal_root": [
+          "517947/1048576",
+          "129487/262144"
+        ],
+        "attempts": []
+      },
+      "input_a": [
+        [
+          [
+            "-2",
+            "99/40",
+            "1/50",
+            "91/4000"
+          ],
+          [
+            "-1",
+            "-33/100",
+            "1/100",
+            "7/10000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "497/200",
+            "1/100",
+            "457/20000"
+          ],
+          [
+            "-1",
+            "-1/8",
+            "1/100",
+            "3/4000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "191/80",
+            "1/100",
+            "183/8000"
+          ],
+          [
+            "-1/2",
+            "-23/200",
+            "1/200",
+            "17/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "0",
+            "23/10",
+            "0",
+            "23/1000"
+          ],
+          [
+            "0",
+            "1/10",
+            "0",
+            "1/1000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "877/400",
+            "1/100",
+            "917/40000"
+          ],
+          [
+            "1/2",
+            "-19/200",
+            "-1/200",
+            "21/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "419/200",
+            "1/100",
+            "459/20000"
+          ],
+          [
+            "1",
+            "-17/200",
+            "-1/100",
+            "23/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-2",
+            "417/200",
+            "1/50",
+            "457/20000"
+          ],
+          [
+            "1",
+            "-29/100",
+            "-1/100",
+            "11/10000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-3/2",
+            "457/200",
+            "3/200",
+            "457/20000"
+          ],
+          [
+            "0",
+            "-83/400",
+            "0",
+            "37/40000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ]
+      ],
+      "input_b": [
+        [
+          [
+            "1",
+            "-499/1000",
+            "3/25",
+            "301/25000"
+          ],
+          [
+            "-2",
+            "473/1000",
+            "2/25",
+            "73/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "-529/1000",
+            "1/25",
+            "271/25000"
+          ],
+          [
+            "-2",
+            "-313/1000",
+            "2/25",
+            "87/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "1099/1000",
+            "1/25",
+            "299/25000"
+          ],
+          [
+            "2",
+            "-273/1000",
+            "-2/25",
+            "127/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "1",
+            "1129/1000",
+            "3/25",
+            "329/25000"
+          ],
+          [
+            "2",
+            "513/1000",
+            "-2/25",
+            "113/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ]
+      ],
+      "status": "CERTIFIED",
+      "label": [
+        "VE",
+        3,
+        3
+      ],
+      "bracket": [
+        "11900099/26214400",
+        "3499319/6553600"
+      ],
+      "threshold": {
+        "lower": "152599979211/8796093022208",
+        "upper": "38149994803/2199023255552",
+        "width": "1/8796093022208",
+        "bisection_count": 40
+      },
+      "seed": 5101629,
+      "perturbation_count": 64
+    },
+    {
+      "name": "skew_wall",
+      "independent_nominal": {
+        "nominal_root": [
+          "517947/1048576",
+          "129487/262144"
+        ],
+        "attempts": []
+      },
+      "input_a": [
+        [
+          [
+            "-2",
+            "57/25",
+            "1/50",
+            "57/2500"
+          ],
+          [
+            "0",
+            "-31/100",
+            "0",
+            "9/10000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "191/80",
+            "1/100",
+            "183/8000"
+          ],
+          [
+            "-1/2",
+            "-23/200",
+            "1/200",
+            "17/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "0",
+            "23/10",
+            "0",
+            "23/1000"
+          ],
+          [
+            "0",
+            "1/10",
+            "0",
+            "1/1000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1",
+            "877/400",
+            "1/100",
+            "917/40000"
+          ],
+          [
+            "1/2",
+            "-19/200",
+            "-1/200",
+            "21/20000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ]
+      ],
+      "input_b": [
+        [
+          [
+            "1",
+            "-453/500",
+            "3/25",
+            "147/12500"
+          ],
+          [
+            "-3",
+            "463/1000",
+            "3/25",
+            "63/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "4",
+            "-299/400",
+            "0",
+            "101/10000"
+          ],
+          [
+            "-5/2",
+            "-711/1000",
+            "1/10",
+            "89/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "7/2",
+            "111/125",
+            "1/50",
+            "36/3125"
+          ],
+          [
+            "3/2",
+            "-949/2000",
+            "-3/50",
+            "251/50000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "1",
+            "533/400",
+            "3/25",
+            "133/10000"
+          ],
+          [
+            "5/2",
+            "259/500",
+            "-1/10",
+            "59/12500"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ]
+      ],
+      "status": "CERTIFIED",
+      "label": [
+        "VE",
+        2,
+        3
+      ],
+      "bracket": [
+        "11900099/26214400",
+        "3499319/6553600"
+      ],
+      "threshold": {
+        "lower": "65052294357/8796093022208",
+        "upper": "32526147179/4398046511104",
+        "width": "1/8796093022208",
+        "bisection_count": 40
+      },
+      "seed": 5101630,
+      "perturbation_count": 64
+    },
+    {
+      "name": "near_tied_tips",
+      "independent_nominal": {
+        "reason": "ZERO_RADIUS_UNCERTIFIED",
+        "labels": [
+          [
+            "VE",
+            1,
+            3
+          ]
+        ],
+        "attempts": [
+          {
+            "bracket": [
+              "11530949/26214400",
+              "6814063/13107200"
+            ],
+            "failed": [
+              "competitor_VE"
+            ]
+          },
+          {
+            "bracket": [
+              "12317381/26214400",
+              "6420847/13107200"
+            ],
+            "failed": [
+              "early_separation"
+            ]
+          },
+          {
+            "bracket": [
+              "12513989/26214400",
+              "6322543/13107200"
+            ],
+            "failed": [
+              "early_separation"
+            ]
+          },
+          {
+            "bracket": [
+              "12563141/26214400",
+              "6297967/13107200"
+            ],
+            "failed": [
+              "early_separation"
+            ]
+          }
+        ]
+      },
+      "input_a": [
+        [
+          [
+            "-2",
+            "99/40",
+            "1/50",
+            "91/4000"
+          ],
+          [
+            "-1",
+            "-33/100",
+            "1/100",
+            "7/10000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "0",
+            "4639/2000",
+            "0",
+            "4599/200000"
+          ],
+          [
+            "-1/10",
+            "49/500",
+            "1/1000",
+            "49/50000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-1/10000",
+            "2280499/1000000",
+            "1/1000000",
+            "2300499/100000000"
+          ],
+          [
+            "1/10",
+            "203959/2000000",
+            "-1/1000",
+            "203999/200000000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ],
+        [
+          [
+            "-2",
+            "417/200",
+            "1/50",
+            "457/20000"
+          ],
+          [
+            "1",
+            "-29/100",
+            "-1/100",
+            "11/10000"
+          ],
+          [
+            "1",
+            "0",
+            "1/100"
+          ]
+        ]
+      ],
+      "input_b": [
+        [
+          [
+            "1",
+            "-499/1000",
+            "3/25",
+            "301/25000"
+          ],
+          [
+            "-2",
+            "473/1000",
+            "2/25",
+            "73/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "-529/1000",
+            "1/25",
+            "271/25000"
+          ],
+          [
+            "-2",
+            "-313/1000",
+            "2/25",
+            "87/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "3",
+            "1099/1000",
+            "1/25",
+            "299/25000"
+          ],
+          [
+            "2",
+            "-273/1000",
+            "-2/25",
+            "127/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ],
+        [
+          [
+            "1",
+            "1129/1000",
+            "3/25",
+            "329/25000"
+          ],
+          [
+            "2",
+            "513/1000",
+            "-2/25",
+            "113/25000"
+          ],
+          [
+            "1",
+            "0",
+            "1/25"
+          ]
+        ]
+      ],
+      "status": "UNPROVED"
+    }
+  ],
+  "nominal_configuration_count": 6,
+  "certified_configuration_count": 4,
+  "unproved_configuration_count": 2,
+  "threshold_note": "r_lo is a conservative rational lower bound, not the exact r_star; width <= edge offset / 64",
+  "perturbation_count": 256,
+  "mismatches": 0,
+  "rows": [
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "1/2",
+        "17/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "1/2",
+        "17/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "diamond",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "1/2",
+      "radius": "194587653867/17592186044416",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "13/32",
+        "7/16"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "13/32",
+        "7/16"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "13/32",
+        "7/16"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "asymmetric_triangle",
+      "factor": "16777215/16777216",
+      "radius": "3264638905272240405/147573952589676412928",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          1,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "7/16",
+        "15/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "1/2",
+      "radius": "152599979211/17592186044416",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "1/2",
+        "17/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "1/2",
+        "17/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "1/2",
+        "17/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "1/2",
+        "17/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "concave_notched",
+      "factor": "16777215/16777216",
+      "radius": "2560202660218477365/147573952589676412928",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          3,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "1/2",
+        "17/32"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "1/2",
+      "radius": "65052294357/17592186044416",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 0,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 1,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 2,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 3,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 4,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 5,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 6,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 7,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 8,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 9,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 10,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 11,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 12,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 13,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 14,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 15,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 16,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 17,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 18,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 19,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 20,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 21,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 22,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 23,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 24,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 25,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 26,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 27,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 28,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 29,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 30,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    },
+    {
+      "case": "skew_wall",
+      "factor": "16777215/16777216",
+      "radius": "1091396328670675755/147573952589676412928",
+      "sample": 31,
+      "labels": [
+        [
+          "VE",
+          2,
+          3
+        ]
+      ],
+      "first_time_interval": [
+        "15/32",
+        "1/2"
+      ],
+      "open_bracket_checked": true,
+      "independent_vertex_time_varying_errors": true
+    }
+  ],
+  "seconds": 187.43289480000385,
+  "sources": {
+    "src/eab/kernel2d/m5c_certificates.py": "3ff979533170748023d2f94dd9911bb155bacc32824009003e8bedb5afe978b1",
+    "src/eab/kernel2d/model_robustness.py": "f3f059118201801234209cd4d3703342831269c23db78a6a87eb90f6736913ba",
+    "src/eab/kernel2d/dda_motion.py": "0d70f0647b10a92313dad3370cc3b30bdfa0d3ef776980c3b6268adce315ccdd",
+    "tests/m5d_r3_oracle.py": "e8a629da0de339872b4f9bb9df15340fcf457e8440aeb3c60e18a56b9dd8e0ae",
+    "tests/m5c_teeth_oracle.py": "7709897e6b4e9d4029b15ac3a1b74de0ee90c83ef5732d1c2948a118e84d23bb",
+    "tests/test_m5d_r3_semantics.py": "2491d4ed0f2d120f60540a077465c03055b714630c36f43a3c39f2774a7cad4f",
+    "tests/mutation_support.py": "362b9afa9a1c223c831209d812edbd3ad64f949484d8f48fc3c887375a1ba547",
+    "tools/m5d_r3_evidence.py": "3a44b2c51c31cf85dac1271dd3b0987e919079839e2936585b1b23514704a8d2"
+  },
+  "limits": [
+    "Finite fixed-seed adversaries do not prove all continuous tubes.",
+    "Two omitted conservative-budget terms are killed on proof-contract refusal, not an asserted physical counterexample."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "reports/codex/M5d_evidence/tmp/b_unit_r5",
+    "tests/test_m5d_wording.py",
+    "tests/test_m5c_accounting_review.py"
+  ],
+  "returncode": 0,
+  "last_line": "22 passed in 2.08s",
+  "TEMP": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5d_evidence\\tmp",
+  "TMP": "D:\\eab-wt\\cx-e2\\reports\\codex\\M5d_evidence\\tmp",
+  "test_source_hashes": {
+    "tests/test_m5d_wording.py": "43fb30df433de7c0548818f910a35c101f0d22d166a693994d2901def8116982",
+    "tests/test_m5c_accounting_review.py": "833364dee52b84e1b08f7d807199c699a5584e22fd793aed8c08c3566cbbb14b"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "actions": [
+    "backup old B JSON bytes",
+    "execute python -X utf8 tools/m5d_wording_audit.py without --source-review",
+    "read back and verify every current input binding",
+    "rerun 22 B/accounting tests on refreshed frozen inputs"
+  ],
+  "before_audit_sha256": "d2a91fc9109152aa698a538a260a8d1e5d10d1c4850ff68b350ee22b6f22a61e",
+  "after_audit_sha256": "d2a91fc9109152aa698a538a260a8d1e5d10d1c4850ff68b350ee22b6f22a61e",
+  "changed_audit_fields": [],
+  "input_bindings_verified": 92,
+  "counts_unchanged": true,
+  "prior_test_source_bindings_current": {
+    "tests/test_m5d_wording.py": true,
+    "tests/test_m5c_accounting_review.py": true
+  },
+  "test_refresh_reason": "Prior b_tests bound only test sources and remained current; rerun after actual frozen publication nonetheless verifies refreshed inputs, rather than edit a hash record.",
+  "test_last_line": "22 passed in 1.95s",
+  "frozen_refresh_sha256": "c87efd0cc4f368831f33b9db33060526a0ca4828f9b0eaf0da030941f055c56f",
+  "source_review_untouched": true,
+  "code_changed": false,
+  "final_four_shards_claimed": false
+}

@@ -20,10 +20,12 @@ import m5b_robust_replay as replay
     ([0, 2, 7, 8, 0, 3, 0], None, None),
     ([0, 2, 7, 8, 7, 3, 2], None, ("VE", 7, 2, 3)),
     ([1, 2, 7, 8, 7, 3, 2], ("VE", 7, 2, 3), None),
-    ([1, 2, 7, 8, 7, 0, 1], ("VE", 7, 0, 1), None),
+    ([1, 2, 7, 8, 7, 4, 5], ("VE", 7, 0, 1), None),
     ([0, 2, 7, 8, 7, 3, 4], None, ("VE", 7, 0, 3)),
 ))
 def test_lock_length_hints_vv_second_and_complete_common_slots_are_not_conflated(raw, secondary, shared):
+    # Canonical 0 is the retained predecessor pad; raw positive aliases 4,5
+    # normalize to 0,1. Raw real vertices do not start at zero.
     blocks = [dict(vertex_ids=[0, 1, 2, 3]), dict(vertex_ids=[6, 7, 8, 9])]
     row = dict(raw=raw, pair=[1, 2], primary=["VE", 2, 7, 8])
     result = replay.canonical_legacy_rows([row], blocks)[0]
@@ -31,7 +33,7 @@ def test_lock_length_hints_vv_second_and_complete_common_slots_are_not_conflated
     assert result["shared_edge"] == shared, "M5c common-edge slot requires m6 and valid complete geometry identities"
 
 
-@pytest.mark.parametrize("slot", ((7, 0, 2), (7, 1, 1), (1, 2, 3), (7, 2, 8), (13, 2, 3)))
+@pytest.mark.parametrize("slot", ((7, 4, 2), (7, 1, 1), (1, 2, 3), (7, 2, 8), (13, 2, 3)))
 def test_malformed_complete_slots_fail_loud_instead_of_entering_all_reference_counts(slot):
     blocks = [dict(vertex_ids=[0, 1, 2, 3]), dict(vertex_ids=[6, 7, 8, 9]),
               dict(vertex_ids=[12, 13, 14, 15])]

@@ -1,0 +1,201 @@
+{
+  "complete": true,
+  "reviewer": "independent parallel team reviewer; NOT owner G6",
+  "recount": {
+    "raw_pairs": 16676,
+    "certified_global_labels_checked": 4280,
+    "duplicate_keys": 0,
+    "counts": {
+      "CROSS_NORMAL_ORDER_UNPROVED": 6,
+      "CERTIFIED_UNIQUE_EXIT": 4280,
+      "RING_NOT_STRICTLY_CONVEX": 12387,
+      "EXIT_ORDER_UNPROVED": 3
+    },
+    "references": {
+      "raw_df05:primary:total": 8055,
+      "raw_df05:primary:match": 3226,
+      "raw_df05:primary:other": 4829,
+      "raw_df05:primary:pair_hit": 3226,
+      "raw_df05:secondary:total": 424,
+      "raw_df05:secondary:match": 349,
+      "raw_df05:secondary:other": 75,
+      "raw_df05:secondary:pair_hit": 349,
+      "raw_df05:shared_edge:total": 4437,
+      "raw_df05:shared_edge:match": 705,
+      "raw_df05:shared_edge:other": 3732,
+      "raw_df05:shared_edge:pair_hit": 705,
+      "raw_df05:all_slots:pair_hit": 4280,
+      "raw_df05:all_slots:pair_miss": 0,
+      "post_df06:primary:total": 8055,
+      "post_df06:primary:match": 3931,
+      "post_df06:primary:other": 4124,
+      "post_df06:primary:pair_hit": 3931,
+      "post_df06:secondary:total": 424,
+      "post_df06:secondary:match": 349,
+      "post_df06:secondary:other": 75,
+      "post_df06:secondary:pair_hit": 349,
+      "post_df06:shared_edge:total": 4437,
+      "post_df06:shared_edge:match": 0,
+      "post_df06:shared_edge:other": 4437,
+      "post_df06:shared_edge:pair_hit": 0,
+      "post_df06:all_slots:pair_hit": 4280,
+      "post_df06:all_slots:pair_miss": 0
+    },
+    "unproved_references": {
+      "raw_df05:primary:total": 73154,
+      "raw_df05:secondary:total": 1577,
+      "raw_df05:shared_edge:total": 15348,
+      "post_df06:primary:total": 73154,
+      "post_df06:secondary:total": 1577,
+      "post_df06:shared_edge:total": 15348
+    },
+    "nonconvex_rejections_with_negative_support": 12387,
+    "summary_sha256": "4ada1c11a51cbf400f645692027969433450838b3e028b7b96bff071d6c744d0",
+    "mismatches": 0
+  },
+  "adversarial": {
+    "seed": 5279301,
+    "configurations": 12,
+    "nonrigid_probes": 240,
+    "oracle": "exhaustive Cartesian differences + all supporting halfplanes, no hull or support argmax",
+    "cases": [
+      {
+        "shape": 0,
+        "scale": "1/1000000000000",
+        "radius": "687285528043023/3602879701896396800000000000",
+        "label": [
+          "EV",
+          1,
+          0
+        ]
+      },
+      {
+        "shape": 0,
+        "scale": "1/1000000000000",
+        "radius": "204827061/2147483648000000000000",
+        "label": [
+          "EV",
+          1,
+          0
+        ]
+      },
+      {
+        "shape": 0,
+        "scale": "1",
+        "radius": "3436427640215115/18014398509481984",
+        "label": [
+          "EV",
+          1,
+          0
+        ]
+      },
+      {
+        "shape": 0,
+        "scale": "1",
+        "radius": "204827061/2147483648",
+        "label": [
+          "EV",
+          1,
+          0
+        ]
+      },
+      {
+        "shape": 0,
+        "scale": "1000000000000",
+        "radius": "838971591849393310546875/4398046511104",
+        "label": [
+          "EV",
+          1,
+          0
+        ]
+      },
+      {
+        "shape": 0,
+        "scale": "1000000000000",
+        "radius": "50006606689453125/524288",
+        "label": [
+          "EV",
+          1,
+          0
+        ]
+      },
+      {
+        "shape": 1,
+        "scale": "1/1000000000000",
+        "radius": "359388658449639/14411518807585587200000000000",
+        "label": [
+          "EV",
+          3,
+          1
+        ]
+      },
+      {
+        "shape": 1,
+        "scale": "1/1000000000000",
+        "radius": "107106173/8589934592000000000000",
+        "label": [
+          "EV",
+          3,
+          1
+        ]
+      },
+      {
+        "shape": 1,
+        "scale": "1",
+        "radius": "1796943292248195/72057594037927936",
+        "label": [
+          "EV",
+          3,
+          1
+        ]
+      },
+      {
+        "shape": 1,
+        "scale": "1",
+        "radius": "107106173/8589934592",
+        "label": [
+          "EV",
+          3,
+          1
+        ]
+      },
+      {
+        "shape": 1,
+        "scale": "1000000000000",
+        "radius": "438706858459031982421875/17592186044416",
+        "label": [
+          "EV",
+          3,
+          1
+        ]
+      },
+      {
+        "shape": 1,
+        "scale": "1000000000000",
+        "radius": "26148968017578125/2097152",
+        "label": [
+          "EV",
+          3,
+          1
+        ]
+      }
+    ],
+    "mismatches": 0
+  },
+  "critical": 0,
+  "major": 0,
+  "source_hashes": {
+    "src/eab/kernel2d/m5d_exit_certificate.py": "c6ec19a1511d73fcd22cf2191f6490aa40270eab030e0cd6d753cd099623f2ae",
+    "tools/m5d_c1_oracle.py": "9612809a25607bfb62086fc94257a00a67b5bc698db50bfa97116ebe9370b499",
+    "tools/m5d_c1_replay.py": "a1c798eb56651b0ea751a94b8d330761212315df52b2bb2cbc7c2a812ed5e128",
+    "docs/m5d_c1_theory.md": "48437b96bd95c408d50fbad2c50c6580084d59fb8154c6c56fe395b8037f86c5",
+    "tools/m5d_review_c1.py": "fa8246bddfcc8a5cf78ad1e419f92478061c372cd7b13dda8852f043825137f2"
+  },
+  "seconds": 6.874158099999477,
+  "residual_limits": [
+    "finite probes do not replace proof",
+    "C1 covers a static initial neighborhood, not whole-step exit persistence",
+    "refusals do not imply instability",
+    "external owner G6 remains outstanding"
+  ]
+}
