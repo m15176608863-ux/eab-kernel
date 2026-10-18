@@ -1,0 +1,64 @@
+{
+  "collected": 7,
+  "exitstatus": 0,
+  "rows": [
+    {
+      "nodeid": "tests/test_m5c_policy_binding.py::test_new_runtime_import_after_start_invalidates_the_sealed_closure",
+      "outcome": "passed",
+      "longrepr": null
+    },
+    {
+      "nodeid": "tests/test_m5c_policy_binding.py::test_source_binding_rejects_parent_traversal_even_with_matching_content",
+      "outcome": "passed",
+      "longrepr": null
+    },
+    {
+      "nodeid": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_endpoint_replay]",
+      "outcome": "passed",
+      "longrepr": null
+    },
+    {
+      "nodeid": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_robust_replay]",
+      "outcome": "passed",
+      "longrepr": null
+    },
+    {
+      "nodeid": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_endpoint_replay]",
+      "outcome": "passed",
+      "longrepr": null
+    },
+    {
+      "nodeid": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_robust_replay]",
+      "outcome": "passed",
+      "longrepr": null
+    },
+    {
+      "nodeid": "tests/test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys",
+      "outcome": "passed",
+      "longrepr": null
+    }
+  ],
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-v",
+    "-p",
+    "no:cacheprovider",
+    "-p",
+    "fix_records",
+    "--basetemp",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\fix_verification\\m1_control_temp",
+    "--runslow",
+    "tests/test_m5c_policy_binding.py::test_new_runtime_import_after_start_invalidates_the_sealed_closure",
+    "tests/test_m5c_policy_binding.py::test_source_binding_rejects_parent_traversal_even_with_matching_content",
+    "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission",
+    "tests/test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys"
+  ],
+  "cwd": "D:\\eab-wt\\cx-e2",
+  "seconds": 1.625,
+  "returncode": 0,
+  "last_line": "============================== 7 passed in 1.07s =============================="
+}

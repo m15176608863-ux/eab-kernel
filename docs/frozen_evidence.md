@@ -19,7 +19,8 @@
   `historical_name` 将新位置反映射为旧的 provenance 键。
 - 新产物的默认目录仍是 `reports/`；resolver 不写文件。历史大流及报告参见
   [归档映射](../reports/EVIDENCE_ARCHIVE.md)。测试不读取仓库外归档。
-- 具名数据门：`test_h1_frozen_data.py::test_frozen_data_hashes_are_preserved_without_current_source_pins`。
+- 具名**完整性检查**（不是语义替代门）：`test_h1_frozen_data.py::test_frozen_data_hashes_are_preserved_without_current_source_pins`。
+  逐项显式断言生产提交为 `unknown`、工具版本为带解释的 `unknown`，不把非空字符串当作来源证明。
   同大小实际输入改动的牙：`test_frozen_data_integrity_rejects_an_actual_same_size_input_edit`。
 
 ## 退役门与真实替代门
@@ -27,19 +28,37 @@
 | 退役的当前源码绑定 | 数量变化 | 替代的具名语义门 |
 |---|---:|---|
 | `test_m4c_replay.py::test_frozen_full_computation_is_bound_to_current_production_sources` 的源码断言；函数改名为历史覆盖门 | 0 | 同文件 `test_real_first_frame_per_family_recomputes_the_frozen_classification`：15 家各 1 帧真实执行 |
-| `test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys` | −1 | 上述真实首帧；该文件其余独立回放接线及内部变异门保留 |
+| `test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys` | 0（返修恢复） | 保留运行内 `REPLAY_SOURCE_FILES` 与独立 AST 导入闭包相等及 POSIX 键门；不再断言当前哈希等于自身重算 |
 | `test_m5a_replay.py::test_frozen_family_products_are_distinct_and_bound_to_current_source` 中 current code/tool hash；改名为历史重验证门 | 0 | 同文件 `test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked`（15 格）和 `test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes`（3 格）：状态、特征、精确代数时间 |
 | `test_m5b_endpoint.py::test_frozen_endpoint_evidence_has_all_cases_and_recomputable_extrema` 中工具哈希断言 | 0 | 同函数真实重构 2 个端点极值；`test_midpoint_minimal_example_has_independent_three_by_three_reconstruction` 的独立精确重构 |
-| `test_m5c_policy_binding.py` 的冻结闭包 2、逐文件改动 2、晚导入 1、路径遍历 1、import-origin 4 | −10 | M5b 5 个真实小例、M5c 1 个真实 R3 小例，以及已有独立几何/证书语义门 |
+| `test_m5c_policy_binding.py` 的历史冻结闭包 2、逐文件当前字节钉 2 | −4 | M5b 5 个真实小例、M5c 1 个真实 R3 小例，以及已有独立几何/证书语义门；晚导入 1、路径遍历 1、import-origin 4 属运行内守卫，返修恢复，不退役 |
 | `test_m5c_combined_evidence.py` 的 `research_wrong_sources` 格；冻结合并摘要的 current source/input-source 哈希断言 | −1；其余 0 | 原 join 门的实际状态、精确时间、标签、引用计数；历史上游数据哈希仍检查 |
 | `test_m5d_frozen_publication.py` 中 `source_hashes` 数据维度 | 0（5 格等量改名） | 改为 `inherited_stream_hashes`，真实改变输入流，继续验证拒绝及完整回滚；最终检查的内部变异牙仍保留 |
 | `m5b_minimal_examples.verify` 的旧源码/脚本哈希 | 0 | `test_m5b_replay.py::test_five_real_model_certificates_recompute_from_self_contained_minimal_inputs`：5 个固定真实例逐项完整比对 |
-| `m5c_research_examples.verify` 的旧源码哈希及无关的全量诊断流依赖 | +2 | `test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_exact_certificate_labels_and_counts`；`test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect` |
+| `m5c_research_examples.verify` 的旧源码哈希及全量诊断流读取依赖 | +2 | `test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval`；`test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect` |
 | 新冻结数据完整性门及同大小输入改动牙 | +2 | `test_h1_frozen_data.py` 两门；不读取任何当前源码 |
 
-本分项合计删除 12 格，新增 4 格，净 −8；等量改名与位置变化不计增减。
+本分项合计删除 **5 格**，新增 4 格，净 −1；H1 首轮误计退役的 7 个运行内守卫已恢复。
+等量改名与位置变化不计增减，返修另将 R3 节点等量改为准确的作用域名称。
 R3 新牙把 `diagnose_single_cover` 内部早期分离预算 `ra+rb` 改为只计 `ra`，
 红在完整精确证书字段比对，不是源码哈希、不在枚举后添加假结果。
+R3 门调用 `examples.verify()`，**在冻结标签与区间上**重执行 P1/P2 两张证书及 legacy 计数；
+它不独立求首入标签/时间，分类不作重新求解声称。`verify()` 恢复 `inherited_hashes`：
+核小型上游摘要的实际字节及摘要内记载的诊断流 SHA，**不读取外档诊断流**，不声称重新核过该流。
+冻结 robust 摘要另保留 schema、source-binding schema-id、历史首尾源码 map 一致性断言。
+
+### 快档与全档
+
+`tests/slow_tests.json::fast_nodes` 明列以下 **20 格**真实重执行，不依赖 `--runslow`：
+
+- M5a `test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked`：15 家各一块。
+- M5a `test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes`：3 格。
+- M5b `test_five_real_model_certificates_recompute_from_self_contained_minimal_inputs`：1 门内核 5 例。
+- M4c `test_real_first_frame_per_family_recomputes_the_frozen_classification[bb52]`：1 帧；其余 14 家只在全档。
+
+R3 两门、两道数据完整性检查及恢复的 7 个运行内守卫也在快档。
+删除已退役的逐文件字节钉慢档条目；恢复的 import-origin 节点不再列慢档，避免死条目。
+上述只是固定小子集的日常语义回归，不扩大为全量历史证据重认证。
 
 ## 工具检查的退役清单
 

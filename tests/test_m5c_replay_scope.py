@@ -76,6 +76,9 @@ def test_frozen_summary_has_disjoint_comparison_and_crosscheck_denominators():
     data = json.loads((data_path(ROOT, replay.EVIDENCE / "robust_summary.json")).read_text(encoding="utf-8"))
     c = data["counts"]
     assert data["complete"] and data["full_history"]
+    assert data["schema"] == "eab.m5b-robust-model-replay.v1"
+    assert data["source_binding"] == "runtime-loaded-repository-closure-start-and-end.v1"
+    assert data["source_hashes"] == data["source_hashes_end"]
     assert c["comparison_basis:EXPLICIT_TRAJECTORY"] == 14079
     assert c["explicit_new_contact_pairs"] == 68
     assert c["p1_p2_explicit_same"] == 14079
@@ -90,6 +93,7 @@ def test_frozen_summary_has_disjoint_comparison_and_crosscheck_denominators():
         assert data["references"][phase+":SECONDARY_REFERENCE_TOTAL"] == 7768
         assert data["references"][phase+":SHARED_EDGE_SLOT_TOTAL"] == 32075
     for case in data["cases"].values():
+        assert case["source_hashes"] == case["source_hashes_end"]
         for example in case["examples"].values():
             if example["result"]["classification"].startswith("ROBUST_"):
                 assert "reason" not in example["result"]

@@ -179,8 +179,6 @@
     "tests/test_m5c_certificates.py::test_near_ties_and_endpoint_ties_are_never_signed",
     "tests/test_m5c_certificates.py::test_relative_simple_certificate_rigid_unit_covariance",
     "tests/test_m5c_combined_evidence.py::test_combined_join_rejects_incomplete_or_inconsistent_evidence_without_publishing",
-    "tests/test_m5c_policy_binding.py::test_changing_any_transitive_source_file_in_a_scratch_copy_is_rejected",
-    "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission",
     "tests/test_m5d_frozen_publication.py::test_publication_closure_drift_rejects_and_restores_every_written_target",
     "tests/test_m5d_r3_semantics.py::test_r3_internal_mutations_die_at_the_named_semantic_assertion",
     "tests/test_m5d_r3_semantics.py::test_r3_p2_certificate_rigid_unit_covariance",
@@ -228,5 +226,26 @@
     "tests/test_readers_roundtrip.py::test_tf_probe_fixture",
     "tests/test_tf_reader.py::test_tf_row_gate_has_teeth_through_the_reader"
   ],
-  "fast_nodes": []
+  "fast_nodes": [
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb52]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb12]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb50]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb51]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb03]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb05]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb06]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb09]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb10]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv01]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv01_dbv01a]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv02]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv02_dbv02a]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbF038]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbS038]",
+    "tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb52-1-pair0]",
+    "tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb12-2-pair1]",
+    "tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb10-7-pair2]",
+    "tests/test_m5b_replay.py::test_five_real_model_certificates_recompute_from_self_contained_minimal_inputs",
+    "tests/test_m4c_replay.py::test_real_first_frame_per_family_recomputes_the_frozen_classification[bb52]"
+  ]
 }

@@ -1,15 +1,10 @@
 {
-  "schema": "h1-source-hash-retirement-v1",
+  "schema": "h1-source-hash-retirement-v2",
   "complete": true,
-  "retired_test_cells": 12,
+  "retired_test_cells": 5,
   "new_test_cells": 4,
-  "net_test_count_change": -8,
+  "net_test_count_change": -1,
   "retired_nodes": [
-    {
-      "path": "tests/test_m4c_fix_replay.py",
-      "name": "test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys",
-      "cells": 1
-    },
     {
       "path": "tests/test_m5c_policy_binding.py",
       "name": "test_frozen_summaries_bind_every_runtime_transitive_source_at_both_ends",
@@ -19,21 +14,6 @@
       "path": "tests/test_m5c_policy_binding.py",
       "name": "test_changing_any_transitive_source_file_in_a_scratch_copy_is_rejected",
       "cells": 2
-    },
-    {
-      "path": "tests/test_m5c_policy_binding.py",
-      "name": "test_new_runtime_import_after_start_invalidates_the_sealed_closure",
-      "cells": 1
-    },
-    {
-      "path": "tests/test_m5c_policy_binding.py",
-      "name": "test_source_binding_rejects_parent_traversal_even_with_matching_content",
-      "cells": 1
-    },
-    {
-      "path": "tests/test_m5c_policy_binding.py",
-      "name": "test_runtime_source_closure_matches_independent_import_origins_and_kills_omission",
-      "cells": 4
     },
     {
       "path": "tests/test_m5c_combined_evidence.py",
@@ -61,7 +41,7 @@
     }
   ],
   "new_nodes": [
-    "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_exact_certificate_labels_and_counts",
+    "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval",
     "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect",
     "tests/test_h1_frozen_data.py::test_frozen_data_hashes_are_preserved_without_current_source_pins",
     "tests/test_h1_frozen_data.py::test_frozen_data_integrity_rejects_an_actual_same_size_input_edit"
@@ -90,8 +70,8 @@
   "full_replay_performed": false,
   "frozen_numerical_data_recomputed": false,
   "historical_json_bytes_modified": false,
-  "input_count": 136,
-  "input_bytes": 11662520,
+  "input_count": 137,
+  "input_bytes": 12445253,
   "largest_input_bytes": 834022,
   "producing_commit_fields": "unknown: no direct original producer commit/version record",
   "source_equivalent_commit_inferences": 23,
@@ -107,5 +87,41 @@
     "No current-source hash matching remains in active frozen-data tests.",
     "No assert_current_sources API remains; assert_run_sources_unchanged compares two same-run snapshots without reading current source.",
     "History finalizers still require explicitly restored archived input artifacts; no claim that every old historical CLI is a standalone current test dependency."
-  ]
+  ],
+  "restored_nodes": [
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "name": "test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys",
+      "cells": 1
+    },
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_new_runtime_import_after_start_invalidates_the_sealed_closure",
+      "cells": 1
+    },
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_source_binding_rejects_parent_traversal_even_with_matching_content",
+      "cells": 1
+    },
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_runtime_source_closure_matches_independent_import_origins_and_kills_omission",
+      "cells": 4
+    }
+  ],
+  "revision": "H1-fix",
+  "new_node_categories": {
+    "data_integrity_not_semantics": [
+      "tests/test_h1_frozen_data.py::test_frozen_data_hashes_are_preserved_without_current_source_pins",
+      "tests/test_h1_frozen_data.py::test_frozen_data_integrity_rejects_an_actual_same_size_input_edit"
+    ],
+    "r3_at_frozen_label_and_interval": [
+      "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval",
+      "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect"
+    ]
+  },
+  "fixed_subset_verifications_scope": "Historical H1-v1 runs; H1-fix current checks and restored guards are in fix_verification/summary.json and fix_fast/summary.json.",
+  "h1_fix_verification": "fix_verification/summary.json",
+  "r3_scope": "Reexecutes two certificates and legacy counts at frozen labels and time intervals; does not discover first entrance labels or time."
 }

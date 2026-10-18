@@ -1,4 +1,4 @@
-"""Exact endpoint affine fit and a rational DDA-shaped trajectory proposal.
+"""Exact endpoint affine fit and coordinate residual bounds.
 
 This module does NOT solve general affine-motion first contact or certify the
 unknown physical path. See docs/m5a2_affine_theory.md for the proof boundary.

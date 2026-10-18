@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "m1_control": "============================== 7 passed in 1.07s ==============================",
+  "m1_mutant": "============================== 7 failed in 1.31s ==============================",
+  "m1_intended_assertions": 7,
+  "m2_fast_promoted": "============================= 20 passed in 5.35s ==============================",
+  "promoted": [
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb52]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb12]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb50]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb51]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb03]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb05]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb06]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb09]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb10]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv01]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv01_dbv01a]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv02]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv02_dbv02a]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbF038]",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbS038]",
+    "tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb52-1-pair0]",
+    "tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb12-2-pair1]",
+    "tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb10-7-pair2]",
+    "tests/test_m5b_replay.py::test_five_real_model_certificates_recompute_from_self_contained_minimal_inputs",
+    "tests/test_m4c_replay.py::test_real_first_frame_per_family_recomputes_the_frozen_classification[bb52]"
+  ],
+  "targeted": "============================= 30 passed in 4.84s ==============================",
+  "restored_nodes": 7,
+  "retired_relative_to_pre_H1": 5,
+  "renamed_r3": {
+    "old": "test_fixed_real_r3_subset_reexecutes_exact_certificate_labels_and_counts",
+    "new": "test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval"
+  },
+  "no_external_archive_reads": true,
+  "no_full_replay": true
+}

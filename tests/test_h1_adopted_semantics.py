@@ -1,4 +1,4 @@
-"""Three semantic gates adopted from sealed commit 5e3ba68, not its framework.
+"""Three adopted semantic gates plus the independently checked A-ring mirror.
 
 Oracle primitives: explicit rational square overlap, expanded determinants,
 and m5d_c1_oracle's independent Cartesian-difference hull. They do not call
@@ -70,3 +70,20 @@ def test_c1_b_ring_convexity_uses_b_radius_when_a_is_exact():
     result = c1.exit_order_certificate(a, b, 0, radius)
     assert result["status"] == "UNPROVED", "C1 B convexity must use B radius even when A radius is zero"
     assert result["reason"] == "TUBE_CONVEXITY_UNPROVED" and result["ring"] == "B"
+
+
+def test_c1_a_ring_convexity_uses_a_radius_when_b_is_exact():
+    def _turn(p, q, r):
+        return p[0]*q[1]+q[0]*r[1]+r[0]*p[1]-p[1]*q[0]-q[1]*r[0]-r[1]*p[0]
+
+    offset = (F(2001, 200), -F(29999, 1000))
+    a = tuple((F(x)-offset[0], F(y)-offset[1]) for x, y in
+              ((0, 0), (F(1, 100), -F(1, 10000)), (10, 0), (0, 10)))
+    b = ((-20, -10), (30, -9), (-10, 30))
+    radius = F(8379977, 167772160000)*F(101, 100)
+    moved = tuple((x, y+sign*radius) for (x, y), sign in zip(a, (-1, 1, -1, 0)))
+    assert _turn(*a[:3]) > 0 and _turn(*moved[:3]) < 0, "the A-only box contains an actual reflected vertex"
+    assert exit_oracle(a, b)["labels"] == (("EV", 0, 2),)
+    result = c1.exit_order_certificate(a, b, radius, 0)
+    assert result["status"] == "UNPROVED", "C1 A convexity must use A radius even when B radius is zero"
+    assert result["reason"] == "TUBE_CONVEXITY_UNPROVED" and result["ring"] == "A"

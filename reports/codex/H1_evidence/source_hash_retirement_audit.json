@@ -1,6 +1,6 @@
 {
   "complete": true,
-  "method": "AST obsolete-API reference census plus manual review of active frozen verification and historical finalizer predicates",
+  "method": "AST obsolete-API reference census plus manual review of active frozen verification and historical finalizer predicates; H1-fix refreshes current AST line ranges (including nested verifier functions) and obsolete API absence; original audit preserved as source_hash_retirement_audit_v1.json",
   "obsolete_api_references": [],
   "reviewed_verifiers": [
     {
@@ -14,7 +14,7 @@
       "path": "tools/m5c_research_examples.py",
       "function": "verify",
       "line_start": 76,
-      "line_end": 88,
+      "line_end": 99,
       "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
     },
     {
@@ -85,5 +85,8 @@
     "m4c_finalize_evidence.main complete replay code map",
     "m4c_finalize_evidence.main historical revalidation driver hash"
   ],
-  "test_count_change": 0
+  "test_count_change": 0,
+  "revision": "H1-fix",
+  "h1_fix_followup": "fix_verification/summary.json",
+  "test_count_change_scope": "Original late-audit correction only; cumulative retirement is -5, additions +4, restored within-run guard nodes 7; see hash_retirement.json."
 }

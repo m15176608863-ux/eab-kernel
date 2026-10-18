@@ -1,0 +1,29 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.0.3, pluggy-1.6.0 -- C:\Program Files\Python312\python.exe
+rootdir: D:\eab-wt\cx-e2
+configfile: pyproject.toml
+plugins: anyio-4.14.1
+collecting ... collected 20 items
+
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb52] PASSED [  5%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb12] PASSED [ 10%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb50] PASSED [ 15%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb51] PASSED [ 20%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb03] PASSED [ 25%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb05] PASSED [ 30%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb06] PASSED [ 35%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb09] PASSED [ 40%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bb10] PASSED [ 45%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv01] PASSED [ 50%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv01_dbv01a] PASSED [ 55%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv02] PASSED [ 60%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbv02_dbv02a] PASSED [ 65%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbF038] PASSED [ 70%]
+tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked[bbS038] PASSED [ 75%]
+tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb52-1-pair0] PASSED [ 80%]
+tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb12-2-pair1] PASSED [ 85%]
+tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes[bb10-7-pair2] PASSED [ 90%]
+tests/test_m5b_replay.py::test_five_real_model_certificates_recompute_from_self_contained_minimal_inputs PASSED [ 95%]
+tests/test_m4c_replay.py::test_real_first_frame_per_family_recomputes_the_frozen_classification[bb52] PASSED [100%]
+
+============================= 20 passed in 5.35s ==============================

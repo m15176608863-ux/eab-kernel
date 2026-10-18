@@ -81,8 +81,19 @@ def verify(target=None):
     # H1: recorded historical source bytes are not compared to current code.
     assert data["input_hashes"] == {name.replace("fixtures/frozen/", "reports/", 1): digest
                                     for name, digest in research.replay.input_hashes().items()}
-    # The 5 MB historical diagnostic stream remains archive provenance, not
-    # a dependency of this self-contained selected-input replay.
+    # Recheck the small inherited summary's bytes and the diagnostic digest
+    # recorded by that summary. The archived diagnostic stream itself is not
+    # read here; this cross-record check is not a new full-stream verification.
+    summaries = [name for name in data["inherited_hashes"] if name.endswith("/research_summary.json")]
+    assert len(summaries) == 1
+    summary_name = summaries[0]
+    summary_path = data_path(research.ROOT, summary_name)
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert summary["complete"]
+    assert data["inherited_hashes"] == {
+        summary_name: research._sha(summary_path),
+        summary["exact_diagnostics_path"]: summary["exact_diagnostics_sha256"],
+    }
     for example in data["examples"]:
         assert _evaluate(example) == example["expected"], (example["case"], example["step"], example["pair"])
     return len(data["examples"])

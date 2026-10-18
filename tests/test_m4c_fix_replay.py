@@ -128,3 +128,48 @@ def test_vv_all_nonzero_internal_mutation_loses_vertex_zero_reference(monkeypatc
     guard(2, True)
     guard(3, True)
 
+
+def test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys():
+    """Guard the live replay manifest, not historical source-byte equality.
+
+    The independent AST traversal includes package initializers and imports in
+    functions. Unrelated LP and 3-D files must not enter the live run closure.
+    The historical node name is retained to make the restoration explicit.
+    """
+    root = replay.ROOT
+    modules = {}
+    for base in (root / "src", root / "tools"):
+        for path in base.rglob("*.py"):
+            name = ".".join(path.relative_to(base).with_suffix("").parts)
+            if name.endswith(".__init__"):
+                name = name[:-9]
+            modules[name] = path
+    seen, pending = set(), ["m4c_motion_replay"]
+    while pending:
+        name = pending.pop()
+        if name in seen or name not in modules:
+            continue
+        seen.add(name)
+        path = modules[name]
+        parts = name.split(".")
+        pending.extend(".".join(parts[:i]) for i in range(1, len(parts)))
+        package = name if path.name == "__init__.py" else name.rpartition(".")[0]
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8-sig"))):
+            if isinstance(node, ast.Import):
+                pending.extend(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                prefix = ""
+                if node.level:
+                    parents = package.split(".")
+                    prefix = ".".join(parents[:len(parents)-node.level+1])+"."
+                target = (prefix+(node.module or "")).rstrip(".")
+                pending.append(target)
+                pending.extend(target+"."+alias.name for alias in node.names)
+    expected = {modules[name].relative_to(root).as_posix() for name in seen}
+    declared = set(replay.REPLAY_SOURCE_FILES)
+    assert declared == expected, "live source manifest must equal the replay import closure"
+    assert len(replay.REPLAY_SOURCE_FILES) == len(declared)
+    assert len(expected) > 4
+    assert "src/eab/lp.py" not in declared and "src/eab/kernel3d/geom.py" not in declared
+    assert all("\\" not in key and Path(key).as_posix() == key for key in declared), "live source manifest keys must be platform-neutral POSIX paths"
+

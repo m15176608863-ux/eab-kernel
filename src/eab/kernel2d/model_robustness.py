@@ -58,7 +58,6 @@ def chord_paths(start, end):
     return tuple(paths)
 
 
-
 def _validate(paths):
     if len(paths) < 3:
         raise ValueError("at least three vertex paths required")

@@ -1,0 +1,1117 @@
+FFFFFFFFFFFFFFFFFFFFFF..                                                 [100%]
+================================== FAILURES ===================================
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q0-0-1] _
+
+q = (Fraction(0, 1), Fraction(1, 1)), physical = 0, topology = 1
+scale = Fraction(1, 1000), shift = (Fraction(1000000, 1), Fraction(-1000000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(1000000, 1), Fraction(-1000000001, 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-1000000001, 1000)))
+B = ((Fraction(1000000001, 1000), Fraction(-500000001, 500)), (Fraction(1000000001, 1000), Fraction(-499999999, 500)), (Fr..., 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(1000000, 1), Fraction(-1000000001, 1000)), ...)
+x = (Fraction(-1, 1000), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q1-1-1] _
+
+q = (Fraction(1, 8), Fraction(1, 1)), physical = 1, topology = 1
+scale = Fraction(1, 1000), shift = (Fraction(1000000, 1), Fraction(-1000000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(1000000, 1), Fraction(-1000000001, 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-1000000001, 1000)))
+B = ((Fraction(1000000001, 1000), Fraction(-500000001, 500)), (Fraction(1000000001, 1000), Fraction(-499999999, 500)), (Fr..., 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(1000000, 1), Fraction(-1000000001, 1000)), ...)
+x = (Fraction(-1, 1000), Fraction(1, 8000))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q2-1-1] _
+
+q = (Fraction(-1, 8), Fraction(1, 1)), physical = 1, topology = 1
+scale = Fraction(1, 1000), shift = (Fraction(1000000, 1), Fraction(-1000000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(1000000, 1), Fraction(-1000000001, 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-1000000001, 1000)))
+B = ((Fraction(1000000001, 1000), Fraction(-500000001, 500)), (Fraction(1000000001, 1000), Fraction(-499999999, 500)), (Fr..., 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(1000000, 1), Fraction(-1000000001, 1000)), ...)
+x = (Fraction(-1, 1000), Fraction(-1, 8000))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q3-0-1] _
+
+q = (Fraction(0, 1), Fraction(9, 8)), physical = 0, topology = 1
+scale = Fraction(1, 1000), shift = (Fraction(1000000, 1), Fraction(-1000000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(1000000, 1), Fraction(-1000000001, 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-1000000001, 1000)))
+B = ((Fraction(1000000001, 1000), Fraction(-500000001, 500)), (Fraction(1000000001, 1000), Fraction(-499999999, 500)), (Fr..., 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(1000000, 1), Fraction(-1000000001, 1000)), ...)
+x = (Fraction(-9, 8000), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q4-0-1] _
+
+q = (Fraction(0, 1), Fraction(7, 8)), physical = 0, topology = 1
+scale = Fraction(1, 1000), shift = (Fraction(1000000, 1), Fraction(-1000000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(1000000, 1), Fraction(-1000000001, 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-1000000001, 1000)))
+B = ((Fraction(1000000001, 1000), Fraction(-500000001, 500)), (Fraction(1000000001, 1000), Fraction(-499999999, 500)), (Fr..., 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(1000000, 1), Fraction(-1000000001, 1000)), ...)
+x = (Fraction(-7, 8000), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q5-0-0] _
+
+q = (Fraction(0, 1), Fraction(3, 1)), physical = 0, topology = 0
+scale = Fraction(1, 1000), shift = (Fraction(1000000, 1), Fraction(-1000000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(1000000, 1), Fraction(-1000000001, 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-1000000001, 1000)))
+B = ((Fraction(1000000001, 1000), Fraction(-500000001, 500)), (Fraction(1000000001, 1000), Fraction(-499999999, 500)), (Fr..., 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(1000000, 1), Fraction(-1000000001, 1000)), ...)
+x = (Fraction(-3, 1000), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q6--1--1] _
+
+q = (Fraction(0, 1), Fraction(25, 8)), physical = -1, topology = -1
+scale = Fraction(1, 1000), shift = (Fraction(1000000, 1), Fraction(-1000000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(1000000, 1), Fraction(-1000000001, 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-999999999, 1000)), (Fraction(999999999, 1000), Fraction(-1000000001, 1000)))
+B = ((Fraction(1000000001, 1000), Fraction(-500000001, 500)), (Fraction(1000000001, 1000), Fraction(-499999999, 500)), (Fr..., 1000)), (Fraction(1000000, 1), Fraction(-999999999, 1000)), (Fraction(1000000, 1), Fraction(-1000000001, 1000)), ...)
+x = (Fraction(-1, 320), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q0-0-1] _
+
+q = (Fraction(0, 1), Fraction(1, 1)), physical = 0, topology = 1
+scale = Fraction(1, 1), shift = (Fraction(0, 1), Fraction(0, 1))
+quarter_turn = False
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1)))
+B = ((Fraction(-2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(-1, 1), Fraction(0, 1)), ...)
+x = (Fraction(0, 1), Fraction(1, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q1-1-1] _
+
+q = (Fraction(1, 8), Fraction(1, 1)), physical = 1, topology = 1
+scale = Fraction(1, 1), shift = (Fraction(0, 1), Fraction(0, 1))
+quarter_turn = False
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1)))
+B = ((Fraction(-2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(-1, 1), Fraction(0, 1)), ...)
+x = (Fraction(1, 8), Fraction(1, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q2-1-1] _
+
+q = (Fraction(-1, 8), Fraction(1, 1)), physical = 1, topology = 1
+scale = Fraction(1, 1), shift = (Fraction(0, 1), Fraction(0, 1))
+quarter_turn = False
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1)))
+B = ((Fraction(-2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(-1, 1), Fraction(0, 1)), ...)
+x = (Fraction(-1, 8), Fraction(1, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q3-0-1] _
+
+q = (Fraction(0, 1), Fraction(9, 8)), physical = 0, topology = 1
+scale = Fraction(1, 1), shift = (Fraction(0, 1), Fraction(0, 1))
+quarter_turn = False
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1)))
+B = ((Fraction(-2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(-1, 1), Fraction(0, 1)), ...)
+x = (Fraction(0, 1), Fraction(9, 8))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q4-0-1] _
+
+q = (Fraction(0, 1), Fraction(7, 8)), physical = 0, topology = 1
+scale = Fraction(1, 1), shift = (Fraction(0, 1), Fraction(0, 1))
+quarter_turn = False
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1)))
+B = ((Fraction(-2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(-1, 1), Fraction(0, 1)), ...)
+x = (Fraction(0, 1), Fraction(7, 8))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q5-0-0] _
+
+q = (Fraction(0, 1), Fraction(3, 1)), physical = 0, topology = 0
+scale = Fraction(1, 1), shift = (Fraction(0, 1), Fraction(0, 1))
+quarter_turn = False
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1)))
+B = ((Fraction(-2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(-1, 1), Fraction(0, 1)), ...)
+x = (Fraction(0, 1), Fraction(3, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q6--1--1] _
+
+q = (Fraction(0, 1), Fraction(25, 8)), physical = -1, topology = -1
+scale = Fraction(1, 1), shift = (Fraction(0, 1), Fraction(0, 1))
+quarter_turn = False
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(1, 1), Fraction(1, 1)), (Fraction(-1, 1), Fraction(1, 1)))
+B = ((Fraction(-2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(-1, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(3, 1)), (Fraction(1, 1), Fraction(0, 1)), (Fraction(-1, 1), Fraction(0, 1)), ...)
+x = (Fraction(0, 1), Fraction(25, 8))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q0-0-1] _
+
+q = (Fraction(0, 1), Fraction(1, 1)), physical = 0, topology = 1
+scale = Fraction(1000, 1), shift = (Fraction(-100000, 1), Fraction(1000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-100000, 1), Fraction(0, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(0, 1)))
+B = ((Fraction(-99000, 1), Fraction(-1000, 1)), (Fraction(-99000, 1), Fraction(3000, 1)), (Fraction(-103000, 1), Fraction(...103000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(0, 1)), ...)
+x = (Fraction(-1000, 1), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q1-1-1] _
+
+q = (Fraction(1, 8), Fraction(1, 1)), physical = 1, topology = 1
+scale = Fraction(1000, 1), shift = (Fraction(-100000, 1), Fraction(1000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-100000, 1), Fraction(0, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(0, 1)))
+B = ((Fraction(-99000, 1), Fraction(-1000, 1)), (Fraction(-99000, 1), Fraction(3000, 1)), (Fraction(-103000, 1), Fraction(...103000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(0, 1)), ...)
+x = (Fraction(-1000, 1), Fraction(125, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q2-1-1] _
+
+q = (Fraction(-1, 8), Fraction(1, 1)), physical = 1, topology = 1
+scale = Fraction(1000, 1), shift = (Fraction(-100000, 1), Fraction(1000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-100000, 1), Fraction(0, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(0, 1)))
+B = ((Fraction(-99000, 1), Fraction(-1000, 1)), (Fraction(-99000, 1), Fraction(3000, 1)), (Fraction(-103000, 1), Fraction(...103000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(0, 1)), ...)
+x = (Fraction(-1000, 1), Fraction(-125, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q3-0-1] _
+
+q = (Fraction(0, 1), Fraction(9, 8)), physical = 0, topology = 1
+scale = Fraction(1000, 1), shift = (Fraction(-100000, 1), Fraction(1000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-100000, 1), Fraction(0, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(0, 1)))
+B = ((Fraction(-99000, 1), Fraction(-1000, 1)), (Fraction(-99000, 1), Fraction(3000, 1)), (Fraction(-103000, 1), Fraction(...103000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(0, 1)), ...)
+x = (Fraction(-1125, 1), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q4-0-1] _
+
+q = (Fraction(0, 1), Fraction(7, 8)), physical = 0, topology = 1
+scale = Fraction(1000, 1), shift = (Fraction(-100000, 1), Fraction(1000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-100000, 1), Fraction(0, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(0, 1)))
+B = ((Fraction(-99000, 1), Fraction(-1000, 1)), (Fraction(-99000, 1), Fraction(3000, 1)), (Fraction(-103000, 1), Fraction(...103000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(0, 1)), ...)
+x = (Fraction(-875, 1), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q5-0-0] _
+
+q = (Fraction(0, 1), Fraction(3, 1)), physical = 0, topology = 0
+scale = Fraction(1000, 1), shift = (Fraction(-100000, 1), Fraction(1000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-100000, 1), Fraction(0, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(0, 1)))
+B = ((Fraction(-99000, 1), Fraction(-1000, 1)), (Fraction(-99000, 1), Fraction(3000, 1)), (Fraction(-103000, 1), Fraction(...103000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(0, 1)), ...)
+x = (Fraction(-3000, 1), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+_ test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q6--1--1] _
+
+q = (Fraction(0, 1), Fraction(25, 8)), physical = -1, topology = -1
+scale = Fraction(1000, 1), shift = (Fraction(-100000, 1), Fraction(1000, 1))
+quarter_turn = True
+
+    @pytest.mark.parametrize('q,physical,topology', [
+        ((F(0), F(1)), 0, 1),
+        ((F(1, 8), F(1)), 1, 1),
+        ((F(-1, 8), F(1)), 1, 1),
+        ((F(0), F(9, 8)), 0, 1),
+        ((F(0), F(7, 8)), 0, 1),
+        ((F(0), F(3)), 0, 0),
+        ((F(0), F(25, 8)), -1, -1),
+    ])
+    @pytest.mark.parametrize('scale,shift,quarter_turn', [
+        (F(1, 1000), (F(10**6), F(-10**6)), True),
+        (F(1), (F(0), F(0)), False),
+        (F(1000), (F(-10**5), F(1000)), True),
+    ])
+    def test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology(
+            q, physical, topology, scale, shift, quarter_turn):
+        """Closed-form pin/slot oracle, including scales and exact rigid motions."""
+        def linear(p):
+            x, y = (F(value)*scale for value in p)
+            return (-y, x) if quarter_turn else (x, y)
+        def body(poly):
+            return tuple((x+shift[0], y+shift[1]) for x, y in map(linear, poly))
+        moving, fixed, translation = body(A), body(B), linear(q)
+        assert _cartesian_state(q) == physical
+        assert _cartesian_topology(q) == topology
+>       assert polygons_overlap_exact(moving, fixed, translation) == physical, 'physical O state'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_m3_theory.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+A = ((Fraction(-100000, 1), Fraction(0, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(2000, 1)), (Fraction(-101000, 1), Fraction(0, 1)))
+B = ((Fraction(-99000, 1), Fraction(-1000, 1)), (Fraction(-99000, 1), Fraction(3000, 1)), (Fraction(-103000, 1), Fraction(...103000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(2000, 1)), (Fraction(-100000, 1), Fraction(0, 1)), ...)
+x = (Fraction(-3125, 1), Fraction(0, 1))
+
+    def polygons_overlap_exact(A: Poly, B: Poly, x: Point = (0.0, 0.0)) -> int:
+        """A 平移 x 后与 B（任意简单多边形、任意朝向）的精确相交状态：1 内部相交 / 0 只有边界接触 / −1 分离。
+    
+        两份精确耳切（`geom.triangulate` 用精确 `orient2d`）逐对三角形做精确分离轴检验（平移在 Fraction 上做）：
+        内部相交 ⟺ 某对三角形内部相交（多边形内部 = 三角形内部 ∪ 对角线的相对内部，两内部之交是开集，非空即有正面积）；
+        否则，若某对三角形相触，相触点必在两个多边形的**边界**上（落在 A 内部的点若在 B 里，附近就有 B 的内部点，前一条已判 1）。"""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel2d\exact.py:282: RuntimeError
+____ test_zero_clearance_contact_is_not_silently_regularized_to_open_union ____
+
+    def test_zero_clearance_contact_is_not_silently_regularized_to_open_union():
+        for name, A, B in _families()[1:]:
+            model = G.global_entrance(A, B)
+>           assert model.classify() == 0, 'physical contact can lie in int E'
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_m3_global3d.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = GlobalEntrance3D(parts_a=(ConvexPart3D(vertices=((Fraction(1, 1), Fraction(1, 1), Fraction(-1, 4)), (Fraction(1, 1), F... 2)), (Fraction(1, 1), Fraction(3, 1), Fraction(-1, 2)))), interior=(Fraction(1, 2), Fraction(2, 1), Fraction(0, 1)))))
+translation = (0, 0, 0)
+
+    def classify(self, translation=(0, 0, 0)):
+        """Physical state -1 separated / 0 touching / 1 interior intersection."""
+>       raise RuntimeError("H1-fix M3 production path poisoned")
+E       RuntimeError: H1-fix M3 production path poisoned
+
+src\eab\kernel3d\global_entrance.py:614: RuntimeError
+=========================== short test summary info ===========================
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q0-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q1-1-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q2-1-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q3-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q4-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q5-0-0]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale0-shift0-True-q6--1--1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q0-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q1-1-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q2-1-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q3-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q4-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q5-0-0]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale1-shift1-False-q6--1--1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q0-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q1-1-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q2-1-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q3-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q4-0-1]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q5-0-0]
+FAILED tests/test_m3_theory.py::test_m3_tight_fit_distinguishes_body_relation_from_entrance_topology[scale2-shift2-True-q6--1--1]
+FAILED tests/test_m3_global3d.py::test_zero_clearance_contact_is_not_silently_regularized_to_open_union
+22 failed, 2 passed in 0.43s

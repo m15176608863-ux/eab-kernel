@@ -18,7 +18,10 @@ def test_frozen_data_hashes_are_preserved_without_current_source_pins():
     assert len(rows) == len({row["path"] for row in rows}) == 137
     for row in rows:
         assert_data_entry(ROOT, row)
-        assert row["producing_git_commit"] and row["accepted_git_commit"] and row["tool_version"]
+        assert row["producing_git_commit"] == "unknown"
+        assert row["tool_version"] == "unknown (no explicit historical producer version recorded)"
+        assert len(row["accepted_git_commit"]) == 40
+        assert set(row["accepted_git_commit"]) <= set("0123456789abcdef")
 
 
 def test_frozen_data_integrity_rejects_an_actual_same_size_input_edit(tmp_path):

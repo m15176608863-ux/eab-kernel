@@ -1,4 +1,4 @@
-"""H1: one fixed real R3 input is replayed instead of hashing current source.
+"""Reexecute two R3 certificates and counts at frozen labels and intervals.
 
 This is a semantic regression against preserved data, not an independent
 geometry oracle. The independent analytic R3 oracle remains in
@@ -17,13 +17,14 @@ from frozen_evidence import data_path
 import m5c_research_examples as examples
 
 
-def test_fixed_real_r3_subset_reexecutes_exact_certificate_labels_and_counts():
+def test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval():
     data = json.loads(data_path(ROOT, examples.TARGET).read_text(encoding="utf-8"))
     assert [(row["case"], row["step"], row["pair"]) for row in data["examples"]] == [
         ("bb05", 3, [2, 3])]
-    for row in data["examples"]:
-        actual = examples._evaluate(row)
-        assert actual == row["expected"], "H1 exact R3 certificate, labels and counts must match fixed data"
+    # verify() checks both exact certificate fields, mapped frozen labels,
+    # legacy counts, live fixture data hashes and historical record consistency.
+    # It does not discover the first entrance or independently derive its label.
+    assert examples.verify() == len(data["examples"])
 
 
 def test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect(monkeypatch):
@@ -31,5 +32,5 @@ def test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect(monkeypatch
         'early_separation=early["gap_lower"]-ra-rb',
         'early_separation=early["gap_lower"]-ra',
     )])
-    with pytest.raises(AssertionError, match="H1 exact R3 certificate, labels and counts"):
-        test_fixed_real_r3_subset_reexecutes_exact_certificate_labels_and_counts()
+    with pytest.raises(AssertionError, match="bb05"):
+        test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval()

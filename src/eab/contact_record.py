@@ -1,4 +1,4 @@
-"""ContactRecord：六种现有接触表示的公共契约。
+"""ContactRecord：域无关的接触记录公共契约。
 
 字段按生命周期分四组（设计文档 §四）：
   身份（跨步不变）  block_a/block_b, cover, feature_a/feature_b, joint_material
@@ -7,18 +7,12 @@
   转移（跨步携带）  mode_init, gap_ref, slip_ref, bond_flag, lock_position
 
 设计要点：
-- 统一词汇（CoverType / Mode）+ 各引擎原始码**同时保留**（raw_mode / raw_cover），
-  因为三家的 "3" 含义不同：b-DDA 3 = v-v 第二参考闭合，bdda3d 3 = 键合，tf.cpp 3 = 受拉。
+- 统一词汇（CoverType / Mode）与不透明来源码同时保留（raw_mode / raw_cover）；
+  来源码到公共词汇的映射由适配器解释，公共契约不赋予来源码语义。
 - `extra` 装下一切不入正式字段的列，读取器**不许丢信息**。
 - 典范序键 `canonical_key()` 与来源的枚举顺序无关（块序交换不变），用于跨引擎集合同构比较。
-  它的分辨率取决于来源给了多少特征身份（审查 C20）：bdda3d 逐步唯一；bdda_df 在旧夹具唯一，
-  M4 的 v01/v02 四例首步却有 9 条主特征重复，须另记 multiplicity/第二参考，不能无声去重；
-  tf 探针不带特征，键只到 (块对, 盖类) 级；bdda_df 缺 verts.csv 时块号未知的记录同样只到块对级。
-  bdda_df 的顶点号在有 verts.csv 时已经 alias 规范化到载入后的多边形（G6 minor 30），与由同一多边形造出的
-  内核盖同名；缺 verts.csv 时是原始号。bdda_df 的 VV 顶点来自两组三点参考的共享顶点，不是固定 p1/p2
-  （tests/test_m4_bdda_vv_reader.py）；半交换只改参考次序，不改顶点身份。bdda3d 的面身份是 legacy 的三角顶点三元组，归约到几何面要几何
-  （tools/g2_bdda3d.py），所以跨引擎比较 bdda3d 仍须经那一步，不能直接比 canonical_key。
-  这几条由 tests/test_readers_roundtrip.py 在真实夹具上断言。
+  分辨率取决于来源提供的特征身份；缺失身份与重复记录不能无声去重。
+  具体来源的身份归约和表格式说明留在适配器及读取器中。
 """
 
 from __future__ import annotations
@@ -45,8 +39,8 @@ class CoverType(str, Enum):
     FF = "FF"          # 3D 退化：平行贴面
     FE = "FE"          # 3D 退化：棱平行于面
     EE_PAR = "EE_PAR"  # 3D 退化：平行棱-棱
-    NN = "NN"          # tf.cpp 候选类 0（入口展开前）
-    NE = "NE"          # tf.cpp 候选类 1（入口展开前）
+    NN = "NN"          # 未展开的顶点-顶点候选
+    NE = "NE"          # 未展开的顶点-棱候选
     UNKNOWN = "UNKNOWN"
 
 
@@ -54,9 +48,9 @@ class Mode(str, Enum):
     OPEN = "OPEN"
     SLIDING = "SLIDING"
     LOCKED = "LOCKED"
-    BONDED = "BONDED"        # bdda3d 键合态
-    TENSION = "TENSION"      # tf.cpp 受拉态
-    VV_CLOSED = "VV_CLOSED"  # b-DDA v-v 第二参考闭合（m0=3）
+    BONDED = "BONDED"        # 键合态
+    TENSION = "TENSION"      # 受拉态
+    VV_CLOSED = "VV_CLOSED"  # 顶点-顶点闭合态
     UNVERIFIED = "UNVERIFIED"  # 引擎给了码、也有名字，但归入统一词汇的依据未核实（原始码见 raw_mode）
     UNKNOWN = "UNKNOWN"
 
@@ -66,8 +60,8 @@ class Feature:
     """块上的几何特征。index 为来源引擎的局部/全局编号，-1 表示未知。
 
     verts：来源没有特征编号、只用顶点号指代特征时的身份（**排序后**的顶点号元组，与列出顺序无关）。
-    例：bdda3d 的 n-p 入口用宿主块面扇形里的一个三角 (P2,P3,P4) 指代面，没有面号 → index=-1、
-    verts=sorted(P2,P3,P4)；e-e 入口的棱 → verts=sorted(两端点)。空元组表示未提供。
+    例如无面编号时可提供面上三角的排序顶点号；棱可提供排序后的两端点号。
+    空元组表示未提供。来源特定的身份归约由适配器负责。
     """
 
     block: int
@@ -85,7 +79,7 @@ Vec = tuple[float, ...]
 @dataclass(slots=True)
 class ContactRecord:
     # ---- 身份（跨步不变）----
-    source: str                 # "bdda-df" | "bdda2" | "bdda3d" | "tf" | "dda4" | "eab"
+    source: str                 # 由来源或适配器声明的不透明标签
     step: int
     contact_index: int          # 来源枚举序里的位置（只做映射，不做语义）
     block_a: int
@@ -98,8 +92,8 @@ class ContactRecord:
     # ---- 步内冻结 ----
     ref_points: tuple[Vec, ...] = ()
     normal: Vec | None = None
-    length_or_area: float | None = None   # 2D 边长 b1 / 3D 面积
-    params: Vec = ()                      # 2D (s3,) / 3D (t1, t2)
+    length_or_area: float | None = None   # 2D 长度 / 3D 面积
+    params: Vec = ()                      # 特征上的参数坐标
     # ---- 状态（迭代内演化）----
     mode: Mode = Mode.UNKNOWN
     raw_mode: int | None = None
@@ -112,10 +106,10 @@ class ContactRecord:
     # ---- 转移（跨步携带）----
     mode_init: Mode | None = None
     raw_mode_init: int | None = None
-    gap_ref: float | None = None          # o3t
-    slip_ref: Vec | None = None           # o4t / 三维滑移参考
-    bond_flag: int | None = None          # m0_0
-    lock_position: float | None = None    # c206 写回的 s3（钉定的"泄漏"语义）
+    gap_ref: float | None = None          # 参考法向间隙
+    slip_ref: Vec | None = None           # 参考滑移
+    bond_flag: int | None = None          # 来源声明的键合标记
+    lock_position: float | None = None    # 锁定状态的参数位置
     # ---- 溯源与余项 ----
     extra: dict[str, Any] = field(default_factory=dict)
 

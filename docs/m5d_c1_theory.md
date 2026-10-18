@@ -67,7 +67,7 @@ C1 不认证凹环、平行跨环边、原并列集合，也不把凸包边界�
 
 ## 6. H1 量化措辞订正（2026-10-19）
 
-以下是封存提交 `5e3ba68` 中既有量化结果的口径订正，不是 H1 新回放，也不把封存工作合入主线。
+以下是**已封存但未验收的 WIP 提交 `5e3ba68`** 中既有量化结果的口径订正，不是 H1 新回放，也不把封存工作合入主线。2728 / 44（26+18）来自该 WIP 的量化产物；当时独立校验只作近似测量（约 2728 / 44），并未把这些历史数值升级成已验收的连续时间结论。
 出处可只读复查：该提交的 `reports/codex/M5e_evidence/c_quantification_fragment.md`、
 `revision_quantification.md` 与 `revision_nominal_witness_audit.json`。
 
@@ -88,4 +88,4 @@ H1 只摘三个不依赖封存框架的具名语义门到 `tests/test_h1_adopted
 `test_c1_ranking_must_include_other_feature_family_competitors`、
 `test_c1_b_ring_convexity_uses_b_radius_when_a_is_exact`。
 它们分别守护双块半径求和、跨 VE/EV 族的全部竞争者、B 环凸性使用 B 半径；
-这些小反例门不为上表的历史全量计数充当新验证。
+这些小反例门不为上表的历史全量计数充当新验证。H1-fix 另补角色互换门 `test_c1_a_ring_convexity_uses_a_radius_when_b_is_exact`，守护 A 环凸性使用 A 半径；它不是从 WIP 摘取的第四道门。

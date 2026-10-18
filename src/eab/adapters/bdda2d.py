@@ -29,8 +29,11 @@ from ..readers.bdda_geom import BlockGeom, StepGeometry
 from ..numeric_decode import integer
 
 
+# 各引擎状态码 → 统一词汇。原始码另存 raw_mode，映射不可逆时靠 raw 还原。
+# b-DDA 3 = v-v 第二参考闭合（m0=3），不是 bdda3d 的键合或 tf 的受拉态。
 BDDA_MODE: dict[int, Mode] = {0: Mode.OPEN, 1: Mode.SLIDING, 2: Mode.LOCKED, 3: Mode.VV_CLOSED}
 
+# b-DDA mtype：0 v-e 1 v-v（df05）
 BDDA_COVER: dict[int, CoverType] = {0: CoverType.VE, 1: CoverType.VV}
 
 
