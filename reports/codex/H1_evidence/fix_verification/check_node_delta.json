@@ -1,0 +1,97 @@
+{
+  "passed": 10,
+  "records": [
+    {
+      "basis": "pre-h1",
+      "case": "utf16_equivalent",
+      "expected_complete": true,
+      "observed_complete": true,
+      "issues": []
+    },
+    {
+      "basis": "pre-h1",
+      "case": "unknown_same_count",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "unknown_removed: 1",
+        "unknown_added: 1"
+      ]
+    },
+    {
+      "basis": "pre-h1",
+      "case": "duplicate_node",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "new node count 13945 != expected 13944",
+        "new collection contains duplicate nodes",
+        "new collection summary is absent, ambiguous, or inconsistent"
+      ]
+    },
+    {
+      "basis": "pre-h1",
+      "case": "missing_summary",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "new collection summary is absent, ambiguous, or inconsistent"
+      ]
+    },
+    {
+      "basis": "pre-h1",
+      "case": "collection_error",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "new collection reported errors"
+      ]
+    },
+    {
+      "basis": "h1-v1",
+      "case": "utf16_equivalent",
+      "expected_complete": true,
+      "observed_complete": true,
+      "issues": []
+    },
+    {
+      "basis": "h1-v1",
+      "case": "unknown_same_count",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "unknown_removed: 1",
+        "unknown_added: 1"
+      ]
+    },
+    {
+      "basis": "h1-v1",
+      "case": "duplicate_node",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "new node count 13945 != expected 13944",
+        "new collection contains duplicate nodes",
+        "new collection summary is absent, ambiguous, or inconsistent"
+      ]
+    },
+    {
+      "basis": "h1-v1",
+      "case": "missing_summary",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "new collection summary is absent, ambiguous, or inconsistent"
+      ]
+    },
+    {
+      "basis": "h1-v1",
+      "case": "collection_error",
+      "expected_complete": false,
+      "observed_complete": false,
+      "issues": [
+        "new collection reported errors"
+      ]
+    }
+  ]
+}

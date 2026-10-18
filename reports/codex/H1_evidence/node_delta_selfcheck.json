@@ -1,0 +1,46 @@
+{
+  "scope": "Parser/accounting self-check with explicitly synthetic scratch collections; not actual pytest collection or execution evidence. Main node_delta files remain based only on supplied actual logs.",
+  "checks": [
+    {
+      "name": "synthetic_complete_diff_utf-8",
+      "passed": true
+    },
+    {
+      "name": "synthetic_complete_diff_utf-8-sig",
+      "passed": true
+    },
+    {
+      "name": "synthetic_complete_diff_utf-16",
+      "passed": true
+    },
+    {
+      "name": "synthetic_complete_diff_utf-16-le",
+      "passed": true
+    },
+    {
+      "name": "synthetic_complete_diff_utf-16-be",
+      "passed": true
+    },
+    {
+      "name": "same_count_unknown_addition_is_rejected",
+      "passed": true
+    },
+    {
+      "name": "undeclared_removal_is_rejected",
+      "passed": true
+    },
+    {
+      "name": "duplicate_node_is_rejected",
+      "passed": true
+    },
+    {
+      "name": "summary_count_mismatch_is_rejected",
+      "passed": true
+    },
+    {
+      "name": "actual_13906_log_reports_only_pending_smoke",
+      "passed": true
+    }
+  ],
+  "passed": 10
+}

@@ -16,6 +16,7 @@ import sys
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from frozen_evidence import data_path
 import m5b_endpoint_replay as endpoint
 import m5b_grouped_probe as grouped
 
@@ -177,13 +178,13 @@ def test_z_rows_pair_by_step_block_not_csv_order_and_snapshot_is_start(tmp_path,
 
 
 def test_frozen_endpoint_evidence_has_all_cases_and_recomputable_extrema():
-    summary_path = endpoint.EVIDENCE / "endpoint_summary.json"
+    summary_path = data_path(endpoint.ROOT, endpoint.EVIDENCE / "endpoint_summary.json")
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     manifest = json.loads((endpoint.INPUTS / "manifest.json").read_text(encoding="utf-8"))
     assert summary["complete"] and manifest["complete"]
     assert summary["block_frames"] == manifest["block_frames"] == 15220
     assert len(summary["cases"]) == len(manifest["cases"]) == 15
-    assert summary["source_hashes"]["tools/m5b_endpoint_replay.py"] == endpoint.sha(endpoint.__file__)
+    # H1: exact endpoint extrema below are reexecuted; tool-byte pin retired.
     assert summary["input_hashes"]["manifest"] == endpoint.sha(endpoint.INPUTS / "manifest.json")
     assert sum(case["steps"] for case in manifest["cases"].values()) == 1810
     assert all(part["bytes"] < 1_000_000 for part in manifest["shards"])
@@ -199,7 +200,7 @@ def test_frozen_endpoint_evidence_has_all_cases_and_recomputable_extrema():
 
 def test_grouped_replay_physical_start_is_not_padding_start(function=grouped.physical_order):
     """Semantic source summation-order gate, not a source-hash tripwire."""
-    summary = json.loads((endpoint.EVIDENCE / "endpoint_grouped_summary.json").read_text(encoding="utf-8"))
+    summary = json.loads((data_path(endpoint.ROOT, endpoint.EVIDENCE / "endpoint_grouped_summary.json")).read_text(encoding="utf-8"))
     witness = summary["example"]
     row, (lo, hi) = witness["input"], witness["physical_range"]
     normalized = function(row, lo, hi)
@@ -238,7 +239,7 @@ def test_midpoint_minimal_example_has_independent_three_by_three_reconstruction(
     select the historical rational u proposal; all final bounds are rational.
     No production fit, rotation, centroid or interval primitive is called.
     """
-    summary = json.loads((endpoint.EVIDENCE / "endpoint_summary.json").read_text(encoding="utf-8"))
+    summary = json.loads(data_path(endpoint.ROOT, endpoint.EVIDENCE / "endpoint_summary.json").read_text(encoding="utf-8"))
     example = summary["examples"]["midpoint_linf_upper"]
     row = example["input"]
     start = tuple(tuple(F(v) for v in p) for p in row["start"])

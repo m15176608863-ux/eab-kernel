@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "D:\eab-wt\cx-m4\tools\m4_verify_evidence.py", line 69, in verify
-    gate._gate_case("bb52_N3")
-  File "D:\eab-wt\cx-m4\tests\test_m4_bdda_shadow.py", line 57, in _gate_case
-    _assert_baseline(case, actual)
-  File "D:\eab-wt\cx-m4\tests\test_m4_bdda_shadow.py", line 68, in _assert_baseline
-    assert row[key] == want[key], ("pinned shadow tally", case, row["step"], key, row[key], want[key])
-           ^^^^^^^^^^^^^^^^^^^^^
-AssertionError: ('pinned shadow tally', 'bb52_N3', 1, 'counts', {'ANGULAR_WINDOW_COVER_NOT_SELECTED': 32, 'LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE': 1, 'MATCH': 53}, {'ANGULAR_WINDOW_COVER_NOT_SELECTED': 6, 'EXACT_LOCAL_COVER_NOT_SELECTED': 26, 'LEGACY_VV_DIRECTION_OUTSIDE_OPEN_CONE': 1, 'MATCH': 53})

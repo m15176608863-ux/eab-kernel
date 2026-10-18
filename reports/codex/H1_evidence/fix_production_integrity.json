@@ -1,0 +1,351 @@
+{
+  "complete": true,
+  "baseline": "476c5d6",
+  "modules": 55,
+  "identical_files": 48,
+  "executable_ast_equal": 55,
+  "changed_only_docs_comments_and_newlines": [
+    "src/eab/adapters/bdda2d.py",
+    "src/eab/adapters/bdda3d.py",
+    "src/eab/adapters/tf.py",
+    "src/eab/contact_record.py",
+    "src/eab/kernel2d/affine_motion.py",
+    "src/eab/kernel2d/geom.py",
+    "src/eab/kernel2d/model_robustness.py"
+  ],
+  "v1_report_byte_equal": true,
+  "v1_sha256": "5debc6e10de29786c61d72d276d9ae625119eea062e9db065a6cb25724f50e00",
+  "parser": "utf-8-sig matches Python source loading; existing untouched BOM files preserved",
+  "rows": [
+    {
+      "path": "src/eab/__init__.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "e562095b90bc1f601db6292768be73126887cbe253be81a49419ed6d90310efc"
+    },
+    {
+      "path": "src/eab/adapters/__init__.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955"
+    },
+    {
+      "path": "src/eab/adapters/bdda2d.py",
+      "executable_ast_equal": true,
+      "bytes_equal": false,
+      "sha256": "ae69bfa5fb7d8b98911cc43881c80c0647c7018f4e76b24c537ac81da2bffafd"
+    },
+    {
+      "path": "src/eab/adapters/bdda2d_affine.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "8862499959b0aaa34f175eeffd50ffd2c06c3bf182c48ae51b29cd4028dab9a7"
+    },
+    {
+      "path": "src/eab/adapters/bdda2d_motion.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "62a022b62af8740e7812e3afcc486f657e2239329f93edb93e3496501ed02ecc"
+    },
+    {
+      "path": "src/eab/adapters/bdda3d.py",
+      "executable_ast_equal": true,
+      "bytes_equal": false,
+      "sha256": "4a32148f3acb3fcf202d31f29a481bcf67719617968a521cd7726512cbf035c5"
+    },
+    {
+      "path": "src/eab/adapters/tf.py",
+      "executable_ast_equal": true,
+      "bytes_equal": false,
+      "sha256": "030b834dd38a7b4e996106152a3af9fd5da705f207e4efba929dd50cf4393541"
+    },
+    {
+      "path": "src/eab/adapters/tia3d.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "321f9ef47d5b0f4d0a463fcba2fbde36ea7f0e3304be4b2d0bb2741020d2dfb0"
+    },
+    {
+      "path": "src/eab/construction.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0"
+    },
+    {
+      "path": "src/eab/contact_record.py",
+      "executable_ast_equal": true,
+      "bytes_equal": false,
+      "sha256": "4f9415f57204989972a4c3e6f50c0742eb53887d6cfc848bb574cc7bfc720b90"
+    },
+    {
+      "path": "src/eab/dual.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5"
+    },
+    {
+      "path": "src/eab/kernel2d/__init__.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94"
+    },
+    {
+      "path": "src/eab/kernel2d/affine_motion.py",
+      "executable_ast_equal": true,
+      "bytes_equal": false,
+      "sha256": "3bab15171bfbaffeb235f43debb166a91f008a3f2079149b6ee45bef52d441ae"
+    },
+    {
+      "path": "src/eab/kernel2d/algebraic.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "b5c4130b75005f0637104e806e54c14679b75769d742269e84329690ea23df38"
+    },
+    {
+      "path": "src/eab/kernel2d/covers.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265"
+    },
+    {
+      "path": "src/eab/kernel2d/entrance.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c"
+    },
+    {
+      "path": "src/eab/kernel2d/exact.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d"
+    },
+    {
+      "path": "src/eab/kernel2d/g0.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013"
+    },
+    {
+      "path": "src/eab/kernel2d/g0_oracle.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03"
+    },
+    {
+      "path": "src/eab/kernel2d/geom.py",
+      "executable_ast_equal": true,
+      "bytes_equal": false,
+      "sha256": "6840bdc5b1607db5549b8e3e849340df3ce3a1afe4755f23b7ba7dc1b2993a71"
+    },
+    {
+      "path": "src/eab/kernel2d/global_entrance.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9"
+    },
+    {
+      "path": "src/eab/kernel2d/m5c_certificates.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "3ff979533170748023d2f94dd9911bb155bacc32824009003e8bedb5afe978b1"
+    },
+    {
+      "path": "src/eab/kernel2d/m5d_exit_certificate.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "c6ec19a1511d73fcd22cf2191f6490aa40270eab030e0cd6d753cd099623f2ae"
+    },
+    {
+      "path": "src/eab/kernel2d/model_robustness.py",
+      "executable_ast_equal": true,
+      "bytes_equal": false,
+      "sha256": "3f22bc9ae76ea71d5bc754e3e3d3b2d21f9e650d6b1a9a1026e887e7a9d902d7"
+    },
+    {
+      "path": "src/eab/kernel2d/motion.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69"
+    },
+    {
+      "path": "src/eab/kernel2d/motion_exit.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1"
+    },
+    {
+      "path": "src/eab/kernel2d/se2.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21"
+    },
+    {
+      "path": "src/eab/kernel3d/__init__.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a"
+    },
+    {
+      "path": "src/eab/kernel3d/boundary.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "e927f4297c0d756de0cfb6c683e402021b1acbd2edf1a2b5a78049347c54a102"
+    },
+    {
+      "path": "src/eab/kernel3d/covers3.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6"
+    },
+    {
+      "path": "src/eab/kernel3d/entrance3.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171"
+    },
+    {
+      "path": "src/eab/kernel3d/entrance_topology.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5"
+    },
+    {
+      "path": "src/eab/kernel3d/exact_geom.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68"
+    },
+    {
+      "path": "src/eab/kernel3d/exact_sweep.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5"
+    },
+    {
+      "path": "src/eab/kernel3d/frozen.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa"
+    },
+    {
+      "path": "src/eab/kernel3d/g03.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "be19d78c3cc409704b51b9647258e115172583b0876f5b430a6b1e54d122f6fe"
+    },
+    {
+      "path": "src/eab/kernel3d/g03_exact.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22"
+    },
+    {
+      "path": "src/eab/kernel3d/g03_exit_oracle.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220"
+    },
+    {
+      "path": "src/eab/kernel3d/g03_surface_oracle.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0"
+    },
+    {
+      "path": "src/eab/kernel3d/geom3.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "504267e89dd3f9adc795dbc5bda0eb59467fa80f4b2602e4d57afdb0fdeb804d"
+    },
+    {
+      "path": "src/eab/kernel3d/global_entrance.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "222ed67b3c2bf7dc34bef5f2fc0ec9e96589b57e9f012a1d542aa13a68646c90"
+    },
+    {
+      "path": "src/eab/limit.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f"
+    },
+    {
+      "path": "src/eab/limit_multi.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65"
+    },
+    {
+      "path": "src/eab/lp.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85"
+    },
+    {
+      "path": "src/eab/margin.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720"
+    },
+    {
+      "path": "src/eab/numeric_decode.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "4c770ef67a572cb24c1f193e0b6ae94cef686917aeb30abcced342fec13fc11c"
+    },
+    {
+      "path": "src/eab/numeric_domain.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785"
+    },
+    {
+      "path": "src/eab/oracle_construction.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878"
+    },
+    {
+      "path": "src/eab/predicates.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984"
+    },
+    {
+      "path": "src/eab/rational3.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431"
+    },
+    {
+      "path": "src/eab/readers/__init__.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa"
+    },
+    {
+      "path": "src/eab/readers/bdda3d.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "82a92dfb7cfda845423449ee8675b4c2121ed4f9b718b5d4c46db2601d279302"
+    },
+    {
+      "path": "src/eab/readers/bdda_df.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "d7a1ba89cb25e9cd07c1499c37019e0dd3b51d0d06e190117af5b588af9fbdd3"
+    },
+    {
+      "path": "src/eab/readers/bdda_geom.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220"
+    },
+    {
+      "path": "src/eab/readers/tf_probe.py",
+      "executable_ast_equal": true,
+      "bytes_equal": true,
+      "sha256": "af526bf7f81d086fb488c50e6c13b6e79c4736c8f811383eb05a4e8efe015e27"
+    }
+  ]
+}

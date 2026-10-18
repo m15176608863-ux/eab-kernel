@@ -52,6 +52,10 @@ def test_every_fixture_file_is_hash_gated():
     """反向完备：fixtures/ 下每个入库文件都必须在 PROVENANCE.json 里有 ok 条目（审查盲区 3：
     bdda3d 的三个 JSON 曾经零条目——G2 的 legacy 侧整个没有被看护，改一个字节也不会红）。"""
     gated = {e["dest"] for e in _entries()}
+    historical = json.loads((FIX / "frozen/PROVENANCE.json").read_text(encoding="utf-8"))
+    gated.update(row["path"].removeprefix("fixtures/") for row in historical["files"])
+    # Like the root PROVENANCE.json, the separate inventory is a trust root.
+    gated.add("frozen/PROVENANCE.json")
     missing = [f for f in _fixture_files() if f not in gated]
     assert missing == [], missing
 

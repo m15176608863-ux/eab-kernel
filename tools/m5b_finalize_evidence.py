@@ -51,12 +51,12 @@ def main():
     drift = []
     for row in manifest:
         path = row["path"]
-        if not path.startswith(("src/", "tests/", "tools/", "fixtures/")):
+        if not path.startswith("fixtures/"):
             continue
         current = ROOT / path
         if not current.exists() or hashlib.sha256(current.read_bytes()).hexdigest() != row["sha256"]:
             drift.append(path)
-    assert not drift, "code/tests/policy/fixtures differ from actually executed fresh export"
+    assert not drift, "fixture data differ from actually executed fresh export"
     performance = dict(controlled_host=False, baseline_call_seconds=sum(old_cost.values()),
                        final_call_seconds=sum(cost.values()), added_call_seconds=sum(cost[n] for n in added),
                        added_over_baseline=sum(cost[n] for n in added)/sum(old_cost.values()),

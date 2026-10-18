@@ -15,7 +15,7 @@ from m5c_teeth_oracle import translation_first_events, point_strictly_inside
 from m5d_r3_oracle import first_events, affine_perturb, point
 from eab.kernel2d import m5c_certificates as cert
 from eab.kernel2d import model_robustness as adapters
-from eab.kernel2d.dda_motion import DDAAnchoredMotion
+from eab.adapters.bdda2d_motion import DDAAnchoredMotion, dda_paths
 
 DIAMOND = ((-2, 0), (-1, F(-1, 2)), (0, 0), (-1, F(1, 2)))
 WALL = ((1, -2), (3, -2), (3, 2), (1, 2))
@@ -158,7 +158,7 @@ def test_r3_unequal_moving_strained_fixture_is_actual_p2():
         for ring,spec,expected in zip((DIAMOND,WALL),p2_specs(offset),(aa,bb)):
             moved=tuple((x+offset,y) for x,y in ring)
             motion=DDAAnchoredMotion(*spec)
-            assert adapters.dda_paths(moved,motion)==expected, 'R3 fixture is the actual unequal-denominator P2'
+            assert dda_paths(moved,motion)==expected, 'R3 fixture is the actual unequal-denominator P2'
 
 
 def test_r3_unequal_p2_denominators_reject_false_time_bracket():

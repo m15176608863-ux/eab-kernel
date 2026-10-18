@@ -1,0 +1,101 @@
+{
+  "schema": "h1-frozen-input-read-audit-v1",
+  "method": "Read-only AST imports and literal/dynamic read expressions, followed by manual call-site review; not a replacement for full execution.",
+  "test_python_files_scanned": 251,
+  "reachable_tool_modules": [
+    "bb52_g0",
+    "bdda3d_document",
+    "check_exact_construction",
+    "frozen_evidence",
+    "frozen_gzip",
+    "g2_bdda3d",
+    "g4_multistep",
+    "h1_kernel_purity",
+    "h1_module_coverage",
+    "ingest_bdda3d",
+    "ingest_fixtures",
+    "m4_bdda_shadow",
+    "m4_capture_family",
+    "m4_shadow_replay",
+    "m4b_verify_byte_evidence",
+    "m4c_motion_replay",
+    "m4c_reproduce_examples",
+    "m4c_run_gates",
+    "m4c_run_replays",
+    "m4c_summarize_evidence",
+    "m5a2_affine_replay",
+    "m5a2_replay_mutations",
+    "m5a2_run_gates",
+    "m5a_se2_replay",
+    "m5b_audit_admissions",
+    "m5b_endpoint_replay",
+    "m5b_grouped_probe",
+    "m5b_minimal_examples",
+    "m5b_robust_replay",
+    "m5c_diagnostics",
+    "m5c_publish_combined",
+    "m5c_research_examples",
+    "m5c_source_binding",
+    "m5d_c1_oracle",
+    "m5d_refresh_frozen",
+    "m5d_wording_audit",
+    "osteomorphic",
+    "policy_history_view",
+    "repository_size",
+    "run_bdda_kernel",
+    "tf_census",
+    "tia_sensitivity"
+  ],
+  "reachable_tool_module_count": 42,
+  "new_confirmed_pytest_missing_inputs": [],
+  "reviewed_routes": [
+    {
+      "location": "tests/test_m5a2_replay.py::real_inputs",
+      "resolution": "frozen_gzip.open redirects immutable reports paths; test function remains unchanged"
+    },
+    {
+      "location": "tests/test_m4c_replay.py::_expected",
+      "resolution": "normalized_file metadata is mapped in memory with data_path before the unchanged 15-cell assertion function reads it"
+    },
+    {
+      "location": "tests/test_m5a_replay.py::test_frozen_family_products_are_distinct_and_retain_historical_revalidation",
+      "resolution": "every historical input_hashes key is read through data_path"
+    },
+    {
+      "location": "tools/m5d_wording_audit.py::audit",
+      "resolution": "data_path input directory/read and historical_name preserve all archived input_hash keys; added 137th input is present"
+    },
+    {
+      "location": "tests/test_m5b_endpoint.py::test_z_rows_pair_by_step_block_not_csv_order_and_snapshot_is_start",
+      "resolution": "synthetic tmp_path reports input is intentionally created by the same test"
+    },
+    {
+      "location": "tests/test_m5c_combined_evidence.py",
+      "resolution": "synthetic reports/old,new,research paths are created under patched tmp_path ROOT; distributed roles use data_path"
+    },
+    {
+      "location": "tests/test_r7fix_docs.py",
+      "resolution": "PERF_report.md remains in repository; not an archived evidence input"
+    }
+  ],
+  "cli_only_historical_paths_not_executed_by_pytest": [
+    {
+      "location": "tools/m5a2_replay_mutations.py::run_guard full_freeze=True",
+      "pytest_call_boundary": "both test callers explicitly use full_freeze=False; old full refreeze is outside H1 allowed execution"
+    },
+    {
+      "location": "tools/m5a2_affine_replay.py::input_paths",
+      "pytest_call_boundary": "tests exercise algebra helpers, not full-history CLI"
+    },
+    {
+      "location": "tools/m4c_summarize_evidence.py::summarize",
+      "pytest_call_boundary": "tests use arithmetic/category helpers and synthetic terminal files, not full summarize"
+    },
+    {
+      "location": "tools/m5d_refresh_frozen.py::main",
+      "pytest_call_boundary": "publication tests call sealed publication APIs with patched synthetic ROOT, not historical refresh CLI"
+    }
+  ],
+  "source_files_modified_by_audit": [],
+  "scope_limit": "Static/manual read review does not prove absence of arbitrary dynamic imports. Full final suite remains authoritative."
+}

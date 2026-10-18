@@ -24,7 +24,7 @@ import m5b_robust_replay as replay
 from eab.kernel2d.m5d_exit_certificate import exit_order_certificate
 from eab.kernel2d.g0_oracle import overlap
 from m5d_c1_oracle import exit_oracle
-from m5c_source_binding import runtime_source_hashes, assert_current_sources
+from m5c_source_binding import runtime_source_hashes, assert_run_sources_unchanged
 
 EVIDENCE = ROOT / "reports/codex/M5d_evidence"
 TMP = EVIDENCE / "tmp"
@@ -107,7 +107,7 @@ def run_case(case, directory, source_hashes, input_hashes):
             if step % 10 == 0 or step == max(frames):
                 replay.write_json(out / "progress.json", dict(complete=False, step=step, counts=dict(counts)))
     observed = sources()
-    assert_current_sources(ROOT, source_hashes, observed)
+    assert_run_sources_unchanged(ROOT, source_hashes, observed)
     if replay.input_hashes() != input_hashes:
         raise AssertionError("C1 worker input binding changed")
     summary = dict(case=case, complete=True, counts=dict(counts), references=dict(references),
@@ -145,7 +145,7 @@ def main():
             replay.write_json(out / "progress.json", dict(complete=False, completed=sorted(results), counts=dict(counts)))
             print(result["case"], result["counts"], flush=True)
     observed = sources()
-    assert_current_sources(ROOT, expected_sources, observed)
+    assert_run_sources_unchanged(ROOT, expected_sources, observed)
     if replay.input_hashes() != expected_inputs:
         raise AssertionError("C1 batch input binding changed")
     if tuple(counts[key] for key in ("steps", "blocks", "all_step_block_pairs", "initial_overlap_pairs")) != (1810, 15220, 64010, 16676):

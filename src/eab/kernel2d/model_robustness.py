@@ -7,7 +7,6 @@ All radii are coordinate L-infinity bounds, not inferred physical-path errors.
 """
 from fractions import Fraction as F
 from math import comb
-from .dda_motion import DDAAnchoredMotion
 
 
 def _q(x):
@@ -57,17 +56,6 @@ def chord_paths(start, end):
         p, q = tuple(_q(x) for x in p), tuple(_q(x) for x in q)
         paths.append(((p[0], q[0]-p[0]), (p[1], q[1]-p[1]), (F(1),)))
     return tuple(paths)
-
-
-def dda_paths(start, motion):
-    """Adapter to the explicit DDA rational path, not a fit."""
-    if type(motion) is not DDAAnchoredMotion:
-        raise ValueError("DDAAnchoredMotion required, not an arbitrary callback")
-    result = []
-    for point in start:
-        numerators, denominator = motion.coordinate_polynomials(point)
-        result.append((*numerators, denominator))
-    return tuple(result)
 
 
 def _validate(paths):

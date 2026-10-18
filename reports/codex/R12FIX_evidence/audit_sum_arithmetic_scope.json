@@ -1,6 +1,0 @@
-{
-  "source": "from fractions import Fraction\nfrom eab.construction import norm_rational\ndef bad():\n    tiny = Fraction(1, 2**1075)\n    x = sum((tiny, 0.0))\n    return norm_rational((x, x))\n",
-  "issues": [],
-  "actual": 0.0,
-  "expected": 5e-324
-}

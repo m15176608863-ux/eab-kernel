@@ -1,0 +1,353 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.0.3, pluggy-1.6.0 -- C:\Program Files\Python312\python.exe
+rootdir: D:\eab-wt\cx-e2\reports\codex\H1_evidence\tmp\fix_verification\m1_combined_mutant
+configfile: pyproject.toml
+plugins: anyio-4.14.1
+collecting ... collected 7 items
+
+tests/test_m5c_policy_binding.py::test_new_runtime_import_after_start_invalidates_the_sealed_closure FAILED [ 14%]
+tests/test_m5c_policy_binding.py::test_source_binding_rejects_parent_traversal_even_with_matching_content FAILED [ 28%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_endpoint_replay] FAILED [ 42%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_robust_replay] FAILED [ 57%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_endpoint_replay] FAILED [ 71%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_robust_replay] FAILED [ 85%]
+tests/test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys FAILED [100%]
+
+================================== FAILURES ===================================
+_____ test_new_runtime_import_after_start_invalidates_the_sealed_closure ______
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/H1_evidence/tmp/fix_verification/m1_combined_mutant_temp/test_new_runtime_import_after_0')
+
+    def test_new_runtime_import_after_start_invalidates_the_sealed_closure(tmp_path):
+        target = tmp_path / "tools/example.py"
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b"value = 1\n")
+        expected = {"tools/example.py": hashlib.sha256(target.read_bytes()).hexdigest()}
+        binding.assert_run_sources_unchanged(tmp_path, expected, expected)
+        observed = dict(expected, **{"tools/late_import.py": "0"*64})
+>       with pytest.raises(ValueError, match="runtime source closure changed"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_m5c_policy_binding.py:70: Failed
+___ test_source_binding_rejects_parent_traversal_even_with_matching_content ___
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/H1_evidence/tmp/fix_verification/m1_combined_mutant_temp/test_source_binding_rejects_pa0')
+
+    def test_source_binding_rejects_parent_traversal_even_with_matching_content(tmp_path):
+        target = tmp_path / "tools/example.py"
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b"value = 1\n")
+        bad = {"tools/../tools/example.py": hashlib.sha256(target.read_bytes()).hexdigest()}
+>       with pytest.raises(ValueError, match="invalid runtime source path"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_m5c_policy_binding.py:79: Failed
+_ test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_endpoint_replay] _
+
+replay_name = 'm5b_endpoint_replay', omit_dependency = False
+
+    @pytest.mark.parametrize("replay_name", ("m5b_endpoint_replay", "m5b_robust_replay"))
+    @pytest.mark.parametrize("omit_dependency", (False, True))
+    def test_runtime_source_closure_matches_independent_import_origins_and_kills_omission(replay_name, omit_dependency):
+        # Independent import-spec enumeration, not the production __file__ scan.
+        # Every node first checks the unmodified path; the omission nodes then
+        # exercise an internal scanner defect through the retained live guard.
+        code = r'''import hashlib, importlib, inspect, json, sys
+    from pathlib import Path
+    sys.path.insert(0, "tools")
+    replay = importlib.import_module(sys.argv[1])
+    import m5c_source_binding as binding
+    actual = replay.source_hashes()
+    root = Path.cwd().resolve()
+    expected = {}
+    for name in tuple(sys.modules):
+        spec = getattr(sys.modules[name], "__spec__", None)
+        origin = getattr(spec, "origin", None)
+        if not origin or not origin.endswith(".py"):
+            continue
+        path = Path(origin).resolve()
+        if not path.is_relative_to(root):
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative.startswith(("src/eab/", "tools/")):
+            expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert "src/eab/numeric_domain.py" in expected
+    assert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"
+    assert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"
+    binding.assert_run_sources_unchanged(root, expected, actual)
+    if sys.argv[2] == "omit":
+        source = inspect.getsource(binding.runtime_source_hashes)
+        old = "for path in sorted(paths)}"
+        assert source.count(old) == 1
+        changed = source.replace(old, "for path in sorted(paths) if path.name != 'numeric_domain.py'}")
+        namespace = dict(vars(binding))
+        exec(compile(changed, "<internal closure omission>", "exec"), namespace)
+        observed = namespace["runtime_source_hashes"](root, replay.__file__)
+        try:
+            binding.assert_run_sources_unchanged(root, expected, observed)
+        except ValueError as exc:
+            assert "runtime source closure changed" in str(exc)
+        else:
+            raise AssertionError("M5c live guard must reject the internal numeric_domain omission")
+    print(json.dumps(sorted(expected)))
+    '''
+        result = subprocess.run([sys.executable, "-c", code, replay_name,
+                                 "omit" if omit_dependency else "normal"], cwd=ROOT,
+                                capture_output=True, text=True, encoding="utf-8", errors="replace")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 22, in <module>
+E         AssertionError: M5c independent import origins require every transitive source, including numeric_domain
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Program Files\\Python312\\python.exe', '-c', 'import hashlib, importlib, inspect, json, sys\nfrom pathlib import Path\nsys.path.insert(0, "tools")\nreplay = importlib.import_module(sys.argv[1])\nimport m5c_source_binding as binding\nactual = replay.source_hashes()\nroot = Path.cwd().resolve()\nexpected = {}\nfor name in tuple(sys.modules):\n    spec = getattr(sys.modules[name], "__spec__", None)\n    origin = getattr(spec, "origin", None)\n    if not origin or not origin.endswith(".py"):\n        continue\n    path = Path(origin).resolve()\n    if not path.is_relative_to(root):\n        continue\n    relative = path.relative_to(root).as_posix()\n    if relative.startswith(("src/eab/", "tools/")):\n        expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()\nassert "src/eab/numeric_domain.py" in expected\nassert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"\nassert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"\nbinding.assert_run_sources_unchanged(root, expected, actual)\nif sys.argv[2] == "omit":\n    source = inspect.getsource(binding.runtime_source_hashes)\n    old = "for path in sorted(paths)}"\n    assert source.count(old) == 1\n    changed = source.replace(old, "for path in sorted(paths) if path.name != \'numeric_domain.py\'}")\n    namespace = dict(vars(binding))\n    exec(compile(changed, "<internal closure omission>", "exec"), namespace)\n    observed = namespace["runtime_source_hashes"](root, replay.__file__)\n    try:\n        binding.assert_run_sources_unchanged(root, expected, observed)\n    except ValueError as exc:\n        assert "runtime source closure changed" in str(exc)\n    else:\n        raise AssertionError("M5c live guard must reject the internal numeric_domain omission")\nprint(json.dumps(sorted(expected)))\n', 'm5b_endpoint_replay', 'normal'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "<string>", line 22, in <module>\nAssertionError: M5c independent import origins require every transitive source, including numeric_domain\n').returncode
+
+tests\test_m5c_policy_binding.py:131: AssertionError
+_ test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_robust_replay] _
+
+replay_name = 'm5b_robust_replay', omit_dependency = False
+
+    @pytest.mark.parametrize("replay_name", ("m5b_endpoint_replay", "m5b_robust_replay"))
+    @pytest.mark.parametrize("omit_dependency", (False, True))
+    def test_runtime_source_closure_matches_independent_import_origins_and_kills_omission(replay_name, omit_dependency):
+        # Independent import-spec enumeration, not the production __file__ scan.
+        # Every node first checks the unmodified path; the omission nodes then
+        # exercise an internal scanner defect through the retained live guard.
+        code = r'''import hashlib, importlib, inspect, json, sys
+    from pathlib import Path
+    sys.path.insert(0, "tools")
+    replay = importlib.import_module(sys.argv[1])
+    import m5c_source_binding as binding
+    actual = replay.source_hashes()
+    root = Path.cwd().resolve()
+    expected = {}
+    for name in tuple(sys.modules):
+        spec = getattr(sys.modules[name], "__spec__", None)
+        origin = getattr(spec, "origin", None)
+        if not origin or not origin.endswith(".py"):
+            continue
+        path = Path(origin).resolve()
+        if not path.is_relative_to(root):
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative.startswith(("src/eab/", "tools/")):
+            expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert "src/eab/numeric_domain.py" in expected
+    assert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"
+    assert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"
+    binding.assert_run_sources_unchanged(root, expected, actual)
+    if sys.argv[2] == "omit":
+        source = inspect.getsource(binding.runtime_source_hashes)
+        old = "for path in sorted(paths)}"
+        assert source.count(old) == 1
+        changed = source.replace(old, "for path in sorted(paths) if path.name != 'numeric_domain.py'}")
+        namespace = dict(vars(binding))
+        exec(compile(changed, "<internal closure omission>", "exec"), namespace)
+        observed = namespace["runtime_source_hashes"](root, replay.__file__)
+        try:
+            binding.assert_run_sources_unchanged(root, expected, observed)
+        except ValueError as exc:
+            assert "runtime source closure changed" in str(exc)
+        else:
+            raise AssertionError("M5c live guard must reject the internal numeric_domain omission")
+    print(json.dumps(sorted(expected)))
+    '''
+        result = subprocess.run([sys.executable, "-c", code, replay_name,
+                                 "omit" if omit_dependency else "normal"], cwd=ROOT,
+                                capture_output=True, text=True, encoding="utf-8", errors="replace")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 22, in <module>
+E         AssertionError: M5c independent import origins require every transitive source, including numeric_domain
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Program Files\\Python312\\python.exe', '-c', 'import hashlib, importlib, inspect, json, sys\nfrom pathlib import Path\nsys.path.insert(0, "tools")\nreplay = importlib.import_module(sys.argv[1])\nimport m5c_source_binding as binding\nactual = replay.source_hashes()\nroot = Path.cwd().resolve()\nexpected = {}\nfor name in tuple(sys.modules):\n    spec = getattr(sys.modules[name], "__spec__", None)\n    origin = getattr(spec, "origin", None)\n    if not origin or not origin.endswith(".py"):\n        continue\n    path = Path(origin).resolve()\n    if not path.is_relative_to(root):\n        continue\n    relative = path.relative_to(root).as_posix()\n    if relative.startswith(("src/eab/", "tools/")):\n        expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()\nassert "src/eab/numeric_domain.py" in expected\nassert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"\nassert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"\nbinding.assert_run_sources_unchanged(root, expected, actual)\nif sys.argv[2] == "omit":\n    source = inspect.getsource(binding.runtime_source_hashes)\n    old = "for path in sorted(paths)}"\n    assert source.count(old) == 1\n    changed = source.replace(old, "for path in sorted(paths) if path.name != \'numeric_domain.py\'}")\n    namespace = dict(vars(binding))\n    exec(compile(changed, "<internal closure omission>", "exec"), namespace)\n    observed = namespace["runtime_source_hashes"](root, replay.__file__)\n    try:\n        binding.assert_run_sources_unchanged(root, expected, observed)\n    except ValueError as exc:\n        assert "runtime source closure changed" in str(exc)\n    else:\n        raise AssertionError("M5c live guard must reject the internal numeric_domain omission")\nprint(json.dumps(sorted(expected)))\n', 'm5b_robust_replay', 'normal'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "<string>", line 22, in <module>\nAssertionError: M5c independent import origins require every transitive source, including numeric_domain\n').returncode
+
+tests\test_m5c_policy_binding.py:131: AssertionError
+_ test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_endpoint_replay] _
+
+replay_name = 'm5b_endpoint_replay', omit_dependency = True
+
+    @pytest.mark.parametrize("replay_name", ("m5b_endpoint_replay", "m5b_robust_replay"))
+    @pytest.mark.parametrize("omit_dependency", (False, True))
+    def test_runtime_source_closure_matches_independent_import_origins_and_kills_omission(replay_name, omit_dependency):
+        # Independent import-spec enumeration, not the production __file__ scan.
+        # Every node first checks the unmodified path; the omission nodes then
+        # exercise an internal scanner defect through the retained live guard.
+        code = r'''import hashlib, importlib, inspect, json, sys
+    from pathlib import Path
+    sys.path.insert(0, "tools")
+    replay = importlib.import_module(sys.argv[1])
+    import m5c_source_binding as binding
+    actual = replay.source_hashes()
+    root = Path.cwd().resolve()
+    expected = {}
+    for name in tuple(sys.modules):
+        spec = getattr(sys.modules[name], "__spec__", None)
+        origin = getattr(spec, "origin", None)
+        if not origin or not origin.endswith(".py"):
+            continue
+        path = Path(origin).resolve()
+        if not path.is_relative_to(root):
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative.startswith(("src/eab/", "tools/")):
+            expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert "src/eab/numeric_domain.py" in expected
+    assert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"
+    assert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"
+    binding.assert_run_sources_unchanged(root, expected, actual)
+    if sys.argv[2] == "omit":
+        source = inspect.getsource(binding.runtime_source_hashes)
+        old = "for path in sorted(paths)}"
+        assert source.count(old) == 1
+        changed = source.replace(old, "for path in sorted(paths) if path.name != 'numeric_domain.py'}")
+        namespace = dict(vars(binding))
+        exec(compile(changed, "<internal closure omission>", "exec"), namespace)
+        observed = namespace["runtime_source_hashes"](root, replay.__file__)
+        try:
+            binding.assert_run_sources_unchanged(root, expected, observed)
+        except ValueError as exc:
+            assert "runtime source closure changed" in str(exc)
+        else:
+            raise AssertionError("M5c live guard must reject the internal numeric_domain omission")
+    print(json.dumps(sorted(expected)))
+    '''
+        result = subprocess.run([sys.executable, "-c", code, replay_name,
+                                 "omit" if omit_dependency else "normal"], cwd=ROOT,
+                                capture_output=True, text=True, encoding="utf-8", errors="replace")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 22, in <module>
+E         AssertionError: M5c independent import origins require every transitive source, including numeric_domain
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Program Files\\Python312\\python.exe', '-c', 'import hashlib, importlib, inspect, json, sys\nfrom pathlib import Path\nsys.path.insert(0, "tools")\nreplay = importlib.import_module(sys.argv[1])\nimport m5c_source_binding as binding\nactual = replay.source_hashes()\nroot = Path.cwd().resolve()\nexpected = {}\nfor name in tuple(sys.modules):\n    spec = getattr(sys.modules[name], "__spec__", None)\n    origin = getattr(spec, "origin", None)\n    if not origin or not origin.endswith(".py"):\n        continue\n    path = Path(origin).resolve()\n    if not path.is_relative_to(root):\n        continue\n    relative = path.relative_to(root).as_posix()\n    if relative.startswith(("src/eab/", "tools/")):\n        expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()\nassert "src/eab/numeric_domain.py" in expected\nassert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"\nassert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"\nbinding.assert_run_sources_unchanged(root, expected, actual)\nif sys.argv[2] == "omit":\n    source = inspect.getsource(binding.runtime_source_hashes)\n    old = "for path in sorted(paths)}"\n    assert source.count(old) == 1\n    changed = source.replace(old, "for path in sorted(paths) if path.name != \'numeric_domain.py\'}")\n    namespace = dict(vars(binding))\n    exec(compile(changed, "<internal closure omission>", "exec"), namespace)\n    observed = namespace["runtime_source_hashes"](root, replay.__file__)\n    try:\n        binding.assert_run_sources_unchanged(root, expected, observed)\n    except ValueError as exc:\n        assert "runtime source closure changed" in str(exc)\n    else:\n        raise AssertionError("M5c live guard must reject the internal numeric_domain omission")\nprint(json.dumps(sorted(expected)))\n', 'm5b_endpoint_replay', 'omit'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "<string>", line 22, in <module>\nAssertionError: M5c independent import origins require every transitive source, including numeric_domain\n').returncode
+
+tests\test_m5c_policy_binding.py:131: AssertionError
+_ test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_robust_replay] _
+
+replay_name = 'm5b_robust_replay', omit_dependency = True
+
+    @pytest.mark.parametrize("replay_name", ("m5b_endpoint_replay", "m5b_robust_replay"))
+    @pytest.mark.parametrize("omit_dependency", (False, True))
+    def test_runtime_source_closure_matches_independent_import_origins_and_kills_omission(replay_name, omit_dependency):
+        # Independent import-spec enumeration, not the production __file__ scan.
+        # Every node first checks the unmodified path; the omission nodes then
+        # exercise an internal scanner defect through the retained live guard.
+        code = r'''import hashlib, importlib, inspect, json, sys
+    from pathlib import Path
+    sys.path.insert(0, "tools")
+    replay = importlib.import_module(sys.argv[1])
+    import m5c_source_binding as binding
+    actual = replay.source_hashes()
+    root = Path.cwd().resolve()
+    expected = {}
+    for name in tuple(sys.modules):
+        spec = getattr(sys.modules[name], "__spec__", None)
+        origin = getattr(spec, "origin", None)
+        if not origin or not origin.endswith(".py"):
+            continue
+        path = Path(origin).resolve()
+        if not path.is_relative_to(root):
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative.startswith(("src/eab/", "tools/")):
+            expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert "src/eab/numeric_domain.py" in expected
+    assert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"
+    assert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"
+    binding.assert_run_sources_unchanged(root, expected, actual)
+    if sys.argv[2] == "omit":
+        source = inspect.getsource(binding.runtime_source_hashes)
+        old = "for path in sorted(paths)}"
+        assert source.count(old) == 1
+        changed = source.replace(old, "for path in sorted(paths) if path.name != 'numeric_domain.py'}")
+        namespace = dict(vars(binding))
+        exec(compile(changed, "<internal closure omission>", "exec"), namespace)
+        observed = namespace["runtime_source_hashes"](root, replay.__file__)
+        try:
+            binding.assert_run_sources_unchanged(root, expected, observed)
+        except ValueError as exc:
+            assert "runtime source closure changed" in str(exc)
+        else:
+            raise AssertionError("M5c live guard must reject the internal numeric_domain omission")
+    print(json.dumps(sorted(expected)))
+    '''
+        result = subprocess.run([sys.executable, "-c", code, replay_name,
+                                 "omit" if omit_dependency else "normal"], cwd=ROOT,
+                                capture_output=True, text=True, encoding="utf-8", errors="replace")
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 22, in <module>
+E         AssertionError: M5c independent import origins require every transitive source, including numeric_domain
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Program Files\\Python312\\python.exe', '-c', 'import hashlib, importlib, inspect, json, sys\nfrom pathlib import Path\nsys.path.insert(0, "tools")\nreplay = importlib.import_module(sys.argv[1])\nimport m5c_source_binding as binding\nactual = replay.source_hashes()\nroot = Path.cwd().resolve()\nexpected = {}\nfor name in tuple(sys.modules):\n    spec = getattr(sys.modules[name], "__spec__", None)\n    origin = getattr(spec, "origin", None)\n    if not origin or not origin.endswith(".py"):\n        continue\n    path = Path(origin).resolve()\n    if not path.is_relative_to(root):\n        continue\n    relative = path.relative_to(root).as_posix()\n    if relative.startswith(("src/eab/", "tools/")):\n        expected[relative] = hashlib.sha256(path.read_bytes()).hexdigest()\nassert "src/eab/numeric_domain.py" in expected\nassert len(expected) > 4, "M5c closure must exceed the old four direct dependencies"\nassert set(actual) == set(expected), "M5c independent import origins require every transitive source, including numeric_domain"\nbinding.assert_run_sources_unchanged(root, expected, actual)\nif sys.argv[2] == "omit":\n    source = inspect.getsource(binding.runtime_source_hashes)\n    old = "for path in sorted(paths)}"\n    assert source.count(old) == 1\n    changed = source.replace(old, "for path in sorted(paths) if path.name != \'numeric_domain.py\'}")\n    namespace = dict(vars(binding))\n    exec(compile(changed, "<internal closure omission>", "exec"), namespace)\n    observed = namespace["runtime_source_hashes"](root, replay.__file__)\n    try:\n        binding.assert_run_sources_unchanged(root, expected, observed)\n    except ValueError as exc:\n        assert "runtime source closure changed" in str(exc)\n    else:\n        raise AssertionError("M5c live guard must reject the internal numeric_domain omission")\nprint(json.dumps(sorted(expected)))\n', 'm5b_robust_replay', 'omit'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "<string>", line 22, in <module>\nAssertionError: M5c independent import origins require every transitive source, including numeric_domain\n').returncode
+
+tests\test_m5c_policy_binding.py:131: AssertionError
+____ test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys ____
+
+    def test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys():
+        """Guard the live replay manifest, not historical source-byte equality.
+    
+        The independent AST traversal includes package initializers and imports in
+        functions. Unrelated LP and 3-D files must not enter the live run closure.
+        The historical node name is retained to make the restoration explicit.
+        """
+        root = replay.ROOT
+        modules = {}
+        for base in (root / "src", root / "tools"):
+            for path in base.rglob("*.py"):
+                name = ".".join(path.relative_to(base).with_suffix("").parts)
+                if name.endswith(".__init__"):
+                    name = name[:-9]
+                modules[name] = path
+        seen, pending = set(), ["m4c_motion_replay"]
+        while pending:
+            name = pending.pop()
+            if name in seen or name not in modules:
+                continue
+            seen.add(name)
+            path = modules[name]
+            parts = name.split(".")
+            pending.extend(".".join(parts[:i]) for i in range(1, len(parts)))
+            package = name if path.name == "__init__.py" else name.rpartition(".")[0]
+            for node in ast.walk(ast.parse(path.read_text(encoding="utf-8-sig"))):
+                if isinstance(node, ast.Import):
+                    pending.extend(alias.name for alias in node.names)
+                elif isinstance(node, ast.ImportFrom):
+                    prefix = ""
+                    if node.level:
+                        parents = package.split(".")
+                        prefix = ".".join(parents[:len(parents)-node.level+1])+"."
+                    target = (prefix+(node.module or "")).rstrip(".")
+                    pending.append(target)
+                    pending.extend(target+"."+alias.name for alias in node.names)
+        expected = {modules[name].relative_to(root).as_posix() for name in seen}
+        declared = set(replay.REPLAY_SOURCE_FILES)
+>       assert declared == expected, "live source manifest must equal the replay import closure"
+E       AssertionError: live source manifest must equal the replay import closure
+E       assert {'src/eab/__i...it__.py', ...} == {'src/eab/__i...it__.py', ...}
+E         
+E         Extra items in the right set:
+E         'src/eab/numeric_domain.py'
+E         
+E         Full diff:
+E           {
+E               'src/eab/__init__.py',...
+E         
+E         ...Full output truncated (23 lines hidden), use '-vv' to show
+
+tests\test_m4c_fix_replay.py:170: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_m5c_policy_binding.py::test_new_runtime_import_after_start_invalidates_the_sealed_closure
+FAILED tests/test_m5c_policy_binding.py::test_source_binding_rejects_parent_traversal_even_with_matching_content
+FAILED tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_endpoint_replay]
+FAILED tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_robust_replay]
+FAILED tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_endpoint_replay]
+FAILED tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_robust_replay]
+FAILED tests/test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys
+============================== 7 failed in 1.31s ==============================

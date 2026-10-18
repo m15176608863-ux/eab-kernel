@@ -1,0 +1,96 @@
+{
+  "baseline": "476c5d6",
+  "modules": [
+    {
+      "path": "src/eab/contact_record.py",
+      "executable_ast_equal": true,
+      "source_before_sha256": "506a141e681f5023ea5467383888c5d8ce9641d0778ccee9a2a708d8e4f47d0e",
+      "source_after_sha256": "4f9415f57204989972a4c3e6f50c0742eb53887d6cfc848bb574cc7bfc720b90",
+      "changed_source_contexts": [
+        "<module>",
+        "CoverType",
+        "Mode",
+        "Feature",
+        "ContactRecord"
+      ],
+      "source_after_hash_basis": "literal file bytes; UTF-8 without BOM, LF"
+    },
+    {
+      "path": "src/eab/adapters/tf.py",
+      "executable_ast_equal": true,
+      "source_before_sha256": "ad26be8fdef703916aaa0780791ce39bf76afe7c0244cca429cb9e8e7eda2ad3",
+      "source_after_sha256": "030b834dd38a7b4e996106152a3af9fd5da705f207e4efba929dd50cf4393541",
+      "changed_source_contexts": [],
+      "source_after_hash_basis": "literal file bytes; UTF-8 without BOM, LF"
+    },
+    {
+      "path": "src/eab/adapters/bdda2d.py",
+      "executable_ast_equal": true,
+      "source_before_sha256": "0e90ac090a17af97efd98c218e2313875ae8ab4ed62d35b0713580e43e7fa313",
+      "source_after_sha256": "ae69bfa5fb7d8b98911cc43881c80c0647c7018f4e76b24c537ac81da2bffafd",
+      "changed_source_contexts": [],
+      "source_after_hash_basis": "literal file bytes; UTF-8 without BOM, LF"
+    },
+    {
+      "path": "src/eab/adapters/bdda3d.py",
+      "executable_ast_equal": true,
+      "source_before_sha256": "93c7cccadccc8d816c9c086100bea8c1edb8c8ab7ce67bf08d7419fb53560f28",
+      "source_after_sha256": "4a32148f3acb3fcf202d31f29a481bcf67719617968a521cd7726512cbf035c5",
+      "changed_source_contexts": [],
+      "source_after_hash_basis": "literal file bytes; UTF-8 without BOM, LF"
+    },
+    {
+      "path": "src/eab/kernel2d/affine_motion.py",
+      "executable_ast_equal": true,
+      "source_before_sha256": "81222c11f9b3c90018a9a768b8c3b1d1b09c897773473c7ee050ae6df02812bd",
+      "source_after_sha256": "3bab15171bfbaffeb235f43debb166a91f008a3f2079149b6ee45bef52d441ae",
+      "changed_source_contexts": [
+        "<module>"
+      ],
+      "source_after_hash_basis": "literal file bytes; UTF-8 without BOM, LF"
+    },
+    {
+      "path": "src/eab/kernel2d/geom.py",
+      "executable_ast_equal": true,
+      "source_before_sha256": "0d6a0668cd192b532d95f01658dd30413a4bfab28b63c4cc91b167d89a2bd182",
+      "source_after_sha256": "6840bdc5b1607db5549b8e3e849340df3ce3a1afe4755f23b7ba7dc1b2993a71",
+      "changed_source_contexts": [
+        "outward_normal"
+      ],
+      "source_after_hash_basis": "literal file bytes; UTF-8 without BOM, LF"
+    },
+    {
+      "path": "src/eab/kernel2d/model_robustness.py",
+      "executable_ast_equal": true,
+      "source_before_sha256": "a9e627d0e7b73537c2aba273575aefbc0bf5b7ba765c6656ac27bcfd48ffdede",
+      "source_after_sha256": "3f22bc9ae76ea71d5bc754e3e3d3b2d21f9e650d6b1a9a1026e887e7a9d902d7",
+      "changed_source_contexts": [],
+      "source_after_hash_basis": "literal file bytes; UTF-8 without BOM, LF"
+    }
+  ],
+  "context_updates_required": [
+    {
+      "id": "R12b-L0008",
+      "path": "src/eab/contact_record.py",
+      "function": "<module>",
+      "pointer": [
+        "waivers",
+        6,
+        "context"
+      ],
+      "old": "316e7dd64f8c98a76f3efed10888c685b1d5075f186a23604b142a768e61acc8",
+      "new": "bb6230c9b3f3f1f656a26c59d339920ab529eed4bfdc81f8481eb58d7f3844ff",
+      "same_executable_ast": true,
+      "same_ast_site": true
+    }
+  ],
+  "policy_modified_by_this_script": false,
+  "line_ending_repair": {
+    "path": "src/eab/kernel2d/geom.py",
+    "preexisting_crlf_count": 8,
+    "before_sha256": "dc48198090ef92fb10cfdb6f0831cf16cb2e5d5f0a3bcf14b4b01dcae05f2e5f",
+    "after_sha256": "6840bdc5b1607db5549b8e3e849340df3ce3a1afe4755f23b7ba7dc1b2993a71",
+    "ast_equal": true,
+    "site_contexts_equal": true
+  }
+}

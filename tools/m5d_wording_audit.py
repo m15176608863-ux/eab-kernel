@@ -1,6 +1,7 @@
 """B5-B7 literal-slot audit, with no production imports or geometric helpers.
 
-Imports: argparse, collections, fractions, gzip, hashlib, json, pathlib.
+Imports: argparse, collections, fractions, gzip, hashlib, json, pathlib;
+frozen_evidence only relocates immutable input paths.
 The first features/certification flags are frozen observations, NOT recomputed
 oracles. Slot matching is independently reconstructed from immutable inputs;
 the geometric structure check uses only rational vector determinants/dots.
@@ -15,9 +16,11 @@ import hashlib
 import json
 from pathlib import Path
 
+from frozen_evidence import data_path, historical_name
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "reports/codex/M5d_evidence"
-INPUTS = ROOT / "reports/codex/M5b_evidence"
+INPUTS = data_path(ROOT, "reports/codex/M5b_evidence")
 PHASES = ("raw_df05", "post_df06")
 SOURCE_REFERENCES = {
     "D:/b-DDA/df/df.c": [(894, 902), (1605, 1681), (1832, 1853), (1935, 1949), (3215, 3238)],
@@ -31,7 +34,7 @@ SOURCE_REFERENCES = {
 
 
 def digest(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    return hashlib.sha256(data_path(ROOT, path).read_bytes()).hexdigest()
 
 
 def decode(rows, blocks):
@@ -91,7 +94,8 @@ Only two VE rows are admitted; no claim is made about arbitrary contact sets.
 def audit():
     bindings = {}
     def read(path):
-        bindings[path.relative_to(ROOT).as_posix()] = digest(path)
+        path = data_path(ROOT, path)
+        bindings[historical_name(ROOT, path)] = digest(path)
         return json.loads(path.read_text(encoding="utf-8"))
     candidates = read(ROOT / "reports/codex/M5c_evidence/research_diagnostics.json")
     needed = {(r["case"], r["step"]) for r in candidates}
@@ -100,7 +104,7 @@ def audit():
     for shard in manifest["shards"]:
         path = INPUTS / "endpoint_inputs" / shard["file"]
         assert digest(path) == shard["sha256"]
-        bindings[path.relative_to(ROOT).as_posix()] = digest(path)
+        bindings[historical_name(ROOT, path)] = digest(path)
         for line in gzip.decompress(path.read_bytes()).decode("utf-8").splitlines():
             row = json.loads(line)
             if (row["case"], row["step"]) in needed:
@@ -109,7 +113,7 @@ def audit():
     for case, info in manifest["cases"].items():
         path = INPUTS / "legacy_inputs" / (case+".jsonl.gz")
         assert digest(path) == info["sha256"]
-        bindings[path.relative_to(ROOT).as_posix()] = digest(path)
+        bindings[historical_name(ROOT, path)] = digest(path)
         for line in gzip.decompress(path.read_bytes()).decode("utf-8").splitlines():
             row = json.loads(line)
             if (case, row["step"]) in needed:
@@ -148,7 +152,7 @@ def audit():
                 unique_configurations=len(groups),
                 configurations=[dict(case=k[0], pair=k[1], features=k[2], steps=v) for k, v in groups.items()],
                 rows=result, input_hashes=bindings, script_sha256=digest(__file__),
-                oracle_imports=["argparse", "collections", "fractions", "gzip", "hashlib", "json", "pathlib"],
+                oracle_imports=["argparse", "collections", "fractions", "gzip", "hashlib", "json", "pathlib", "frozen_evidence"],
                 production_imports=[], geometric_primitives_shared=[],
                 geometric_limit="Near-parallel is a descriptive exact sin-squared bound <1/300, not a certificate threshold")
 

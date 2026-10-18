@@ -141,7 +141,7 @@ def outward_normal(poly: Poly, i: int) -> Point:
     """CCW 多边形第 i 条边 (i -> i+1) 的单位外法向。
 
     零长边（连续重复顶点）没有法向：抛 ValueError('zero-length edge ...')，而不是 unit() 的
-    ZeroDivisionError（审查 C19）。输入归一化在读取器边界做（readers.bdda_geom.strip_duplicate_vertices）。
+    ZeroDivisionError（审查 C19）。调用方须在输入边界去掉连续重复顶点。
     """
     from ..construction import sqrt_rational, unit_rational
     p, q = edge(poly, i)

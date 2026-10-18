@@ -14,6 +14,7 @@ from mutation_support import replace_module_callable
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
+from frozen_evidence import data_path
 import m5b_robust_replay as replay
 
 
@@ -100,7 +101,7 @@ def test_p3_endpoint_closure_budget_mutation_dies_on_wiring_assertion(monkeypatc
 
 
 def test_frozen_input_counts_cover_fifteen_cases_and_15220_blocks():
-    manifest = json.loads((ROOT / "reports/codex/M5b_evidence/endpoint_inputs/manifest.json").read_text(encoding="utf-8"))
+    manifest = json.loads((data_path(ROOT, "reports/codex/M5b_evidence/endpoint_inputs/manifest.json")).read_text(encoding="utf-8"))
     assert manifest["complete"] and len(manifest["cases"]) == 15
     assert sum(row["steps"] for row in manifest["cases"].values()) == 1810
     assert sum(row["block_frames"] for row in manifest["cases"].values()) == 15220

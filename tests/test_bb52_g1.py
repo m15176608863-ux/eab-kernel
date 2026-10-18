@@ -14,6 +14,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from frozen_evidence import data_path
 import bb52_g0  # noqa: E402
 
 FIX = Path(__file__).resolve().parents[1] / "fixtures" / "bdda_df" / "studio_20260712"
@@ -300,7 +301,7 @@ def test_first_look_json_carries_its_retraction():
     且它引用的现行数字与现行报告逐项一致——消费者读 JSON 不会再把 1186/1186 当成 G0 通过。"""
     import json
     root = Path(__file__).resolve().parents[1]
-    d = json.loads((root / "reports" / "bb52_g0_first_look.json").read_text(encoding="utf-8"))
+    d = json.loads((data_path(root, "reports/bb52_g0_first_look.json")).read_text(encoding="utf-8"))
     assert (d["g0_samples"], d["g0_agree"]) == (1186, 1186)             # 原数据保留
     r = d["retracted"]
     assert r["superseded_by"] == "reports/bb52_g1_g0.json"

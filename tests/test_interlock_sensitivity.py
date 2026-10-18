@@ -17,7 +17,7 @@ from test_interlock_escape import analytic_escape_height  # noqa: E402
 
 from eab import dual as D  # noqa: E402
 from eab.dual import Dual, central_difference, convergence_order, val  # noqa: E402
-from eab.kernel3d.interlock import (escape_candidates, escape_height_brute,  # noqa: E402
+from eab.adapters.tia3d import (escape_candidates, escape_height_brute,  # noqa: E402
                                     escape_height_covers, escape_height_from_frozen_cover,
                                     frozen_ee_sign)
 
@@ -243,7 +243,7 @@ def test_steep_gate_has_teeth_vertical_tie_window(monkeypatch):
     a branch strictly inside the independently reconstructed report/extent band.
     All old slope/height/interval assertions and all 72 inputs remain in place.
     """
-    import eab.kernel3d.interlock as I
+    import eab.adapters.tia3d as I
 
     def vertical_window(z, nz, cands, gtol, r):
         pos = [c for c in cands if c[0] > 0.0]

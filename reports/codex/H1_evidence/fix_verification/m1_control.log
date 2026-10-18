@@ -1,0 +1,16 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.0.3, pluggy-1.6.0 -- C:\Program Files\Python312\python.exe
+rootdir: D:\eab-wt\cx-e2
+configfile: pyproject.toml
+plugins: anyio-4.14.1
+collecting ... collected 7 items
+
+tests/test_m5c_policy_binding.py::test_new_runtime_import_after_start_invalidates_the_sealed_closure PASSED [ 14%]
+tests/test_m5c_policy_binding.py::test_source_binding_rejects_parent_traversal_even_with_matching_content PASSED [ 28%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_endpoint_replay] PASSED [ 42%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_robust_replay] PASSED [ 57%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_endpoint_replay] PASSED [ 71%]
+tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_robust_replay] PASSED [ 85%]
+tests/test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys PASSED [100%]
+
+============================== 7 passed in 1.07s ==============================

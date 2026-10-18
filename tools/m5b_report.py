@@ -66,7 +66,7 @@ P2/P3 全窗位置界为 `r1*(|u1|³/2+2 epsilon_u)`，其中 r1=max||p-c||1。�
 
 ## 2. 实现/API、数值合同与 oracle
 
-- `src/eab/kernel2d/dda_motion.py`：`area_centroid`、`rational_half_angle`、`DDAAnchoredMotion`、`dda_motion_from_z`、`p2_p3_bound`、`dda_first_entrance`。
+- `src/eab/adapters/bdda2d_motion.py`：`area_centroid`、`rational_half_angle`、`DDAAnchoredMotion`、`dda_motion_from_z`、`p2_p3_bound`、`dda_first_entrance`。
 - `src/eab/kernel2d/algebraic.py`：实代数数和求根上限六次，未放宽任何判定。
 - `src/eab/kernel2d/model_robustness.py`：有理坐标包络、`separation_certificate`、`single_cover_certificate`；返回 None 表示未证，不是接触或实际模型敏感。
 - 回放与复现工具：`m5b_endpoint_replay.py`、`m5b_grouped_probe.py`、`m5b_robust_replay.py`、`m5b_minimal_examples.py`；无姊妹代码 import，仅标准库和本仓库代码。

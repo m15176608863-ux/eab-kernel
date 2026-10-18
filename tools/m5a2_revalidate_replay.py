@@ -9,6 +9,7 @@ An interrupted or changed-source run is invalid and must use a fresh name.
 """
 from __future__ import annotations
 
+from frozen_evidence import data_path
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import gzip
@@ -61,7 +62,7 @@ def inputs():
         names.extend(("fixtures/m5a_se2/"+case+".jsonl.gz", "fixtures/m4b_shadow/"+case+".jsonl.gz",
                       "reports/codex/M4c_evidence/fix_frozen_replay/"+case+"/audit.json",
                       "reports/codex/M4c_evidence/fix_frozen_replay/"+case+"/normalized.jsonl.gz"))
-    return {name: replay.file_hash(ROOT / name) for name in names}
+    return {name: replay.file_hash(data_path(ROOT, name)) for name in names}
 
 
 def tool_hashes():

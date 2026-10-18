@@ -4,7 +4,7 @@ Integer identities/states stay exact even when a JSON decimal denotes an
 integer. Known continuous fields use the checked binary64 reader boundary;
 unknown metadata retains its existing numeric-tree model, not invented units.
 """
-from eab.readers.numeric_decode import decode_tree, integer, loads as loads_exact, scalar
+from eab.numeric_decode import decode_tree, integer, loads as loads_exact, scalar
 
 
 _INTEGER = {"bi", "bj", "nsign", "m0init", "m0_0"}

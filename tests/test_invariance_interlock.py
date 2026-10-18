@@ -47,7 +47,7 @@ from eab.dual import Dual  # noqa: E402
 from eab.kernel3d.covers3 import enumerate_covers3  # noqa: E402
 from eab.kernel3d.frozen import frozen_ee_sign  # noqa: E402
 from eab.kernel3d.geom3 import Polyhedron, box, brute_feature_distance, norm, sub, tetra  # noqa: E402
-from eab.kernel3d.interlock import (dilatancy_profile, escape_candidates, escape_height_brute,  # noqa: E402
+from eab.adapters.tia3d import (dilatancy_profile, escape_candidates, escape_height_brute,  # noqa: E402
                                     escape_height_covers, escape_height_from_frozen_cover)
 from eab.margin import (INSIDE, ON_BOUNDARY, OUTSIDE, PENETRATING, REL_GEOM_TOL,  # noqa: E402
                         body_distance, characteristic_length, effective_geom_tol, inflated_membership,

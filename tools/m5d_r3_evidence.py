@@ -88,7 +88,7 @@ def write(path,data):
 def run(count):
     started=perf_counter()
     sources=('src/eab/kernel2d/m5c_certificates.py','src/eab/kernel2d/model_robustness.py',
-             'src/eab/kernel2d/dda_motion.py','tests/m5d_r3_oracle.py','tests/m5c_teeth_oracle.py',
+             'src/eab/adapters/bdda2d_motion.py','tests/m5d_r3_oracle.py','tests/m5c_teeth_oracle.py',
              'tests/test_m5d_r3_semantics.py','tests/mutation_support.py','tools/m5d_r3_evidence.py')
     source_start={path:hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in sources}
     progress=OUT/'r3_progress.json'

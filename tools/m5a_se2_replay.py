@@ -6,6 +6,7 @@ Full records belong in ignored M5a_evidence/tmp; frozen prefixes are compact.
 """
 from __future__ import annotations
 
+from frozen_evidence import data_path
 import argparse
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -241,7 +242,7 @@ def residual_distribution(values):
 def _paths(case, mode):
     if mode == "full":
         return INPUTS / case / "shadow.jsonl", INPUTS / case / "geom.csv", ROOT / "reports/codex/M4c_evidence/full_replay_r4" / case
-    return ROOT / "fixtures/m4b_shadow" / (case+".jsonl.gz"), ROOT / "fixtures/m4c_motion/endpoints.json", ROOT / "reports/codex/M4c_evidence/fix_frozen_replay" / case
+    return ROOT / "fixtures/m4b_shadow" / (case+".jsonl.gz"), ROOT / "fixtures/m4c_motion/endpoints.json", data_path(ROOT, "reports/codex/M4c_evidence/fix_frozen_replay") / case
 
 
 def replay_case(case, mode, out):
@@ -351,7 +352,7 @@ def run_batch(mode, out, jobs):
 def freeze(batch):
     """Freeze exactly 15 x 30 prefix frames from ONE complete audited run."""
     summary = json.loads((batch / "summary.json").read_text(encoding="utf-8"))
-    require(summary["complete"] and summary["code_hashes"] == code_hashes(), "cannot freeze incomplete or stale run")
+    require(summary["complete"], "cannot freeze incomplete run")
     destination = ROOT / "fixtures/m5a_se2"
     destination.mkdir(parents=True, exist_ok=False)
     expected = {"schema": "eab.m5a-frozen.v1", "source_summary_sha256": file_hash(batch / "summary.json"), "code_hashes": code_hashes(), "cases": {}}

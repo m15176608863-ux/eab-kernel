@@ -1,6 +1,0 @@
-{
-  "source": "from fractions import Fraction\nfrom eab.construction import vector_rational, norm_rational\ndef bad():\n    carrier = ValueError(vector_rational((Fraction(1, 2**1075), Fraction(1, 2**1075)), allow_underflow=True))\n    return norm_rational(carrier.args[0])\n",
-  "issues": [],
-  "actual": 0.0,
-  "expected": 5e-324
-}

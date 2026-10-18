@@ -14,4 +14,5 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "tools"]
+markers = ["slow: measured expensive tests; run with --runslow"]

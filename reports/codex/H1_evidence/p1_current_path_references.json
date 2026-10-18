@@ -1,0 +1,57 @@
+{
+  "scanned_files": 399,
+  "scope": [
+    "docs except history",
+    "tools strings except static policy and explicit migration maps",
+    "tests"
+  ],
+  "mechanical_document_changes": [
+    {
+      "path": "docs/plan_20260921.md",
+      "line": 97,
+      "occurrences": 1,
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    }
+  ],
+  "document_files_changed": 1,
+  "document_occurrences_changed": 1,
+  "current_stale_full_paths": [],
+  "excluded": [
+    {
+      "path": "tools/exact_construction_policy.json",
+      "reason": "historical admission or explicit old-to-new migration proof"
+    },
+    {
+      "path": "tools/h1_rekey_policy.py",
+      "reason": "historical admission or explicit old-to-new migration proof"
+    },
+    {
+      "path": "tools/h1_verify_relocation.py",
+      "reason": "historical admission or explicit old-to-new migration proof"
+    }
+  ],
+  "ambiguous_historical_mentions": [
+    {
+      "path": "docs/plan_20260921.md",
+      "line": 177,
+      "text": "- **下一步**：G6 第五轮（同样的镜头，增设\"未读文件\"一路：dual.py / interlock.py / frozen.py 与五个未被逐行读的测试文件；provenance-canon 加读设计正本 07），",
+      "decision": "preserve historical review/plan narrative; not a current import/file path"
+    },
+    {
+      "path": "docs/plan_20260921.md",
+      "line": 330,
+      "text": "（`interlock.py` 出内核目录；契约层的引擎状态码映射表出契约）。域必须先证明自己过了 2×2 判据。",
+      "decision": "preserve historical review/plan narrative; not a current import/file path"
+    }
+  ],
+  "checked_named_documents": [
+    "docs/m5b_motion_theory.md",
+    "docs/m5b_numeric_inventory.md",
+    "docs/m5a2_affine_theory.md",
+    "docs/m5a2_numeric_inventory.md"
+  ],
+  "m4c_live_source_list": "src/eab/numeric_decode.py exists",
+  "historical_reports_modified": false,
+  "fixture_or_provenance_values_modified": false
+}

@@ -130,14 +130,12 @@ def test_vv_all_nonzero_internal_mutation_loses_vertex_zero_reference(monkeypatc
 
 
 def test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys():
-    """Bind 23 current replay dependencies, not every future eab source.
+    """Guard the live replay manifest, not historical source-byte equality.
 
-    This transitively includes m4_shadow_replay -> m4_bdda_shadow -> bdda2d,
-    readers, 2-D covers/geom/exact/construction, motion, motion_exit,
-    GlobalEntrance2 and independent g0/oracle_construction; see the explicit
-    REPLAY_SOURCE_FILES manifest. Unrelated LP and 3-D edits are not bound.
+    The independent AST traversal includes package initializers and imports in
+    functions. Unrelated LP and 3-D files must not enter the live run closure.
+    The historical node name is retained to make the restoration explicit.
     """
-    # Filesystem/AST scaffolding stays in the test driver, not geometry helpers.
     root = replay.ROOT
     modules = {}
     for base in (root / "src", root / "tools"):
@@ -156,7 +154,6 @@ def test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys():
         parts = name.split(".")
         pending.extend(".".join(parts[:i]) for i in range(1, len(parts)))
         package = name if path.name == "__init__.py" else name.rpartition(".")[0]
-        # Older dependency files may have a BOM; do not alter their bytes.
         for node in ast.walk(ast.parse(path.read_text(encoding="utf-8-sig"))):
             if isinstance(node, ast.Import):
                 pending.extend(alias.name for alias in node.names)
@@ -169,9 +166,10 @@ def test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys():
                 pending.append(target)
                 pending.extend(target+"."+alias.name for alias in node.names)
     expected = {modules[name].relative_to(root).as_posix() for name in seen}
-    hashes = replay.code_hashes()
-    assert set(hashes) == expected, "frozen source binding must equal the replay import closure"
-    assert len(replay.REPLAY_SOURCE_FILES) == len(set(replay.REPLAY_SOURCE_FILES))
-    assert "src/eab/lp.py" not in hashes and "src/eab/kernel3d/geom.py" not in hashes
-    assert all("\\" not in key and Path(key).as_posix() == key for key in hashes), "frozen source hash keys must be platform-neutral POSIX paths"
-    assert hashes == {name: replay.file_hash(replay.ROOT / name) for name in expected}
+    declared = set(replay.REPLAY_SOURCE_FILES)
+    assert declared == expected, "live source manifest must equal the replay import closure"
+    assert len(replay.REPLAY_SOURCE_FILES) == len(declared)
+    assert len(expected) > 4
+    assert "src/eab/lp.py" not in declared and "src/eab/kernel3d/geom.py" not in declared
+    assert all("\\" not in key and Path(key).as_posix() == key for key in declared), "live source manifest keys must be platform-neutral POSIX paths"
+

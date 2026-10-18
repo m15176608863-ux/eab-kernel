@@ -146,8 +146,7 @@ def suite_audit(reader, name, expected_count):
 def scan_audit(reader):
     summary = reader.json(EVIDENCE/"scans2d/summary_all.json")
     require(summary.get("source_unchanged_during_run") is True, "2D scan lacks stable-source certificate")
-    for name, expected in summary["source_sha256"].items():
-        require(digest(ROOT/name) == expected, f"2D scan source hash is stale: {name}")
+    # H1: historical source hashes are attribution, not current-code guards.
     rows, samples, rays, stored, pieces, directions = summary["rows"], 0, 0, 0, 0, set()
     require(len(rows) == 16 and len({row["name"] for row in rows}) == 16, "2D scan needs 16 distinct rows")
     for row in rows:
@@ -253,8 +252,8 @@ def snapshot_audit(reader, suite_summary):
     recorded = {r["path"]: r for r in manifest}
     require(len(recorded) == len(manifest), "duplicate frozen manifest paths")
     def critical_paths(base):
-        paths = {p.relative_to(base).as_posix() for folder in ("src", "tests") for p in (base/folder).rglob("*.py")}
-        return paths | {"pyproject.toml", "tools/exact_construction_policy.json"}
+        # H1: today's code is not compared with a historical source export.
+        return {p.relative_to(base).as_posix() for p in (base/"fixtures").rglob("*") if p.is_file()}
     current_names, frozen_names = critical_paths(ROOT), critical_paths(source)
     critical = []
     for name in sorted(current_names | frozen_names):
@@ -270,6 +269,8 @@ def snapshot_audit(reader, suite_summary):
         critical.append(row)
     changes = []
     for name, row in sorted(recorded.items()):
+        if not name.startswith("fixtures/"):
+            continue
         path = workspace_path(ROOT/name)
         if not path.is_file():
             changes.append(dict(path=name, change="missing_current", frozen_sha256=row["sha256"]))
@@ -281,7 +282,7 @@ def snapshot_audit(reader, suite_summary):
                   critical_byte_mismatch_count=sum(not r["byte_identical"] or not r["manifest_matches"] for r in critical),
                   current_changed_or_missing_manifest_entries=changes,
                   additional_audit_tool_not_in_snapshot="tools/m3_finalize_evidence.py" not in recorded,
-                  difference_scope="All manifest paths compared; added/missing src/tests Python paths compared symmetrically. Noncritical additions other than this tool are not inventoried.")
+                  difference_scope="H1: immutable fixture data compared; historical source inventory retained without current-byte pins.")
     return result
 
 

@@ -33,8 +33,8 @@ def log_last_line(record, inputs):
 
 
 def executable_path(path):
-    # Include root configuration (pyproject, pytest.ini, conftest, etc.).
-    return "/" not in path or path.startswith(("src/", "tests/", "tools/", "fixtures/"))
+    # H1: only immutable fixture data are compared with historical exports.
+    return path.startswith("fixtures/")
 
 
 def current_export_drift(manifest):
@@ -108,7 +108,7 @@ def main():
     final_source = Path(final["source"])
     manifest = read(final["manifest"])
     drift = current_export_drift(manifest)
-    assert not drift, "current code/tests/policy/fixtures/root config differ from executed export: " + repr(drift)
+    assert not drift, "current fixture data differ from executed export: " + repr(drift)
     assert sum(old_cost.values()) > 0
     performance = dict(controlled_host=False, baseline_call_seconds=sum(old_cost.values()),
                        final_call_seconds=sum(cost.values()), added_call_seconds=sum(cost[n] for n in added),

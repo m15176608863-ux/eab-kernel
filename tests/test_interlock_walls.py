@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from eab.kernel3d.geom3 import Polyhedron, box  # noqa: E402
-from eab.kernel3d.interlock import (escape_height_brute, escape_height_covers, escape_height_from_frozen_cover,  # noqa: E402
+from eab.adapters.tia3d import (escape_height_brute, escape_height_covers, escape_height_from_frozen_cover,  # noqa: E402
                                     frozen_ee_sign)
 
 U_PROF = [(-2, -1), (2, -1), (2, 1), (1, 1), (1, 0), (-1, 0), (-1, 1), (-2, 1)]   # 槽底 z = 0（|x| < 1），竖墙 x = ±1 到 z = 1

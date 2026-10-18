@@ -11,7 +11,7 @@
 编码（tf.cpp 注释 297-336）：contact_type 0 n-n / 1 n-e / 2 n-p / 3 e-e；
 contact_state = m0[i][1]（0 open 1 friction 2 s-spring 3 tension 4/5/6 变体），previous = m0[i][3]，
 contact_entry = m0[i][0]（当前选中入口的 m[][] 索引）。gap 约定：tf 的 o[i][2]，>0 张开 <0 侵入。
-状态 4/5/6 → Mode.UNVERIFIED（归入统一词汇的依据未核实，见 contact_record.TF_MODE）；raw_mode 保留原始码。
+状态 4/5/6 → Mode.UNVERIFIED（归入统一词汇的依据未核实，见 adapters.tf.TF_MODE）；raw_mode 保留原始码。
 执行门：tests/test_tf_reader.py（读取器重算普查 6716 条 / 100% n-p，并与零共用 oracle 逐行、逐字段精确对账——
 含法向、接触点、法向力、剪切、contact_index 与全部余项列；牙注入本文件源码，G6 major 16 的五个变异逐一报红）。
 两个探针都是 HeavyProbe，默认关闭；retry 探针只在重试事件时写、且只写涉及触发块/顶压板的接触
@@ -28,7 +28,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..construction import scalar_rational
-from ..contact_record import TF_COVER, TF_MODE, ContactRecord, CoverType, Mode
+from eab.adapters.tf import TF_COVER, TF_MODE
+from ..contact_record import ContactRecord, CoverType, Mode
 
 
 @dataclass(slots=True)

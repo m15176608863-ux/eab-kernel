@@ -1,8 +1,0 @@
-﻿tools\exact_construction_flow.py:1033:        elif name in {"json.load", "json.loads"}:
-tools\exact_construction_subset.py:82:    return json.loads((HERE / "exact_construction_policy.json").read_text(encoding="utf-8"))
-tools\m4_capture_family.py:111:    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
-tools\m4_capture_family.py:144:        data = json.loads(MANIFEST.read_text(encoding="utf-8"))
-tools\ingest_fixtures.py:57:    prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {"entries": []}
-tools\ingest_fixtures.py:68:    prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {"entries": []}
-src\eab\readers\numeric_decode.py:9:No nonstandard JSON NaN/Infinity sentinel; parse_float only retains exact
-src\eab\readers\numeric_decode.py:42:    return json.loads(text, parse_float=_decimal, parse_constant=_nonfinite)

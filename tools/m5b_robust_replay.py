@@ -16,21 +16,23 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from frozen_evidence import data_path, historical_name
 import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
 import m5b_endpoint_replay as endpoint
-from m5c_source_binding import runtime_source_hashes, assert_current_sources
-from eab.kernel2d.dda_motion import dda_motion_from_z, p2_p3_bound, dda_first_entrance
+from m5c_source_binding import runtime_source_hashes, assert_run_sources_unchanged
+from eab.adapters.bdda2d_motion import dda_motion_from_z, p2_p3_bound, dda_first_entrance
 from eab.kernel2d.motion import motion_first_entrance
-from eab.kernel2d.model_robustness import chord_paths, dda_paths, swept_axis_bounds, separation_certificate, single_cover_certificate
+from eab.kernel2d.model_robustness import chord_paths, swept_axis_bounds, separation_certificate, single_cover_certificate
+from eab.adapters.bdda2d_motion import dda_paths
 from eab.kernel2d.g0_oracle import overlap
 
 EVIDENCE = ROOT / "reports/codex/M5b_evidence"
 TMP = ROOT / "reports/codex/M5c_evidence/tmp"
-LEGACY = EVIDENCE / "legacy_inputs"
+LEGACY = data_path(ROOT, EVIDENCE / "legacy_inputs")
 PHASES = ("raw_df05", "post_df06")
 
 
@@ -51,16 +53,17 @@ def source_hashes():
 
 
 def input_hashes():
-    return {p.relative_to(ROOT).as_posix(): sha(p) for directory in (endpoint.INPUTS, LEGACY)
+    return {historical_name(ROOT, p): sha(p) for directory in (endpoint.INPUTS, LEGACY)
             for p in sorted(directory.iterdir()) if p.is_file()}
 
 
 def freeze_legacy():
     """Copy only canonicalized legacy rows; bind original snapshot hashes."""
-    if LEGACY.exists():
+    output_legacy = EVIDENCE / "legacy_inputs"
+    if output_legacy.exists():
         raise ValueError("legacy bundle exists; immutable input")
     manifest = json.loads((endpoint.INPUTS / "manifest.json").read_text(encoding="utf-8"))
-    LEGACY.mkdir(parents=True)
+    output_legacy.mkdir(parents=True)
     output = {"complete": False, "cases": {}}
     for case, expected in manifest["cases"].items():
         path = TMP / "endpoint_originals" / case / "shadow.jsonl"
@@ -86,14 +89,14 @@ def freeze_legacy():
             packed.append(dict(step=frame["step"], **phases))
         if sha(path) != before or len(packed) != expected["steps"]:
             raise AssertionError("legacy source changed or incomplete")
-        target = LEGACY / (case+".jsonl.gz")
+        target = output_legacy / (case+".jsonl.gz")
         target.write_bytes(gzip.compress("".join(json.dumps(r, separators=(",", ":"))+"\n" for r in packed).encode(), mtime=0))
         if target.stat().st_size > 1_000_000:
             raise AssertionError("legacy input exceeds 1 MB")
         output["cases"][case] = dict(source_sha256=before, sha256=sha(target), steps=len(packed))
-        write_json(LEGACY / "manifest.json", output)
+        write_json(output_legacy / "manifest.json", output)
     output["complete"] = True
-    write_json(LEGACY / "manifest.json", output)
+    write_json(output_legacy / "manifest.json", output)
 
 
 def prepare(row):
@@ -336,7 +339,7 @@ def replay_case(case, out, expected_source, expected_inputs):
             if step % 5 == 0 or step == len(frames):
                 write_json(directory / "progress.json", dict(complete=False, step=step, counts=dict(counts), seconds=time.perf_counter()-started))
     final_sources = source_hashes()
-    assert_current_sources(ROOT, expected_source, final_sources)
+    assert_run_sources_unchanged(ROOT, expected_source, final_sources)
     if input_hashes() != expected_inputs:
         raise AssertionError("replay inputs changed during worker")
     result = dict(case=case, complete=True, counts=dict(counts), references=dict(references), examples=examples,
@@ -390,7 +393,7 @@ def main():
             write_json(out / "progress.json", dict(complete=False, completed=sorted(results), counts=dict(counts)))
             print(result["case"], result["counts"], flush=True)
     final_sources = source_hashes()
-    assert_current_sources(ROOT, sources, final_sources)
+    assert_run_sources_unchanged(ROOT, sources, final_sources)
     if input_hashes() != inputs:
         raise AssertionError("full batch input change invalidates result")
     full = set(cases) == set(manifest["cases"])

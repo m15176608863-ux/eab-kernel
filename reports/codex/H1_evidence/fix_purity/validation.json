@@ -1,0 +1,72 @@
+{
+  "pristine": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\fix_purity\\pristine",
+      "tests/test_kernel_purity.py"
+    ],
+    "exit_code": 0,
+    "seconds": 7.463319300033618,
+    "last_line": "35 passed in 6.97s",
+    "log": "pristine.log"
+  },
+  "parent_bfs_removal_mutant": {
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\fix_purity\\parent_bfs_pytest",
+      "tests/test_kernel_purity.py::test_parent_package_imports_are_checked_for_every_kernel_module"
+    ],
+    "exit_code": 1,
+    "seconds": 1.4079141999827698,
+    "last_line": "1 failed in 0.96s",
+    "log": "parent_bfs_mutant.log"
+  },
+  "parent_mutant_failing_assertion": "assert reached == expected",
+  "parent_kernel_module_count": 40,
+  "lexical_module_count": 43,
+  "new_nodes": 29,
+  "current_nodes": 35,
+  "static_paths": [
+    "tests/test_kernel_purity.py",
+    "src/eab/contact_record.py",
+    "src/eab/adapters/tf.py",
+    "src/eab/adapters/bdda2d.py",
+    "src/eab/adapters/bdda3d.py",
+    "src/eab/kernel2d/affine_motion.py",
+    "src/eab/kernel2d/geom.py",
+    "src/eab/kernel2d/model_robustness.py"
+  ],
+  "static_issues": [
+    [
+      "src/eab/contact_record.py",
+      1,
+      "<module>",
+      "closed-stale-waiver",
+      "Local review expired: closed-callable-value"
+    ],
+    [
+      "src/eab/contact_record.py",
+      76,
+      "<module>",
+      "closed-callable-value",
+      "tuple"
+    ]
+  ],
+  "scope": "Focused checks only. Full static and full four shards are performed by root."
+}

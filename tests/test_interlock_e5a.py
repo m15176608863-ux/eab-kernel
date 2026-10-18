@@ -6,10 +6,10 @@ from types import SimpleNamespace
 import inspect
 import pytest
 
-from eab.kernel3d import interlock as I
+from eab.adapters import tia3d as I
 
 from eab.kernel3d.geom3 import Polyhedron, cross, norm
-from eab.kernel3d.interlock import _normal_noise
+from eab.adapters.tia3d import _normal_noise
 
 
 def test_normal_noise_handles_exact_cross_hidden_by_unit_vector_rounding(monkeypatch):

@@ -1,0 +1,28 @@
+{
+  "production_old_modules": 52,
+  "production_new_modules": 55,
+  "definitions": 1074,
+  "matched_definitions": 1074,
+  "unmatched_new_definitions": 0,
+  "mapping_tables": 6,
+  "mathematical_ast_equal": true,
+  "normalization": [
+    "geom3.Polyhedron.edge_dir: domain-specific reader example -> generic input boundary"
+  ],
+  "intentional_api_changes": [
+    "module ownership/import paths",
+    "root package no longer exports domain maps"
+  ],
+  "checked_against": "HEAD",
+  "relocation_verifier_teeth": {
+    "status": "KILLED",
+    "function": "_scale",
+    "old": "return tuple(k*x for x in a)",
+    "new": "return tuple(k+x for x in a)",
+    "assertion": [
+      "src/eab/kernel2d/model_robustness.py",
+      "_scale",
+      "src/eab/kernel2d/model_robustness.py"
+    ]
+  }
+}

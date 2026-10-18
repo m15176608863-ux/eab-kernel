@@ -15,7 +15,8 @@ import sys
 
 import pytest
 
-from eab.kernel2d.affine_motion import AffineFit, DDAAffineMotion, fit_affine
+from eab.kernel2d.affine_motion import AffineFit, fit_affine
+from eab.adapters.bdda2d_affine import DDAAffineMotion
 from eab.kernel2d.motion import motion_first_entrance
 from eab.kernel2d.se2 import SE2Motion
 

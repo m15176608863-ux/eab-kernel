@@ -3,6 +3,8 @@
 Imports for expected values: stdlib json/hashlib and literal protocol results.
 Static defects are injected inside scan_text; timeout defects are injected
 inside a real RealAlgebraic method, not appended to a result or a hash file.
+H1 preserves the original history fingerprints through its proved namespace
+projection; no grant, rule, reason or AST site is normalized away.
 """
 import hashlib
 import importlib.util
@@ -14,6 +16,7 @@ import subprocess
 import sys
 
 import pytest
+from policy_history_view import accepted_policy
 from mutation_support import replace_module_callable
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,7 +26,7 @@ import m5a2_run_gates as runner
 
 
 def test_all_3103_legacy_and_117_m5a_admissions_remain_unchanged():
-    policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    policy = accepted_policy(ROOT)
     prefix = policy["waivers"][:3220]
     fingerprint = hashlib.sha256(json.dumps(prefix, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     assert len(prefix) == 3220 and fingerprint == "1e513fa6d8f8e7b991750d20060547dadfc434887ea105cf7a97b7fd9f540163", \
@@ -31,7 +34,7 @@ def test_all_3103_legacy_and_117_m5a_admissions_remain_unchanged():
 
 
 def test_all_287_m5a_and_m5a2_historical_admissions_remain_unchanged():
-    policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    policy = accepted_policy(ROOT)
     rows = [row for row in policy["waivers"] if row["id"].startswith(("M5A-", "M5A2-"))]
     fingerprint = hashlib.sha256(json.dumps(rows, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     assert len(rows) == 287 and fingerprint == "8c58d2cbd3c7051c972c46d742d824ca1d629ccf613f1d22587bbe11a061591c", \

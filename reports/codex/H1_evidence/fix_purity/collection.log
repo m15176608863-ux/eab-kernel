@@ -1,0 +1,37 @@
+tests/test_kernel_purity.py::test_kernel_domain_purity
+tests/test_kernel_purity.py::test_kernel_purity_rejects_actual_source_mutations[from eab.adapters import bdda2d\n-forbidden import path]
+tests/test_kernel_purity.py::test_kernel_purity_rejects_actual_source_mutations[mtype = 0\n-domain token mtype]
+tests/test_kernel_purity.py::test_kernel_purity_follows_transitive_imports
+tests/test_kernel_purity.py::test_kernel_domain_vocabulary_covers_required_tokens_and_spelling
+tests/test_kernel_purity.py::test_only_real_docstrings_are_exempt
+tests/test_kernel_purity.py::test_parent_package_imports_are_checked_for_every_kernel_module
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-joints = 1\n-domain token joint]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-rocks = 1\n-domain token rock]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-m4 = 1\nm6 = 2\n-domain token m4]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-tuple7 = 1\n-domain token tuple7]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-legacy_slot = 1\n-domain token legacy,slot]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-zsto = 1\n-domain token zsto]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-lock_second = 1\n-domain token lock_second]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-bolt_force = 1\n-domain token bolt]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-out_csv_z = 1\n-domain token csv]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-m_type = 1\n-domain token mtype]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-ddamotion = 1\n-domain token dda]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-bddacover = 1\n-domain token bdda,dda]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-tiaprism = 1\n-domain token tia]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-csvexport = 1\n-domain token csv]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-zstorecord = 1\n-domain token zsto]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-df06state = 1\n-domain token df06]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-payload = b'df06'\n-domain token df06]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-label = '\u5ca9\u4f53\u56f4\u5ca9\u65ad\u5c42\u5ca9\u7206'\n-domain token]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-def probe(value):\n    match value:\n        case complex(mtype=0):\n            return 1\n-domain token mtype]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[dda_probe.py-value = 1\n-domain module token dda]
+tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[tia_prism/probe.py-value = 1\n-domain module token tia]
+tests/test_kernel_purity.py::test_shared_contract_modules_are_lexically_scanned[contact_record.py]
+tests/test_kernel_purity.py::test_shared_contract_modules_are_lexically_scanned[numeric_decode.py]
+tests/test_kernel_purity.py::test_shared_contract_modules_are_lexically_scanned[__init__.py]
+tests/test_kernel_purity.py::test_contract_field_allowlist_is_site_specific_and_documented
+tests/test_kernel_purity.py::test_language_slots_exception_is_not_a_slot_variable_exemption
+tests/test_kernel_purity.py::test_static_dynamic_import_spellings_reach_forbidden_packages[import importlib\nvalue = importlib.import_module('eab.' + 'adapters')\n]
+tests/test_kernel_purity.py::test_static_dynamic_import_spellings_reach_forbidden_packages[import sys\nvalue = sys.modules['eab.readers']\n]
+
+35 tests collected in 0.04s

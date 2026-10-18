@@ -1,0 +1,127 @@
+{
+  "schema": "h1-source-hash-retirement-v2",
+  "complete": true,
+  "retired_test_cells": 5,
+  "new_test_cells": 4,
+  "net_test_count_change": -1,
+  "retired_nodes": [
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_frozen_summaries_bind_every_runtime_transitive_source_at_both_ends",
+      "cells": 2
+    },
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_changing_any_transitive_source_file_in_a_scratch_copy_is_rejected",
+      "cells": 2
+    },
+    {
+      "path": "tests/test_m5c_combined_evidence.py",
+      "name": "test_combined_join_rejects_incomplete_or_inconsistent_evidence_without_publishing[research_wrong_sources-hash mismatch]",
+      "cells": 1
+    }
+  ],
+  "equal_count_changes": [
+    {
+      "old": "test_frozen_full_computation_is_bound_to_current_production_sources",
+      "new": "test_frozen_full_computation_retains_historical_coverage"
+    },
+    {
+      "old": "test_frozen_family_products_are_distinct_and_bound_to_current_source",
+      "new": "test_frozen_family_products_are_distinct_and_retain_historical_revalidation"
+    },
+    {
+      "old": "test_frozen_combined_summary_has_complete_cohorts_current_sources_and_bound_upstream_summaries",
+      "new": "test_frozen_combined_summary_has_complete_cohorts_and_bound_upstream_data"
+    },
+    {
+      "old": "test_publication_closure_drift_rejects_and_restores_every_written_target[source_hashes-*]",
+      "new": "test_publication_closure_drift_rejects_and_restores_every_written_target[inherited_stream_hashes-*]",
+      "cells": 5
+    }
+  ],
+  "new_nodes": [
+    "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval",
+    "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect",
+    "tests/test_h1_frozen_data.py::test_frozen_data_hashes_are_preserved_without_current_source_pins",
+    "tests/test_h1_frozen_data.py::test_frozen_data_integrity_rejects_an_actual_same_size_input_edit"
+  ],
+  "fixed_subset_verifications": [
+    {
+      "log": "hash_retirement_targeted.log",
+      "last_line": "96 passed in 10.22s",
+      "scope": "136 immutable data files, M5b 5 real examples + endpoint extrema, R3 1 real example + internal tooth, M5c joins, M5d publication, M4c small geometry examples"
+    },
+    {
+      "log": "hash_retirement_m4_m5_subset.log",
+      "last_line": "41 passed in 18.06s",
+      "scope": "M4c first-frame per 15 cases, M5a first-block per 15 + 3 real rotating pairs, 4 focused rotating ledgers, data integrity"
+    },
+    {
+      "log": "hash_gzip_rebind.log",
+      "last_line": "4 passed in 0.45s",
+      "scope": "four focused rotating ledgers after exact-source preservation and gzip import rebinding"
+    }
+  ],
+  "new_test_static_scan": {
+    "tests/test_h1_frozen_data.py": 0,
+    "tests/test_h1_frozen_semantics.py": 0
+  },
+  "full_replay_performed": false,
+  "frozen_numerical_data_recomputed": false,
+  "historical_json_bytes_modified": false,
+  "input_count": 137,
+  "input_bytes": 12445253,
+  "largest_input_bytes": 834022,
+  "producing_commit_fields": "unknown: no direct original producer commit/version record",
+  "source_equivalent_commit_inferences": 23,
+  "detailed_inventory": "docs/frozen_evidence.md",
+  "preserved_checks": [
+    "data SHA256/bytes",
+    "semantic exact labels/time/state/counts",
+    "actual-run start/end source stability only",
+    "archived executed-source export self-integrity",
+    "static admission authorization handled separately by mechanical rekey"
+  ],
+  "notes": [
+    "No current-source hash matching remains in active frozen-data tests.",
+    "No assert_current_sources API remains; assert_run_sources_unchanged compares two same-run snapshots without reading current source.",
+    "History finalizers still require explicitly restored archived input artifacts; no claim that every old historical CLI is a standalone current test dependency."
+  ],
+  "restored_nodes": [
+    {
+      "path": "tests/test_m4c_fix_replay.py",
+      "name": "test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys",
+      "cells": 1
+    },
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_new_runtime_import_after_start_invalidates_the_sealed_closure",
+      "cells": 1
+    },
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_source_binding_rejects_parent_traversal_even_with_matching_content",
+      "cells": 1
+    },
+    {
+      "path": "tests/test_m5c_policy_binding.py",
+      "name": "test_runtime_source_closure_matches_independent_import_origins_and_kills_omission",
+      "cells": 4
+    }
+  ],
+  "revision": "H1-fix",
+  "new_node_categories": {
+    "data_integrity_not_semantics": [
+      "tests/test_h1_frozen_data.py::test_frozen_data_hashes_are_preserved_without_current_source_pins",
+      "tests/test_h1_frozen_data.py::test_frozen_data_integrity_rejects_an_actual_same_size_input_edit"
+    ],
+    "r3_at_frozen_label_and_interval": [
+      "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval",
+      "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_kills_an_internal_radius_budget_defect"
+    ]
+  },
+  "fixed_subset_verifications_scope": "Historical H1-v1 runs; H1-fix current checks and restored guards are in fix_verification/summary.json and fix_fast/summary.json.",
+  "h1_fix_verification": "fix_verification/summary.json",
+  "r3_scope": "Reexecutes two certificates and legacy counts at frozen labels and time intervals; does not discover first entrance labels or time."
+}

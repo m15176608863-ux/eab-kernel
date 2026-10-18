@@ -363,7 +363,7 @@ class Polyhedron:
         d = exact_edge_vector(self, e)
         if d == (0.0, 0.0, 0.0):
             raise ValueError(f"zero-length edge {e} (consecutive duplicate vertex at {self.verts[e[0]]}); "
-                             f"strip duplicates at the reader boundary (readers.bdda_geom.strip_duplicate_vertices)")
+                             f"strip duplicates at the input boundary")
         return unit(d)
 
     def dihedral_turn(self, e: tuple[int, int]) -> float:

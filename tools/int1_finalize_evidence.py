@@ -106,16 +106,16 @@ def main():
           baseline_rules=dict(Counter(r["rule"] for r in seam_policy["waivers"])),
           final_rules=dict(Counter(r["rule"] for r in policy["waivers"]))))
 
-    # Compare the executed frozen source to both its manifest and current files.
+    # Verify the executed export; compare only frozen data with current files.
     from m5a2_run_gates import export_mismatches
     source = Path(final["source"])
     manifest = read(Path(final["manifest"]))
     executed_mismatches = export_mismatches(source, manifest)
     generated = lambda p: p.startswith("reports/codex/INT1_evidence/") or p == "reports/codex/INT1_report.md"
-    current_mismatches = [r["path"] for r in manifest if not generated(r["path"])
+    current_mismatches = [r["path"] for r in manifest if r["path"].startswith("fixtures/")
                           and (not (ROOT / r["path"]).is_file() or digest(ROOT / r["path"]) != r["sha256"])]
     names = set(filter(None, git("ls-files", "-z", "--cached", "--others", "--exclude-standard").decode("utf-8").split("\0")))
-    missing = sorted(n for n in names if not generated(n) and n not in {r["path"] for r in manifest})
+    missing = sorted(n for n in names if n.startswith("fixtures/") and n not in {r["path"] for r in manifest})
     changed = set(filter(None, (git("diff", "--name-only", "-z") + git("ls-files", "--others", "--exclude-standard", "-z")).decode("utf-8").split("\0")))
     errors, artifacts = [], []
     for name in sorted(changed):

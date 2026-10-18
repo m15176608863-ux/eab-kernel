@@ -1,0 +1,418 @@
+{
+  "schema": "eab.wo_h1.node_delta.v2",
+  "basis": "h1-v1",
+  "complete": true,
+  "scope": "Exact collect-only node accounting; this is not evidence of execution or passing tests.",
+  "old": {
+    "path": "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\fix_baseline\\collection.txt",
+    "encoding": "utf-8-sig",
+    "sha256": "f0f309c6f11a2798c97cf6a218fcd74c693a242ac3ff82c981634ea0ef4a9a1c",
+    "bytes": 1524898,
+    "node_count": 13907,
+    "unique_node_count": 13907,
+    "reported_collection_totals": [
+      13907
+    ],
+    "duplicate_nodes": [],
+    "collection_errors": []
+  },
+  "new": {
+    "path": "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\fix_final\\collection.txt",
+    "encoding": "utf-8-sig",
+    "sha256": "cfe2c7bf8a217e115c06690c6304c6e33f76f119d10a87792e5d95efcb9b7281",
+    "bytes": 1529873,
+    "node_count": 13944,
+    "unique_node_count": 13944,
+    "reported_collection_totals": [
+      13944
+    ],
+    "duplicate_nodes": [],
+    "collection_errors": []
+  },
+  "counts": {
+    "unchanged": 13881,
+    "raw_removed": 26,
+    "raw_added": 63,
+    "retired_expected": 0,
+    "retired_observed": 0,
+    "new_expected": 37,
+    "new_observed": 37,
+    "renamed_expected": 26,
+    "renamed_observed": 26,
+    "net_change": 37
+  },
+  "retired": [],
+  "added_categories": {
+    "restored_live_run_guards": [
+      {
+        "node": "tests/test_m4c_fix_replay.py::test_frozen_hash_scope_is_exact_replay_import_closure_with_posix_keys",
+        "observed": true
+      },
+      {
+        "node": "tests/test_m5c_policy_binding.py::test_new_runtime_import_after_start_invalidates_the_sealed_closure",
+        "observed": true
+      },
+      {
+        "node": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_endpoint_replay]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[False-m5b_robust_replay]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_endpoint_replay]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_m5c_policy_binding.py::test_runtime_source_closure_matches_independent_import_origins_and_kills_omission[True-m5b_robust_replay]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_m5c_policy_binding.py::test_source_binding_rejects_parent_traversal_even_with_matching_content",
+        "observed": true
+      }
+    ],
+    "kernel_purity_expansion": [
+      {
+        "node": "tests/test_kernel_purity.py::test_contract_field_allowlist_is_site_specific_and_documented",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[dda_probe.py-value = 1\\n-domain module token dda]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-bddacover = 1\\n-domain token bdda,dda]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-bolt_force = 1\\n-domain token bolt]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-csvexport = 1\\n-domain token csv]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-ddamotion = 1\\n-domain token dda]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-def probe(value):\\n    match value:\\n        case complex(mtype=0):\\n            return 1\\n-domain token mtype]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-df06state = 1\\n-domain token df06]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-joints = 1\\n-domain token joint]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-label = '\\u5ca9\\u4f53\\u56f4\\u5ca9\\u65ad\\u5c42\\u5ca9\\u7206'\\n-domain token]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-legacy_slot = 1\\n-domain token legacy,slot]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-lock_second = 1\\n-domain token lock_second]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-m4 = 1\\nm6 = 2\\n-domain token m4]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-m_type = 1\\n-domain token mtype]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-out_csv_z = 1\\n-domain token csv]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-payload = b'df06'\\n-domain token df06]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-rocks = 1\\n-domain token rock]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-tiaprism = 1\\n-domain token tia]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-tuple7 = 1\\n-domain token tuple7]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-zsto = 1\\n-domain token zsto]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[probe.py-zstorecord = 1\\n-domain token zsto]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_domain_lexical_classes_reject_real_source_injections[tia_prism/probe.py-value = 1\\n-domain module token tia]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_language_slots_exception_is_not_a_slot_variable_exemption",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_parent_package_imports_are_checked_for_every_kernel_module",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_shared_contract_modules_are_lexically_scanned[__init__.py]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_shared_contract_modules_are_lexically_scanned[contact_record.py]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_shared_contract_modules_are_lexically_scanned[numeric_decode.py]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_static_dynamic_import_spellings_reach_forbidden_packages[import importlib\\nvalue = importlib.import_module('eab.' + 'adapters')\\n]",
+        "observed": true
+      },
+      {
+        "node": "tests/test_kernel_purity.py::test_static_dynamic_import_spellings_reach_forbidden_packages[import sys\\nvalue = sys.modules['eab.readers']\\n]",
+        "observed": true
+      }
+    ],
+    "c1_a_ring_mirror": [
+      {
+        "node": "tests/test_h1_adopted_semantics.py::test_c1_a_ring_convexity_uses_a_radius_when_b_is_exact",
+        "observed": true
+      }
+    ]
+  },
+  "renamed": [
+    {
+      "category": "r3_scope_correction",
+      "old": "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_exact_certificate_labels_and_counts",
+      "new": "tests/test_h1_frozen_semantics.py::test_fixed_real_r3_subset_reexecutes_certificates_and_counts_at_frozen_label_and_interval",
+      "reason": "冻结标签和区间上重执行两证书及计数，不声称重求首入标签或时间",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "test_of_test",
+      "old": "tests/test_h1_entrance_symmetry.py::test_symmetry_parameter_cells_produce_distinct_reference_geometries",
+      "new": "tests/test_h1_entrance_symmetry.py::test_of_test_symmetry_parameter_cells_produce_distinct_geometries",
+      "reason": "参数格多样性元测试，不计作独立生产语义门",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation0-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation0-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation0-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation0-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation0-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation0-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation1-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation1-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation1-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation1-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation1-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation1-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation2-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation2-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation2-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation2-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation2-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation2-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation3-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation3-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation3-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation3-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation0-translation3-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation3-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation0-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation0-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation0-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation0-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation0-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation0-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation1-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation1-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation1-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation1-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation1-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation1-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation2-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation2-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation2-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation2-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation2-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation2-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation3-scale0]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation3-scale0]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation3-scale1]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation3-scale1]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    },
+    {
+      "category": "displacement_symmetry_scope_correction",
+      "old": "tests/test_h1_entrance_symmetry.py::test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance[rotation1-translation3-scale2]",
+      "new": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation1-translation3-scale2]",
+      "reason": "改为位移形式且逐点对独立 oracle；补非凸、紧配拓扑及顺时针输入",
+      "old_removed": true,
+      "new_added": true
+    }
+  ],
+  "unmatched": {
+    "unknown_removed": [],
+    "unknown_added": [],
+    "missing_expected_removals": [],
+    "missing_expected_additions": []
+  },
+  "issues": []
+}

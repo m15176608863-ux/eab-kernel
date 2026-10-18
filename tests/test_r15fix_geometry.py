@@ -12,7 +12,7 @@ import sys
 import pytest
 
 from eab import margin as M
-from eab.kernel3d import interlock as I
+from eab.adapters import tia3d as I
 from eab.kernel3d.geom3 import Polyhedron
 from eab.numeric_domain import ConstructionDomainError
 

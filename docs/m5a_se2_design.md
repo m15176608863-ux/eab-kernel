@@ -334,7 +334,8 @@ n 可用坐标轴或任一初始边法向，选择不影响证明，只影响剪
 |---|---|---|
 | S. M. LaValle, *Planning Algorithms* (2006), Ch.4, §4.2.1、§4.3.1–4.3.3 | **已核原文（所列相关节，不是全书）** | 作者公开版 pp.145–146、156–166：平面位形、C-障碍定义、平移 Minkowski 差、含转动 VE/EV 接触与代数化；不据此声称本实现或五次轨迹定理已被该书证明。链接：[作者 Ch.4 PDF](https://lavalle.pl/planning/ch4.pdf)。 |
 | Basu, Pollack, Roy, *Algorithms in Real Algebraic Geometry*, 2nd ed. (2006) | **未核原文** | 本次仅核作者下载页及书目，不以此替代 §4 的 Sturm/gcd 证明或实现门。链接：[作者下载页](https://www.math.purdue.edu/~sbasu/bpr-posted1.html)。 |
-| 石根华 E(A,B) 及设计正本引用的历史实现论文 | **未核原文** | 本单未重新核对外文论文，不作优先性、还原原算法或真实 DDA 步内连续路径的主张。 |
+| 石根华 2015、2021 接触理论 | **已核原文（2026-10-19 提供的双读者核读与对照）** | 原文只定义平移入口块（2015 §3.2；2021 §3.2），转动靠逐步线性化（2015 §2.1、§5.1、§9.1）。本单 SE(2) 轨迹、五次事件与代数首入整体在原文范围之外；不宣称优先性或恢复真实 DDA 连续路径。详见 [归属总表](shi_attribution.md)。 |
+| 设计正本引用的其他历史实现论文 | **未核原文** | 石根华两篇的核读不自动升级其他论文的阅读状态。 |
 
 本地背景已读 `docs/m3_global_entrance_design.md`、`docs/m4c_motion_entrance_design.md`、
 `docs/m4c_difference_ledger.md`、`reports/codex/M3_report.md`、`reports/codex/M4c_report.md`、

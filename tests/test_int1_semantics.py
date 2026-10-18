@@ -13,7 +13,7 @@ from fractions import Fraction as F
 
 import pytest
 
-from eab.kernel2d import affine_motion as affine
+from eab.adapters import bdda2d_affine as affine
 from eab.kernel2d import algebraic as alg
 from eab.kernel2d import se2
 from mutation_support import mutated_function, replace_module_callable

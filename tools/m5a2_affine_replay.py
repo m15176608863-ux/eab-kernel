@@ -22,7 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
 import m5a_se2_replay as rigid
 from eab.construction import scalar_rational, sqrt_rational
-from eab.kernel2d.affine_motion import DDAAffineMotion, fit_affine
+from eab.adapters.bdda2d_affine import DDAAffineMotion
+from eab.kernel2d.affine_motion import fit_affine
 from eab.kernel2d import g0_oracle as oracle
 
 EVIDENCE = ROOT / "reports/codex/M5a2_evidence"

@@ -1,4 +1,4 @@
-﻿"""E5b exact earliest-event, certificate, mutation and cache gates.
+"""E5b exact earliest-event, certificate, mutation and cache gates.
 
 Main wall oracle uses only test-only integer temporal triangle SAT and parity;
 profile oracle uses independently triangulated star tetrahedra with swept SAT.
@@ -10,7 +10,7 @@ import math
 import pytest
 import test_interlock_walls as W
 from e5b_wall_oracle import earliest_wall_escape, earliest_star_escape
-from eab.kernel3d import interlock as I
+from eab.adapters import tia3d as I
 from eab.kernel3d import exact_sweep as S
 from eab.kernel3d.geom3 import Polyhedron,box
 

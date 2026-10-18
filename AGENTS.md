@@ -1,99 +1,64 @@
-# AGENTS.md — eab-kernel 常驻纪律
+# AGENTS.md — eab 接触引擎常驻纪律
 
-本仓库是"统一接触内核"（石根华入口块 E(A,B) 理论的一份独立实现，兼姊妹三线里三维接触枚举的一条独立 oracle 通道）。设计文档正本：`D:\E(A, B)\07 程序设计·统一接触内核方案.md`。
+本仓库实现域无关接触引擎；Python 版是参照实现兼裁判，C++ 引擎 eab2 规划中。它是石根华入口块理论的一份独立实现，不作实现优先性或姊妹对账通道序数宣传。原文归属见 [归属总表](docs/shi_attribution.md)，二手正本订正见 [勘误](docs/canon_errata_20261019.md)。
+设计正本 `D:/E(A, B)/07 程序设计·统一接触内核方案.md` 只读；旧纪律及事故叙事完整保存在 [历史副本](docs/history/AGENTS_through_20261019.md)，不再反复堆进当前入口。
 
-> **订正（2026-09-24）**：原文写"E(A,B) 理论的**第一份实现**"，不成立——`D:\E(A, B)\00` §3.3（及第七节"替代入口"第 3 条）
-> 引的 Zhao et al. 2020（DDA + 4D-LSM 耦合），以及第八节文献清单"圈内实现与批评"里的 Zheng, Jiao et al. 2016
-> （该表标为"首个三维入口块实现"）、Feng & Tan 2020、Ni et al. 2020 等，都是更早或同期的实现
-> （`docs/canon_map.md` 第七节第三层已指出）。R7FIX 进一步撤掉对账通道的序数性宣传；这里只指姊妹三线之间的独立对账通道，不涉及学术优先性。
+## 1. 范围与只读红线
 
-## 1. 红线：第四个独立仓库，姊妹三线只读
+1. **零姊妹代码依赖**：`src/eab` 不导入 `D:/b-DDA`、`C:/3DDA`、`D:/3-b-dda` 或导师 DDA4.x。对账只读导出文件；入库 `fixtures/` 后回归不依赖任何姊妹 exe 或源码。
+2. **姊妹仓库只读**：不写、不删、不作 Git 操作。确需新导出时，在本仓库 `tools/` 写编排，把 exe 与输入复制到获准 scratch 沙箱运行，再复制产物到 `fixtures/`。姊妹缺陷只记 `docs/sibling_observations.md`。
+3. **影子边界**：本仓库的几何结果不等于姊妹力学轨迹等价；切换开关与现有求解器修改只能由各线所有者决定。
+4. **按工单限定写域**：不擅自 commit / push / reset / checkout / stash / worktree / branch；需要新鲜树验证时由所有者安排，未经执行不得宣称已做。
+5. **文件交付**：凡生成、修改、导出、归档的文件或目录，回复给可点击 Markdown 链接；Windows 使用 `file:///D:/...`。多项列关键 3–8 链接，其余给清单链接。
 
-1. **零代码依赖**：`src/eab` 不 import `D:\b-DDA`、`C:\3DDA`、`D:\3-b-dda` 的任何模块，也不 import 导师线 DDA4.x。对账只消费它们的**导出文件**（dump/探针/快照），快照入库 `fixtures/` 后回归不依赖任何 exe 或姊妹源码。
-2. **对姊妹仓库一律只读**：不写入、不删除、不 git 操作。需要它们生成新导出时，在本仓库 `tools/` 里写编排脚本，把 exe 与输入**复制**到 scratchpad 沙箱运行，产物再复制回 `fixtures/`。
-3. **现有内核语义零修改**：本仓库以影子运行（shadow-run）挂到三条线；切换开关只在各线自己的仓库、由所有者决定。
-4. 姊妹仓库的缺陷记入 `docs/sibling_observations.md`，不代为修改。
+## 2. 内核纯度与分层
 
-## 2. 门（改动必跑）
+**内核范围**：`src/eab/` 下的 `predicates`、`construction`、`numeric_domain`、`rational3`、`dual`、`lp`、`margin`、`limit`、`limit_multi`、`oracle_construction`、`kernel2d`、`kernel3d` 及其全部子模块。
 
-- `python -m pytest -q`（契约往返 + 读取器确定性）
-- 阶段门见设计文档第五节：G0 自证（暴力成员谓词）/ G1 二维同构 / G2 三维同构 / G3 对偶 / G4 活动集 / G5 差异台账。
-- **门要有牙**：新加看护算例必须把缺陷重新引入一次、确认它会报红；参数化的门加"产物互异"断言。
-  （2026-09-24 补）**牙要穿过被测路径**：缺陷注入到被测代码内部，不要在它的产出之后追加假数据。
-  反例：G2 的 VF/FV 带内检测起初只在"枚举之后追加的假盖"上测过，把 `compare()` 的枚举窗口改回去，
-  整套照绿（第二轮验证判 NO_TEETH）；6f157ac 改成在内核里打缺陷
-  （`tests/test_g2_bdda3d.py::test_g2_band_catches_a_real_kernel_defect_through_enumeration`）。
-  （2026-09-24 补）**变异报红后要看是哪条断言红、为什么红**：红的必须是看护该缺陷的断言，而不是一条碰巧依赖求解器取哪个顶点的脆断言。
-  反例：b26d7f5 的"力矩反号"变异在对称参考点上只是接触列重排（同一个 LP），它弄红的 2 格是"滑动机构无转动"这条非不变量断言，
-  提交说明却把它记成"其余全绿"；8376ec2 删掉该断言、改读对偶最优面的不变量
-  （`tests/test_end_to_end_cb2.py::test_failure_mode_is_read_off_invariants_of_the_dual_face`）。
-  上面两例里的 6f157ac、b26d7f5、8376ec2 都是 b1bbd27 合并之后直接进 main 的，**未经独立验证者复核**，待 G6。
-- **新路径守同构门，不守逐字节门**：盖枚举顺序天然不同于 legacy（df04 候选序 / df05 平局 / df06 匹配序"即物理"）。
+- 内核不得出现域语义标识符或非 docstring 字符串：DDA/BDDA/TIA/TF、岩石/节理，以及 legacy 接触表语义（`mtype`、`m4/m6` 槽位、`df04/df05/df06/df07`、`out.csv` 的 z 格式）。docstring 可以把 DDA 作为适配器示例提及。
+- 纯度门 `tests/test_kernel_purity.py` 按下划线、驼峰与大小写不敏感切词，保留字母数字串，并检查复数、小写拼接、bytes 常量与模块路径；起始禁词至少为 `dda bdda tia tf rock joint mtype df04 df05 df06 df07`，增补 `legacy zsto lock_second bolt m4 m6 csv slot tuple7 岩体 围岩 断层 岩爆`；只可增补，不可删减。词法扫描同时包含每次内核导入执行的 `eab/__init__.py`、`contact_record.py`、`numeric_decode.py`，不作整模块豁免。
+- 窄白名单及理由随门保存：`contact_record` 的现有 `joint_material` 仅允许记录字段与解码键两个 AST 站点（保留序列化合同，不是引擎码）；`dataclass(slots=...)` 仅属语言关键字；`initial/partial/potential/spatial/tangential/exponential/differential` 等普通数学词不因含 `tia` 子串误报。白名单不豁免同名新增变量或字符串。
+- 内核的静态 import 图不得到达 `eab.adapters` / `eab.readers`。禁止在旧内核位置留下导入适配器的兼容转发模块；调用方和测试使用新路径。
+- L5 域问题放在 `adapters/`：TIA 逃逸/剪胀剖面、各引擎状态码和接触表映射、DDA 锚定与 z/槽位解析。通用路径代数、精确几何和证书数学留在内核。
+- `contact_record.py` 只留域无关枚举与记录；适配器消费契约，不把引擎码倒灌进公共契约。
+- 新路径守**同构语义门**而不是逐字节/盖枚举序门；原 legacy 的候选序、平局序、匹配序属于适配器解释。
 
-## 2a. 审查后的常驻纪律（2026-09-21 定 A/B/C 与 G6，2026-09-24 补 D/E，2026-09-27 补 F）
+## 3. 验证与成本
 
-出处：`docs/plan_20260921.md` 第一节、`reports/audit_20260921.md`。每个里程碑都受它们约束。
+- 日常改动跑快档：`python tools/h1_run_gates.py --name <新的快档名>`；也可用 `python -m pytest -q -p no:cacheprovider --basetemp <本单证据目录>/tmp/pytest_fast`。默认不执行 `slow`；目标单进程约 5 分钟以内，每个 `src/eab` 模块至少由一个快档测试导入并执行。
+- 全档包含快档和慢档：`python tools/h1_run_gates.py --name final --runslow`，由运行器固定四分片；普通 pytest 的 `--runslow` 同样包含快慢全档；单跑慢档时 `-m slow` 必须配 `--runslow`（否则默认过滤后可能收集为 0），且不能代替快慢全档；执行节点多重集合必须等于收集节点，0 skip、0 failed。
+- 带逐模块实际执行核对的 H1 运行器需 Python 3.12+；缺少运行时监测能力必须失败，不得伪报覆盖。
+- pytest 均禁 cacheprovider 并显式指定 basetemp。运行器把 TEMP/TMP 指向本单证据 tmp；测试本身不得依赖 TEMP 的具体位置。
+- **成本上限**：一单一线；长跑先估时。全档只在开工基线与收尾各跑一次，中间用定向门；禁止为文档整理重算全量冻结证据或全量回放。运行被中断则该次作废重跑，不拼接日志。超过工单时间预算按 PARTIAL 明列未完成项。
+- **静态构造准入冻结**：工具继续跑且保持 0 违例；H1 起不新增准入。搬家只机械重键，须证明旧新键一一对应、同一 AST 站点与同一函数源码、仅模块路径变化，条目总数不变，保存脚本与映射。静态零诊断不是数值安全证明。
+- **冻结证据不钉当前源码**：保存数据、产生它的 Git 提交号与工具版本；回归用固定小子集实际重跑比较状态、标签、精确时间和计数。不准仅改记录哈希让搬家过门。数据文件的完整性哈希与来源元数据仍保留。
+- 测试输入放 `fixtures/` 或 `tests/data/`；大型历史证据放仓库外，映射及逐文件 SHA256 见 `reports/EVIDENCE_ARCHIVE.md`。被跟踪单文件不得超过 1 MB，明确理由的允许列表除外。
+- 阶段门保留 G0 独立自证、G1 二维同构、G2 三维同构、G3 对偶、G4 活动集、G5 差异台账。
+- **门要有牙**：缺陷须注入被测代码内部，不得在产出后追加假数据；确认是守护目标缺陷的语义断言报红，不是源码哈希或偶然解序。参数化门另核产物互异。
 
-- **A · oracle 不得与被测代码共用几何原语。** 每道 G0 类门在 docstring 里写明"oracle 用了哪些原语、与被测对象不重合"。
-  做不到零共用的对照（例如暴力二分逃逸高度与被测路径共用 `polyhedra_overlap`）只能当佐证，不能当主 oracle。
-- **B · 参数化按构造覆盖三类格子**：至少一个分界点（如 μ = w/2h）、一个非对称/一般位置输入（如 nx=5 而不只 nx=4）、
-  一个尺度变化输入（荷载与几何各自缩放）。09-21 的 critical 与多条 major 都是"参数恰好避开了失败格子"。
-- **C · 声称先门后文。** README/reports 里任何带 ✔ 的句子、docstring 里的任何性质陈述，都要指向一个以该声称命名的测试；
-  指不出来就不写。
-- **D · 里程碑的绿以新鲜 git worktree 为准，主树的绿不算数。** 每个里程碑收尾、每次合并之后，在新建的 worktree
-  （或全新克隆）里跑全套，必须全绿。缘由（cc5d7cf）：10 个 Phase 0 夹具入库时被系统级 `core.autocrlf=true`
-  规范成 LF，而 `fixtures/PROVENANCE.json` 记的是 CRLF 原件的哈希；主树的工作副本还是 CRLF、git 的 stat 缓存让
-  `git status` 显示干净，所以溯源门只在这台机器的主树上是绿的，GitHub 克隆下来自己的溯源门就是红的。
-  09-21 的六路审查全在主树里跑，一路都没发现。现在仓库有 `.gitattributes`（`* -text`）并在本地设 `core.autocrlf=false`。
-- **E · 镜像/中心对称位形会藏住符号错误。** 凡涉及力矩、参考点、法向朝向、接触侧的门，参数化必须含一个
-  **非对称参考点**（或打破对称的位形）。缘由（b26d7f5）：cb2 的四个接触点关于原点中心对称，"接触列力矩反号"
-  与"接触列忘减参考点"两种缺陷在原点取对称中心时不可见；
-  `tests/test_end_to_end_cb2.py::test_capacity_is_independent_of_the_moment_reference_point`
-  把原点挪到 (5,−3,2)、(−0.7,0.4,−11) 后两种变异都报红。
-  （2026-09-27 补，G6 第二轮）M0.2 起 limit_load 总在**接触形心**求解，挪调用方原点对 LP 已不可见——cb2 的形心就是
-  对称中心，LP 列代码丢了参考点，这道门照样全绿。所以"非对称参考点"要落到 LP **实际使用**的参考点上：让接触形心
-  离开原点（整块平移），并由自校验的静力一侧用独立构造的列核对平衡（`tests/test_limit_selfcheck.py`）。
-- **F · 刚体运动与单位不变性是每个几何/力学 API 的元门；阈值只许相对。** G6（09-24）6 条 critical 有 5 条同一个根因：
-  绝对容差遍布内核，而测试从不平移、从不旋转、从不放到工程坐标上。纪律 B 的"尺度格子"只把荷载与黏聚一起放大、
-  块体始终在原点且轴对齐，一条都碰不到。所以：
-  (1) 每个几何/力学 API 都要有元门：随机旋转 + 大平移（|t| ∈ {0, 1e3, 1e5}；三维几何门另含 1e6）+ 单位缩放下，结果必须按
-  应有的方式变换（距离 ×s、承载比不变、状态不变、标签一致置换）。门：`tests/test_invariance_geom.py`（m2-geom）、
-  `tests/test_invariance_2d.py`（m2-legacy）、`tests/test_invariance_limit.py`（m2-lp）、`tests/test_invariance_interlock.py`
-  （m2-theory）——M0.2 四组各自的不变性门（`test_kernel2d_review.py` 只是 09-18 对抗审查的点状回归门，不是不变性门）；
-  M0.3 另有特征尺度 ≪ 坐标量级的角落门：`tests/test_margin_resolution.py`（短棱 1e-8、间隙 1e-9、|t| = 1e6）；
-  (2) **阈值 = max(按问题尺度的相对量, 按舍入量级的噪声量)**：没有与问题无关的绝对数，也没有随条件数 κ 膨胀的量。
-  M0.2 LP 返修一、二踩过的五个坑每一个都违反了这条：逐列相对判据在正交列上是 噪声/噪声；噪声线 ∝ κ(B) 在病态基上
-  盖过真信号、静默早停；全局尺度判据放过目标很小时的次优；绝对可行性下限放过右端项 1e-11 的整行违反；跨行的全局
-  噪声项吞掉小尺度行。
-  (3) **判定必须可证正确时，阈值原则也不够。** 按 (2) 改完的六类阈值，复核者仍从两侧构造出静默错（纯对角缩放报无界、
-  相对差 1e-10 的可行 LP 报不可行……）。小规模问题改为**浮点只给候选、有理数精确核验**，派生量也要精确
-  （`src/eab/lp.py` 模块文档"契约"、`src/eab/limit.py` 模块文档"精确模型"）；阈值类缺陷在复核里超过两轮就该换这条路。
-- **G6 · 独立对抗审查是里程碑唯一的退出门。** 每个里程碑收尾跑一次与 09-21 同构的六路审查，
-  **0 critical、0 major 才算过**；声称在 G6 之后才许进 README。"测试全绿"不是退出判据。
+## 4. A–F 实质纪律与里程碑核查
 
-## 3. 数值纪律（从 bdda2 继承）
+- **A · oracle 独立**：G0 类门的 docstring 写出 oracle 的原语及与被测对象不重合之处；共用生产几何原语的对照只能作佐证，不能当主 oracle。
+- **B · 参数化覆盖**：至少一个分界点、一个非对称/一般位置输入、一个尺度变化输入；荷载与几何各自缩放，不以原点轴对齐的整齐格子代替覆盖。
+- **C · 先门后文**：README/reports 的已证/已实现性质陈述与 docstring 性质声明须指向具名测试；指不出就不写。README 的“已证明清单”只收有门守护的命题；无门命题只能进入“未证明 / 无门”栏，或在归属/证明表明确记“无门”，不得强凑手算算例作生产门。有限测试不冒充全输入域证明。
+- **D · 新鲜树可复现**：里程碑和合并后的最终绿须由所有者安排的新鲜 worktree/克隆核验；主树绿不能代替。工单禁止 Git 写时不自行建树，准确记录实际采用的字节副本/导出及其局限。保持 `.gitattributes` 与 `core.autocrlf=false` 的字节合同，不擅改设置。
+- **E · 打破对称**：力矩、参考点、法向和接触侧门必须含非对称参考点或位形；非对称要落在 LP **实际使用**的参考点上。接触形心求解时需整体平移使形心离开原点，并用独立构造列核平衡。
+- **F · 刚体与单位元门**：每个几何/力学 API 覆盖随机旋转、大平移（|t|∈{0,1e3,1e5}；三维另含 1e6）及单位缩放；距离按 s、承载比/状态不变、标签一致置换；另覆盖特征尺度远小于坐标量级的输入。具名元门：`tests/test_invariance_geom.py`、`tests/test_invariance_2d.py`、`tests/test_invariance_limit.py`、`tests/test_invariance_interlock.py`；分辨率角落门：`tests/test_margin_resolution.py`。
+  - 阈值只能为 `max(问题尺度相对量, 舍入量级噪声量)`，不得用无关绝对数、条件数 κ 膨胀量或跨行全局噪声吞掉小尺度真信号。
+  - 必须可证正确的小规模判定采用浮点候选 + 原始数据有理精确核验，派生量亦精确；阈值修补经两轮仍静默错时改策略，不无限加容差。
+- **里程碑对抗核查**：旧 G6 多路复审制退役；每个里程碑由 Claude 安排**一路**独立对抗核查。测试全绿本身不替代核查；核查 0 critical、0 major 才默认退出，若所有者另定例外须单独记录，不冒称核查通过或自动升级声称。
 
-- 标量泛型 `S ∈ {float, Dual}`：`val()` 只用于择支（开闭判定、主元、钳位），`is_exact_zero()` 看**全部**通道后才可跳过恒等更新；**禁止 `!= 0` 零跳过**（会静默丢导数，任何门都抓不到）。
-- 判据函数（primal-only）与本构函数（dual-through）在**签名上区分**。
-- （2026-09-24 补）**`Dual` 没有隐式 float 转换**：`float(d)`、`math.sin(d)` 等 `math.*`、`%` 格式化一律抛 TypeError，
-  响亮地失败，不再静默丢导数。择支用 `val()`，算术用 `eab.dual.sin / cos / sqrt / atan2`。
-  `Dual ** p` 在负底且 p 非整数时抛错（不再返回复数）；`atan2` 两个参数的导数通道宽度不同时抛错（不再静默截断）。
-  缘由：`Dual.__float__` 曾让 `math.sin(Dual)` 静默降成 float，`osteomorphic_block_generic` 默认 `sin_fn=math.sin`，
-  不传 `sin_fn` 时 ∂h/∂phase 被清零而数值逐位不变，任何值门都抓不到。
-  门：`tests/test_dual.py` 的 `test_implicit_float_conversion_of_a_dual_is_a_type_error`、
-  `test_percent_formatting_of_a_dual_is_a_type_error`、`test_pow_of_a_negative_base_to_a_fractional_power_is_an_error`、
-  `test_atan2_width_mismatch_is_an_error`；`tests/test_interlock_sensitivity.py::test_generic_block_default_sin_keeps_the_phase_derivative`。
-- （2026-09-27 改）**LP 求解器：答案对给定数据精确成立。** 浮点单纯形只给候选（状态 + 基），有理数层在原始数据上精确核验
-  三种证书（最优 = 原始 + 对偶可行、无界 = 可行 + 下降射线、不可行 = Farkas），不过就用有理数单纯形走完；浮点层的数值失败
-  只算"没有候选"。调用方在浮点里算不精确的**派生量**要精确地给（`lp.solve(..., exact=)`；极限分析的力矩列、荷载平移、
-  黏聚上限都是这样给的）。缘由：M0.2 的 LP 经五轮独立复核，前两轮在浮点阈值上修补，每轮都被找到静默错；精确核验之后
-  第三轮又发现"只对浮点派生数据精确"（夹持顶点报承载无限）。门：`tests/test_lp_certificates.py`（含"浮点层说谎"的注入门）。
-  取代 09-24 的"要么答对、要么抛错"（`tests/test_lp_fail_loud.py` 仍在，现在那些格子一律答对）。
-- 浮点运算次序即契约；批量改文本以保留换行符方式读写（`newline=''`）。
-- 阈值先测后钉；产物自报口径（`source`/`observable` 字段）。
+## 5. 数值合同（不得因搬家改变）
 
-## 4. 术语（与设计文档一致）
+- 泛型标量 `S∈{float,Dual}`：`val()` 只用于择支；仅 `is_exact_zero()` 检查全部通道后可跳过恒等更新。禁止用 `!=0` 作零跳过而丢导数。
+- 判据（primal-only）与本构（dual-through）在签名区分。`Dual` 无隐式 float 转换，`float(d)`、`math.*(d)`、`%` 数值格式化抛 TypeError；用 `eab.dual.sin/cos/sqrt/atan2` 做泛型算术。
+- `Dual**p` 的负底非整数幂报错；`atan2` 导数宽度不等报错，不截断。门见 `tests/test_dual.py` 四项转换/幂/宽度门及 `tests/test_interlock_sensitivity.py::test_generic_block_default_sin_keeps_the_phase_derivative`。
+- **LP 对给定数据精确成立**：浮点只给状态/基候选；有理层在原始模型核最优（原/对偶可行）、无界（可行 + 下降射线）、不可行（Farkas）证书，未通过则有理单纯形继续。数值失败只算无候选。力矩、荷载平移、黏聚上限等派生量经 `lp.solve(..., exact=)` 精确提供。门 `tests/test_lp_certificates.py` 包含浮点说谎注入。
+- 浮点运算次序即合同；读取已有文件后再编辑，UTF-8 无 BOM、不混换行，批量编辑用 `newline=''`。不覆盖无关用户修改。
+- **阈值先测后钉**；输出自报 `source`/`observable`；精确证书与浮点显示分层，不拿显示舍入结果再当原证书。
 
-- **盖 cover**：∂E(A,B) 的一片，带模态标签（谁碰谁）。类型枚举见 `src/eab/contact_record.py::CoverType`。
-- **首入 first entrance**：集值点上的确定性裁决。
-- **ContactRecord**：六种现有表示的公共语言，字段按生命周期分四组（身份 / 步内冻结 / 状态 / 转移）。
+## 6. 术语与归属
+
+- **盖 cover**：带模态标签的接触候选片；一般凹块未裁剪盖可落在 E 内部，不能一概称为 ∂E 的一片。凸等号、一般包含及裁剪前提见 [归属总表](docs/shi_attribution.md)。
+- **首入 first entrance**：参考点从 E 外首次到达 ∂E 的事件（2015 摘要第 (2) 条、§10、§13）；本仓库沿运动方向精确计算并报出全部并列；原文没有选一个的规则。
+- **ContactRecord**：域无关公共记录，字段按生命周期分身份、步内冻结、状态、转移；各引擎码和表槽位留在适配器。

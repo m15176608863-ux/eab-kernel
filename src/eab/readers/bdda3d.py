@@ -15,9 +15,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from .numeric_decode import scalar as scalar_rational
-from .numeric_decode import decode_tree, integer, loads as loads_exact
-from ..contact_record import BDDA3D_COVER, BDDA3D_MODE, ContactRecord, CoverType, Feature, Mode
+from ..numeric_decode import scalar as scalar_rational
+from ..numeric_decode import decode_tree, integer, loads as loads_exact
+from eab.adapters.bdda3d import BDDA3D_COVER, BDDA3D_MODE
+from ..contact_record import ContactRecord, CoverType, Feature, Mode
 
 _KNOWN = {"etype", "bi", "bj", "refs", "owner", "nsign", "t1", "t2", "d1", "area",
           "fa", "coh", "tens", "m0init", "m0_0", "o3t", "slip_ref"}

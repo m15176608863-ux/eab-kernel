@@ -1,0 +1,117 @@
+{
+  "complete": true,
+  "baseline": "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\baseline_export",
+  "old_count": 3522,
+  "new_count": 3522,
+  "changed_rows": 114,
+  "unchanged_rows": 3408,
+  "same_ast_sites": true,
+  "same_function_sources": true,
+  "module_context_exceptions": [
+    {
+      "id": "R12b-L0008",
+      "old_path": "src/eab/contact_record.py",
+      "new_path": "src/eab/contact_record.py",
+      "function": "<module>",
+      "same_ast_site": true,
+      "same_function_source": false,
+      "context_change": "module-import-and-constant-relocation-only"
+    },
+    {
+      "id": "M5B-S0038",
+      "old_path": "src/eab/kernel2d/dda_motion.py",
+      "new_path": "src/eab/adapters/bdda2d_motion.py",
+      "function": "<module>",
+      "same_ast_site": true,
+      "same_function_source": false,
+      "context_change": "module-import-and-constant-relocation-only"
+    }
+  ],
+  "import_rekeys": {
+    "..readers.numeric_decode:integer": "..numeric_decode:integer",
+    ".frozen:frozen_lift": "..kernel3d.frozen:frozen_lift",
+    ".readers.numeric_decode:decode_tree": "..numeric_decode:decode_tree",
+    ".readers.numeric_decode:loads": "..numeric_decode:loads",
+    ".readers.numeric_decode:scalar": "..numeric_decode:scalar",
+    "eab.kernel3d.interlock": "eab.adapters.tia3d",
+    "eab.kernel3d.interlock:_cover_at": "eab.adapters.tia3d:_cover_at",
+    "eab.kernel3d.interlock:_normal_noise": "eab.adapters.tia3d:_normal_noise",
+    "eab.kernel3d.interlock:dilatancy_profile": "eab.adapters.tia3d:dilatancy_profile",
+    "eab.kernel3d.interlock:escape_candidates": "eab.adapters.tia3d:escape_candidates",
+    "eab.kernel3d.interlock:escape_height_brute": "eab.adapters.tia3d:escape_height_brute",
+    "eab.kernel3d.interlock:escape_height_covers": "eab.adapters.tia3d:escape_height_covers",
+    "eab.kernel3d.interlock:escape_height_from_frozen_cover": "eab.adapters.tia3d:escape_height_from_frozen_cover",
+    "eab.kernel3d.interlock:frozen_ee_sign": "eab.adapters.tia3d:frozen_ee_sign",
+    "eab.kernel3d:interlock": "eab.adapters:tia3d"
+  },
+  "member_rekeys": {
+    "import:eab.kernel3d:interlock._candidates": "import:eab.adapters:tia3d._candidates",
+    "import:eab.kernel3d:interlock._candidates_cached.cache_clear": "import:eab.adapters:tia3d._candidates_cached.cache_clear",
+    "import:eab.kernel3d:interlock._candidates_uncached": "import:eab.adapters:tia3d._candidates_uncached",
+    "import:eab.kernel3d:interlock._normal_noise": "import:eab.adapters:tia3d._normal_noise",
+    "import:eab.kernel3d:interlock.escape_height_brute": "import:eab.adapters:tia3d.escape_height_brute",
+    "import:eab.kernel3d:interlock.escape_height_covers": "import:eab.adapters:tia3d.escape_height_covers",
+    "import:eab.kernel3d:interlock.escape_height_from_frozen_cover": "import:eab.adapters:tia3d.escape_height_from_frozen_cover",
+    "import:eab.kernel3d:interlock.surface_events": "import:eab.adapters:tia3d.surface_events",
+    "module:eab.kernel3d.interlock.EscapeSolution": "module:eab.adapters.tia3d.EscapeSolution"
+  },
+  "scaffolding_import_rekeys": [
+    {
+      "path": "tests/test_int1_semantics.py",
+      "function": "inject_semantic_mutation",
+      "function_source_unchanged": true,
+      "import_only": true
+    },
+    {
+      "path": "tests/test_int1_semantics.py",
+      "function": "inject_semantic_mutation",
+      "function_source_unchanged": true,
+      "import_only": true
+    },
+    {
+      "path": "tests/test_int1_semantics.py",
+      "function": "inject_semantic_mutation",
+      "function_source_unchanged": true,
+      "import_only": true
+    }
+  ],
+  "historical_projection_fields": 142,
+  "historical_projection_file": "tools/exact_construction_relocations.json",
+  "production_definition_proof": {
+    "old_modules": 52,
+    "new_modules": 55,
+    "equal_definitions": 1074,
+    "equal_mapping_tables": 6,
+    "unmatched_new_definitions": 0,
+    "mathematical_ast_equal": true,
+    "diagnostic_text_exception": "geom3.Polyhedron.edge_dir: reader example -> input boundary",
+    "baseline": "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\baseline_export"
+  },
+  "counts": {
+    "imports": 648,
+    "members": 432,
+    "waivers": 3522,
+    "renewals": 106,
+    "mutation_instrumentation_reviews": 2
+  },
+  "h1_fix_addendum": {
+    "historical_proof_scope": "Original mechanical relocation at 476c5d6; original CSV/JSON preserved in fix_purity/*_v1.*",
+    "retired_import_keys": 13,
+    "retired_member_keys": 6,
+    "instrumentation_scope_source_edits": 1,
+    "csv_waiver_rows": 114,
+    "csv_retirement_rows": 19,
+    "csv_instrumentation_rows": 1,
+    "csv_total_rows": 134,
+    "current_docstring_context_proof": "fix_purity/comment_context_proof.json"
+  },
+  "h1_fix_comment_context_update": {
+    "evidence": "fix_purity/context_update.json",
+    "script": "fix_policy_context.py",
+    "original_relocation_proof_applies_to": "476c5d6",
+    "one_context_field_updated": true,
+    "same_executable_ast": true,
+    "new_admissions": 0,
+    "current_policy_historical_view_equals": "1ce9a91"
+  }
+}

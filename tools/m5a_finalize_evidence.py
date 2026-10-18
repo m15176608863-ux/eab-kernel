@@ -124,10 +124,10 @@ def main():
     # Audit the actually executed copy after the run, not just current source.
     executed_mismatches = [r["path"] for r in manifest if not (source/r["path"]).is_file()
                            or sha(source/r["path"]) != r["sha256"]]
-    important = [r for r in manifest if not generated_output(r["path"])]
+    important = [r for r in manifest if r["path"].startswith("fixtures/")]
     mismatches = [r["path"] for r in important if not (ROOT/r["path"]).is_file() or sha(ROOT/r["path"]) != r["sha256"]]
     files = set(filter(None, git("ls-files", "-z", "--cached", "--others", "--exclude-standard").split("\0")))
-    current = {p for p in files if not generated_output(p) and (ROOT/p).is_file()}
+    current = {p for p in files if p.startswith("fixtures/") and (ROOT/p).is_file()}
     missing = sorted(current-{r["path"] for r in important})
     write(EVIDENCE/"runtime_environment.json", dict(python=sys.version, executable=sys.executable,
           platform=platform.platform(), cpu_count=os.cpu_count(), temp=os.environ.get("TEMP"), tmp=os.environ.get("TMP"),

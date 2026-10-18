@@ -14,7 +14,8 @@ import pytest
 
 from eab.contact_record import ContactRecord, records_from_json, records_to_json
 from eab.numeric_domain import ConstructionDomainError
-from eab.readers import bdda3d, numeric_decode
+from eab.readers import bdda3d
+from eab import numeric_decode
 from tools import bdda3d_document
 
 

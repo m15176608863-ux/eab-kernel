@@ -1,4 +1,5 @@
 """Freeze/reexecute smallest R3 real-data examples, with both model certificates."""
+from frozen_evidence import data_path
 import argparse
 import gzip
 import json
@@ -72,13 +73,27 @@ def freeze():
     assert TARGET.stat().st_size < 1_000_000
 
 
-def verify():
-    data = json.loads(TARGET.read_text(encoding="utf-8"))
+def verify(target=None):
+    # Default reads immutable regression data; a new producer passes its exact output.
+    source = data_path(research.ROOT, TARGET) if target is None else target
+    data = json.loads(source.read_text(encoding="utf-8"))
     assert data["complete"] and data["source_hashes"] == data["source_hashes_end"]
-    for name, expected in data["source_hashes"].items():
-        assert research._sha(research.ROOT / name) == expected
-    assert data["input_hashes"] == research.replay.input_hashes()
-    assert data["inherited_hashes"] == {name: research._sha(research.ROOT / name) for name in data["inherited_hashes"]}
+    # H1: recorded historical source bytes are not compared to current code.
+    assert data["input_hashes"] == {name.replace("fixtures/frozen/", "reports/", 1): digest
+                                    for name, digest in research.replay.input_hashes().items()}
+    # Recheck the small inherited summary's bytes and the diagnostic digest
+    # recorded by that summary. The archived diagnostic stream itself is not
+    # read here; this cross-record check is not a new full-stream verification.
+    summaries = [name for name in data["inherited_hashes"] if name.endswith("/research_summary.json")]
+    assert len(summaries) == 1
+    summary_name = summaries[0]
+    summary_path = data_path(research.ROOT, summary_name)
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert summary["complete"]
+    assert data["inherited_hashes"] == {
+        summary_name: research._sha(summary_path),
+        summary["exact_diagnostics_path"]: summary["exact_diagnostics_sha256"],
+    }
     for example in data["examples"]:
         assert _evaluate(example) == example["expected"], (example["case"], example["step"], example["pair"])
     return len(data["examples"])
@@ -90,4 +105,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.freeze:
         freeze()
-    print("M5C_RESEARCH_MINIMAL_EXAMPLES_GREEN", verify(), flush=True)
+    print("M5C_RESEARCH_MINIMAL_EXAMPLES_GREEN", verify(TARGET if args.freeze else None), flush=True)

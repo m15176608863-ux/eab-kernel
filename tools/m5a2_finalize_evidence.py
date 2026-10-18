@@ -97,10 +97,10 @@ def main():
     from m5a2_run_gates import export_mismatches
     executed_mismatches = export_mismatches(source, frozen)
     generated = lambda name: name.startswith("reports/codex/M5a2_evidence/") or name == "reports/codex/M5a2_report.md"
-    source_mismatches = [row["path"] for row in frozen if not generated(row["path"])
+    source_mismatches = [row["path"] for row in frozen if row["path"].startswith("fixtures/")
                          and digest(ROOT / row["path"]) != row["sha256"]]
     names = set(filter(None, git("ls-files", "-z", "--cached", "--others", "--exclude-standard").split("\0")))
-    missing = sorted(name for name in names if not generated(name) and name not in {row["path"] for row in frozen})
+    missing = sorted(name for name in names if name.startswith("fixtures/") and name not in {row["path"] for row in frozen})
     audit = dict(audit="GREEN" if not (errors or executed_mismatches or source_mismatches or missing) else "RED",
                  old_3220_admissions_unchanged=True, new_admissions=len(policy["waivers"])-3220,
                  explicit_renewals=len(policy.get("renewals", [])), provenance_old_entries_unchanged=True,

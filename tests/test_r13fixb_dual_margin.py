@@ -14,7 +14,7 @@ import pytest
 from construction_oracle import scalar_exact, sqrt_exact
 from eab import dual, margin, limit, limit_multi
 from eab.kernel3d.geom3 import Polyhedron
-from eab.kernel3d import interlock
+from eab.adapters import tia3d as interlock
 from eab.kernel3d.exact_sweep import translate_exact
 from eab.numeric_domain import ConstructionDomainError
 
