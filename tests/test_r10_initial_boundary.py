@@ -11,7 +11,8 @@ import pytest
 
 from eab import margin
 from eab.kernel2d import entrance as entrance2
-from eab.kernel3d import entrance3, interlock
+from eab.kernel3d import entrance3
+from eab.adapters import tia3d as interlock
 from eab.kernel3d.geom3 import Polyhedron
 
 FACES = [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]

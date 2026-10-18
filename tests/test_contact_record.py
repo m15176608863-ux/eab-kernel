@@ -45,7 +45,9 @@ def test_validate_rejects_nonfinite_and_bad_kind():
 
 def test_raw_codes_survive_even_when_mode_vocabulary_collides():
     # 三家的 "3" 含义不同；统一词汇不同，raw 保留。
-    from eab import BDDA_MODE, BDDA3D_MODE, TF_MODE
+    from eab.adapters.bdda2d import BDDA_MODE
+    from eab.adapters.bdda3d import BDDA3D_MODE
+    from eab.adapters.tf import TF_MODE
     assert BDDA_MODE[3] is Mode.VV_CLOSED
     assert BDDA3D_MODE[3] is Mode.BONDED
     assert TF_MODE[3] is Mode.TENSION

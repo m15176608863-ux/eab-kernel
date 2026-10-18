@@ -1,0 +1,504 @@
+[
+ {
+  "key": "2015",
+  "paper": "石根华 (Shi GenHua). Contact theory. Science China Technological Sciences, 2015, 58(9): 1450–1496, doi:10.1007/s11431-015-5814-3。本地文件 D:/E(A, B)/papers/2015_Contact_theory.pdf，共 47 页，PDF 第 k 页对应期刊页 1449+k。它与用户 @ 的 C:\\Users\\m1517\\Downloads\\s11431-015-5814-3.pdf 是同一 DOI。读取方式：Read 工具渲染 PDF 失败（本机没有 pdftoppm），改用 PyMuPDF 逐页抽文本并渲染成 PNG。数学字体抽出来是乱码，所以公式一律对照页面图像核对。按 1–16、17–32、33–47 三段读完。全程只读，没有改动任何文件；临时文本和图像在 C:/Users/m1517/AppData/Local/Temp/claude/C--Agent--claude/659f270b-c2f6-43a9-9717-6dc28c605be4/scratchpad/ct2015/。引文纪律：全文只直接引用一句原文（不超过 15 词），其余均为意译，并标注节号和页码。数学式不属于引文，照原样转写。",
+  "structure": "1 Introduction (p.1450–1451)\n2 Geometric representations of angles and blocks (p.1451–1455)：2.1 Discontinuous computations；2.2 Related mathematical symbols；2.3 Algebraic operations of blocks（Minkowski 和与差）；2.4 Representation of solid angles；2.5 Inequality equations of angles；2.6 Representation of blocks；2.7 Structure of blocks（A(0)/A(1)/A(2)，cover system 定义）；2.8 Inequality equations of blocks\n3 Definition of the entrance block (p.1455–1458)：3.1 Relations of two blocks；3.2 Definition of entrance block；3.3 Entrance block and parallel movement；3.4 Entrance block of a block and a point；3.5 … a block and a ball；3.6 The entrance ball between two balls；3.7 Theorem of separation；3.8 Theorem of entrance；3.9 Theorem of distance；3.10 Theorem of lock；3.11 Examples of the entrance block\n4 Basic theorems of entrance block (p.1458–1461)：4.1 uniqueness；4.2 finite covers；4.3 including；4.4 union；4.5 symmetry；4.6 contact；4.7 removability；4.8 inner points；4.9 convex blocks\n5 Boundaries of the entrance solid angles of 2D solid angles (p.1461–1464)：5.1 Local entrance solid angle of 2D blocks；5.2 Existence of entrance solid angle boundary；5.3 Contact surface of 2D solid angles；5.4 Entrance of boundary vector to vector；5.5 Contact vectors of angle to angle contact；5.6 Finite covers of 2D parallel vector to vector entrance；5.7 Contact vectors of 2D entrance solid angle\n6 Contact vectors of 2D solid angles (p.1464–1469)：6.1 凸角与凹角；6.2 两凸角；6.3 圆角凸角与凹角；6.4 两个圆角凸角\n7 Boundaries of an entrance block of 2D blocks (p.1469–1472)：7.1 inner points；7.2 edge to edges；7.3 contact edges of 2D block to block contact；7.4 finite covers of 2D parallel edge to edge entrance；7.5 contact edges of 2D entrance block\n8 Contact edges of 2D blocks (p.1472–1476)：8.1 convex；8.2 general；8.3 Applications in 2D DDA；8.4 Applications in 2D NMM\n9 Boundaries of entrance solid angle of 3D solid angles (p.1476–1484)：9.1 Local entrance angle of 3D angles；9.2 Existence；9.3 inner points；9.4 boundary angle to angle；9.5 boundary angle to vector；9.6 3D vertex to boundary angle；9.7 3D boundary vector to vector；9.8 finite covers parallel boundary angle to vector；9.9 finite covers parallel boundary angle；9.10 Contact angles of 3D entrance solid angle\n10 Contact solid angles of 3D solid angles (p.1484–1488)：10.1 solid angle 与 half space；10.2 两个 3D 凸棱；10.3 凹棱与 3D 角；10.4 凸棱与 3D 角；10.5 两个 3D 凸角；10.6 两个 3D 一般角\n11 Boundaries of entrance block of 3D blocks (p.1488–1492)：11.1 inner points；11.2 boundary polygons；11.3 polygon to edge；11.4 vertex to polygon；11.5 edge to edge；11.6 finite covers parallel polygon to edge；11.7 finite covers parallel polygon；11.8 Contact polygons of 3D entrance blocks\n12 Contact polygons of 3D blocks (p.1492–1495)：12.1 two 3D convex blocks；12.2 two general 3D blocks（\"cutting\"）；12.3 Simple examples from 3D DDA\n13 Conclusions (p.1495–1496)；References 共 21 条 (p.1496)",
+  "answers": [
+   {
+    "q": "1. E(A,B) 的定义与记号方向：谁动谁不动、参考点在哪个块上、是 B⊕(−A) 还是 A⊕(−B)",
+    "answer": "定义（§3.2）：取块 A 的参考点 a0，E(A,B) = ∪_{a∈A,b∈B}(b − a + a0) = B − A + a0。\n\n谁动谁不动：a0 跟着 A 一起动，A 是动块，B 是固定块。原文意思是：A 只平移、不转动时，E 中每一点都是 A 与 B 有公共点时 a0 所处的一个位置（意译）。\n\n减号的含义（§2.3）：A − B := A + (−B) = ∪(a − b)，也就是 Minkowski 和意义下的差，不是 Pontryagin/Hadwiger 差。所以 E(A,B) = B ⊕ (−A) ⊕ {a0} = B ⊕ (−(A − a0))，方向是 B⊕(−A)，再平移 a0。这正等价于以 A 为“机器人”、a0 为参考点、B 为障碍物的 C-obstacle；这个对照是我的判断，原文没有这么说。\n\n参考点：a0 在 A 上（原文写“a reference point a0 of block A”）。§4.5 引入 B 的参考点 b0，对称定理为 E(A,B) = −E(B,A) + (a0 + b0)；取 a0 = b0 = 0 时 E(A,B) = −E(B,A)。\n\n配套结论：\n- §3.3：E(A+δ, B) = E(A, B)，参考点同步平移为 a0 + δ。\n- §3.4：A = a0 是一个点时，E = B。\n- §3.6：两球的入口块是以 b0 为心、半径 r1 + r2 的球。\n\n排版注意：§2.3 的 Minkowski 和印成了 “AB = ∪(a+b)”，加号疑似漏印。",
+    "where": "§2.3 p.1452（PDF p3）；§3.2–3.4 p.1456–1457（PDF p7–8）；§3.6 p.1457；§4.5 p.1460（PDF p11）"
+   },
+   {
+    "q": "2. “有限覆盖”或类似定理：正式陈述、编号、条件、证明结构（构造性还是存在性）",
+    "answer": "正式陈述（§4.2 “Theorem of finite covers of entrance blocks”，无数字编号，靠节号定位）：设 A、B 是 n 维块，n = 1, 2, 3，则\n(i) E(A,B) = ∪_{m=0}^{n} E(A(m), B(n−m))；\n(ii) E(A,B) = E(∂A, B) ∪ E(A, ∂B)。\n\n记号：§2.7 定义 A(0) 为边界顶点集，A(1) 为边或边向量集，A(2) 为二维实角或多边形集。n = 3 时 A(3) 原文没有定义；证明里出现 E(A(n), B(0))，推断是把 A(n) 当作 A 本身。\n\n证明结构：对任意 a∈A、b∈B，直接断言“存在 δ 使 a+δ ∈ A(m) 且 b+δ ∈ B(n−m)”，再用 E(a,b) = E(a+δ, b+δ) 推出包含关系。δ 为什么存在没有论证，也没有给构造，所以是存在性的草证。证明后的结论句（意译）：E(A(m), B(n−m)) 在 E(A,B) 上构成有限覆盖系统。\n\n“覆盖系统”的定义（§2.7）：A = ∪_i A_i，A_i 是闭子集。原文把“闭集”印成 A_i ⊂ ∂A_i，疑为 ∂A_i ⊂ A_i 的笔误；原文还声明这里的覆盖系统与一般拓扑中的定义不同。覆盖允许重叠（多处写 overlapped covers）。\n\n平行退化情形的特化版本（都只写“同 §4.2”，没有独立证明）：\n- §7.4 两平行边：E(a_i a_{i+1}, b_j b_{j+1}) = E(a_i a_{i+1}, b_j) ∪ E(a_i a_{i+1}, b_{j+1}) ∪ E(a_i, b_j b_{j+1}) ∪ E(a_{i+1}, b_j b_{j+1})，四个互相重叠的覆盖，每个对应一个点-边接触；\n- §9.8 边向量与平行面角，3 项；\n- §9.9 两个平行面角，6 项；\n- §11.6 边与平行多边形；§11.7 两平行多边形。\n\n真正用于计算的是“边界被接触覆盖盖住”这组定理：\n- 2D：§7.5 和 §8.2 给出 ∂E ⊂ C(0,1) ∪ C(1,0) ⊂ E；凸块时 §8.1 给出等式 ∂E = C(0,1) ∪ C(1,0)。\n- 3D：§9.10、§11.8、§12.2 给出 ∂E ⊂ C(0,2) ∪ C(2,0) ∪ C(1,1) ⊂ E；凸角、凸块时 §10.5、§12.1 给出等式。\n\n这组定理的证明是排除法加反证，属于存在性论证，不是构造性的：\n1. 含内点的点对映到 int E（§7.1、§11.1），因此 ∂E ⊂ E(∂A, ∂B)；\n2. 不平行的两条边，其内点对映到 int E（§7.2、§11.2、§11.3）；\n3. 不满足接触条件的点-边对映到 int E（§7.3、§11.4、§11.5，反证）。\n凸情形的反向包含另行证明：由支撑半平面（半空间）构成的入口块包含 E，而合格覆盖恰好落在该入口块的边界上。\n\n结论部分（§13，意译）：接触边界被证明是覆盖系统，每个覆盖对应一个可能的接触。",
+    "where": "§2.7 p.1455（PDF p6）；§4.2 p.1459–1460（PDF p10–11）；§7.4 p.1471（PDF p22）；§7.5/§8.1/§8.2 p.1472–1473（PDF p23–24）；§9.8–9.10 p.1481–1484；§11.6–11.8 p.1491–1492；§12.1–12.2 p.1493–1495；§13 p.1495"
+   },
+   {
+    "q": "3. 凹块（非凸块）怎么处理：是否明确说“不需要全局凸分解”；用什么代替",
+    "answer": "原文没有明确说“不需要全局凸分解”，这一点原文未写。它实际上两种说法并存。\n\n一方面，原文保留了“凹 = 凸之并”的说法：\n- §2.5 和 §2.8 说“可以证明”凹角、凹块是若干凸子角、凸子块之并，且凸子块的面都是原面的延拓：A = ∪_i ∩_k (↑m_{1i(k)} + a_{1i(k)})。这句没有给证明。\n- §4.9 的动机句（意译）：多数块是凸的，非凸块也可以分成凸块，所以凸块定理重要。\n- §12 开头（意译）：复杂块是凸块之并。\n- 配合 §4.4 并定理 E(A1∪A2, B) = E(A1, B) ∪ E(A2, B)，原则上可以走“先凸分解、再取并”的路线。\n\n另一方面，原文对一般块的实际计算路线不做全局凸分解：\n- §8.2（2D）和 §12.2（3D）直接在原始边界上枚举候选覆盖：2D 是点-边、边-点，3D 是点-面、面-点、边-边。\n- 筛选用的是每个顶点自身的实角（可以是凹角）与对方边/面半平面的局部接触条件；凹顶点自动通不过点-边接触条件。\n- 然后把覆盖“连接/相交”拼成 ∂E，3D 称为 cutting。\n\n凹性只在局部处理：\n- 2D 凹角 = 两个半平面之并（§6.1），结论是 int(∡e1e2 ∩ ∡h1h2) = ∅ ⟺ E(A,B) = B − e + a0；\n- 3D 凹棱 = 两个半空间之并（§10.3），结论是 E(A,B) = B + a0 − e；\n- 3D 一般角按面的凸、凹切换内法向符号（§10.6）。\n\n所以代替全局凸分解的是：顶点局部实角，加上“实角与半平面/半空间的入口”符号判定，再加上覆盖拼接。\n\n另外两点：\n- Fig.17 给出了凹多边形入口块的计算图，但 §3.11 明说这些例子没有证明。\n- §12.3 承认现行 3D DDA 主要处理凸块。",
+    "where": "§2.5 p.1453（PDF p4）；§2.8 p.1455（PDF p6）；§3.11 与 Fig.17 p.1458–1459；§4.4 p.1460；§4.9 p.1461（PDF p12）；§6.1 p.1464–1465；§8.2 p.1473（PDF p24）；§10.3 p.1485；§10.6 p.1487–1488；§12 与 §12.2–12.3 p.1492–1495"
+   },
+   {
+    "q": "4. “角”（angle）的定义、不等式表示、角的代数运算（并、交、补、Minkowski 和等）",
+    "answer": "术语：原文中 angle 指二维角，solid angle 指实角。\n\n定义（§2.4）：\n- 1D 实角是射线 ∡e1 = ∪_{t≥0} t e1；直线 ⃡e1 = ∪_{∀t} t e1。\n- 2D 实角 ∡e1e2 是射线从 e1 逆时针（ox→oy）扫到 e2 所覆盖的区域。凸角为 ∪_{t1,t2≥0}(t1 e1 + t2 e2)，判据 e1×e2 ⇈ (0,0,+1)；凹角判据 e1×e2 ⇈ (0,0,−1)。2D 角的边界是 ∡e1 ∪ ∡e2。\n- 3D 实角 ∡e1e2…eu 的边界是面角 ∡e_r e_{r+1}，按右手规则定向，转轴为外法向。内法向：凸面角取 e_{r+1} × e_r，凹面角取 e_r × e_{r+1}。\n- 带顶点的角写成平移形式，例如 A = ∡e1e2 + e。\n\n不等式表示（§2.5，块的版本在 §2.8）：\n- 平面 ⊥n = {x·n = 0}，半空间 ↑n = {x·n ≥ 0}。\n- 凸 3D 角 = ∩_{r=1}^{u} ↑n_{1r}；u = 2 时是二面角 ↑n11 ∩ ↑n12。\n- 凹角 = ∪_i ∩_r ↑n_{1i(r)}，原文说“可以证明”，没有给证明。\n- 块：凸块 A = ∩_k (↑m_{1k} + a_{1k})，其中内法向 m_{1k} = Σ a_{i+1} × a_i。\n- §9.7 “Theorem of intersection of half space”（无证明）：↑n11 ∩ ↑n12 = ∡e_{r1}e_{r2} + ⃡e_r，即凸棱 = 2D 角 ⊕ 直线；其边界由 (∡e_{r1} + ⃡e_r) 与 (∡e_{r2} + ⃡e_r) 两个半平面组成，其中 e_{r1} = n11×n12×n11，e_{r2} = n12×n11×n12。\n\n代数运算：\n- Minkowski 和 A+B、取负 −B、差 A−B = A + (−B)（§2.3）。\n- 取负规则：−∡e1e2 = ∡(−e1)(−e2)，−∡e1…eu = ∡(−eu)…(−e1)，原文说“可证”，没有给证明。\n- 并、交直接当集合运算用：凸角是半平面之交，凹角是半平面之并。\n- 补集原文没有作为一种运算来定义（原文未写）。\n- 角的入口块就是角的 Minkowski 差：E(∡e_i + e, ∡h_j + h) = ∡h_j + h − ∡e_i − e + a0。\n- 两射线之差：§10.5 写成 −∡e_r + ∡h_s = ∡(−e_r)h_s；§5.6 给出同向射线 ∡h_j − ∡h_j = ⃡h_j。\n\n核心判定式（§5.5 “Theorem of entrance of solid angle and half plane”，块的版本 §7.3、§8.2，3D 版本 §9.6、§10.1，都没有证明）：\nint(∡e1e2 ∩ ↑n2j) = ∅ ⟺ ∡e1e2 ∩ ↑n2j ⊂ (∂∡e1e2 ∩ ∂↑n2j) ⟺ E(∡e1e2, ↑n2j) = ↑n2j + a0 ⟺ e1×e2 ⇈ (0,0,+1)，e1·n2j ≤ 0，e2·n2j ≤ 0。\n3D 版本为：e_r·n_2s ≤ 0（r = 1…u），且 ∡n_2s ∩ ∡e1…eu = (0,0,0)。\n第一行就是原文所说的 contact condition，本质上是有限个内积的符号测试。\n\n2D 两角的判定（§6.2）：int(∡e1e2 ∩ ∡h1h2) = ∅ ⟺ e1、e2、h1、h2 依次从 ox 转向 oy。若 e1×h1 ⇈ +z，则 E(e, ∡h1 + h) 是入口角的一条边界向量；若 e2×h2 ⇈ +z，则 E(∡e2 + e, h) 是另一条。Fig.30 给出两种求法（rotation method 与 angle method），原文说旧 2D DDA/NMM 用的是 angle method。\n\n圆角：\n- §6.3：圆角实角 A = E(A1, A2) = A2 − A1 + a0，其中 A1 是圆盘、A2 是内缩角，顶点 e0 = e + r(n11 + n12)/(1 + n11·n12)。\n- §6.4：两个圆角角的入口块 E(A,B) = E(E(A1,B1), E(A2,B2))，仍是圆角凸角，等于入口算子的复合。\n\n2D/3D 空边界定理（§5.2、§9.2）：两角有公共内向量 v0 时，E 是整个平面或整个空间，∂E = ∅。",
+    "where": "§2.3–2.5 p.1452–1453（PDF p3–4）；§2.8 p.1455；§5.2、§5.5 p.1461–1463；§5.6 p.1464；§6.2 p.1465–1467；§6.3–6.4 p.1467–1469；§9.6–9.7 p.1479–1480；§10.1、§10.5 p.1484–1487"
+   },
+   {
+    "q": "5. 盖（cover）之间的裁剪 / 相互遮挡 / “只有暴露部分参与接触检测”：有没有对应的命题或算法？怎么表述？",
+    "answer": "没有专门处理覆盖之间相互遮挡、或“只有暴露部分参与检测”的命题或算法。相关内容分五层：\n\n(a) 单个覆盖的局部筛选只是必要条件。§5.5、§7.3、§9.6、§11.4、§11.5 的点-边、点-面、边-边接触定理都写成：若覆盖内某点落在 ∂E 上，则该顶点（或棱）实角与对方内半平面（半空间）的内部不交；证明用反证。这只回答“一个覆盖能不能贡献边界”，不涉及覆盖与覆盖之间的遮挡。\n\n(b) 凸块没有遮挡问题。§8.1 和 §12.1 证明合格覆盖整片都在 ∂E 上，即等式 ∂E = ∪C。\n\n(c) 一般块只有夹逼：§8.2、§10.6、§11.8、§12.2 都只给出 ∂E ⊂ ∪C ⊂ E。也就是说，通过局部筛选的覆盖仍可能有一部分落在 E 内部，被别的覆盖“挡住”。原文没有给判别哪一部分暴露的定理，只给了以下陈述（均为意译）：\n- 2D：所有接触边相互连接或相交，构成 ∂E（§8.2，Fig.41）。\n- 3D 角：接触面角相互连接相交，构成 3D 入口角；如果构不成，E 就是整个空间（§10.6）。\n- 3D 块：接触多边形相互连接相交，构成 E；这一过程叫 cutting，原文称之为标准的计算几何过程，所有接触多边形都作为输入（§12.2）。cutting 没有给算法、正确性证明或复杂度。\n\n(d) 时间步截断是局部化，不是遮挡判定。§9.1 规定只需考虑 E ∩ D，D 是以 a0 为心、半径 ε = 2ρ 的球（ρ 为每步最大位移）。\n\n(e) Fig.17 用细线画覆盖、粗线画 E 边界，说明作者的程序里做了裁剪；但 §3.11 明说这些例子“没有证明”，并说证明在“Chapter 8”。\n\n结论：覆盖之间的裁剪和遮挡在原文里只停留在“陈述 + 图示”的层次，没有命题，这正是形式化需要补上的缺口（这是我的评价）。",
+    "where": "§3.11 与 Fig.17 p.1458–1459；§5.5 p.1463；§7.3 p.1470；§8.1–8.2 与 Fig.41 p.1472–1474；§9.1 p.1477；§10.6 p.1487–1488；§11.8 p.1492；§12.1–12.2 p.1493–1495"
+   },
+   {
+    "q": "6. 接触判定与“首入”（entrance）规则：接触点、法向、侵入深度如何确定；多个候选时怎么选；是否沿运动方向；已侵入时取什么（最短出口？）",
+    "answer": "两块关系与 a0 位置的对应：\n- 三种关系（§3.1）：分离 A∩B = ∅；侵入 A∩B ≠ ∅；接触 A∩B ≠ ∅ 且 int(A∩B) = ∅。原文把接触条件写成 A∩B ⊂ (∂A∩∂B) ≠ ∅。\n- §3.7 分离 ⟺ a0 ∉ E。\n- §3.8 相交 ⟺ a0 ∈ E。\n- §3.9 距离 |A,B| = ε ⟺ |a0, E| = ε。\n- §4.7 可移除性：在接触条件下，对任意 ε > 0 都存在 |δ| < ε 使 (A+δ)∩B = ∅ ⟺ a0 ∈ ∂E。\n- §3.10 锁定：在接触条件下，存在 ε > 0 使所有 |δ| < ε 都有 (A+δ)∩B ≠ ∅ ⟺ a0 ∈ int E。\n- §4.8：int(A∩B) ≠ ∅ ⇒ a0 ∈ int E。\n\n首入：摘要和 §13 的意思是，a0 从 E 外移动到 E 表面时发生首入，首入点所在的表面决定接触点和接触位置（意译）。§10 开头的原文是 “Only the first entrance is essential for discontinuous computations.”，对应的情形是 a0 ∈ ∂E。\n\n接触点：摘要说每个接触覆盖定义一个接触点。\n- 2D：a0 落在 E(a_i, b_j b_{j+1}) = b_j b_{j+1} − a_i + a0 上，表示顶点 a_i 与边 b_j b_{j+1} 接触；E(a_i a_{i+1}, b_j) 是边-点接触。\n- 3D：点-面 E(e, P)、面-点 E(P, h)、边-边 E(ee_r, hh_s)。\n\n法向：原文没有单独定义“接触法向”。从定理里可以读出：\n- 点-边覆盖位于直线 ⊥m_2j + b_j − a_i + a0 上，m_2j 是该边的内法向（§8.1 证明）；\n- 3D 边-边接触面的法向 n0 ∥ e_r × h_s（§9.7、§10.2）。\n\n侵入深度：原文没有给公式。只有两点：\n- 分离时，距离等于 a0 到 E 的距离（§3.9）；\n- 已侵入时，a0 沿最短路径退出 E，最短出口点所在的表面决定接触点（摘要）。§13 称这一做法为 shortest exit，可以把块系统从侵入态恢复到接触态。\n最短出口怎么计算、多个等距出口如何选择，原文未写。\n\n是否沿运动方向：摘要说“a0 移动到表面”即发生首入，隐含沿 a0 的运动轨迹；但原文没有给沿位移方向求首个交点（射线投射）的公式。§8 的做法是：每步开始时计算接触边，根据 a0 与接触边的相对位置找出闭合的接触边；步内位移不超过 ρ，且只看 2ρ 范围内的部分（§9.1）。\n\n多个候选：原文没有“挑一个”的规则。平行边情形下，每条重叠接触边含两个点-边接触点对，开、闭由开闭迭代决定（§7.4、§11.6）；所有闭合接触点共同控制运动、转动和变形。也就是说，候选整体交给开闭迭代处理，而不是只选其中一个。",
+    "where": "摘要 p.1450（PDF p1）；§3.1 p.1455–1456；§3.7–3.10 p.1458（PDF p9）；§4.7–4.8 p.1460–1461；§7.4 p.1471；§8 开头 p.1472（PDF p23）；§9.1 p.1477；§10 开头 p.1484（PDF p35）；§13 p.1495–1496"
+   },
+   {
+    "q": "7. 是否处理转动（非平移）、二维还是三维、是否涉及时间离散",
+    "answer": "转动：E(A,B) 只对平移定义。§3.2 明确是 A 不转动地移动；§3.3、§3.10、§4.7 中的扰动也都是平移 δ。原文没有构造包含转动的 SE(2)/SE(3) 配置空间。\n\n转动是靠时间步线性化间接处理的：\n- §2.1：每步位移小于给定限值时，一步之内线性近似已足够精确，原文称 step-linear approach。\n- §5.1 与 §9.1：步长足够小时，所有接触都退化成彼此独立的局部接触。2D 是角-角、角-边；3D 是角-角、角-边、角-面、边-边。\n- §7.4、§11.6、§13：平行接触有无穷多个点对，但发生小转动或小变形后，块只沿少数点-边（3D 为点-面、边-边）接触点接触，这些点控制转动。\n\n维度：2D（§5–8）和 3D（§9–12）都有完整处理；§4.2 写明 n = 1, 2, 3。\n\n时间离散：有。\n- §8 和 §9.1：每步最大位移为 ρ，接触距离取 ε = 2ρ。\n- 每个时间步开始时计算接触边（3D 为接触多边形），见 §8、§12。\n- DDA 每步做若干次开闭迭代（§8.3）。",
+    "where": "§2.1 p.1451；§3.2–3.3 p.1456；§5.1 p.1461；§7.4 p.1471；§8 p.1472；§8.3 p.1473–1474；§9.1 p.1477（PDF p28）；§12 p.1493；§13 p.1496"
+   },
+   {
+    "q": "8. 参考文献里有没有 Lozano-Pérez、configuration space / C-obstacle、Minkowski sum、GJK、NFP 之类；如有，原文如何定位自己的贡献",
+    "answer": "参考文献共 21 条。\n\n有的：Minkowski [14]（1910，条目印作 “Geometrie der Z.”）。正文 §1 和 §2.3 提到 Minkowski Sum (1910)。\n\n没有的：Lozano-Pérez、configuration space、C-obstacle、GJK、NFP（no-fit polygon）。我对全文做了关键词检索，这些词出现次数都是 0。robot 一词只在引言首句和结论末句的应用领域列举里出现。\n\n接触检测方面的引用：\n- Cundall 1988 common plane [6]；\n- Nezami 2006 shortest link [7]；\n- Benson–Hallquist single surface [8]；\n- Zhong–Nilsson hierarchy territory [9]；\n- He 2010 3D NMM [10]；\n- Jelenić–Crisfield master-slave [11]；\n- Li 2004 block-particle [12]；\n- Konyukhov–Schweizerhof 2013 [13]；\n- Belytschko pinball [4]；\n- Wu 2014 multi-shell cover [5]；\n- Zheng–Li 2015 LCP-DDA [20]；\n- 自引 [2, 15, 16, 17, 18, 21]。前身工作是 Shi 2013 ARMA [15] 和 2013 年的书章 [16]。\n\n原文对自身贡献的定位（§1，意译）：\n- 现有方法解决了圆角凸角、球、2D 凸角、3D 平面等接触问题，但还缺一个“经拓扑证明、适用于任意形状”的全局接触理论；\n- Minkowski 提供了简单点集的运算，但处理复杂点集的数学工具仍然缺乏；\n- 本文提出新的点集运算工具和 entrance block 概念，把几何、拓扑计算转成代数计算；\n- 可用于 DDA、DEM、NMM、FEM。\n\n原文完全没有与机器人学 C-space 或计算几何中 Minkowski 和算法的比较。这是“入口块 = C-obstacle”这一对应关系在文献上的缺口（这是我的评价）。",
+    "where": "§1 p.1450–1451（PDF p1–2）；§2.3 p.1452；References p.1496（PDF p47）"
+   },
+   {
+    "q": "9. 哪些结论有证明、哪些只是陈述或算例；算法复杂度与数值实现细节（精度、容差）",
+    "answer": "有完整证明（多为几行的集合论推导）：\n§3.3、§3.5、§3.6、§3.7、§3.9、§4.1、§4.3、§4.5、§4.8、§4.9；§5.2–5.4；§5.5 的两个接触定理；§5.6；§6.1–6.4；§7.1–7.3；§7.4 的平行边接触定理；§8.1 的三个定理；§9.2–9.7（个别判定定理除外，见下）；§9.8 和 §9.9 的平行接触定理；§10.2–10.5；§11.1–11.5；§11.6 和 §11.7 的平行接触定理；§12.1。\n\n草证（存在性或推理较粗）：\n- §4.2 有限覆盖：δ 的存在性没有论证；\n- §3.10 锁定：只是一串很粗的 ⟺ 推导。\n\n只有陈述、没有证明：\n- §3.8 入口定理、§4.4 并定理、§4.6 接触定理、§4.7 可移除性定理；\n- §2.4、§2.5、§2.8 中“可以证明”的几条：取负规则，以及凹角、凹块是凸之并；\n- “实角与半平面/半空间的入口”判定定理（§5.5、§7.3、§9.6、§10.1）；\n- §9.7 半空间交定理；\n- 平行情形的有限覆盖特化版（§7.4、§9.8、§9.9、§11.6、§11.7，都只写“同 §4.2”）；\n- 一般块的边界定理（§8.2、§10.6、§12.2），只说是“前面定理的结论”。\n\n只有图例或算例：\n- §3.11 的 Fig.17，明说不证明；\n- Fig.40、Fig.41；\n- DDA、NMM 工程算例 Fig.42–48；\n- 3D DDA 试算 Fig.66。\n\ncutting 拼接过程既没有算法也没有证明。\n\n复杂度：原文未写。只有一句定性说法（§12 开头）：3D 凸入口块的接触多边形计算量大约是球情形的几倍。\n\n精度与容差：原文未写。平行判定用的是精确的 ∥、⇈，没有任何 ε 容差。§8.3 和 §8.4 只说，在“时间步足够小、接触弹簧刚度足够大”时，现行 DDA/NMM 与本理论一致。\n\n形式化时需要修正的笔误和交叉引用错误：\n1. §2.3 Minkowski 和印成 “AB”，缺加号；\n2. §2.7 闭集写成 A_i ⊂ ∂A_i；\n3. §3.11 说证明在 “Chapter 8”；\n4. §4.5 定理陈述与证明相差平移 (a0 + b0)；\n5. §7.2 证明写 “From 6.1”，应为 7.1；\n6. §9.5 第一个定理右端印作 E(A(0),B(2)) ∪ E(A(2),B(1))，按其证明应为 E(A(0),B(2)) ∪ E(A(1),B(1))；\n7. §9.5 第二个定理和 §11.2 引用 “Section 3.2” 做平行分解，应为 4.2；\n8. §10.1 引用 “Section 8.6”，该节不存在，应为 9.6；\n9. §12.1 引 “Section 2.5”，应为 2.6；\n10. Fig.13 标题写“三角形与点”，而该处定理讲的是球。",
+    "where": "全文各节（逐条页码见 theorems 列表）；§3.11 p.1458；§8.3 p.1473；§12 p.1493；§9.5 p.1478（PDF p29）；§10.1 p.1484（PDF p35）"
+   },
+   {
+    "q": "10. 与接触力、开闭迭代、DDA 的衔接",
+    "answer": "接触不等式的地位（§2.1，意译）：\n- 不连续计算的基本任务是建立不等式方程和求解不等式方程；\n- 求解方法各主流方法都已成熟，本质是把一部分不等式转成普通方程；\n- 难点在于建立不等式，也就是找接触位置，即决定在哪里施加接触弹簧、罚函数或线性互补条件 [20]；\n- 本文的目的就是借入口块及其接触覆盖来建立这些接触不等式。\n\n开闭迭代：\n- §7.4、§11.6：接触点对有开、闭两种状态，由开闭迭代决定；所有闭合接触点共同决定块的运动、转动和变形。\n- §8 开头：每步开始时计算接触边，由 a0 与接触边的相对位置找出闭合接触边，闭合接触点控制整个时间步。\n\n与 DDA 的衔接（§8.3）：\n- 现行 2D DDA 在“步长足够小、弹簧刚度足够大”两个条件下与本理论一致；\n- 每个时间步做若干次开闭迭代，每次迭代都解一次全局平衡方程，直到每个接触位置在求解前后的模式相同；\n- 摩擦律被转写为不等式；\n- 单块可以是凸或凹多边形，各矩阵由单纯形积分 [21] 解析得出。\n\n其他衔接点：\n- §5 开头（意译）：旧 2D DDA 和 NMM 的接触算法也是在计算这些边界，与本文结果一致；新理论可以简化这些算法，复杂情形下能精确找到接触覆盖。\n- §8.4：2D NMM 采用同一接触算法。\n- §12.3：现行 3D DDA 主要处理凸块，即使对凸块也需要按本理论改进。\n- §13（意译）：某一步只要有一个接触点不对，就可能出现大侵入、整个计算失效；shortest exit 能把块系统恢复到接触态，提高可靠性。\n\n原文未写的内容：接触力表达式、弹簧或罚刚度取值、摩擦公式的具体形式、开闭判据的具体阈值。",
+    "where": "§2.1 p.1451（PDF p2）；§5 开头 p.1461；§7.4 p.1471；§8 开头 p.1472；§8.3–8.4 p.1473–1476（PDF p24–27）；§11.6 p.1491；§12.3 p.1495；§13 p.1496"
+   },
+   {
+    "q": "11. 其他对“形式化石根华接触理论”最关键的内容",
+    "answer": "(1) 统一框架。块、实角、多边形、边、向量都被当作点集，用线性不等式的交、以及交之间的并来表示。入口块把“两块关系”约化为“点与一个块的关系”。\n\n(2) 可以直接作为公理化性质的定理：\n- 平移不变 E(A+δ, B) = E(A, B)（§3.3）；\n- 点情形 E(a0, B) = B（§3.4）；\n- 唯一性 a = b ⟺ E(a, b) = a0（§4.1）；\n- 单调性（§4.3）；\n- 对并分配（§4.4）；\n- 对称性（§4.5）；\n- 凸性保持（§4.9）；\n- 边界只来自边界对：∂E ⊂ E(∂A, ∂B)（§5.3、§7.1、§9.3、§11.1）；\n- 空边界：两角有公共内向量时 E 为全平面或全空间（§5.2、§9.2）。\n\n(3) 锁定定理（§3.10）和可移除性定理（§4.7）用 a0 ∈ int E 与 a0 ∈ ∂E 刻画“平移意义下的互锁与可移出”，与 TIA 二维互锁直接相关。但它们只管平移，转动互锁不在原文范围内（这是我的评价）。\n\n(4) 局部判定的核心是有限个内积的符号测试：\n- 点-边/点-面：e_r·n ≤ 0 再加凸性条件；\n- 3D 边-边：存在 n0 ∥ e_r × h_s，使 e_{r1}·n0 ≤ 0、e_{r2}·n0 ≤ 0、h_{s1}·n0 ≥ 0、h_{s2}·n0 ≥ 0（§9.7、§10.2）。\n这些测试适合用有理数精确实现，没有任何容差（这是我的评价）。\n\n(5) 边界覆盖的类型：2D 只有 C(0,1) 点-边和 C(1,0) 边-点；3D 是 C(0,2) 点-面、C(2,0) 面-点、C(1,1) 边-边。平行退化情形通过有限覆盖降到这几类。覆盖允许重叠，与 NMM 的有限覆盖是同一思路（§8.4）。\n\n(6) 原文没有覆盖的缺口，也就是形式化要补的部分：\n- 覆盖之间的裁剪（cutting）没有理论；\n- 转动没有理论；\n- 最短出口没有算法；\n- 多候选选择没有规则；\n- 复杂度和容差没有讨论；\n- §4.2 与 §3.10 是草证；\n- 有约 10 处交叉引用笔误（见第 9 条）。\n\n(7) 圆角处理用入口算子的复合：圆角 = E(圆盘, 内缩角)，两个圆角相互作用 = E(E(A1,B1), E(A2,B2))（§6.3–6.4）。这说明入口算子在 Minkowski 运算下封闭，可以作为形式化里的一个基本算子。",
+    "where": "§3.3–3.10 p.1456–1458；§4 p.1458–1461；§5.2–5.3 p.1461–1462；§6.3–6.4 p.1467–1469；§8.4 p.1474–1476；§9.7 p.1480；§10.2 p.1484–1485；§12–13 p.1492–1496"
+   }
+  ],
+  "theorems": [
+   {
+    "id": "§3.3 Theorem of parallel movement",
+    "statement": "E(A+δ, B) = E(A, B)，参考点同步平移为 a0+δ",
+    "proof_status": "有证明（一行）",
+    "page": "p.1456（PDF7）"
+   },
+   {
+    "id": "§3.4 entrance block of block and point",
+    "statement": "A = a0 时 E(a0, B) = B",
+    "proof_status": "直接推导",
+    "page": "p.1456–1457"
+   },
+   {
+    "id": "§3.5 Theorem of point-block distance",
+    "statement": "A 为以 a0 为心、半径 r 的球：|a0, B| ≤ r ⟺ a0 ∈ E(A,B)",
+    "proof_status": "有证明",
+    "page": "p.1457（PDF8）"
+   },
+   {
+    "id": "§3.6 Theorem of ball entrance",
+    "statement": "两球（半径 r1、r2）的入口块 E(A,B) = {|x − b0| ≤ r1 + r2}",
+    "proof_status": "有证明（双向包含）",
+    "page": "p.1457"
+   },
+   {
+    "id": "§3.7 Theorem of separation",
+    "statement": "A∩B = ∅ ⟺ a0 ∉ E(A,B)",
+    "proof_status": "有证明",
+    "page": "p.1458（PDF9）"
+   },
+   {
+    "id": "§3.8 Theorem of entrance",
+    "statement": "A∩B ≠ ∅ ⟺ a0 ∈ E(A,B)",
+    "proof_status": "仅陈述（是 3.7 的逆否）",
+    "page": "p.1458"
+   },
+   {
+    "id": "§3.9 Theorem of distance",
+    "statement": "|A,B| = ε ⟺ |a0, E(A,B)| = ε",
+    "proof_status": "有证明",
+    "page": "p.1458"
+   },
+   {
+    "id": "§3.10 Theorem of lock",
+    "statement": "在接触条件 A∩B ⊂ (∂A∩∂B) ≠ ∅ 下：存在 ε，使所有 |δ| < ε 都有 (A+δ)∩B ≠ ∅ ⟺ a0 ∈ int E(A,B)",
+    "proof_status": "有证明（⟺ 链较粗，近草证）",
+    "page": "p.1458"
+   },
+   {
+    "id": "§4.1 Theorem of uniqueness",
+    "statement": "a = b ⟺ E(a,b) = a0",
+    "proof_status": "有证明",
+    "page": "p.1458–1459"
+   },
+   {
+    "id": "§4.2 Theorem of finite covers of entrance blocks",
+    "statement": "n 维块（n = 1, 2, 3）：E(A,B) = ∪_{m=0}^{n} E(A(m), B(n−m))；E(A,B) = E(∂A, B) ∪ E(A, ∂B)；E(A(m), B(n−m)) 构成 E 上的有限覆盖系统",
+    "proof_status": "草证、存在性：断言存在 δ 使 a+δ ∈ A(m)、b+δ ∈ B(n−m)，未论证；A(n) 未定义",
+    "page": "p.1459–1460（PDF10–11）"
+   },
+   {
+    "id": "§4.3 Theorem of including",
+    "statement": "A1 ⊂ A、B1 ⊂ B（同一参考点）⇒ E(A1,B) ⊂ E(A,B)，E(A,B1) ⊂ E(A,B)",
+    "proof_status": "有证明",
+    "page": "p.1460"
+   },
+   {
+    "id": "§4.4 Theorem of union",
+    "statement": "A = A1∪A2 ⇒ E(A1,B) ∪ E(A2,B) = E(A,B)；B 侧同理",
+    "proof_status": "仅陈述",
+    "page": "p.1460"
+   },
+   {
+    "id": "§4.5 Theorem of symmetry",
+    "statement": "a0 = b0 = 0 时 E(A,B) = −E(B,A)；一般情形证明给出 E(A,B) = −E(B,A) + (a0 + b0)",
+    "proof_status": "有证明（陈述与证明相差一个平移）",
+    "page": "p.1460"
+   },
+   {
+    "id": "§4.6 Theorem of contact",
+    "statement": "int(A∩B) = ∅ ⟺ (A∩B) ⊂ (∂A∩∂B)",
+    "proof_status": "仅陈述",
+    "page": "p.1460"
+   },
+   {
+    "id": "§4.7 Theorem of removability",
+    "statement": "在接触条件下：对任意 ε > 0 都存在 |δ| < ε 使 (A+δ)∩B = ∅ ⟺ a0 ∈ ∂E(A,B)",
+    "proof_status": "仅陈述（并给出 removability 的定义）",
+    "page": "p.1460"
+   },
+   {
+    "id": "§4.8 Theorem of inner points",
+    "statement": "int(A∩B) ≠ ∅ ⇒ a0 ∈ int E(A,B)",
+    "proof_status": "有证明",
+    "page": "p.1460–1461"
+   },
+   {
+    "id": "§4.9 Theorem of convex blocks",
+    "statement": "A、B 凸 ⇒ E(A,B) 凸",
+    "proof_status": "有证明",
+    "page": "p.1461（PDF12）"
+   },
+   {
+    "id": "§2.5/§2.8（无名）",
+    "statement": "凹角、凹块是凸子角、凸子块之并，凸子块的面是原面的延拓；另有取负规则 −∡e1…eu = ∡(−eu)…(−e1)",
+    "proof_status": "仅陈述（原文写“可以证明”）",
+    "page": "p.1453, 1455"
+   },
+   {
+    "id": "§5.2 / §9.2 Theorem of empty boundary of 2D / 3D entrance solid angle",
+    "statement": "两角有公共内向量 v0 ⇒ E 为全平面或全空间，∂E = ∅",
+    "proof_status": "有证明",
+    "page": "p.1461–1462；p.1477"
+   },
+   {
+    "id": "§5.3 / §7.1 / §9.3 / §11.1 Theorem of entrance of inner points",
+    "statement": "∂E(A,B) ⊂ E(∂A, ∂B)",
+    "proof_status": "有证明",
+    "page": "p.1462；p.1469；p.1477；p.1488"
+   },
+   {
+    "id": "§5.4 / §7.2 Theorem of entrance of 2D vector-vector / edge-edge",
+    "statement": "∂E ⊂ E(A(0), B(1)) ∪ E(A(1), B(0))",
+    "proof_status": "有证明（平行情形引用 §4.2）",
+    "page": "p.1462；p.1469–1471"
+   },
+   {
+    "id": "§5.5 / §7.3 Theorem of 2D vertex-vector(edge) contact 及其对偶",
+    "statement": "若存在 b ∈ int(边) 使 E(e,b) ∈ ∂E，则 int(∡e1e2 ∩ ↑n2j) = ∅；对偶版本同理",
+    "proof_status": "有证明（反证）",
+    "page": "p.1463；p.1470"
+   },
+   {
+    "id": "§5.5 / §7.3 / §8.2 Theorem of entrance of solid angle and half plane",
+    "statement": "int(∡e1e2 ∩ ↑n2j) = ∅ ⟺ E(∡e1e2, ↑n2j) = ↑n2j + a0 ⟺ e1×e2 ⇈ +z，e1·n2j ≤ 0，e2·n2j ≤ 0（即接触条件）",
+    "proof_status": "仅陈述",
+    "page": "p.1463；p.1470；p.1473"
+   },
+   {
+    "id": "§5.6 / §7.4 Theorem of parallel vector(edge) contact",
+    "statement": "两边平行且内点对落在 ∂E 上 ⇒ 内法向反向，n1i ⇈ −n2j",
+    "proof_status": "有证明（反证）",
+    "page": "p.1463；p.1471"
+   },
+   {
+    "id": "§5.6 Theorem of contact vector covers",
+    "statement": "e_i ⇈ h_j 时 E(∡e_i+e, ∡h_j+h) = E(e, ∡h_j+h) ∪ E(∡h_j+e, h)；−e_i ⇈ h_j 时二者相等",
+    "proof_status": "有证明",
+    "page": "p.1463–1464"
+   },
+   {
+    "id": "§5.7 / §7.5 Theorem of 2D contact vectors / edges",
+    "statement": "∂E ⊂ C(0,1) ∪ C(1,0) ⊂ E",
+    "proof_status": "作为前文结论给出",
+    "page": "p.1464；p.1472"
+   },
+   {
+    "id": "§6.1 Theorem of contact vectors of 2D concave-convex solid angle",
+    "statement": "A 凸、B 凹：int(∡e1e2 ∩ ∡h1h2) = ∅ ⟺ E(A,B) = B − e + a0，∂E = ∂B − e + a0",
+    "proof_status": "有证明",
+    "page": "p.1465"
+   },
+   {
+    "id": "§6.2 Theorem of contact vectors of 2D solid angle",
+    "statement": "int(∡e1e2 ∩ ∡h1h2) = ∅ 时：e1×h1 ⇈ +z ⇒ E(e, ∡h1+h) 是边界向量；e2×h2 ⇈ +z ⇒ E(∡e2+e, h) 是边界向量（rotation method）",
+    "proof_status": "有证明",
+    "page": "p.1466–1467"
+   },
+   {
+    "id": "§6.3 Theorem of round corner solid angle / round corner 与凹角",
+    "statement": "圆角 A = E(A1, A2)，e0 = e + r(n11 + n12)/(1 + n11·n12)；与凹角的入口块 = (↑n21 + h0) ∪ (↑n22 + h0)",
+    "proof_status": "有证明",
+    "page": "p.1467–1468"
+   },
+   {
+    "id": "§6.4 Theorem of entrance round corner solid angle",
+    "statement": "E(A,B) = E(E(A1,B1), E(A2,B2))",
+    "proof_status": "有证明",
+    "page": "p.1468–1469"
+   },
+   {
+    "id": "§7.4 Theorem of finite covers of 1D entrance blocks",
+    "statement": "两平行边的入口块 = 四个点-边覆盖之并（互相重叠）",
+    "proof_status": "仅陈述",
+    "page": "p.1471（PDF22）"
+   },
+   {
+    "id": "§8.1 Theorems of vertex-edge / edge-vertex / contact edges of 2D convex blocks",
+    "statement": "满足接触条件 ⇒ 覆盖 ⊂ ∂E；凸块时 ∂E = C(0,1) ∪ C(1,0)",
+    "proof_status": "有证明（支撑半平面论证）",
+    "page": "p.1472–1473"
+   },
+   {
+    "id": "§8.2 Theorem of contact edges of 2D blocks",
+    "statement": "一般 2D 块：∂E ⊂ C(0,1) ∪ C(1,0) ⊂ E；接触边相互连接或相交构成 ∂E",
+    "proof_status": "作为前文结论给出；拼接步骤无证明",
+    "page": "p.1473（PDF24）"
+   },
+   {
+    "id": "§9.4–9.5 boundary angle-angle / vector-angle / angle-vector of 3D solid angles",
+    "statement": "∂E ⊂ E(A(1),B(2)) ∪ E(A(2),B(1))；最终 ∂E ⊂ E(A(0),B(2)) ∪ E(A(2),B(0)) ∪ E(A(1),B(1))",
+    "proof_status": "有证明（其中一条右端有笔误）",
+    "page": "p.1477–1479"
+   },
+   {
+    "id": "§9.6 Theorem of 3D vertex-angle / angle-vertex contact；entrance of solid angle and half space",
+    "statement": "必要条件 int(∡e1…eu ∩ ↑n2s) = ∅；判定式：e_r·n2s ≤ 0（对所有 r）且 ∡n2s ∩ ∡e1…eu = (0,0,0)",
+    "proof_status": "接触定理有证明；判定式仅陈述",
+    "page": "p.1479"
+   },
+   {
+    "id": "§9.7 Theorem of 3D vector-vector contact；intersection of half space；solid convex edge to edge",
+    "statement": "边-边接触条件为 int((↑n11∩↑n12) ∩ (↑n21∩↑n22)) = ∅ ⟺ 存在 n0 ∥ e_r × h_s，使 e_{r1}·n0 ≤ 0、e_{r2}·n0 ≤ 0、h_{s1}·n0 ≥ 0、h_{s2}·n0 ≥ 0",
+    "proof_status": "接触定理有证明；半空间交定理仅陈述；判定式在 §10.2 证明",
+    "page": "p.1480"
+   },
+   {
+    "id": "§9.8–9.9 / §11.6–11.7 finite covers 与 parallel contact",
+    "statement": "平行退化情形的入口块 = 低维覆盖之并；平行面接触 ⇒ 法向反向",
+    "proof_status": "有限覆盖部分写“同 §4.2”；平行接触定理有证明",
+    "page": "p.1481–1483；p.1491–1492"
+   },
+   {
+    "id": "§9.10 / §11.8 Theorem of 3D contact angles / polygons",
+    "statement": "∂E ⊂ C(0,2) ∪ C(2,0) ∪ C(1,1) ⊂ E",
+    "proof_status": "作为前文结论给出",
+    "page": "p.1484；p.1492"
+   },
+   {
+    "id": "§10.2 Theorem of the contact plane of 3D solid convex edges",
+    "statement": "两条不平行的凸棱：E = ↑n0 + h − e + a0，接触面为 ⊥n0 + h − e + a0",
+    "proof_status": "有证明",
+    "page": "p.1485–1486"
+   },
+   {
+    "id": "§10.3 / §10.4 contact half planes（凹棱 / 凸棱与 3D 角）",
+    "statement": "凹棱：E = B + a0 − e；凸棱：E = ∡d1d2 + ⃡h1 + h − e + a0，可降为 2D 角-角问题",
+    "proof_status": "有证明",
+    "page": "p.1485–1486"
+   },
+   {
+    "id": "§10.5 / §12.1 Theorem of contact edges(polygons) of 3D convex solid angles / blocks",
+    "statement": "凸情形 ∂E = C(0,2) ∪ C(2,0) ∪ C(1,1)",
+    "proof_status": "有证明",
+    "page": "p.1486–1487；p.1493–1495"
+   },
+   {
+    "id": "§10.6 / §12.2 Theorem of contact solid angles / polygons of 3D general blocks",
+    "statement": "∂E ⊂ ∪C ⊂ E；接触多边形相互连接相交形成 E（cutting）；若形成不了 3D 角，E 为全空间",
+    "proof_status": "包含式作为结论给出；cutting 无算法、无证明",
+    "page": "p.1487–1488；p.1495"
+   },
+   {
+    "id": "§3.11 / Fig.17 / Fig.40–41 / Fig.42–48 / Fig.66",
+    "statement": "凹多边形入口块计算图、2D 入口块示例、DDA/NMM 工程算例、3D DDA 试算",
+    "proof_status": "仅为算例或图示（§3.11 明说不证明）",
+    "page": "p.1458–1459；p.1473–1476；p.1495"
+   }
+  ],
+  "references_of_note": [
+   "[14] Minkowski H. Geometrie der Z(ahlen). Teubner, 1910 —— 全文唯一引用的经典点集运算来源；原文据此定义 Minkowski 和与差 A−B = A+(−B)",
+   "[15] Shi G H. Basic equations of two and three dimensional contacts. 47th US Rock Mech Symp (ARMA), 2013: 253–269 —— 本文前身",
+   "[16] Shi G H. Basic theory of two dimensional and three dimensional contacts. In: Frontiers of Discontinuous Numerical Methods…, Taylor & Francis, 2013 —— 本文前身",
+   "[6] Cundall P A. 1988, common plane 接触检测（3D DEM）",
+   "[7] Nezami E G et al. Shortest link method for contact detection in DEM, 2006",
+   "[5] Wu W et al. A multi-shell cover algorithm for contact detection in 3D DDA, 2014",
+   "[13] Konyukhov A, Schweizerhof K. Computational Contact Mechanics: Geometrically Exact Theory for Arbitrary Shaped Bodies, Springer 2013",
+   "[20] Zheng H, Li X K. Mixed linear complementarity formulation of DDA, 2015 —— 原文在“接触不等式可用互补条件施加”处引用",
+   "[17] Shi G H. DDA 博士论文, UC Berkeley 1988；[18] Manifold method 1991；[21] Simplex integration 1996",
+   "缺失：Lozano-Pérez / configuration space / C-obstacle / GJK / NFP 全部未引用，全文关键词检索均为 0 次"
+  ]
+ },
+ {
+  "key": "2021",
+  "paper": "石根华 (SHI Gen-Hua). Contact theory and algorithm. Sci China Tech Sci, 2021, 64(8): 1775–1790. doi:10.1007/s11431-020-1792-y。读的是 D:/E(A, B)/papers/2021_Contact_theory_and_algorithm.pdf，PDF 第 1–16 页对应期刊页 1775–1790，下文页码一律用期刊页。读法说明：Read 工具直接读 PDF 时报错（本机没装 pdftoppm），所以改用 PyMuPDF 抽文字，再把每页渲染成图片（存在 scratchpad\\c2021），公式全部对照图片逐页核读。原 PDF 没有改动。文中定理都不编号，只有“节号 + 名称”；全文无编号公式、无表格，共 30 幅图。按引用规则，全文只给一处不到 15 词的原文直引，其余是公式记号加中文转述，并标出精确位置。",
+  "structure": "1 Introduction (p.1775) | 2 Geometric representations of angles and blocks：2.1 Related mathematical symbols (p.1775)；2.2 Algebraic operations of blocks；2.3 Representation of solid angles；2.4 Simultaneous homogeneous inequality equations of convex solid angles；2.5 Representation of blocks (以上 p.1776)；2.6 Boundary structure of blocks (p.1776–1777)；2.7 Boundary point related solid angles (p.1777) | 3 Entrance block：3.1 Definitions of general relations of two blocks（contact、common boundary 定理、penetration 在 p.1777；entrance、separation、distance、removability、lock 在 p.1778）；3.2 Geometric and algebraic definition of entrance block（含 Theorem of entrance block，p.1778） | 4 Basic theorems of entrance block：4.1 Theorem of entrance；4.2 Theory of distance；4.3 Theorem of convex blocks；4.4 Theorem of finite covers of entrance blocks；4.5 Theorem of finite covers of entrance surfaces（以上 p.1779）；4.6 Theorem of entrance surface and solid angle（p.1779–1780）；4.7 Theorem of entrance surface of convex blocks（p.1780–1781） | 5 Finding contact vector covers on 2D entrance surface：5.1 Contact vectors on entrance solid angle of 2D solid angles；5.2 Examples；5.3 Entrance convex round corner solid angle of round corner convex solid angles（p.1781–1782） | 6 Finding contact edge covers on the surface of 2D entrance block：6.1 Contact edges on the surface of 2D entrance blocks；6.2 Examples of 2D entrance blocks；6.3 Contact edges and corresponding control point（p.1783；图 19–23 在 p.1784–1786） | 7 Finding contact polygon covers on the surface of 3D entrance block：7.1 Contact polygons on surface of 3D entrance blocks（p.1783–1786）；7.2 Computation of 3D entrance blocks（p.1786–1788；图 26–30） | 8 Conclusions（p.1788–1789） | References [1]–[14]（p.1789–1790）",
+  "answers": [
+   {
+    "q": "1. E(A,B) 的定义与记号方向：谁动谁不动、参考点在哪个块上、是 B⊕(−A) 还是 A⊕(−B)",
+    "answer": "A 平移，B 不动；参考点 a0 取在 A（动块）上。E(A,B) = B⊕(−A) 再平移 a0，不是 A⊕(−B)。\n(1) 几何定义（§3.2）：任取 A 中一点 a0，E(A,B) = {a0 + x \\ (A+x)∩B ≠ ∅}，等价写成 E(A,B) = ∪_{(A+x)∩B≠∅}(x + a0)。这里 A+x 指 A 沿向量 x 的平移（§2.2）。记号“\\”读作“在……条件下”，{ \\ } 是条件并（§2.7 定义）。\n(2) 入口块定理（§3.2，有证明）：E(A,B) = B − A + a0 = ∪_{a∈A, b∈B}(b − a + a0)。§2.2 中 A+B 是 Minkowski 和 ∪(a+b)，−B = ∪(−b)，A−B := A+(−B)。§3.2 的“代数定义”就是把这个等式反过来当定义用。\n(3) 派生记号：点对记号 E(a,b) = b − a + a0，从 §4.3 的证明开始用，原文没有单独定义。子集记号 E(X,Y) = Y − X + a0（X⊂A, Y⊂B），如 E(A(n−k),B(k))。§5.3 中 E(A1,A2) = A2 − A1 + a0，这里 a0 是圆盘 A1 的圆心。\n(4) 对称关系：§7.2（p.1788）设 a0=(0,0,0)，此时 E(A,B) = −E(B,A)，两者中心对称；§6.2 也指出图 19–21 中 E(A,B) 与 E(B,A) 中心对称。若 A 中心对称且 a0 是中心，则 E(A,A) = A + A − a0 = 2A − a0，与 A 同形。我的注：A+A=2A 只对凸集成立，原文没写凸性前提。\n(5) 图 10（p.1779）：所有公共点对 a=b 对应同一个 a0。\n我的判断（原文未提）：这正是 Lozano-Pérez 意义下、以 a0 为参考点的纯平移 C-obstacle。",
+    "where": "§2.2 (p.1776)；§2.7 (p.1777)；§3.2 几何/代数定义与入口块定理 (p.1778)；图 9、10 (p.1779)；§4.3 证明 (p.1779)；§5.3 (p.1782)；§6.2 (p.1783)；§7.2 (p.1788)"
+   },
+   {
+    "q": "2. “有限覆盖”或类似定理：正式陈述、编号、条件、证明结构",
+    "answer": "共两条，都不编号，按节名称呼。\n(A) §4.4 入口块有限覆盖定理。陈述：A、B 是 n 维块，n = 2,3，则 E(A,B) = ∪_{k=0}^{n} E(A(n−k), B(k))。\n记号（§2.6–2.7）：A(0) 是顶点集，A(1) 是棱（2D 为边），A(2) 是 3D 的面多边形，3D 中 A(3) = A；2D 中 A(2) 就是多边形本身（原文对 2D 的 A(2) 没单列，按 §2.6/§2.7 推定）。\n2D 展开：E(A, B 的顶点) ∪ E(A 的边, B 的边) ∪ E(A 的顶点, B)，即 −A 的平移副本 ∪ 平行四边形 ∪ B 的平移副本（图 11）。\n证明结构：从几何定义出发。对满足 (A+x)∩B≠∅ 的 x，先说 (A+x)∩B 是一个块，再断言存在 δ，使 a+x+δ = b+δ 是 (A+x)∩B 的顶点，且 a+δ∈A(n−k)、b+δ∈B(k)，由此 E(a,b) = E(a+δ,b+δ) ⊂ E(A(n−k),B(k))。\n性质：这是逐点的存在性论证（∃δ 取交集的顶点），不是构造算法。\n缺口（我的判断）：\n- “交集顶点必落在维数互补的一对边界元素上”这一步是直接断言的，没写维数论证。\n- “⊇”方向显然，但没写。\n- 交集必有顶点，要求块有界且为多面体；可 §2.1 允许“无限块”，图 11(c)(d) 又含曲边块，都不在证明覆盖内。\n- 原文自评这种覆盖法效率不高，只用来求 E 的边界结构。\n(B) §4.5 入口面有限覆盖定理。陈述：n = 2,3 时 ∂E(A,B) ⊂ ∪_{k=0}^{n−1} E(A(n−1−k), B(k))。2D 即“顶点−边”“边−顶点”线段；3D 即面−顶点、棱−棱、顶点−面三类。\n证明：有限并的边界 ⊂ 各边界之并，再用 ∂E(X,Y) ⊂ E(∂X,Y) ∪ E(X,∂Y)，降一维换指标。\n隐含问题：对低维元素，∂ 只能理解为相对边界，原文没说明。\n(C) 由 (B) 加 §4.6/4.7 的局部锥条件，派生出 §5.1、§6.1、§7.1 的“contact vector / edge / polygon covers”定理（见第 5 条）。",
+    "where": "§4.4、§4.5 (p.1779)；图 11 (p.1780)；§2.1 (p.1775)；§2.6–2.7 (p.1776–1777)"
+   },
+   {
+    "q": "3. 凹块（非凸块）怎么处理：是否明确说“不需要全局凸分解”；用什么代替",
+    "answer": "原文没有“不需要凸分解”这类表述。\n(1) 表示层其实给了一个“凸片并”。§2.5 对凹块写 A = ∪_i ∩_{k∈L_i}(↑m_ik + a_k)，L_i ⊂ {1,…,f}，即若干组自身面半空间之交再取并；凸块是 A = ∩_{k=1..f}(↑m_ik + a_k)。但后面的覆盖定理与算法都不调用这个分解。\n(2) 计算层用三样东西代替全局分解：\n- 边界元素两两配对的有限覆盖（§4.4/4.5），对任意形状成立；\n- 边界点处的局部实体角，凹角也按局部角处理（第 4 条）：2D 凹角用三个射线 Minkowski 组合之并表示；凹棱角 = ↑n1 ∪ ↑n2；\n- 局部锥内部不交条件，用来筛选覆盖片（§4.6）。\n(3) 凹块只有包含关系：对一般块是 ∂E ⊂ C(0,1)∪C(1,0)（3D 为 ⊂ C(0,2)∪C(2,0)∪C(1,1)），等号只对凸块成立。§6.2 说凹情形各覆盖之间只部分相连，原文：“concave connections use cutting”（§6.2，p.1783）。§7.1（p.1786）、§7.2（p.1788）也说凹入口块靠 cutting 求得。cutting 的算法、正确性与复杂度原文都没写。\n(4) 图 20（p.1785）的凹例中，“contact edges”里有落在 E 内部的十字形多余线段。这说明筛选后仍有冗余，需要靠 cutting 去除（这是看图得出的，正文没讨论）。\n(5) 曲边块（图 11(c)(d)、21、27、30）只给算例，没有理论处理，表示方式也没写。",
+    "where": "§2.3、§2.5 (p.1776)；§2.7 (p.1777)；§4.6 (p.1779–1780)；§6.2 (p.1783)；图 20 (p.1785)；§7.1 (p.1786)；§7.2 (p.1788)"
+   },
+   {
+    "q": "4. “角”（angle）的定义、不等式表示、角的代数运算",
+    "answer": "原文统一叫 solid angle（实体角），一律以原点为顶点。\n(1) §2.3 的四种角：\n- 1 维角是射线：∠e1 = ∪_{t≥0} t·e1。\n- 2D 角 ∠e1e2：从 e1 按 ox→oy 方向（逆时针）扫到 e2 的区域（图 1）。\n- 2D 凸角：e1×e2 与 (0,0,+1) 同向，∠e1e2 = ∠e1 + ∠e2，即两射线的 Minkowski 和。\n- 2D 凹角：e1×e2 与 (0,0,−1) 同向，∠e1e2 = (∠e1 − ∠e2) ∪ (−∠e1 + ∠e2) ∪ (−∠e1 − ∠e2)，即用三个凸锥之并表示优角。\n- 3D 角 ∠e1e2…eu 由棱向量给出，相邻面 e_r e_{r+1} 按右手定则转，转轴为外法向（图 2）。\n(2) §2.4 的不等式表示：过原点平面 ⊥n = {x·n = 0}；半空间 ↑n = {x·n ≥ 0}；凸实体角是齐次线性不等式组，即半空间之交（图 4 为 ∩_{r=1}^{5} {x·n_1r ≥ 0}）。\n(3) §2.7 边界点的角：∠d = ∪_{da⊂A} ∠(da)，即从 d 出发、局部留在 A 内的方向集合（切锥）。3D 中：\n- 顶点 e：∠e = ∠e1e2…eu，由相邻顶点连成；\n- 棱：设两邻面内法向 n1、n2，满足 e_r ∥同向 n2×n1；凸棱 ∠A_r(1) = ↑n1 ∩ ↑n2，凹棱 = ↑n1 ∪ ↑n2；\n- 面：∠A_k(2) = ↑m_1k。\n2D 中：∠a_i = ∠e1e2，其中 e1 = (a_i a_{i+1})、e2 = (a_i a_{i−1})；边的角 = ↑m_1i，m_1i = (0,0,1) × e（原文下标写作 e_i，有歧义）。\n(4) 代数运算：\n- 并、交、Minkowski 和与取负（§2.2）都有，并直接用于角。\n- 补运算原文未定义。\n- 角与角之间的“入口”E(·,·) 用于 §5（角对角）和 §5.3（圆角）。\n- 法向计算：图 13 标注凸角 n11 = e1×e2×e1、n12 = e2×e1×e2；凹角 n21 = h2×h1×h1、n22 = h1×h2×h2（只出现在图注里，正文无）。\n- §5.3 的圆角角：A0 = (↑n11+e) ∩ (↑n12+e)；内角 A2 顶点 e0 = e + r1(n11+n12)/(1+n11·n12)；圆角角 A = E(A1,A2) = A2 − A1 + a0，A1 为半径 r1 的圆盘。",
+    "where": "§2.3、§2.4 (p.1776)；§2.7 (p.1777)；图 1–4 (p.1776–1777)；§5.3 (p.1781–1782)；图 13 (p.1781)"
+   },
+   {
+    "q": "5. 盖（cover）之间的裁剪 / 相互遮挡 / “只有暴露部分参与接触检测”：有没有对应命题或算法",
+    "answer": "有筛选命题，但只是局部锥条件，没有全局遮挡或可见性的命题。\n(1) 依据是 §4.6 和 §4.7：\n- §4.6（一般块，n=2,3）：E(a,b) ∈ ∂E(A,B) ⇒ int(∠a) ∩ int(∠b) = ∅，必要条件；\n- §4.7（凸块）：变为 ⇔。\n(2) 筛选后的覆盖集。\n§6.1（2D 多边形）：\n- C(0,1) = ∪{E(a_i, b_j b_{j+1}) \\ int(∠a_i) ∩ int(↑m_2j) = ∅}，A 顶点配 B 边；\n- C(1,0) = ∪{E(a_i a_{i+1}, b_j) \\ int(↑m_1i) ∩ int(∠b_j) = ∅}，A 边配 B 顶点。\n§5.1 是角对角版本：C(0,1) 中取 E(e, ∠h_j + h)，条件为 int(∠e1e2) ∩ int(↑n_2j) = ∅。\n§7.1（3D）：\n- C(0,2) = {E(e,Q_l) \\ int(∠e) ∩ int(↑m_2l) = ∅}；\n- C(2,0) = {E(P_k,h) \\ int(↑m_1k) ∩ int(∠h) = ∅}；\n- C(1,1) = {E(ee_r, hh_s) \\ int(∠ee_r) ∩ int(∠hh_s) = ∅}。\n定理：一般块 ∂E ⊂ C(0,1)∪C(1,0)（3D 为 ⊂ C(0,2)∪C(2,0)∪C(1,1)）；凸块取等号。证明只有一句：由 §4.5–4.7 推出。\n(3) 拼接：\n- 凸块：C(0,1) 与 C(1,0) 经 C(0,0) 完全相连；3D 的三类覆盖经 C(1,0)、C(0,1) 相连。\n- 凹块：只部分相连，凹处用 cutting（引文见第 3 条）。\n- C(0,0) 原文没有正式定义。\n(4) 局部窗口：每步最大位移为 r，只用 E 的一小部分，即 {|x − a0| ≤ 2r} ∩ E(A,B)（§6.2；§7.1 凸、凹两处）。为什么取 2r 原文没解释；我推测是两块各动 r。\n结论：本文的“裁剪”只是逐对局部锥兼容性检验加时间步窗口，不是“只有暴露部分参与”的全局遮挡命题。凹块筛完仍可能留下落在 E 内部的片（图 20），去除它们靠没有给出的 cutting。",
+    "where": "§4.6 (p.1779–1780)；§4.7 (p.1780–1781)；§5.1 (p.1781)；§6.1–6.2 (p.1783)；§7.1 (p.1783、1785、1786)；图 18 (p.1783)；图 20 (p.1785)"
+   },
+   {
+    "q": "6. 接触判定与“首入”（entrance）规则：接触点、法向、侵入深度；多个候选怎么选；是否沿运动方向；已侵入时取什么",
+    "answer": "(1) 判定（§4.1，有证明）：A∩B = ∅ ⇔ a0 ∉ E(A,B)；A∩B ≠ ∅ ⇔ a0 ∈ E(A,B)。注意本文的 entrance 只是一个关系定义：A∩B ≠ ∅（§3.1，p.1778），包括接触和侵入，不是“沿运动方向的首次进入”规则。\n(2) 距离（§4.2，有证明）：先定义 |A,B| = min{|x| \\ (A+x)∩B ≠ ∅}；A∩B = ∅ 时 |A,B| = |a0, E(A,B)|。只对分离情形成立。\n(3) 接触点（§6.3）：每条含 a0 的 contact edge 对应一个顶点，称为 contact point，也叫 control point（图 23 用同色圆圈标出）。例：对 E(a_i, b_j b_{j+1})，a0 在其上即顶点 a_i 落在 B 的边上（我的解读）。\n(4) 以下原文都未写：\n- 法向：没有接触法向的定义；覆盖片带面/边内法向 ↑m，但原文没把它定义为接触法向；\n- 侵入深度：没有定义；\n- 多候选选择：图 23 显示可有多条 contact edge 同时含 a0，各对应一个控制点，但没有选择或合并规则；\n- 沿运动方向的“首入”规则、已侵入时的最短出口/最小平移出口规则也没有；\n- §3.1 的 lock / removability 定义只涉及小平移的存在与任意，不涉及方向选择。\n(5) 与时间步的联系仅限于：每步最大位移 r，只用窗口 {|x − a0| ≤ 2r} ∩ E（§6.2、§7.1）。",
+    "where": "§3.1 (p.1778)；§4.1、§4.2 (p.1779)；§6.2、§6.3 (p.1783)；图 23 (p.1786)；§7.1 (p.1786)"
+   },
+   {
+    "q": "7. 是否处理转动（非平移）、二维还是三维、是否涉及时间离散",
+    "answer": "(1) 转动：不处理。E(A,B) 只按平移 A+x 定义（§2.2、§3.2）；§3.1 的 removability、lock、distance 也都只对平移量 δ、x 定义。全文没有讨论转动或刚体变换下的入口块，原文未写。\n(2) 维数：理论部分统一写 n = 2,3（§4.4–4.7）。§2.1 说 A、B 可以是 2D 或 3D、有限或无限的块。§5–6 是 2D（角对角、多边形边覆盖、2D 圆角），§7 是 3D（顶点−面、棱−棱，图 24、25；凸、曲、凹 3D 入口块见图 26–30）。曲边块只出现在算例中（图 11(c)(d)、21、27、30）。\n(3) 时间离散：只有定性的局部化前提。§5 开头说，离散计算按时间步推进，可取足够小的步位移，使所有接触变成彼此独立的“实体角对实体角”接触（图 12：角对角、平行边）。§6.2、§7.1 给出每步最大位移 r 和窗口 {|x − a0| ≤ 2r} ∩ E。没有 r 的取法、误差或收敛分析。",
+    "where": "§2.1 (p.1775)；§2.2 (p.1776)；§3.1–3.2 (p.1778)；§4.4–4.7 (p.1779–1781)；§5 开头与图 12 (p.1781)；§6.2 (p.1783)；§7.1 (p.1786)"
+   },
+   {
+    "q": "8. 参考文献里有没有 Lozano-Pérez、configuration space / C-obstacle、Minkowski sum、GJK、NFP 之类；原文如何定位贡献",
+    "answer": "(1) 14 条参考文献中，Lozano-Pérez、configuration space、C-obstacle、GJK、NFP、计算几何的 Minkowski 和文献一概没有。\n(2) Minkowski 只在 §2.2 正文出现一次：说 A+B 即 Minkowski 和，标“(1910)”，但没列入参考文献。关键词里有 computational geometry，却没引任何计算几何文献。\n(3) 参考文献分三组：\n- 背景：[1] Goodman 1968 节理岩体模型；[2] 石 1993 DDA 专著；[3] Zhong & Nilsson 1989 接触搜索；[4] He 2010 三维 NMM 学位论文；[5] Wu 等 2014 三维 DDA 多壳覆盖接触检测。\n- 本人前作与应用：[6] 石 2015《Contact theory》；[7]–[10] 是基于入口块理论的 3D DDA 接触检测应用（Zheng 2017、Zhang 2018、Lin 2019、Ni 2020）。\n- 接触力框架：[11] 变分不等式 DDA；[12] 二阶锥规划 DDA；[13] NMM 摩擦弹簧与黏聚接触；[14] 接触势 3D DDA。\n(4) 自我定位（§1、§8、摘要，均为转述）：\n- 本文是对 2015 年接触理论的改进，表达更简洁，并经数学证明；\n- 适合编程，可直接用于 DDA、NMM、DEM（摘要还提到 FEM）；\n- 可与传统开闭迭代、变分不等式、二阶锥规划结合；\n- 程序会更严格；\n- §8 称新算法能处理任意形状、平行接触和小边长问题。\n全文没有和机器人学或计算几何的已有结果作任何比较。",
+    "where": "摘要与 §1 (p.1775)；§2.2 (p.1776)；§8 (p.1788–1789)；References (p.1789–1790)"
+   },
+   {
+    "q": "9. 哪些结论有证明、哪些只是陈述或算例；算法复杂度与数值实现细节",
+    "answer": "(1) 有成段证明的：\n- §3.2 入口块定理：等价链，末步写成 ⇒，实际得出集合相等；\n- §4.2 距离：⇔ 链；\n- §4.3 凸性：凸组合；\n- §4.4 有限覆盖：证明简略，关键一步直接断言（见第 2 条）；\n- §4.5 边界覆盖：集合包含链；\n- §4.6 边界点 ⇒ 局部锥内部不交：用逆否证明。证明用到“存在 ε 使 B_ε∩(A−a) = B_ε∩∠a”的局部锥性质，这只对多面体成立，曲边块不适用；文中还有排版错“int ∈ (B)”；\n- §4.7 凸块 ⇔：⇐ 方向用 ∠a+a ⊃ A，再沿 int(∠a) 方向平移分离；\n- §5.3 圆角入口定理：纯 Minkowski 交换律、结合律推导。我的观察：前提里的 int(↑n11∩↑n12) ∩ int(↑n21∩↑n22) = ∅ 在证明中没用到。\n(2) 一句话证明：§4.1（取 x=0 由定义直接得）；§5.1、§6.1、§7.1 三条覆盖定理（都只写“由 §4.5–4.7 得”）。另外 §6.1 的前提写的是“2D 凸块”，定理却同时陈述了一般块，前后不一致。\n(3) 只有陈述、没有证明的：\n- §3.1 公共边界定理：(A∩B) ⊂ (∂A∩∂B) ≠ ∅ ⇔ A∩B ≠ ∅ 且 int A ∩ int B = ∅。成立需要块是正则闭集，原文没写这个前提；\n- §3.1 中 removability、lock 只是定义，没有任何定理把它们和 E 的内部或边界联系起来；\n- §6.2、§7.1 的“完全相连 / 部分相连 + cutting”；\n- §8 的“开闭迭代因解析质量矩阵而收敛”。\n(4) 只有算例图的：图 11、19–23（2D）；图 26–30（3D 凸、曲、凹）。\n(5) 复杂度：没有任何复杂度分析。唯一相关的是 §4.4 自评整块覆盖法效率不高，只用于求边界结构，以及“只用 E 的 2r 小窗口”。我的推算（原文未写）：2D 片数为 O(pq)。\n(6) 数值实现：浮点精度、容差、退化处理、精确算术，原文都没写。§8 声称能处理平行接触和小边长，但没有数值证据，也没讨论容差。",
+    "where": "§3.1–3.2 (p.1777–1778)；§4.1–4.7 (p.1779–1781)；§5.1、§5.3 (p.1781–1782)；§6.1–6.2 (p.1783)；§7.1 (p.1785–1786)；§8 (p.1788–1789)"
+   },
+   {
+    "q": "10. 与接触力、开闭迭代、DDA 的衔接",
+    "answer": "只有定性衔接，没有公式层面的接口。\n(1) §1：可嵌入 DDA、NMM、DEM 等不连续方法；可与传统开闭迭代、变分不等式 [11]、二阶锥规划 [12] 等框架 [11–14] 结合。\n(2) §8 结论：\n- 块体系统用开闭迭代保证不受拉、不侵入；\n- 开闭迭代因解析质量矩阵而收敛（只有陈述）；\n- 迭代把不等式组化为不等式子集，再化为可解方程组；\n- DEM 用显式开闭迭代，DDA 用隐式开闭迭代；\n- 本文的改进可完美地用于开闭迭代（转述）。\n(3) 最接近接口的概念是 §6.3 的 control point（含 a0 的接触边所对应的顶点），以及每步最大位移 r、2r 窗口。\n(4) 原文未写：接触弹簧或罚函数、接触力方向（法向/切向）、摩擦、开闭状态如何由 C(i,j) 覆盖片生成约束、多候选接触如何进入迭代、变形块（DDA 一阶位移场含转动和应变）怎样与只按平移定义的 E 配合。",
+    "where": "摘要与 §1 (p.1775)；§6.2–6.3 (p.1783)；§8 (p.1788–1789)；参考文献 [11]–[14] (p.1790)"
+   },
+   {
+    "q": "11. 其他对“形式化石根华接触理论”最关键的内容",
+    "answer": "(1) E 就是平移 C-obstacle：E = B ⊕ (−A) ⊕ {a0}，状态判定是 a0 ∈ E 与否（§4.1）。\n(2) 接触态细分。§3.1 定义：contact 为 A∩B ≠ ∅ 且 A∩B ⊂ ∂A∩∂B；penetration 为 int A ∩ int B ≠ ∅；removability 为对任意 ε 存在 0<|δ|<ε 使 (A+δ)∩B = ∅；lock 为存在 ε 使所有 |δ|<ε 都有 (A+δ)∩B ≠ ∅。\n我的推论（原文没作为定理）：在接触态下，“可移”⇔ a0 ∈ ∂E，“锁”⇔ a0 ∈ int E。所以 int E 严格大于“侵入平移集”，∂E 也不等于全部接触。例：零间隙的榫槽恰好嵌合时，任意小平移仍相交，但并不侵入；图 8（p.1778）画的就是这种锁态入口块。形式化时 ∂E 不能简单当作“接触”的同义词。\n(3) 三层结构：\n- 整块有限覆盖（§4.4）；\n- 边界覆盖（§4.5）；\n- 局部锥过滤，得到 C(i,j)（§4.6/4.7，以及 §5.1、§6.1、§7.1）；\n- 再加时间步窗口 {|x−a0| ≤ 2r}。\n凸块各处取等号；凹块只有超集，加上一个未定义的 cutting。原创且可证明的是前两层加局部锥定理；凹块拼接是没有证明的工程步骤。\n(4) 未写明的前提：块须为正则闭集（公共边界定理需要）；须有界且为多面体（§4.4 取交集顶点、§4.6 的局部锥性质都需要）；低维元素的 ∂ 应是相对边界；A(n) = A；n 只限 2、3；E 须是闭集（§4.2 才能取 min）。可 §2.1 又允许无限块，算例里还有曲边块，与证明前提不一致。\n(5) 曲边：理论上只有 §5.3 的 2D 凸角加圆盘圆角，结论是“圆角的入口 = 入口的圆角，半径 r1+r2”：E(E(A1,A2), E(B1,B2)) = E(E(A1,B1), E(A2,B2))，其中 E(A1,B1) 是半径 r1+r2 的圆盘。这是 Minkowski 交换律、结合律的直接推论。\n(6) 缺失的定义：C(0,0)、cutting 算法、接触法向与侵入深度、多候选选择、转动、数值容差。\n(7) 记号与笔误：\n- “\\”意为 on condition that；\n- E(a,b) 点记号未定义就使用；\n- §2.7 中 m_1i = (0,0,1)×e_i 的下标有歧义；\n- §4.6 证明有“int ∈ (B)”；\n- §4.2 标题写成 Theory；\n- 参考文献 [7] 题名拼成 tsheory；\n- §3.2 证明末步只写 ⇒；\n- §6.1 前提写凸块，定理却含一般块。\n(8) 凹块其实有“凸片并”表示（§2.5），凹角有“三个凸锥并”的分解（§2.3），凹棱 = 两个半空间之并（§2.7）。但覆盖定理不依赖这些分解，而是靠逐对边界元素配对加局部锥条件。所以可以说“检测层不需要全局凸分解”，但这只是我们的归纳，原文没这样说。",
+    "where": "§2.1 (p.1775)；§2.3、§2.5 (p.1776)；§2.7 (p.1777)；§3.1 与图 8 (p.1777–1778)；§4.1–4.7 (p.1779–1781)；§5.3 (p.1782)；§6.2 (p.1783)；§7.1–7.2 (p.1786–1788)；参考文献 (p.1790)"
+   }
+  ],
+  "theorems": [
+   {
+    "id": "§3.1 Theorem of the common boundary",
+    "statement": "(A∩B) ⊂ (∂A∩∂B) ≠ ∅ ⇔ A∩B ≠ ∅ 且 int(A)∩int(B) = ∅",
+    "proof_status": "只有陈述，无证明（成立需要块为正则闭集，原文没写这个前提）",
+    "page": "1777"
+   },
+   {
+    "id": "§3.2 Theorem of entrance block",
+    "statement": "E(A,B) := {a0+x \\ (A+x)∩B≠∅} = B − A + a0 = ∪_{a∈A,b∈B}(b − a + a0)，a0 ∈ A 为参考点，A 平移、B 不动",
+    "proof_status": "有证明：从几何定义出发的等价链（末步写作 ⇒，实际得到集合相等）",
+    "page": "1778"
+   },
+   {
+    "id": "§4.1 Theorem of entrance",
+    "statement": "A∩B = ∅ ⇔ a0 ∉ E(A,B)；A∩B ≠ ∅ ⇔ a0 ∈ E(A,B)",
+    "proof_status": "一句话证明：取 x=(0,0,0)，由几何定义直接得",
+    "page": "1779"
+   },
+   {
+    "id": "§4.2 Theory of distance",
+    "statement": "若 A∩B = ∅，则 |A,B| = |a0, E(A,B)|，其中 |A,B| = min{|x| \\ (A+x)∩B≠∅}",
+    "proof_status": "有证明（⇔ 链）；只适用于分离情形，侵入情形未处理",
+    "page": "1779"
+   },
+   {
+    "id": "§4.3 Theorem of convex blocks",
+    "statement": "A、B 均凸 ⇒ E(A,B) 凸",
+    "proof_status": "有证明（凸组合）",
+    "page": "1779"
+   },
+   {
+    "id": "§4.4 Theorem of finite covers of entrance blocks",
+    "statement": "A、B 为 n 维块，n=2,3：E(A,B) = ∪_{k=0}^{n} E(A(n−k), B(k))；A(k) 为 k 维边界元素（顶点、棱、面），A(n)=A",
+    "proof_status": "有证明但简略：取 (A+x)∩B 的顶点并平移 δ，属逐点存在性论证。“交集顶点落在 A(n−k)+x 与 B(k) 上”这一步直接断言，未给维数论证；⊇ 方向未写；需要有界多面体（无限块、曲边块不在证明覆盖内）。原文自评该法效率不高，只用于求边界结构",
+    "page": "1779"
+   },
+   {
+    "id": "§4.5 Theorem of finite covers of entrance surfaces",
+    "statement": "n=2,3：∂E(A,B) ⊂ ∪_{k=0}^{n−1} E(A(n−1−k), B(k))（2D 为顶点−边/边−顶点；3D 为面−顶点、棱−棱、顶点−面）",
+    "proof_status": "有证明：并的边界 ⊂ 边界的并，加 ∂E(X,Y) ⊂ E(∂X,Y)∪E(X,∂Y)。低维元素的 ∂ 须理解为相对边界，原文未说明",
+    "page": "1779"
+   },
+   {
+    "id": "§4.6 Theorem of entrance surface and solid angle",
+    "statement": "一般 n 维块（n=2,3）：E(a,b) ∈ ∂E(A,B) ⇒ int(∠a) ∩ int(∠b) = ∅（∠a 为 A 在 a 处的实体角，即切锥）",
+    "proof_status": "有证明（逆否），依赖局部锥性质 B_ε∩(A−a) = B_ε∩∠a，只对多面体成立；有排版错“int ∈ (B)”",
+    "page": "1779–1780"
+   },
+   {
+    "id": "§4.7 Theorem of entrance surface of convex blocks",
+    "statement": "A、B 为凸块（n=2,3）：E(a,b) ∈ ∂E(A,B) ⇔ int(∠a) ∩ int(∠b) = ∅",
+    "proof_status": "有证明：⇐ 方向用 ∠a+a ⊃ A、∠b+b ⊃ B，沿 int(∠a) 方向平移即分离；⇒ 方向引 §4.6",
+    "page": "1780–1781"
+   },
+   {
+    "id": "§5.1 Theorem of contact vectors of 2D solid angle contact",
+    "statement": "2D 角对角 A=∠e1e2+e、B=∠h1h2+h：一般块 ∂E ⊂ C(0,1) ∪ C(1,0)，凸块取等号。C(0,1) = {E(e, ∠h_j+h) \\ int(∠e1e2)∩int(↑n_2j)=∅}，C(1,0) = {E(∠e_i+e, h) \\ int(↑n_1i)∩int(∠h1h2)=∅}",
+    "proof_status": "只写“由 §4.5–4.7 得”，无独立证明",
+    "page": "1781"
+   },
+   {
+    "id": "§5.3 Theorem of entrance round corner solid angle",
+    "statement": "法向为单位向量、A1、B1 为半径 r1、r2 的圆盘，A=E(A1,A2)、B=E(B1,B2) 为圆角凸角，且 int(↑n11∩↑n12)∩int(↑n21∩↑n22)=∅ 时：E(A,B) = E(E(A1,A2),E(B1,B2)) = E(E(A1,B1),E(A2,B2))，其中 E(A1,B1) 为半径 r1+r2 的圆盘",
+    "proof_status": "有证明（Minkowski 代数交换、结合）；前提中的锥内部不交条件在证明中未被使用（我的观察）",
+    "page": "1782"
+   },
+   {
+    "id": "§6.1 Theorem of contact edges of 2D blocks",
+    "statement": "一般块 ∂E(A,B) ⊂ C(0,1) ∪ C(1,0)，凸块取等号。C(0,1) = {E(a_i, b_j b_{j+1}) \\ int(∠a_i)∩int(↑m_2j)=∅}，C(1,0) = {E(a_i a_{i+1}, b_j) \\ int(↑m_1i)∩int(∠b_j)=∅}",
+    "proof_status": "只写“由 §4.5–4.7 直接得”；本节前提写“2D 凸块”，定理却含一般块，前后不一致",
+    "page": "1783"
+   },
+   {
+    "id": "§7.1 Theorem of contact polygons of 3D entrance blocks",
+    "statement": "一般块 ∂E(A,B) ⊂ C(0,2) ∪ C(2,0) ∪ C(1,1)，凸块取等号。条件依次为 int(∠e)∩int(↑m_2l)=∅、int(↑m_1k)∩int(∠h)=∅、int(∠ee_r)∩int(∠hh_s)=∅",
+    "proof_status": "只写“由 §4.5–4.7 直接得”",
+    "page": "1785"
+   },
+   {
+    "id": "§6.2/§7.1 连接与窗口论断（非定理）",
+    "statement": "凸块：各覆盖经 C(0,0)（3D 经 C(1,0)、C(0,1)）完全相连。凹块：部分相连，凹处靠 cutting。每步最大位移 r，只用 {|x−a0| ≤ 2r} ∩ E(A,B)",
+    "proof_status": "只有陈述；C(0,0) 与 cutting 算法均未定义",
+    "page": "1783, 1786"
+   },
+   {
+    "id": "§8 开闭迭代收敛论断（非定理）",
+    "statement": "开闭迭代因解析质量矩阵而收敛；DEM 用显式开闭迭代、DDA 用隐式开闭迭代；本文理论可完美地用于开闭迭代",
+    "proof_status": "只有陈述，无证明、无算例支撑",
+    "page": "1788"
+   }
+  ],
+  "references_of_note": [
+   "[6] Shi G H. Contact theory. Sci China Tech Sci, 2015, 58: 1450–1496（本文所改进的前作）",
+   "[7] Zheng F, Jiao Y Y, Zhang X L, et al. 基于入口块理论的 3D DDA 面向对象接触检测. Int J Geomech, 2017, 17: E4016009",
+   "[8] Zhang H, Liu S G, Zheng L, et al. 3D DDA 接触不确定性的解决方法. Int J Geomech, 2018, 18: 04018130",
+   "[9] Lin X C, Li X, Wang X G, et al. 紧凑的 3D 块体切割与接触搜索算法. Sci China Tech Sci, 2019, 62: 1438–1454",
+   "[10] Ni K, Ning Y, Yang J, et al. 基于接触理论的 3D DDA 稳健接触检测. Int J Rock Mech Min Sci, 2020, 134: 104478",
+   "[5] Wu W, Zhu H, Zhuang X, et al. 3D DDA 多壳覆盖接触检测. Theor Appl Fract Mech, 2014, 72: 136–149",
+   "[11] Fan H, Zhao J, Zheng H. 基于变分不等式的 DDA 框架. IJNME, 2018, 115: 358–394",
+   "[12] Meng J, Cao P, Huang J, et al. DDA 的二阶锥规划格式. IJNME, 2019, 118: 243–257",
+   "[13] Zhang N, Li X, Lin X. NMM 摩擦弹簧与黏聚接触模型. IJNME, 2020, 121: 2369–2397",
+   "[14] Xu D, Wu A, Yang Y, et al. 基于接触势的 3D DDA. IJRMMS, 2020, 127: 104206",
+   "[3] Zhong Z H, Nilsson L. 一般接触问题的接触搜索算法. Comput Struct, 1989, 33: 197–209",
+   "缺失项：参考文献中没有 Lozano-Pérez、configuration space/C-obstacle、GJK、NFP，也没有任何计算几何文献；Minkowski (1910) 只在 §2.2 正文提到，未列入参考文献"
+  ]
+ }
+]

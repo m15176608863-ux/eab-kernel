@@ -33,7 +33,7 @@ from eab.kernel3d.entrance3 import first_entrance3, first_entrance_brute        
 from eab.kernel3d.geom3 import Polyhedron, box, brute_feature_distance, convex_hull_3d  # noqa: E402
 from eab.construction import scalar_rational
 from eab.numeric_domain import check_input, check_mu
-from eab.readers.numeric_decode import integer
+from eab.numeric_decode import integer
 from eab.limit import LimitContact, wrench                                 # noqa: E402
 from eab.limit_multi import BodyContact, LimitBody, limit_load_multi      # noqa: E402
 from eab.margin import body_distance, inflated_membership, margin_contacts  # noqa: E402

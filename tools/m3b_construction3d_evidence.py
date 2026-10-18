@@ -91,7 +91,8 @@ def microbench(folder):
     if folder:
         _load_baseline(folder)
     from fractions import Fraction as F
-    from eab.kernel3d import global_entrance as G, interlock as I
+    from eab.kernel3d import global_entrance as G
+    from eab.adapters import tia3d as I
     from eab.kernel3d.geom3 import box
     from test_interlock_exact import _wall
     from osteomorphic import interlocking_pair

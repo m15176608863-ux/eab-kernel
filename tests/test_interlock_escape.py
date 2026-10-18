@@ -28,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from osteomorphic import interlocking_pair  # noqa: E402
 
 from eab.kernel3d.frozen import FACET_KINDS, frozen_ee_sign  # noqa: E402
-from eab.kernel3d.interlock import (escape_candidates, escape_height_brute,  # noqa: E402
+from eab.adapters.tia3d import (escape_candidates, escape_height_brute,  # noqa: E402
                                     escape_height_covers, escape_height_from_frozen_cover)
 
 

@@ -5,6 +5,7 @@ Legacy absence still requires the source-normalized table hash evidence.
 """
 from __future__ import annotations
 
+from frozen_evidence import data_path
 import argparse
 from fractions import Fraction as F
 import json
@@ -58,7 +59,7 @@ def reproduce(example):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("path", type=Path, nargs="?", default=replay.ROOT / "reports/codex/M4c_evidence/minimal_examples.json")
+    parser.add_argument("path", type=Path, nargs="?", default=data_path(replay.ROOT, "reports/codex/M4c_evidence/minimal_examples.json"))
     parser.add_argument("--name")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()

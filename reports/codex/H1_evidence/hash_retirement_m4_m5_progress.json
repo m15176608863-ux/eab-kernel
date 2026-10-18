@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "exit_code": 0,
+  "elapsed_seconds": 20.03100000001723,
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\H1_evidence\\tmp\\hash_m4_m5_selected",
+    "--durations=10",
+    "tests/test_m4c_replay.py::test_real_first_frame_per_family_recomputes_the_frozen_classification",
+    "tests/test_m4c_replay.py::test_frozen_full_computation_retains_historical_coverage",
+    "tests/test_m5a_replay.py::test_real_first_block_fit_per_family_is_reexecuted_not_just_hash_checked",
+    "tests/test_m5a_replay.py::test_real_rotating_candidate_pairs_reexecute_exact_events_not_just_frozen_hashes",
+    "tests/test_m5a_replay.py::test_frozen_family_products_are_distinct_and_retain_historical_revalidation",
+    "tests/test_m5a2_replay.py::test_real_rotating_ledger_matches_direct_kernels_and_independent_classification",
+    "tests/test_h1_frozen_data.py"
+  ],
+  "last_line": "41 passed in 18.06s"
+}

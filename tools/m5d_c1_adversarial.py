@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
 from eab.kernel2d.m5d_exit_certificate import exit_order_certificate
 from m5d_c1_oracle import exit_oracle
-from m5c_source_binding import runtime_source_hashes, assert_current_sources
+from m5c_source_binding import runtime_source_hashes, assert_run_sources_unchanged
 
 EVIDENCE = ROOT / "reports/codex/M5d_evidence"
 TMP = EVIDENCE / "tmp"
@@ -78,7 +78,7 @@ def main():
                              radius=radius, label=result["label"], perturbations=64))
         write(out / "progress.json", dict(complete=False, cases=case+1, checks=checks))
     observed = runtime_source_hashes(ROOT, __file__)
-    assert_current_sources(ROOT, binding, observed)
+    assert_run_sources_unchanged(ROOT, binding, observed)
     result = dict(schema="eab.m5d-c1-threshold-adversarial.v1", complete=True, seed=52761,
                   nominal_configurations=48, threshold_bisections=40, certified_radii=len(rows),
                   nonrigid_both_ring_perturbations=checks, counterexamples=0,

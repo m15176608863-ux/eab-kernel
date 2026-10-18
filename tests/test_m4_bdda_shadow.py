@@ -17,6 +17,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
+from frozen_evidence import data_path
 import m4_bdda_shadow as shadow
 from eab.adapters import bdda2d
 from eab.readers import bdda_df
@@ -79,7 +80,7 @@ def test_fifteen_family_three_steps_have_only_pinned_classified_differences(case
 
 
 def test_family_capture_coverage_and_detection_products_are_not_all_identical():
-    manifest = json.loads((ROOT / "reports/codex/M4a_evidence/family_manifest.json").read_text(encoding="utf-8"))
+    manifest = json.loads((data_path(ROOT, "reports/codex/M4a_evidence/family_manifest.json")).read_text(encoding="utf-8"))
     assert tuple(Path(c["fixture"]).name for c in manifest["cases"]) == CASES
     assert all(c["steps"] == 3 for c in manifest["cases"])
     expected = json.loads(EXPECTED_PATH.read_text(encoding="utf-8"))

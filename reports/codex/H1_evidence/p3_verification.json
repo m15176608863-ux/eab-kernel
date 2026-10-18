@@ -1,0 +1,65 @@
+{
+  "adopted_commit": "5e3ba68",
+  "baseline": "28 passed in 0.24s",
+  "new_nodes": {
+    "adopted_semantics": 3,
+    "symmetry": 25
+  },
+  "static_issues": 0,
+  "mutation_results": [
+    {
+      "case": "replay_radius_sum",
+      "status": "KILLED",
+      "test": "test_replay_box_shortcut_adds_independent_radii_before_certifying_separation",
+      "module": "m5b_robust_replay",
+      "function": "compare_pair",
+      "anchor": [
+        "a[\"radius\"]+b[\"radius\"]",
+        "max(a[\"radius\"], b[\"radius\"])"
+      ],
+      "assertion": "replay box shortcut must add both independent block radii",
+      "line": 39
+    },
+    {
+      "case": "c1_cross_family",
+      "status": "KILLED",
+      "test": "test_c1_ranking_must_include_other_feature_family_competitors",
+      "module": "eab.kernel2d.m5d_exit_certificate",
+      "function": "exit_order_certificate",
+      "anchor": [
+        "if key != label",
+        "if key != label and key[0] == label[0]"
+      ],
+      "assertion": "C1 must compare the VE winner against EV competitors",
+      "line": 54
+    },
+    {
+      "case": "c1_b_radius",
+      "status": "KILLED",
+      "test": "test_c1_b_ring_convexity_uses_b_radius_when_a_is_exact",
+      "module": "eab.kernel2d.m5d_exit_certificate",
+      "function": "exit_order_certificate",
+      "anchor": [
+        "(\"B\", b, rb)",
+        "(\"B\", b, ra)"
+      ],
+      "assertion": "C1 B convexity must use B radius even when A radius is zero",
+      "line": 71
+    },
+    {
+      "case": "entrance_difference_not_sum",
+      "status": "KILLED",
+      "test": "test_shi_reference_point_reflection_identity_for_nonconvex_global_entrance",
+      "module": "eab.kernel2d.global_entrance",
+      "function": "GlobalEntrance2.__init__",
+      "anchor": [
+        "_sub(b, a)",
+        "(b[0]+a[0], b[1]+a[1])"
+      ],
+      "assertion": "forward E state disagrees with independent overlap oracle",
+      "line": 49
+    }
+  ],
+  "production_source_edits": false,
+  "full_replay": false
+}

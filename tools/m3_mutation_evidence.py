@@ -45,7 +45,8 @@ def child(kind, guard):
     sys.path[:0] = [str(ROOT/"src"), str(ROOT/"tests"), str(ROOT/"tools")]
     import pytest
     from eab.kernel2d import global_entrance as G2
-    from eab.kernel3d import global_entrance as G3, interlock
+    from eab.kernel3d import global_entrance as G3
+    from eab.adapters import tia3d as interlock
     cls = G2.GlobalEntrance2
     replacements = {
         "remove_clipping": (G2, cls, "clipped_covers", "exposed = (states[0] >= 0) != (states[1] >= 0)", "exposed = True"),

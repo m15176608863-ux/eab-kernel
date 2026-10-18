@@ -15,7 +15,7 @@ import pytest
 from r13_event_oracle import assert_event_binding, assert_scalar_binding
 from eab.kernel2d import entrance as E2
 from eab.kernel3d import entrance3 as E3
-from eab.kernel3d import interlock as I
+from eab.adapters import tia3d as I
 from eab.kernel3d.geom3 import Polyhedron
 
 

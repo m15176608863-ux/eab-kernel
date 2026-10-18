@@ -1,0 +1,89 @@
+{
+  "complete": true,
+  "method": "AST obsolete-API reference census plus manual review of active frozen verification and historical finalizer predicates",
+  "obsolete_api_references": [],
+  "reviewed_verifiers": [
+    {
+      "path": "tools/m5b_minimal_examples.py",
+      "function": "verify",
+      "line_start": 54,
+      "line_end": 65,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m5c_research_examples.py",
+      "function": "verify",
+      "line_start": 76,
+      "line_end": 88,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m5c_source_binding.py",
+      "function": "assert_run_sources_unchanged",
+      "line_start": 36,
+      "line_end": 53,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m5c_publish_combined.py",
+      "function": "check_sources",
+      "line_start": 78,
+      "line_end": 80,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m4c_run_replays.py",
+      "function": "verify_batch",
+      "line_start": 100,
+      "line_end": 128,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m5d_refresh_frozen.py",
+      "function": "check_binding",
+      "line_start": 52,
+      "line_end": 57,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m5d_refresh_frozen.py",
+      "function": "seal_candidates",
+      "line_start": 60,
+      "line_end": 79,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m3b_finalize_evidence.py",
+      "function": "verify_hashes",
+      "line_start": 252,
+      "line_end": 270,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m5c_report.py",
+      "function": "check_sources",
+      "line_start": 22,
+      "line_end": 26,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    },
+    {
+      "path": "tools/m5d_report.py",
+      "function": "check_map",
+      "line_start": 18,
+      "line_end": 25,
+      "review": "historical-current source equality absent; data hashes or same-run snapshots retained"
+    }
+  ],
+  "remaining_historical_current_source_pins": [],
+  "intentional_retained_checks": [
+    "static construction admission source authorization (not evidence/current numerical result pin)",
+    "same actual run before/after source stability",
+    "frozen execution export data self-integrity",
+    "input/artifact bytes and SHA256"
+  ],
+  "late_corrections": [
+    "m4c_finalize_evidence.main complete replay code map",
+    "m4c_finalize_evidence.main historical revalidation driver hash"
+  ],
+  "test_count_change": 0
+}

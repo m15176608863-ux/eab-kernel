@@ -201,7 +201,7 @@ def test_r14_tool_document_decimal_identity_is_not_rounded(tmp_path):
 
 
 def test_r14_tool_document_generic_tree_identity_mutation_is_caught(tmp_path, monkeypatch):
-    from eab.readers.numeric_decode import loads, decode_tree
+    from eab.numeric_decode import loads, decode_tree
     monkeypatch.setattr(g2_bdda3d, "numeric_loads", lambda text: decode_tree(loads(text), "old document"))
     with pytest.raises(AssertionError, match="decimal step must remain exact integer"):
         test_r14_tool_document_decimal_identity_is_not_rounded(tmp_path)

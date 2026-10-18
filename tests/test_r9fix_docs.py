@@ -16,7 +16,7 @@ CASES = (
         "proposition 7 is implemented but proposition 8 and entrance control are not",
     ),
     (
-        "README.md",
+        "docs/history/README_through_20261019.md",
         "随后已经过 G6 第二至第五轮独立重审",
         "canon_map（未经 G6）",
         (
@@ -86,11 +86,11 @@ def _assert_route_is_explicit_history(text):
 
 
 def test_readme_route_old_status_is_not_advertised_as_current():
-    _assert_route_is_explicit_history((ROOT / "README.md").read_text(encoding="utf-8-sig"))
+    _assert_route_is_explicit_history((ROOT / "docs/history/README_through_20261019.md").read_text(encoding="utf-8-sig"))
 
 
 def test_route_history_marker_internal_text_mutation_is_caught():
-    text = (ROOT / "README.md").read_text(encoding="utf-8-sig")
+    text = (ROOT / "docs/history/README_through_20261019.md").read_text(encoding="utf-8-sig")
     with pytest.raises(AssertionError, match="G6I-06 route history"):
         _assert_route_is_explicit_history(text.replace("历史路线快照（094861c 时期）", "当前路线"))
 

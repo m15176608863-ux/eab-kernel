@@ -4,6 +4,8 @@ Oracle imports: json and hashlib, not the checker or numerical implementation.
 The source anchor is accepted df4f6f1 (M3, INT1-C, old shared review, renewals),
 plus the explicitly reviewed M5b shared successor. Hash checks here are the
 history contract itself, never evidence that a numerical mutant was killed.
+H1 reads the accepted namespace view from the mechanical relocation mapping;
+all literal historical fingerprints remain unchanged and live counts freeze.
 """
 import copy
 import hashlib
@@ -11,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+from policy_history_view import accepted_policy
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,7 +29,7 @@ HISTORY = (
 
 @pytest.mark.parametrize("group,count,fingerprint", HISTORY)
 def test_m3_int1c_renewal_and_shared_records_are_append_only(group, count, fingerprint):
-    policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    policy = accepted_policy(ROOT)
     if group == "M3":
         rows = [r for r in policy["waivers"] if r["id"].startswith("M3b-")]
     elif group == "INT1-C":
@@ -51,7 +54,7 @@ def test_m3_int1c_renewal_and_shared_records_are_append_only(group, count, finge
 
 
 def test_original_int1_shared_review_is_immutable_not_rewritten_by_its_successor():
-    policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    policy = accepted_policy(ROOT)
     old = policy["mutation_instrumentation_review"]
     fingerprint = hashlib.sha256(json.dumps(old, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     assert fingerprint == "5ff343c439a8321479c68d4470220042ea9996f50683ad29a689089dfbca109a"
@@ -72,7 +75,7 @@ def test_rule_site_audit_counts_identical_same_line_ast_occurrences_separately()
 
 def test_current_effective_shared_review_has_its_own_accepted_fingerprint(policy=None):
     if policy is None:
-        policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+        policy = accepted_policy(ROOT)
     active = policy["mutation_instrumentation_reviews"][-1]
     actual = hashlib.sha256(json.dumps(active, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     assert actual == "cb2f1e7fe51137a61fcf9126f756af55fce22875beac487cedc27ec5e7b78cdc", \
@@ -80,7 +83,7 @@ def test_current_effective_shared_review_has_its_own_accepted_fingerprint(policy
 
 
 def test_appending_a_wider_review_does_not_inherit_the_effective_fingerprint():
-    policy = json.loads((ROOT / "tools/exact_construction_policy.json").read_text(encoding="utf-8"))
+    policy = accepted_policy(ROOT)
     active = policy["mutation_instrumentation_reviews"][-1]
     bad = copy.deepcopy(active)
     bad["rules"].append("closed-rounded-construction")

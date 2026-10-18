@@ -19,13 +19,14 @@ import json
 import math
 import os
 from pathlib import Path
+from frozen_evidence import data_path
 import shutil
 import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "reports/codex/M5b_evidence"
-INPUTS = EVIDENCE / "endpoint_inputs"
+INPUTS = data_path(ROOT, EVIDENCE / "endpoint_inputs")
 TMP = ROOT / "reports/codex/M5c_evidence/tmp"
 
 
@@ -33,7 +34,8 @@ def source_hashes():
     # midpoint_discrepancy has lazy imports: load the exact same dependencies
     # before the start snapshot, not after the closure has already been sealed.
     sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
-    from eab.kernel2d.affine_motion import DDAAffineMotion, fit_affine
+    from eab.adapters.bdda2d_affine import DDAAffineMotion
+    from eab.kernel2d.affine_motion import fit_affine
     from m5a_se2_replay import fit_rigid
     from m5c_source_binding import runtime_source_hashes
     return runtime_source_hashes(ROOT, __file__)
@@ -205,9 +207,9 @@ def _pack_points(poly):
     return [[str(v) for v in p] for p in poly]
 
 
-def freeze_inputs(destination=INPUTS):
+def freeze_inputs(destination=None):
     """Create once; cross-check raw z/geometry pairing against all snapshots."""
-    destination = Path(destination)
+    destination = Path(destination) if destination is not None else EVIDENCE / "endpoint_inputs"
     if destination.exists():
         raise ValueError("input bundle exists: never overwrite frozen inputs")
     destination.mkdir(parents=True)
@@ -338,7 +340,8 @@ def iter_inputs(directory=INPUTS, case=None):
 def midpoint_discrepancy(row):
     """Old M5a2 fit family vs mathematical DDA P3; no path supremum claim."""
     sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
-    from eab.kernel2d.affine_motion import DDAAffineMotion, fit_affine
+    from eab.adapters.bdda2d_affine import DDAAffineMotion
+    from eab.kernel2d.affine_motion import fit_affine
     from m5a_se2_replay import fit_rigid
     start, end = exact_points(row["start"]), exact_points(row["end"])
     fit, rigid = fit_affine(start, end), fit_rigid(start, end)
@@ -364,7 +367,7 @@ def run(run_name, directory=INPUTS):
     destination.mkdir(parents=True)
     started = time.perf_counter()
     manifest_path = Path(directory) / "manifest.json"
-    from m5c_source_binding import assert_current_sources
+    from m5c_source_binding import assert_run_sources_unchanged
     initial = source_hashes()
     manifest_hash = sha(manifest_path)
     summary = {"schema": "eab.m5b-endpoint-reconstruction.v1", "complete": False,
@@ -409,7 +412,7 @@ def run(run_name, directory=INPUTS):
                 write_json(destination / "progress.json", summary)
                 print("endpoint", summary["block_frames"], case, row["step"], flush=True)
     final = source_hashes()
-    assert_current_sources(ROOT, initial, final)
+    assert_run_sources_unchanged(ROOT, initial, final)
     if sha(manifest_path) != manifest_hash:
         raise ValueError("bound input manifest changed; discard run and restart")
     # Re-read every frozen shard after the computation before publication.

@@ -11,6 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
+from frozen_evidence import data_path
 from g2_bdda3d import G2_BAND, G2_WINDOW, compare, load_case, polyhedron_preserving_indices  # noqa: E402
 from osteomorphic import osteomorphic_block  # noqa: E402
 
@@ -587,7 +588,7 @@ def test_g2_enumerated_window_is_read_off_the_actual_enumeration():
 def test_g2_committed_report_equals_the_live_comparison():
     """reports/g2_bdda3d.json 必须等于当前 compare() 在三份夹具上的输出（G6 minor 22：旧文件停在 6934694，
     记着 6 个盖、重复 VF 行、没有 window/band 字段）。重生成：python tools/g2_bdda3d.py。"""
-    committed = json.loads((ROOT / "reports" / "g2_bdda3d.json").read_text(encoding="utf-8"))
+    committed = json.loads((data_path(ROOT, "reports/g2_bdda3d.json")).read_text(encoding="utf-8"))
     live = json.loads(json.dumps([compare(p) for p in CASES], indent=1, default=str))
     assert committed == live
 

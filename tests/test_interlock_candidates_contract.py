@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "tools"))
 
 from osteomorphic import interlocking_pair  # noqa: E402
-from eab.kernel3d.interlock import _cover_at, escape_candidates, escape_height_covers  # noqa: E402
+from eab.adapters.tia3d import _cover_at, escape_candidates, escape_height_covers  # noqa: E402
 from eab.margin import effective_geom_tol  # noqa: E402
 
 

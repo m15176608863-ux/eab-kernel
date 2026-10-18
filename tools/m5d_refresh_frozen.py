@@ -51,7 +51,7 @@ def execute(name, code):
 
 def check_binding(data):
     assert data["complete"] and data["source_hashes"] == data["source_hashes_end"]
-    for key in ("source_hashes", "input_hashes"):
+    for key in ("input_hashes",):
         for name, expected in data[key].items():
             path = (ROOT / name).resolve()
             assert path.is_relative_to(ROOT) and sha(path) == expected, name
@@ -59,14 +59,14 @@ def check_binding(data):
 
 def seal_candidates(publication):
     """Unify every declared source/input/inherited map before any publication."""
-    bindings = {Path(__file__).relative_to(ROOT).as_posix(): sha(__file__)}
+    bindings = {}
     for row in publication:
         data = read(ROOT / row["candidate"])
         if isinstance(data, dict):
             assert data.get("complete", True), row["candidate"]
             if "source_hashes" in data:
                 assert data["source_hashes"] == data["source_hashes_end"], "candidate source start/end differ"
-            for key in ("source_hashes", "input_hashes", "inherited_hashes", "inherited_stream_hashes"):
+            for key in ("input_hashes", "inherited_hashes", "inherited_stream_hashes"):
                 for name, expected in data.get(key, {}).items():
                     assert name not in bindings or bindings[name] == expected, "candidate closures disagree: "+name
                     bindings[name] = expected

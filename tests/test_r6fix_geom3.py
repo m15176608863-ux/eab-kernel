@@ -13,7 +13,7 @@ import textwrap
 import pytest
 
 from eab.kernel3d import geom3 as G
-from eab.kernel3d import interlock as I
+from eab.adapters import tia3d as I
 from eab.kernel3d.exact_sweep import translate_exact
 from eab.kernel3d.covers3 import membership_convex3
 

@@ -18,7 +18,8 @@ from pathlib import Path
 
 import pytest
 
-from eab import TF_MODE, Mode
+from eab.adapters.tf import TF_MODE
+from eab import Mode
 from eab.readers import tf_probe
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,7 +78,7 @@ _PROBE_CORE_COLS = {"step", "time", "block_a", "block_b", "contact_index", "cont
                     "shear_dx", "shear_dy", "shear_dz"}
 
 
-# 状态码 → Mode 的期望映射，测试自带一份（零共用：不从 eab 导入 TF_MODE）。依据见 contact_record.TF_MODE 的注释。
+# 状态码 → Mode 的期望映射，测试自带一份（零共用：不从 eab 导入 TF_MODE）。依据见 adapters.tf.TF_MODE 的注释。
 _TF_MODE_ORACLE = {0: "OPEN", 1: "SLIDING", 2: "LOCKED", 3: "TENSION", 4: "UNVERIFIED", 5: "UNVERIFIED", 6: "UNVERIFIED"}
 
 

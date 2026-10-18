@@ -11,7 +11,7 @@ import sys
 import pytest
 from mutation_support import replace_module_callable
 from eab.kernel2d import model_robustness as rob
-from eab.kernel2d.dda_motion import DDAAnchoredMotion
+from eab.adapters.bdda2d_motion import DDAAnchoredMotion
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import m5b_robust_replay as replay

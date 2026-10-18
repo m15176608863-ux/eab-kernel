@@ -28,7 +28,7 @@ def main():
     mutations = [case.attrib["name"] for case in cases if case.attrib["name"].startswith("test_internal")]
     assert len(mutations) == 6
     sources = ("tests/test_m5d_replay_semantics.py", "tests/mutation_support.py", "tools/m5b_robust_replay.py",
-               "src/eab/kernel2d/model_robustness.py", "src/eab/kernel2d/dda_motion.py", "tools/m5d_replay_teeth_evidence.py")
+               "src/eab/kernel2d/model_robustness.py", "src/eab/adapters/bdda2d_motion.py", "tools/m5d_replay_teeth_evidence.py")
     evidence = dict(complete=True, collected=len(cases), executed=len(cases), skip_count=0,
                     mutation_count=len(mutations), mutations=mutations, hash_tripwires_selected=False,
                     frozen_snapshot_tripwires_selected=False, oracle_imports=["fractions.Fraction", "math.comb"],

@@ -9,7 +9,8 @@ from fractions import Fraction as F
 
 import pytest
 
-from eab.kernel3d import exact_sweep as S, interlock as I
+from eab.kernel3d import exact_sweep as S
+from eab.adapters import tia3d as I
 from eab.kernel3d.geom3 import Polyhedron, box, tetra
 from perf_sweep_reference import reference_events
 

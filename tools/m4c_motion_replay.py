@@ -66,7 +66,7 @@ REPLAY_SOURCE_FILES = (
     "src/eab/readers/__init__.py",
     "src/eab/readers/bdda_df.py",
     "src/eab/readers/bdda_geom.py",
-    "src/eab/readers/numeric_decode.py",
+    "src/eab/numeric_decode.py",
     "tools/m4_bdda_shadow.py",
     "tools/m4_shadow_replay.py",
     "tools/m4c_motion_replay.py",

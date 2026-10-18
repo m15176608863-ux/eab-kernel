@@ -3,6 +3,7 @@ import argparse
 import gzip
 import json
 from pathlib import Path
+from frozen_evidence import data_path
 
 import m5b_robust_replay as replay
 
@@ -42,7 +43,7 @@ def freeze(*, refresh=False):
         example["expected"] = evaluate(example)
         examples.append(example)
     after = replay.source_hashes()
-    replay.assert_current_sources(replay.ROOT, before, after)
+    replay.assert_run_sources_unchanged(replay.ROOT, before, after)
     assert replay.input_hashes() == inputs
     if (TARGET.read_bytes() if TARGET.exists() else None) != previous:
         raise AssertionError("minimal target changed during actual recomputation")
@@ -50,15 +51,15 @@ def freeze(*, refresh=False):
                       source_hashes=before, source_hashes_end=after, input_hashes=inputs, script_sha256=replay.sha(Path(__file__)), examples=examples))
 
 
-def verify():
-    data = json.loads(TARGET.read_text(encoding="utf-8"))
+def verify(target=None):
+    # Default reads immutable regression data; a new producer passes its exact output.
+    source = data_path(replay.ROOT, TARGET) if target is None else target
+    data = json.loads(source.read_text(encoding="utf-8"))
     assert data["complete"]
-    # Verification may run inside pytest, whose unrelated loaded modules are
-    # not replay dependencies. Check every frozen dependency byte instead of
-    # comparing the replay closure with that polluted process-wide namespace.
-    replay.assert_current_sources(replay.ROOT, data["source_hashes"], data["source_hashes_end"])
-    assert data["input_hashes"] == replay.input_hashes()
-    assert data["script_sha256"] == replay.sha(Path(__file__))
+    # H1: frozen source hashes identify historical production only.
+    # The self-contained examples below are the current semantic check.
+    assert data["input_hashes"] == {name.replace("fixtures/frozen/", "reports/", 1): digest
+                                    for name, digest in replay.input_hashes().items()}
     for example in data["examples"]:
         assert evaluate(example) == example["expected"], (example["case"], example["step"], example["pair"])
     return len(data["examples"])
@@ -71,7 +72,7 @@ def main():
     args = parser.parse_args()
     if args.freeze or args.refresh:
         freeze(refresh=args.refresh)
-    print("M5B_MINIMAL_EXAMPLES_GREEN", verify())
+    print("M5B_MINIMAL_EXAMPLES_GREEN", verify(TARGET if args.freeze or args.refresh else None))
 
 
 if __name__ == "__main__":

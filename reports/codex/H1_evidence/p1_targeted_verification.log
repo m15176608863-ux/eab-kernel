@@ -1,0 +1,13 @@
+........................................................................ [ 34%]
+........................................................................ [ 68%]
+..................................................................       [100%]
+============================= slowest 8 durations =============================
+4.79s call     tests/test_kernel_purity.py::test_kernel_purity_rejects_actual_source_mutations[from eab.adapters import bdda2d\n-forbidden import path]
+3.73s call     tests/test_kernel_purity.py::test_kernel_purity_rejects_actual_source_mutations[mtype = 0\n-domain token mtype]
+2.38s call     tests/test_interlock_exact.py::test_explicit_window_contract_and_default_exactness[None]
+2.13s call     tests/test_interlock_exact.py::test_near_vertical_event_removal_is_killed_inside_live_event_path
+2.03s call     tests/test_interlock_exact.py::test_explicit_window_contract_and_default_exactness[window2]
+1.94s call     tests/test_interlock_exact.py::test_exact_contact_label_frozen_height_equals_the_exact_root[19]
+1.51s call     tests/test_interlock_exact.py::test_exact_contact_label_frozen_height_equals_the_exact_root[7]
+1.12s call     tests/test_kernel_purity.py::test_kernel_purity_follows_transitive_imports
+210 passed in 29.79s

@@ -14,7 +14,7 @@ from fractions import Fraction as F
 from collections import Counter
 import hashlib
 from functools import lru_cache
-import gzip
+import frozen_gzip as gzip
 import json
 from math import isqrt
 from pathlib import Path

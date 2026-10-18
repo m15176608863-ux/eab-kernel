@@ -7,6 +7,7 @@ This is NOT another all-pairs P2 solve; it is a bound two-stage evidence join.
 """
 from __future__ import annotations
 
+from frozen_evidence import data_path
 import argparse
 from collections import Counter, defaultdict
 import gzip
@@ -53,7 +54,7 @@ def local(root, name):
     path = (root / name).resolve()
     require(path.is_relative_to(root) and path.relative_to(root).as_posix() == name,
             "noncanonical or outside-worktree path: " + name)
-    return path
+    return data_path(root, path)
 
 
 def bind(root, name, bindings, expected=None):
@@ -76,7 +77,8 @@ def check_hash_map(root, mapping, bindings):
 
 def check_sources(root, summary, bindings):
     require(summary.get("source_hashes") == summary.get("source_hashes_end"), "source start/end differ")
-    check_hash_map(root, summary.get("source_hashes"), bindings)
+    require(isinstance(summary.get("source_hashes"), dict) and bool(summary["source_hashes"]), "missing historical source inventory")
+    # H1: historical source maps are metadata; only evidence data binds this join.
 
 
 def count_map(value):
@@ -352,7 +354,7 @@ def build_combined(root=ROOT, baseline=BASELINE, fresh=FRESH, research=RESEARCH,
                 initial_overlap_references=dict(scope="All initially penetrated pair records; readable primary/VV/common slots only, NOT shortest-exit matching certificates", pairs=full_counts["comparison_basis:CONSTRUCTED_INITIAL_OVERLAP"], references=dict(initial_refs), certified_exit_pairs=0),
                 by_case=by_case, candidate_join=joined, exact_observation_pairs_compared=len(all_keys),
                 source_hashes=source_start, source_hashes_end=source_end, input_hashes=bindings,
-                source_dependency_contract="All recorded source bytes/current start-end maps checked; research includes every fresh replay source plus R3 core. Actual closure completeness is additionally guarded by the independent A7 import-origin pytest gates.",
+                source_dependency_contract="Historical source inventories are attribution metadata only. Current regression executes fixed real-data subsets; this join verifies immutable data, counts, labels and exact observations, not current source bytes.",
                 evidence_roles=dict(historical=baseline, fresh_r2=fresh, research=research, compact_diagnostics=diagnostics),
                 seconds=time.perf_counter()-started,
                 limits=["Only the certified union subset supports first-cover reference conclusions; unproved pairs are not extrapolated",

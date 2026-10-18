@@ -1,0 +1,1267 @@
+{
+  "schema": "eab.h1-policy-relocation.v1",
+  "baseline_commit": "1ce9a91760e22cab7e471e76c39dcc2b786eb6ab",
+  "proof": "tools/h1_rekey_policy.py: same AST sites and function sources; no new grants",
+  "changes": [
+    {
+      "pointer": [
+        "imports",
+        41
+      ],
+      "old": "..readers.numeric_decode:integer",
+      "new": "..numeric_decode:integer"
+    },
+    {
+      "pointer": [
+        "imports",
+        100
+      ],
+      "old": ".frozen:frozen_lift",
+      "new": "..kernel3d.frozen:frozen_lift"
+    },
+    {
+      "pointer": [
+        "imports",
+        183
+      ],
+      "old": ".readers.numeric_decode:decode_tree",
+      "new": "..numeric_decode:decode_tree"
+    },
+    {
+      "pointer": [
+        "imports",
+        185
+      ],
+      "old": ".readers.numeric_decode:loads",
+      "new": "..numeric_decode:loads"
+    },
+    {
+      "pointer": [
+        "imports",
+        186
+      ],
+      "old": ".readers.numeric_decode:scalar",
+      "new": "..numeric_decode:scalar"
+    },
+    {
+      "pointer": [
+        "imports",
+        417
+      ],
+      "old": "eab.kernel3d.interlock",
+      "new": "eab.adapters.tia3d"
+    },
+    {
+      "pointer": [
+        "imports",
+        418
+      ],
+      "old": "eab.kernel3d.interlock:_cover_at",
+      "new": "eab.adapters.tia3d:_cover_at"
+    },
+    {
+      "pointer": [
+        "imports",
+        419
+      ],
+      "old": "eab.kernel3d.interlock:_normal_noise",
+      "new": "eab.adapters.tia3d:_normal_noise"
+    },
+    {
+      "pointer": [
+        "imports",
+        420
+      ],
+      "old": "eab.kernel3d.interlock:dilatancy_profile",
+      "new": "eab.adapters.tia3d:dilatancy_profile"
+    },
+    {
+      "pointer": [
+        "imports",
+        421
+      ],
+      "old": "eab.kernel3d.interlock:escape_candidates",
+      "new": "eab.adapters.tia3d:escape_candidates"
+    },
+    {
+      "pointer": [
+        "imports",
+        422
+      ],
+      "old": "eab.kernel3d.interlock:escape_height_brute",
+      "new": "eab.adapters.tia3d:escape_height_brute"
+    },
+    {
+      "pointer": [
+        "imports",
+        423
+      ],
+      "old": "eab.kernel3d.interlock:escape_height_covers",
+      "new": "eab.adapters.tia3d:escape_height_covers"
+    },
+    {
+      "pointer": [
+        "imports",
+        424
+      ],
+      "old": "eab.kernel3d.interlock:escape_height_from_frozen_cover",
+      "new": "eab.adapters.tia3d:escape_height_from_frozen_cover"
+    },
+    {
+      "pointer": [
+        "imports",
+        425
+      ],
+      "old": "eab.kernel3d.interlock:frozen_ee_sign",
+      "new": "eab.adapters.tia3d:frozen_ee_sign"
+    },
+    {
+      "pointer": [
+        "imports",
+        436
+      ],
+      "old": "eab.kernel3d:interlock",
+      "new": "eab.adapters:tia3d"
+    },
+    {
+      "pointer": [
+        "members",
+        185
+      ],
+      "old": "import:eab.kernel3d:interlock._candidates",
+      "new": "import:eab.adapters:tia3d._candidates"
+    },
+    {
+      "pointer": [
+        "members",
+        186
+      ],
+      "old": "import:eab.kernel3d:interlock._candidates_cached.cache_clear",
+      "new": "import:eab.adapters:tia3d._candidates_cached.cache_clear"
+    },
+    {
+      "pointer": [
+        "members",
+        187
+      ],
+      "old": "import:eab.kernel3d:interlock._candidates_uncached",
+      "new": "import:eab.adapters:tia3d._candidates_uncached"
+    },
+    {
+      "pointer": [
+        "members",
+        188
+      ],
+      "old": "import:eab.kernel3d:interlock._normal_noise",
+      "new": "import:eab.adapters:tia3d._normal_noise"
+    },
+    {
+      "pointer": [
+        "members",
+        189
+      ],
+      "old": "import:eab.kernel3d:interlock.escape_height_brute",
+      "new": "import:eab.adapters:tia3d.escape_height_brute"
+    },
+    {
+      "pointer": [
+        "members",
+        190
+      ],
+      "old": "import:eab.kernel3d:interlock.escape_height_covers",
+      "new": "import:eab.adapters:tia3d.escape_height_covers"
+    },
+    {
+      "pointer": [
+        "members",
+        191
+      ],
+      "old": "import:eab.kernel3d:interlock.escape_height_from_frozen_cover",
+      "new": "import:eab.adapters:tia3d.escape_height_from_frozen_cover"
+    },
+    {
+      "pointer": [
+        "members",
+        192
+      ],
+      "old": "import:eab.kernel3d:interlock.surface_events",
+      "new": "import:eab.adapters:tia3d.surface_events"
+    },
+    {
+      "pointer": [
+        "members",
+        301
+      ],
+      "old": "module:eab.kernel3d.interlock.EscapeSolution",
+      "new": "module:eab.adapters.tia3d.EscapeSolution"
+    },
+    {
+      "pointer": [
+        "waivers",
+        6,
+        "context"
+      ],
+      "old": "8a28bc4476d57ac4374facd45c9ee3f40ccd47fc80d21caa036398542f1250bc",
+      "new": "316e7dd64f8c98a76f3efed10888c685b1d5075f186a23604b142a768e61acc8"
+    },
+    {
+      "pointer": [
+        "waivers",
+        423,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        424,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        425,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        426,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        427,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        428,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        429,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        430,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        431,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        432,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        433,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        434,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        435,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        436,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        437,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        438,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        439,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        440,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        441,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        442,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        443,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        444,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        445,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        446,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        447,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        448,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        449,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        450,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        451,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        452,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        453,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        454,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        455,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        456,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        457,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        458,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        459,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        460,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        461,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        462,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        463,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        464,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        465,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        466,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2302,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2303,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2304,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2305,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2616,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2617,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2618,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2619,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2620,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2621,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2622,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2623,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2624,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2733,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2734,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2735,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2736,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2737,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2738,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2739,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2740,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2741,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2742,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2743,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2985,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        2986,
+        "path"
+      ],
+      "old": "src/eab/readers/numeric_decode.py",
+      "new": "src/eab/numeric_decode.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3026,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3027,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3028,
+        "path"
+      ],
+      "old": "src/eab/kernel3d/interlock.py",
+      "new": "src/eab/adapters/tia3d.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3242,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3243,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3244,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3245,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3246,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3257,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3258,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3259,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3260,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/affine_motion.py",
+      "new": "src/eab/adapters/bdda2d_affine.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3466,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3467,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3468,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3469,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3470,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3471,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3472,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3473,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3474,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3475,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3476,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3477,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3478,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3479,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3480,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3481,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3482,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3483,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3484,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3485,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3486,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3487,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3488,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3489,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3489,
+        "context"
+      ],
+      "old": "1604266d64678844000b43656eceb1dabe872bce6bb9417cb84798bf7a471262",
+      "new": "dc0174eea37115e7e2d706dce9af8c64aca41d395b33ac8bd1e4ef1b3920a95a"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3490,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3491,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3492,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3493,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/dda_motion.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3519,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/model_robustness.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3520,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/model_robustness.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "waivers",
+        3521,
+        "path"
+      ],
+      "old": "src/eab/kernel2d/model_robustness.py",
+      "new": "src/eab/adapters/bdda2d_motion.py"
+    },
+    {
+      "pointer": [
+        "mutation_instrumentation_reviews",
+        0,
+        "scopes",
+        6,
+        "module_context"
+      ],
+      "old": "4609f630939ef6519f4d3f67b6b2894876b92582c8059182e387807386a5c5cd",
+      "new": "939cebe79064bd17fd51f63e20a38d7e0ed75b3108df0e774220a8bc85651521"
+    },
+    {
+      "pointer": [
+        "mutation_instrumentation_reviews",
+        1,
+        "scopes",
+        6,
+        "module_context"
+      ],
+      "old": "4609f630939ef6519f4d3f67b6b2894876b92582c8059182e387807386a5c5cd",
+      "new": "939cebe79064bd17fd51f63e20a38d7e0ed75b3108df0e774220a8bc85651521"
+    },
+    {
+      "pointer": [
+        "mutation_instrumentation_reviews",
+        1,
+        "scopes",
+        6,
+        "module_source_sha256"
+      ],
+      "old": "3dd27d050ea0b9c637ff71ba8d4947f06205e571dd82ca461dcdec1e6e72f2d1",
+      "new": "f6cafb874f142e3ce6e3237a38541371a01ab99342986be1310d23ae86fc88e1"
+    }
+  ]
+}

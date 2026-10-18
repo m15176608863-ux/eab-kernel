@@ -309,7 +309,7 @@ def test_face_touching_stack_is_touching_under_rigid_motion(seed, t):
     rational-affine cells retain the ideal zero-contact assertions. The oracle
     uses no production geometric primitive and does not convexify the surface.
     """
-    from eab.kernel3d.interlock import escape_height_brute
+    from eab.adapters.tia3d import escape_height_brute
     R = _g6_rot(200 + seed)
     tv = tuple(t * c for c in (0.6, -0.48, 0.64))
     A = _placed(box((0.1, -0.2, 0.5), (1.0, 1.0, 0.5)), R, 1.0, tv)
@@ -328,7 +328,7 @@ def test_face_touching_stack_is_touching_under_rigid_motion(seed, t):
             escape_height_brute(A,B,(0.,0.,0.),hi=1.)
     else:
         from e5b_wall_oracle import earliest_star_escape
-        from eab.kernel3d.interlock import escape_height_covers
+        from eab.adapters.tia3d import escape_height_covers
         truth=earliest_star_escape(A,B)
         sol=escape_height_covers(A,B,(0.,0.,0.))
         z=escape_height_brute(A,B,(0.,0.,0.),hi=1.)

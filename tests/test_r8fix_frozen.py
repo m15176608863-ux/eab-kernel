@@ -10,7 +10,7 @@ import pytest
 from eab.dual import Dual
 from eab.kernel3d.geom3 import Polyhedron
 from eab.kernel3d.frozen import frozen_normal, frozen_gap
-from eab.kernel3d.interlock import escape_height_from_frozen_cover
+from eab.adapters.tia3d import escape_height_from_frozen_cover
 from eab.margin import body_distance, margin_gap_from_frozen_cover
 
 FACES = [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]

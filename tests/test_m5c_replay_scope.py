@@ -10,6 +10,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
+from frozen_evidence import data_path
 import m5b_robust_replay as replay
 
 
@@ -59,7 +60,7 @@ def test_primary_secondary_and_missing_pair_are_three_distinct_questions():
 
 def test_bb03_raw_first_cover_is_in_the_same_rows_secondary_slot():
     """Real minimal example, literal tuple7 oracle; not a geometric oracle."""
-    data = json.loads((replay.EVIDENCE / "robust_minimal_examples.json").read_text(encoding="utf-8"))
+    data = json.loads((data_path(ROOT, replay.EVIDENCE / "robust_minimal_examples.json")).read_text(encoding="utf-8"))
     example = next(r for r in data["examples"] if (r["case"], r["step"], r["pair"]) == ("bb03", 15, [8, 11]))
     a, b = (replay.prepare(r) for r in example["blocks"])
     result = replay.compare_pair(a, b)
@@ -72,7 +73,7 @@ def test_bb03_raw_first_cover_is_in_the_same_rows_secondary_slot():
 
 
 def test_frozen_summary_has_disjoint_comparison_and_crosscheck_denominators():
-    data = json.loads((replay.EVIDENCE / "robust_summary.json").read_text(encoding="utf-8"))
+    data = json.loads((data_path(ROOT, replay.EVIDENCE / "robust_summary.json")).read_text(encoding="utf-8"))
     c = data["counts"]
     assert data["complete"] and data["full_history"]
     assert c["comparison_basis:EXPLICIT_TRAJECTORY"] == 14079

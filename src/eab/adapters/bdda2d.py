@@ -23,10 +23,15 @@ from pathlib import Path
 
 from ..construction import norm_rational, scalar_rational
 from ..numeric_domain import check_input, exact_input
-from ..contact_record import ContactRecord, CoverType, Feature
+from ..contact_record import ContactRecord, CoverType, Feature, Mode
 from ..kernel2d import covers
 from ..readers.bdda_geom import BlockGeom, StepGeometry
-from ..readers.numeric_decode import integer
+from ..numeric_decode import integer
+
+
+BDDA_MODE: dict[int, Mode] = {0: Mode.OPEN, 1: Mode.SLIDING, 2: Mode.LOCKED, 3: Mode.VV_CLOSED}
+
+BDDA_COVER: dict[int, CoverType] = {0: CoverType.VE, 1: CoverType.VV}
 
 
 OBSERVABLE = "static_window_valid_covers"

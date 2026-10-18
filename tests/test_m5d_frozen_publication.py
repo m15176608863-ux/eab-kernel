@@ -18,7 +18,7 @@ import m5d_refresh_frozen as publisher
 
 
 @pytest.mark.parametrize("change_point", (None, 0, 1, 3, "after_final_check"))
-@pytest.mark.parametrize("dependency_kind", ("source_hashes", "input_hashes", "inherited_hashes"))
+@pytest.mark.parametrize("dependency_kind", ("input_hashes", "inherited_hashes", "inherited_stream_hashes"))
 def test_publication_closure_drift_rejects_and_restores_every_written_target(
         tmp_path, monkeypatch, change_point, dependency_kind, mutate=False):
     executable = tmp_path / "tools/m5d_refresh_frozen.py"
@@ -27,12 +27,12 @@ def test_publication_closure_drift_rejects_and_restores_every_written_target(
     monkeypatch.setattr(publisher, "ROOT", tmp_path)
     monkeypatch.setattr(publisher, "__file__", str(executable))
     dependencies = {}
-    for key in ("source_hashes", "input_hashes", "inherited_hashes"):
+    for key in ("input_hashes", "inherited_hashes", "inherited_stream_hashes"):
         path = tmp_path / (key+".txt")
         path.write_bytes(b"original dependency\n")
         dependencies[key] = path
     metadata = {key: {path.name: publisher.sha(path)} for key, path in dependencies.items()}
-    metadata["source_hashes_end"] = metadata["source_hashes"]
+    # H1: publisher pins evidence data; old source bytes are not an input.
     metadata["complete"] = True
     publication = []
     original = []
@@ -96,4 +96,4 @@ def test_publication_closure_drift_rejects_and_restores_every_written_target(
 def test_missing_final_publication_verification_mutant_fails_the_named_semantic_assertion(tmp_path, monkeypatch):
     with pytest.raises(AssertionError, match="M5d changed closure must be refused"):
         test_publication_closure_drift_rejects_and_restores_every_written_target(
-            tmp_path, monkeypatch, "after_final_check", "source_hashes", mutate=True)
+            tmp_path, monkeypatch, "after_final_check", "input_hashes", mutate=True)

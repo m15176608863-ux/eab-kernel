@@ -40,7 +40,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..construction import scalar_rational
-from ..contact_record import BDDA_COVER, BDDA_MODE, ContactRecord, CoverType, Feature, Mode
+from eab.adapters.bdda2d import BDDA_COVER, BDDA_MODE
+from ..contact_record import ContactRecord, CoverType, Feature, Mode
 from .bdda_geom import load_step_geometries
 
 

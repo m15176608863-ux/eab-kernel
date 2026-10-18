@@ -13,9 +13,9 @@ from random import Random
 import pytest
 from mutation_support import mutated_function
 
-from eab.kernel2d import dda_motion as module
+from eab.adapters import bdda2d_motion as module
 from eab.kernel2d.algebraic import RealAlgebraic, roots_interval
-from eab.kernel2d.dda_motion import (
+from eab.adapters.bdda2d_motion import (
     DDAAnchoredMotion, HalfAngleApproximation, area_centroid, dda_first_entrance, dda_motion_from_z,
     p2_p3_bound, projected_sweep, rational_half_angle,
 )

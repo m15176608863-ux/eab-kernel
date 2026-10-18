@@ -1,4 +1,0 @@
-{
-  "source": "from eab.construction import vector_rational, norm_rational\ndef finish(p):\n    return norm_rational(p)\ndef bad(q):\n    return finish(vector_rational(q, allow_underflow=True))\n",
-  "issues": []
-}

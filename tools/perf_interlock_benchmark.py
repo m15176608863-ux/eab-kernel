@@ -1,4 +1,4 @@
-﻿"""Reproduce WO-PERF interlock equivalence microbenchmarks and cProfile.
+"""Reproduce WO-PERF interlock equivalence microbenchmarks and cProfile.
 
 Run: PYTHONPATH=src python -X utf8 tools/perf_interlock_benchmark.py
 All compared timings use the same current arithmetic primitives, so they isolate
@@ -16,7 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests'))
 from osteomorphic import interlocking_pair
 from perf_sweep_reference import reference_events
-from eab.kernel3d import exact_sweep as S, interlock as I
+from eab.kernel3d import exact_sweep as S
+from eab.adapters import tia3d as I
 from eab.kernel3d.geom3 import Polyhedron
 
 OUT = ROOT / 'reports/codex/PERF_evidence/interlock'

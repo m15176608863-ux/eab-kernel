@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 from eab.construction import scalar_rational
 from eab.numeric_domain import ConstructionDomainError, check_input, check_mu
-from eab.readers.numeric_decode import integer
+from eab.numeric_decode import integer
 from eab.limit import LimitContact, wrench
 from eab.limit_multi import LimitBody, BodyContact
 

@@ -188,7 +188,7 @@ def _internal_mutant(module, function, old, new):
 
 
 def test_n03_json_guard_mutation_is_caught_inside_real_decoder(monkeypatch, tmp_path):
-    from eab.readers import numeric_decode as decoder
+    from eab import numeric_decode as decoder
     mutant = _internal_mutant(decoder, decoder.loads, "parse_float=_decimal", "parse_float=float")
     monkeypatch.setattr(bdda3d, "loads_exact", mutant)
     with pytest.raises(pytest.fail.Exception, match="DID NOT RAISE"):
@@ -204,7 +204,7 @@ def test_n03_direct_fraction_guard_mutation_is_caught_inside_decode(monkeypatch)
 
 
 def test_identity_integrality_guard_mutation_is_caught(monkeypatch):
-    from eab.readers import numeric_decode as decoder
+    from eab import numeric_decode as decoder
     from eab import contact_record as cr
     mutant = _internal_mutant(decoder, decoder.integer, "if q.denominator != 1:", "if False:")
     monkeypatch.setattr(cr, "integer", mutant)
@@ -222,7 +222,7 @@ def test_window_range_guard_mutation_is_caught_at_constructor(monkeypatch):
 
 
 def test_signed_zero_preservation_has_an_internal_mutation_tooth(monkeypatch):
-    from eab.readers import numeric_decode as decoder
+    from eab import numeric_decode as decoder
     from eab import contact_record as cr
     mutant = _internal_mutant(decoder, decoder.scalar,
                              "return value if isinstance(value, float) and value == 0.0 else result",

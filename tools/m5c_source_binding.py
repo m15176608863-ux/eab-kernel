@@ -33,8 +33,13 @@ def runtime_source_hashes(root, entrypoint):
             for path in sorted(paths)}
 
 
-def assert_current_sources(root, expected, observed=None):
-    """Reject stale bytes, malformed paths or a changed runtime import closure."""
+def assert_run_sources_unchanged(root, expected, observed):
+    """Reject drift between snapshots from ONE live run, never frozen records.
+
+    H1 retires current-source checks for historical evidence. This helper
+    intentionally does not reread any source file or accept a lone old map.
+    Callers must take both snapshots during the same actual computation.
+    """
     root = Path(root).resolve()
     if not expected:
         raise ValueError("empty runtime source closure")
@@ -44,7 +49,5 @@ def assert_current_sources(root, expected, observed=None):
                 or path.relative_to(root).as_posix() != name
                 or not name.startswith(("src/eab/", "tools/"))):
             raise ValueError("invalid runtime source path: " + name)
-        if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-            raise ValueError("runtime source bytes changed: " + name)
-    if observed is not None and observed != expected:
+    if observed != expected:
         raise ValueError("runtime source closure changed; discard run and restart")

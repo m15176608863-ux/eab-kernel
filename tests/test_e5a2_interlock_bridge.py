@@ -14,7 +14,7 @@ import pytest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from osteomorphic import interlocking_pair
-from eab.kernel3d import interlock as I
+from eab.adapters import tia3d as I
 from eab.kernel3d.geom3 import Polyhedron,box,polyhedra_overlap
 from eab.kernel3d.exact_sweep import translate_exact
 

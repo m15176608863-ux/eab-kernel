@@ -13,7 +13,7 @@ from mutation_support import replace_module_callable
 from m5c_teeth_oracle import (point_strictly_inside, rotate_rational,
                              translation_first_events)
 from eab.kernel2d import model_robustness as rob
-from eab.kernel2d.dda_motion import DDAAnchoredMotion
+from eab.adapters.bdda2d_motion import DDAAnchoredMotion, dda_paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import m5b_robust_replay as replay
@@ -174,7 +174,7 @@ def test_replay_p2_box_cannot_be_replaced_by_p1_box_only():
     assert end[0] == (10, F(1, 2))
     assert point_strictly_inside(midpoint, b)
     def prepared(start, finish, motion, ids, radius):
-        one, two = rob.chord_paths(start, finish), rob.dda_paths(start, motion)
+        one, two = rob.chord_paths(start, finish), dda_paths(start, motion)
         return dict(start=start, end=finish, motion=motion, ids=ids, radius=radius,
                     paths1=one, paths2=two, box1=rob.swept_axis_bounds(one),
                     box2=rob.swept_axis_bounds(two))

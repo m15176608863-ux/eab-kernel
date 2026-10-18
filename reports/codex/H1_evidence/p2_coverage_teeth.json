@@ -1,0 +1,151 @@
+{
+  "cases": [
+    {
+      "node": "test_collection_is_not_execution",
+      "last_line": "1 passed in 0.02s",
+      "audit": {
+        "complete": false,
+        "function_modules": [
+          "src/eab/logic.py"
+        ],
+        "declarative_modules": [
+          "src/eab/__init__.py",
+          "src/eab/tables.py"
+        ],
+        "missing_function_calls": [
+          "src/eab/logic.py"
+        ],
+        "missing_module_execution": [
+          "src/eab/__init__.py",
+          "src/eab/tables.py"
+        ],
+        "missing_imports": [],
+        "errors": [],
+        "function_witnesses": {},
+        "module_witnesses": {},
+        "module_count": 3,
+        "imported_count": 3,
+        "function_covered_count": 0,
+        "declarative_covered_count": 0
+      },
+      "progress": {
+        "complete": true,
+        "elapsed_seconds": 0.17099999997299165,
+        "collected": 1,
+        "calls": 1,
+        "failed": 0,
+        "skipped": 0,
+        "current": "<between-tests>",
+        "started_epoch": 1792347155.7432442,
+        "last_event_epoch": 1792347155.7452471
+      }
+    },
+    {
+      "node": "test_class_body_is_not_call",
+      "last_line": "1 passed in 0.01s",
+      "audit": {
+        "complete": false,
+        "function_modules": [
+          "src/eab/logic.py"
+        ],
+        "declarative_modules": [
+          "src/eab/__init__.py",
+          "src/eab/tables.py"
+        ],
+        "missing_function_calls": [
+          "src/eab/logic.py"
+        ],
+        "missing_module_execution": [],
+        "missing_imports": [],
+        "errors": [],
+        "function_witnesses": {},
+        "module_witnesses": {
+          "src/eab/__init__.py": {
+            "function": "<module>",
+            "line": 1,
+            "nodeid": "tests/test_smoke.py::test_class_body_is_not_call"
+          },
+          "src/eab/tables.py": {
+            "function": "<module>",
+            "line": 1,
+            "nodeid": "tests/test_smoke.py::test_class_body_is_not_call"
+          },
+          "src/eab/logic.py": {
+            "function": "<module>",
+            "line": 1,
+            "nodeid": "tests/test_smoke.py::test_class_body_is_not_call"
+          }
+        },
+        "module_count": 3,
+        "imported_count": 3,
+        "function_covered_count": 0,
+        "declarative_covered_count": 2
+      },
+      "progress": {
+        "complete": true,
+        "elapsed_seconds": 0.1720000000204891,
+        "collected": 1,
+        "calls": 1,
+        "failed": 0,
+        "skipped": 0,
+        "current": "<between-tests>",
+        "started_epoch": 1792347156.2845829,
+        "last_event_epoch": 1792347156.2871547
+      }
+    },
+    {
+      "node": "test_real_function_and_module_execution",
+      "last_line": "1 passed in 0.01s",
+      "audit": {
+        "complete": true,
+        "function_modules": [
+          "src/eab/logic.py"
+        ],
+        "declarative_modules": [
+          "src/eab/__init__.py",
+          "src/eab/tables.py"
+        ],
+        "missing_function_calls": [],
+        "missing_module_execution": [],
+        "missing_imports": [],
+        "errors": [],
+        "function_witnesses": {
+          "src/eab/logic.py": {
+            "function": "value",
+            "line": 2,
+            "nodeid": "tests/test_smoke.py::test_real_function_and_module_execution"
+          }
+        },
+        "module_witnesses": {
+          "src/eab/__init__.py": {
+            "function": "<module>",
+            "line": 1,
+            "nodeid": "tests/test_smoke.py::test_real_function_and_module_execution"
+          },
+          "src/eab/tables.py": {
+            "function": "<module>",
+            "line": 1,
+            "nodeid": "tests/test_smoke.py::test_real_function_and_module_execution"
+          }
+        },
+        "module_count": 3,
+        "imported_count": 3,
+        "function_covered_count": 1,
+        "declarative_covered_count": 2
+      },
+      "progress": {
+        "complete": true,
+        "elapsed_seconds": 0.1720000000204891,
+        "collected": 1,
+        "calls": 1,
+        "failed": 0,
+        "skipped": 0,
+        "current": "<between-tests>",
+        "started_epoch": 1792347156.8396142,
+        "last_event_epoch": 1792347156.8421168
+      }
+    }
+  ],
+  "monitoring_absent_rejected": true,
+  "missing_monitoring_journal_rejected": true
+}

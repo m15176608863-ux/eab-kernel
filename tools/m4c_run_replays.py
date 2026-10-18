@@ -101,9 +101,9 @@ def verify_batch(directory, output):
     """Audit the entire SAME completed batch; never join partial executions."""
     before = replay.file_hash(directory / "summary.json")
     summary = json.loads((directory / "summary.json").read_text(encoding="utf-8"))
-    current = replay.code_hashes(); failures = {}; cases = {}; counts = {p: Counter() for p in replay.PHASES}; secondary = {p: Counter() for p in replay.PHASES}; stats = Counter()
-    replay.require(summary.get("complete") is True and summary.get("code_hashes") == current and set(summary.get("cases", {})) == set(replay.CASES),
-                   "only complete current-source fifteen-case batches may be revalidated")
+    current = summary["code_hashes"]; failures = {}; cases = {}; counts = {p: Counter() for p in replay.PHASES}; secondary = {p: Counter() for p in replay.PHASES}; stats = Counter()
+    replay.require(summary.get("complete") is True and set(summary.get("cases", {})) == set(replay.CASES),
+                   "only complete fifteen-case batches may be revalidated")
     replay.require(summary.get("mode") in ("full", "frozen"), "batch mode malformed")
     for case in replay.CASES:
         try:

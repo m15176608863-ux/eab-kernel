@@ -18,7 +18,7 @@ V 形；δ=0.5 是剖面峰值折点），此时那支的 AD 值只是单侧方�
   differentiable_by[通道]  = 全部并列活跃盖在该通道的导数一致（差 ≤ 该通道的导数容差，见 `_deriv_tol`）
   derivative_range[通道]   = 这些导数的 [最小, 最大]（分段光滑时即两个单侧导数；可微时退化为一点）
   differentiable           = 三个通道都可微
-"并列"由 `eab.kernel3d.interlock.escape_height_covers` 定，与逃逸谓词用**同一把尺**：候选盖在接受高度处的
+"并列"由 `eab.adapters.tia3d.escape_height_covers` 定，与逃逸谓词用**同一把尺**：候选盖在接受高度处的
 法向间隙 ≤ geom_tol_eff（随尺度，= max(1e-9·L, 64·eps·C)）。它是一阶判据、无需步长 ε，但**只在谓词分辨带之外
 精确**：离折点的竖向高度差小于 ~geom_tol_eff / n_z 的点，两支都报出、标不可微（保守，不会"可微却给错支"）。
 （旧文档称"相对 TIE_TOL = 1e-9、精确的一阶判据"——那个窗口按竖向高度、对 |z| < 1 实为绝对，且与谓词不一致，
@@ -41,7 +41,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from eab import dual as D  # noqa: E402
 from eab.dual import Dual, val  # noqa: E402
-from eab.kernel3d.interlock import (escape_height_covers, escape_height_from_frozen_cover,  # noqa: E402
+from eab.adapters.tia3d import (escape_height_covers, escape_height_from_frozen_cover,  # noqa: E402
                                     frozen_ee_sign)
 from eab.margin import characteristic_length, rounding_floor  # noqa: E402
 from osteomorphic import interlocking_pair, interlocking_pair_generic  # noqa: E402

@@ -254,6 +254,8 @@ class Audit:
             return {}
         checked, mismatches = 0, []
         for name, expected in hashes.items():
+            if name.endswith(".py"):
+                continue  # H1: historical source identity is metadata only.
             path = self.path(name)
             if path is None:
                 continue
@@ -264,7 +266,7 @@ class Audit:
             checked += 1
             if actual != expected:
                 mismatches.append(dict(path=name, recorded=expected, current=actual))
-        self.check(scope, "recorded_source_hashes_match_current_bytes", not mismatches, mismatches)
+        self.check(scope, "recorded_data_hashes_match_current_bytes", not mismatches, mismatches)
         return dict(checked=checked, mismatches=mismatches)
 
     def suite(self, name):
@@ -360,16 +362,11 @@ class Audit:
             return name != SELF and (name in (POLICY, BOUND_SUMMARY) or (path.parts and path.parts[0] in ("src", "tests", "tools") and path.suffix == ".py"))
         entries = [r for r in manifest if included(r["path"])]
         frozen_names = Counter(r["path"] for r in entries)
-        current_names = Counter(p.relative_to(self.root).as_posix() for folder in ("src", "tests", "tools")
-                                for p in (self.root / folder).rglob("*.py") if p.relative_to(self.root).as_posix() != SELF)
-        current_names[POLICY] += 1
-        current_names[BOUND_SUMMARY] += 1
-        self.check(scope, "frozen_and_current_file_inventory_equal", frozen_names == current_names,
-                   dict(missing_from_export=short_counter(current_names-frozen_names), missing_now=short_counter(frozen_names-current_names)))
+        # H1: historical source inventories need not match current module paths.
         self.check(scope, "frozen_paths_unique", all(n == 1 for n in frozen_names.values()))
         changed = []
         for row in entries:
-            for stage, path in (("current", self.root / row["path"]), ("frozen_export", source / row["path"])):
+            for stage, path in (("frozen_export", source / row["path"]),):
                 path = self.path(path)
                 if path is None:
                     continue
@@ -379,7 +376,7 @@ class Audit:
                 if path.stat().st_size != row.get("bytes") or sha256(path) != row.get("sha256"):
                     changed.append(dict(path=row["path"], stage=stage, expected_bytes=row.get("bytes"),
                                         actual_bytes=path.stat().st_size, expected_sha256=row.get("sha256"), actual_sha256=sha256(path)))
-        self.check(scope, "every_frozen_and_current_byte_hash_matches_manifest", not changed, changed)
+        self.check(scope, "every_frozen_export_byte_hash_matches_manifest", not changed, changed)
         return dict(checked_files=len(entries), changed=changed, excluded_auditor=SELF,
                     exclusion_reason="The independent final auditor may be created after source freeze; no other Python file is excluded.")
 
@@ -523,8 +520,7 @@ class Audit:
                     frozen_changes.append(dict(path=name, recorded=expected, current_frozen=sha256(path)))
         self.check(scope, "attested_frozen_source_still_matches", not frozen_changes, frozen_changes)
         src_hashes = {name: value for name, value in before.items() if name.startswith("src/") and name.endswith(".py")}
-        current_src_names = {p.relative_to(self.root).as_posix() for p in (self.root / "src").rglob("*.py")}
-        self.check(scope, "all_current_src_files_attested", set(src_hashes) == current_src_names)
+        # H1: the frozen source inventory is not required to match current modules.
         source_check = self.verify_hashes(scope, src_hashes)
         import_path = self.evidence / "construction3d_frozen_r4_actual_imports.json"
         actual_imports = self.read(import_path, as_json=True)
@@ -569,7 +565,7 @@ class Audit:
                 for row in rows:
                     name = row["path"]
                     expected = src_hashes.get(name, actual_bound_hashes.get(name))
-                    for stage, root in (("replay", frozen_root), ("current", self.root), ("final_suite_r4", final_root)):
+                    for stage, root in (("replay", frozen_root), ("final_suite_r4", final_root)):
                         path = self.path(name, root)
                         if path is None:
                             continue
