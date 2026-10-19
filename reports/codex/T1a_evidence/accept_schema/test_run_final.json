@@ -1,0 +1,22 @@
+{
+  "state": "INVALIDATED",
+  "exit_code": 1,
+  "seconds": 15.767752399959136,
+  "last_line": "1 failed, 110 passed in 15.23s",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "reports/codex/T1a_evidence/tmp/schema_repair_03",
+    "tests/test_tia2d_cases.py",
+    "tests/test_tia2d_export.py"
+  ],
+  "failure_class": "concurrent_source_change",
+  "reason": "export source guard detected parallel file edits; rerun required after source freeze"
+}

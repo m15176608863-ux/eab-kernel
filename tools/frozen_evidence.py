@@ -7,9 +7,11 @@ their original paths when no frozen counterpart exists.
 import hashlib
 from pathlib import Path
 
+ARCHIVE_ROOT = Path("D:/eab-evidence")
+
 
 def data_path(root, name):
-    """Resolve a reports/... input to fixtures/frozen/... when it exists."""
+    """Prefer frozen fixtures, then existing live data, then the H1 archive."""
     root = Path(root).resolve()
     original = Path(name)
     if not original.is_absolute():
@@ -22,6 +24,10 @@ def data_path(root, name):
         frozen = root / "fixtures" / "frozen" / Path(*relative.parts[1:])
         if frozen.exists():
             return frozen
+        if not original.exists():
+            archived = ARCHIVE_ROOT / relative
+            if archived.exists():
+                return archived
     return original
 
 

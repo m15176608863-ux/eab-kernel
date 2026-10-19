@@ -1,0 +1,19 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_last_allowed_bisection_step_retains_resolution_reason_and_proof_reason _
+
+    def test_last_allowed_bisection_step_retains_resolution_reason_and_proof_reason():
+        # [0,2^-1073] contains precisely one positive interior binary64 value.
+        # That query consumes the only step; resolution is detected AFTER the loop.
+        result = critical_parameter(g1(t=Q(0)), mu_max=Q(1, 2**1073), max_steps=1)
+>       assert result.bisection_termination == "input_resolution_limit", "loop-end resolution reason must survive"
+E       AssertionError: loop-end resolution reason must survive
+E       assert 'iteration_limit' == 'input_resolution_limit'
+E         
+E         - input_resolution_limit
+E         + iteration_limit
+
+tests\test_tia2d_critical_acceptance.py:88: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_critical_acceptance.py::test_last_allowed_bisection_step_retains_resolution_reason_and_proof_reason
+1 failed in 0.28s

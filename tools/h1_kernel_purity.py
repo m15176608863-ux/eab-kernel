@@ -18,7 +18,7 @@ SHARED_MODULES = frozenset(("eab", "eab.contact_record", "eab.numeric_decode"))
 DOMAIN_ACRONYMS = frozenset("dda bdda tia csv zsto df04 df05 df06 df07".split())
 # These ordinary mathematical words contain the acronym 'tia' accidentally.
 # Whole components only: appending a domain acronym is never exempted.
-ORDINARY_COMPONENTS = frozenset("initial partial potential spatial tangential exponential differential".split())
+ORDINARY_COMPONENTS = frozenset("initial partial potential spatial tangential exponential differential differentiability".split())
 LEXICAL_ALLOWLIST = {
     ("eab.contact_record", "joint_material"): "Existing serialized material identity field, not an engine code or table slot.",
     ("*", "slots"): "Only the dataclass(slots=...) language keyword; never a variable or string.",

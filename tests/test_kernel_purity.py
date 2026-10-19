@@ -71,7 +71,7 @@ def test_parent_package_imports_are_checked_for_every_kernel_module(tmp_path):
     shutil.copytree(ROOT / "src" / "eab", copied / "eab", ignore=shutil.ignore_patterns("__pycache__"))
     expected = {p.relative_to(copied).as_posix() for p in (copied / "eab").rglob("*.py")
                 if p.relative_to(copied / "eab").parts[0].removesuffix(".py") in KERNEL_ROOTS}
-    assert len(expected) == 40 and "eab/predicates.py" in expected
+    assert len(expected) == 47 and "eab/predicates.py" in expected
     path = copied / "eab" / "contact_record.py"
     with path.open("a", encoding="utf-8", newline="") as stream:
         stream.write("\nfrom .adapters import bdda2d\n")
@@ -94,6 +94,9 @@ def test_parent_package_imports_are_checked_for_every_kernel_module(tmp_path):
     ("probe.py", "ddamotion = 1\n", "domain token dda"),
     ("probe.py", "bddacover = 1\n", "domain token bdda,dda"),
     ("probe.py", "tiaprism = 1\n", "domain token tia"),
+    ("probe.py", "tia_block = 1\n", "domain token tia"),
+    ("probe.py", "class TiaAssembly:\n    pass\n", "domain token tia"),
+    ("probe.py", "differentiability_tia = 1\n", "domain token tia"),
     ("probe.py", "csvexport = 1\n", "domain token csv"),
     ("probe.py", "zstorecord = 1\n", "domain token zsto"),
     ("probe.py", "df06state = 1\n", "domain token df06"),

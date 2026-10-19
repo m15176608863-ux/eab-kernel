@@ -1,0 +1,18 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______ test_endpoint_states_do_not_replace_opposite_side_continuation ________
+
+    def test_endpoint_states_do_not_replace_opposite_side_continuation():
+        answer = critical_parameter(g1(t=Q(3, 16), orientation="unreversed"), max_steps=1)
+        assert answer.lower_certificate.status == "OPTIMAL"
+        assert answer.upper_certificate.status == "UNBOUNDED"
+        assert answer.mu_hi == 0.5
+>       assert answer.exact_threshold is None and answer.attained is None, "upper state alone is not a closed threshold"
+E       AssertionError: upper state alone is not a closed threshold
+E       assert (Fraction(1, 2) is None)
+E        +  where Fraction(1, 2) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.5, attained=True, lower_certi...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:52: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_critical_acceptance.py::test_endpoint_states_do_not_replace_opposite_side_continuation
+1 failed in 0.27s

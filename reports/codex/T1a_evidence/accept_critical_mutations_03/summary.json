@@ -1,0 +1,173 @@
+{
+  "status": "PASS",
+  "method": "edited_source_copy_semantic_pytest_assertions",
+  "mutations": [
+    {
+      "mutation": "C1",
+      "source": "src/eab/kernel2d/statics.py",
+      "gate": "tests/test_tia2d_critical_acceptance.py::test_endpoint_states_do_not_replace_opposite_side_continuation",
+      "before_sha256": "d70d12dec967d8a77160184fd6e46f805521f331851676c43e95948bc8860e06",
+      "mutant_sha256": "02d81b0dcd3e9ed73b27d82ae1ececab4141e05c8e202247e51802c0964a130e",
+      "killed_by_semantic_assertion": true,
+      "returncode": 1,
+      "assertion": "upper state alone is not a closed threshold",
+      "seconds": 0.822237899992615,
+      "last_line": "1 failed in 0.27s",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-e2\\reports\\codex\\T1a_evidence\\tmp\\accept_critical_mutations_03\\C1_pytest",
+        "tests/test_tia2d_critical_acceptance.py::test_endpoint_states_do_not_replace_opposite_side_continuation"
+      ]
+    },
+    {
+      "mutation": "C2",
+      "source": "src/eab/kernel2d/statics.py",
+      "gate": "tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root",
+      "before_sha256": "d70d12dec967d8a77160184fd6e46f805521f331851676c43e95948bc8860e06",
+      "mutant_sha256": "262b5352a271002f098b780e17c9cc7ef9f1df820b4b9c33c7a53e911fc32c98",
+      "killed_by_semantic_assertion": true,
+      "returncode": 1,
+      "assertion": "exact root requires both relevant continuation proofs",
+      "seconds": 7.655032799986657,
+      "last_line": "18 failed, 30 passed in 7.12s",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-e2\\reports\\codex\\T1a_evidence\\tmp\\accept_critical_mutations_03\\C2_pytest",
+        "tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root"
+      ]
+    },
+    {
+      "mutation": "C11",
+      "source": "src/eab/kernel2d/critical.py",
+      "gate": "tests/test_tia2d_critical_acceptance.py::test_branch_signs_rejects_interior_numerator_roots_even_when_midpoint_positive",
+      "before_sha256": "e6fe3c9881f57075cb20bff6893b464988fee8273423c8b8c435db4ee718b9e0",
+      "mutant_sha256": "60736d6051374a095bdb714b7d5cff7b3f291048c25cb23f56057f89f3aa381c",
+      "killed_by_semantic_assertion": true,
+      "returncode": 1,
+      "assertion": "interior numerator roots must not be skipped",
+      "seconds": 0.7152429000125267,
+      "last_line": "1 failed in 0.19s",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-e2\\reports\\codex\\T1a_evidence\\tmp\\accept_critical_mutations_03\\C11_pytest",
+        "tests/test_tia2d_critical_acceptance.py::test_branch_signs_rejects_interior_numerator_roots_even_when_midpoint_positive"
+      ]
+    },
+    {
+      "mutation": "C10",
+      "source": "src/eab/kernel2d/critical.py",
+      "gate": "tests/test_tia2d_critical_acceptance.py::test_mechanism_basis_rejects_negative_reduced_costs",
+      "before_sha256": "e6fe3c9881f57075cb20bff6893b464988fee8273423c8b8c435db4ee718b9e0",
+      "mutant_sha256": "e27d500253e4ab86b15654a841009c38a6a8f82e4aa94902acfb2c95e114c31f",
+      "killed_by_semantic_assertion": true,
+      "returncode": 1,
+      "assertion": "negative dual slack is not a mechanism basis",
+      "seconds": 0.7096414000261575,
+      "last_line": "1 failed in 0.18s",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-e2\\reports\\codex\\T1a_evidence\\tmp\\accept_critical_mutations_03\\C10_pytest",
+        "tests/test_tia2d_critical_acceptance.py::test_mechanism_basis_rejects_negative_reduced_costs"
+      ]
+    },
+    {
+      "mutation": "S7",
+      "source": "src/eab/kernel2d/sensitivity.py",
+      "gate": "tests/test_tia2d_critical_acceptance.py::test_dual_recession_requires_the_lp_witness_not_only_lineality",
+      "before_sha256": "94896d1db3742aba8e707a9534388b87596662a0deb4d107539fc8c9b67d8f18",
+      "mutant_sha256": "186170de565e45254fe302e65ac351949e1a05fd3bf348f4330216910417b7e3",
+      "killed_by_semantic_assertion": true,
+      "returncode": 1,
+      "assertion": "dual half-line recession must suppress a slope",
+      "seconds": 0.732421200023964,
+      "last_line": "1 failed in 0.18s",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-e2\\reports\\codex\\T1a_evidence\\tmp\\accept_critical_mutations_03\\S7_pytest",
+        "tests/test_tia2d_critical_acceptance.py::test_dual_recession_requires_the_lp_witness_not_only_lineality"
+      ]
+    },
+    {
+      "mutation": "C9",
+      "source": "src/eab/kernel2d/statics.py",
+      "gate": "tests/test_tia2d_critical_acceptance.py::test_last_allowed_bisection_step_retains_resolution_reason_and_proof_reason",
+      "before_sha256": "d70d12dec967d8a77160184fd6e46f805521f331851676c43e95948bc8860e06",
+      "mutant_sha256": "2d66fa29be9d165fff42abb00f20975e921ed37bdef469e827c83989c1a65597",
+      "killed_by_semantic_assertion": true,
+      "returncode": 1,
+      "assertion": "loop-end resolution reason must survive",
+      "seconds": 0.8129475000314415,
+      "last_line": "1 failed in 0.28s",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-e2\\reports\\codex\\T1a_evidence\\tmp\\accept_critical_mutations_03\\C9_pytest",
+        "tests/test_tia2d_critical_acceptance.py::test_last_allowed_bisection_step_retains_resolution_reason_and_proof_reason"
+      ]
+    }
+  ],
+  "baseline": {
+    "returncode": 0,
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "D:\\eab-wt\\cx-e2\\reports\\codex\\T1a_evidence\\tmp\\accept_critical_mutations_03\\baseline_pytest",
+      "tests"
+    ],
+    "last_line": "113 passed in 10.78s"
+  }
+}

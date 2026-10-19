@@ -1,0 +1,18 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_mechanism_basis_rejects_negative_reduced_costs _____________
+
+    def test_mechanism_basis_rejects_negative_reduced_costs():
+        # Exact y=1 activates column 0, but slack for column 1 is 1-2=-1.
+        good = solve_limit_problem2(_problem([[1, 1]], [1], [1, 2]))
+        wrong_candidate = replace(good, exact_y=(Q(1),))
+        matrix = (((Q(1),), (Q(1),)),)
+>       assert mechanism_basis2(wrong_candidate, matrix) is None, "negative dual slack is not a mechanism basis"
+E       AssertionError: negative dual slack is not a mechanism basis
+E       assert CriticalBasis2(kind='mechanism', basis=(0,), entering=None, determinant=(Fraction(1, 1),), numerators=((Fraction(0, 1),), (Fraction(-1, 1),)), labels=(), sample_parameter=Fraction(0, 1), sample_values=(Fraction(0, 1), Fraction(-1, 1))) is None
+E        +  where CriticalBasis2(kind='mechanism', basis=(0,), entering=None, determinant=(Fraction(1, 1),), numerators=((Fraction(0, 1),), (Fraction(-1, 1),)), labels=(), sample_parameter=Fraction(0, 1), sample_values=(Fraction(0, 1), Fraction(-1, 1))) = mechanism_basis2(LimitResult2(call_status='OK', mathematical_status='OPTIMAL', display_status='EXACT', exact_value=Fraction(2, 1), exac...nsitivity_model='ideal_exact_2d'), reason=None, basis=(1,), sensitivity_model='ideal_exact_2d', validity_conditions=()), (((Fraction(1, 1),), (Fraction(1, 1),)),))
+
+tests\test_tia2d_critical_acceptance.py:69: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_critical_acceptance.py::test_mechanism_basis_rejects_negative_reduced_costs
+1 failed in 0.18s
