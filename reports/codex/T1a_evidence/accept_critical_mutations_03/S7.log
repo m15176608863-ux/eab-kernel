@@ -1,0 +1,19 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______ test_dual_recession_requires_the_lp_witness_not_only_lineality ________
+
+    def test_dual_recession_requires_the_lp_witness_not_only_lineality():
+        result = solve_limit_problem2(_problem([[1]], [0], [0]))
+        seed = LimitSeed2(((Q(0),),), (Q(1),), (Q(0),), "rhs")
+        derivative = evaluate_sensitivity2(result, seed, parameter="rhs")
+>       assert derivative.differentiability == "singular", "dual half-line recession must suppress a slope"
+E       AssertionError: dual half-line recession must suppress a slope
+E       assert 'unresolved' == 'singular'
+E         
+E         - singular
+E         + unresolved
+
+tests\test_tia2d_critical_acceptance.py:76: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_critical_acceptance.py::test_dual_recession_requires_the_lp_witness_not_only_lineality
+1 failed in 0.18s

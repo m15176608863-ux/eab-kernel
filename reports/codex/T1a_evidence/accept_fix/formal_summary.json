@@ -1,0 +1,153 @@
+{
+  "schema_revision": "tia2d-2",
+  "case_count": 114,
+  "python_only_count": 2,
+  "query_count": 1086,
+  "query_kinds": {
+    "assembly": 114,
+    "first_order": 114,
+    "limit": 114,
+    "sensitivity": 280,
+    "lock": 350,
+    "critical": 114
+  },
+  "states": {
+    "assembly": {
+      "RESOLVED": 111,
+      "MECHANICAL_UNRESOLVED": 2,
+      "OVERLAP": 1
+    },
+    "first_order": {
+      "NONZERO_CONE": 74,
+      "MECHANICAL_UNRESOLVED": 2,
+      "ZERO_CONE": 36,
+      "OVERLAP": 1,
+      "UNPROVED": 1
+    },
+    "limit": {
+      "OPTIMAL": 51,
+      "UNBOUNDED": 58,
+      "MECHANICAL_UNRESOLVED": 2,
+      "INFEASIBLE": 1,
+      "OVERLAP": 1,
+      "UNPROVED": 1
+    },
+    "sensitivity": {
+      "OPTIMAL": 97,
+      "CERTIFIED": 120,
+      "UNBOUNDED": 58,
+      "MECHANICAL_UNRESOLVED": 2,
+      "INFEASIBLE": 1,
+      "OVERLAP": 1,
+      "UNPROVED": 1
+    },
+    "lock": {
+      "NOT_SEPARABLE_TRANSLATION": 276,
+      "REMOVABLE_TRANSLATION": 71,
+      "NOT_CONTACT": 2,
+      "OVERLAP": 1
+    },
+    "critical": {
+      "CERTIFIED": 108,
+      "UNPROVED": 5,
+      "INFEASIBLE": 1
+    }
+  },
+  "call_status": {
+    "OK": 1085,
+    "UNSUPPORTED": 1
+  },
+  "display_status": {
+    "EXACT": 777,
+    "NOT_APPLICABLE": 309
+  },
+  "fp_types_all_114_roles": {
+    "CONVEX": 1796,
+    "TRUE_VV": 2,
+    "REDUNDANT_PROVED": 2
+  },
+  "retained_all_114_roles": {
+    "True": 1568,
+    "False": 232
+  },
+  "bisection_termination": {
+    "iteration_limit": 15,
+    "None": 90,
+    "input_resolution_limit": 9
+  },
+  "threshold_proof_reason": {
+    "exact_basis_continuation": 24,
+    "None": 90
+  },
+  "iteration_limit_case_ids": [
+    "g1_koureas_h0_t0",
+    "g1_koureas_h1_t0",
+    "g1_koureas_h2_t0",
+    "g1_unreversed_t0",
+    "g1_reverse_i1_t0",
+    "TIA-G2-A0-W0",
+    "TIA-G2-A0-W1",
+    "TIA-G2-A0-W2",
+    "TIA-G3-A0-W0",
+    "TIA-G3-A0-W1",
+    "TIA-G3-A0-W2",
+    "TIA-G4-A0-W0",
+    "TIA-G4-A0-W1",
+    "TIA-G4-A0-W2",
+    "single_TIA-G5_body2"
+  ],
+  "alias_groups": {
+    "g1_koureas_h0_t0": [
+      "g1_koureas_h0_t0",
+      "g1_unreversed_t0",
+      "g1_reverse_i1_t0"
+    ],
+    "g5_n3_mu0": [
+      "g5_n3_mu0",
+      "regression_d_flush_mu0"
+    ],
+    "g5_n3_mu1": [
+      "g5_n3_mu1",
+      "regression_d_flush_mu025",
+      "coverage_unsupported_h"
+    ],
+    "regression_c_redundant_vv": [
+      "regression_c_redundant_vv",
+      "coverage_redundant_vv_mu2"
+    ],
+    "TIA-G3-A0-W0": [
+      "TIA-G3-A0-W0",
+      "TIA-G4-A0-W0"
+    ],
+    "TIA-G3-A0-W1": [
+      "TIA-G3-A0-W1",
+      "TIA-G4-A0-W1"
+    ],
+    "TIA-G3-A0-W2": [
+      "TIA-G3-A0-W2",
+      "TIA-G4-A0-W2"
+    ]
+  },
+  "part_count": 165,
+  "part_max_bytes": 999453,
+  "decompressed_bytes": 80343492,
+  "gzip_bytes": 4581793,
+  "gzip_max_bytes": 58312,
+  "cold_queries": 1086,
+  "query_target_seconds_sum": 63.626092100399546,
+  "query_target_seconds_median": 0.004284750029910356,
+  "query_target_seconds_max": 1.8890003000269644,
+  "readback_stats_all_116_roles": {
+    "queries": 1100,
+    "fields_compared": 6283924,
+    "lp_certificates": 323,
+    "mills_certificates": 122,
+    "cone_certificates": 656,
+    "recession_certificates": 56
+  },
+  "readback_wall_seconds": 88.84486499999184,
+  "source_manifest_sha256": "ec5d81cb0bfc6508eaf9b3e54481eca42a642f709d86cf098ad47af6177dd157",
+  "strict_readback_wall_seconds": 85.73737930000061,
+  "strict_reader_sha256": "a195bdb7dd292dc7444ee82fdbd8c849e64e902007ea1479da9bf97f48393642",
+  "strict_readback_status": "PASS"
+}

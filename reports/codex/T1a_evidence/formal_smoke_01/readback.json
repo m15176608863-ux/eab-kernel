@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "valid": true,
+  "reason": null,
+  "source_batch": "reports\\codex\\T1a_evidence\\formal_smoke_01\\binary64",
+  "reader": "independent_struct_fraction_and_production_replay_v1",
+  "current_source_hash_equality_required": false,
+  "wall_seconds": 2.3255518000223674,
+  "cases": [
+    {
+      "case_id": "g5_n3_mu2",
+      "status": "PASS",
+      "queries": 11,
+      "fields_compared": 8572,
+      "lp_certificates": 2,
+      "mills_certificates": 6,
+      "cone_certificates": 1,
+      "reader_wallclock_seconds": 0.22649600001750514
+    },
+    {
+      "case_id": "TIA-G3-A3-W2",
+      "status": "PASS",
+      "queries": 10,
+      "fields_compared": 223501,
+      "lp_certificates": 3,
+      "mills_certificates": 0,
+      "cone_certificates": 19,
+      "reader_wallclock_seconds": 1.718602099979762
+    }
+  ],
+  "python_only": [
+    {
+      "case_id": "python_only_g1_tenth",
+      "status": "PASS",
+      "cpp_input": false,
+      "fields_compared": 7704,
+      "lp_certificates": 1,
+      "queries": 7,
+      "cone_certificates": 1
+    },
+    {
+      "case_id": "python_only_g1_third_slender",
+      "status": "PASS",
+      "cpp_input": false,
+      "fields_compared": 8904,
+      "lp_certificates": 1,
+      "queries": 7,
+      "cone_certificates": 1
+    }
+  ]
+}

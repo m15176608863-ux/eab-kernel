@@ -1,0 +1,19 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_branch_signs_rejects_interior_numerator_roots_even_when_midpoint_positive _
+
+    def test_branch_signs_rejects_interior_numerator_roots_even_when_midpoint_positive():
+        # (x-1/8)(x-1/4) is positive at 1/2 but negative inside the interval.
+        branch = CriticalBasis2("improving_ray", (0,), 1, (Q(1),),
+                                ((Q(1, 32), -Q(3, 8), Q(1)),), ("r",), Q(1), (Q(21, 32),))
+>       assert branch_signs2(branch, Q(0), Q(1)) is None, "interior numerator roots must not be skipped"
+E       AssertionError: interior numerator roots must not be skipped
+E       assert (('denominator', (0, 0), Fraction(1, 1)), (0, (0, 0), Fraction(3, 32))) is None
+E        +  where (('denominator', (0, 0), Fraction(1, 1)), (0, (0, 0), Fraction(3, 32))) = branch_signs2(CriticalBasis2(kind='improving_ray', basis=(0,), entering=1, determinant=(Fraction(1, 1),), numerators=((Fraction(1, 32), Fraction(-3, 8), Fraction(1, 1)),), labels=('r',), sample_parameter=Fraction(1, 1), sample_values=(Fraction(21, 32),)), Fraction(0, 1), Fraction(1, 1))
+E        +    where Fraction(0, 1) = Q(0)
+E        +    and   Fraction(1, 1) = Q(1)
+
+tests\test_tia2d_critical_acceptance.py:59: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_critical_acceptance.py::test_branch_signs_rejects_interior_numerator_roots_even_when_midpoint_positive
+1 failed in 0.19s

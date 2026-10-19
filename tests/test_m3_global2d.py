@@ -107,7 +107,7 @@ def test_clipped_covers_are_exactly_boundary_and_cover_oracle_ray_exits(name, A,
     for direction in [(1, 0), (0, 1), (-1, 0), (0, -1), (2, 3), (-3, 2), (5, -1), (-1, -3)]:
         time = oracle.ray_exit(oracle.translate(A, origin), oracle.points(B), direction)
         p = origin[0]+time*direction[0], origin[1]+time*direction[1]
-        assert any(oracle.on_segment(p, a, b) for a, b in g.boundary), "oracle boundary missed by clipped covers"
+        assert any(oracle.on_segment(p, a, b) for a, b in g.boundary), "oracle ray exit missed by production boundary"
 
 
 def test_global_shortest_exit_distinguishes_tight_contact_seam():

@@ -1,0 +1,100 @@
+.............................................F.......................... [ 64%]
+.......................................                                  [100%]
+================================== FAILURES ===================================
+_ test_approved_batch_has_one_source_manifest_and_lossless_ordered_query_parts _
+
+tmp_path = WindowsPath('D:/eab-wt/cx-e2/reports/codex/T1a_evidence/tmp/schema_repair_03/test_approved_batch_has_one_so0')
+
+    def test_approved_batch_has_one_source_manifest_and_lossless_ordered_query_parts(tmp_path):
+        case = build_case(g5(mu=Q(1, 4)), "split-case", include_sensitivity=True)
+        while len(json.dumps(case, ensure_ascii=False, separators=(",", ":")).encode("utf-8")) <= 1_100_000:
+            case["queries"] = case["queries"] * 2
+        target = tmp_path / "approved-split"
+>       manifest = export_cases((item for item in (case,)), target,
+                                schema_approval=SCHEMA_APPROVAL, _output_root=tmp_path)
+
+tests\test_tia2d_cases.py:457: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cases = <generator object test_approved_batch_has_one_source_manifest_and_lossless_ordered_query_parts.<locals>.<genexpr> at 0x0000000004B55600>
+directory = WindowsPath('D:/eab-wt/cx-e2/reports/codex/T1a_evidence/tmp/schema_repair_03/test_approved_batch_has_one_so0/approved-split')
+
+    def export_cases(cases, directory, *, schema_approval=None, _output_root=None):
+        """Write one approved batch, guarding actual source bytes before and after.
+    
+    The private output-root injection is only an isolated test I/O boundary;
+    production defaults to ROOT and source provenance always reads ROOT.
+    """
+        if schema_approval != SCHEMA_APPROVAL:
+            raise PermissionError("Claude schema confirmation CLAUDE-APPROVED-TIA2D-2 required")
+        before = _source_stamp()
+        materialized = []
+        for case in cases:
+            stamp = getattr(case, "_source_stamp", None)
+            if stamp is None:
+                raise ValueError("case lacks its in-memory source guard; rebuild from current inputs")
+            if _source_key(stamp) != _source_key(before):
+                raise ValueError("batch cases have different source stamps")
+            name = case["case_id"]
+            if not name or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-" for c in name):
+                raise ValueError("unsafe case_id")
+            if case["schema_revision"] != SCHEMA_REVISION or case["design_sha256"] != before["design_sha256"]:
+                raise ValueError("case schema or design differs from approved batch")
+            if any(query["kind"] == "sensitivity" and query.get("seed") is not None
+                   and query.get("geometry_seed") is None for query in case["queries"]):
+                raise ValueError("formal sensitivity requires geometry_seed; LP-only probes are private")
+            for query in case["queries"]:
+                declared = query.get("declared_validity_conditions", ())
+                result_conditions = query["result"].get("validity_conditions", ())
+                if (set(declared) | set(result_conditions)) - VALIDITY_CONDITIONS:
+                    raise ValueError("formal validity_conditions must use the approved enum codes")
+            materialized.append(case)
+        if len({case["case_id"] for case in materialized}) != len(materialized):
+            raise ValueError("duplicate case_id")
+        aliases = {}
+        for case in materialized:
+            digest = _input_hash(case)
+            case["alias_of"] = aliases.get(digest)
+            case["role"] = "alias" if digest in aliases else "primary"
+            aliases.setdefault(digest, case["case_id"])
+        if _source_key(_source_stamp()) != _source_key(before):
+            raise RuntimeError("source changed during batch generation; discard and rerun")
+        source = _source_manifest(materialized, before)
+        source_data = _json_bytes(source)
+        if len(source_data) > MAX_BYTES:
+            raise ValueError("source manifest exceeds 1 MB")
+        source_sha = hashlib.sha256(source_data).hexdigest()
+        files = [("source_manifest.json", source_data)]
+        records = []
+        for case in materialized:
+            stamped = dict(case, provenance=dict(source_manifest_sha256=source_sha))
+            parts = []
+            for index, (indices, data) in enumerate(_split_case(stamped)):
+                path = case["case_id"] + ".part" + str(index + 1).zfill(3) + ".json"
+                files.append((path, data))
+                parts.append(dict(path=path, bytes=len(data), sha256=hashlib.sha256(data).hexdigest(),
+                                  query_indices=list(indices)))
+            records.append(dict(case_id=case["case_id"], input_sha256=_input_hash(case),
+                                query_count=len(case["queries"]), parts=parts))
+        manifest = dict(schema="eab2.case-batch.v1", schema_revision=SCHEMA_REVISION,
+            schema_approval=SCHEMA_APPROVAL, approval_date=APPROVAL_DATE,
+            source_manifest=dict(path="source_manifest.json", bytes=len(source_data), sha256=source_sha), cases=records)
+        manifest_data = _json_bytes(manifest)
+        if len(manifest_data) > MAX_BYTES:
+            raise ValueError("batch manifest exceeds 1 MB")
+        target = Path(directory).resolve()
+        output_root = ROOT if _output_root is None else Path(_output_root).resolve()
+        if not target.is_relative_to(output_root) or target.exists():
+            raise ValueError("choose a new output directory inside the worktree")
+        target.mkdir(parents=True)
+        try:
+            for name, data in files:
+                (target / name).write_bytes(data)
+            if _source_key(_source_stamp()) != _source_key(before):
+>               raise RuntimeError("source changed during batch writing; discard and rerun")
+E               RuntimeError: source changed during batch writing; discard and rerun
+
+tools\tia2d_cases.py:633: RuntimeError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_cases.py::test_approved_batch_has_one_source_manifest_and_lossless_ordered_query_parts
+1 failed, 110 passed in 15.23s

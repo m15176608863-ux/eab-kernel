@@ -90,6 +90,21 @@
 - `reports/codex/H1_evidence/`：本工单的计划、审计清单、迁移映射与当前验证；ignored 临时目录不属于可交付文件。
 - 根 `reports/` 的小型报告/指标记录及本归档索引：未把它们冒作当前运行证据；实际测试输入已按清单移到 fixtures。
 
+## WO-T1a 验收返修追加（2026-10-19）
+
+Claude 本轮明确批准写入 `D:/eab-evidence/reports/codex/T1a_evidence/`。原 272 个大证据文件共 **95,543,532 B** 已按“复制 → 两端逐文件 SHA256 → 再核源文件 → 删除本树原文件”的顺序外归档；没有覆盖不等字节的目标，没有递归删除目录。每条记录含旧相对路径、新绝对路径、长度与 SHA，外归档另存同一清单。
+
+- [逐文件清单](codex/T1a_evidence/accept_fix/archive_original.json)；[外归档清单](file:///D:/eab-evidence/reports/codex/T1a_evidence/_manifests/archive_original.json)。
+- 包括旧正式批（保留本树小型 readback.json）、旧 smoke、48 例诊断、36 格扫描、幅值再试和两个手装探针。旧 binary64 批不留在当前 fixtures 或报告目录里；原始历史字节仅在外归档。
+- [归档工具](../tools/tia2d_archive_evidence.py) 限定本树 T1a_evidence 源及本次批准的外目标。图工具通过 `frozen_evidence.data_path` 读取：fixtures 优先，仍存在的当前文件保持原位置，否则按历史路径查外归档。
+- 新正式输入移入 `fixtures/eab2_cases/tia2d-2/`，gzip−9、mtime=0；内容 SHA 与压缩 SHA 分开，来源见 [PROVENANCE](../fixtures/PROVENANCE.json)。包装与后续归档的实测数见 [T1a 报告](codex/T1a_report.md)。
+- 二级历史证据另移 81 文件、962,073 B：[本树清单](codex/T1a_evidence/accept_fix/archive_secondary.json)、[外清单](file:///D:/eab-evidence/reports/codex/T1a_evidence/_manifests/archive_secondary.json)。包括历史 resume 数据、两次中间变异运行、完整真圆探针；保留文献核读笔记和本轮最终摘要。
+- 新正式批原始 JSON、Python-only、计时进度另移 176 文件、81,175,040 B：[本树清单](codex/T1a_evidence/accept_fix/archive_formal_v2.json)、[外清单](file:///D:/eab-evidence/reports/codex/T1a_evidence/_manifests/archive_formal_v2.json)。三批合计 529 文件、177,680,645 B；不包括留在 fixtures 的 165 个 gzip 分片（4,581,793 B）及其索引。新批内容 SHA 按解压字节核验，gz SHA 另列；完整加强回读摘要留在本树。
+- 历史门摘要再移61文件、163,738 B：[本树清单](codex/T1a_evidence/accept_fix/archive_historical_summaries.json)、[外清单](file:///D:/eab-evidence/reports/codex/T1a_evidence/_manifests/archive_historical_summaries.json)。本轮四批总计 **590文件、177,844,383 B**；当前快档/全档/无Git摘要仍保留本树，历史原文不混称当前验证。
+- **没有改写 Git 历史**。`b0c1cbf` 仍含旧大 blob；Claude 将从 `fc9675c` 重建干净提交。本轮工作树布局正确不等于历史体积已被清除。
+
+回退仅可按清单在旧路径不存在时复制对应外归档字节，并重新核 SHA；不得覆盖所有者后续文件。外归档为本地原字节副本，不称远端备份。
+
 ## 晚发现的测试输入与最终核对
 
 快档实跑发现 `M5c_evidence/research_diagnostics.json` 也是固定门输入：从外归档原字节**复制**到 `fixtures/frozen/codex/M5c_evidence/research_diagnostics.json`，782,733 字节，外归档原件及其 SHA256 清单均未修改。最终输入为 **136 搬迁 + 1 复制 = 137 文件，12,445,253 字节**；不重算冻结数据。

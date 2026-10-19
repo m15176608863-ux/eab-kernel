@@ -1,0 +1,508 @@
+FF.F...F........FFFF...F...F....FFFFFF.F...F....                         [100%]
+================================== FAILURES ===================================
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling0-1-koureas-t0-height0-truth0-True] _
+
+orientation = 'koureas', t = Fraction(1, 3), height = Fraction(3, 16)
+truth = Fraction(11, 48), closed = True, steps = 1, ceiling = Fraction(1, 2)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(11, 48)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.25, attained=False, lower_cer...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling0-1-unreversed-t1-height1-truth1-False] _
+
+orientation = 'unreversed', t = Fraction(3, 16), height = Fraction(1, 1)
+truth = Fraction(3, 16), closed = False, steps = 1, ceiling = Fraction(1, 2)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(3, 16)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.25, attained=False, lower_cer...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling0-1-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 1, ceiling = Fraction(1, 2)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.25, attained=False, lower_cer...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling0-2-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 2, ceiling = Fraction(1, 2)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.125, attained=False, lower_ce...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-koureas-t0-height0-truth0-True] _
+
+orientation = 'koureas', t = Fraction(1, 3), height = Fraction(3, 16)
+truth = Fraction(11, 48), closed = True, steps = 1, ceiling = Fraction(3, 4)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(11, 48)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.375, attained=False, lower_ce...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-unreversed-t1-height1-truth1-False] _
+
+orientation = 'unreversed', t = Fraction(3, 16), height = Fraction(1, 1)
+truth = Fraction(3, 16), closed = False, steps = 1, ceiling = Fraction(3, 4)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(3, 16)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.375, attained=False, lower_ce...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-reverse_i1-t2-height2-truth2-True] _
+
+orientation = 'reverse_i1', t = Fraction(5, 16), height = Fraction(1, 1)
+truth = Fraction(5, 16), closed = True, steps = 1, ceiling = Fraction(3, 4)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(5, 16)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.375, attained=False, lower_ce...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 1, ceiling = Fraction(3, 4)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.375, attained=False, lower_ce...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling1-2-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 2, ceiling = Fraction(3, 4)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.1875, attained=False, lower_c...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling1-3-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 3, ceiling = Fraction(3, 4)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.09375, attained=False, lower_...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-koureas-t0-height0-truth0-True] _
+
+orientation = 'koureas', t = Fraction(1, 3), height = Fraction(3, 16)
+truth = Fraction(11, 48), closed = True, steps = 1, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(11, 48)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.5, attained=False, lower_cert...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-unreversed-t1-height1-truth1-False] _
+
+orientation = 'unreversed', t = Fraction(3, 16), height = Fraction(1, 1)
+truth = Fraction(3, 16), closed = False, steps = 1, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(3, 16)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.5, attained=False, lower_cert...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-reverse_i1-t2-height2-truth2-True] _
+
+orientation = 'reverse_i1', t = Fraction(5, 16), height = Fraction(1, 1)
+truth = Fraction(5, 16), closed = True, steps = 1, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(5, 16)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.5, attained=False, lower_cert...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 1, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.5, attained=False, lower_cert...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-2-koureas-t0-height0-truth0-True] _
+
+orientation = 'koureas', t = Fraction(1, 3), height = Fraction(3, 16)
+truth = Fraction(11, 48), closed = True, steps = 2, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(11, 48)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.25, attained=False, lower_cer...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-2-unreversed-t1-height1-truth1-False] _
+
+orientation = 'unreversed', t = Fraction(3, 16), height = Fraction(1, 1)
+truth = Fraction(3, 16), closed = False, steps = 2, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(3, 16)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.25, attained=False, lower_cer...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-2-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 2, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.25, attained=False, lower_cer...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+_ test_low_budget_threshold_never_certifies_a_false_root[ceiling2-3-koureas-t3-height3-truth3-True] _
+
+orientation = 'koureas', t = Fraction(1, 8), height = Fraction(1, 16)
+truth = Fraction(191, 2048), closed = True, steps = 3, ceiling = Fraction(1, 1)
+
+    @pytest.mark.parametrize("orientation,t,height,truth,closed", [
+        ("koureas", Q(1, 3), Q(3, 16), Q(11, 48), True),
+        ("unreversed", Q(3, 16), Q(1), Q(3, 16), False),
+        ("reverse_i1", Q(5, 16), Q(1), Q(5, 16), True),
+        ("koureas", Q(1, 8), Q(1, 16), Q(191, 2048), True),
+    ])
+    @pytest.mark.parametrize("steps", [1, 2, 3, 4])
+    @pytest.mark.parametrize("ceiling", [Q(1, 2), Q(3, 4), Q(1)])
+    def test_low_budget_threshold_never_certifies_a_false_root(orientation, t, height, truth, closed, steps, ceiling):
+        answer = critical_parameter(g1(t=t, height=height, orientation=orientation),
+                                    mu_max=ceiling, max_steps=steps)
+        assert answer.status == "CERTIFIED"
+        assert Q(answer.mu_lo) <= truth <= Q(answer.mu_hi)
+        if answer.exact_threshold is None:
+            assert answer.attained is None
+        else:
+>           assert answer.exact_threshold == truth, "exact root requires both relevant continuation proofs"
+E           AssertionError: exact root requires both relevant continuation proofs
+E           assert Fraction(0, 1) == Fraction(191, 2048)
+E            +  where Fraction(0, 1) = CriticalParameter2(call_status='OK', mathematical_status='CERTIFIED', mu_lo=0.0, mu_hi=0.125, attained=False, lower_ce...'), bisection_termination='iteration_limit', threshold_proof_reason='exact_basis_continuation', validity_conditions=()).exact_threshold
+
+tests\test_tia2d_critical_acceptance.py:41: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling0-1-koureas-t0-height0-truth0-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling0-1-unreversed-t1-height1-truth1-False]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling0-1-koureas-t3-height3-truth3-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling0-2-koureas-t3-height3-truth3-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-koureas-t0-height0-truth0-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-unreversed-t1-height1-truth1-False]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-reverse_i1-t2-height2-truth2-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling1-1-koureas-t3-height3-truth3-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling1-2-koureas-t3-height3-truth3-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling1-3-koureas-t3-height3-truth3-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-koureas-t0-height0-truth0-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-unreversed-t1-height1-truth1-False]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-reverse_i1-t2-height2-truth2-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-1-koureas-t3-height3-truth3-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-2-koureas-t0-height0-truth0-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-2-unreversed-t1-height1-truth1-False]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-2-koureas-t3-height3-truth3-True]
+FAILED tests/test_tia2d_critical_acceptance.py::test_low_budget_threshold_never_certifies_a_false_root[ceiling2-3-koureas-t3-height3-truth3-True]
+18 failed, 30 passed in 7.12s
