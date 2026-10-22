@@ -100,6 +100,21 @@ typedef struct eab2_covers2_input {
 EAB2_API eab2_call_status eab2_covers2_exact(eab2_context context,
     eab2_entrance2 entrance, const eab2_covers2_input* input, eab2_exact_result* output);
 
+/* Standard form min/max c^T x, A x=b, x>=0. Text order is row-major A,
+ * then b, then c. sense 0=min, 1=max. max_pivots must be positive.
+ * Test-only; never exported by the production DLL. */
+typedef struct eab2_opt_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t sense; uint32_t reserved;
+    uint64_t rows; uint64_t columns; uint64_t max_pivots;
+    uint64_t value_count; uint64_t value_stride; const eab2_text* values;
+} eab2_opt_input;
+EAB2_API eab2_call_status eab2_opt_solve_exact(eab2_context context,
+    const eab2_opt_input* input, eab2_exact_result* output);
+/* A two-party rendezvous INSIDE the context lock, solely for the overlap gate.
+ * Distinct contexts must meet; timeout is a test failure, not a math result. */
+EAB2_API eab2_call_status eab2_test_context_rendezvous(eab2_context context);
+
 #ifdef __cplusplus
 }
 #endif

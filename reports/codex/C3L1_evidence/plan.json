@@ -1,0 +1,77 @@
+{
+  "target": "WO-C3L1 exact opt and L1 C++ port with independent Python verification",
+  "scope": [
+    "eab2",
+    "tools/eab2*",
+    "tests/test_eab2*",
+    "reports/codex/C3L1*",
+    "fixtures/eab2_cases/t1b_l1",
+    "fixtures/PROVENANCE.json"
+  ],
+  "non_goals": [
+    "Python mathematical contract changes",
+    "Git writes",
+    "sibling writes",
+    "L3/L4",
+    "installation/download"
+  ],
+  "rollback_anchor": "clean eab2-c3 @ 7540cdec5f4ca06a709deca3673435a091961941",
+  "design_sha256": "6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac",
+  "steps": [
+    {
+      "id": 1,
+      "name": "baseline full four shards and contracts",
+      "status": "complete"
+    },
+    {
+      "id": 2,
+      "name": "exact opt with certificates and independent diff",
+      "status": "complete"
+    },
+    {
+      "id": 3,
+      "name": "L1 and ABI with formal corpus",
+      "status": "complete"
+    },
+    {
+      "id": 4,
+      "name": "P1 and metamorphic gates / P2 measurement",
+      "status": "complete"
+    },
+    {
+      "id": 5,
+      "name": "final fast/full verification and report",
+      "status": "complete"
+    }
+  ],
+  "verification": [
+    "python tools/h1_run_gates.py --name NEW --runslow --evidence-root reports/codex/C3L1_evidence",
+    "cmd /c eab2\\build_eab2.bat",
+    "C++ CTest",
+    "independent opt/L1 diff",
+    "kernel purity / exact construction / file size gates"
+  ],
+  "baseline_policy": "No tracked or non-evidence source writes until baseline completes. Drafts only under excluded evidence/tmp.",
+  "closeout_restart": {
+    "reason": "Owner continuation after capacity interruption; all final validation restarted from fixed bytes",
+    "runner": "closeout_restart_runner.py",
+    "invalidated_run": "final_full",
+    "reuse_old_final_results": false,
+    "status": "failed_static_gate"
+  },
+  "closeout_repair": {
+    "reason": "One new test direct-float site repaired with approved scalar constructor; no new admissions; rerun all final stages",
+    "runner": "closeout_repair_runner.py",
+    "status": "complete",
+    "reuse_old_final_results": false
+  },
+  "overall_status": "C3L1_DONE",
+  "pending_owner_gates": [],
+  "acceptance_fix": {
+    "intake": "acceptance_fix/intake.json",
+    "final_run": "acceptance_fix/acceptance_final_run.json",
+    "status": "complete",
+    "math_src_changed": false,
+    "static_admissions_changed": false
+  }
+}

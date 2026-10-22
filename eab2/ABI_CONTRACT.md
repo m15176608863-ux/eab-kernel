@@ -1,10 +1,10 @@
-# eab2 C0 / C1 工作 ABI 合同
+# eab2 C0 / C1 / C3-L1 工作 ABI 合同
 
 这是设计 §5.4 的 C0 工作接口，不是 C3 发布产品 ABI 冻结。公共 C 头只含固定宽度整数、长度与指针；无 C++ bool、STL、Boost、异常或 enum 布局。全部入口捕获 C++ 异常。调用方仍须提供真实有效且足够大的、互不重叠的描述符和缓冲区；本单不是恶意地址/宿主接缝加固。
 
 ## 正式导出与能力
 
-`eab2_get_abi_info`、`eab2_self_test`、`eab2_context_create`、`eab2_context_destroy`、`eab2_context_get_error`。ABI version=1，`struct_size` 必须精确匹配；版本不匹配返回 UNSUPPORTED。构建身份包含工具链、ISA 与后端，由构建系统生成。`get_abi_info` 总是报告已实现能力；`requested_capabilities` 的未支持位完整返回 `unsupported_capabilities` 并返回 UNSUPPORTED。C1 正式 DLL 具有 CONTEXT/BODY2/ENTRANCE2/QUERY2/EXPORT_EXACT/LOCAL2 能力，没有 rho/SE2/LP2 或数值发布入口；不提供占位时间、距离或承载力。
+`eab2_get_abi_info`、`eab2_self_test`、`eab2_context_create`、`eab2_context_destroy`、`eab2_context_get_error`。ABI version=1，`struct_size` 必须精确匹配；版本不匹配返回 UNSUPPORTED。构建身份包含工具链、ISA 与后端，由构建系统生成。`get_abi_info` 总是报告已实现能力；`requested_capabilities` 的未支持位完整返回 `unsupported_capabilities` 并返回 UNSUPPORTED。C1 正式 DLL 具有 CONTEXT/BODY2/ENTRANCE2/QUERY2/EXPORT_EXACT/LOCAL2/LIMITS2 能力，没有 rho/SE2/LP2 或数值发布入口；不提供占位时间、距离或承载力。
 
 `eab2_numeric_batch` 只在 `EAB2_ENABLE_TEST_API` 测试构建导出，测试 DLL 额外报告 TEST_NUMERIC 能力；正式 DLL 没有该导出。单元测试见 `tests/test_abi.cpp`，生产 C 头/能力检查见 `tests/test_c_header.c`。
 
@@ -26,7 +26,7 @@
 
 ## 生命周期与错误
 
-context 是 `{owner,id,generation,type,reserved}` 的 32 字节 token，不是可供调用者释放的指针。context token 的 owner 必须等于 id；每次查表还核类型、世代与 reserved。context 与子对象槽位复用；每次分配使用库级单调递增 generation（溢出 RESOURCE_LIMIT），使同 id 的旧 token 仍无效。子对象 owner 为 context id；跨 context、错类型、旧 generation 均拒收。释放 context 同时销毁子对象。context 槽位元数据保留，全部几何/结果载荷释放。`test_abi.cpp::main/geometry2_matrix` 实际复用槽位后再尝试旧句柄，不仅检查不同 id。失败创建首先将整个输出清零；库内部创建/销毁唯一所有权对象，不跨 CRT free。全局锁仅管理注册表和访问串行化，错误保存在各 context，不使用全局 last_error。
+context 是 `{owner,id,generation,type,reserved}` 的 32 字节 token，不是可供调用者释放的指针。context token 的 owner 必须等于 id；每次查表还核类型、世代与 reserved。context 与子对象槽位复用；每次分配使用库级单调递增 generation（溢出 RESOURCE_LIMIT），使同 id 的旧 token 仍无效。子对象 owner 为 context id；跨 context、错类型、旧 generation 均拒收。释放 context 同时销毁子对象。context 槽位元数据保留，全部几何/结果载荷释放。`test_abi.cpp::main/geometry2_matrix` 实际复用槽位后再尝试旧句柄，不仅检查不同 id。失败创建首先将整个输出清零；库内部创建/销毁唯一所有权对象，不跨 CRT free。全局锁仅解析/修改注册表并固定 shared ownership；随后释放全局锁，按 context mutex 串行计算。destroy 标记旧 state 失效再回收槽位，generation 原子单调推进；不同 context 可以并行。错误保存在各 context，不使用全局 last_error。
 
 错误由 context 持有 code/field/index 和消息，失败批次记录错误；正常批次将错误清空；逐项失败记录第一个失败的下标。`get_error` 不改变既有错误。两阶段获取消息：NULL/0 查询所需容量（含 NUL），再由调用方分配，库只复制；不足容量不写消息。消息长度上限 511 字节，field 上限 47 字节；错误 code/index 不截断。context 销毁后错误也失效。
 
@@ -61,13 +61,15 @@ context 是 `{owner,id,generation,type,reserved}` 的 32 字节 token，不是�
 | 释放 | `eab2_result_destroy` 在库侧释放 exact_result.result；data 只读，byte_count 不含尾 NUL；释放 result 或 context 后失效 |
 | 测试隔离 | `eab2_query2_exact_batch` 接 canonical 有理坐标；`eab2_covers2_exact` 接显式精确窗口/容差；仅 test DLL 导出，测试能力 TEST_EXACT2 |
 
+`eab2_local_origin2_exact` 默认通过合并后的胞计算（继承 entrance flags；显式 NO_MERGE 另论）。它不能代替 `query_lock` 使用的未合并耳切积胞、逐胞证据或严格半径界；两者在原点状态相同不意味着胞分解与半径证书可互换。
+
 两个状态都是独立的 uint32 值域：body OUTSIDE=0/CONTACT=1/OVERLAP=2；topology OUTSIDE=0/BOUNDARY=1/INTERIOR=2。合法 OVERLAP 是调用成功的数学 VALUE，不能读取 call_status 当是否重叠。输入点失败则数学 NOT_COMPUTED，两个状态均为 UINT32_MAX，避免伪造 OUTSIDE。
 
 批查询先验证所有外层结构/尺寸/stride/容量、暂存结果再提交；结构或灾难性分配失败不改输出。合法批次外层 OK，非法数值点逐项失败，首项错误存 context。空批允许 NULL points/items。每批 ≤65536 点，body ABI ≤4096 点；几何核心另有确定性工作限额，超过 RESOURCE_LIMIT。测试有理查询每坐标 ≤4096 bytes；批次解析长度平方和 ≤67108864，耗尽后逐项 RESOURCE_LIMIT。
 
-exact result 创建失败不改已有输出；成功创建的新 token 必须释放，不可把含活 token 的输出重复覆盖而不先释放。失败的 body/E 创建清全零 token。错误详情不依赖全局 last_error；C1 调用开始时清旧错误，逐项错误保留首错。context、Body/E 和结果不允许调用时并发重入。
+exact result 创建失败不改已有输出；成功创建的新 token 必须释放，不可把含活 token 的输出重复覆盖而不先释放。失败的 body/E 创建清全零 token。错误详情不依赖全局 last_error；C1 调用开始时清旧错误，逐项错误保留首错。同一 context 的调用被串行化；result / context 销毁后，返回的 data 指针失效。调用者须自行协调借用 data 的读取与销毁，串行化 API 调用不延长借用指针的生命周期。
 
-`test_abi.cpp::geometry2_matrix` 守护尺寸、三态、部分成功、句柄槽位复用、跨 context、库释放、export 及有理测试入口；`tools/eab2_audit.py` 核查正式 DLL 无两个测试入口。所有 C1 计算入口重查当前线程 FP 合同。
+`test_abi.cpp::geometry2_matrix` 守护尺寸、三态、部分成功、句柄槽位复用、跨 context、库释放、export 及有理测试入口；`tools/eab2_audit.py` 核查正式 DLL 无两个测试入口。所有 C1 计算入口重查当前线程 FP 合同；`body2_destroy/entrance2_destroy/result_destroy/context_get_limits2` 以及 C3 释放入口不运行 FP 自检，在坏环境下仍可清理/读配置。`test_c3l1_abi.cpp::release_bad_fp` 实际检查 FTZ/DAZ、三种非 RN、六个屏蔽位和宿主状态不变。
 
 构建身份由 `tools/eab2_audit.py` 调实际编译器 `/Bv` 获取版本，再与 `compile_commands.json` 的实际工具路径、`/MD /O2 /std:c++20 /fp:precise` 和无 `/arch:* /GL` 比对 DLL identity。受控源码在 `exact.hpp/c_api.cpp/fp_contract.cpp` 入口拒 `__AVX__`；geometry 经 exact.hpp 同样受控。此审计证明的是编译目标而非整个 CRT/STL 的二进制 ISA 纯度。
 
@@ -81,4 +83,28 @@ exact result 创建失败不改已有输出；成功创建的新 token 必须释
 
 C1 入口建立共享 `GeometryWorkScope`，嵌套几何调用/同批各点共用工作预算；Body/E 及方法各自保留直接 C++ 调用的范围。`IntegerLimitScope` 在 exact 算术层前置检查乘积/平移/有理交叉乘及加减的保守位长上界，并检查 owning 结果；超限抛专用 ResourceLimit，C ABI 转 RESOURCE_LIMIT，不产生几何否定。保守上界可能拒绝一个约分或消去后本可很小的结果，这是明确的资源拒签，不是数学误判。
 
-这些位长限额不是整进程内存/墙钟预算，也不声称已证明 Boost 私有算法所有临时 limb 分配的物理峰值；前置算术界比单纯导出后验位长检查更强，但二者不能混称。C0 无 C1 scope 时保留原无固定几何预算的数学行为；scope RAII 在异常路径恢复，测试 `test_numeric.cpp::integer_budget_contract` 守护。配置与三类资源拒签门见 `test_abi.cpp::limits2_matrix`。十进制测试桥仍有独立固定协议工作预算。
+这些位长限额不是整进程内存/墙钟预算，也不声称已证明 Boost 私有算法所有临时 limb 分配的物理峰值；前置算术界比单纯导出后验位长检查更强，但二者不能混称。直接 C++ 数值核心无显式 scope 时保留原行为；C0 测试 ABI 的每项 evaluate 现在独立建立 context 的 `IntegerLimitScope(max_integer_bits)`，超限按逐项 RESOURCE_LIMIT 提交，其他项仍可成功。scope RAII 在异常路径恢复，测试 `test_numeric.cpp::integer_budget_contract` 与 `test_abi.cpp::numeric_compute_budget_matrix` 守护。配置与三类资源拒签门见 `test_abi.cpp::limits2_matrix`。十进制测试桥仍有独立固定协议工作预算。
+
+
+## C3-L1 增量合同
+
+`eab2_get_c3l1_abi_info` 单独返回 C3 描述符尺寸，不扩写冻结 C0/C1 布局。新增正式能力 ASSEMBLY2=512、CONTACTSET2=1024、LOCK2=2048、MOBILITY2=4096；仅测试 DLL 有 TEST_OPT=8192。LP2 仍保留给未实现的 L3 发布族，不以 test-only opt 入口冒充生产 L3。数学状态新增 MECHANICAL_UNRESOLVED=7；精确 JSON 保留更细的状态串，零/非零锥不是有限运动的 true/false。
+
+| 族 | 工作入口 / 合同 |
+|---|---|
+| Assembly | `assembly2_create/destroy`；复制同 context body，非空唯一 UTF-8 ID（每个≤4096 bytes），显式 binary64 参考点和 dof_anchor，mask 的 bit0/1/2 表示 x/y/rotation 自由；FIXED_BODY 要求 mask=0 |
+| 候选对 | flags COMPLETE=1 / EXPLICIT_PAIRS=2；complete 必须显式包括所有无序体对；未声明完整性不自动补证。profile 必须1；仅未知 profile 返回 UNSUPPORTED |
+| ContactSet | `assemble_contact_set2` 返回独立快照 token；assembly 可先释放。`contact_set2_export_exact` 输出逐点类型/保留边界/来源/不可达证书/未解析真VV及状态；`contact_set2_destroy` 库侧释放 |
+| 锁定 | `query_lock(assembly, input, result)`；input 显式 moving index 与 neighbor index 数组，每个邻体在本次查询视为固定；不据 mask 推断遗漏邻体。OVERLAP call OK + math OVERLAP、JSON status=null，不能伪造四状态 |
+| 一阶 | `first_order_mobility(contacts,result)`；只用法向，固定/掩码/锚点来自不可变快照。未解析真VV返回 MECHANICAL_UNRESOLVED，不枚举模态；完整性未知返回 UNPROVED |
+| 测试 LP | `opt_solve_exact`，标准型 min/max，文本顺序 row-major A、b、c；sense 0/1，显式正 max_pivots；输出精确 x/y/归一化射线和统计。只在测试 DLL，供独立 Python 差分 |
+
+外层结构、数组乘法、精确 stride、指针、尺寸与 owner/type/generation 均检查；失败创建 token 全零，失败精确查询不改变原输出。没有借用输入内存。结果仍按 C1 result 生命周期库侧释放，不能覆盖未释放的活 result。所有计算入口核 FP；释放与 get_limits2 不核 FP。
+
+Assembly≤1024 bodies，candidate pair/neighbor count≤context.max_elements；几何/整数限额沿 C1 scope。opt测试入口≤1024行、4096列、65536个精确数（A+b+c），单文本≤4096 bytes、长度平方和≤67108864；主元预算含辅助LP，耗尽返回 RESOURCE_LIMIT 而非数学 UNPROVED。位长统计为存储输入/基逆/证书分量高水位，不声称所有算术临时峰值或进程内存上界。默认无浮点候选加速，只有全有理冷启动/候选精确重建。**LP 运算使用独立主元预算与整数位长限制，不消费 GeometryWorkScope 的 max_work_units；不能声称几何工作计数覆盖 LP 算术。**
+
+`numeric_batch` 同时受固定输入/解析预算和逐项算术整数位长预算约束：每个 evaluate 使用 context.max_integer_bits，覆盖 VECTOR / NORM / UNIT 的平方和及其他 exact 算术；超限项不改 bits 缓冲区并返回 RESOURCE_LIMIT，不产生数学结论。此 scope 不消费 GeometryWorkScope.max_work_units，也不是整进程内存或任意算法的统一墙钟保证。对抗 NORM 批由 `test_abi.cpp::numeric_compute_budget_matrix` 及收尾对手脚本复跑核验。
+
+NO_COMPACT 导出仅作诊断；不把未压缩排布当规范接触骨架产品输出。C1 差分现检查 exterior_state 与 CONTACT 剖分层/接触骨架集合一致，见 `tools/eab2_c1_exact.py::verify_contact_layers/compare_exports`。
+
+并发验证：test-only `test_context_rendezvous` 在真实 context 计算锁内设置两方会合；`test_c3l1_abi.cpp::concurrent_contexts` 用不同 context 的两个线程证明确实重叠，不以两个串行成功调用冒充并行。测试超时只报测试失败，无数学结论；此入口不在生产 DLL。

@@ -1,0 +1,38 @@
+{
+  "schema": "eab2.c3l1.archive_initial_audit.v1",
+  "status": "PASS",
+  "read_only_originals": true,
+  "head": "84d514ebd7e820a6ea7e5f58f4113d8e2bd32e24",
+  "manifest_sha256": "ad2a58e47a875971931a0d74060c1771778bfb57c21651b6c41de76d6bd86fbb",
+  "manifest_copies_equal": true,
+  "plan_rows": 219,
+  "checked_originals_against_git_head": 220,
+  "actions": {
+    "copy_only_before_rewrite": 10,
+    "archive_original": 136,
+    "gzip_in_place": 2
+  },
+  "original_bytes_by_action": {
+    "copy_only_before_rewrite": 163677,
+    "archive_original": 11949974,
+    "gzip_in_place": 233067
+  },
+  "kept_files": 81,
+  "kept_bytes": 587610,
+  "gzip_compressed_bytes": 11974,
+  "baseline_7540cde_worktree_net_bytes_at_audit": 1393408,
+  "boundaries": [
+    "D:/eab-wt/cx-c0/reports/codex/C3L1_evidence",
+    "D:/eab-evidence/reports/codex/C3L1_evidence"
+  ],
+  "script_review": [
+    "Prevalidates all original planned sources against SHA before migration.",
+    "Each archived target must be missing or byte-identical; source is re-read unchanged before single-file unlink.",
+    "No recursive delete/move, Git writes, or process controls.",
+    "Only explicit per-file old source unlink occurs after verified copy/gzip; backup entries are copy-only.",
+    "Destination and source resolved boundaries are checked; actual source/target parent paths independently show no symlinks.",
+    "Final manifests, executor, and plan agree between local and approved external subtree."
+  ],
+  "errors": [],
+  "last_line": "C3L1_ARCHIVE_INITIAL_AUDIT originals=220 archive=136 gzip=2 kept=81 errors=0 status=PASS"
+}

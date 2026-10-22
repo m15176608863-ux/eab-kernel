@@ -1,0 +1,36 @@
+{
+  "schema": "eab2.c3l1.acceptance_delivery_integrity.v1",
+  "status": "PASS",
+  "scope": "Local packaging QA, not a mathematical oracle or fresh-Git-tree reproduction",
+  "root": "D:/eab-wt/cx-c0",
+  "archive_root": "D:/eab-evidence/reports/codex/C3L1_evidence",
+  "counts": {
+    "files": 186,
+    "text_files": 144,
+    "local_links": 296,
+    "archive_rows": 184,
+    "protected_files": 143,
+    "tested_source_files": 1711
+  },
+  "execution_checks": [
+    {
+      "name": "acceptance_fast",
+      "shards": 1,
+      "count": 8951,
+      "multiset_equal": true
+    },
+    {
+      "name": "acceptance_full",
+      "shards": 4,
+      "count": 15035,
+      "multiset_equal": true
+    }
+  ],
+  "post_gate_changed": [
+    "reports/EVIDENCE_ARCHIVE.md",
+    "reports/codex/C3L1_report.md"
+  ],
+  "owner_review_scope": "Owner-supplied review and fresh-tree results cover original 84d514e; current repaired run is a byte export",
+  "errors": [],
+  "last_line": "C3L1_ACCEPTANCE_DELIVERY_INTEGRITY files=186 links=296 errors=0 status=PASS"
+}

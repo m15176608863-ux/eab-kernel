@@ -1,0 +1,22 @@
+{
+  "schema": "eab2.c3l1.p2_extra.v1",
+  "c1_source": "c1_diff_repair.json",
+  "opt_source": "opt_diff_repair.json",
+  "c1": {
+    "python_seconds": 43.02294889988843,
+    "cpp_build_seconds": 2.2908996969927102,
+    "cpp_export_seconds": 33.22369629878085,
+    "cpp_export_over_python": 0.7722319633665792
+  },
+  "opt": {
+    "cpp_seconds": 27.146454999689013,
+    "python_seconds": 5.9796325993957,
+    "cpp_over_python": 4.539819888337693,
+    "max_rows": 12,
+    "max_columns": 2053,
+    "max_pivots": 69,
+    "max_max_stored_integer_bits": 1374
+  },
+  "performance_gate": false,
+  "caveat": "Sequential single cold-query observations, not process-cold; no hardware isolation or causal profiler. Measurement scopes differ."
+}

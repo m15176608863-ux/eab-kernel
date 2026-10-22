@@ -152,3 +152,23 @@ Claude 本轮明确批准写入 `D:/eab-evidence/reports/codex/T1a_evidence/`。
 - [全部本轮文件链接](codex/T1b_evidence/acceptance_recheck_m4b/artifacts.md)、[当前文件SHA](codex/T1b_evidence/acceptance_recheck_m4b/artifact_manifest.json)、[受测字节审计](codex/T1b_evidence/acceptance_recheck_m4b/final_tested_source_audit.json)、[净增/卫生](codex/T1b_evidence/acceptance_recheck_m4b/hygiene.json)。最终结论见[T1b报告§6.4](codex/T1b_report.md#64-第二轮复验同一凹障碍内跨片的端点式变异)。
 
 外归档仅为本地保存，不等于远端备份；回滚不得覆盖所有者后续修改。C仍为可选项，不记PARTIAL；旧轮RED及所有来源哈希保留。
+
+## WO-C3L1 验收返修归档（84d514e 后未提交字节）
+
+Claude 本次仅授权外写 `D:/eab-evidence/reports/codex/C3L1_evidence/`。按 LP/ABI 验收第(4)节三清单迁移：旧轮219文件中81个小型摘要/必要日志留仓，136个原文件（11,949,974 B）外移，2个正式重放文件改为gzip−9、mtime=0；10个待更新报告/索引另存原字节副本，不混入“外移”数量。旧三个repair差分选用获准的外归档方案，当前返修差分只保留新的权威gzip。
+
+- [逐文件旧路径/新路径/长度/SHA256及双SHA压缩记录](codex/C3L1_evidence/acceptance_fix/archive_manifest.json)；[外部相同清单](file:///D:/eab-evidence/reports/codex/C3L1_evidence/_manifests/archive_original.json)。
+- [原始验收全文](file:///D:/eab-evidence/reports/codex/C3L1_evidence/acceptance_review/C3L1_acceptance.md)；[入口与回退锚](codex/C3L1_evidence/acceptance_fix/intake.json)。Claude所报84d514e新鲜树全绿及两路0 critical/0 major，以该输入记录来源，不冒称本代理亲自重跑。
+- 每个外移文件执行“复制 → 目标逐字节/SHA核对 → 再核源 → 单文件unlink”，未覆盖不等字节目标，未递归删除。gzip逐个解压等于原字节；旧SHA原样保留。过期 `test_eab2_c3l1_before_static_repair.py` 已外归档，不再作为本树可收集测试。
+- 历史H1原始执行记录及脚本在外归档同相对路径，原哈希见 [raw_log_archive.json](codex/C3L1_evidence/raw_log_archive.json)。原脚本是历史快照，不在外部位置直接执行其旧相对路径假设。
+- [返修定向红/绿及对手脚本原字节清单](codex/C3L1_evidence/acceptance_fix/preflight_archive.json)；最终门与新的原始记录映射将在 [C3L1报告](codex/C3L1_report.md) 和 [交付索引](codex/C3L1_evidence/deliverables.md) 收口。
+
+不改Git历史；工作字节瘦身不等于84d514e旧大blob已从历史清除。外目录是本地归档，不称远端备份。回退仅在原路径不存在时依清单复制并核SHA，禁止覆盖所有者后续修改。
+
+### C3L1 本次最终门与归档索引
+
+完整重建及12阶段固定字节收尾全部GREEN，快/全H1使用本树字节导出，不冒称新的Git树。新的逐分片日志/执行多重集/来源清单在C3L1外归档 `acceptance_runs/`；每个gzip均level9、mtime=0、解压原SHA相等，原ignored临时日志不混作入库材料。
+
+- [本轮最终归档映射与双SHA](codex/C3L1_evidence/acceptance_fix/final_archive.json)；[外部相同清单](file:///D:/eab-evidence/reports/codex/C3L1_evidence/_manifests/acceptance_final_archive.json)。
+- [完整最终流水账](codex/C3L1_evidence/acceptance_fix/acceptance_final_run.json)；[当前权威交付索引](codex/C3L1_evidence/deliverables.md)；[当前文件SHA](codex/C3L1_evidence/artifact_manifest.json)；[链接/哈希/执行集合审计](codex/C3L1_evidence/delivery_integrity.json)。
+- [工作字节净增/单文件卫生](codex/C3L1_evidence/acceptance_fix/hygiene.json)：相对7540cde按当前拟交付字节计，不是Git pack/history体积。

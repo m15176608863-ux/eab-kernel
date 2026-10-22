@@ -243,7 +243,35 @@ def layer_samples(export):
             yield kind, point(row["sample"]), (row["body_state"], row["topology_state"])
 
 
+def verify_contact_layers(export):
+    """The CONTACT stratum in subdivision equals the raw contact skeleton.
+
+    Fraction interval unions are independent of C++ subdivision constructors;
+    extra compact vertices are allowed, missing CONTACT geometry is not.
+    """
+    subd = export["subdivision"]
+    if subd["exterior_state"] != -1:
+        raise AssertionError("subdivision exterior_state must be OUTSIDE")
+    segments = canonical_segments(export["contact_segments"])
+    contact_edges = [r["vertices"] for r in subd["edges"] if r["body_state"] == 0]
+    if canonical_segments(contact_edges) != segments:
+        raise AssertionError("subdivision CONTACT edges differ from contact skeleton")
+    vertices = {point(r["vertices"][0]) for r in subd["vertices"] if r["body_state"] == 0}
+    ends = {point(p) for edge in contact_edges for p in edge}
+    if not ends <= vertices:
+        raise AssertionError("subdivision CONTACT edge endpoint missing from vertices")
+    isolated = {p for p in vertices if not any(on(p, a, b) for a, b in segments)}
+    expected = {point(r["point"]) for r in export["contact_points"]}
+    expected = {p for p in expected if not any(on(p, a, b) for a, b in segments)}
+    if isolated != expected:
+        raise AssertionError("subdivision CONTACT isolated vertices differ from contact skeleton")
+
+
 def compare_exports(expected, actual, model):
+    if expected["subdivision"]["exterior_state"] != actual["subdivision"]["exterior_state"]:
+        raise AssertionError("subdivision exterior_state differs")
+    verify_contact_layers(expected)
+    verify_contact_layers(actual)
     def raw_signature(export):
         return tuple(sorted((tuple(r["label"]), point(r["start"]), point(r["end"]))
                             for r in export["raw_segments"]))

@@ -1,0 +1,67 @@
+{
+  "schema": "eab2.c3l1.opt.mutations.v1",
+  "source": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\stage_lp\\opt.cpp",
+  "source_sha256": "67ab32ca678f7cd88dc5626353f700a5c2df53ddcada0fa9554e441f875c2cda",
+  "baseline_last_line": "EAB2_OPT_TESTS checks=5894 failed=0",
+  "mutation_count": 5,
+  "killed": 5,
+  "survived": 0,
+  "mutations": [
+    {
+      "name": "optimal_dual_check",
+      "killed": true,
+      "semantic_contract": "A suboptimal basis must not certify as optimal; independent original-data dual inequality rejects it.",
+      "expected_diagnostic": "basis certificate disagrees with original LP",
+      "exit_code": 1,
+      "last_line": "EAB2_OPT_TESTS checks=1 failed=1 detail=basis certificate disagrees with original LP",
+      "seconds": 3.9325637000147253,
+      "directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\opt_mutations_stage\\optimal_dual_check",
+      "mutant_sha256": "a789cdda9a0c90f999886bfc23a4d82d19287583fe97cb1dd5ee80acadc5802f"
+    },
+    {
+      "name": "farkas_column_check",
+      "killed": true,
+      "semantic_contract": "Positive b separation alone is insufficient; every original Farkas column must be nonpositive.",
+      "expected_diagnostic": "basis certificate disagrees with original LP",
+      "exit_code": 1,
+      "last_line": "EAB2_OPT_TESTS checks=10 failed=1 detail=basis certificate disagrees with original LP",
+      "seconds": 3.916653599939309,
+      "directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\opt_mutations_stage\\farkas_column_check",
+      "mutant_sha256": "be01d9bd674398282a5247328e121de8e06b7406440d5c7766fa1e0c1ea067c9"
+    },
+    {
+      "name": "strict_ray_improvement",
+      "killed": true,
+      "semantic_contract": "A feasible recession direction with increasing objective is not an unbounded certificate.",
+      "expected_diagnostic": "basis certificate disagrees with original LP",
+      "exit_code": 1,
+      "last_line": "EAB2_OPT_TESTS checks=13 failed=1 detail=basis certificate disagrees with original LP",
+      "seconds": 3.930547499912791,
+      "directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\opt_mutations_stage\\strict_ray_improvement",
+      "mutant_sha256": "e7ed54d5329d71345caf883fd7216f4ae0f291d972ad597f215008d5b5f7fdcc"
+    },
+    {
+      "name": "unbounded_feasible_point",
+      "killed": true,
+      "semantic_contract": "An improving homogeneous ray does not replace the nonzero original-RHS feasible point.",
+      "expected_diagnostic": "LP result failed original-model certificate",
+      "exit_code": 1,
+      "last_line": "EAB2_OPT_TESTS checks=115 failed=1 detail=LP result failed original-model certificate",
+      "seconds": 3.980748899979517,
+      "directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\opt_mutations_stage\\unbounded_feasible_point",
+      "mutant_sha256": "b501ede08ec85448279fa7e5206290cf7b10d5e104e17fe7255a74e7dc19e140"
+    },
+    {
+      "name": "bland_anti_cycling",
+      "killed": true,
+      "semantic_contract": "Known exact cycling examples must switch to Bland and finish within the 1000-pivot test budget.",
+      "expected_diagnostic": "exact LP pivot work limit exceeded; no answer returned",
+      "exit_code": 1,
+      "last_line": "EAB2_OPT_TESTS checks=5813 failed=1 detail=exact LP pivot work limit exceeded; no answer returned",
+      "seconds": 4.037782099912874,
+      "directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\opt_mutations_stage\\bland_anti_cycling",
+      "mutant_sha256": "d9fd3c3430774362ebb80ad095eccea20d8edaf130a192e38a9e224e09b89d63"
+    }
+  ],
+  "last_line": "OPT_MUTATIONS total=5 killed=5 survived=0"
+}

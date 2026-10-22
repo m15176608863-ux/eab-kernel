@@ -1,0 +1,118 @@
+{
+  "schema": "eab2.diff.c0.v1",
+  "suite": "c0",
+  "dll": "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+  "dll_sha256": "db832290db48b6d130c7d9d1b24453356e4fbcd442a95789feeb5dee06ac3649",
+  "abi": {
+    "checks": {
+      "struct_size": [
+        248,
+        248
+      ],
+      "abi_version": [
+        1,
+        1
+      ],
+      "context_size": [
+        32,
+        32
+      ],
+      "context_options_size": [
+        16,
+        16
+      ],
+      "error_info_size": [
+        72,
+        72
+      ],
+      "binary64_bits": [
+        64,
+        64
+      ],
+      "pointer_bits": [
+        64,
+        64
+      ]
+    },
+    "supported_capabilities": 16383,
+    "unsupported_capabilities": 0,
+    "build_identity": "eab2-c3l1;compiler=MSVC-19.44.35227.0;toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20"
+  },
+  "seed": 15381184,
+  "random_generator_iterations": 128,
+  "sample_count": 4483,
+  "bit_comparisons": 6003,
+  "mismatch_count": 0,
+  "mismatches_stored": 0,
+  "operation_counts": {
+    "aabb2": 236,
+    "binary64_decode_roundtrip": 149,
+    "cross2_sign": 240,
+    "dot_sign": 374,
+    "norm_rational": 465,
+    "normalized_difference_rational": 284,
+    "orient2d": 250,
+    "ratio_rational": 323,
+    "scalar_algebraic_rational_compare": 362,
+    "scalar_algebraic_sqrt_compare": 273,
+    "scalar_rational": 499,
+    "sqrt_rational": 277,
+    "unit_rational": 377,
+    "unsupported": 1,
+    "vector_rational": 373
+  },
+  "source_counts": {
+    "boundary_matrix": 240,
+    "fixed_seed_random": 2432,
+    "invariance_exact_transform": 576,
+    "r8_frozen_projection": 53,
+    "r9_compound": 10,
+    "r9_range_policy": 20,
+    "r9_rounding_cells": 1056,
+    "r9_subnormal_sqrt": 48,
+    "r9_vectors": 48
+  },
+  "expected_status_counts": {
+    "CONSTRUCTION_RANGE": 310,
+    "INVALID_INPUT": 23,
+    "OK": 4149,
+    "UNSUPPORTED": 1
+  },
+  "source_definitions": {
+    "r9_rounding_cells": "tests/test_r9fix_construction_rounding.py::_rounding_cells",
+    "r9_subnormal_sqrt": "tests/test_r9fix_construction_rounding.py::test_r9_exact_sqrt_non_square_subnormal_certificates",
+    "r9_vectors": "tests/test_r9fix_construction_rounding.py::test_r9_norm_and_unit_round_exact_final_components",
+    "r9_range_policy": "tests/test_r9fix_construction_rounding.py::test_r9_constructor_range_policy_is_explicit",
+    "r9_compound": "tests/test_r9fix_compound_construction.py",
+    "r8_frozen_projection": "tests/test_r8fix_frozen.py (numeric closed forms only, not geometry/jet coverage)",
+    "boundary_matrix": "C0 binary64, exponent, binade, invalid-input and asymmetric geometry matrix",
+    "fixed_seed_random": "random.Random(0xEAB2C0); finite binary64 bit strings and exact rational values",
+    "invariance_exact_transform": "same RNG stream after random corpus; rational SO(2), positive scaling, large translation; exact transformed-input Python oracle"
+  },
+  "source_hashes_for_traceability_only": {
+    "src/eab/construction.py": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src/eab/kernel2d/geom.py": "6840bdc5b1607db5549b8e3e849340df3ce3a1afe4755f23b7ba7dc1b2993a71",
+    "tests/test_r9fix_construction_rounding.py": "73c78d7e8cd8f21e317493afd6eb7e4548f433ec9341920896a4f1325b4762b6",
+    "tests/test_r9fix_compound_construction.py": "9cc4fbcdd1977a1a7539f453f430be5144b74fb4f005a331881031f06f6af104",
+    "tests/test_r8fix_frozen.py": "f3e404abcea1cb1306b4f387951ee9386ecb34f8f5d80f069fd9ff0c9f3f3e1c"
+  },
+  "timing_seconds": {
+    "corpus_generation": 0.017654399969615042,
+    "python_oracle": 0.30408060003537685,
+    "ctypes_batch_including_c_abi_and_core": 0.2555742999538779,
+    "total_before_json_write": 0.6086316000437364
+  },
+  "independence": "Python expectations use only existing src/eab and stdlib; ctypes only obtains actual results.",
+  "limits": [
+    "No performance gate or sample quota.",
+    "C0 numeric closed forms from frozen tests do not claim geometry or Dual coverage.",
+    "Decode is checked through roundtrip and exact-derived predicate/construction results; no exact-string export.",
+    "Rotation/translation/scaling cases transform exact rationals; no bit invariance is claimed for rounded floating transformations or rotated AABB bounds.",
+    "Successful numerical zero is canonical +0 except explicitly allowed negative underflow.",
+    "This suite is not fresh-tree validation or independent adversarial milestone review."
+  ],
+  "failures": [],
+  "last_line": "EAB2_DIFF samples=4483 bits=6003 mismatches=0 status=PASS"
+}

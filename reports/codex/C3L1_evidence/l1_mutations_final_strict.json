@@ -1,0 +1,57 @@
+{
+  "schema": "eab2.c3l1.internal_mutations.v1",
+  "source_sha256": "a4a0963176e50231d71d39236909db75dd6725b3ea2540eeed4b4b180fcaeac4",
+  "mutants": [
+    {
+      "name": "point_boundary_collinearity",
+      "source_replacements": 1,
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_red": true,
+      "expected_semantic_failure": "regression a analytic normals",
+      "original_last_line": "EAB2_L1_TESTS checks=2 failed=1 detail=regression a analytic normals",
+      "diff": "reports\\codex\\C3L1_evidence\\tmp\\l1_mutations_final_strict\\tmp\\l1_mutations\\point_boundary_collinearity\\mutation.diff"
+    },
+    {
+      "name": "actual_twist_rotation",
+      "source_replacements": 1,
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_red": true,
+      "expected_semantic_failure": "regression e same pair edge plus true VV",
+      "original_last_line": "EAB2_L1_TESTS checks=28 failed=1 detail=regression e same pair edge plus true VV",
+      "diff": "reports\\codex\\C3L1_evidence\\tmp\\l1_mutations_final_strict\\tmp\\l1_mutations\\actual_twist_rotation\\mutation.diff"
+    },
+    {
+      "name": "strict_lock_cell",
+      "source_replacements": 1,
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_red": true,
+      "expected_semantic_failure": "pairwise removable union has seam",
+      "original_last_line": "EAB2_L1_TESTS checks=384 failed=1 detail=pairwise removable union has seam",
+      "diff": "reports\\codex\\C3L1_evidence\\tmp\\l1_mutations_final_strict\\tmp\\l1_mutations\\strict_lock_cell\\mutation.diff"
+    },
+    {
+      "name": "flat_interior_retention",
+      "source_replacements": 1,
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_red": true,
+      "expected_semantic_failure": "flat interior source not force point",
+      "original_last_line": "EAB2_L1_TESTS checks=42 failed=1 detail=flat interior source not force point",
+      "diff": "reports\\codex\\C3L1_evidence\\tmp\\l1_mutations_final_strict\\tmp\\l1_mutations\\flat_interior_retention\\mutation.diff"
+    },
+    {
+      "name": "lock_original_ear_products",
+      "source_replacements": 1,
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_red": true,
+      "expected_semantic_failure": "lock keeps unmerged ear-product cell witnesses",
+      "original_last_line": "EAB2_L1_TESTS checks=381 failed=1 detail=lock keeps unmerged ear-product cell witnesses",
+      "diff": "reports\\codex\\C3L1_evidence\\tmp\\l1_mutations_final_strict\\tmp\\l1_mutations\\lock_original_ear_products\\mutation.diff"
+    }
+  ],
+  "status": "GREEN"
+}
