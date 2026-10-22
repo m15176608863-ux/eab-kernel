@@ -1,5 +1,5 @@
 @echo off
-rem WO-C0: pinned VS2022 Community CMake/Ninja, MSVC 14.44.35207 x64.
+rem WO-C1E: pinned VS2022 Community CMake/Ninja, MSVC 14.44.35207 x64.
 rem Pure ASCII. No clean/delete option; build products remain under eab2/build.
 setlocal
 set "VSDIR=C:\Program Files\Microsoft Visual Studio\2022\Community"
@@ -13,7 +13,7 @@ set "PATH=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer;%PATH%"
 call "%VSDIR%\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.44.35207
 if errorlevel 1 exit /b %errorlevel%
 set "VSLANG=1033"
-set "TEMP=%~dp0..\reports\codex\C0_evidence\tmp"
+set "TEMP=%~dp0..\reports\codex\C1E_evidence\tmp"
 set "TMP=%TEMP%"
 if not exist "%TEMP%" mkdir "%TEMP%"
 cd /d "%~dp0"
@@ -33,4 +33,8 @@ if errorlevel 1 exit /b %errorlevel%
 build\eab2_test_c_header.exe
 if errorlevel 1 exit /b %errorlevel%
 build\eab2_test_c_header_static.exe
+if errorlevel 1 exit /b %errorlevel%
+build\eab2_test_geometry2.exe
+if errorlevel 1 exit /b %errorlevel%
+build\eab2_test_geometry2_local.exe
 exit /b %errorlevel%

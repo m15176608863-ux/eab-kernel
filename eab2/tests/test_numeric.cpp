@@ -160,6 +160,14 @@ void predicates_and_aabb() {
 }
 
 void input_and_dispatch() {
+    fails(5, [&] { parse_rational("1/" + std::string(4096, '9')); }, "decimal parse work limit before bigint");
+    bool underflow = false;
+    check(evaluate(1, 2, {power(-1075).canonical()}, true, &underflow)[0] == 0 && underflow,
+          "underflow distinct from exact zero");
+    check(evaluate(1, 2, {"0/1"}, true, &underflow)[0] == 0 && !underflow,
+          "underflow status resets for exact zero");
+    check(evaluate(2, 2, {(-power(-1075)).canonical()}, true, &underflow)[0] == negative_mask && underflow,
+          "negative algebraic underflow carries sign and status");
     check(parse_rational("-13/17") == Rational(Int(-13), Int(17)), "canonical rational parse");
     for (const auto* invalid : {"1", "1/0", "1/-2", "2/4", "0/2", "-0/1", "+1/2", "01/2", "1/02", "1 /2", "1/2/3", "/1"})
         fails(1, [&] { parse_rational(invalid); }, "malformed canonical rational");
@@ -177,11 +185,42 @@ void input_and_dispatch() {
     fails(1, [&] { evaluate(1, 3, {"1/1"}, false); }, "invalid encoding");
     fails(3, [&] { evaluate(99, 2, {"1/1"}, false); }, "unsupported operation");
 }
+void integer_budget_contract() {
+    check(eab2::exact::integer_limit_bits == 0, "C0 arithmetic has no hidden C1 budget");
+    {
+        eab2::exact::IntegerLimitScope scope(32);
+        {
+            eab2::exact::IntegerLimitScope larger(65536);
+            check(eab2::exact::integer_limit_bits == 32, "nested larger bit budget cannot relax outer scope");
+            eab2::exact::IntegerLimitScope unlimited(0);
+            check(eab2::exact::integer_limit_bits == 32, "nested zero cannot disable outer scope");
+            eab2::exact::IntegerLimitScope smaller(16);
+            check(eab2::exact::integer_limit_bits == 16, "nested tighter bit budget applies");
+        }
+        check(eab2::exact::integer_limit_bits == 32, "nested bit scopes restore outer budget");
+        bool rejected = false;
+        try { const auto ignored = Int(1) << 33; (void)ignored; }
+        catch (const eab2::exact::ResourceLimit&) { rejected = true; }
+        check(rejected, "shift preflight bit budget");
+        rejected = false;
+        try { const auto x = Int(1) << 20; const auto ignored = x * x; (void)ignored; }
+        catch (const eab2::exact::ResourceLimit&) { rejected = true; }
+        check(rejected, "integer product preflight bit budget");
+        rejected = false;
+        try { const Rational x(Int(1) << 20); const auto ignored = x * x; (void)ignored; }
+        catch (const eab2::exact::ResourceLimit&) { rejected = true; }
+        check(rejected, "rational product preflight bit budget");
+        check(Rational(3) + Rational(5) == Rational(8), "budget keeps exact small arithmetic");
+    }
+    check(eab2::exact::integer_limit_bits == 0 && (Int(1) << 100).bit_length() == 101,
+          "exception and scope leave C0 arithmetic contract unchanged");
+}
+
 } // namespace
 
 int main() {
     try {
-        midpoint_matrix(); exact_and_construction(); predicates_and_aabb(); input_and_dispatch();
+        midpoint_matrix(); exact_and_construction(); predicates_and_aabb(); input_and_dispatch(); integer_budget_contract();
         std::cout << "EAB2_NUMERIC_TESTS checks=" << checks << " failed=0\n";
         return 0;
     } catch (const std::exception& error) {

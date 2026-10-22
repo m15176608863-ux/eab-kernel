@@ -43,5 +43,6 @@ Aabb2 exact_aabb2(const std::vector<Point2>& points);
 
 // Test-only dispatcher used by the DLL test bridge; no product numeric ABI.
 std::vector<std::uint64_t> evaluate(std::uint32_t operation, std::uint32_t encoding,
-                                  const std::vector<std::string>& values, bool allow_underflow);
+                                  const std::vector<std::string>& values, bool allow_underflow,
+                                  bool* underflow_zero = nullptr);
 } // namespace eab2::numeric

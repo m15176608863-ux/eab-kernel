@@ -1,0 +1,49 @@
+{
+  "schema": "eab2.c1.generated.v1",
+  "seed": 20261022,
+  "requested_legal_cases": 100,
+  "complete": true,
+  "status": "PASS",
+  "completed_cases": 100,
+  "mismatches": [],
+  "statistics": {
+    "attempts": 100,
+    "accepted": 100,
+    "rejected": {},
+    "family_counts": {
+      "collinear": 20,
+      "one_ulp_gap": 20,
+      "one_ulp_overlap": 20,
+      "near_parallel": 18,
+      "narrow_edge": 18,
+      "extreme_exponent": 2,
+      "tight_seam": 1,
+      "isolated_contact": 1
+    },
+    "known_origin_states": {
+      "0": 42,
+      "-1": 20,
+      "1": 38
+    }
+  },
+  "input_chunks": [
+    {
+      "path": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\generator_smoke_r1\\inputs_001.json.gz",
+      "count": 100,
+      "sha256": "9cef906205cc53bfabab6fed3dc7ac844347a9cb73590d4f365b9d088dd9148b"
+    }
+  ],
+  "totals": {
+    "cpp_layer_samples_rechecked": 3256,
+    "python_layer_samples_reverse_checked": 3256,
+    "raw_sources_checked": 0,
+    "independent_sector_samples": 0
+  },
+  "comparison": "full exact canonical E/O sets, source strata, all layer states and local certificates; not just origin queries",
+  "meets_10000_case_count": false,
+  "journal": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\generator_smoke_r1\\case_results.jsonl",
+  "dll_sha256": "7d80d6344de4f944e379ade29000afcbb37ab35b60b383b09587cc86e503e7ca",
+  "build_identity": "eab2-c1;compiler=MSVC-19.44.35227.0;toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20",
+  "seconds": 3.5041454999009147,
+  "journal_sha256": "02f940ec0b3735e27868184f41691302cb148533aa4a04cf284032a0a15c9c6f"
+}

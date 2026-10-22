@@ -14,7 +14,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 import ctypes as C
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from fractions import Fraction as F
 import hashlib
 import json
@@ -424,7 +424,11 @@ def expected(case: Case) -> dict:
     except (ValueError, ZeroDivisionError):
         return {"call_status": 1, "mathematical_status": 0, "display_status": 0, "bits": []}
     outputs = result if isinstance(result, tuple) else (result,)
-    return {"call_status": 0, "mathematical_status": 1, "display_status": 1,
+    # C1E display-only refinement: Python's strict construction oracle rejects
+    # a nonzero value rounding to zero; opt-in success must identify that zero.
+    # No C++ helper participates in this expectation and no math contract changes.
+    underflow_zero = case.allow_underflow and expected(replace(case, allow_underflow=False))["call_status"] == 4
+    return {"call_status": 0, "mathematical_status": 1, "display_status": 3 if underflow_zero else 1,
             "bits": [bits(value) for value in outputs]}
 
 
@@ -470,6 +474,26 @@ def load_library(path: Path):
 
 
 def run_batch(dll, context: Context, cases: list[Case]) -> tuple[list[dict], float]:
+    # Respect deterministic C1E parsing work budgets without weakening coverage.
+    # Every selected case executes; batching is transport only.
+    groups, group, work, values = [], [], 0, 0
+    for case in cases:
+        cost = sum(len(v) ** 2 for v in case.values)
+        if group and (work + cost > 67108864 or values + len(case.values) > 65536):
+            groups.append(group)
+            group, work, values = [], 0, 0
+        group.append(case)
+        work += cost
+        values += len(case.values)
+    if group:
+        groups.append(group)
+    if len(groups) > 1:
+        results, elapsed = [], 0.0
+        for group in groups:
+            rows, seconds = run_batch(dll, context, group)
+            results.extend(rows)
+            elapsed += seconds
+        return results, elapsed
     inputs = (NumericInput * len(cases))()
     outputs = (NumericOutput * len(cases))()
     text_arrays, byte_strings, buffers = [], [], []

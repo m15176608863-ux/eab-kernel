@@ -37,13 +37,33 @@ extern "C" {
 #define EAB2_DISPLAY_NOT_AVAILABLE UINT32_C(0)
 #define EAB2_DISPLAY_VALID UINT32_C(1)
 #define EAB2_DISPLAY_RANGE UINT32_C(2)
+#define EAB2_DISPLAY_UNDERFLOW_ZERO UINT32_C(3)
 
 #define EAB2_CAP_CONTEXT UINT64_C(1)
 #define EAB2_CAP_TEST_NUMERIC UINT64_C(2)
+#define EAB2_CAP_BODY2 UINT64_C(4)
+#define EAB2_CAP_ENTRANCE2 UINT64_C(8)
+#define EAB2_CAP_QUERY2 UINT64_C(16)
+#define EAB2_CAP_EXPORT_EXACT UINT64_C(32)
+#define EAB2_CAP_LOCAL2 UINT64_C(64)
+#define EAB2_CAP_TEST_EXACT2 UINT64_C(128)
+#define EAB2_CAP_LIMITS2 UINT64_C(256)
 #define EAB2_CAP_RHO UINT64_C(65536)
 #define EAB2_CAP_SE2 UINT64_C(131072)
 #define EAB2_CAP_LP2 UINT64_C(262144)
 #define EAB2_HANDLE_CONTEXT UINT32_C(1)
+#define EAB2_HANDLE_BODY2 UINT32_C(2)
+#define EAB2_HANDLE_ENTRANCE2 UINT32_C(3)
+#define EAB2_HANDLE_RESULT UINT32_C(4)
+#define EAB2_BODY_OUTSIDE UINT32_C(0)
+#define EAB2_BODY_CONTACT UINT32_C(1)
+#define EAB2_BODY_OVERLAP UINT32_C(2)
+#define EAB2_TOPOLOGY_OUTSIDE UINT32_C(0)
+#define EAB2_TOPOLOGY_BOUNDARY UINT32_C(1)
+#define EAB2_TOPOLOGY_INTERIOR UINT32_C(2)
+#define EAB2_ENTRANCE_NO_MERGE UINT32_C(1)
+#define EAB2_ENTRANCE_NO_COMPACT UINT32_C(2)
+#define EAB2_ENTRANCE_NO_CACHE UINT32_C(4)
 
 typedef uint32_t eab2_call_status;
 
@@ -96,6 +116,78 @@ EAB2_API eab2_call_status eab2_context_destroy(eab2_context context);
 EAB2_API eab2_call_status eab2_context_get_error(
     eab2_context context, eab2_error_info* info,
     char* message, uint64_t capacity, uint64_t* required);
+
+
+/* Positive explicit values only; query defaults before configuration. */
+typedef struct eab2_context_limits2 {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t max_work_units; uint64_t max_elements; uint64_t max_integer_bits;
+} eab2_context_limits2;
+EAB2_API eab2_call_status eab2_context_get_limits2(eab2_context context, eab2_context_limits2* output);
+EAB2_API eab2_call_status eab2_context_configure_limits2(eab2_context context, const eab2_context_limits2* input);
+
+/* C1 working interface. Tokens share a layout, but their types are checked. */
+typedef eab2_context eab2_body2;
+typedef eab2_context eab2_entrance2;
+typedef eab2_context eab2_result;
+typedef struct eab2_point2_bits { uint64_t x_bits; uint64_t y_bits; } eab2_point2_bits;
+typedef struct eab2_body2_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t vertex_count; uint64_t vertex_stride;
+    const eab2_point2_bits* vertices;
+    uint32_t flags; uint32_t reserved;
+} eab2_body2_input;
+typedef struct eab2_entrance2_options {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t flags; uint32_t reserved;
+} eab2_entrance2_options;
+typedef struct eab2_query2_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t point_count; uint64_t point_stride;
+    const eab2_point2_bits* points;
+} eab2_query2_input;
+typedef struct eab2_query2_item {
+    uint32_t call_status; uint32_t mathematical_status;
+    uint32_t body_state; uint32_t topology_state;
+} eab2_query2_item;
+typedef struct eab2_query2_output {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t item_capacity; uint64_t item_stride; uint64_t item_count;
+    eab2_query2_item* items;
+} eab2_query2_output;
+typedef struct eab2_exact_result {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t call_status; uint32_t mathematical_status;
+    eab2_result result;
+    const char* data; uint64_t byte_count;
+} eab2_exact_result;
+typedef struct eab2_c1_abi_info {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t body2_input_size; uint32_t entrance2_options_size;
+    uint32_t query2_input_size; uint32_t query2_item_size;
+    uint32_t query2_output_size; uint32_t exact_result_size;
+    uint32_t point2_bits_size; uint32_t reserved;
+} eab2_c1_abi_info;
+EAB2_API eab2_call_status eab2_get_c1_abi_info(eab2_c1_abi_info* info);
+EAB2_API eab2_call_status eab2_body2_create(eab2_context context,
+    const eab2_body2_input* input, eab2_body2* output);
+EAB2_API eab2_call_status eab2_body2_destroy(eab2_context context, eab2_body2 body);
+EAB2_API eab2_call_status eab2_entrance2_create(eab2_context context,
+    eab2_body2 a, eab2_body2 b, const eab2_entrance2_options* options, eab2_entrance2* output);
+EAB2_API eab2_call_status eab2_entrance2_destroy(eab2_context context, eab2_entrance2 entrance);
+/* Both states are returned together; no single inside Boolean substitutes for either. */
+EAB2_API eab2_call_status eab2_query2_batch(eab2_context context, eab2_entrance2 entrance,
+    const eab2_query2_input* input, eab2_query2_output* output);
+EAB2_API eab2_call_status eab2_membership2_batch(eab2_context context, eab2_entrance2 entrance,
+    const eab2_query2_input* input, eab2_query2_output* output);
+EAB2_API eab2_call_status eab2_topology2_batch(eab2_context context, eab2_entrance2 entrance,
+    const eab2_query2_input* input, eab2_query2_output* output);
+/* UTF-8 JSON, byte_count excludes terminating NUL. Valid until result/context destroy. */
+EAB2_API eab2_call_status eab2_result_export_exact(eab2_context context,
+    eab2_entrance2 entrance, eab2_exact_result* output);
+EAB2_API eab2_call_status eab2_local_origin2_exact(eab2_context context,
+    eab2_entrance2 entrance, eab2_exact_result* output);
+EAB2_API eab2_call_status eab2_result_destroy(eab2_context context, eab2_result result);
 
 #ifdef __cplusplus
 }

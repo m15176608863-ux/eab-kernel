@@ -1,0 +1,28 @@
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.14.32
+** Copyright (c) 2025 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+cmake version 3.31.6-msvc6
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+1.12.1
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe
+-- Configuring done (0.0s)
+cmd : CMake Error at CMakeLists.txt:87 (add_executable):
+所在位置 行:2 字符: 161
++ ... | Out-Null; cmd /c eab2\build_eab2.bat > reports/codex/C1E_evidence/a ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (CMake Error at ...dd_executable)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  Cannot find source file:
+
+    tests/test_geometry2.cpp
+
+
+CMake Error at CMakeLists.txt:87 (add_executable):
+  No SOURCES given to target: eab2_test_geometry2
+
+
+CMake Generate step failed.  Build files cannot be regenerated correctly.

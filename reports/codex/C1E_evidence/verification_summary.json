@@ -1,0 +1,249 @@
+{
+  "schema": "eab2.c1e.delivery.v1",
+  "status": "C1E_PARTIAL",
+  "author_verification_pass": true,
+  "acceptance_complete": false,
+  "pending_external": [
+    "Claude 指派的一路非作者对抗核查（0 critical / 0 major）",
+    "所有者安排的新鲜 Git 工作树复现"
+  ],
+  "baseline_full": "NOT_RUN: opening baseline was fast only; final full does not retroactively replace it",
+  "base_commit": "8269d1d5f4896e74b5186583f9784d700a189a2c",
+  "source_is_uncommitted": true,
+  "dll_sha256": "dd64762305f62b56b3aa985f1988b36bc619d1dbc367942ae6a9c40fca66dbf8",
+  "all_final_dll_hashes_equal_live": true,
+  "cpp_six_suites_pass": true,
+  "cpp_last_lines": [
+    "EAB2_NUMERIC_TESTS checks=558 failed=0",
+    "ABI_TESTS: 764 assertions, 0 failures",
+    "C_HEADER_PRODUCTION_DLL checks=7 failures=0",
+    "C_HEADER_STATIC checks=7 failures=0",
+    "EAB2_GEOMETRY2_TESTS checks=700 failed=0",
+    "EAB2_LOCAL_TESTS checks=233 failed=0"
+  ],
+  "ctest_six_pass": true,
+  "c0_mismatches": 0,
+  "delivery_audit_status": "PASS",
+  "formal_named": {
+    "completed": 657,
+    "mismatches": 0,
+    "metamorphic": 17
+  },
+  "generated": {
+    "attempts": 10079,
+    "accepted": 10000,
+    "completed": 10000,
+    "mismatches": 0
+  },
+  "local_contact_sources": {
+    "records": 114,
+    "pairs": 605,
+    "sources": 7197
+  },
+  "python_fast": {
+    "audit": "GREEN",
+    "complete": true,
+    "collected": 8690,
+    "shards": [
+      {
+        "command": [
+          "C:\\Program Files\\Python312\\python.exe",
+          "-X",
+          "utf8",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-p",
+          "h1_execution_plugin",
+          "@D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_fast\\shard_1_nodes.txt",
+          "--basetemp",
+          "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_fast\\pytest_1",
+          "--durations=0"
+        ],
+        "exit_code": 0,
+        "seconds": 246.625,
+        "last_line": "8690 passed in 239.80s (0:03:59)",
+        "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_fast\\shard_1.txt",
+        "dispatched": 8690,
+        "collected": 8690,
+        "executed": 8690,
+        "complete": true,
+        "node_sets_equal": true,
+        "skip_count": 0,
+        "failed_count": 0
+      }
+    ],
+    "static": null,
+    "module_coverage_complete": true,
+    "elapsed_seconds": 253.03200000000652,
+    "source": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_fast\\source",
+    "temp": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_fast",
+    "export_changed": [],
+    "live_tree_changed": [],
+    "fresh_git_checkout": false,
+    "version": "h1-gates-1"
+  },
+  "python_full": {
+    "audit": "GREEN",
+    "complete": true,
+    "collected": 14666,
+    "shards": [
+      {
+        "command": [
+          "C:\\Program Files\\Python312\\python.exe",
+          "-X",
+          "utf8",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-p",
+          "h1_execution_plugin",
+          "@D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_1_nodes.txt",
+          "--basetemp",
+          "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\pytest_1",
+          "--durations=0",
+          "--runslow"
+        ],
+        "exit_code": 0,
+        "seconds": 899.3279999999795,
+        "last_line": "3667 passed in 879.39s (0:14:39)",
+        "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_1.txt",
+        "dispatched": 3667,
+        "collected": 3667,
+        "executed": 3667,
+        "complete": true,
+        "node_sets_equal": true,
+        "skip_count": 0,
+        "failed_count": 0
+      },
+      {
+        "command": [
+          "C:\\Program Files\\Python312\\python.exe",
+          "-X",
+          "utf8",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-p",
+          "h1_execution_plugin",
+          "@D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_2_nodes.txt",
+          "--basetemp",
+          "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\pytest_2",
+          "--durations=0",
+          "--runslow"
+        ],
+        "exit_code": 0,
+        "seconds": 759.265999999945,
+        "last_line": "3667 passed in 738.89s (0:12:18)",
+        "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_2.txt",
+        "dispatched": 3667,
+        "collected": 3667,
+        "executed": 3667,
+        "complete": true,
+        "node_sets_equal": true,
+        "skip_count": 0,
+        "failed_count": 0
+      },
+      {
+        "command": [
+          "C:\\Program Files\\Python312\\python.exe",
+          "-X",
+          "utf8",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-p",
+          "h1_execution_plugin",
+          "@D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_3_nodes.txt",
+          "--basetemp",
+          "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\pytest_3",
+          "--durations=0",
+          "--runslow"
+        ],
+        "exit_code": 0,
+        "seconds": 1237.4839999999385,
+        "last_line": "3666 passed in 1226.93s (0:20:26)",
+        "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_3.txt",
+        "dispatched": 3666,
+        "collected": 3666,
+        "executed": 3666,
+        "complete": true,
+        "node_sets_equal": true,
+        "skip_count": 0,
+        "failed_count": 0
+      },
+      {
+        "command": [
+          "C:\\Program Files\\Python312\\python.exe",
+          "-X",
+          "utf8",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-p",
+          "h1_execution_plugin",
+          "@D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_4_nodes.txt",
+          "--basetemp",
+          "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\pytest_4",
+          "--durations=0",
+          "--runslow"
+        ],
+        "exit_code": 0,
+        "seconds": 715.1719999999041,
+        "last_line": "3666 passed in 695.84s (0:11:35)",
+        "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\shard_4.txt",
+        "dispatched": 3666,
+        "collected": 3666,
+        "executed": 3666,
+        "complete": true,
+        "node_sets_equal": true,
+        "skip_count": 0,
+        "failed_count": 0
+      }
+    ],
+    "static": {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/check_exact_construction.py"
+      ],
+      "exit_code": 0,
+      "seconds": 120.06299999996554,
+      "last_line": "exact construction AST gate: 0 violation(s)",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\exact_construction.txt"
+    },
+    "module_coverage_complete": true,
+    "elapsed_seconds": 1363.9679999999935,
+    "source": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final\\source",
+    "temp": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\c1e_final",
+    "export_changed": [],
+    "live_tree_changed": [],
+    "fresh_git_checkout": false,
+    "version": "h1-gates-1"
+  },
+  "scale_report_only": {
+    "complete": true,
+    "selected": 55,
+    "measured": 55,
+    "cpp_errors": 0
+  },
+  "not_claimed": [
+    "fresh Git worktree",
+    "Claude independent review",
+    "all-input mathematical proof",
+    "C3 mechanics or Shi classification",
+    "production integration",
+    "isolated performance benchmark"
+  ]
+}

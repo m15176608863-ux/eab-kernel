@@ -1,0 +1,61 @@
+{
+  "commands": [
+    {
+      "name": "audit_build06",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "tools/eab2_audit.py",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\abi\\delivery_audit_build06.json"
+      ],
+      "returncode": 1,
+      "last_line": "authored-header dependency gap: D:\\eab-wt\\cx-c0\\eab2\\tests\\test_geometry2_local.cpp: ['D:\\\\eab-wt\\\\cx-c0\\\\eab2\\\\build\\\\generated\\\\build_identity.hpp']",
+      "log": "reports\\codex\\C1E_evidence\\abi\\audit_build06.log"
+    },
+    {
+      "name": "c0_diff_build06",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "tools/eab2_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\abi\\c0_diff_build06.json"
+      ],
+      "returncode": 0,
+      "last_line": "EAB2_DIFF samples=4483 bits=6003 mismatches=0 status=PASS",
+      "log": "reports\\codex\\C1E_evidence\\abi\\c0_diff_build06.log"
+    },
+    {
+      "name": "ctest_build06",
+      "command": [
+        "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\ctest.exe",
+        "--test-dir",
+        "eab2/build",
+        "--output-on-failure"
+      ],
+      "returncode": 0,
+      "last_line": "Total Test time (real) =   0.21 sec",
+      "log": "reports\\codex\\C1E_evidence\\abi\\ctest_build06.log"
+    },
+    {
+      "name": "audit_build06_final",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "tools/eab2_audit.py",
+        "--output",
+        "reports/codex/C1E_evidence/abi/delivery_audit_build06_final.json"
+      ],
+      "returncode": 0,
+      "last_line": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=13",
+      "log": "reports/codex/C1E_evidence/abi/audit_build06_final.log"
+    }
+  ],
+  "dll_sha256": "dd64762305f62b56b3aa985f1988b36bc619d1dbc367942ae6a9c40fca66dbf8"
+}
