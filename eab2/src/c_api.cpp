@@ -8,6 +8,8 @@
 #include "numeric.hpp"
 #include "l1.hpp"
 #include "opt.hpp"
+#include "statics.hpp"
+#include "critical.hpp"
 
 #include <algorithm>
 #include <atomic>
@@ -97,7 +99,8 @@ template<class T> uint32_t header(const T* value) noexcept {
 uint64_t capabilities() noexcept {
     uint64_t result = EAB2_CAP_CONTEXT | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 |
         EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2 |
-        EAB2_CAP_ASSEMBLY2 | EAB2_CAP_CONTACTSET2 | EAB2_CAP_LOCK2 | EAB2_CAP_MOBILITY2;
+        EAB2_CAP_ASSEMBLY2 | EAB2_CAP_CONTACTSET2 | EAB2_CAP_LOCK2 | EAB2_CAP_MOBILITY2 |
+        EAB2_CAP_LIMIT2 | EAB2_CAP_CRITICAL_PARAMETER;
 #ifdef EAB2_ENABLE_TEST_API
     result |= EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_TEST_OPT;
 #endif
@@ -861,3 +864,104 @@ extern "C" EAB2_API eab2_call_status eab2_test_context_rendezvous(eab2_context c
     });
 }
 #endif
+
+namespace {
+uint32_t l3_math(const std::optional<std::string>& name) {
+    if (name && *name == "INFEASIBLE") return EAB2_MATH_INFEASIBLE;
+    if (name && *name == "UNBOUNDED") return EAB2_MATH_UNBOUNDED;
+    return l1_math(name);
+}
+uint32_t l3_status(const std::string& name) {
+    if (name == "INVALID_INPUT") return EAB2_INVALID_INPUT;
+    if (name == "UNSUPPORTED") return EAB2_UNSUPPORTED;
+    if (name == "RESOURCE_LIMIT") return EAB2_RESOURCE_LIMIT;
+    if (name == "CONSTRUCTION_RANGE") return EAB2_CONSTRUCTION_RANGE;
+    if (name == "CANCELLED") return EAB2_CANCELLED;
+    return EAB2_INTERNAL_ERROR;
+}
+uint32_t decode_parameter(ContextState& state, uint64_t bits, const char* field,
+                          eab2::exact::Rational& value) {
+    try { value = eab2::numeric::decode_binary64(bits); }
+    catch (const eab2::numeric::Error& error) {
+        return reject_c1(state, error.code, field, error.what());
+    }
+    if (value < eab2::exact::Rational(0))
+        return reject_c1(state, EAB2_INVALID_INPUT, field, "parameter must be nonnegative");
+    return EAB2_OK;
+}
+uint32_t decode_loads(ContextState& state, const eab2::contact::ContactSet2& contacts,
+                      uint64_t count, uint64_t stride, const eab2_body_load2* input,
+                      eab2::statics::Loads2& loads) {
+    if (stride != sizeof(eab2_body_load2) || !c1_extent(count, stride) ||
+        count != contacts.assembly.bodies.size() || (count && !input))
+        return reject_c1(state, EAB2_INVALID_INPUT, "loads", "load count/stride/pointer must match assembly bodies");
+    if (count > state.limits.max_elements)
+        return reject_c1(state, EAB2_RESOURCE_LIMIT, "loads", "load count limit exceeded");
+    loads.resize(static_cast<size_t>(count));
+    for (size_t i = 0; i < loads.size(); ++i) {
+        try {
+            for (size_t k = 0; k < 3; ++k) {
+                loads[i].dead[k] = eab2::numeric::decode_binary64(input[i].dead_bits[k]);
+                loads[i].live[k] = eab2::numeric::decode_binary64(input[i].live_bits[k]);
+            }
+        } catch (const eab2::numeric::Error& error) {
+            return reject_c1(state, error.code, "loads", error.what(), i);
+        }
+    }
+    return EAB2_OK;
+}
+}
+extern "C" EAB2_API eab2_call_status eab2_get_c3l3_abi_info(eab2_c3l3_abi_info* info) {
+    const auto status = header(info);
+    if (status != EAB2_OK) return status;
+    if (info->reserved) return EAB2_INVALID_INPUT;
+    *info = {sizeof(eab2_c3l3_abi_info), EAB2_ABI_VERSION, sizeof(eab2_body_load2),
+        sizeof(eab2_limit2_input), sizeof(eab2_critical_parameter_input), 0};
+    return EAB2_OK;
+}
+extern "C" EAB2_API eab2_call_status eab2_solve_limit2(eab2_context context,
+    eab2_contact_set2 contacts, const eab2_limit2_input* input, eab2_exact_result* output) {
+    return c1_call(context, [&](ContextState& state) {
+        const auto* found = object(state, context, contacts, EAB2_HANDLE_CONTACTSET2);
+        if (!found) return reject_c1(state, EAB2_INVALID_HANDLE, "contacts", "invalid contact set handle");
+        const auto in_status = header(input), out_status = header(output);
+        if (in_status != EAB2_OK) return reject_c1(state, in_status, "input", "invalid limit input header");
+        if (out_status != EAB2_OK) return reject_c1(state, out_status, "output", "invalid exact result header");
+        eab2::exact::Rational mu;
+        const auto parameter_status = decode_parameter(state, input->mu_bits, "mu", mu);
+        if (parameter_status != EAB2_OK) return parameter_status;
+        eab2::statics::Loads2 loads;
+        const auto decoded = decode_loads(state, *found->contacts, input->body_count, input->body_stride, input->loads, loads);
+        if (decoded != EAB2_OK) return decoded;
+        const auto result = eab2::statics::limit_load_ideal_exact_2d(*found->contacts, loads, mu);
+        if (result.call_status != "OK")
+            return reject_c1(state, l3_status(result.call_status), "limit", result.reason.value_or("limit query failed").c_str());
+        return save_exact(state, context, eab2::statics::export_exact(result), l3_math(result.mathematical_status), output);
+    });
+}
+extern "C" EAB2_API eab2_call_status eab2_critical_parameter(eab2_context context,
+    eab2_contact_set2 contacts, const eab2_critical_parameter_input* input, eab2_exact_result* output) {
+    return c1_call(context, [&](ContextState& state) {
+        const auto* found = object(state, context, contacts, EAB2_HANDLE_CONTACTSET2);
+        if (!found) return reject_c1(state, EAB2_INVALID_HANDLE, "contacts", "invalid contact set handle");
+        const auto in_status = header(input), out_status = header(output);
+        if (in_status != EAB2_OK) return reject_c1(state, in_status, "input", "invalid critical input header");
+        if (out_status != EAB2_OK) return reject_c1(state, out_status, "output", "invalid exact result header");
+        if (input->reserved)
+            return reject_c1(state, EAB2_INVALID_INPUT, "reserved", "critical reserved must be zero");
+        if (input->parameter != EAB2_PARAMETER_MU)
+            return reject_c1(state, EAB2_UNSUPPORTED, "parameter", "only mu has the required cone nesting");
+        if (input->max_steps > 4096)
+            return reject_c1(state, EAB2_RESOURCE_LIMIT, "max_steps", "binary64 refinement limit exceeded");
+        eab2::exact::Rational mu_max;
+        const auto parameter_status = decode_parameter(state, input->mu_max_bits, "mu_max", mu_max);
+        if (parameter_status != EAB2_OK) return parameter_status;
+        eab2::statics::Loads2 loads;
+        const auto decoded = decode_loads(state, *found->contacts, input->body_count, input->body_stride, input->loads, loads);
+        if (decoded != EAB2_OK) return decoded;
+        const auto result = eab2::statics::critical_parameter(*found->contacts, loads, mu_max, static_cast<size_t>(input->max_steps));
+        if (result.call_status != "OK")
+            return reject_c1(state, l3_status(result.call_status), "critical", result.reason.value_or("critical query failed").c_str());
+        return save_exact(state, context, eab2::statics::export_exact(result), l3_math(result.mathematical_status), output);
+    });
+}

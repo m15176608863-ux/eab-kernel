@@ -1,0 +1,334 @@
+{
+  "schema": "eab2.c3l3.critical_mutations.v2",
+  "root": "D:\\eab-wt\\cx-c0",
+  "source_dir": "D:\\eab-wt\\cx-c0\\eab2\\src",
+  "test_file": "D:\\eab-wt\\cx-c0\\eab2\\tests\\test_critical.cpp",
+  "output": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1",
+  "independent_adversarial_review": false,
+  "source_sha256": {
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\numeric.cpp": "5790b014ae8cc0f216c83755298ab882d7a38af4aa8e0620827a854ba9161f13",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\fp_contract.cpp": "1317819447c61bfc2edcf0254f3ad3a4fe52dd5a9b17ebc7058896ee2d4f82ff",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\geometry2.cpp": "59cbe3a1c2bec3538e443f6e30ada26cff6cef1e246f02780cace94f60e05709",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\geometry2_local.cpp": "ed41274adbc344d70339d3184411dd776b01a28cadc448c3f4db133d4443384f",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\opt.cpp": "67ab32ca678f7cd88dc5626353f700a5c2df53ddcada0fa9554e441f875c2cda",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\l1.cpp": "a4a0963176e50231d71d39236909db75dd6725b3ea2540eeed4b4b180fcaeac4",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\statics.cpp": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\critical.cpp": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+    "D:\\eab-wt\\cx-c0\\eab2\\tests\\test_critical.cpp": "3442343cf4080b469dce8df42eacea51b97dff242fa605711851bd3f5db1e24f",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\critical.hpp": "ed45ebd3ddd0bebf5a49236ed2683bf397e3d1c66e1bed3be322f2e0a24d2460",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\exact.hpp": "efbfd3e00a6587d8fbdc18d52d7de7ec84a587731887368b4bc45cf2b7d3c986",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\fp_contract.hpp": "d11260023de36cabef39e1f3861b7381a33eaa790d0bd436122c136f1eed2307",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\geometry2.hpp": "ad223e982c359d9943caf03ae263350f947ac64edc40b198f9f8d33af663d137",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\geometry2_local.hpp": "b23d3548c3596474f087ec36f3b1cf6abaf3223be93fef231d4a7a1426b77886",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\l1.hpp": "3fa883b0b6f558c1822da069f171a1ab56761c06f59da46830cd31ce31d36ec6",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\numeric.hpp": "c26650bbb27e6794dc1965dbff947a8e082da90d3238567ede99a0a1fa56bc6e",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\opt.hpp": "4a80e9dac91c7224b37f4bd10eab33c927a8a11621909416c856393ffee057e6",
+    "D:\\eab-wt\\cx-c0\\eab2\\src\\statics.hpp": "bafd34e8f8df4d9b0e1745c6cf890f2be3ae1b0b9363e9d9ea6a17385aa8a859",
+    "D:\\eab-wt\\cx-c0\\eab2\\include\\eab2\\c_api.h": "a3c023dd7e8ba180ae2a79db93a581125e6129e2ba2c3e0a43b5af2ee6b64ad2",
+    "D:\\eab-wt\\cx-c0\\eab2\\include\\eab2\\testing.h": "a26c39161533d1c658b0348d3b8adada07819c03e17e77d668fa2cdb6f3bdb03"
+  },
+  "common_build": {
+    "command": [
+      "C:\\WINDOWS\\system32\\cmd.exe",
+      "/d",
+      "/c",
+      "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\build.cmd"
+    ],
+    "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common",
+    "returncode": 0,
+    "wall_seconds": 14.492278799996711,
+    "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\compile.log",
+    "final_line": "正在生成代码...",
+    "compiler_command": "cl /Bv /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" /c \"D:\\eab-wt\\cx-c0\\eab2\\src\\numeric.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\src\\fp_contract.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\src\\geometry2.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\src\\geometry2_local.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\src\\opt.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\src\\l1.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\src\\statics.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\tests\\test_critical.cpp\""
+  },
+  "baseline": {
+    "build": {
+      "command": [
+        "C:\\WINDOWS\\system32\\cmd.exe",
+        "/d",
+        "/c",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\baseline\\build.cmd"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\baseline",
+      "returncode": 0,
+      "wall_seconds": 2.978649999946356,
+      "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\baseline\\compile.log",
+      "final_line": "critical.cpp",
+      "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\baseline\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+    },
+    "run": {
+      "command": [
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\baseline\\critical_test.exe"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\baseline",
+      "returncode": 0,
+      "wall_seconds": 2.38679180003237,
+      "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\baseline\\test.log",
+      "final_line": "C3L3_CRITICAL_OK checks=346"
+    }
+  },
+  "mutations": [
+    {
+      "name": "skip_numerator_sturm",
+      "original_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "mutated_sha256": "6dfe5d8bc5dc555e6895b773d47d7a6984fab0450fb2b9191e6cb30e0b657068",
+      "replacement": {
+        "before": "if (root_count(numerator.first, lower, upper)) return std::nullopt;",
+        "after": "if (false && root_count(numerator.first, lower, upper)) return std::nullopt;",
+        "count": 1,
+        "character_offset": 13456
+      },
+      "expected_semantic_assertion": "interior numerator roots rejected despite positive midpoint",
+      "build": {
+        "command": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/d",
+          "/c",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm\\build.cmd"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm",
+        "returncode": 0,
+        "wall_seconds": 2.985127699910663,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm\\compile.log",
+        "final_line": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm\\critical.cpp(297): note: 考虑改用 \"if constexpr\" 语句",
+        "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+      },
+      "run": {
+        "command": [
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm\\critical_test.exe"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm",
+        "returncode": 1,
+        "wall_seconds": 0.18980970000848174,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_numerator_sturm\\test.log",
+        "final_line": "C3L3_CRITICAL_FAIL checks=27 reason=interior numerator roots rejected despite positive midpoint"
+      },
+      "caught": true
+    },
+    {
+      "name": "skip_denominator_sturm",
+      "original_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "mutated_sha256": "d6965fc0f438a19df8d43147bb92b296d85872203293a68bfbd4c70704fa440a",
+      "replacement": {
+        "before": "!nonzero(reduced.first) || root_count(reduced.first, lower, upper)",
+        "after": "!nonzero(reduced.first)",
+        "count": 1,
+        "character_offset": 12945
+      },
+      "expected_semantic_assertion": "interior denominator root rejected",
+      "build": {
+        "command": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/d",
+          "/c",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_denominator_sturm\\build.cmd"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_denominator_sturm",
+        "returncode": 0,
+        "wall_seconds": 3.019753100001253,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_denominator_sturm\\compile.log",
+        "final_line": "critical.cpp",
+        "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_denominator_sturm\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+      },
+      "run": {
+        "command": [
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_denominator_sturm\\critical_test.exe"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_denominator_sturm",
+        "returncode": 1,
+        "wall_seconds": 0.19418620003852993,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\skip_denominator_sturm\\test.log",
+        "final_line": "C3L3_CRITICAL_FAIL checks=31 reason=interior denominator root rejected"
+      },
+      "caught": true
+    },
+    {
+      "name": "drop_last_step_resolution",
+      "original_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "mutated_sha256": "3df50bcf5540464d18e33fe00297397f6124ea5451b163be44d731ace7023161",
+      "replacement": {
+        "before": "const auto reason = critical_detail::binary_midpoint(lo, hi) ? \"iteration_limit\" : \"input_resolution_limit\";",
+        "after": "const auto reason = \"iteration_limit\";",
+        "count": 1,
+        "character_offset": 20689
+      },
+      "expected_semantic_assertion": "last-step resolution reason preserved",
+      "build": {
+        "command": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/d",
+          "/c",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_last_step_resolution\\build.cmd"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_last_step_resolution",
+        "returncode": 0,
+        "wall_seconds": 3.019252000027336,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_last_step_resolution\\compile.log",
+        "final_line": "critical.cpp",
+        "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_last_step_resolution\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+      },
+      "run": {
+        "command": [
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_last_step_resolution\\critical_test.exe"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_last_step_resolution",
+        "returncode": 1,
+        "wall_seconds": 1.3278898000717163,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_last_step_resolution\\test.log",
+        "final_line": "C3L3_CRITICAL_FAIL checks=196 reason=last-step resolution reason preserved"
+      },
+      "caught": true
+    },
+    {
+      "name": "accept_nonbinary_domain",
+      "original_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "mutated_sha256": "53dbb8b851095654e79f5a849a43ab755fa4afb57df3fbdac7a09c17070ee83f",
+      "replacement": {
+        "before": "mu_max < Rational(0) || !critical_detail::is_binary64(mu_max)",
+        "after": "mu_max < Rational(0)",
+        "count": 1,
+        "character_offset": 17985
+      },
+      "expected_semantic_assertion": "nonbinary64 search endpoint rejected",
+      "build": {
+        "command": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/d",
+          "/c",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\accept_nonbinary_domain\\build.cmd"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\accept_nonbinary_domain",
+        "returncode": 0,
+        "wall_seconds": 3.008100499981083,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\accept_nonbinary_domain\\compile.log",
+        "final_line": "critical.cpp",
+        "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\accept_nonbinary_domain\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+      },
+      "run": {
+        "command": [
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\accept_nonbinary_domain\\critical_test.exe"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\accept_nonbinary_domain",
+        "returncode": 1,
+        "wall_seconds": 1.3299878999823704,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\accept_nonbinary_domain\\test.log",
+        "final_line": "C3L3_CRITICAL_FAIL checks=201 reason=nonbinary64 search endpoint rejected"
+      },
+      "caught": true
+    },
+    {
+      "name": "drop_private_integer_scope",
+      "original_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "mutated_sha256": "48a017df956270513bcd4752876aaaa3e48a56b64b25e02740ed5f488f4ac473",
+      "replacement": {
+        "before": "exact::IntegerLimitScope integers(contacts.assembly.limits.max_integer_bits);",
+        "after": "// Mutant: private critical continuation lacks its integer scope.",
+        "count": 1,
+        "character_offset": 17751
+      },
+      "expected_semantic_assertion": "private critical input arithmetic observes integer budget",
+      "build": {
+        "command": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/d",
+          "/c",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_private_integer_scope\\build.cmd"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_private_integer_scope",
+        "returncode": 0,
+        "wall_seconds": 3.0123478999594226,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_private_integer_scope\\compile.log",
+        "final_line": "critical.cpp",
+        "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_private_integer_scope\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+      },
+      "run": {
+        "command": [
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_private_integer_scope\\critical_test.exe"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_private_integer_scope",
+        "returncode": 1,
+        "wall_seconds": 1.886358999996446,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\drop_private_integer_scope\\test.log",
+        "final_line": "C3L3_CRITICAL_FAIL checks=342 reason=private critical input arithmetic observes integer budget"
+      },
+      "caught": true
+    },
+    {
+      "name": "closed_no_lower_continuation",
+      "original_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "mutated_sha256": "96e6a0d80667205818948da7c0c61813c8913ea08157487b16de663f84a542ec",
+      "replacement": {
+        "before": "const bool closed = at.mathematical_status == \"UNBOUNDED\" && (candidate == Rational(0) || below.has_value());",
+        "after": "const bool closed = at.mathematical_status == \"UNBOUNDED\";",
+        "count": 1,
+        "character_offset": 16767
+      },
+      "expected_semantic_assertion": "koureas_wide_four_steps_requires_below: unbounded endpoint is not a closed threshold",
+      "build": {
+        "command": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/d",
+          "/c",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation\\build.cmd"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation",
+        "returncode": 0,
+        "wall_seconds": 2.9602441999595612,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation\\compile.log",
+        "final_line": "critical.cpp",
+        "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+      },
+      "run": {
+        "command": [
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation\\critical_test.exe"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation",
+        "returncode": 1,
+        "wall_seconds": 1.069381200009957,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation\\test.log",
+        "final_line": "C3L3_CRITICAL_FAIL checks=143 reason=koureas_wide_four_steps_requires_below: unbounded endpoint is not a closed threshold"
+      },
+      "caught": true
+    },
+    {
+      "name": "open_no_upper_ray",
+      "original_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "mutated_sha256": "a0a0d184aa34aab001d0aba92806647d28cf2182c5131a8ef65c3c89e60e08df",
+      "replacement": {
+        "before": "const bool opened = at.mathematical_status == \"OPTIMAL\" && !nonzero(zero.b) && above && candidate < hi;",
+        "after": "const bool opened = at.mathematical_status == \"OPTIMAL\" && !nonzero(zero.b) && candidate < hi;",
+        "count": 1,
+        "character_offset": 16885
+      },
+      "expected_semantic_assertion": "unreversed_open_requires_above: endpoint states cannot certify an open threshold",
+      "build": {
+        "command": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/d",
+          "/c",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray\\build.cmd"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray",
+        "returncode": 0,
+        "wall_seconds": 3.0187740001128986,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray\\compile.log",
+        "final_line": "critical.cpp",
+        "compiler_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray\\critical.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\test_critical.obj\" /Fe:critical_test.exe"
+      },
+      "run": {
+        "command": [
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray\\critical_test.exe"
+        ],
+        "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray",
+        "returncode": 1,
+        "wall_seconds": 0.994135299930349,
+        "log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray\\test.log",
+        "final_line": "C3L3_CRITICAL_FAIL checks=131 reason=unreversed_open_requires_above: endpoint states cannot certify an open threshold"
+      },
+      "caught": true
+    }
+  ],
+  "sources_unchanged": true,
+  "passed": true,
+  "final_line": "C3L3_CRITICAL_MUTATIONS_OK caught=7 escaped=0"
+}

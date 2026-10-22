@@ -1,0 +1,6 @@
+skip_numerator_sturm: CAUGHT C3L3_CRITICAL_FAIL checks=27 reason=interior numerator roots rejected despite positive midpoint
+skip_denominator_sturm: CAUGHT C3L3_CRITICAL_FAIL checks=31 reason=interior denominator root rejected
+drop_last_step_resolution: CAUGHT C3L3_CRITICAL_FAIL checks=172 reason=last-step resolution reason preserved
+accept_nonbinary_domain: CAUGHT C3L3_CRITICAL_FAIL checks=177 reason=nonbinary64 search endpoint rejected
+drop_private_integer_scope: CAUGHT C3L3_CRITICAL_FAIL checks=318 reason=private critical input arithmetic observes integer budget
+C3L3_CRITICAL_MUTATIONS_OK caught=5 escaped=0

@@ -1,0 +1,1121 @@
+{
+  "format": "tia2d.t1b.thickness.summary.v1",
+  "complete": true,
+  "source_revision": "e757883",
+  "source_pre_post_equal": true,
+  "source_sha256": {
+    "src/eab/__init__.py": "e562095b90bc1f601db6292768be73126887cbe253be81a49419ed6d90310efc",
+    "src/eab/adapters/__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
+    "src/eab/adapters/bdda2d.py": "ae69bfa5fb7d8b98911cc43881c80c0647c7018f4e76b24c537ac81da2bffafd",
+    "src/eab/adapters/bdda2d_affine.py": "8862499959b0aaa34f175eeffd50ffd2c06c3bf182c48ae51b29cd4028dab9a7",
+    "src/eab/adapters/bdda2d_motion.py": "62a022b62af8740e7812e3afcc486f657e2239329f93edb93e3496501ed02ecc",
+    "src/eab/adapters/bdda3d.py": "4a32148f3acb3fcf202d31f29a481bcf67719617968a521cd7726512cbf035c5",
+    "src/eab/adapters/tf.py": "030b834dd38a7b4e996106152a3af9fd5da705f207e4efba929dd50cf4393541",
+    "src/eab/adapters/tia2d.py": "c53ea6b7652d32dc0715e902159f36ed4450da1ce76b087e938cd597b3a57b5d",
+    "src/eab/adapters/tia3d.py": "321f9ef47d5b0f4d0a463fcba2fbde36ea7f0e3304be4b2d0bb2741020d2dfb0",
+    "src/eab/construction.py": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0",
+    "src/eab/contact_record.py": "4f9415f57204989972a4c3e6f50c0742eb53887d6cfc848bb574cc7bfc720b90",
+    "src/eab/dual.py": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5",
+    "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src/eab/kernel2d/affine_motion.py": "3bab15171bfbaffeb235f43debb166a91f008a3f2079149b6ee45bef52d441ae",
+    "src/eab/kernel2d/algebraic.py": "b5c4130b75005f0637104e806e54c14679b75769d742269e84329690ea23df38",
+    "src/eab/kernel2d/assembly.py": "1d842ac31b80229019408e28226b8214880c58b345210a9c7c4338495be2c171",
+    "src/eab/kernel2d/contacts.py": "db62916c110325232418c803eb50eba2356a34ebb744a60fa518847747a8a934",
+    "src/eab/kernel2d/covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
+    "src/eab/kernel2d/critical.py": "e6fe3c9881f57075cb20bff6893b464988fee8273423c8b8c435db4ee718b9e0",
+    "src/eab/kernel2d/entrance.py": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c",
+    "src/eab/kernel2d/erosion.py": "3db5d5a0abeab5fd0a5bfa57db0403d8faf9151c28c9003fcde5aa62b7554c6a",
+    "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src/eab/kernel2d/g0.py": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src/eab/kernel2d/geom.py": "6840bdc5b1607db5549b8e3e849340df3ce3a1afe4755f23b7ba7dc1b2993a71",
+    "src/eab/kernel2d/global_entrance.py": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9",
+    "src/eab/kernel2d/lock.py": "041839e84944804cb25002cc2a7fd5c4e362d66a0f82a7696be765aeb5af1899",
+    "src/eab/kernel2d/m5c_certificates.py": "3ff979533170748023d2f94dd9911bb155bacc32824009003e8bedb5afe978b1",
+    "src/eab/kernel2d/m5d_exit_certificate.py": "c6ec19a1511d73fcd22cf2191f6490aa40270eab030e0cd6d753cd099623f2ae",
+    "src/eab/kernel2d/mobility.py": "364305a393946235c742efbffc38651c373f6ad53c0ae4cc0df6b9d217041ed7",
+    "src/eab/kernel2d/model_robustness.py": "3f22bc9ae76ea71d5bc754e3e3d3b2d21f9e650d6b1a9a1026e887e7a9d902d7",
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
+    "src/eab/kernel2d/sensitivity.py": "94896d1db3742aba8e707a9534388b87596662a0deb4d107539fc8c9b67d8f18",
+    "src/eab/kernel2d/statics.py": "d70d12dec967d8a77160184fd6e46f805521f331851676c43e95948bc8860e06",
+    "src/eab/kernel2d/translation_certificates.py": "60f08901e81a3456b7829267852e9fd9ea7eb694d57a988e8e8fa810ef9763a4",
+    "src/eab/kernel2d/translation_space.py": "5fbf12b7d2e949718d6dbf176f1a32b7f494436b809e350b1c84f5b569afdfe3",
+    "src/eab/kernel3d/__init__.py": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a",
+    "src/eab/kernel3d/boundary.py": "e927f4297c0d756de0cfb6c683e402021b1acbd2edf1a2b5a78049347c54a102",
+    "src/eab/kernel3d/covers3.py": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6",
+    "src/eab/kernel3d/entrance3.py": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171",
+    "src/eab/kernel3d/entrance_topology.py": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
+    "src/eab/kernel3d/exact_geom.py": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
+    "src/eab/kernel3d/exact_sweep.py": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5",
+    "src/eab/kernel3d/frozen.py": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa",
+    "src/eab/kernel3d/g03.py": "be19d78c3cc409704b51b9647258e115172583b0876f5b430a6b1e54d122f6fe",
+    "src/eab/kernel3d/g03_exact.py": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22",
+    "src/eab/kernel3d/g03_exit_oracle.py": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220",
+    "src/eab/kernel3d/g03_surface_oracle.py": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0",
+    "src/eab/kernel3d/geom3.py": "504267e89dd3f9adc795dbc5bda0eb59467fa80f4b2602e4d57afdb0fdeb804d",
+    "src/eab/kernel3d/global_entrance.py": "222ed67b3c2bf7dc34bef5f2fc0ec9e96589b57e9f012a1d542aa13a68646c90",
+    "src/eab/limit.py": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f",
+    "src/eab/limit_multi.py": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65",
+    "src/eab/lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
+    "src/eab/margin.py": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720",
+    "src/eab/numeric_decode.py": "4c770ef67a572cb24c1f193e0b6ae94cef686917aeb30abcced342fec13fc11c",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src/eab/predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src/eab/rational3.py": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
+    "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src/eab/readers/bdda3d.py": "82a92dfb7cfda845423449ee8675b4c2121ed4f9b718b5d4c46db2601d279302",
+    "src/eab/readers/bdda_df.py": "d7a1ba89cb25e9cd07c1499c37019e0dd3b51d0d06e190117af5b588af9fbdd3",
+    "src/eab/readers/bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
+    "src/eab/readers/tf_probe.py": "af526bf7f81d086fb488c50e6c13b6e79c4736c8f811383eb05a4e8efe015e27",
+    "tools/tia2d_t1b_thickness.py": "b274eab288ae8e7a6c6ed205f4a4e1b5e0c7bcb58bb48070b87a99dc29c8d9b8",
+    "tools/tia2d_t1b_morphology.py": "0c4c78be16b1b14e9a32d8edced62f9185d1abd2aefe34ac91686845b75e4730"
+  },
+  "bands": [
+    {
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "phase": "0/1",
+      "tilt": "3/32",
+      "spacing": "2/1",
+      "ratio_domain": [
+        "0/1",
+        "3/16"
+      ],
+      "slopes": [
+        "1/8",
+        "1/16"
+      ],
+      "wrench_widths": [
+        "65/128",
+        "257/512"
+      ],
+      "facet_zero_boundaries": [
+        "16/65",
+        "32/257"
+      ],
+      "flat_zero_boundary": "96/1033",
+      "toothed_zero_boundary": "32/257",
+      "nonempty": true,
+      "morphology_creates_threshold_interval": [
+        "96/1033",
+        "32/257"
+      ],
+      "interval_closed": [
+        true,
+        false
+      ],
+      "zero_at_toothed_boundary_attained": true
+    },
+    {
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "phase": "0/1",
+      "tilt": "3/32",
+      "spacing": "2/1",
+      "ratio_domain": [
+        "0/1",
+        "3/16"
+      ],
+      "slopes": [
+        "1/8",
+        "1/12"
+      ],
+      "wrench_widths": [
+        "65/256",
+        "145/192"
+      ],
+      "facet_zero_boundaries": [
+        "32/65",
+        "16/145"
+      ],
+      "flat_zero_boundary": "96/1033",
+      "toothed_zero_boundary": "16/145",
+      "nonempty": true,
+      "morphology_creates_threshold_interval": [
+        "96/1033",
+        "16/145"
+      ],
+      "interval_closed": [
+        true,
+        false
+      ],
+      "zero_at_toothed_boundary_attained": true
+    },
+    {
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "phase": "0/1",
+      "tilt": "3/32",
+      "spacing": "2/1",
+      "ratio_domain": [
+        "0/1",
+        "3/16"
+      ],
+      "slopes": [
+        "7/64",
+        "5/64"
+      ],
+      "wrench_widths": [
+        "12421/16384",
+        "12373/16384"
+      ],
+      "facet_zero_boundaries": [
+        "1792/12421",
+        "1280/12373"
+      ],
+      "flat_zero_boundary": "96/1033",
+      "toothed_zero_boundary": "1280/12373",
+      "nonempty": true,
+      "morphology_creates_threshold_interval": [
+        "96/1033",
+        "1280/12373"
+      ],
+      "interval_closed": [
+        true,
+        false
+      ],
+      "zero_at_toothed_boundary_attained": true
+    },
+    {
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "phase": "0/1",
+      "tilt": "3/32",
+      "spacing": "2/1",
+      "ratio_domain": [
+        "0/1",
+        "3/16"
+      ],
+      "slopes": [
+        "1/8",
+        "1/12"
+      ],
+      "wrench_widths": [
+        "81/128",
+        "677/768"
+      ],
+      "facet_zero_boundaries": [
+        "16/81",
+        "64/677"
+      ],
+      "flat_zero_boundary": "96/1033",
+      "toothed_zero_boundary": "64/677",
+      "nonempty": true,
+      "morphology_creates_threshold_interval": [
+        "96/1033",
+        "64/677"
+      ],
+      "interval_closed": [
+        true,
+        false
+      ],
+      "zero_at_toothed_boundary_attained": true
+    },
+    {
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "phase": "0/1",
+      "tilt": "3/32",
+      "spacing": "2/1",
+      "ratio_domain": [
+        "0/1",
+        "3/16"
+      ],
+      "slopes": [
+        "5/32",
+        "1/32"
+      ],
+      "wrench_widths": [
+        "3127/4096",
+        "3079/4096"
+      ],
+      "facet_zero_boundaries": [
+        "640/3127",
+        "128/3079"
+      ],
+      "flat_zero_boundary": "96/1033",
+      "toothed_zero_boundary": "128/3079",
+      "nonempty": false,
+      "morphology_creates_threshold_interval": null,
+      "interval_closed": null,
+      "zero_at_toothed_boundary_attained": true
+    },
+    {
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "phase": "0/1",
+      "tilt": "3/32",
+      "spacing": "2/1",
+      "ratio_domain": [
+        "0/1",
+        "3/16"
+      ],
+      "slopes": [
+        "7/32",
+        "5/96"
+      ],
+      "wrench_widths": [
+        "5253/8192",
+        "21589/24576"
+      ],
+      "facet_zero_boundaries": [
+        "1792/5253",
+        "1280/21589"
+      ],
+      "flat_zero_boundary": "96/1033",
+      "toothed_zero_boundary": "1280/21589",
+      "nonempty": false,
+      "morphology_creates_threshold_interval": null,
+      "interval_closed": null,
+      "zero_at_toothed_boundary_attained": true
+    }
+  ],
+  "rows": [
+    {
+      "family_index": 0,
+      "ratio": "392183/4231168",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "34606345/2166358016",
+      "attained": true,
+      "flat_threshold": "1033/4194304",
+      "case": "thickness_00_00.json.gz",
+      "sha256": "34c5cbcebb2c91866a6813eb1c54ed12262f72c5c11b4e3af44796412d4a0d0c"
+    },
+    {
+      "family_index": 0,
+      "ratio": "96/1033",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "131/8264",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_01.json.gz",
+      "sha256": "5e31b31b965290cd0e18d3fdcdee10a579376b6a0a46fdf16d15f29fa1afb86e"
+    },
+    {
+      "family_index": 0,
+      "ratio": "26768/265481",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "393/33056",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_02.json.gz",
+      "sha256": "7e481631fdd89fa118ac70b7f54a3571ef68d47e4b23b88ceb8d2c27d1b4ba67"
+    },
+    {
+      "family_index": 0,
+      "ratio": "28864/265481",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "131/16528",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_03.json.gz",
+      "sha256": "d36ee433de34dbd722e1ece76081ac6e0446566d93216453d42357f95d566df7"
+    },
+    {
+      "family_index": 0,
+      "ratio": "30960/265481",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "131/33056",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_04.json.gz",
+      "sha256": "374e01cde679cf32be94724a519bddaa1cbd48f802164e2b9c76b0c92c1bd9db"
+    },
+    {
+      "family_index": 0,
+      "ratio": "32/257",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_05.json.gz",
+      "sha256": "83c08e344d219ba893649de104510fcbce0405344efbe87bc57aa4f765a29a1c"
+    },
+    {
+      "family_index": 0,
+      "ratio": "131329/1052672",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_06.json.gz",
+      "sha256": "085970545ff32b4821e572075a5e70cc538eb9ea665cc377332deef05618a20a"
+    },
+    {
+      "family_index": 0,
+      "ratio": "3/16",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_07.json.gz",
+      "sha256": "d58a69a7cc6924a729bac4f9ce4f345985d5dbae1781649d8afd44c54e0bd0dd"
+    },
+    {
+      "family_index": 0,
+      "ratio": "3/32",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "253/16384",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_00_08.json.gz",
+      "sha256": "c0f4cabfda9aabe17ed20ec9c563a3d8c977530499b6dc3c17a84f0680c9691f"
+    },
+    {
+      "family_index": 1,
+      "ratio": "392183/4231168",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "10832153/812384256",
+      "attained": true,
+      "flat_threshold": "1033/4194304",
+      "case": "thickness_01_00.json.gz",
+      "sha256": "c0f541bbdcb392439db34e82b06b81705277df4d6786db476d577fdc28229ea8"
+    },
+    {
+      "family_index": 1,
+      "ratio": "96/1033",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "163/12396",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_01_01.json.gz",
+      "sha256": "5290a831d6e665d65bb77fd753759f8b14dfebddeced8f7d407e2b6bbdade16e"
+    },
+    {
+      "family_index": 1,
+      "ratio": "14572/149785",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "163/16528",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_01_02.json.gz",
+      "sha256": "f4112a75c53531d7b697cf722001bb28f71391823853e12dfceba02cad51490d"
+    },
+    {
+      "family_index": 1,
+      "ratio": "15224/149785",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "163/24792",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_01_03.json.gz",
+      "sha256": "49dc1a2d1580f18191cbb4f010b11e3d82786fead6d743acaef561175cbd7c6a"
+    },
+    {
+      "family_index": 1,
+      "ratio": "15876/149785",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "163/49584",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_01_04.json.gz",
+      "sha256": "a51d71a46b208128d0961f6a19f1821605c4e35def5b030769a5c6068ff15ed8"
+    },
+    {
+      "family_index": 1,
+      "ratio": "16/145",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_01_05.json.gz",
+      "sha256": "219a5dbb757cc427a7957d8adf70e16ad95f060cf7b96208d97902730dfa9465"
+    },
+    {
+      "family_index": 1,
+      "ratio": "65681/593920",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_01_06.json.gz",
+      "sha256": "a51601627d37b5392890d36b2a3f1b977713bf5e324210b838944ad1e3530887"
+    },
+    {
+      "family_index": 1,
+      "ratio": "3/16",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_01_07.json.gz",
+      "sha256": "a7972c13ca65fd62af17ec556259cba408cace04380ee68d0c5e95b38c0b0f40"
+    },
+    {
+      "family_index": 2,
+      "ratio": "392183/4231168",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "187804927/23091085696",
+      "attained": true,
+      "flat_threshold": "1033/4194304",
+      "case": "thickness_02_00.json.gz",
+      "sha256": "a06c8c0154f3ed27668f3abe93fe4ce4a8e9b247692dd4e7730b1c88ca350b8d"
+    },
+    {
+      "family_index": 2,
+      "ratio": "96/1033",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "4201/528512",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_02_01.json.gz",
+      "sha256": "da8d1c3b1c01eaa7a618204811f3d001c16ecf6ee968b7653aa1fdb6412f9b93"
+    },
+    {
+      "family_index": 2,
+      "ratio": "1221416/12781309",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "51978973/8718859392",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_02_02.json.gz",
+      "sha256": "750961842f3b8c690969a1948bb2fa6c31ced735400703285bf665758cc07820"
+    },
+    {
+      "family_index": 2,
+      "ratio": "1255024/12781309",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "51978973/13078020224",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_02_03.json.gz",
+      "sha256": "be294ca1eeaaded4b89131f7f39888a09eabab9602f108bb434fd7b4eaf8fe99"
+    },
+    {
+      "family_index": 2,
+      "ratio": "1288632/12781309",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "51978973/26155502720",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_02_04.json.gz",
+      "sha256": "663f63a40c09727d5246303254481a5e89948b48d2ba5ed7ec8a68e556dc690d"
+    },
+    {
+      "family_index": 2,
+      "ratio": "1280/12373",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_02_05.json.gz",
+      "sha256": "4125aa7f8ae6627ebe42f0f65c0d448c7780c4cca316eb1f2c635464ec796660"
+    },
+    {
+      "family_index": 2,
+      "ratio": "5255253/50679808",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_02_06.json.gz",
+      "sha256": "271efbab3163d8068914a7a4b12f3bd37f301c763f4dfc719997e277d0b6668b"
+    },
+    {
+      "family_index": 2,
+      "ratio": "3/16",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_02_07.json.gz",
+      "sha256": "2519aee7384e1a00605f7ab9c4d26707b9f607fd8c7fa7718120671d71f6d4fb"
+    },
+    {
+      "family_index": 3,
+      "ratio": "392183/4231168",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "5286861/3247968292",
+      "attained": true,
+      "flat_threshold": "1033/4194304",
+      "case": "thickness_03_00.json.gz",
+      "sha256": "725e5840e4b64cde10402ba447077a23cf142287dae58adfd55794020b9c8021"
+    },
+    {
+      "family_index": 3,
+      "ratio": "96/1033",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "1/708",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_03_01.json.gz",
+      "sha256": "b3a9b11cdc735833e6e3cd99f1cd2a218fd3ec664b50e7903efdf974f34c7466"
+    },
+    {
+      "family_index": 3,
+      "ratio": "65272/699341",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "2031/1917260",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_03_02.json.gz",
+      "sha256": "575729563f7eda2bfde9d53f1bf3ba3064bd0c32b46264b8639bcfc983ff68cf"
+    },
+    {
+      "family_index": 3,
+      "ratio": "65552/699341",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "677/958628",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_03_03.json.gz",
+      "sha256": "d904ff1a1a6b170540540024c62b4288fd4a2317c15007c8238de413a141e1e9"
+    },
+    {
+      "family_index": 3,
+      "ratio": "65832/699341",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "677/1917252",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_03_04.json.gz",
+      "sha256": "9a3dcef4a3dc950aedc047bde32cd4082f306a94109eaebdaa3574e03385a34d"
+    },
+    {
+      "family_index": 3,
+      "ratio": "64/677",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_03_05.json.gz",
+      "sha256": "dad3e458cd536e6e5aa1455a4a821dc4ebca83513a939044f644bbb100b59ce1"
+    },
+    {
+      "family_index": 3,
+      "ratio": "262821/2772992",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_03_06.json.gz",
+      "sha256": "7ff8ddc6d416b7dffe4767696eea6f5a1f701180cbac14a369901eb491cf6998"
+    },
+    {
+      "family_index": 3,
+      "ratio": "3/16",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_03_07.json.gz",
+      "sha256": "66a693421f25778a75423121c2b51f7b46115e38ebadd973b5990b17d6753409"
+    },
+    {
+      "family_index": 4,
+      "ratio": "96/1033",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_04_00.json.gz",
+      "sha256": "04dc798ed74db603c4f01fd461f47a16e03feb396f5bba5adc16df05017488df"
+    },
+    {
+      "family_index": 4,
+      "ratio": "4635/33056",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_04_01.json.gz",
+      "sha256": "8368fb8d5d2c3645bbc0b6b37de1d389497ce2e5675937f247ccbc52a4feeb49"
+    },
+    {
+      "family_index": 4,
+      "ratio": "3/16",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_04_02.json.gz",
+      "sha256": "69a973274c6814723486feef99001ee8adfda57a8fd22511a32a9799ee684f5d"
+    },
+    {
+      "family_index": 5,
+      "ratio": "96/1033",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_05_00.json.gz",
+      "sha256": "ad794bc2c16c4711e03dfb43dfb4d4877213d704440a69384dc50bd2e5d0bf6c"
+    },
+    {
+      "family_index": 5,
+      "ratio": "4635/33056",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_05_01.json.gz",
+      "sha256": "1560dbd101c057fdef4edcffd420a2a6325371cb6773c05c91560a1d9c95816b"
+    },
+    {
+      "family_index": 5,
+      "ratio": "3/16",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "flat_threshold": "0/1",
+      "case": "thickness_05_02.json.gz",
+      "sha256": "8b73b2fa2c74d64ed8306a55c2630dc2a8fd7d08e78b65f59c7aa83f1c60db8f"
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_00.json.gz",
+      "bytes": 30544,
+      "sha256": "34c5cbcebb2c91866a6813eb1c54ed12262f72c5c11b4e3af44796412d4a0d0c"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_01.json.gz",
+      "bytes": 20088,
+      "sha256": "5e31b31b965290cd0e18d3fdcdee10a579376b6a0a46fdf16d15f29fa1afb86e"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_02.json.gz",
+      "bytes": 31277,
+      "sha256": "7e481631fdd89fa118ac70b7f54a3571ef68d47e4b23b88ceb8d2c27d1b4ba67"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_03.json.gz",
+      "bytes": 26273,
+      "sha256": "d36ee433de34dbd722e1ece76081ac6e0446566d93216453d42357f95d566df7"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_04.json.gz",
+      "bytes": 26863,
+      "sha256": "374e01cde679cf32be94724a519bddaa1cbd48f802164e2b9c76b0c92c1bd9db"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_05.json.gz",
+      "bytes": 3162,
+      "sha256": "83c08e344d219ba893649de104510fcbce0405344efbe87bc57aa4f765a29a1c"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_06.json.gz",
+      "bytes": 3633,
+      "sha256": "085970545ff32b4821e572075a5e70cc538eb9ea665cc377332deef05618a20a"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_07.json.gz",
+      "bytes": 3270,
+      "sha256": "d58a69a7cc6924a729bac4f9ce4f345985d5dbae1781649d8afd44c54e0bd0dd"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_00_08.json.gz",
+      "bytes": 14776,
+      "sha256": "c0f4cabfda9aabe17ed20ec9c563a3d8c977530499b6dc3c17a84f0680c9691f"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_00.json.gz",
+      "bytes": 27422,
+      "sha256": "c0f541bbdcb392439db34e82b06b81705277df4d6786db476d577fdc28229ea8"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_01.json.gz",
+      "bytes": 17150,
+      "sha256": "5290a831d6e665d65bb77fd753759f8b14dfebddeced8f7d407e2b6bbdade16e"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_02.json.gz",
+      "bytes": 33863,
+      "sha256": "f4112a75c53531d7b697cf722001bb28f71391823853e12dfceba02cad51490d"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_03.json.gz",
+      "bytes": 30844,
+      "sha256": "49dc1a2d1580f18191cbb4f010b11e3d82786fead6d743acaef561175cbd7c6a"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_04.json.gz",
+      "bytes": 34725,
+      "sha256": "a51d71a46b208128d0961f6a19f1821605c4e35def5b030769a5c6068ff15ed8"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_05.json.gz",
+      "bytes": 3222,
+      "sha256": "219a5dbb757cc427a7957d8adf70e16ad95f060cf7b96208d97902730dfa9465"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_06.json.gz",
+      "bytes": 3681,
+      "sha256": "a51601627d37b5392890d36b2a3f1b977713bf5e324210b838944ad1e3530887"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_01_07.json.gz",
+      "bytes": 3281,
+      "sha256": "a7972c13ca65fd62af17ec556259cba408cace04380ee68d0c5e95b38c0b0f40"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_00.json.gz",
+      "bytes": 51755,
+      "sha256": "a06c8c0154f3ed27668f3abe93fe4ce4a8e9b247692dd4e7730b1c88ca350b8d"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_01.json.gz",
+      "bytes": 26796,
+      "sha256": "da8d1c3b1c01eaa7a618204811f3d001c16ecf6ee968b7653aa1fdb6412f9b93"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_02.json.gz",
+      "bytes": 50499,
+      "sha256": "750961842f3b8c690969a1948bb2fa6c31ced735400703285bf665758cc07820"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_03.json.gz",
+      "bytes": 50587,
+      "sha256": "be294ca1eeaaded4b89131f7f39888a09eabab9602f108bb434fd7b4eaf8fe99"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_04.json.gz",
+      "bytes": 52749,
+      "sha256": "663f63a40c09727d5246303254481a5e89948b48d2ba5ed7ec8a68e556dc690d"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_05.json.gz",
+      "bytes": 5517,
+      "sha256": "4125aa7f8ae6627ebe42f0f65c0d448c7780c4cca316eb1f2c635464ec796660"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_06.json.gz",
+      "bytes": 6848,
+      "sha256": "271efbab3163d8068914a7a4b12f3bd37f301c763f4dfc719997e277d0b6668b"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_02_07.json.gz",
+      "bytes": 5548,
+      "sha256": "2519aee7384e1a00605f7ab9c4d26707b9f607fd8c7fa7718120671d71f6d4fb"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_00.json.gz",
+      "bytes": 53372,
+      "sha256": "725e5840e4b64cde10402ba447077a23cf142287dae58adfd55794020b9c8021"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_01.json.gz",
+      "bytes": 34570,
+      "sha256": "b3a9b11cdc735833e6e3cd99f1cd2a218fd3ec664b50e7903efdf974f34c7466"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_02.json.gz",
+      "bytes": 41710,
+      "sha256": "575729563f7eda2bfde9d53f1bf3ba3064bd0c32b46264b8639bcfc983ff68cf"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_03.json.gz",
+      "bytes": 39955,
+      "sha256": "d904ff1a1a6b170540540024c62b4288fd4a2317c15007c8238de413a141e1e9"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_04.json.gz",
+      "bytes": 41743,
+      "sha256": "9a3dcef4a3dc950aedc047bde32cd4082f306a94109eaebdaa3574e03385a34d"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_05.json.gz",
+      "bytes": 5526,
+      "sha256": "dad3e458cd536e6e5aa1455a4a821dc4ebca83513a939044f644bbb100b59ce1"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_06.json.gz",
+      "bytes": 6771,
+      "sha256": "7ff8ddc6d416b7dffe4767696eea6f5a1f701180cbac14a369901eb491cf6998"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_03_07.json.gz",
+      "bytes": 5562,
+      "sha256": "66a693421f25778a75423121c2b51f7b46115e38ebadd973b5990b17d6753409"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_04_00.json.gz",
+      "bytes": 5708,
+      "sha256": "04dc798ed74db603c4f01fd461f47a16e03feb396f5bba5adc16df05017488df"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_04_01.json.gz",
+      "bytes": 6462,
+      "sha256": "8368fb8d5d2c3645bbc0b6b37de1d389497ce2e5675937f247ccbc52a4feeb49"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_04_02.json.gz",
+      "bytes": 5649,
+      "sha256": "69a973274c6814723486feef99001ee8adfda57a8fd22511a32a9799ee684f5d"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_05_00.json.gz",
+      "bytes": 5917,
+      "sha256": "ad794bc2c16c4711e03dfb43dfb4d4877213d704440a69384dc50bd2e5d0bf6c"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_05_01.json.gz",
+      "bytes": 6650,
+      "sha256": "1560dbd101c057fdef4edcffd420a2a6325371cb6773c05c91560a1d9c95816b"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thickness_05_02.json.gz",
+      "bytes": 5821,
+      "sha256": "8b73b2fa2c74d64ed8306a55c2630dc2a8fd7d08e78b65f59c7aa83f1c60db8f"
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\acceptance_fix\\thickness_final\\thick_controls.json.gz",
+      "bytes": 19791,
+      "sha256": "493793467f9d90e8f8c990ef85a403230989602590cc5a9ecee27e4125a56868"
+    }
+  ],
+  "thick_controls": [
+    {
+      "ratio": "3/16",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/4",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/2",
+      "relative_amplitude": "1/64",
+      "periods": 1,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "3/16",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/4",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/2",
+      "relative_amplitude": "1/128",
+      "periods": 1,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "3/16",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/4",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/2",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "3/16",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/4",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/2",
+      "relative_amplitude": "1/256",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "3/16",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/4",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/2",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/2",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "3/16",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/4",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "ratio": "1/2",
+      "relative_amplitude": "1/64",
+      "periods": 2,
+      "asymmetry": "1/4",
+      "exact_threshold": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    }
+  ],
+  "threshold_claim": "samplewise exact LP and one-sided basis certificates",
+  "band_claim": "analytic all-ratio zero-friction boundary on the stated six fixed families",
+  "elapsed_seconds": "257195326441/8589934592"
+}

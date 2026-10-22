@@ -1,0 +1,78 @@
+{
+  "work_order": "WO-C3L3",
+  "target": "profile1 exact rigid-body statics and mu critical threshold C++ port with independent differential verification",
+  "scope": [
+    "eab2/src",
+    "eab2/include/eab2",
+    "eab2/tests",
+    "eab2/CMakeLists.txt",
+    "eab2/build_eab2.bat",
+    "eab2/ABI_CONTRACT.md",
+    "tools",
+    "tests",
+    "reports/codex/C3L3_report.md",
+    "reports/codex/C3L3_evidence",
+    "eab2/README.md"
+  ],
+  "non_goals": [
+    "src/eab mathematical changes",
+    "LP core reimplementation",
+    "profile2",
+    "L4 full sensitivity API",
+    "sibling writes",
+    "git writes",
+    "install/download",
+    "owner-arranged fresh worktree or independent adversarial signoff"
+  ],
+  "rollback_anchor": {
+    "commit": "1b6b4f32ff3c5716f8e3a24ad73dd3cf6081f39c",
+    "branch": "eab2-c3l3",
+    "tracked_clean_at_entry": true,
+    "design_sha256": "6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac",
+    "core_autocrlf": "false"
+  },
+  "success_criteria": [
+    "P0 exact assembly and 3 LP states + certificates",
+    "binary64 mu bracket and independently verified rational open/closed proofs",
+    "formal 114 limit + 114 critical queries and T1b required subsets with zero semantic mismatch",
+    "ABI lifecycle/input/FP/resource tests",
+    "P1 invariance and valid implications",
+    "P2 measured size and cold timing report",
+    "C++ units/differential/fast/full4 verified",
+    "no src/eab edit, no forbidden access, net deliverable <=2MB"
+  ],
+  "verification_commands": [
+    "python tools/h1_run_gates.py --name baseline --runslow --evidence-root reports/codex/C3L3_evidence",
+    "eab2/build_eab2.bat",
+    "python tools/eab2_c3l3_diff.py --help",
+    "python tools/h1_run_gates.py --name final_fast --evidence-root reports/codex/C3L3_evidence",
+    "python tools/h1_run_gates.py --name final_full --runslow --evidence-root reports/codex/C3L3_evidence",
+    "python tools/eab2_audit.py --output reports/codex/C3L3_evidence/delivery_audit.json"
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "name": "baseline and contract",
+      "state": "completed"
+    },
+    {
+      "id": 2,
+      "name": "P0 implementation and differential",
+      "state": "completed"
+    },
+    {
+      "id": 3,
+      "name": "P1 gates and P2 report",
+      "state": "completed"
+    },
+    {
+      "id": 4,
+      "name": "closeout verification and Chinese report",
+      "state": "completed"
+    }
+  ],
+  "baseline_walltime_estimate_seconds": 1800,
+  "estimate_basis": "C3L1 acceptance_full elapsed 1704.469s read locally; no guarantee",
+  "note": "All implementation/differential/fast/full4/scale complete. Final report/archive/metadata only after tests. External owner fresh-tree and Claude independent review remain pending.",
+  "acceptance_status": "PARTIAL_OWNER_GATES_PENDING"
+}

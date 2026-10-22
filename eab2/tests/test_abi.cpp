@@ -488,7 +488,7 @@ int main() {
         info.reserved = 0;
         check(info.context_size == sizeof(eab2_context) && info.pointer_bits == 64 &&
               info.binary64_bits == 64 && info.build_identity[0], "ABI sizes support domain identity");
-        check(info.supported_capabilities == (EAB2_CAP_CONTEXT | EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 | EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2 | EAB2_CAP_ASSEMBLY2 | EAB2_CAP_CONTACTSET2 | EAB2_CAP_LOCK2 | EAB2_CAP_MOBILITY2 | EAB2_CAP_TEST_OPT), "test capabilities explicit");
+        check(info.supported_capabilities == (EAB2_CAP_CONTEXT | EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 | EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2 | EAB2_CAP_ASSEMBLY2 | EAB2_CAP_CONTACTSET2 | EAB2_CAP_LOCK2 | EAB2_CAP_MOBILITY2 | EAB2_CAP_TEST_OPT | EAB2_CAP_LIMIT2 | EAB2_CAP_CRITICAL_PARAMETER), "test capabilities explicit");
         info.requested_capabilities = EAB2_CAP_RHO | EAB2_CAP_SE2 | EAB2_CAP_LP2;
         check(eab2_get_abi_info(&info) == EAB2_UNSUPPORTED &&
               info.unsupported_capabilities == info.requested_capabilities, "unimplemented capabilities unsupported");

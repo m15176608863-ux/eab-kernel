@@ -1,0 +1,91 @@
+{
+  "work_order": "WO-C3L3 acceptance repair",
+  "implementation_and_verification": "COMPLETE",
+  "milestone_acceptance": "PARTIAL_CRITICAL_REVIEW_PENDING",
+  "requirements": [
+    {
+      "id": "MAJOR-1a",
+      "status": "PASS",
+      "evidence": "critical_repair.json",
+      "checks": "Two named null-threshold regressions, exact brackets and independent truths; complete build critical checks=346"
+    },
+    {
+      "id": "MAJOR-1b",
+      "status": "PASS",
+      "evidence": "differential.json.gz",
+      "checks": "2310 G1 wide queries over 3 orientations, 11 shapes, 10 maxima and steps 0..6; 16 Farkas-lower queries; 6 quadratic controls"
+    },
+    {
+      "id": "MAJOR-1c",
+      "status": "PASS",
+      "evidence": "critical_mutations.json",
+      "checks": "7 internal mutants caught=7 escaped=0; both continuation mutants hit named semantic assertions"
+    },
+    {
+      "id": "MAJOR-1-independent-checker-red-gates",
+      "status": "PASS",
+      "evidence": "continuation_dll_red_gates.json",
+      "checks": "Two real internally mutated DLL native outputs rejected before any enrichment disposition; final checker SHA verified"
+    },
+    {
+      "id": "MINOR-1",
+      "status": "PASS",
+      "evidence": "acceptance_enrichment_disposition.md",
+      "checks": "20 reported cases reproduced; 73 total proved C++ open-threshold enrichments independently verified; both-nonnull equality preserved; metadata and exclusive payload guard"
+    },
+    {
+      "id": "MINOR-2",
+      "status": "PASS",
+      "evidence": "../C3L3_report.md",
+      "checks": "Sections 4 and 8 define comparison domain; section 6 includes both continuation guards"
+    },
+    {
+      "id": "STATICS-ANCHOR-NOTE",
+      "status": "PASS",
+      "evidence": "../C3L3_report.md",
+      "checks": "Section 2 states all movable-body moments and dual/mechanism twists are at dof_anchor; C3-L4 coordinate requirement explicit"
+    },
+    {
+      "id": "THICKNESS-INPUT-DOMAIN",
+      "status": "PASS",
+      "evidence": "thickness_contract.md",
+      "checks": "39 samples partitioned 7 exact binary64 / 32 outside ABI domain; 18 controls; 25 source identities and 19 unique models; final differential 75 limit +25 critical"
+    },
+    {
+      "id": "FINAL-BUILD",
+      "status": "PASS",
+      "evidence": "verification_runs.json",
+      "checks": "New byte-copy complete build 12/12 CTest; statics3916 critical346 ABI128; delivery audit PASS"
+    },
+    {
+      "id": "FINAL-DIFF",
+      "status": "PASS",
+      "evidence": "differential.json.gz",
+      "checks": "292 limit +2528 critical, mismatch0, all old five families retained; source pre/post equal"
+    },
+    {
+      "id": "FINAL-PYTHON",
+      "status": "PASS",
+      "evidence": "final_full/summary.json",
+      "checks": "Fast8996 and full15080 in4 shards; no failed/skipped; actual node multisets and module execution coverage; static construction0"
+    },
+    {
+      "id": "PRODUCTION-SCOPE",
+      "status": "PASS",
+      "evidence": "delivery_integrity.json",
+      "checks": "src/eab, eab2/src and design unchanged from c8718bb; no Git writes/install/download/unrelated process termination"
+    },
+    {
+      "id": "DELIVERY-HYGIENE",
+      "status": "PASS",
+      "evidence": "hygiene.json",
+      "checks": "Overall net delta relative1b6 <=2MB; one differential authority; UTF8 without BOM; no compiler binaries; append-only archive"
+    },
+    {
+      "id": "CLAUDE-REACCEPTANCE",
+      "status": "PENDING_OWNER",
+      "evidence": "input/C3L3_acceptance.md",
+      "checks": "c8718bb owner fresh-tree and statics closure acknowledged; repaired critical path still needs Claude re-review"
+    }
+  ]
+}

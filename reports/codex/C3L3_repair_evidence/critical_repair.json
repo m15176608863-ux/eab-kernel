@@ -1,0 +1,120 @@
+{
+  "schema": "eab2.c3l3.critical_repair.v1",
+  "head": "c8718bb0850328defd8f0cc16fb4f3a09e922975",
+  "acceptance_source": "C:\\Users\\m1517\\AppData\\Local\\Temp\\claude\\C--Agent--claude\\659f270b-c2f6-43a9-9717-6dc28c605be4\\scratchpad\\c3l3_accept\\C3L3_acceptance.md",
+  "acceptance_sha256": "9b4a19a3861dcbc4ec339e6180653f00788da9c7c4f122b09bb6450b157b38d6",
+  "scope": [
+    "eab2/tests/test_critical.cpp",
+    "tools/eab2_c3l3_critical_mutations.py"
+  ],
+  "regressions": [
+    {
+      "id": "koureas_wide_four_steps",
+      "t": "3/32",
+      "height": "1/16",
+      "mu_max": "3/4",
+      "max_steps": 4,
+      "mu_lo": "3/64",
+      "mu_hi": "3/32",
+      "closed_form_truth": "2039/32768",
+      "exact_threshold": null,
+      "attained": null
+    },
+    {
+      "id": "koureas_wide_one_step",
+      "t": "3/8",
+      "height": "1/4",
+      "mu_max": "3/8",
+      "max_steps": 1,
+      "mu_lo": "3/16",
+      "mu_hi": "3/8",
+      "closed_form_truth": "119/512",
+      "exact_threshold": null,
+      "attained": null
+    }
+  ],
+  "production_cpp_unchanged": true,
+  "production_sources": {
+    "eab2/src/c_api.cpp": {
+      "sha256": "4083d70194dffc50aa12d1c23fab920951b52f243b31e5b9b2afcb3a7b0edc6b",
+      "head_sha256": "4083d70194dffc50aa12d1c23fab920951b52f243b31e5b9b2afcb3a7b0edc6b",
+      "unchanged": true
+    },
+    "eab2/src/critical.cpp": {
+      "sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "head_sha256": "c90fbbce747d58157e141dc0ccd31d630f38660158003871fdff3354e4e285c5",
+      "unchanged": true
+    },
+    "eab2/src/fp_contract.cpp": {
+      "sha256": "1317819447c61bfc2edcf0254f3ad3a4fe52dd5a9b17ebc7058896ee2d4f82ff",
+      "head_sha256": "1317819447c61bfc2edcf0254f3ad3a4fe52dd5a9b17ebc7058896ee2d4f82ff",
+      "unchanged": true
+    },
+    "eab2/src/geometry2.cpp": {
+      "sha256": "59cbe3a1c2bec3538e443f6e30ada26cff6cef1e246f02780cace94f60e05709",
+      "head_sha256": "59cbe3a1c2bec3538e443f6e30ada26cff6cef1e246f02780cace94f60e05709",
+      "unchanged": true
+    },
+    "eab2/src/geometry2_local.cpp": {
+      "sha256": "ed41274adbc344d70339d3184411dd776b01a28cadc448c3f4db133d4443384f",
+      "head_sha256": "ed41274adbc344d70339d3184411dd776b01a28cadc448c3f4db133d4443384f",
+      "unchanged": true
+    },
+    "eab2/src/l1.cpp": {
+      "sha256": "a4a0963176e50231d71d39236909db75dd6725b3ea2540eeed4b4b180fcaeac4",
+      "head_sha256": "a4a0963176e50231d71d39236909db75dd6725b3ea2540eeed4b4b180fcaeac4",
+      "unchanged": true
+    },
+    "eab2/src/numeric.cpp": {
+      "sha256": "5790b014ae8cc0f216c83755298ab882d7a38af4aa8e0620827a854ba9161f13",
+      "head_sha256": "5790b014ae8cc0f216c83755298ab882d7a38af4aa8e0620827a854ba9161f13",
+      "unchanged": true
+    },
+    "eab2/src/opt.cpp": {
+      "sha256": "67ab32ca678f7cd88dc5626353f700a5c2df53ddcada0fa9554e441f875c2cda",
+      "head_sha256": "67ab32ca678f7cd88dc5626353f700a5c2df53ddcada0fa9554e441f875c2cda",
+      "unchanged": true
+    },
+    "eab2/src/statics.cpp": {
+      "sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+      "head_sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+      "unchanged": true
+    }
+  },
+  "modified_file_sha256": {
+    "eab2/tests/test_critical.cpp": "3442343cf4080b469dce8df42eacea51b97dff242fa605711851bd3f5db1e24f",
+    "tools/eab2_c3l3_critical_mutations.py": "f40fc492d9f62c19c0222663cc2e66f3a66864776acb2fd9c599993545c86955"
+  },
+  "isolated_mutation_command": [
+    "python",
+    "-X",
+    "utf8",
+    "tools/eab2_c3l3_critical_mutations.py",
+    "--root",
+    "D:/eab-wt/cx-c0",
+    "--output",
+    "D:/eab-wt/cx-c0/eab2/build/tmp/c3l3_repair_critical_mutations_20261023_r1"
+  ],
+  "isolated_mutation_exit_code": 0,
+  "authoritative_mutation_summary": "critical_mutations.json",
+  "authoritative_mutation_summary_sha256": "b505edbd58c33bbbc92d521da037e69f553b24fbdee5fad5d80ac8da7b7f4228",
+  "baseline_last_line": "C3L3_CRITICAL_OK checks=346",
+  "mutation_last_line": "C3L3_CRITICAL_MUTATIONS_OK caught=7 escaped=0",
+  "new_mutation_final_lines": {
+    "closed_no_lower_continuation": "C3L3_CRITICAL_FAIL checks=143 reason=koureas_wide_four_steps_requires_below: unbounded endpoint is not a closed threshold",
+    "open_no_upper_ray": "C3L3_CRITICAL_FAIL checks=131 reason=unreversed_open_requires_above: endpoint states cannot certify an open threshold"
+  },
+  "formal_build_run": false,
+  "python_full_suite_run": false,
+  "independent_adversarial_review": false,
+  "additional_dll_red_gates": {
+    "summary": "continuation_dll_red_gates.json",
+    "summary_sha256": "3ba1a30c22a1819513c64d5df1acb0d59f311c10bf8513b7ee4a9affff4b5906",
+    "final_line": "C3L3_CONTINUATION_DLL_RED_GATES_OK rejected=2 admitted=0",
+    "mutant_source_injection": true,
+    "production_export_count_each": 29,
+    "false_proof_enrichment_dispositions": 0,
+    "raw_and_binaries_archive_queue": "continuation_dll_archive_queue.json",
+    "verification_runner_adjustment": "Initial focused runner caught AssertionError, but checker require raises ValueError; adjusted only ignored runner exception handler and reran the two focused queries. No production or checker code changed."
+  }
+}

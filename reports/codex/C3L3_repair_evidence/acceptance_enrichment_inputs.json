@@ -1,0 +1,977 @@
+{
+  "schema": "eab2.c3l3.acceptance_enrichment_inputs.v1",
+  "purpose": "Read-only provenance projection; runtime inputs are persistent exact parameters in wide_enhancement_targets, never the reviewer temporary tree.",
+  "source_sha256": {
+    "critical/scripts/adv.py": "9411c7a01c5e776c7af0d54b94e30f0841584bf300b92a09fd6a8e67cc53decb",
+    "critical/scripts/m_compare.py": "984be6da0be2a650bce3d422c9477ad04fc38febb030ebdc7d767aa58a076be0",
+    "critical/scripts/quad.py": "c6e07ff0fa32437bc989c2d95ab41d7860dee94d0068852749b2649d67cadad7",
+    "critical/out/adv_sweep.json": "97f039950ede08fa27513d3cb0b9bffea227434d0451bf741a9695c74bc11ccf"
+  },
+  "source_count": 592,
+  "source_flagged": 33,
+  "selected_count": 20,
+  "selected": [
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=1.0/steps=0",
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 0
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 3,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=1.0/steps=2",
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 4)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1/4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 5,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=0.5/steps=1",
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 4)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1/4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 4,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=4.0/steps=0",
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 0
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(4, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 3,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=4.0/steps=1",
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 1
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(2, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "2",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 4,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=4.0/steps=2",
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 2
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 5,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=1.0/steps=0",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 0
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 3,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=1.0/steps=2",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 4)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1/4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 5,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=0.5/steps=1",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 4)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1/4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 4,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=4.0/steps=0",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 0
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(4, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 3,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=4.0/steps=1",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 1
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(2, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "2",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 4,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=4.0/steps=2",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 2
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 5,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=1.0/steps=0",
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 0
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 3,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=1.0/steps=2",
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 4)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1/4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 5,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=0.5/steps=1",
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 4)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1/4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 4,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=4.0/steps=0",
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 0
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(4, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "4",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 3,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=4.0/steps=1",
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 1
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(2, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "2",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 4,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=4.0/steps=2",
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 2
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "0"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(0, 1), 'attained': False, 'li': (Fraction(0, 1), Fraction(0, 1)), 'ui': (Fraction(0, 1), Fraction(1, 1)), 'reason': 'exact_basis_continuation', 'ls': True, 'us': False, 'lb': None, 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "0",
+        "hi": "1",
+        "attained": false,
+        "t": "0",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 5,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/1/4/1/2/mumax=1.0/steps=2",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "1/4",
+        "h": "1/2",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "1/4"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(1, 4), 'attained': False, 'li': (Fraction(1, 4), Fraction(1, 4)), 'ui': (Fraction(1, 4), Fraction(1, 2)), 'reason': 'exact_basis_continuation', 'ls': False, 'us': False, 'lb': 'mechanism', 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "1/4",
+        "hi": "1/2",
+        "attained": false,
+        "t": "1/4",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 5,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray",
+          "mechanism"
+        ]
+      }
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/1/4/1/2/mumax=0.5/steps=1",
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "1/4",
+        "h": "1/2",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "reviewer_differences": {
+        "attained": [
+          "None",
+          "False"
+        ],
+        "t": [
+          "None",
+          "1/4"
+        ],
+        "tpr": [
+          "None",
+          "exact_basis_continuation"
+        ],
+        "tc": [
+          "None",
+          "OPTIMAL"
+        ],
+        "proof": [
+          "None",
+          "{'t': Fraction(1, 4), 'attained': False, 'li': (Fraction(1, 4), Fraction(1, 4)), 'ui': (Fraction(1, 4), Fraction(1, 2)), 'reason': 'exact_basis_continuation', 'ls': False, 'us': False, 'lb': 'mechanism', 'ub': 'improving_ray'}"
+        ]
+      },
+      "reviewer_actual": {
+        "math": "CERTIFIED",
+        "lo": "1/4",
+        "hi": "1/2",
+        "attained": false,
+        "t": "1/4",
+        "reason": "iteration_limit",
+        "bt": "iteration_limit",
+        "tpr": "exact_basis_continuation",
+        "queries": 4,
+        "lc": "OPTIMAL",
+        "uc": "UNBOUNDED",
+        "polys": [
+          "improving_ray",
+          "mechanism"
+        ]
+      }
+    }
+  ]
+}

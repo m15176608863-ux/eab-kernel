@@ -1,0 +1,73 @@
+{
+  "schema": "eab2-c3l3-statics-mutations-1",
+  "source": "D:\\eab-wt\\cx-c0\\eab2\\src\\statics.cpp",
+  "source_sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+  "test_file": "D:\\eab-wt\\cx-c0\\eab2\\tests\\test_statics.cpp",
+  "test_sha256": "6eabf2f2a7194e40b3783e407e8cc2f21015dfd57243b5159e4be2e86bfea59f",
+  "core_library": "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib",
+  "core_library_sha256": "c0599607a271529415c9ed17fa91f5a3b819a8cb59ee0161f995da4daa5ad94d",
+  "cases": [
+    {
+      "name": "baseline",
+      "source_sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+      "mutant_sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+      "before": null,
+      "after": null,
+      "replacements": 0,
+      "expected_assertion": null,
+      "build_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\baseline\\statics_mutation.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\tests\\test_statics.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib\" /Fe:\"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\baseline\\statics_mutation.exe\"",
+      "compile_exit": 0,
+      "test_exit": 0,
+      "semantic_last_line": "C3L3_STATICS_OK checks=3916",
+      "compile_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\baseline\\compile.log",
+      "test_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\baseline\\test.log"
+    },
+    {
+      "name": "ignore_physical_anchor",
+      "source_sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+      "mutant_sha256": "8d54d436a5d0f5208131932661a0d59d0c9ff0f0979bf304d63656a51126e7e9",
+      "before": "wrench[2] - geometry2::cross(offset, {wrench[0], wrench[1]})",
+      "after": "wrench[2]",
+      "replacements": 1,
+      "expected_assertion": "released plate physical-anchor counterexample",
+      "build_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\ignore_physical_anchor\\statics_mutation.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\tests\\test_statics.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib\" /Fe:\"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\ignore_physical_anchor\\statics_mutation.exe\"",
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_last_line": "C3L3_STATICS_FAIL released plate physical-anchor counterexample",
+      "compile_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\ignore_physical_anchor\\compile.log",
+      "test_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\ignore_physical_anchor\\test.log"
+    },
+    {
+      "name": "same_friction_sign",
+      "source_sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+      "mutant_sha256": "1d93dd58b0ac3d5ad88a091ee73568779b546385000951f18ca38582c700a2b5",
+      "before": "Rational(sign) * mu * contact.tangent",
+      "after": "Rational(1) * mu * contact.tangent",
+      "replacements": 2,
+      "expected_assertion": "G5 closed form and C3-L1 regression d",
+      "build_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_friction_sign\\statics_mutation.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\tests\\test_statics.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib\" /Fe:\"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_friction_sign\\statics_mutation.exe\"",
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_last_line": "C3L3_STATICS_FAIL G5 closed form and C3-L1 regression d",
+      "compile_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_friction_sign\\compile.log",
+      "test_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_friction_sign\\test.log"
+    },
+    {
+      "name": "same_action_reaction_sign",
+      "source_sha256": "28604091f7908e97bc6fb4103a706641330f49c716743a381a881bc8f08ec8c4",
+      "mutant_sha256": "77ed0928fe1db68c9f1db8f9d3eec56d7aacbc2a3700396dbfd67c8fe016f6f7",
+      "before": "static_cast<int>(i == contact.a) - static_cast<int>(i == contact.b)",
+      "after": "static_cast<int>(i == contact.a) + static_cast<int>(i == contact.b)",
+      "replacements": 1,
+      "expected_assertion": "G5 closed form and C3-L1 regression d",
+      "build_command": "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_action_reaction_sign\\statics_mutation.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\tests\\test_statics.cpp\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib\" /Fe:\"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_action_reaction_sign\\statics_mutation.exe\"",
+      "compile_exit": 0,
+      "test_exit": 1,
+      "semantic_last_line": "C3L3_STATICS_FAIL G5 closed form and C3-L1 regression d",
+      "compile_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_action_reaction_sign\\compile.log",
+      "test_log": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_statics_final\\same_action_reaction_sign\\test.log"
+    }
+  ],
+  "elapsed_s": 20.16967799991835,
+  "summary": "C3L3_STATICS_MUTATIONS_OK baseline=1 rejected=3 semantic_failures=3"
+}

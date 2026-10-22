@@ -172,3 +172,32 @@ Claude 本次仅授权外写 `D:/eab-evidence/reports/codex/C3L1_evidence/`。�
 - [本轮最终归档映射与双SHA](codex/C3L1_evidence/acceptance_fix/final_archive.json)；[外部相同清单](file:///D:/eab-evidence/reports/codex/C3L1_evidence/_manifests/acceptance_final_archive.json)。
 - [完整最终流水账](codex/C3L1_evidence/acceptance_fix/acceptance_final_run.json)；[当前权威交付索引](codex/C3L1_evidence/deliverables.md)；[当前文件SHA](codex/C3L1_evidence/artifact_manifest.json)；[链接/哈希/执行集合审计](codex/C3L1_evidence/delivery_integrity.json)。
 - [工作字节净增/单文件卫生](codex/C3L1_evidence/acceptance_fix/hygiene.json)：相对7540cde按当前拟交付字节计，不是Git pack/history体积。
+
+## WO-C3L3（1b6b4f3 后未提交字节，2026-10-23）
+
+本节保留原交付时的历史状态与路径；`c8718bb` 后验收事实及当前差分权威见下一节，旧差分路径按下一节精确映射读取归档。
+
+P0/P1 实现及本单验证、P2 实测交付；所有者新鲜 Git 树与 Claude 一路独立对抗核查尚未执行，不签里程碑 DONE。
+
+- [中文报告](codex/C3L3_report.md)、[交付索引](codex/C3L3_evidence/deliverables.md)、[当前文件 SHA](codex/C3L3_evidence/artifact_manifest.json)、[卫生账](codex/C3L3_evidence/hygiene.json)。
+- [开工全档](codex/C3L3_evidence/baseline/summary.json)、[收尾快档](codex/C3L3_evidence/final_fast/summary.json)、[收尾全档四片](codex/C3L3_evidence/final_full/summary.json)：15035 / 8972 / 15056 项 GREEN，0 failed/skip，逐模块实际执行完备，两个全档静态 0 违例。使用工作树字节导出，非新建 Git 树。
+- [唯一权威差分](codex/C3L3_evidence/differential.json)：217 limit、171 critical（含1个不支持参数调用错误），0失配；[规模报告](codex/C3L3_evidence/scale.json)：60行/1441列，非性能门。
+- [原始日志/执行节点/回退字节/隔离变体归档映射及双 SHA](codex/C3L3_evidence/archive_manifest.json)：102 文件、原始 45,501,105 B；gzip level9、mtime=0，逐文件解压原 SHA 相等，保留 ignored 原临时日志，不拼接运行。旧轮差分仅归档，不冒充最后源码绿。
+- [受测完整源码 ZIP](file:///D:/eab-evidence/reports/codex/C3L3_evidence/run_20261023/final_full_tested_source.zip)：1845成员，逐成员 SHA 核验；[外部相同映射](file:///D:/eab-evidence/reports/codex/C3L3_evidence/run_20261023/archive_manifest.json)。
+- [受测字节与交付完整性](codex/C3L3_evidence/delivery_integrity.json)：全档后只回填报告/本索引及证据，不改受测源码。
+
+只向本单新路径追加，不删除原证据、不写 Git。外目录为本地保存，不等于远端备份；回滚须核对所有者后续修改。
+
+## WO-C3L3 验收返修（c8718bb 后未提交字节）
+
+Claude 提供 c8718bb 新鲜树构建/五层差分/全档15056绿及两路验收全文：静力路0缺陷，临界路1 major门缺口、2 minor；来源与SHA见[返修入口](codex/C3L3_repair_evidence/intake.json)。这是所有者提供的基线，不冒称本代理重跑其新鲜树。
+
+- [原 c8718bb 证据逐文件原SHA/压缩SHA与归档路径](codex/C3L3_repair_evidence/previous_archive.json)。旧 differential.json/log/progress 三文件复制、解压核字节及源SHA后逐文件移出工作树；其余旧摘要保留为历史。旧清单中的SHA不重写。
+- 对上述三个旧路径，按逐文件清单定位 `D:/eab-evidence/reports/codex/C3L3_evidence/acceptance_repair_20261023/history_c8718bb/` 下原相对路径加 `.gz`；这条本单精确映射优先于默认旧目录回退规则。
+- 本轮[唯一权威差分 gzip](codex/C3L3_repair_evidence/differential.json.gz)：292 limit、2528 critical，0 失配；原 JSON 为 2,544,040 B，压缩后 106,221 B，[解压与双 SHA](codex/C3L3_repair_evidence/differential_archive.json)已核。包括原五层、2332 宽括号查询及 7+18 厚度条目；73 项合法证明增强中，验收指出的[20 个实例全部逐例处置](codex/C3L3_repair_evidence/acceptance_enrichment_disposition.md)。
+- [完整构建与运行记录](codex/C3L3_repair_evidence/verification_runs.json)：CTest 12/12；[快档](codex/C3L3_repair_evidence/final_fast/summary.json)8996、[全档四片](codex/C3L3_repair_evidence/final_full/summary.json)15080，GREEN，0 failed/skip，模块实际执行覆盖完整，静态构造 0 违例。
+- [本轮归档映射](codex/C3L3_repair_evidence/archive_manifest.json)：107 份原始记录逐件 gzip/解压核 SHA，[受测源码 ZIP](file:///D:/eab-evidence/reports/codex/C3L3_evidence/acceptance_repair_20261023/final_runs/final_full_tested_source.zip)1909 成员逐件核 SHA；[外部相同映射](file:///D:/eab-evidence/reports/codex/C3L3_evidence/acceptance_repair_20261023/final_runs/archive_manifest.json)。不拼接运行、不移改冻结历史 SHA。
+- [日志编码补充映射](codex/C3L3_repair_evidence/encoding_corrections.json)：报告回填发现两份定向日志为 PowerShell 的 UTF-16LE 输出，原字节追加保存在 [encoding_originals](file:///D:/eab-evidence/reports/codex/C3L3_evidence/acceptance_repair_20261023/final_runs/encoding_originals/)，仓内转为 UTF-8 无 BOM/LF，逐行内容完全不变，未重跑或改写测试结果。
+- 修复内容及原样末行见[主报告](codex/C3L3_report.md)；[最终交付索引](codex/C3L3_repair_evidence/deliverables.md)、[字节与链接审计](codex/C3L3_repair_evidence/delivery_integrity.json)、[卫生账](codex/C3L3_repair_evidence/hygiene.json)给出当前候选。`c8718bb` 新鲜树与静力验收已据所有者来函记录；本轮临界参数路返修仍待 Claude 复验，不以作者自查签署独立验收。
+
+无Git写操作；外归档为本地保存，不是远端备份。

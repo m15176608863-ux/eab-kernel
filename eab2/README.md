@@ -1,6 +1,6 @@
-# eab2 C3-L1：精确 LP 与二维接触裁判（工作版本）
+# eab2 C3-L3：精确二维接触与 profile1 极限分析（工作版本）
 
-范围以 [设计 §8.2/§8.5](../docs/eab2_design.md) 为准。Python `src/eab` 为独立裁判；本目录不导入、调用或修改姊妹引擎。当前不是完整力学接触引擎；C1 增加二维一般凹简单环 E/O 与局部查询，C3-L1 增加横切精确 LP、完整点接触装配、局部平移锁定证书与一阶法向可动性，不含 L3/L4、Sturm、浮点过滤或宿主接入。
+范围以 [设计 §8.2/§8.5](../docs/eab2_design.md) 为准。Python `src/eab` 为独立裁判；本目录不导入、调用或修改姊妹引擎。当前不是完整力学接触引擎；C1 增加二维一般凹简单环 E/O 与局部查询，C3-L1 增加横切精确 LP、完整点接触装配、局部平移锁定证书与一阶法向可动性；C3-L3 增加 profile1 静力装配、极限载荷三态证书和 μ 临界参数（有理基多项式与单侧 Sturm 证明）。不含 L4 完整敏感性、一般代数根引擎、浮点过滤或宿主接入。
 
 ## 构建与复跑
 
@@ -18,7 +18,7 @@ python -X utf8 tools/eab2_audit.py --output eab2/build/tmp/recheck/delivery_audi
 
 - `eab2_core.lib`：同工具链内部数值静态核心；`eab2_test_numeric.exe` 直接链接该库。
 - CMake target `eab2_static`（`eab2_static.lib` + 传递链接 `eab2_core`）：静态 C 生命周期接口。手工链接时须同时提供两个 `.lib`，使用 CMake target 则自动传递。
-- `eab2.dll`：生命周期/能力、C1 body/E/双三态/精确结果/0 处局部及 C3-L1 接口；**不导出 numeric_batch、query2_exact_batch 、covers2_exact 或 opt_solve_exact**。
+- `eab2.dll`：生命周期/能力、C1 body/E/双三态/精确结果/0 处局部及 C3-L1/C3-L3 接口；**不导出 numeric_batch、query2_exact_batch 、covers2_exact 或 opt_solve_exact**。
 - `eab2_test.dll`：另加测试专用 numeric_batch、query2_exact_batch、covers2_exact 与 opt_solve_exact，不能作为稳定发布 ABI。
 - `eab2_test_abi.exe`：DLL ABI/坏 FP 环境测试；`eab2_test_c_header.exe` / `eab2_test_c_header_static.exe`：纯 C 头及正式 DLL/静态链接验证。
 
@@ -42,10 +42,10 @@ python -X utf8 tools/eab2_audit.py --output eab2/build/tmp/recheck/delivery_audi
 ## 尚未证明 / 无门与退出限制
 
 - 未声称全输入域数值证明、性能预算、跨编译器可复现、任意错误编译配置可由探针识别。
-- LP 已输出精确 OPTIMAL/Farkas/UNBOUNDED 证书；几何与 L1 可输出 OVERLAP/UNPROVED/MECHANICAL_UNRESOLVED。NO_EVENT 路径、L3 承载力与 L4 敏感性仍未实现。
+- LP 已输出精确 OPTIMAL/Farkas/UNBOUNDED 证书；几何与 L1 可输出 OVERLAP/UNPROVED/MECHANICAL_UNRESOLVED。NO_EVENT 路径与 L4 完整敏感性仍未实现；L3 仅支持具名门守护的 profile1，不支持 profile2/非关联摩擦。
 - `scalar_algebraic` 只有精确比较器→RN 边界，不是代数根引擎；无代数根 CertifiedValue 或 Dual 可选项。
 - 内部缺陷注入是实现者的测试敏感性检查，不能代替 Claude 安排的非作者独立对抗核查。
-- 本树/字节导出验证不能代替所有者安排的新鲜 worktree/克隆复现。最终工单状态和实际证据见 [C3L1_report.md](../reports/codex/C3L1_report.md)。
+- 本树/字节导出验证不能代替所有者安排的新鲜 worktree/克隆复现。最终工单状态和实际证据见 [C3L3_report.md](../reports/codex/C3L3_report.md)。
 
 
 ## C1 与 C0 小项
@@ -69,3 +69,16 @@ python -X utf8 tools/eab2_audit.py --output eab2/build/tmp/recheck/delivery_audi
 - 完整进度、具名回归、非唯一证书的严格差异计数与独立核证见 [C3L1_report.md](../reports/codex/C3L1_report.md)。有限测试、字节导出和实现者变异门不替代所有者新鲜树及 Claude 指派的独立核查。
 
 DLL 字节不承诺跨树复现（本轮未增加 `/Brepro`）；复现以受测源码 SHA-256、实际工具链/编译选项及语义门为锚。单树 DLL 哈希仅标识该次被测产物，不能据不同树 DLL 哈希不同推断源码或数学结果不同。
+
+
+## C3-L3 工作接口与已测试性质
+
+| 实现/边界 | 具名门 |
+|---|---|
+| g±、作用反作用、精确力矩、参考点/端板物理锚点、回归(d)、4/3与2/3 | `test_statics.cpp::g5_closed_form_and_masks/matrix_and_certificates` |
+| 原/对偶与驱动机构、Farkas、无界可行点和射线、VV冗余不计力 | `test_statics.cpp::matrix_and_certificates`；差分 `verify_limit` |
+| binary64括号、零/有界域、开闭阈、Sturm端点根/内部根、字段拆分 | `test_critical.cpp::binary_grid/polynomial_guards/threshold_contracts`；差分 `verify_critical` |
+| 刚体/单位/参考点变换及有效蕴含、G5反向反例 | `test_statics.cpp::rigid_units_and_anchor_translation/valid_implications_and_reverse_counterexample`；`test_critical.cpp::invariant_thresholds`；差分 `metamorphic_cases/implication_cases` |
+| 静力与阈值的内部源码缺陷被指定语义红门捕获 | `tools/eab2_c3l3_statics_mutations.py`、`tools/eab2_c3l3_critical_mutations.py`（实现者自检，不是独立核查） |
+
+正式差分：`python tools/eab2_c3l3_diff.py --dll "$PWD/eab2/build/eab2.dll" --output eab2/build/tmp/recheck/c3l3_diff.json`。`tools/eab2_c3l3_scale.py` 只作 P2 冷进程规模/耗时报告，**不设性能门**。未证明全输入域正确性、一般代数根精确值、有限样本以外的性能预算或非关联模型安全性。profile1 的 UNBOUNDED 不等于锁定，也不是有限承载力。
