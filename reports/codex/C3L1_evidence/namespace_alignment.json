@@ -1,0 +1,31 @@
+{
+  "schema": "eab2.c3l1.namespace_alignment.v1",
+  "from_symbol": "eab2::l1",
+  "to_symbol": "eab2::contact",
+  "reason": "Design section 5.1 namespace alignment; no mathematical or C ABI change",
+  "scope": "L1 header/source/native tests only; c_api alignment performed by root agent",
+  "files": [
+    {
+      "path": "eab2/src/l1.hpp",
+      "replacements": 2,
+      "before_sha256": "b0dd97dc0517d16e1773a1af55ba34f18ce59744b9634a321eaf2f6d0d09ae0d",
+      "after_sha256": "3fa883b0b6f558c1822da069f171a1ab56761c06f59da46830cd31ce31d36ec6",
+      "inverse_replacement_restores_original_bytes": true
+    },
+    {
+      "path": "eab2/src/l1.cpp",
+      "replacements": 2,
+      "before_sha256": "fc5bb6ad07997129f1f2809e0102cc2be837a19019ccc0b2c82ae993369543d7",
+      "after_sha256": "a4a0963176e50231d71d39236909db75dd6725b3ea2540eeed4b4b180fcaeac4",
+      "inverse_replacement_restores_original_bytes": true
+    },
+    {
+      "path": "eab2/tests/test_l1.cpp",
+      "replacements": 1,
+      "before_sha256": "a01fc2bf58f71199682f9cccd90c6fb8a99c84501943526c10d28adf53f30eb3",
+      "after_sha256": "a45233204a33b81871d50d6f000e9e28648c81172495d63007fc1fdeb7d47ea9",
+      "inverse_replacement_restores_original_bytes": true
+    }
+  ],
+  "status": "MECHANICAL_ONLY"
+}

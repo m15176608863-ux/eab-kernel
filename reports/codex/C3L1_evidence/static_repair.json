@@ -1,0 +1,15 @@
+{
+  "failure_class": "verification / static-construction policy",
+  "failure_site": "tests/test_eab2_c3l1.py::test_c3l1_t1b_frozen_l1_projection_has_36_lossless_inputs",
+  "old": "Q(float(x)) == x",
+  "new": "Q(scalar_rational(x)) == x",
+  "semantics": "Same exact rational roundtrip equality; approved scalar construction adds range checking. No test expectation or fixture changed.",
+  "before_sha256": "dfee11640fa05fee97f8382c9a7313f42e049545358786f4b3b6aa0241957143",
+  "after_sha256": "59ce3204db2a1b855ec44f6dd2246e480eff1558234e3b6d0dcb313faadf4d96",
+  "policy_sha256": "cb813970c4194d61761dc10ccd576e765ea339c2f36d87a352fd31111585b97d",
+  "policy_changed": false,
+  "new_admissions": 0,
+  "cpp_and_src_eab_changed": false,
+  "failed_full_run": "closeout_restart_full",
+  "failed_run_retained": true
+}

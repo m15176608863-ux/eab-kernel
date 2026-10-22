@@ -1,0 +1,45 @@
+{
+  "audit": "RED",
+  "complete": true,
+  "collected": 8907,
+  "shards": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "h1_execution_plugin",
+        "@D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\final_fast\\shard_1_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\final_fast\\pytest_1",
+        "--durations=0"
+      ],
+      "exit_code": 1,
+      "seconds": 288.7970000000205,
+      "last_line": "1 failed, 8906 passed in 282.86s (0:04:42)",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\final_fast\\shard_1.txt",
+      "dispatched": 8907,
+      "collected": 8907,
+      "executed": 8907,
+      "complete": true,
+      "node_sets_equal": true,
+      "skip_count": 0,
+      "failed_count": 1
+    }
+  ],
+  "static": null,
+  "module_coverage_complete": false,
+  "elapsed_seconds": 295.31200000003446,
+  "source": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\final_fast\\source",
+  "temp": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\tmp\\final_fast",
+  "export_changed": [],
+  "live_tree_changed": [],
+  "fresh_git_checkout": false,
+  "version": "h1-gates-1"
+}

@@ -34,6 +34,8 @@ extern "C" {
 #define EAB2_MATH_INFEASIBLE UINT32_C(5)
 #define EAB2_MATH_UNBOUNDED UINT32_C(6)
 
+#define EAB2_MATH_MECHANICAL_UNRESOLVED UINT32_C(7)
+
 #define EAB2_DISPLAY_NOT_AVAILABLE UINT32_C(0)
 #define EAB2_DISPLAY_VALID UINT32_C(1)
 #define EAB2_DISPLAY_RANGE UINT32_C(2)
@@ -48,6 +50,11 @@ extern "C" {
 #define EAB2_CAP_LOCAL2 UINT64_C(64)
 #define EAB2_CAP_TEST_EXACT2 UINT64_C(128)
 #define EAB2_CAP_LIMITS2 UINT64_C(256)
+#define EAB2_CAP_ASSEMBLY2 UINT64_C(512)
+#define EAB2_CAP_CONTACTSET2 UINT64_C(1024)
+#define EAB2_CAP_LOCK2 UINT64_C(2048)
+#define EAB2_CAP_MOBILITY2 UINT64_C(4096)
+#define EAB2_CAP_TEST_OPT UINT64_C(8192)
 #define EAB2_CAP_RHO UINT64_C(65536)
 #define EAB2_CAP_SE2 UINT64_C(131072)
 #define EAB2_CAP_LP2 UINT64_C(262144)
@@ -55,6 +62,8 @@ extern "C" {
 #define EAB2_HANDLE_BODY2 UINT32_C(2)
 #define EAB2_HANDLE_ENTRANCE2 UINT32_C(3)
 #define EAB2_HANDLE_RESULT UINT32_C(4)
+#define EAB2_HANDLE_ASSEMBLY2 UINT32_C(5)
+#define EAB2_HANDLE_CONTACTSET2 UINT32_C(6)
 #define EAB2_BODY_OUTSIDE UINT32_C(0)
 #define EAB2_BODY_CONTACT UINT32_C(1)
 #define EAB2_BODY_OVERLAP UINT32_C(2)
@@ -188,6 +197,58 @@ EAB2_API eab2_call_status eab2_result_export_exact(eab2_context context,
 EAB2_API eab2_call_status eab2_local_origin2_exact(eab2_context context,
     eab2_entrance2 entrance, eab2_exact_result* output);
 EAB2_API eab2_call_status eab2_result_destroy(eab2_context context, eab2_result result);
+
+/* C3-L1 working ABI; exact JSON is owned by a result handle. */
+typedef eab2_context eab2_assembly2;
+typedef eab2_context eab2_contact_set2;
+typedef struct eab2_string { const char* data; uint64_t length; } eab2_string;
+#define EAB2_BOUNDARY_NONE UINT32_C(0)
+#define EAB2_FIXED_BODY UINT32_C(1)
+#define EAB2_FORCE_CONTROLLED_PLATE UINT32_C(2)
+#define EAB2_PROFILE1 UINT32_C(1)
+#define EAB2_ASSEMBLY_COMPLETE UINT32_C(1)
+#define EAB2_ASSEMBLY_EXPLICIT_PAIRS UINT32_C(2)
+/* Mask bit 0=x, bit 1=y, bit 2=rotation; 1 means free. Both points explicit. */
+typedef struct eab2_assembly_body2 {
+    uint32_t struct_size; uint32_t abi_version;
+    eab2_body2 body;
+    eab2_string body_id;
+    eab2_point2_bits reference_point; eab2_point2_bits dof_anchor;
+    uint32_t boundary_type; uint32_t dof_mask;
+} eab2_assembly_body2;
+typedef struct eab2_pair2 { uint64_t a; uint64_t b; } eab2_pair2;
+typedef struct eab2_assembly2_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t flags; uint32_t profile;
+    uint64_t body_count; uint64_t body_stride; const eab2_assembly_body2* bodies;
+    uint64_t pair_count; uint64_t pair_stride; const eab2_pair2* pairs;
+} eab2_assembly2_input;
+/* Explicit neighbor indices, each treated as fixed for this translation query.
+ * No omitted neighbor is assumed absent; this is not an assembly mobility test. */
+typedef struct eab2_lock2_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t moving_index;
+    uint64_t neighbor_count; uint64_t neighbor_stride; const uint64_t* neighbors;
+} eab2_lock2_input;
+typedef struct eab2_c3l1_abi_info {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t assembly_body2_size; uint32_t assembly2_input_size;
+    uint32_t pair2_size; uint32_t lock2_input_size;
+    uint32_t string_size; uint32_t reserved;
+} eab2_c3l1_abi_info;
+EAB2_API eab2_call_status eab2_get_c3l1_abi_info(eab2_c3l1_abi_info* info);
+EAB2_API eab2_call_status eab2_assembly2_create(eab2_context context,
+    const eab2_assembly2_input* input, eab2_assembly2* output);
+EAB2_API eab2_call_status eab2_assembly2_destroy(eab2_context context, eab2_assembly2 assembly);
+EAB2_API eab2_call_status eab2_assemble_contact_set2(eab2_context context,
+    eab2_assembly2 assembly, eab2_contact_set2* output);
+EAB2_API eab2_call_status eab2_contact_set2_destroy(eab2_context context, eab2_contact_set2 contacts);
+EAB2_API eab2_call_status eab2_contact_set2_export_exact(eab2_context context,
+    eab2_contact_set2 contacts, eab2_exact_result* output);
+EAB2_API eab2_call_status eab2_query_lock(eab2_context context, eab2_assembly2 assembly,
+    const eab2_lock2_input* input, eab2_exact_result* output);
+EAB2_API eab2_call_status eab2_first_order_mobility(eab2_context context,
+    eab2_contact_set2 contacts, eab2_exact_result* output);
 
 #ifdef __cplusplus
 }

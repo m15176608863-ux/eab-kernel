@@ -1,0 +1,93 @@
+{
+  "schema": "eab2.c3l1.verification.acceptance.v1",
+  "generated_at_utc": "2026-10-22T19:58:40.613058+00:00",
+  "l1_counts": {
+    "assembly": 186,
+    "first_order": 186,
+    "lock": 404
+  },
+  "formal_status_counts": {
+    "assembly": {
+      "MECHANICAL_UNRESOLVED": 2,
+      "OVERLAP": 1,
+      "RESOLVED": 111
+    },
+    "first_order": {
+      "MECHANICAL_UNRESOLVED": 2,
+      "NONZERO_CONE": 74,
+      "OVERLAP": 1,
+      "UNPROVED": 1,
+      "ZERO_CONE": 36
+    },
+    "lock": {
+      "NOT_CONTACT": 2,
+      "NOT_SEPARABLE_TRANSLATION": 276,
+      "OVERLAP": 1,
+      "REMOVABLE_TRANSLATION": 71
+    }
+  },
+  "semantic_mismatches": 0,
+  "strict_field_difference_counts": {
+    "assembly": 0,
+    "first_order": 495,
+    "lock": 0
+  },
+  "opt_selected": 745,
+  "opt_status_counts": {
+    "infeasible": 7,
+    "optimal": 688,
+    "unbounded": 50
+  },
+  "build_dll_sha256": {
+    "eab2.dll": "9bf5b452c216d4577377974b1f1e8d12fd8699c9bb73a2472b67205dc0d66ac1",
+    "eab2_test.dll": "db832290db48b6d130c7d9d1b24453356e4fbcd442a95789feeb5dee06ac3649"
+  },
+  "source_hash_checks": "all build and differential source hashes matched before report generation",
+  "owner_gates_complete": true,
+  "historical_python": {
+    "baseline_full": {
+      "audit": "GREEN",
+      "collected": 14938,
+      "module_coverage_complete": true,
+      "export_changed": [],
+      "live_tree_changed": [],
+      "fresh_git_checkout": false
+    },
+    "closeout_repair_fast": {
+      "audit": "GREEN",
+      "collected": 8944,
+      "module_coverage_complete": true,
+      "export_changed": [],
+      "live_tree_changed": [],
+      "fresh_git_checkout": false
+    },
+    "closeout_repair_full": {
+      "audit": "GREEN",
+      "collected": 15028,
+      "module_coverage_complete": true,
+      "export_changed": [],
+      "live_tree_changed": [],
+      "fresh_git_checkout": false
+    }
+  },
+  "python": {
+    "acceptance_fast": {
+      "audit": "GREEN",
+      "collected": 8951,
+      "module_coverage_complete": true,
+      "export_changed": [],
+      "live_tree_changed": [],
+      "fresh_git_checkout": false
+    },
+    "acceptance_full": {
+      "audit": "GREEN",
+      "collected": 15035,
+      "module_coverage_complete": true,
+      "export_changed": [],
+      "live_tree_changed": [],
+      "fresh_git_checkout": false
+    }
+  },
+  "owner_gates_scope": "84d514e original, owner-provided",
+  "final_run": "acceptance_fix/acceptance_final_run.json"
+}

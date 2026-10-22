@@ -1,0 +1,60 @@
+{
+  "name": "build",
+  "command": [
+    "cmd",
+    "/c",
+    "eab2\\build_eab2.bat"
+  ],
+  "log": "closeout_repair_build.log",
+  "started_at_utc": "2026-10-22T16:44:01.607224+00:00",
+  "complete": true,
+  "source_pre_equal": true,
+  "exit_code": 0,
+  "seconds": 2.01500000001397,
+  "finished_at_utc": "2026-10-22T16:44:03.620997+00:00",
+  "source_post_equal": true,
+  "last_line": "EAB2_C3L1_ABI checks=134 failed=0",
+  "last_lines": [
+    "EAB2_NUMERIC_TESTS checks=558 failed=0",
+    "FP_ENVIRONMENT: FTZ=reject DAZ=reject ROUND_MODES=3_reject MASK_BITS_7_12=6_reject HOST_STATE=unchanged",
+    "ABI_TESTS: 764 assertions, 0 failures",
+    "C_HEADER_PRODUCTION_DLL checks=31 failures=0",
+    "C_HEADER_STATIC checks=31 failures=0",
+    "EAB2_GEOMETRY2_TESTS checks=700 failed=0",
+    "EAB2_LOCAL_TESTS checks=233 failed=0",
+    "EAB2_OPT_TESTS checks=5894 failed=0",
+    "EAB2_L1_TESTS checks=8144 failed=0",
+    "EAB2_C3L1_ABI checks=134 failed=0"
+  ],
+  "source_sha256": {
+    "eab2/src/build_identity.hpp.in": "9ca36e87d19beaccd492437af3fc4ea2d1eef6675f39cdbb6552c4e62bbbc437",
+    "eab2/src/c_api.cpp": "16e77d463438254463105ede851b600c734263ca374124574a97082ddf7efaa6",
+    "eab2/src/exact.hpp": "efbfd3e00a6587d8fbdc18d52d7de7ec84a587731887368b4bc45cf2b7d3c986",
+    "eab2/src/fp_contract.cpp": "1317819447c61bfc2edcf0254f3ad3a4fe52dd5a9b17ebc7058896ee2d4f82ff",
+    "eab2/src/fp_contract.hpp": "d11260023de36cabef39e1f3861b7381a33eaa790d0bd436122c136f1eed2307",
+    "eab2/src/geometry2.cpp": "59cbe3a1c2bec3538e443f6e30ada26cff6cef1e246f02780cace94f60e05709",
+    "eab2/src/geometry2.hpp": "ad223e982c359d9943caf03ae263350f947ac64edc40b198f9f8d33af663d137",
+    "eab2/src/geometry2_local.cpp": "ed41274adbc344d70339d3184411dd776b01a28cadc448c3f4db133d4443384f",
+    "eab2/src/geometry2_local.hpp": "b23d3548c3596474f087ec36f3b1cf6abaf3223be93fef231d4a7a1426b77886",
+    "eab2/src/l1.cpp": "a4a0963176e50231d71d39236909db75dd6725b3ea2540eeed4b4b180fcaeac4",
+    "eab2/src/l1.hpp": "3fa883b0b6f558c1822da069f171a1ab56761c06f59da46830cd31ce31d36ec6",
+    "eab2/src/numeric.cpp": "5790b014ae8cc0f216c83755298ab882d7a38af4aa8e0620827a854ba9161f13",
+    "eab2/src/numeric.hpp": "c26650bbb27e6794dc1965dbff947a8e082da90d3238567ede99a0a1fa56bc6e",
+    "eab2/src/opt.cpp": "67ab32ca678f7cd88dc5626353f700a5c2df53ddcada0fa9554e441f875c2cda",
+    "eab2/src/opt.hpp": "4a80e9dac91c7224b37f4bd10eab33c927a8a11621909416c856393ffee057e6",
+    "eab2/include/eab2/c_api.h": "8d05124bd57d637ff4bb39e3727ca786696709ffcf67811d47cc21b13e51dfa1",
+    "eab2/include/eab2/testing.h": "a26c39161533d1c658b0348d3b8adada07819c03e17e77d668fa2cdb6f3bdb03",
+    "eab2/tests/test_abi.cpp": "97fa8ea41aae9df15ac0b2c12d158fa1e207995c04df705ce6e3f0b9adc98135",
+    "eab2/tests/test_c3l1_abi.cpp": "7f20d51c900a395a07daef60dee408c2177fd200d347860c4df405381c04eb68",
+    "eab2/tests/test_c_header.c": "51445def9269d02cb42171f60030ef4c8aa45b0ceb96e351fc64f32d458c4872",
+    "eab2/tests/test_geometry2.cpp": "014b761c942c7ec7e685095113b953daa5229a6d36c684f08c419e93d58522e0",
+    "eab2/tests/test_geometry2_local.cpp": "08dd6212d1a2c35a29b0971a998c38d82f177ad8875c0ed5fd8939b2fce699fd",
+    "eab2/tests/test_l1.cpp": "a45233204a33b81871d50d6f000e9e28648c81172495d63007fc1fdeb7d47ea9",
+    "eab2/tests/test_numeric.cpp": "908ae56c20a5cdb4f3e96bbe2d97e4cc5d11ca92e4c965fe82241bf1c068f07b",
+    "eab2/tests/test_opt.cpp": "2c536cf4d9b7c10460743d79bc8a20449a9bbae707458c52365210ed8e4dbccb"
+  },
+  "dll_sha256": {
+    "eab2.dll": "497131bef6ce93fa34f1aa6f84aafbbb12e2ab490da0544cf6da3bed8f8aec48",
+    "eab2_test.dll": "52feb6f87150ef49bcc31ffafb0d36bfd7f238f3aa0d0d17e83e9fa81e0be9e1"
+  }
+}

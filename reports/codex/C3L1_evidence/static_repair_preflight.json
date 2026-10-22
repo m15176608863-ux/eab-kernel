@@ -1,0 +1,33 @@
+[
+  {
+    "name": "static_repair_unit",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "reports\\codex\\C3L1_evidence\\tmp\\pytest_static_repair",
+      "tests/test_eab2_c3l1.py"
+    ],
+    "exit_code": 0,
+    "seconds": 1.1410000000614673,
+    "last_line": "20 passed in 0.68s"
+  },
+  {
+    "name": "static_repair_gate",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "tools/check_exact_construction.py"
+    ],
+    "exit_code": 0,
+    "seconds": 136.67199999990407,
+    "last_line": "exact construction AST gate: 0 violation(s)"
+  }
+]

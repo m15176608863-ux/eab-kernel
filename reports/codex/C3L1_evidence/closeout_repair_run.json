@@ -1,0 +1,230 @@
+{
+  "schema": "eab2.c3l1.closeout_repair.v1",
+  "started_at_utc": "2026-10-22T16:44:01.477311+00:00",
+  "status": "GREEN",
+  "complete": true,
+  "source_manifest": "closeout_repair_source_manifest.json",
+  "sequential": true,
+  "interrupted_run_not_reused": true,
+  "stages": [
+    {
+      "name": "build",
+      "command": [
+        "cmd",
+        "/c",
+        "eab2\\build_eab2.bat"
+      ],
+      "log": "closeout_repair_build.log",
+      "started_at_utc": "2026-10-22T16:44:01.607224+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.01500000001397,
+      "finished_at_utc": "2026-10-22T16:44:03.620997+00:00",
+      "source_post_equal": true,
+      "last_line": "EAB2_C3L1_ABI checks=134 failed=0"
+    },
+    {
+      "name": "ctest",
+      "command": [
+        "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\ctest.exe",
+        "--test-dir",
+        "eab2/build",
+        "--output-on-failure"
+      ],
+      "log": "closeout_repair_ctest.log",
+      "started_at_utc": "2026-10-22T16:44:03.873312+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.0,
+      "finished_at_utc": "2026-10-22T16:44:05.878963+00:00",
+      "source_post_equal": true,
+      "last_line": "Total Test time (real) =   0.49 sec"
+    },
+    {
+      "name": "audit",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_audit.py",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\delivery_audit_repair.json"
+      ],
+      "log": "closeout_repair_audit.log",
+      "started_at_utc": "2026-10-22T16:44:06.140027+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.015999999945052,
+      "finished_at_utc": "2026-10-22T16:44:08.147623+00:00",
+      "source_post_equal": true,
+      "last_line": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=18"
+    },
+    {
+      "name": "numeric",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\numeric_diff_repair.json"
+      ],
+      "log": "closeout_repair_numeric.log",
+      "started_at_utc": "2026-10-22T16:44:08.417553+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.0160000000614673,
+      "finished_at_utc": "2026-10-22T16:44:10.429041+00:00",
+      "source_post_equal": true,
+      "last_line": "EAB2_DIFF samples=4483 bits=6003 mismatches=0 status=PASS"
+    },
+    {
+      "name": "opt",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_opt_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\opt_diff_repair.json",
+        "--source-commit",
+        "7540cde+C3L1-uncommitted-test-repair"
+      ],
+      "log": "closeout_repair_opt.log",
+      "started_at_utc": "2026-10-22T16:44:10.676551+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 40.03200000000652,
+      "finished_at_utc": "2026-10-22T16:44:50.705676+00:00",
+      "source_post_equal": true,
+      "last_line": "OPT_DIFF selected=745 completed=745 mismatches=0"
+    },
+    {
+      "name": "l1",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_c3l1_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\diff_repair.json",
+        "--dataset",
+        "all"
+      ],
+      "log": "closeout_repair_l1.log",
+      "started_at_utc": "2026-10-22T16:44:50.979606+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 312.14000000001397,
+      "finished_at_utc": "2026-10-22T16:50:03.129090+00:00",
+      "source_post_equal": true,
+      "last_line": "C3L1_DIFF assembly=186 first_order=186 lock=404 mismatch=0 strict_fields=495"
+    },
+    {
+      "name": "c1",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_diff_c1.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\c1_diff_repair.json",
+        "--metamorphic",
+        "--source-commit",
+        "7540cde+C3L1-uncommitted-test-repair"
+      ],
+      "log": "closeout_repair_c1.log",
+      "started_at_utc": "2026-10-22T16:50:03.385268+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 220.09399999992456,
+      "finished_at_utc": "2026-10-22T16:53:43.486050+00:00",
+      "source_post_equal": true,
+      "last_line": "C1_DIFF selected=657 completed=657 mismatches=0 layer_queries=100086"
+    },
+    {
+      "name": "p2",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_c3l1_measure.py",
+        "--input",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\diff_repair.json",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\p2_repair.json"
+      ],
+      "log": "closeout_repair_p2.log",
+      "started_at_utc": "2026-10-22T16:53:43.724823+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.01500000001397,
+      "finished_at_utc": "2026-10-22T16:53:45.742476+00:00",
+      "source_post_equal": true,
+      "last_line": "C3L1_TIMING_REPORT queries=776 groups=8 performance_gate=false"
+    },
+    {
+      "name": "fast",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "closeout_repair_fast",
+        "--evidence-root",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence"
+      ],
+      "log": "closeout_repair_fast.log",
+      "started_at_utc": "2026-10-22T16:53:45.973147+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 352.1720000000205,
+      "finished_at_utc": "2026-10-22T16:59:38.137248+00:00",
+      "source_post_equal": true,
+      "last_line": "shard 1: 8944 passed in 329.06s (0:05:29)"
+    },
+    {
+      "name": "full",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "closeout_repair_full",
+        "--evidence-root",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence",
+        "--runslow"
+      ],
+      "log": "closeout_repair_full.log",
+      "started_at_utc": "2026-10-22T16:59:38.401357+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 1662.75,
+      "finished_at_utc": "2026-10-22T17:27:21.157088+00:00",
+      "source_post_equal": true,
+      "last_line": "exact construction AST gate: 0 violation(s)"
+    }
+  ],
+  "finished_at_utc": "2026-10-22T17:27:21.284333+00:00",
+  "source_pre_post_equal": true
+}

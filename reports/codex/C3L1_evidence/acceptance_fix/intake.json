@@ -1,0 +1,55 @@
+{
+  "schema": "eab2.c3l1.acceptance_fix.v1",
+  "target": "Resolve acceptance minors and archive evidence, then fixed-byte full closeout",
+  "head": "84d514ebd7e820a6ea7e5f58f4113d8e2bd32e24",
+  "initial_status": "clean",
+  "scope": [
+    "D:/eab-wt/cx-c0",
+    "D:/eab-evidence/reports/codex/C3L1_evidence/"
+  ],
+  "non_goals": [
+    "src/eab mathematical changes",
+    "Git writes",
+    "install/download",
+    "termination of non-owned processes",
+    "L3/L4"
+  ],
+  "rollback_anchor": "84d514e plus exact byte SHA256 archive; no automatic overwrite restore",
+  "acceptance_source": "C:\\Users\\m1517\\AppData\\Local\\Temp\\claude\\C--Agent--claude\\659f270b-c2f6-43a9-9717-6dc28c605be4\\scratchpad\\c3l1_accept\\C3L1_acceptance.md",
+  "acceptance_archived_copy": "D:\\eab-evidence\\reports\\codex\\C3L1_evidence\\acceptance_review\\C3L1_acceptance.md",
+  "acceptance_sha256": "2aead318aab53edcd52668f38b4d3010f1c713effa7c391512d7bf5bcc161a97",
+  "owner_reported_fresh_tree": "84d514e build, C0/C1/LP/L1 differences zero, Python 15028 passed; reported by Claude, not rerun by this agent",
+  "independent_review": "Two non-authors, both 0 critical / 0 major; read complete source report",
+  "success_criteria": [
+    "NORM adversarial RESOURCE_LIMIT within bound; legal C0 unchanged",
+    "certificate matrices rebuilt from original geometry",
+    "old evidence copy/hash/verify/remove, deterministic gzip and total net increase about <=2MB",
+    "complete build and CTest, all four differences zero semantic mismatch",
+    "fast/full4 GREEN, executed multisets equal, no source drift",
+    "links/hashes/encoding/size verified and final report correct"
+  ],
+  "dll_reproduction_choice": "source hash anchor; no /Brepro added and no cross-tree DLL byte reproducibility claimed",
+  "steps": [
+    {
+      "step": 1,
+      "name": "implement scoped acceptance repairs",
+      "status": "complete"
+    },
+    {
+      "step": 2,
+      "name": "archive historical evidence with per-file SHA",
+      "status": "complete"
+    },
+    {
+      "step": 3,
+      "name": "freeze bytes and rerun all final validation",
+      "status": "complete"
+    },
+    {
+      "step": 4,
+      "name": "report, delivery index and integrity audit",
+      "status": "complete"
+    }
+  ],
+  "completion_report": "../../C3L1_report.md"
+}

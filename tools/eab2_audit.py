@@ -1,4 +1,4 @@
-"""Read-only C0/C1 delivery/build audit; writes only an explicitly requested JSON.
+"""Read-only C0/C1/C3-L1 delivery/build audit; writes only an explicitly requested JSON.
 
 No downloads, Git writes, source rewrites, or numeric oracle helpers. The audit
 checks the actual final compiler commands, private vendor bytes, and DLL exports.
@@ -98,7 +98,10 @@ def main():
               "eab2_context_get_limits2", "eab2_context_configure_limits2",
               "eab2_body2_create", "eab2_body2_destroy", "eab2_entrance2_create", "eab2_entrance2_destroy",
               "eab2_query2_batch", "eab2_membership2_batch", "eab2_topology2_batch",
-              "eab2_result_export_exact", "eab2_result_destroy", "eab2_local_origin2_exact"]
+              "eab2_result_export_exact", "eab2_result_destroy", "eab2_local_origin2_exact",
+              "eab2_get_c3l1_abi_info", "eab2_assembly2_create", "eab2_assembly2_destroy",
+              "eab2_assemble_contact_set2", "eab2_contact_set2_destroy", "eab2_contact_set2_export_exact",
+              "eab2_query_lock", "eab2_first_order_mobility"]
     for name in public:
         if not hasattr(production, name):
             findings.append(f"missing production export: {name}")
@@ -106,7 +109,7 @@ def main():
         findings.append("test numeric ABI leaked into production DLL")
     if not hasattr(testing, "eab2_numeric_batch"):
         findings.append("numeric test export absent")
-    for test_name in ("eab2_query2_exact_batch", "eab2_covers2_exact"):
+    for test_name in ("eab2_query2_exact_batch", "eab2_covers2_exact", "eab2_opt_solve_exact", "eab2_test_context_rendezvous"):
         if hasattr(production, test_name) or not hasattr(testing, test_name):
             findings.append(f"test bridge production/testing isolation failed: {test_name}")
     sys.path.insert(0, str(ROOT / "tools"))

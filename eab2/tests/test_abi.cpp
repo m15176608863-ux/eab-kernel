@@ -370,6 +370,76 @@ void child_context_reuse() {
     check(eab2_context_destroy(second) == EAB2_OK, "context RAII final child cleanup");
 }
 
+void numeric_compute_budget_matrix() {
+    auto options = initialized<eab2_context_options>();
+    eab2_context limited{}, unrestricted{};
+    check(eab2_context_create(&options, &limited) == EAB2_OK &&
+          eab2_context_create(&options, &unrestricted) == EAB2_OK, "numeric budget contexts created");
+    auto original = initialized<eab2_context_limits2>();
+    check(eab2_context_get_limits2(limited, &original) == EAB2_OK, "numeric original budget read");
+    auto configured = original;
+    configured.max_integer_bits = 256;
+    check(eab2_context_configure_limits2(limited, &configured) == EAB2_OK, "numeric bit budget configured");
+
+    // Each small canonical input fits. Only the exact sum of squares grows
+    // beyond the budget: distinct prime denominators cannot cancel its product.
+    const unsigned primes[] = {101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151,
+        157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233,
+        239, 241, 251, 257, 263, 269};
+    std::vector<std::string> sources;
+    for (const auto prime : primes) sources.push_back("1/" + std::to_string(prime));
+    std::vector<eab2_text> texts;
+    for (const auto& source : sources) texts.push_back({source.data(), source.size()});
+    Batch growing, valid;
+    growing.item.operation = EAB2_OP_NORM;
+    growing.item.encoding = EAB2_ENCODING_RATIONAL;
+    growing.item.value_count = texts.size(); growing.item.values = texts.data();
+    valid.item.operation = EAB2_OP_NORM;
+    valid.item.encoding = EAB2_ENCODING_RATIONAL;
+    const eab2_text pythagorean[] = {{"3/1", 3}, {"4/1", 3}};
+    valid.item.value_count = 2; valid.item.values = pythagorean;
+    eab2_numeric_input inputs[] = {valid.item, growing.item, valid.item};
+    uint64_t bits[] = {0, UINT64_C(0xdeadbeefcafef00d), 0};
+    eab2_numeric_output outputs[] = {valid.result, growing.result, valid.result};
+    for (size_t i = 0; i < 3; ++i) outputs[i].bits = &bits[i];
+    auto input = valid.input; input.items = inputs; input.item_count = 3;
+    auto output = valid.output; output.items = outputs; output.item_capacity = 3;
+    check(eab2_numeric_batch(limited, &input, &output) == EAB2_OK && output.item_count == 3,
+          "numeric compute limit is a per-item failure, not batch rejection");
+    check(outputs[1].call_status == EAB2_RESOURCE_LIMIT &&
+          outputs[1].mathematical_status == EAB2_MATH_NOT_COMPUTED &&
+          outputs[1].display_status == EAB2_DISPLAY_NOT_AVAILABLE && outputs[1].bits_count == 0 &&
+          bits[1] == UINT64_C(0xdeadbeefcafef00d), "norm sum-of-squares budget before oversized arithmetic");
+    check(outputs[0].call_status == EAB2_OK && outputs[2].call_status == EAB2_OK &&
+          outputs[0].bits_count == 1 && outputs[2].bits_count == 1 &&
+          bits[0] == UINT64_C(0x4014000000000000) && bits[0] == bits[2],
+          "valid norm items before and after resource failure retain exact output");
+    auto error = initialized<eab2_error_info>();
+    uint64_t required = 0;
+    check(eab2_context_get_error(limited, &error, nullptr, 0, &required) == EAB2_OK &&
+          error.code == EAB2_RESOURCE_LIMIT && error.index == 1 && std::strcmp(error.field, "numeric") == 0,
+          "numeric compute failure records first failing item");
+
+    std::vector<uint64_t> vector_bits(texts.size());
+    growing.result.bits = vector_bits.data(); growing.result.bits_capacity = vector_bits.size();
+    growing.item.operation = EAB2_OP_UNIT;
+    check(growing.run(limited) == EAB2_OK && growing.result.call_status == EAB2_RESOURCE_LIMIT &&
+          growing.result.bits_count == 0, "unit sum-of-squares uses same arithmetic budget");
+    growing.item.operation = EAB2_OP_VECTOR;
+    check(growing.run(limited) == EAB2_OK && growing.result.call_status == EAB2_OK &&
+          growing.result.bits_count == texts.size(), "adversarial inputs individually fit parsing and vector conversion");
+    growing.item.operation = EAB2_OP_NORM;
+    check(growing.run(unrestricted) == EAB2_OK && growing.result.call_status == EAB2_OK &&
+          growing.result.bits_count == 1, "item exception restores thread-local scope for a different context");
+    const auto norm_bits = vector_bits[0];
+    check(eab2_context_configure_limits2(limited, &original) == EAB2_OK &&
+          growing.run(limited) == EAB2_OK && growing.result.call_status == EAB2_OK &&
+          growing.result.bits_count == 1 && vector_bits[0] == norm_bits,
+          "restored context budget reproduces exact norm after prior rejection");
+    check(eab2_context_destroy(limited) == EAB2_OK && eab2_context_destroy(unrestricted) == EAB2_OK,
+          "numeric budget context cleanup");
+}
+
 void limits2_matrix() {
     auto options = initialized<eab2_context_options>();
     eab2_context context{};
@@ -418,7 +488,7 @@ int main() {
         info.reserved = 0;
         check(info.context_size == sizeof(eab2_context) && info.pointer_bits == 64 &&
               info.binary64_bits == 64 && info.build_identity[0], "ABI sizes support domain identity");
-        check(info.supported_capabilities == (EAB2_CAP_CONTEXT | EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 | EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2), "test capabilities explicit");
+        check(info.supported_capabilities == (EAB2_CAP_CONTEXT | EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 | EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2 | EAB2_CAP_ASSEMBLY2 | EAB2_CAP_CONTACTSET2 | EAB2_CAP_LOCK2 | EAB2_CAP_MOBILITY2 | EAB2_CAP_TEST_OPT), "test capabilities explicit");
         info.requested_capabilities = EAB2_CAP_RHO | EAB2_CAP_SE2 | EAB2_CAP_LP2;
         check(eab2_get_abi_info(&info) == EAB2_UNSUPPORTED &&
               info.unsupported_capabilities == info.requested_capabilities, "unimplemented capabilities unsupported");
@@ -472,6 +542,7 @@ int main() {
         }
         child_context_reuse();
         limits2_matrix();
+        numeric_compute_budget_matrix();
         std::cout << "ABI_TESTS: " << assertions << " assertions, 0 failures\n";
         return 0;
     } catch (const std::exception& error) {

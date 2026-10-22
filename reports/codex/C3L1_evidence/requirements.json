@@ -1,0 +1,92 @@
+{
+  "schema": "eab2.c3l1.requirements.v1",
+  "overall_status": "C3L1_DONE",
+  "items": [
+    {
+      "id": "P0-1",
+      "requirement": "横切精确 LP 核及三证书",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/opt_diff_acceptance.json.gz",
+      "gate": "eab2/tests/test_opt.cpp"
+    },
+    {
+      "id": "P0-2",
+      "requirement": "逐点 F_p 完整界面装配及真 VV",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/diff_acceptance.json.gz",
+      "gate": "eab2/tests/test_l1.cpp::six_regressions/provenance_and_flat"
+    },
+    {
+      "id": "P0-3",
+      "requirement": "平移锁定及严格局部半径",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/diff_acceptance.json.gz",
+      "gate": "eab2/tests/test_l1.cpp::lock_cases"
+    },
+    {
+      "id": "P0-4",
+      "requirement": "法向一阶可动性及精确 DD",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/diff_acceptance.json.gz",
+      "gate": "eab2/tests/test_l1.cpp::mobility_cases/dd_oracle"
+    },
+    {
+      "id": "P0-5",
+      "requirement": "T1a/T1b 独立 Python 差分",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/diff_acceptance.json.gz",
+      "gate": "tools/eab2_c3l1_diff.py"
+    },
+    {
+      "id": "P0-6",
+      "requirement": "工作 C ABI 增量",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/build_acceptance.json",
+      "gate": "eab2/tests/test_c3l1_abi.cpp"
+    },
+    {
+      "id": "P1-7",
+      "requirement": "C1 遗留项",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/c1_diff_acceptance.json.gz",
+      "gate": "eab2/tests/test_c3l1_abi.cpp; tools/eab2_c1_exact.py"
+    },
+    {
+      "id": "P1-8",
+      "requirement": "精确刚体与单位变换元门",
+      "status": "IMPLEMENTED_VERIFIED",
+      "evidence": "acceptance_fix/diff_acceptance.json.gz",
+      "gate": "eab2/tests/test_l1.cpp::exact_metamorphic"
+    },
+    {
+      "id": "P2-9",
+      "requirement": "规模、冷调用耗时及成本说明（不设门）",
+      "status": "REPORTED_NO_GATE",
+      "evidence": "acceptance_fix/p2_acceptance.json",
+      "gate": "tools/eab2_c3l1_measure.py"
+    }
+  ],
+  "pending_owner_gates": [],
+  "strict_certificate_representation_differences": 495,
+  "strict_difference_policy": "All retained; only independently verified nonunique witnesses differ, not state/radius/generator-set semantics.",
+  "not_claimed": [
+    "current-fix fresh Git tree",
+    "new independent review of current minor fixes",
+    "all-input theorem",
+    "L3/L4",
+    "finite-motion locking",
+    "engineering benchmark",
+    "cross-tree DLL byte reproducibility"
+  ],
+  "owner_gates_scope": "Claude-provided 84d514e fresh-tree and nonauthor reports; current minor fixes independently rerun locally, not another owner fresh-tree review",
+  "acceptance_minors": {
+    "M1": "IMPLEMENTED_VERIFIED",
+    "M2": "IMPLEMENTED_VERIFIED",
+    "M3": "IMPLEMENTED_VERIFIED",
+    "M4": "IMPLEMENTED_VERIFIED",
+    "M5": "IMPLEMENTED_VERIFIED",
+    "L1-m1": "IMPLEMENTED_VERIFIED",
+    "L1-m2": "IMPLEMENTED_VERIFIED",
+    "L1-m3": "IMPLEMENTED_VERIFIED"
+  }
+}

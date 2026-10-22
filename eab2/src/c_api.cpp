@@ -6,8 +6,11 @@
 #include "build_identity.hpp"
 #include "geometry2.hpp"
 #include "numeric.hpp"
+#include "l1.hpp"
+#include "opt.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <cstdio>
 #include <cstring>
 #include <limits>
@@ -15,6 +18,7 @@
 #include <mutex>
 #include <new>
 #include <string>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
@@ -37,20 +41,27 @@ struct Object {
     std::unique_ptr<eab2::geometry2::Body> body;
     std::unique_ptr<eab2::geometry2::Entrance> entrance;
     std::unique_ptr<std::string> json;
+    std::unique_ptr<eab2::contact::Assembly2> assembly;
+    std::unique_ptr<eab2::contact::ContactSet2> contacts;
 };
 struct ContextState {
+    std::mutex mutex;
+    bool alive = true;
     uint64_t generation = 0;
     ErrorState error;
     eab2::geometry2::GeometryLimits limits;
     std::vector<Object> objects;
 };
 std::mutex registry_mutex;
-std::unordered_map<uint64_t, std::unique_ptr<ContextState>> registry;
+std::unordered_map<uint64_t, std::shared_ptr<ContextState>> registry;
 uint64_t next_id = 1;
-uint64_t next_generation = 1;
+std::atomic<uint64_t> next_generation{1};
 uint64_t generation() {
-    if (next_generation == UINT64_MAX) throw eab2::numeric::Error(EAB2_RESOURCE_LIMIT, "handle generation exhausted");
-    return next_generation++;
+    auto value = next_generation.load(std::memory_order_relaxed);
+    do {
+        if (value == UINT64_MAX) throw eab2::numeric::Error(EAB2_RESOURCE_LIMIT, "handle generation exhausted");
+    } while (!next_generation.compare_exchange_weak(value, value + 1, std::memory_order_relaxed));
+    return value;
 }
 
 void set_error(ContextState& state, uint32_t code, const char* field,
@@ -61,31 +72,41 @@ void set_error(ContextState& state, uint32_t code, const char* field,
     std::snprintf(state.error.field, sizeof(state.error.field), "%s", field);
     std::snprintf(state.error.message, sizeof(state.error.message), "%s", message);
 }
-ContextState* lookup(eab2_context token) noexcept {
+// Registry lock only pins ownership. It is NEVER held while waiting for a
+// context mutex, so distinct contexts compute concurrently and destroy is safe.
+std::shared_ptr<ContextState> resolve(eab2_context token) {
     if (token.id == 0 || token.owner != token.id ||
-        token.type != EAB2_HANDLE_CONTEXT || token.reserved != 0) {
-        return nullptr;
-    }
+        token.type != EAB2_HANDLE_CONTEXT || token.reserved != 0) return {};
+    std::lock_guard lock(registry_mutex);
     const auto found = registry.find(token.id);
     return found != registry.end() && found->second && found->second->generation == token.generation
-        ? found->second.get() : nullptr;
+        ? found->second : std::shared_ptr<ContextState>{};
 }
+struct ContextAccess {
+    std::shared_ptr<ContextState> owner;
+    std::unique_lock<std::mutex> lock;
+    explicit ContextAccess(eab2_context token) : owner(resolve(token)) {
+        if (owner) lock = std::unique_lock(owner->mutex);
+    }
+    ContextState* get() const { return owner && owner->alive ? owner.get() : nullptr; }
+};
 template<class T> uint32_t header(const T* value) noexcept {
     if (!value || value->struct_size != sizeof(T)) return EAB2_INVALID_INPUT;
     return value->abi_version == EAB2_ABI_VERSION ? EAB2_OK : EAB2_UNSUPPORTED;
 }
 uint64_t capabilities() noexcept {
     uint64_t result = EAB2_CAP_CONTEXT | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 |
-        EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2;
+        EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2 |
+        EAB2_CAP_ASSEMBLY2 | EAB2_CAP_CONTACTSET2 | EAB2_CAP_LOCK2 | EAB2_CAP_MOBILITY2;
 #ifdef EAB2_ENABLE_TEST_API
-    result |= EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2;
+    result |= EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_TEST_OPT;
 #endif
     return result;
 }
 uint32_t record_exception(eab2_context context, uint32_t code, const char* message) noexcept {
     try {
-        std::lock_guard lock(registry_mutex);
-        if (auto* state = lookup(context))
+        ContextAccess access(context);
+        if (auto* state = access.get())
             set_error(*state, code, "exception", UINT64_MAX, message);
     } catch (...) { /* A failure to reacquire cannot escape the C boundary. */ }
     return code;
@@ -130,7 +151,7 @@ extern "C" EAB2_API eab2_call_status eab2_context_create(
         if (options->flags != 0 || options->reserved != 0) return EAB2_INVALID_INPUT;
         const auto fp_status = eab2::fp::self_test();
         if (fp_status != EAB2_OK) return fp_status;
-        auto created = std::make_unique<ContextState>();
+        auto created = std::make_shared<ContextState>();
         std::lock_guard lock(registry_mutex);
         uint64_t id = 0;
         for (const auto& entry : registry) if (!entry.second) { id = entry.first; break; }
@@ -150,8 +171,11 @@ extern "C" EAB2_API eab2_call_status eab2_context_create(
 
 extern "C" EAB2_API eab2_call_status eab2_context_destroy(eab2_context context) {
     try {
+        ContextAccess access(context);
+        if (!access.get()) return EAB2_INVALID_HANDLE;
+        access.owner->alive = false;
+        access.owner->objects.clear();
         std::lock_guard lock(registry_mutex);
-        if (!lookup(context)) return EAB2_INVALID_HANDLE;
         registry[context.id].reset();
         return EAB2_OK;
     } catch (...) { return EAB2_INTERNAL_ERROR; }
@@ -161,8 +185,8 @@ extern "C" EAB2_API eab2_call_status eab2_context_get_error(
     eab2_context context, eab2_error_info* info,
     char* message, uint64_t capacity, uint64_t* required) {
     try {
-        std::lock_guard lock(registry_mutex);
-        const auto* state = lookup(context);
+        ContextAccess access(context);
+        const auto* state = access.get();
         if (!state) return EAB2_INVALID_HANDLE;
         const auto status = header(info);
         if (status != EAB2_OK) return status;
@@ -204,13 +228,13 @@ uint32_t reject_c1(ContextState& state, uint32_t code, const char* field, const 
     set_error(state, code, field, index, message);
     return code;
 }
-template<class Function> uint32_t c1_call(eab2_context context, Function function) noexcept {
+template<class Function> uint32_t c1_call(eab2_context context, Function function, bool requires_fp = true) noexcept {
     try {
-        std::lock_guard lock(registry_mutex);
-        auto* state = lookup(context);
+        ContextAccess access(context);
+        auto* state = access.get();
         if (!state) return EAB2_INVALID_HANDLE;
         state->error = {};
-        const auto fp_status = eab2::fp::self_test();
+        const auto fp_status = requires_fp ? eab2::fp::self_test() : EAB2_OK;
         if (fp_status != EAB2_OK)
             return reject_c1(*state, fp_status, "environment", "floating-point contract failed");
         eab2::exact::IntegerLimitScope integer_scope(state->limits.max_integer_bits);
@@ -239,7 +263,7 @@ uint32_t destroy_object(eab2_context context, eab2_context token, uint32_t type)
         if (!found) return reject_c1(state, EAB2_INVALID_HANDLE, "handle", "wrong owner, type, or generation");
         *found = {};
         return EAB2_OK;
-    });
+    }, false);
 }
 template<class Input, class Decode>
 uint32_t query2_impl(eab2_context context, eab2_entrance2 entrance, const Input* input,
@@ -316,7 +340,7 @@ extern "C" EAB2_API eab2_call_status eab2_context_get_limits2(eab2_context conte
         *output = {sizeof(eab2_context_limits2), EAB2_ABI_VERSION, state.limits.max_work_units,
             state.limits.max_elements, state.limits.max_integer_bits};
         return EAB2_OK;
-    });
+    }, false);
 }
 extern "C" EAB2_API eab2_call_status eab2_context_configure_limits2(eab2_context context, const eab2_context_limits2* input) {
     return c1_call(context, [&](ContextState& state) {
@@ -477,8 +501,8 @@ extern "C" EAB2_API eab2_call_status eab2_numeric_batch(
     eab2_context context, const eab2_numeric_batch_input* input,
     eab2_numeric_batch_output* output) {
     try {
-        std::lock_guard lock(registry_mutex);
-        auto* state = lookup(context);
+        ContextAccess access(context);
+        auto* state = access.get();
         if (!state) return EAB2_INVALID_HANDLE;
         auto reject = [&](uint32_t code, const char* field, uint64_t index,
                           const char* message) {
@@ -544,6 +568,7 @@ extern "C" EAB2_API eab2_call_status eab2_numeric_batch(
                 values.reserve(static_cast<size_t>(in.value_count));
                 for (uint64_t j = 0; j < in.value_count; ++j)
                     values.emplace_back(in.values[j].data, static_cast<size_t>(in.values[j].length));
+                eab2::exact::IntegerLimitScope integer_scope(state->limits.max_integer_bits);
                 result.bits = eab2::numeric::evaluate(in.operation, in.encoding, values,
                     (in.flags & EAB2_NUMERIC_ALLOW_UNDERFLOW) != 0, &result.underflow_zero);
                 if (result.bits.size() > output->items[i].bits_capacity) {
@@ -551,6 +576,9 @@ extern "C" EAB2_API eab2_call_status eab2_numeric_batch(
                     result.message = "insufficient result bits capacity";
                     result.bits.clear();
                 }
+            } catch (const eab2::exact::ResourceLimit& error) {
+                result.status = EAB2_RESOURCE_LIMIT;
+                result.message = error.what();
             } catch (const eab2::numeric::Error& error) {
                 result.status = error.code >= EAB2_INVALID_INPUT && error.code <= EAB2_CANCELLED
                     ? error.code : EAB2_INTERNAL_ERROR;
@@ -589,5 +617,247 @@ extern "C" EAB2_API eab2_call_status eab2_numeric_batch(
     } catch (...) {
         return record_exception(context, EAB2_INTERNAL_ERROR, "unexpected batch boundary exception; outputs unchanged");
     }
+}
+#endif
+
+namespace {
+uint32_t l1_math(const std::optional<std::string>& name) {
+    if (!name) return EAB2_MATH_NOT_COMPUTED;
+    if (*name == "OVERLAP") return EAB2_MATH_OVERLAP;
+    if (*name == "UNPROVED") return EAB2_MATH_UNPROVED;
+    if (*name == "MECHANICAL_UNRESOLVED") return EAB2_MATH_MECHANICAL_UNRESOLVED;
+    return EAB2_MATH_VALUE;
+}
+uint32_t save_exact(ContextState& state, eab2_context context, std::string json,
+                    uint32_t math, eab2_exact_result* output) {
+    Object created;
+    created.type = EAB2_HANDLE_RESULT;
+    created.json = std::make_unique<std::string>(std::move(json));
+    const auto* data = created.json->c_str();
+    const auto count = created.json->size();
+    const auto token = add_object(state, context, std::move(created));
+    *output = {sizeof(eab2_exact_result), EAB2_ABI_VERSION, EAB2_OK, math, token, data, count};
+    return EAB2_OK;
+}
+bool valid_utf8(const std::string& text) {
+    size_t at = 0;
+    while (at < text.size()) {
+        const auto first = static_cast<unsigned char>(text[at++]);
+        if (first < 128) continue;
+        unsigned width = 0, value = 0, minimum = 0;
+        if (first >= 0xc2 && first <= 0xdf) { width = 1; value = first & 31; minimum = 0x80; }
+        else if (first >= 0xe0 && first <= 0xef) { width = 2; value = first & 15; minimum = 0x800; }
+        else if (first >= 0xf0 && first <= 0xf4) { width = 3; value = first & 7; minimum = 0x10000; }
+        else return false;
+        if (width > text.size() - at) return false;
+        for (unsigned k = 0; k < width; ++k) {
+            const auto next = static_cast<unsigned char>(text[at++]);
+            if ((next & 0xc0) != 0x80) return false;
+            value = (value << 6) | (next & 63);
+        }
+        if (value < minimum || value > 0x10ffff || (value >= 0xd800 && value <= 0xdfff)) return false;
+    }
+    return true;
+}
+eab2::geometry2::Point decode_point(eab2_point2_bits point) {
+    return {eab2::numeric::decode_binary64(point.x_bits), eab2::numeric::decode_binary64(point.y_bits)};
+}
+}
+extern "C" EAB2_API eab2_call_status eab2_get_c3l1_abi_info(eab2_c3l1_abi_info* info) {
+    const auto status = header(info);
+    if (status != EAB2_OK) return status;
+    if (info->reserved) return EAB2_INVALID_INPUT;
+    *info = {sizeof(eab2_c3l1_abi_info), EAB2_ABI_VERSION, sizeof(eab2_assembly_body2),
+        sizeof(eab2_assembly2_input), sizeof(eab2_pair2), sizeof(eab2_lock2_input), sizeof(eab2_string), 0};
+    return EAB2_OK;
+}
+extern "C" EAB2_API eab2_call_status eab2_assembly2_create(eab2_context context,
+    const eab2_assembly2_input* input, eab2_assembly2* output) {
+    if (!output) return EAB2_INVALID_INPUT;
+    *output = {};
+    return c1_call(context, [&](ContextState& state) {
+        const auto status = header(input);
+        if (status != EAB2_OK) return reject_c1(state, status, "input", "invalid assembly input header");
+        if (input->profile != EAB2_PROFILE1)
+            return reject_c1(state, EAB2_UNSUPPORTED, "profile", "only profile1 is implemented");
+        if ((input->flags & ~(EAB2_ASSEMBLY_COMPLETE | EAB2_ASSEMBLY_EXPLICIT_PAIRS)) ||
+            !input->body_count || input->body_stride != sizeof(eab2_assembly_body2) || !input->bodies ||
+            input->pair_stride != sizeof(eab2_pair2) || (input->pair_count && !input->pairs) ||
+            !c1_extent(input->body_count, input->body_stride) || !c1_extent(input->pair_count, input->pair_stride) ||
+            (!(input->flags & EAB2_ASSEMBLY_EXPLICIT_PAIRS) && (input->pair_count || (input->flags & EAB2_ASSEMBLY_COMPLETE))))
+            return reject_c1(state, EAB2_INVALID_INPUT, "assembly", "invalid body/pair counts, pointers, strides or flags");
+        if (input->body_count > 1024 || input->pair_count > state.limits.max_elements)
+            return reject_c1(state, EAB2_RESOURCE_LIMIT, "assembly", "assembly descriptor work limit exceeded");
+        auto value = std::make_unique<eab2::contact::Assembly2>();
+        value->limits = state.limits;
+        value->completeness = input->flags & EAB2_ASSEMBLY_COMPLETE ? "complete" : "completeness_unknown";
+        std::set<std::string> ids;
+        for (uint64_t i = 0; i < input->body_count; ++i) {
+            const auto& entry = input->bodies[i];
+            const auto entry_status = header(&entry);
+            if (entry_status != EAB2_OK) return reject_c1(state, entry_status, "body", "invalid body entry header", i);
+            const auto* body = object(state, context, entry.body, EAB2_HANDLE_BODY2);
+            if (!body) return reject_c1(state, EAB2_INVALID_HANDLE, "body", "invalid assembly body handle", i);
+            if (!entry.body_id.length || !entry.body_id.data || entry.dof_mask > 7 || entry.boundary_type > 2)
+                return reject_c1(state, EAB2_INVALID_INPUT, "body", "invalid id/mask/boundary", i);
+            if (entry.body_id.length > 4096)
+                return reject_c1(state, EAB2_RESOURCE_LIMIT, "body_id", "identifier length limit exceeded", i);
+            std::string id(entry.body_id.data, static_cast<size_t>(entry.body_id.length));
+            if (!valid_utf8(id) || !ids.insert(id).second)
+                return reject_c1(state, EAB2_INVALID_INPUT, "body_id", "duplicate or invalid UTF-8 identifier", i);
+            const std::string boundary = entry.boundary_type == EAB2_FIXED_BODY ? "FIXED_BODY" :
+                entry.boundary_type == EAB2_FORCE_CONTROLLED_PLATE ? "FORCE_CONTROLLED_PLATE" : "";
+            std::array<int, 3> mask{int(entry.dof_mask & 1), int((entry.dof_mask >> 1) & 1), int((entry.dof_mask >> 2) & 1)};
+            value->bodies.emplace_back(std::move(id), *body->body, decode_point(entry.reference_point),
+                boundary, mask, decode_point(entry.dof_anchor));
+        }
+        if (input->flags & EAB2_ASSEMBLY_EXPLICIT_PAIRS) {
+            value->pairs.emplace();
+            std::set<std::array<size_t, 2>> pairs;
+            for (uint64_t i = 0; i < input->pair_count; ++i) {
+                const auto pair = input->pairs[i];
+                if (pair.a >= input->body_count || pair.b >= input->body_count || pair.a == pair.b)
+                    return reject_c1(state, EAB2_INVALID_INPUT, "pairs", "invalid candidate pair", i);
+                value->pairs->push_back({static_cast<size_t>(pair.a), static_cast<size_t>(pair.b)});
+                pairs.insert({static_cast<size_t>(std::min(pair.a, pair.b)), static_cast<size_t>(std::max(pair.a, pair.b))});
+            }
+            if (value->completeness == "complete" && pairs.size() != input->body_count * (input->body_count - 1) / 2)
+                return reject_c1(state, EAB2_INVALID_INPUT, "pairs", "complete list must include all body pairs");
+        }
+        Object created; created.type = EAB2_HANDLE_ASSEMBLY2; created.assembly = std::move(value);
+        *output = add_object(state, context, std::move(created));
+        return EAB2_OK;
+    });
+}
+extern "C" EAB2_API eab2_call_status eab2_assembly2_destroy(eab2_context context, eab2_assembly2 assembly) {
+    return destroy_object(context, assembly, EAB2_HANDLE_ASSEMBLY2);
+}
+extern "C" EAB2_API eab2_call_status eab2_contact_set2_destroy(eab2_context context, eab2_contact_set2 contacts) {
+    return destroy_object(context, contacts, EAB2_HANDLE_CONTACTSET2);
+}
+extern "C" EAB2_API eab2_call_status eab2_assemble_contact_set2(eab2_context context,
+    eab2_assembly2 assembly, eab2_contact_set2* output) {
+    if (!output) return EAB2_INVALID_INPUT;
+    *output = {};
+    return c1_call(context, [&](ContextState& state) {
+        const auto* found = object(state, context, assembly, EAB2_HANDLE_ASSEMBLY2);
+        if (!found) return reject_c1(state, EAB2_INVALID_HANDLE, "assembly", "invalid assembly handle");
+        Object created; created.type = EAB2_HANDLE_CONTACTSET2;
+        created.contacts = std::make_unique<eab2::contact::ContactSet2>(eab2::contact::assemble_contact_set2(*found->assembly));
+        *output = add_object(state, context, std::move(created));
+        return EAB2_OK;
+    });
+}
+extern "C" EAB2_API eab2_call_status eab2_contact_set2_export_exact(eab2_context context,
+    eab2_contact_set2 contacts, eab2_exact_result* output) {
+    return c1_call(context, [&](ContextState& state) {
+        const auto* found = object(state, context, contacts, EAB2_HANDLE_CONTACTSET2);
+        if (!found) return reject_c1(state, EAB2_INVALID_HANDLE, "contacts", "invalid contact set handle");
+        const auto status = header(output);
+        if (status != EAB2_OK) return reject_c1(state, status, "output", "invalid exact result header");
+        return save_exact(state, context, eab2::contact::export_exact(*found->contacts),
+            l1_math(found->contacts->mathematical_status), output);
+    });
+}
+extern "C" EAB2_API eab2_call_status eab2_query_lock(eab2_context context, eab2_assembly2 assembly,
+    const eab2_lock2_input* input, eab2_exact_result* output) {
+    return c1_call(context, [&](ContextState& state) {
+        const auto* found = object(state, context, assembly, EAB2_HANDLE_ASSEMBLY2);
+        if (!found) return reject_c1(state, EAB2_INVALID_HANDLE, "assembly", "invalid assembly handle");
+        const auto in_status = header(input), out_status = header(output);
+        if (in_status != EAB2_OK) return reject_c1(state, in_status, "input", "invalid lock header");
+        if (out_status != EAB2_OK) return reject_c1(state, out_status, "output", "invalid exact result header");
+        if (input->moving_index >= found->assembly->bodies.size() || input->neighbor_stride != sizeof(uint64_t) ||
+            !c1_extent(input->neighbor_count, input->neighbor_stride) || (input->neighbor_count && !input->neighbors))
+            return reject_c1(state, EAB2_INVALID_INPUT, "neighbors", "invalid moving body/neighbors descriptor");
+        if (input->neighbor_count > state.limits.max_elements)
+            return reject_c1(state, EAB2_RESOURCE_LIMIT, "neighbors", "neighbor count limit exceeded");
+        std::vector<eab2::geometry2::Body> neighbors;
+        for (uint64_t i = 0; i < input->neighbor_count; ++i) {
+            const auto at = input->neighbors[i];
+            if (at >= found->assembly->bodies.size() || at == input->moving_index)
+                return reject_c1(state, EAB2_INVALID_INPUT, "neighbors", "invalid explicit neighbor index", i);
+            neighbors.push_back(found->assembly->bodies[static_cast<size_t>(at)].geometry);
+        }
+        const auto result = eab2::contact::query_lock(found->assembly->bodies[static_cast<size_t>(input->moving_index)].geometry,
+            neighbors, state.limits);
+        return save_exact(state, context, eab2::contact::export_exact(result), l1_math(result.mathematical_status), output);
+    });
+}
+extern "C" EAB2_API eab2_call_status eab2_first_order_mobility(eab2_context context,
+    eab2_contact_set2 contacts, eab2_exact_result* output) {
+    return c1_call(context, [&](ContextState& state) {
+        const auto* found = object(state, context, contacts, EAB2_HANDLE_CONTACTSET2);
+        if (!found) return reject_c1(state, EAB2_INVALID_HANDLE, "contacts", "invalid contact set handle");
+        const auto status = header(output);
+        if (status != EAB2_OK) return reject_c1(state, status, "output", "invalid exact result header");
+        const auto result = eab2::contact::first_order_mobility(*found->contacts);
+        return save_exact(state, context, eab2::contact::export_exact(result), l1_math(result.mathematical_status), output);
+    });
+}
+
+#ifdef EAB2_ENABLE_TEST_API
+#include <thread>
+#include <chrono>
+extern "C" EAB2_API eab2_call_status eab2_opt_solve_exact(eab2_context context,
+    const eab2_opt_input* input, eab2_exact_result* output) {
+    return c1_call(context, [&](ContextState& state) {
+        const auto in_status = header(input), out_status = header(output);
+        if (in_status != EAB2_OK) return reject_c1(state, in_status, "input", "invalid opt header");
+        if (out_status != EAB2_OK) return reject_c1(state, out_status, "output", "invalid exact result header");
+        if (input->sense > 1 || input->reserved || !input->max_pivots ||
+            input->max_pivots > std::numeric_limits<size_t>::max() ||
+            input->value_stride != sizeof(eab2_text) || !c1_extent(input->value_count, input->value_stride) ||
+            (input->value_count && !input->values))
+            return reject_c1(state, EAB2_INVALID_INPUT, "opt", "invalid sense, pivot limit, pointer or stride");
+        if (input->rows > 1024 || input->columns > 4096 || input->value_count > 65536 ||
+            input->rows * input->columns + input->rows + input->columns > 65536)
+            return reject_c1(state, EAB2_RESOURCE_LIMIT, "opt", "LP shape work limit exceeded");
+        if (input->value_count != input->rows * input->columns + input->rows + input->columns)
+            return reject_c1(state, EAB2_INVALID_INPUT, "values", "LP exact array shape mismatch");
+        uint64_t parse_work = 0;
+        for (uint64_t i = 0; i < input->value_count; ++i) {
+            const auto text = input->values[i];
+            if (!text.data || !text.length)
+                return reject_c1(state, EAB2_INVALID_INPUT, "values", "empty exact LP value", i);
+            if (text.length > 4096 || text.length * text.length > UINT64_C(67108864) - parse_work)
+                return reject_c1(state, EAB2_RESOURCE_LIMIT, "values", "LP parsing work limit exceeded", i);
+            parse_work += text.length * text.length;
+        }
+        size_t at = 0;
+        auto parse = [&]() {
+            const auto text = input->values[at++];
+            return eab2::numeric::parse_rational(std::string(text.data, static_cast<size_t>(text.length)));
+        };
+        eab2::opt::Matrix A(static_cast<size_t>(input->rows), eab2::opt::Vector(static_cast<size_t>(input->columns)));
+        eab2::opt::Vector b(static_cast<size_t>(input->rows)), c(static_cast<size_t>(input->columns));
+        for (auto& row : A) for (auto& value : row) value = parse();
+        for (auto& value : b) value = parse();
+        for (auto& value : c) value = parse();
+        eab2::opt::Options options; options.max_pivots = static_cast<size_t>(input->max_pivots);
+        const auto result = input->sense ? eab2::opt::maximize(A, b, c, options) : eab2::opt::solve(A, b, c, options);
+        const auto math = result.status == eab2::opt::Status::optimal ? EAB2_MATH_VALUE :
+            result.status == eab2::opt::Status::infeasible ? EAB2_MATH_INFEASIBLE : EAB2_MATH_UNBOUNDED;
+        return save_exact(state, context, eab2::opt::export_exact(result, input->sense != 0), math, output);
+    });
+}
+extern "C" EAB2_API eab2_call_status eab2_test_context_rendezvous(eab2_context context) {
+    return c1_call(context, [&](ContextState&) -> uint32_t {
+        static std::atomic<unsigned> arrivals{0}, round{0};
+        static std::atomic<bool> timed_out{false};
+        if (timed_out.load()) return EAB2_CANCELLED;
+        const auto current = round.load();
+        if (arrivals.fetch_add(1) == 1) {
+            arrivals.store(0); round.fetch_add(1); return EAB2_OK;
+        }
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+        while (round.load() == current) {
+            if (std::chrono::steady_clock::now() >= deadline) {
+                timed_out.store(true); return EAB2_CANCELLED;
+            }
+            std::this_thread::yield();
+        }
+        return EAB2_OK;
+    });
 }
 #endif

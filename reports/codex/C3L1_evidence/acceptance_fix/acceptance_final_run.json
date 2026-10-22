@@ -1,0 +1,267 @@
+{
+  "schema": "eab2.c3l1.acceptance_closeout.v1",
+  "started_at_utc": "2026-10-22T19:13:42.221699+00:00",
+  "status": "GREEN",
+  "complete": true,
+  "source_manifest": "acceptance_final_source_manifest.json",
+  "sequential": true,
+  "interrupted_run_not_reused": true,
+  "stages": [
+    {
+      "name": "clean_build_outputs",
+      "command": [
+        "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+        "--build",
+        "eab2/build",
+        "--target",
+        "clean"
+      ],
+      "log": "acceptance_final_clean_build_outputs.log",
+      "started_at_utc": "2026-10-22T19:13:42.340626+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.015999999945052,
+      "finished_at_utc": "2026-10-22T19:13:44.350144+00:00",
+      "source_post_equal": true,
+      "last_line": ""
+    },
+    {
+      "name": "build",
+      "command": [
+        "cmd",
+        "/c",
+        "eab2\\build_eab2.bat"
+      ],
+      "log": "acceptance_final_build.log",
+      "started_at_utc": "2026-10-22T19:13:44.586145+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 8.015999999945052,
+      "finished_at_utc": "2026-10-22T19:13:52.605080+00:00",
+      "source_post_equal": true,
+      "last_line": "EAB2_C3L1_ABI checks=134 failed=0"
+    },
+    {
+      "name": "ctest",
+      "command": [
+        "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\ctest.exe",
+        "--test-dir",
+        "eab2/build",
+        "--output-on-failure"
+      ],
+      "log": "acceptance_final_ctest.log",
+      "started_at_utc": "2026-10-22T19:13:52.864082+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.01500000001397,
+      "finished_at_utc": "2026-10-22T19:13:54.876140+00:00",
+      "source_post_equal": true,
+      "last_line": "Total Test time (real) =   0.49 sec"
+    },
+    {
+      "name": "audit",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_audit.py",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\acceptance_fix\\delivery_audit_acceptance.json"
+      ],
+      "log": "acceptance_final_audit.log",
+      "started_at_utc": "2026-10-22T19:13:55.149478+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.0,
+      "finished_at_utc": "2026-10-22T19:13:57.156125+00:00",
+      "source_post_equal": true,
+      "last_line": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=18"
+    },
+    {
+      "name": "numeric",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\acceptance_fix\\numeric_diff_acceptance.json"
+      ],
+      "log": "acceptance_final_numeric.log",
+      "started_at_utc": "2026-10-22T19:13:57.426392+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.0160000000614673,
+      "finished_at_utc": "2026-10-22T19:13:59.436523+00:00",
+      "source_post_equal": true,
+      "last_line": "EAB2_DIFF samples=4483 bits=6003 mismatches=0 status=PASS"
+    },
+    {
+      "name": "norm_budget",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "eab2/build/tmp/acceptance_norm_check.py"
+      ],
+      "log": "acceptance_final_norm_budget.log",
+      "started_at_utc": "2026-10-22T19:13:59.704997+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.01500000001397,
+      "finished_at_utc": "2026-10-22T19:14:01.716741+00:00",
+      "source_post_equal": true,
+      "last_line": "NUMERIC_COMPUTE_BUDGET adversarial=6 k65536=RESOURCE_LIMIT status=PASS"
+    },
+    {
+      "name": "opt",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_opt_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\acceptance_fix\\opt_diff_acceptance.json",
+        "--source-commit",
+        "84d514e+acceptance-fixes-uncommitted"
+      ],
+      "log": "acceptance_final_opt.log",
+      "started_at_utc": "2026-10-22T19:14:01.966196+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 40.03099999995902,
+      "finished_at_utc": "2026-10-22T19:14:41.998469+00:00",
+      "source_post_equal": true,
+      "last_line": "OPT_DIFF selected=745 completed=745 mismatches=0"
+    },
+    {
+      "name": "l1",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_c3l1_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\acceptance_fix\\diff_acceptance.json",
+        "--dataset",
+        "all"
+      ],
+      "log": "acceptance_final_l1.log",
+      "started_at_utc": "2026-10-22T19:14:42.247036+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 312.1570000000065,
+      "finished_at_utc": "2026-10-22T19:19:54.401138+00:00",
+      "source_post_equal": true,
+      "last_line": "C3L1_DIFF assembly=186 first_order=186 lock=404 mismatch=0 strict_fields=495"
+    },
+    {
+      "name": "c1",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_diff_c1.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\acceptance_fix\\c1_diff_acceptance.json",
+        "--metamorphic",
+        "--source-commit",
+        "84d514e+acceptance-fixes-uncommitted"
+      ],
+      "log": "acceptance_final_c1.log",
+      "started_at_utc": "2026-10-22T19:19:54.660124+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 256.125,
+      "finished_at_utc": "2026-10-22T19:24:10.780287+00:00",
+      "source_post_equal": true,
+      "last_line": "C1_DIFF selected=657 completed=657 mismatches=0 layer_queries=100086"
+    },
+    {
+      "name": "p2",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_c3l1_measure.py",
+        "--input",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\acceptance_fix\\diff_acceptance.json",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence\\acceptance_fix\\p2_acceptance.json"
+      ],
+      "log": "acceptance_final_p2.log",
+      "started_at_utc": "2026-10-22T19:24:11.035500+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 2.01500000001397,
+      "finished_at_utc": "2026-10-22T19:24:13.043124+00:00",
+      "source_post_equal": true,
+      "last_line": "C3L1_TIMING_REPORT queries=776 groups=8 performance_gate=false"
+    },
+    {
+      "name": "fast",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "acceptance_fast",
+        "--evidence-root",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence"
+      ],
+      "log": "acceptance_final_fast.log",
+      "started_at_utc": "2026-10-22T19:24:13.288959+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 354.1570000000065,
+      "finished_at_utc": "2026-10-22T19:30:07.448814+00:00",
+      "source_post_equal": true,
+      "last_line": "shard 1: 8951 passed in 332.80s (0:05:32)"
+    },
+    {
+      "name": "full",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "acceptance_full",
+        "--evidence-root",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L1_evidence",
+        "--runslow"
+      ],
+      "log": "acceptance_final_full.log",
+      "started_at_utc": "2026-10-22T19:30:07.731252+00:00",
+      "complete": true,
+      "source_pre_equal": true,
+      "exit_code": 0,
+      "seconds": 1712.75,
+      "finished_at_utc": "2026-10-22T19:58:40.484466+00:00",
+      "source_post_equal": true,
+      "last_line": "exact construction AST gate: 0 violation(s)"
+    }
+  ],
+  "finished_at_utc": "2026-10-22T19:58:40.613058+00:00",
+  "source_pre_post_equal": true
+}

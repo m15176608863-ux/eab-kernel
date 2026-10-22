@@ -1,0 +1,1057 @@
+{
+  "schema": "eab2.c3l1.differential.v1",
+  "cpp_executed": true,
+  "build_identity": "eab2-c3l1;compiler=MSVC-19.44.35227.0;toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20",
+  "counts": {
+    "assembly": 7,
+    "first_order": 7,
+    "lock": 13
+  },
+  "timing_scope": "One query per assembly state; excludes process/DLL startup and input decode; first_order uses prebuilt contacts on both sides. python_seconds includes query+dataclass JSON encode/decode; python_kernel_seconds is query only; cpp_seconds includes ABI+ctypes+JSON decode; no performance gate",
+  "strict_field_difference_counts": {
+    "assembly": 0,
+    "first_order": 0,
+    "lock": 58
+  },
+  "mismatches": [
+    {
+      "case_id": "regression_a_saw",
+      "query_index": 4,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_b_bare_vv",
+      "query_index": 4,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_c_redundant_vv",
+      "query_index": 4,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 4,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 5,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 6,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 7,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 4,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 5,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 6,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 7,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_e_mixed_vv_edge",
+      "query_index": 4,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    },
+    {
+      "case_id": "regression_f_convex_in_notch",
+      "query_index": 4,
+      "kind": "lock",
+      "reason": "semantic fields differ"
+    }
+  ],
+  "queries": [
+    {
+      "case_id": "regression_a_saw",
+      "query_index": 0,
+      "kind": "assembly",
+      "python_kernel_seconds": 0.024186299997381866,
+      "python_seconds": 0.024445999995805323,
+      "cpp_seconds": 0.0009331000037491322,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "RESOLVED"
+    },
+    {
+      "case_id": "regression_a_saw",
+      "query_index": 1,
+      "kind": "first_order",
+      "python_kernel_seconds": 0.0012938000727444887,
+      "python_seconds": 0.0013695000670850277,
+      "cpp_seconds": 0.0006346000591292977,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "NONZERO_CONE"
+    },
+    {
+      "case_id": "regression_a_saw",
+      "query_index": 4,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0022571999579668045,
+      "python_seconds": 0.0026569999754428864,
+      "cpp_seconds": 0.0009555000578984618,
+      "semantic_mismatch_count": 6,
+      "strict_field_difference_count": 6,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 20,
+          "actual": 16
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 7,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/2",
+          "actual": "2/3"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 32,
+          "actual": 9
+        },
+        {
+          "path": "result.separation_ray[0]",
+          "expected": "-5/8",
+          "actual": "-3/4"
+        },
+        {
+          "path": "result.separation_ray[1]",
+          "expected": "3/8",
+          "actual": "1/4"
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 20,
+          "actual": 16
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 7,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/2",
+          "actual": "2/3"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 32,
+          "actual": 9
+        },
+        {
+          "path": "result.separation_ray[0]",
+          "expected": "-5/8",
+          "actual": "-3/4"
+        },
+        {
+          "path": "result.separation_ray[1]",
+          "expected": "3/8",
+          "actual": "1/4"
+        }
+      ],
+      "mathematical_status": "REMOVABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_b_bare_vv",
+      "query_index": 0,
+      "kind": "assembly",
+      "python_kernel_seconds": 0.0010677999816834927,
+      "python_seconds": 0.0011792000150308013,
+      "cpp_seconds": 0.0005226000212132931,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "MECHANICAL_UNRESOLVED"
+    },
+    {
+      "case_id": "regression_b_bare_vv",
+      "query_index": 1,
+      "kind": "first_order",
+      "python_kernel_seconds": 8.399947546422482e-06,
+      "python_seconds": 3.929995000362396e-05,
+      "cpp_seconds": 2.3300061002373695e-05,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "MECHANICAL_UNRESOLVED"
+    },
+    {
+      "case_id": "regression_b_bare_vv",
+      "query_index": 4,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0007371000247076154,
+      "python_seconds": 0.0008932000491768122,
+      "cpp_seconds": 0.0004677999531850219,
+      "semantic_mismatch_count": 6,
+      "strict_field_difference_count": 6,
+      "semantic_differences": [
+        {
+          "path": "result.arcs[1].blockers[0][1]",
+          "expected": 2,
+          "actual": 0
+        },
+        {
+          "path": "result.local_cells[0].cell_index",
+          "expected": 2,
+          "actual": 0
+        },
+        {
+          "path": "result.local_cells[0].piece_a",
+          "expected": 1,
+          "actual": 0
+        },
+        {
+          "path": "result.local_cells[0].vertices.length",
+          "expected": 3,
+          "actual": 4
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "4/5"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 16,
+          "actual": 2
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs[1].blockers[0][1]",
+          "expected": 2,
+          "actual": 0
+        },
+        {
+          "path": "result.local_cells[0].cell_index",
+          "expected": 2,
+          "actual": 0
+        },
+        {
+          "path": "result.local_cells[0].piece_a",
+          "expected": 1,
+          "actual": 0
+        },
+        {
+          "path": "result.local_cells[0].vertices.length",
+          "expected": 3,
+          "actual": 4
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "4/5"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 16,
+          "actual": 2
+        }
+      ],
+      "mathematical_status": "REMOVABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_c_redundant_vv",
+      "query_index": 0,
+      "kind": "assembly",
+      "python_kernel_seconds": 0.0023952999617904425,
+      "python_seconds": 0.0026543999556452036,
+      "cpp_seconds": 0.001332900021225214,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "RESOLVED"
+    },
+    {
+      "case_id": "regression_c_redundant_vv",
+      "query_index": 1,
+      "kind": "first_order",
+      "python_kernel_seconds": 0.0009645000100135803,
+      "python_seconds": 0.0010331999510526657,
+      "cpp_seconds": 0.000444200006313622,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "NONZERO_CONE"
+    },
+    {
+      "case_id": "regression_c_redundant_vv",
+      "query_index": 4,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0015179000329226255,
+      "python_seconds": 0.0018116000574082136,
+      "cpp_seconds": 0.0008402999956160784,
+      "semantic_mismatch_count": 6,
+      "strict_field_difference_count": 6,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 4,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 29,
+          "actual": 5
+        },
+        {
+          "path": "result.separation_ray[0]",
+          "expected": "-1/4",
+          "actual": "-1/2"
+        },
+        {
+          "path": "result.separation_ray[1]",
+          "expected": "3/4",
+          "actual": "1/2"
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 4,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 29,
+          "actual": 5
+        },
+        {
+          "path": "result.separation_ray[0]",
+          "expected": "-1/4",
+          "actual": "-1/2"
+        },
+        {
+          "path": "result.separation_ray[1]",
+          "expected": "3/4",
+          "actual": "1/2"
+        }
+      ],
+      "mathematical_status": "REMOVABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 0,
+      "kind": "assembly",
+      "python_kernel_seconds": 0.003709500073455274,
+      "python_seconds": 0.004094599978998303,
+      "cpp_seconds": 0.0024395000655204058,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "RESOLVED"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 1,
+      "kind": "first_order",
+      "python_kernel_seconds": 0.007717799977399409,
+      "python_seconds": 0.007943699951283634,
+      "cpp_seconds": 0.004526800010353327,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "NONZERO_CONE"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 4,
+      "kind": "lock",
+      "python_kernel_seconds": 0.002702999976463616,
+      "python_seconds": 0.0031742999562993646,
+      "cpp_seconds": 0.0013145999982953072,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "mathematical_status": "NOT_SEPARABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 5,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0026805000379681587,
+      "python_seconds": 0.0031490999972447753,
+      "cpp_seconds": 0.0013004000065848231,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "mathematical_status": "NOT_SEPARABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 6,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0027529000071808696,
+      "python_seconds": 0.0032592000206932425,
+      "cpp_seconds": 0.0013278999831527472,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "mathematical_status": "NOT_SEPARABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu0",
+      "query_index": 7,
+      "kind": "lock",
+      "python_kernel_seconds": 0.002482200041413307,
+      "python_seconds": 0.002921000006608665,
+      "cpp_seconds": 0.001147200004197657,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 3,
+          "actual": 1
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 67,
+          "actual": 15
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 3,
+          "actual": 1
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 67,
+          "actual": 15
+        }
+      ],
+      "mathematical_status": "REMOVABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 0,
+      "kind": "assembly",
+      "python_kernel_seconds": 0.004598499974235892,
+      "python_seconds": 0.0050333000253885984,
+      "cpp_seconds": 0.0027086000191047788,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "RESOLVED"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 1,
+      "kind": "first_order",
+      "python_kernel_seconds": 0.00802730000577867,
+      "python_seconds": 0.008316699997521937,
+      "cpp_seconds": 0.004579599946737289,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "NONZERO_CONE"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 4,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0027847999008372426,
+      "python_seconds": 0.0032803999492898583,
+      "cpp_seconds": 0.0013213000493124127,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "mathematical_status": "NOT_SEPARABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 5,
+      "kind": "lock",
+      "python_kernel_seconds": 0.002700100070796907,
+      "python_seconds": 0.00319460011087358,
+      "cpp_seconds": 0.0013360000448301435,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "mathematical_status": "NOT_SEPARABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 6,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0031240000389516354,
+      "python_seconds": 0.0036823999835178256,
+      "cpp_seconds": 0.001360399997793138,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 6,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 62,
+          "actual": 14
+        }
+      ],
+      "mathematical_status": "NOT_SEPARABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_d_flush_mu025",
+      "query_index": 7,
+      "kind": "lock",
+      "python_kernel_seconds": 0.002553099999204278,
+      "python_seconds": 0.003034299938008189,
+      "cpp_seconds": 0.0012036999687552452,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 3,
+          "actual": 1
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 67,
+          "actual": 15
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 12,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 3,
+          "actual": 1
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/3",
+          "actual": "1/2"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 67,
+          "actual": 15
+        }
+      ],
+      "mathematical_status": "REMOVABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_e_mixed_vv_edge",
+      "query_index": 0,
+      "kind": "assembly",
+      "python_kernel_seconds": 0.0023374001029878855,
+      "python_seconds": 0.0025464000646024942,
+      "cpp_seconds": 0.0015348000451922417,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "MECHANICAL_UNRESOLVED"
+    },
+    {
+      "case_id": "regression_e_mixed_vv_edge",
+      "query_index": 1,
+      "kind": "first_order",
+      "python_kernel_seconds": 1.379998866468668e-05,
+      "python_seconds": 5.519995465874672e-05,
+      "cpp_seconds": 2.7999980375170708e-05,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "MECHANICAL_UNRESOLVED"
+    },
+    {
+      "case_id": "regression_e_mixed_vv_edge",
+      "query_index": 4,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0029071999015286565,
+      "python_seconds": 0.0034315999364480376,
+      "cpp_seconds": 0.001477799960412085,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 16,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 4,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/9",
+          "actual": "1/5"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 61,
+          "actual": 16
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 16,
+          "actual": 8
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 4,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "1/9",
+          "actual": "1/5"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 61,
+          "actual": 16
+        }
+      ],
+      "mathematical_status": "REMOVABLE_TRANSLATION"
+    },
+    {
+      "case_id": "regression_f_convex_in_notch",
+      "query_index": 0,
+      "kind": "assembly",
+      "python_kernel_seconds": 0.0007471999851986766,
+      "python_seconds": 0.000853199977427721,
+      "cpp_seconds": 0.0006439000135287642,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "RESOLVED"
+    },
+    {
+      "case_id": "regression_f_convex_in_notch",
+      "query_index": 1,
+      "kind": "first_order",
+      "python_kernel_seconds": 0.0005564000457525253,
+      "python_seconds": 0.0006145000224933028,
+      "cpp_seconds": 0.0002218999434262514,
+      "semantic_mismatch_count": 0,
+      "strict_field_difference_count": 0,
+      "semantic_differences": [],
+      "strict_field_differences": [],
+      "mathematical_status": "NONZERO_CONE"
+    },
+    {
+      "case_id": "regression_f_convex_in_notch",
+      "query_index": 4,
+      "kind": "lock",
+      "python_kernel_seconds": 0.0012906999327242374,
+      "python_seconds": 0.0015439999988302588,
+      "cpp_seconds": 0.0009859000565484166,
+      "semantic_mismatch_count": 4,
+      "strict_field_difference_count": 4,
+      "semantic_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 20,
+          "actual": 16
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 3,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "4/9",
+          "actual": "4/5"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 16,
+          "actual": 10
+        }
+      ],
+      "strict_field_differences": [
+        {
+          "path": "result.arcs.length",
+          "expected": 20,
+          "actual": 16
+        },
+        {
+          "path": "result.local_cells.length",
+          "expected": 3,
+          "actual": 2
+        },
+        {
+          "path": "result.radius",
+          "expected": "4/9",
+          "actual": "4/5"
+        },
+        {
+          "path": "result.radius_bounds.length",
+          "expected": 16,
+          "actual": 10
+        }
+      ],
+      "mathematical_status": "REMOVABLE_TRANSLATION"
+    }
+  ],
+  "seconds": 0.20739090000279248,
+  "last_line": "C3L1_DIFF assembly=7 first_order=7 lock=13 mismatch=13 strict_nonunique=58"
+}
