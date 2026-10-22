@@ -112,3 +112,17 @@ Claude 本轮明确批准写入 `D:/eab-evidence/reports/codex/T1a_evidence/`。
 [追加映射](codex/H1_evidence/frozen_inputs_addendum.json)；[当前完整输入清单](codex/H1_evidence/frozen_inputs_manifest.json)；[最终校验](codex/H1_evidence/archive_validation.json)。`archive_result.json` 的 `input_manifest` 是当时读取的路径（当时为 136 项），不是现已追加为 137 项的内容快照；初批专属清单明确记录复原方法，不伪称有未保存的原清单文件哈希。回退时，追加复制项的原件已在外归档，不应再次覆盖它。
 
 单文件上限为 1,000,000 字节；唯一例外是本单冻结、只准机械重键的 `tools/exact_construction_policy.json`。具名门见 [test_repository_size.py](../tests/test_repository_size.py)，包含无 Git 副本中实际写入 1,000,001 字节文件后报红的牙。
+
+## WO-T1b 追加（2026-10-22）
+
+获准外目录为 `D:/eab-evidence/reports/codex/T1b_evidence/`，未触碰其他工作树。新大证据直接写外部；H1日志与执行清单采用gzip（mtime=0），压缩后逐字节解压核对，不删除原始临时文件。不改历史T1a数据或来源哈希。
+
+- [外部逐文件SHA256清单](file:///D:/eab-evidence/reports/codex/T1b_evidence/_manifests/t1b_files.sha256.jsonl)；[文件数/总量/清单自身SHA](codex/T1b_evidence/external_archive_summary.json)。清单不包括自身与runtime tmp。
+- [P0最终数据](file:///D:/eab-evidence/reports/codex/T1b_evidence/p0_final.json)：36燕尾政策组合、4凸耳、72逐内块条目、8标准例；完整有理输入/路径/界。探索 `p0_tolerance.json` 不混作最终数据。
+- [P1最终36例](file:///D:/eab-evidence/reports/codex/T1b_evidence/p1_final_20261022/)：gzip逐例精确LP与一阶证书、来源前后清单、进度与完成标记。`p1_scan_20261022`仅为早期探索。
+- [门日志映射及双SHA](codex/T1b_evidence/gate_archive.json)：开工全档GREEN、收尾快档GREEN、收尾全档**RED**原日志均保留，不拼接成新绿。
+- [源码字节快照](codex/T1b_evidence/source_snapshots.json)：全档RED的完整字节导出，以及只修复两份测试helper后的 `postfix_NOT_FULL_VERIFIED_source.zip`；均1154文件、逐成员清单另存。后者没有完整全档复验，不能因其ZIP完整性正确而称验证通过。
+- [无Git字节副本](file:///D:/eab-evidence/reports/codex/T1b_evidence/no_git_postfix/)；[修复后摘要](codex/T1b_evidence/no_git_postfix_summary.json)。无`.git`、PATH中无git；不是新鲜Git worktree/克隆。
+- [回滚锚点](codex/T1b_evidence/rollback.json)：原设计、静态准入、适配器、纯度门与本台账原字节，均与开工HEAD比对。只能在确认没有所有者后续改动后人工恢复，不自动覆盖。
+
+当前只交付Python诊断格式，没有新建正式tia2d-2 C++批次或自行改schema。完整结果、订正与未完成验收项见 [T1b报告](codex/T1b_report.md)；修复后完整快档已GREEN，四分片及Claude独立核查仍待安排，不能将快档或局部复核冒作最终全绿。外目录是本地保存，不是远端备份。

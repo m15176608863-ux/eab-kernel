@@ -1,0 +1,1512 @@
+{
+  "format": "tia2d.t1b.morphology.summary.v1",
+  "complete": true,
+  "source_revision": "7f95105",
+  "revision_is_baseline_not_dirty_bytes": true,
+  "source_sha256": {
+    "src/eab/__init__.py": "e562095b90bc1f601db6292768be73126887cbe253be81a49419ed6d90310efc",
+    "src/eab/adapters/__init__.py": "475cb2455cfa9ced75e06275f70d8fb084ec7bb27aca3ebe2cd5966fcbe04955",
+    "src/eab/adapters/bdda2d.py": "ae69bfa5fb7d8b98911cc43881c80c0647c7018f4e76b24c537ac81da2bffafd",
+    "src/eab/adapters/bdda2d_affine.py": "8862499959b0aaa34f175eeffd50ffd2c06c3bf182c48ae51b29cd4028dab9a7",
+    "src/eab/adapters/bdda2d_motion.py": "62a022b62af8740e7812e3afcc486f657e2239329f93edb93e3496501ed02ecc",
+    "src/eab/adapters/bdda3d.py": "4a32148f3acb3fcf202d31f29a481bcf67719617968a521cd7726512cbf035c5",
+    "src/eab/adapters/tf.py": "030b834dd38a7b4e996106152a3af9fd5da705f207e4efba929dd50cf4393541",
+    "src/eab/adapters/tia2d.py": "c53ea6b7652d32dc0715e902159f36ed4450da1ce76b087e938cd597b3a57b5d",
+    "src/eab/adapters/tia3d.py": "321f9ef47d5b0f4d0a463fcba2fbde36ea7f0e3304be4b2d0bb2741020d2dfb0",
+    "src/eab/construction.py": "bfd5a3f7a4aa0b6a5a3c9a63202cfa77bc9216b9627ea9e45cb6a614817a20f0",
+    "src/eab/contact_record.py": "4f9415f57204989972a4c3e6f50c0742eb53887d6cfc848bb574cc7bfc720b90",
+    "src/eab/dual.py": "62bd35a7d71c31ddd4fd4e41fdc1ef9ac3109d7a64de436a115f4043033655a5",
+    "src/eab/kernel2d/__init__.py": "a4cedc79eb57238e8e88a7e57852b6e359b3f465c4a00d84adec63b17ac61d94",
+    "src/eab/kernel2d/affine_motion.py": "3bab15171bfbaffeb235f43debb166a91f008a3f2079149b6ee45bef52d441ae",
+    "src/eab/kernel2d/algebraic.py": "b5c4130b75005f0637104e806e54c14679b75769d742269e84329690ea23df38",
+    "src/eab/kernel2d/assembly.py": "1d842ac31b80229019408e28226b8214880c58b345210a9c7c4338495be2c171",
+    "src/eab/kernel2d/contacts.py": "db62916c110325232418c803eb50eba2356a34ebb744a60fa518847747a8a934",
+    "src/eab/kernel2d/covers.py": "ea9668e44bda6b3995deb9b1a2b0d4a9c4e7e9a5f6cd6ab0cb2ec43735938265",
+    "src/eab/kernel2d/critical.py": "e6fe3c9881f57075cb20bff6893b464988fee8273423c8b8c435db4ee718b9e0",
+    "src/eab/kernel2d/entrance.py": "4bc8cf53ac351c6e5afddb2908fabb754d017a00b87df9432aaa61e59cfc574c",
+    "src/eab/kernel2d/erosion.py": "3db5d5a0abeab5fd0a5bfa57db0403d8faf9151c28c9003fcde5aa62b7554c6a",
+    "src/eab/kernel2d/exact.py": "6e809f5a89083c79c32f5e65dff54f59e0d53eca6590819a1c964d9073d25f4d",
+    "src/eab/kernel2d/g0.py": "ead0eb9888220cb9bf4d9a2ade6e43591b793d8828dc261dccb476b7932fe013",
+    "src/eab/kernel2d/g0_oracle.py": "7810fd3593589e8e2d4c101dc17e637bb3161647b73b03f10fee5401bf806f03",
+    "src/eab/kernel2d/geom.py": "6840bdc5b1607db5549b8e3e849340df3ce3a1afe4755f23b7ba7dc1b2993a71",
+    "src/eab/kernel2d/global_entrance.py": "a84477256c9492add86b1b52a8164b127d1428ec372bcc8d33b58d271ebe6be9",
+    "src/eab/kernel2d/lock.py": "041839e84944804cb25002cc2a7fd5c4e362d66a0f82a7696be765aeb5af1899",
+    "src/eab/kernel2d/m5c_certificates.py": "3ff979533170748023d2f94dd9911bb155bacc32824009003e8bedb5afe978b1",
+    "src/eab/kernel2d/m5d_exit_certificate.py": "c6ec19a1511d73fcd22cf2191f6490aa40270eab030e0cd6d753cd099623f2ae",
+    "src/eab/kernel2d/mobility.py": "364305a393946235c742efbffc38651c373f6ad53c0ae4cc0df6b9d217041ed7",
+    "src/eab/kernel2d/model_robustness.py": "3f22bc9ae76ea71d5bc754e3e3d3b2d21f9e650d6b1a9a1026e887e7a9d902d7",
+    "src/eab/kernel2d/motion.py": "066c29ef0c9b8e5dd73661a4b562788561fc6380d0ac37c4a3719c4005d18e69",
+    "src/eab/kernel2d/motion_exit.py": "00119fd6d1b6a40b889d2e80d8357e8236caa77ed890c9c05361c847e46d40a1",
+    "src/eab/kernel2d/se2.py": "0befea5368bb721fd918e64243a12e59bdeb3bb4968b95ebf010194ab3563a21",
+    "src/eab/kernel2d/sensitivity.py": "94896d1db3742aba8e707a9534388b87596662a0deb4d107539fc8c9b67d8f18",
+    "src/eab/kernel2d/statics.py": "d70d12dec967d8a77160184fd6e46f805521f331851676c43e95948bc8860e06",
+    "src/eab/kernel2d/translation_certificates.py": "60f08901e81a3456b7829267852e9fd9ea7eb694d57a988e8e8fa810ef9763a4",
+    "src/eab/kernel2d/translation_space.py": "5fbf12b7d2e949718d6dbf176f1a32b7f494436b809e350b1c84f5b569afdfe3",
+    "src/eab/kernel3d/__init__.py": "2d20be7fbc48e2c68c8e0d556bc17271e52f8945bd3333b43b82c0d6d0123e4a",
+    "src/eab/kernel3d/boundary.py": "e927f4297c0d756de0cfb6c683e402021b1acbd2edf1a2b5a78049347c54a102",
+    "src/eab/kernel3d/covers3.py": "247301d34fab23c6eae8ec5307084e6f6cea239af12071175b61bd2e122c20f6",
+    "src/eab/kernel3d/entrance3.py": "51fb72714e361d5579731df9b51befaf3bc89ec511cd13fed67732c82f237171",
+    "src/eab/kernel3d/entrance_topology.py": "ae43cd2d7fed5ae8e519d737d58c6192f26a2c122fa96768f122383075f359b5",
+    "src/eab/kernel3d/exact_geom.py": "4f5e2fd42741ce28544091fa90089678da53b3184a3175f0b050beedf56a5c68",
+    "src/eab/kernel3d/exact_sweep.py": "e3fdc487737f3483c97d62dd2b9bb67adfc73adf95af08bc1cc76f6cd1d0efe5",
+    "src/eab/kernel3d/frozen.py": "4e88c69d50852ae008cdffb4f16e56e8e7af7596a99f891063160bbba5ac0ffa",
+    "src/eab/kernel3d/g03.py": "be19d78c3cc409704b51b9647258e115172583b0876f5b430a6b1e54d122f6fe",
+    "src/eab/kernel3d/g03_exact.py": "7a6806d63deb212f4fb13606d70c2db3a5513f9372f1c3dbaca952faf4354a22",
+    "src/eab/kernel3d/g03_exit_oracle.py": "834d02c0026e8a9dbab241db74769b7c73366446b57680e71038f484014c4220",
+    "src/eab/kernel3d/g03_surface_oracle.py": "f863c51abf8de258ad2aff86882047e8bbebcb155b6b3f5174423dfeaf2634b0",
+    "src/eab/kernel3d/geom3.py": "504267e89dd3f9adc795dbc5bda0eb59467fa80f4b2602e4d57afdb0fdeb804d",
+    "src/eab/kernel3d/global_entrance.py": "222ed67b3c2bf7dc34bef5f2fc0ec9e96589b57e9f012a1d542aa13a68646c90",
+    "src/eab/limit.py": "e4bdf3c0c363b24b1bdbeee290e5aa6239e2a1c5a544d35e8c798a6f4b14a96f",
+    "src/eab/limit_multi.py": "d3c6a6f6f0ccacfcd0b722b0dc46dd9ea26b7a5e69971e4c3cbe6d08cc6f3a65",
+    "src/eab/lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
+    "src/eab/margin.py": "c2cf87d20d269513a55634ab681ac4ab6128445b0a88a2d0a5724d4730c98720",
+    "src/eab/numeric_decode.py": "4c770ef67a572cb24c1f193e0b6ae94cef686917aeb30abcced342fec13fc11c",
+    "src/eab/numeric_domain.py": "025b11c4958aa67509f2956d6491b8f318d89cf342dff7b489a82867366a2785",
+    "src/eab/oracle_construction.py": "4a76e484b150aae0d5c86aab0a85ab12a81382151df12faa12552b9e2605e878",
+    "src/eab/predicates.py": "5d364f794e31687db3e4d209982a5fd9229a04285500c7c8085e0e08acd3b984",
+    "src/eab/rational3.py": "7e67d1b3b7696dc70aac146b0464d45a67435665a208719fba499fdbcbf7d431",
+    "src/eab/readers/__init__.py": "0e46e7b213dd2cd3fc57aed48d2fa8ed275ca8e25645bb76999c3c62961fe3fa",
+    "src/eab/readers/bdda3d.py": "82a92dfb7cfda845423449ee8675b4c2121ed4f9b718b5d4c46db2601d279302",
+    "src/eab/readers/bdda_df.py": "d7a1ba89cb25e9cd07c1499c37019e0dd3b51d0d06e190117af5b588af9fbdd3",
+    "src/eab/readers/bdda_geom.py": "8028eaaaf22590dd4121246f7a78d7dc646c7c52d0a48771b1c6f605ec333220",
+    "src/eab/readers/tf_probe.py": "af526bf7f81d086fb488c50e6c13b6e79c4736c8f811383eb05a4e8efe015e27",
+    "tools/tia2d_t1b_morphology.py": "d9818b03643f926a91b544f7eb4b61002a7b8f8c28a1aff5def326f380c6e69c"
+  },
+  "source_pre_post_equal": true,
+  "max_steps": 40,
+  "rows": [
+    {
+      "family": "sawtooth",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "76963465707/1099511627776",
+      "mu_hi": "19240866427/274877906944",
+      "mu_exact": "9177/131104",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "534254080/16785409",
+          "right": "534254080/16785409",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4071/4097",
+          "right": "4071/4097",
+          "reason": null
+        }
+      },
+      "seconds": 1.324451000080444,
+      "case": "p1_case_000.json.gz",
+      "sha256": "fdeba4d1529397da5144e25cccc842dc5bbd7c824426989e2da5ff60b28c2a32"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "76961365745/1099511627776",
+      "mu_hi": "38480682873/549755813888",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 2.019556399900466,
+      "case": "p1_case_001.json.gz",
+      "sha256": "f5beccb6f34330afdc091eca4bcfc60104f78968483d337e27a16af0badab677"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "19240879825/274877906944",
+      "mu_hi": "76963519301/1099511627776",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 1.4147489999886602,
+      "case": "p1_case_002.json.gz",
+      "sha256": "b8a224bab320611d10f6002495f58a5c7a3c22450a13e5d4dab1da754e13b25e"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "68614619135/1099511627776",
+      "mu_hi": "16359/262144",
+      "mu_exact": "16359/262144",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-2043/64",
+          "right": "-2043/64",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "2043/2048",
+          "right": "2043/2048",
+          "reason": null
+        }
+      },
+      "seconds": 1.292432399932295,
+      "case": "p1_case_003.json.gz",
+      "sha256": "b705347a40b3bdaababcb2af18b2d52182809231a89b5ce5d2cd6bb43ecbc4ae"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "77258037375/1099511627776",
+      "mu_hi": "603578417/8589934592",
+      "mu_exact": "9211/131088",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-2145254336/67125249",
+          "right": "-2145254336/67125249",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "8183/8193",
+          "right": "8183/8193",
+          "reason": null
+        }
+      },
+      "seconds": 2.334603700088337,
+      "case": "p1_case_004.json.gz",
+      "sha256": "bab8aad622220d12fdc33c217ebe74366364f56803f8b06506ee91b35bf9052c"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "85496988573/1099511627776",
+      "mu_hi": "42748494287/549755813888",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 1.461876199929975,
+      "case": "p1_case_005.json.gz",
+      "sha256": "c07931769ee7233023b17dad3da29bfec47d4ec2b92b677e0a0a731120e63c61"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "51472498687/1099511627776",
+      "mu_hi": "767/16384",
+      "mu_exact": "767/16384",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-511/16",
+          "right": "-511/16",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "511/512",
+          "right": "511/512",
+          "reason": null
+        }
+      },
+      "seconds": 1.3143231999129057,
+      "case": "p1_case_006.json.gz",
+      "sha256": "f66cae9c407154107560e404dbac944629ce7ff50dc178cd193c9d2112c1c32f"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "30049046271/549755813888",
+      "mu_hi": "60098092543/1099511627776",
+      "mu_exact": "3583/65552",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-536575776/16785409",
+          "right": "-536575776/16785409",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4093/4097",
+          "right": "4093/4097",
+          "reason": null
+        }
+      },
+      "seconds": 2.2588628999656066,
+      "case": "p1_case_007.json.gz",
+      "sha256": "54ce20e11ba0876cce4984f4811a677a61d7541f74e6e2a058fb6eaac1c076c4"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "1/16",
+      "mu_hi": "68719476737/1099511627776",
+      "mu_exact": "1/16",
+      "attained": false,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-32/1",
+          "right": "-32/1",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "1/1",
+          "right": "1/1",
+          "reason": null
+        }
+      },
+      "seconds": 1.5063249999657273,
+      "case": "p1_case_008.json.gz",
+      "sha256": "2827e3e15da513913ddfb807edd00943441525d4d0870924030c151160beda93"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "34212973559/549755813888",
+      "mu_hi": "68425947119/1099511627776",
+      "mu_exact": "8159/131104",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "534515488/16785409",
+          "right": "534515488/16785409",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4073/4097",
+          "right": "4073/4097",
+          "reason": null
+        }
+      },
+      "seconds": 1.235454799956642,
+      "case": "p1_case_009.json.gz",
+      "sha256": "e180c3d1a2535aa5b3c6aaedab73034fff4c9a103be333929c881b24c4ca93d6"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "68423847879/1099511627776",
+      "mu_hi": "8552980985/137438953472",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 2.0393763999454677,
+      "case": "p1_case_010.json.gz",
+      "sha256": "0308074e94b9f6340bb5b2f893788564e95c9b9fe4683a685c91a57777d10e8b"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "4276624579/68719476736",
+      "mu_hi": "68425993265/1099511627776",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 1.443090100074187,
+      "case": "p1_case_011.json.gz",
+      "sha256": "353c3c2955446ba343c09ba61ad56c72075b9534179ced91914640db25a338fe"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "60044607487/1099511627776",
+      "mu_hi": "57263/1048576",
+      "mu_exact": "57263/1048576",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-4087/128",
+          "right": "-4087/128",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4087/4096",
+          "right": "4087/4096",
+          "reason": null
+        }
+      },
+      "seconds": 1.3614968000911176,
+      "case": "p1_case_012.json.gz",
+      "sha256": "d145c991f279f3e0bebd73c77b43df191a9408010a52b1239c420401ab90d058"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "68678063039/1099511627776",
+      "mu_hi": "1073094735/17179869184",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 2.3747935000574216,
+      "case": "p1_case_013.json.gz",
+      "sha256": "ccfbb2f07b02665ae11d655df26bd5439cb0c18dffb4e127514ce85a2ff13243"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "38481817701/549755813888",
+      "mu_hi": "76963635403/1099511627776",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 1.4934656000696123,
+      "case": "p1_case_014.json.gz",
+      "sha256": "e7f1916a84d4de41541eb6ba57b5d76b931d1a134fcac2dee08bffee6cc308cb"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "42898292735/1099511627776",
+      "mu_hi": "40911/1048576",
+      "mu_exact": "40911/1048576",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-4089/128",
+          "right": "-4089/128",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4089/4096",
+          "right": "4089/4096",
+          "reason": null
+        }
+      },
+      "seconds": 1.3751736000413075,
+      "case": "p1_case_015.json.gz",
+      "sha256": "d51ca7a90ad11346d8013869eee0a05cf2b57bc8d802bca662015387286b23a4"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "25758010175/549755813888",
+      "mu_hi": "51516020351/1099511627776",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 2.4487365999957547,
+      "case": "p1_case_016.json.gz",
+      "sha256": "eeef5d0fe6d2949a3da835f308bbfe7cec53c46f204253b7e7ba6732a893bef6"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "7/128",
+      "mu_hi": "60129542145/1099511627776",
+      "mu_exact": "7/128",
+      "attained": false,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-32/1",
+          "right": "-32/1",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "1/1",
+          "right": "1/1",
+          "reason": null
+        }
+      },
+      "seconds": 1.6220758000854403,
+      "case": "p1_case_017.json.gz",
+      "sha256": "b3d1d706e52fa588cd405dddeec0809cf9b08add01770d337f7e9b43d14fd8f8"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/32",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 2,
+      "mu_lo": "10709092857/274877906944",
+      "mu_hi": "42836371429/1099511627776",
+      "mu_exact": "319/8188",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-267486016/4190209",
+          "right": "-267486016/4190209",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "2041/2047",
+          "right": "2041/2047",
+          "reason": null
+        }
+      },
+      "seconds": 4.894820100045763,
+      "case": "p1_case_018.json.gz",
+      "sha256": "552e84a09e63f04a47a09fc59912888e6e8ff174dd55f95c7d3a3e2ff4781a61"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/32",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 2,
+      "mu_lo": "47851807731/1099511627776",
+      "mu_hi": "11962951933/274877906944",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 6.694063999922946,
+      "case": "p1_case_019.json.gz",
+      "sha256": "caf7d21c9a8977631c87424c04c5c91b17e8777c760e40013bc84cc5acbd41d6"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/32",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 2,
+      "mu_lo": "51468286971/1099511627776",
+      "mu_hi": "12867071743/274877906944",
+      "mu_exact": "3067/65520",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-1071252544/16769025",
+          "right": "-1071252544/16769025",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4087/4095",
+          "right": "4087/4095",
+          "reason": null
+        }
+      },
+      "seconds": 4.986072800005786,
+      "case": "p1_case_020.json.gz",
+      "sha256": "2113abd62f864c67081ef8fd2c02f3978b743c53fe3b45673f5fe9cd3ec96c4f"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/64",
+      "amplitude_over_wavelength": "1/32",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 4,
+      "mu_lo": "2110729649/549755813888",
+      "mu_hi": "4221459299/1099511627776",
+      "mu_exact": "201/52352",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-106945488/836405",
+          "right": "-106945488/836405",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4083/4090",
+          "right": "4083/4090",
+          "reason": null
+        }
+      },
+      "seconds": 20.641332700033672,
+      "case": "p1_case_021.json.gz",
+      "sha256": "9e362b5a97098f2dd5e238657959e6e885fbd04874e23580e07f377e2964503b"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/64",
+      "amplitude_over_wavelength": "1/32",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/4",
+      "asymmetry": "1/2",
+      "periods": 4,
+      "mu_lo": "3499232799/549755813888",
+      "mu_hi": "6998465599/1099511627776",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 23.685598500072956,
+      "case": "p1_case_022.json.gz",
+      "sha256": "f990dc663b4077e4bc0ae44bb934f9fe7d0e75c11d6df3e0a17785525161ff13"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/64",
+      "amplitude_over_wavelength": "1/32",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "1/2",
+      "asymmetry": "1/2",
+      "periods": 4,
+      "mu_lo": "8533242283/1099511627776",
+      "mu_hi": "2133310571/274877906944",
+      "mu_exact": "127/16364",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-2140086080/16736281",
+          "right": "-2140086080/16736281",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4085/4091",
+          "right": "4085/4091",
+          "reason": null
+        }
+      },
+      "seconds": 19.182989099994302,
+      "case": "p1_case_023.json.gz",
+      "sha256": "8edde34013d665ebd0665ea05eb8c104601d31c86f015444d8013b34123f61f0"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/4",
+      "periods": 1,
+      "mu_lo": "32838604117/549755813888",
+      "mu_hi": "65677208235/1099511627776",
+      "mu_exact": "367/6144",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-85/4",
+          "right": "-85/4",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "255/256",
+          "right": "255/256",
+          "reason": null
+        }
+      },
+      "seconds": 1.423557800007984,
+      "case": "p1_case_024.json.gz",
+      "sha256": "4cc4bdb0d872d6e12e9830ff8558024b7c229d50e3669db08cf34f479a481f4a"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "3/4",
+      "periods": 1,
+      "mu_lo": "60095987711/1099511627776",
+      "mu_hi": "1791/32768",
+      "mu_exact": "1791/32768",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-1023/16",
+          "right": "-1023/16",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "1023/1024",
+          "right": "1023/1024",
+          "reason": null
+        }
+      },
+      "seconds": 1.2742640000069514,
+      "case": "p1_case_025.json.gz",
+      "sha256": "cbc1426009dcf2175a77bd2d179c892bb1fd8d869e12a1756a6aa0e8e1320e0b"
+    },
+    {
+      "family": "kinked",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "38479614845/549755813888",
+      "mu_hi": "76959229691/1099511627776",
+      "mu_exact": "73403/1048704",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "2135434208/67125249",
+          "right": "2135434208/67125249",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "8141/8193",
+          "right": "8141/8193",
+          "reason": null
+        }
+      },
+      "seconds": 1.1966779000358656,
+      "case": "p1_case_026.json.gz",
+      "sha256": "5e358905558f6704566e6ac7d281ac696f7eccdf31d655b2e0cd72259f70d499"
+    },
+    {
+      "family": "kinked",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "10687098877/137438953472",
+      "mu_hi": "85496791017/1099511627776",
+      "mu_exact": "20389/262208",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "533727456/16785409",
+          "right": "533727456/16785409",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4069/4097",
+          "right": "4069/4097",
+          "reason": null
+        }
+      },
+      "seconds": 1.190575199900195,
+      "case": "p1_case_027.json.gz",
+      "sha256": "bb405f2ad26e3cfab6a1f61a197263206ae3dee081d41cf57ba255969de65b5c"
+    },
+    {
+      "family": "kinked",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "85748350975/1099511627776",
+      "mu_hi": "5111/65536",
+      "mu_exact": "5111/65536",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "0/1",
+          "right": "0/1",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "1021/1024",
+          "right": "1021/1024",
+          "reason": null
+        }
+      },
+      "seconds": 1.1328544000862166,
+      "case": "p1_case_028.json.gz",
+      "sha256": "1a1769934df6357899c8dc024a2c121b877f71588e85d9f2bfceb2758f373d59"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "0/1",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "0/1",
+      "height": "1/16",
+      "tilt": "3/32",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "68417486847/1099511627776",
+      "mu_hi": "2039/32768",
+      "mu_exact": "2039/32768",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "no_valid_direction"
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "509/512",
+          "right": "509/512",
+          "reason": null
+        }
+      },
+      "seconds": 0.3468989999964833,
+      "case": "p1_case_029.json.gz",
+      "sha256": "6a642e9bdee6efc4fba927992082e8990f6c241f42d3358f8d9a277d9372dd22"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/4",
+      "periods": 1,
+      "mu_lo": "28559627605/549755813888",
+      "mu_hi": "57119255211/1099511627776",
+      "mu_exact": null,
+      "attained": null,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        },
+        "tilt": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "exact_threshold_basis_and_seed_required"
+        }
+      },
+      "seconds": 1.436871699988842,
+      "case": "p1_case_030.json.gz",
+      "sha256": "25a6318d5c2ff75fcac9324f54fea53d4c654865f08f585b0e87e45ae2c3d3c7"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "3/4",
+      "periods": 1,
+      "mu_lo": "51513917439/1099511627776",
+      "mu_hi": "98255/2097152",
+      "mu_exact": "98255/2097152",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "-8185/128",
+          "right": "-8185/128",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "8185/8192",
+          "right": "8185/8192",
+          "reason": null
+        }
+      },
+      "seconds": 1.4078435000265017,
+      "case": "p1_case_031.json.gz",
+      "sha256": "1b6d687e813bc7d6f9e1f1f7fa21cda840896e81c387a13e73c737b67807ca1e"
+    },
+    {
+      "family": "kinked",
+      "amplitude": "1/4096",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/256",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "68421717499/1099511627776",
+      "mu_hi": "17105429375/274877906944",
+      "mu_exact": "16315/262176",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "2136481312/67125249",
+          "right": "2136481312/67125249",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "2715/2731",
+          "right": "2715/2731",
+          "reason": null
+        }
+      },
+      "seconds": 1.2336784999351948,
+      "case": "p1_case_032.json.gz",
+      "sha256": "91bd588ce2f83b803cb8a3c181e4463bf8a47b872834a7ada0e08639cef1c82c"
+    },
+    {
+      "family": "kinked",
+      "amplitude": "1/2048",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/128",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "76963465707/1099511627776",
+      "mu_hi": "19240866427/274877906944",
+      "mu_exact": "9177/131104",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "533989232/16785409",
+          "right": "533989232/16785409",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4071/4097",
+          "right": "4071/4097",
+          "reason": null
+        }
+      },
+      "seconds": 1.2412880000192672,
+      "case": "p1_case_033.json.gz",
+      "sha256": "f3c4ef92bb9ec1047ca0d138f8d41cfb31ec24510cd3ce8d6fc54aa96401edc1"
+    },
+    {
+      "family": "kinked",
+      "amplitude": "1/1024",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "1/64",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "77182533631/1099511627776",
+      "mu_hi": "73607/1048576",
+      "mu_exact": "73607/1048576",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "smooth",
+          "left": "0/1",
+          "right": "0/1",
+          "reason": null
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "4085/4096",
+          "right": "4085/4096",
+          "reason": null
+        }
+      },
+      "seconds": 1.2179529001004994,
+      "case": "p1_case_034.json.gz",
+      "sha256": "03ff522c1747a369af64ae7ec7fc725dcce2a802598eb25172fe9d6004a1c089"
+    },
+    {
+      "family": "sawtooth",
+      "amplitude": "0/1",
+      "wavelength": "1/16",
+      "amplitude_over_wavelength": "0/1",
+      "height": "1/16",
+      "tilt": "11/128",
+      "phase": "0/1",
+      "asymmetry": "1/2",
+      "periods": 1,
+      "mu_lo": "59875786751/1099511627776",
+      "mu_hi": "28551/524288",
+      "mu_exact": "28551/524288",
+      "attained": true,
+      "mode": "associated_translation_rotation",
+      "first_order": "NONZERO_CONE",
+      "derivatives": {
+        "amplitude": {
+          "status": "unresolved",
+          "left": null,
+          "right": null,
+          "reason": "no_valid_direction"
+        },
+        "tilt": {
+          "status": "smooth",
+          "left": "2037/2048",
+          "right": "2037/2048",
+          "reason": null
+        }
+      },
+      "seconds": 0.3642144000623375,
+      "case": "p1_case_035.json.gz",
+      "sha256": "deb982bb42a709062f8b7322623147f5b5cbb4d40462aa0754a0d6eaef5f4f0d"
+    }
+  ],
+  "t1a_controls": [
+    {
+      "family": "TIA-G2",
+      "amplitude": "1/8",
+      "wavelength": "1/1",
+      "mu_exact": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "family": "TIA-G3",
+      "amplitude": "1/8",
+      "wavelength": "1/1",
+      "mu_exact": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    },
+    {
+      "family": "TIA-G4",
+      "amplitude": "1/8",
+      "wavelength": "1/1",
+      "mu_exact": "0/1",
+      "attained": true,
+      "certificate_arithmetic": true
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_000.json.gz",
+      "sha256": "fdeba4d1529397da5144e25cccc842dc5bbd7c824426989e2da5ff60b28c2a32",
+      "bytes": 18397
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_001.json.gz",
+      "sha256": "f5beccb6f34330afdc091eca4bcfc60104f78968483d337e27a16af0badab677",
+      "bytes": 20549
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_002.json.gz",
+      "sha256": "b8a224bab320611d10f6002495f58a5c7a3c22450a13e5d4dab1da754e13b25e",
+      "bytes": 15695
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_003.json.gz",
+      "sha256": "b705347a40b3bdaababcb2af18b2d52182809231a89b5ce5d2cd6bb43ecbc4ae",
+      "bytes": 16077
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_004.json.gz",
+      "sha256": "bab8aad622220d12fdc33c217ebe74366364f56803f8b06506ee91b35bf9052c",
+      "bytes": 24657
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_005.json.gz",
+      "sha256": "c07931769ee7233023b17dad3da29bfec47d4ec2b92b677e0a0a731120e63c61",
+      "bytes": 15263
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_006.json.gz",
+      "sha256": "f66cae9c407154107560e404dbac944629ce7ff50dc178cd193c9d2112c1c32f",
+      "bytes": 16164
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_007.json.gz",
+      "sha256": "54ce20e11ba0876cce4984f4811a677a61d7541f74e6e2a058fb6eaac1c076c4",
+      "bytes": 22708
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_008.json.gz",
+      "sha256": "2827e3e15da513913ddfb807edd00943441525d4d0870924030c151160beda93",
+      "bytes": 16388
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_009.json.gz",
+      "sha256": "e180c3d1a2535aa5b3c6aaedab73034fff4c9a103be333929c881b24c4ca93d6",
+      "bytes": 17294
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_010.json.gz",
+      "sha256": "0308074e94b9f6340bb5b2f893788564e95c9b9fe4683a685c91a57777d10e8b",
+      "bytes": 15888
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_011.json.gz",
+      "sha256": "353c3c2955446ba343c09ba61ad56c72075b9534179ced91914640db25a338fe",
+      "bytes": 15079
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_012.json.gz",
+      "sha256": "d145c991f279f3e0bebd73c77b43df191a9408010a52b1239c420401ab90d058",
+      "bytes": 16902
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_013.json.gz",
+      "sha256": "ccfbb2f07b02665ae11d655df26bd5439cb0c18dffb4e127514ce85a2ff13243",
+      "bytes": 22907
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_014.json.gz",
+      "sha256": "e7f1916a84d4de41541eb6ba57b5d76b931d1a134fcac2dee08bffee6cc308cb",
+      "bytes": 20618
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_015.json.gz",
+      "sha256": "d51ca7a90ad11346d8013869eee0a05cf2b57bc8d802bca662015387286b23a4",
+      "bytes": 23206
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_016.json.gz",
+      "sha256": "eeef5d0fe6d2949a3da835f308bbfe7cec53c46f204253b7e7ba6732a893bef6",
+      "bytes": 23785
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_017.json.gz",
+      "sha256": "b3d1d706e52fa588cd405dddeec0809cf9b08add01770d337f7e9b43d14fd8f8",
+      "bytes": 25653
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_018.json.gz",
+      "sha256": "552e84a09e63f04a47a09fc59912888e6e8ff174dd55f95c7d3a3e2ff4781a61",
+      "bytes": 26661
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_019.json.gz",
+      "sha256": "caf7d21c9a8977631c87424c04c5c91b17e8777c760e40013bc84cc5acbd41d6",
+      "bytes": 21091
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_020.json.gz",
+      "sha256": "2113abd62f864c67081ef8fd2c02f3978b743c53fe3b45673f5fe9cd3ec96c4f",
+      "bytes": 31649
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_021.json.gz",
+      "sha256": "9e362b5a97098f2dd5e238657959e6e885fbd04874e23580e07f377e2964503b",
+      "bytes": 48224
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_022.json.gz",
+      "sha256": "f990dc663b4077e4bc0ae44bb934f9fe7d0e75c11d6df3e0a17785525161ff13",
+      "bytes": 33165
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_023.json.gz",
+      "sha256": "8edde34013d665ebd0665ea05eb8c104601d31c86f015444d8013b34123f61f0",
+      "bytes": 47330
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_024.json.gz",
+      "sha256": "4cc4bdb0d872d6e12e9830ff8558024b7c229d50e3669db08cf34f479a481f4a",
+      "bytes": 19748
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_025.json.gz",
+      "sha256": "cbc1426009dcf2175a77bd2d179c892bb1fd8d869e12a1756a6aa0e8e1320e0b",
+      "bytes": 15281
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_026.json.gz",
+      "sha256": "5e358905558f6704566e6ac7d281ac696f7eccdf31d655b2e0cd72259f70d499",
+      "bytes": 18525
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_027.json.gz",
+      "sha256": "bb405f2ad26e3cfab6a1f61a197263206ae3dee081d41cf57ba255969de65b5c",
+      "bytes": 18143
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_028.json.gz",
+      "sha256": "1a1769934df6357899c8dc024a2c121b877f71588e85d9f2bfceb2758f373d59",
+      "bytes": 18257
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_029.json.gz",
+      "sha256": "6a642e9bdee6efc4fba927992082e8990f6c241f42d3358f8d9a277d9372dd22",
+      "bytes": 5881
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_030.json.gz",
+      "sha256": "25a6318d5c2ff75fcac9324f54fea53d4c654865f08f585b0e87e45ae2c3d3c7",
+      "bytes": 20002
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_031.json.gz",
+      "sha256": "1b6d687e813bc7d6f9e1f1f7fa21cda840896e81c387a13e73c737b67807ca1e",
+      "bytes": 22594
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_032.json.gz",
+      "sha256": "91bd588ce2f83b803cb8a3c181e4463bf8a47b872834a7ada0e08639cef1c82c",
+      "bytes": 20662
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_033.json.gz",
+      "sha256": "f3c4ef92bb9ec1047ca0d138f8d41cfb31ec24510cd3ce8d6fc54aa96401edc1",
+      "bytes": 24486
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_034.json.gz",
+      "sha256": "03ff522c1747a369af64ae7ec7fc725dcce2a802598eb25172fe9d6004a1c089",
+      "bytes": 23763
+    },
+    {
+      "path": "D:\\eab-evidence\\reports\\codex\\T1b_evidence\\p1_final_20261022\\p1_case_035.json.gz",
+      "sha256": "deb982bb42a709062f8b7322623147f5b5cbb4d40462aa0754a0d6eaef5f4f0d",
+      "bytes": 6093
+    }
+  ],
+  "elapsed_seconds": 124.71194850001484
+}
