@@ -1,0 +1,26 @@
+{
+  "work_order": "WO-C1E",
+  "target": "C1 exact simple-ring E/O and local zero queries",
+  "scope": "D:/eab-wt/cx-c0 only",
+  "non_goals": [
+    "C2 events",
+    "C3 mechanics",
+    "src/eab mathematical changes",
+    "Git writes",
+    "sibling writes",
+    "downloads/installations"
+  ],
+  "rollback_anchor": "8269d1d5f4896e74b5186583f9784d700a189a2c",
+  "branch": "eab2-c1",
+  "initial_status": "",
+  "design_sha256": "6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac",
+  "verification": [
+    "C++ CTest",
+    "tools/eab2_diff_c1.py with explicit test DLL",
+    "C0 differential",
+    "Python fast + four-shard full",
+    "exact construction/purity/size/encoding audit"
+  ],
+  "fresh_git_checkout": false,
+  "utc": "2026-10-22T11:38:18.923596+00:00"
+}

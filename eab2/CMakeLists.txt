@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 cmake_policy(SET CMP0091 NEW)
-project(eab2_c0 VERSION 0.0.1 LANGUAGES C CXX)
+project(eab2_c1 VERSION 0.1.0 LANGUAGES C CXX)
 
 if(NOT MSVC OR NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
   message(FATAL_ERROR "C0 supports only MSVC x64")
@@ -29,10 +29,21 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
 set(CMAKE_C_FLAGS_RELEASE "/O2 /DNDEBUG")
-set(EAB2_BUILD_ID "eab2-c0;compiler=MSVC-${CMAKE_CXX_COMPILER_VERSION};toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20")
+set(EAB2_BUILD_ID "eab2-c1;compiler=MSVC-${CMAKE_CXX_COMPILER_VERSION};toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20")
 configure_file(src/build_identity.hpp.in generated/build_identity.hpp @ONLY)
+# MSVC diagnostic language/codepage can make Ninja's /showIncludes parser miss
+# a header. Explicit authored-header dependencies keep incremental builds sound
+# without depending on the host diagnostic locale. Vendor bytes are frozen/audited.
+file(GLOB EAB2_AUTHORED_HEADERS CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/eab2/*.h")
+list(APPEND EAB2_AUTHORED_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/generated/build_identity.hpp")
 
 function(eab2_controlled target)
+  get_target_property(controlled_sources ${target} SOURCES)
+  foreach(controlled_source IN LISTS controlled_sources)
+    set_property(SOURCE "${controlled_source}" PROPERTY OBJECT_DEPENDS "${EAB2_AUTHORED_HEADERS}")
+  endforeach()
   target_compile_options(${target} PRIVATE /utf-8 /permissive- /fp:precise /W4 /EHsc)
   target_compile_definitions(${target} PRIVATE BOOST_MP_STANDALONE)
   target_include_directories(${target} PRIVATE
@@ -42,7 +53,7 @@ function(eab2_controlled target)
   target_include_directories(${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 endfunction()
 
-set(EAB2_CORE_SOURCES src/numeric.cpp src/fp_contract.cpp)
+set(EAB2_CORE_SOURCES src/numeric.cpp src/fp_contract.cpp src/geometry2.cpp src/geometry2_local.cpp)
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/exact.cpp")
   list(APPEND EAB2_CORE_SOURCES src/exact.cpp)
 endif()
@@ -83,3 +94,14 @@ add_executable(eab2_test_c_header_static tests/test_c_header.c)
 target_link_libraries(eab2_test_c_header_static PRIVATE eab2_static)
 target_compile_options(eab2_test_c_header_static PRIVATE /utf-8 /fp:precise /W4)
 add_test(NAME c_header_static COMMAND eab2_test_c_header_static)
+
+add_executable(eab2_test_geometry2 tests/test_geometry2.cpp)
+target_link_libraries(eab2_test_geometry2 PRIVATE eab2_core)
+eab2_controlled(eab2_test_geometry2)
+add_test(NAME geometry2_static COMMAND eab2_test_geometry2)
+add_executable(eab2_test_geometry2_local tests/test_geometry2_local.cpp)
+target_link_libraries(eab2_test_geometry2_local PRIVATE eab2_core)
+eab2_controlled(eab2_test_geometry2_local)
+add_test(NAME geometry2_local_static COMMAND eab2_test_geometry2_local)
+
+set_property(SOURCE tests/test_c_header.c PROPERTY OBJECT_DEPENDS "${EAB2_AUTHORED_HEADERS}")

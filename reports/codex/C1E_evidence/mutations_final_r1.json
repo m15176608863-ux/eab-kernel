@@ -1,0 +1,73 @@
+{
+  "schema": "eab2.c1.mutations.v1",
+  "passed": true,
+  "scope": "Author gate sensitivity only; no claim of independent review or fresh-tree acceptance.",
+  "baseline_last_line": "EAB2_GEOMETRY2_TESTS checks=700 failed=0",
+  "baseline_sha256": {
+    "eab2\\src\\geometry2.cpp": "59cbe3a1c2bec3538e443f6e30ada26cff6cef1e246f02780cace94f60e05709",
+    "eab2\\src\\geometry2.hpp": "ad223e982c359d9943caf03ae263350f947ac64edc40b198f9f8d33af663d137",
+    "eab2\\tests\\test_geometry2.cpp": "014b761c942c7ec7e685095113b953daa5229a6d36c684f08c419e93d58522e0",
+    "eab2\\src\\numeric.hpp": "c26650bbb27e6794dc1965dbff947a8e082da90d3238567ede99a0a1fa56bc6e",
+    "eab2\\src\\exact.hpp": "efbfd3e00a6587d8fbdc18d52d7de7ec84a587731887368b4bc45cf2b7d3c986",
+    "eab2\\build\\compile_commands.json": "c564ffe854282e1b58c6a623852ceb847bed05647411e14e45327646d813eaa1",
+    "eab2\\build\\CMakeFiles\\eab2_test_geometry2.dir\\tests\\test_geometry2.cpp.obj": "0e01bb31435aceec172bf1d64e50fb86b206ad6b83e5fe6b20eda084ec2ce03a",
+    "eab2\\build\\eab2_core.lib": "3e3c6ad40ab6c046c4a6365ca21bb79cf62b565edbc7c270fe90b839053f495a",
+    "eab2\\build\\eab2_test_geometry2.exe": "97f71122cd0f8d710553d75d17e2a796a409931975838706c7d639d22020b255"
+  },
+  "original_unchanged": true,
+  "mutants": [
+    {
+      "name": "closed_E_mislabelled_as_O",
+      "old": "const auto value = cell_state(cells[i], point);\n        if (value == 1) return 1;",
+      "new": "const auto value = cell_state(cells[i], point);\n        if (value >= 0) return 1;",
+      "expected": "failed=1 detail=nonconvex exact rectangle-union oracle",
+      "defect": "Treat closed product-cell contact as strict body overlap inside membership.",
+      "passed": true,
+      "exit_code": 1,
+      "last_line": "EAB2_GEOMETRY2_TESTS checks=116 failed=1 detail=nonconvex exact rectangle-union oracle",
+      "seconds": 3.454125100048259,
+      "source_copy": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\closed_E_mislabelled_as_O.cpp",
+      "source_sha256": "b226d89fb19cd995e7a4b7dd560b7b473fbfb2cab4ed710c78ad926cc37f9867",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\closed_E_mislabelled_as_O.log",
+      "log_sha256": "1892dc59ecf7b053db14c87d594b6e567e2d2620700220e5c01985f336433bc6",
+      "actual_compile_command": "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\eab2\\src -ID:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\eab2\\build\\generated -ID:\\eab-wt\\cx-c0\\eab2\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /Fo\"D:/eab-wt/cx-c0/reports/codex/C1E_evidence/tmp/mutations_final_r1/closed_E_mislabelled_as_O.obj\" /Fd\"D:/eab-wt/cx-c0/reports/codex/C1E_evidence/tmp/mutations_final_r1/closed_E_mislabelled_as_O.pdb\" /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\closed_E_mislabelled_as_O.cpp",
+      "link_command": "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe /nologo /MD \"D:\\eab-wt\\cx-c0\\eab2\\build\\CMakeFiles\\eab2_test_geometry2.dir\\tests\\test_geometry2.cpp.obj\" \"D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\closed_E_mislabelled_as_O.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib\" /link /OUT:\"D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\closed_E_mislabelled_as_O.exe\" /INCREMENTAL:NO /MACHINE:X64"
+    },
+    {
+      "name": "isolated_contact_removed",
+      "old": "if (membership(point) == 0) point_result.push_back({point, std::vector<Label>(labels.begin(), labels.end())});",
+      "new": "if (membership(point) == 0 && std::any_of(contact_result.begin(), contact_result.end(), [&](const ContactSegment& e) { return on_segment(point, e.start, e.end); })) point_result.push_back({point, std::vector<Label>(labels.begin(), labels.end())});",
+      "expected": "failed=1 detail=isolated contact retained",
+      "defect": "Discard state-zero points not incident to a retained open contact segment.",
+      "passed": true,
+      "exit_code": 1,
+      "last_line": "EAB2_GEOMETRY2_TESTS checks=405 failed=1 detail=isolated contact retained",
+      "seconds": 3.464276700047776,
+      "source_copy": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\isolated_contact_removed.cpp",
+      "source_sha256": "c1ec4aba3925d968f0df5bd374ca74d593183b8d32be18382492115a1c618049",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\isolated_contact_removed.log",
+      "log_sha256": "097de36bb194d2770515ccd67b664ee63d44a4715e35e6e2d2d6dd19a8ab8299",
+      "actual_compile_command": "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\eab2\\src -ID:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\eab2\\build\\generated -ID:\\eab-wt\\cx-c0\\eab2\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /Fo\"D:/eab-wt/cx-c0/reports/codex/C1E_evidence/tmp/mutations_final_r1/isolated_contact_removed.obj\" /Fd\"D:/eab-wt/cx-c0/reports/codex/C1E_evidence/tmp/mutations_final_r1/isolated_contact_removed.pdb\" /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\isolated_contact_removed.cpp",
+      "link_command": "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe /nologo /MD \"D:\\eab-wt\\cx-c0\\eab2\\build\\CMakeFiles\\eab2_test_geometry2.dir\\tests\\test_geometry2.cpp.obj\" \"D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\isolated_contact_removed.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib\" /link /OUT:\"D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\isolated_contact_removed.exe\" /INCREMENTAL:NO /MACHINE:X64"
+    },
+    {
+      "name": "window_promoted_to_strict",
+      "old": "return w2 > Rational(0) && cone_nonreflex(cone.first, cone.second, w2) && cone_accepts(cone.first, cone.second, v, w2) ? 0 : -1;",
+      "new": "return w2 > Rational(0) && cone_nonreflex(cone.first, cone.second, w2) && cone_accepts(cone.first, cone.second, v, w2) ? 1 : -1;",
+      "expected": "failed=1 detail=explicit cone admits small reflex but never strict",
+      "defect": "Promote an explicitly enlarged VE cone window to exact strictness.",
+      "passed": true,
+      "exit_code": 1,
+      "last_line": "EAB2_GEOMETRY2_TESTS checks=84 failed=1 detail=explicit cone admits small reflex but never strict",
+      "seconds": 3.4432351000141352,
+      "source_copy": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\window_promoted_to_strict.cpp",
+      "source_sha256": "751fde3f0c4fab12db58ca0e90b9eb044413cbf909edef70d4b71d0649e798b1",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\window_promoted_to_strict.log",
+      "log_sha256": "427e646c3c5b8018c6a730ae19775ffb5cd08fe5fee477321ecdcae628e97a98",
+      "actual_compile_command": "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\eab2\\src -ID:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\eab2\\build\\generated -ID:\\eab-wt\\cx-c0\\eab2\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /Fo\"D:/eab-wt/cx-c0/reports/codex/C1E_evidence/tmp/mutations_final_r1/window_promoted_to_strict.obj\" /Fd\"D:/eab-wt/cx-c0/reports/codex/C1E_evidence/tmp/mutations_final_r1/window_promoted_to_strict.pdb\" /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\window_promoted_to_strict.cpp",
+      "link_command": "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe /nologo /MD \"D:\\eab-wt\\cx-c0\\eab2\\build\\CMakeFiles\\eab2_test_geometry2.dir\\tests\\test_geometry2.cpp.obj\" \"D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\window_promoted_to_strict.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_core.lib\" /link /OUT:\"D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\mutations_final_r1\\window_promoted_to_strict.exe\" /INCREMENTAL:NO /MACHINE:X64"
+    }
+  ],
+  "seconds": 10.51772110001184,
+  "last_line": "C1_GEOMETRY_MUTATIONS mutants=3 semantic_kills=3 original_unchanged=1"
+}

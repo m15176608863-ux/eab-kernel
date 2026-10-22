@@ -9,6 +9,7 @@
 
 namespace eab2::numeric {
 namespace {
+thread_local bool* underflow_sink = nullptr;
 constexpr std::uint64_t negative_bit = UINT64_C(0x8000000000000000);
 constexpr std::uint64_t maximum_bits = UINT64_C(0x7fefffffffffffff);
 constexpr std::uint64_t fraction_mask = UINT64_C(0x000fffffffffffff);
@@ -29,6 +30,7 @@ std::uint64_t pack_quantum(const Int& significand, std::int64_t quantum, bool ne
     const auto width = significand.bit_length();
     if (!width) {
         if (!allow_underflow) throw Error(4, std::string(quantity) + ": nonzero exact value is below binary64 output range");
+        if (underflow_sink) *underflow_sink = true;
         return negative ? negative_bit : 0;
     }
     const std::int64_t exponent = quantum + static_cast<std::int64_t>(width) - 1;
@@ -95,6 +97,10 @@ std::uint64_t parse_bits(const std::string& text) {
 }
 
 Rational parse_rational(const std::string& text) {
+    // Conservative decimal multiply/gcd work bound, checked before big integers.
+    constexpr std::size_t max_parse_work = 16777216;
+    if (text.size() > 4096 || text.size() * text.size() > max_parse_work)
+        throw Error(5, "rational: deterministic decimal parsing work limit exceeded");
     const auto slash = text.find('/');
     if (slash == std::string::npos || text.find('/', slash + 1) != std::string::npos)
         throw Error(1, "rational: require canonical reduced numerator/denominator");
@@ -146,6 +152,7 @@ std::uint64_t scalar_algebraic(const std::function<int(const Rational&)>& compar
     const int order = compare(midpoint);
     const auto result = order < 0 || (!order && !(lo & 1)) ? lo : lo + 1;
     if (!result && !allow_underflow) throw Error(4, "scalar_algebraic: nonzero exact real is below binary64 output range");
+    if (!result && underflow_sink) *underflow_sink = true;
     return result;
 }
 
@@ -239,7 +246,7 @@ Aabb2 exact_aabb2(const std::vector<Point2>& points) {
     return result;
 }
 
-std::vector<std::uint64_t> evaluate(std::uint32_t operation, std::uint32_t encoding,
+static std::vector<std::uint64_t> evaluate_impl(std::uint32_t operation, std::uint32_t encoding,
                                   const std::vector<std::string>& texts, bool allow_underflow) {
     if (operation < 1 || operation > 14) throw Error(3, "numeric operation is unsupported");
     if (encoding != 1 && encoding != 2) throw Error(1, "numeric input encoding is invalid");
@@ -282,5 +289,15 @@ std::vector<std::uint64_t> evaluate(std::uint32_t operation, std::uint32_t encod
     }
     default: throw Error(3, "numeric operation is unsupported");
     }
+}
+std::vector<std::uint64_t> evaluate(std::uint32_t operation, std::uint32_t encoding,
+                                  const std::vector<std::string>& values, bool allow_underflow,
+                                  bool* underflow_zero) {
+    bool observed = false;
+    struct Restore { bool* previous; ~Restore() { underflow_sink = previous; } } restore{underflow_sink};
+    underflow_sink = &observed;
+    auto result = evaluate_impl(operation, encoding, values, allow_underflow);
+    if (underflow_zero) *underflow_zero = observed;
+    return result;
 }
 } // namespace eab2::numeric

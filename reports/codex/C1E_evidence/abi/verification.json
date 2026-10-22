@@ -1,0 +1,47 @@
+{
+  "commands": [
+    {
+      "name": "audit_final",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "tools/eab2_audit.py",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\abi\\delivery_audit_final.json"
+      ],
+      "returncode": 0,
+      "last_line": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=13",
+      "log": "reports\\codex\\C1E_evidence\\abi\\audit_final.log"
+    },
+    {
+      "name": "c0_diff_final",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "tools/eab2_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\abi\\c0_diff_final.json"
+      ],
+      "returncode": 0,
+      "last_line": "EAB2_DIFF samples=4483 bits=6003 mismatches=0 status=PASS",
+      "log": "reports\\codex\\C1E_evidence\\abi\\c0_diff_final.log"
+    },
+    {
+      "name": "ctest_final",
+      "command": [
+        "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\ctest.exe",
+        "--test-dir",
+        "eab2/build",
+        "--output-on-failure"
+      ],
+      "returncode": 0,
+      "last_line": "Total Test time (real) =   0.08 sec",
+      "log": "reports\\codex\\C1E_evidence\\abi\\ctest_final.log"
+    }
+  ],
+  "dll_sha256": "b9d245c437c04b5b2e1db1ee780a8255a97e48a4cd159a936b2dae4699043e1b"
+}

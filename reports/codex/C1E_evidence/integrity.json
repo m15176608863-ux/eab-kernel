@@ -1,0 +1,54 @@
+{
+  "schema": "eab2.c1e.integrity.v1",
+  "status": "PASS",
+  "failures": [],
+  "utc": "2026-10-22T12:40:50.722296+00:00",
+  "base_commit": "8269d1d5f4896e74b5186583f9784d700a189a2c",
+  "branch": "eab2-c1",
+  "git_writes_performed": false,
+  "fresh_git_checkout": false,
+  "baseline_changed_files": [
+    "eab2/ABI_CONTRACT.md",
+    "eab2/CMakeLists.txt",
+    "eab2/README.md",
+    "eab2/build_eab2.bat",
+    "eab2/include/eab2/c_api.h",
+    "eab2/include/eab2/testing.h",
+    "eab2/src/c_api.cpp",
+    "eab2/src/exact.hpp",
+    "eab2/src/fp_contract.cpp",
+    "eab2/src/numeric.cpp",
+    "eab2/src/numeric.hpp",
+    "eab2/tests/test_abi.cpp",
+    "eab2/tests/test_numeric.cpp",
+    "tools/eab2_audit.py",
+    "tools/eab2_diff.py"
+  ],
+  "readonly_prefixes_unchanged": {
+    "src/eab/": true,
+    "fixtures/": true,
+    "tests/": true,
+    "eab2/third_party/": true,
+    "docs/": true
+  },
+  "design_sha256": "6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac",
+  "python_judge_no_modification": true,
+  "post_h1_source_hash_changes": [],
+  "final_report_added_after_h1": "reports/codex/C1E_report.md; report generation only, no source or tests changed",
+  "deliverable_files_checked": 121,
+  "maximum_deliverable_bytes": 887638,
+  "byte_contract_files": {
+    ".gitattributes": "0fc8713cf4318f751d77e7e06f9f25315c09cfce3a23f8fd83a9e6c3fc828e1c",
+    ".gitignore": "4e3e1bdff4a621c43c29a676951768aa71b2a739142f4537be913301e13d7a6e",
+    "AGENTS.md": "67652485d65a94e0e9fd4fdc165c2efc3d70ad3e75b4a85f285d922322082740"
+  },
+  "git_diff_check": {
+    "returncode": 0,
+    "output": ""
+  },
+  "self_manifest_exclusions": [
+    "reports/codex/C1E_evidence/deliverables.json",
+    "reports/codex/C1E_evidence/deliverables.md",
+    "reports/codex/C1E_evidence/integrity.json"
+  ]
+}

@@ -74,11 +74,31 @@ typedef struct eab2_numeric_batch_output {
 } eab2_numeric_batch_output;
 
 /* Structural failure: no output mutation. Otherwise batch OK and per-item
- * status (including failures); bits written ONLY for VALUE/DISPLAY_VALID.
+ * status (including failures); bits written only for VALUE with DISPLAY_VALID
+ * or explicit DISPLAY_UNDERFLOW_ZERO.
  * All strides are exactly sizeof(the corresponding element). */
 EAB2_API eab2_call_status eab2_numeric_batch(
     eab2_context context, const eab2_numeric_batch_input* input,
     eab2_numeric_batch_output* output);
+
+typedef struct eab2_point2_exact { eab2_text x; eab2_text y; } eab2_point2_exact;
+typedef struct eab2_query2_exact_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t point_count; uint64_t point_stride;
+    const eab2_point2_exact* points;
+} eab2_query2_exact_input;
+EAB2_API eab2_call_status eab2_query2_exact_batch(eab2_context context,
+    eab2_entrance2 entrance, const eab2_query2_exact_input* input, eab2_query2_output* output);
+
+/* NULL/0 window means unbounded; NULL/0 cone_tol/seg_tol mean Python defaults.
+ * tol must be canonical nonnegative rational; require_in_segment is exactly 0/1. */
+typedef struct eab2_covers2_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t require_in_segment; uint32_t reserved;
+    eab2_text window; eab2_text tol; eab2_text cone_tol; eab2_text seg_tol;
+} eab2_covers2_input;
+EAB2_API eab2_call_status eab2_covers2_exact(eab2_context context,
+    eab2_entrance2 entrance, const eab2_covers2_input* input, eab2_exact_result* output);
 
 #ifdef __cplusplus
 }

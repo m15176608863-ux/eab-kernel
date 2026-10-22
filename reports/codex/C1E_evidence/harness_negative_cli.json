@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "tools/eab2_diff_c1.py",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\should_not_exist.json"
+      ],
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "usage: eab2_diff_c1.py [-h] --dll DLL --output OUTPUT\n                       [--case-prefix CASE_PREFIX] [--no-formal]\n                       [--limit LIMIT] [--metamorphic]\neab2_diff_c1.py: error: the following arguments are required: --dll\n",
+      "report_was_not_created": true
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "tools/eab2_diff_c1.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\missing_eab2.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\should_not_exist.json"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "C1_DIFF_FAIL ValueError: --dll must be an existing absolute DLL path\n",
+      "report_was_not_created": true
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "schema": "eab2.c1.diff.v1",
+  "dll": "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+  "dll_sha256": "7d80d6344de4f944e379ade29000afcbb37ab35b60b383b09587cc86e503e7ca",
+  "build_identity": "eab2-c1;compiler=MSVC-19.44.35227.0;toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20",
+  "coverage": {
+    "named_and_formal_pair_occurrences": 39,
+    "unique_ordered_binary64_pairs": 39,
+    "deduplicated_occurrences": 0
+  },
+  "selected_cases": 6,
+  "completed_cases": 3,
+  "mismatches": [
+    {
+      "name": "m3/tight_fit",
+      "error": "contact segment exact side occupancy differs",
+      "failure_artifact": "D:\\eab-wt\\cx-c0\\reports\\codex\\C1E_evidence\\tmp\\failures\\case_0003.json",
+      "a_bits": [
+        [
+          "0000000000000000",
+          "3fe0000000000000"
+        ],
+        [
+          "3ff0000000000000",
+          "3fe0000000000000"
+        ],
+        [
+          "3ff0000000000000",
+          "3ff8000000000000"
+        ],
+        [
+          "0000000000000000",
+          "3ff8000000000000"
+        ]
+      ],
+      "b_bits": [
+        [
+          "bff0000000000000",
+          "bff0000000000000"
+        ],
+        [
+          "4000000000000000",
+          "bff0000000000000"
+        ],
+        [
+          "4000000000000000",
+          "4000000000000000"
+        ],
+        [
+          "3ff0000000000000",
+          "4000000000000000"
+        ],
+        [
+          "3ff0000000000000",
+          "0000000000000000"
+        ],
+        [
+          "0000000000000000",
+          "0000000000000000"
+        ],
+        [
+          "0000000000000000",
+          "4000000000000000"
+        ],
+        [
+          "bff0000000000000",
+          "4000000000000000"
+        ]
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "cpp_layer_samples_rechecked": 53,
+      "canonical_segments": 6,
+      "source_strata": 16,
+      "isolated_points": 0,
+      "face_boundary_segments": 6,
+      "zero_window_covers_checked": 0,
+      "clipped_cover_strata": 18,
+      "name": "m3/thin_L",
+      "source_occurrences": 1,
+      "rounded_input_coordinates": 6,
+      "python_layer_samples_reverse_checked": 53,
+      "origin_body_state": 1,
+      "origin_topology_state": 1,
+      "python_seconds": 0.01826110004913062,
+      "cpp_build_seconds": 0.0004205999430269003,
+      "cpp_export_seconds": 0.005889000021852553,
+      "raw_segments": 48,
+      "convex_cells": 2,
+      "subdivision_sizes": {
+        "vertices": 20,
+        "edges": 26,
+        "faces": 7
+      },
+      "statistics": {
+        "raw_segments": 48,
+        "arranged_segments": 40,
+        "intersection_points": 26,
+        "cells": 2,
+        "contact_segments": 16,
+        "contact_points": 16,
+        "max_integer_bits": 59,
+        "exact_work_units": 1606,
+        "floating_filters": 0,
+        "exact_fallbacks": 0
+      },
+      "local_statistics": {
+        "raw_sources_checked": 6,
+        "local_cells_checked": 2,
+        "excluded_cells_checked": 0,
+        "radius_bounds_checked": 10,
+        "independent_sector_samples": 8
+      }
+    },
+    {
+      "cpp_layer_samples_rechecked": 69,
+      "canonical_segments": 12,
+      "source_strata": 12,
+      "isolated_points": 0,
+      "face_boundary_segments": 12,
+      "zero_window_covers_checked": 0,
+      "clipped_cover_strata": 14,
+      "name": "m3/slot_wedge",
+      "source_occurrences": 1,
+      "rounded_input_coordinates": 7,
+      "python_layer_samples_reverse_checked": 69,
+      "origin_body_state": 1,
+      "origin_topology_state": 1,
+      "python_seconds": 0.024942400050349534,
+      "cpp_build_seconds": 0.0005411999300122261,
+      "cpp_export_seconds": 0.008913199999369681,
+      "raw_segments": 48,
+      "convex_cells": 3,
+      "subdivision_sizes": {
+        "vertices": 22,
+        "edges": 34,
+        "faces": 13
+      },
+      "statistics": {
+        "raw_segments": 48,
+        "arranged_segments": 88,
+        "intersection_points": 44,
+        "cells": 3,
+        "contact_segments": 12,
+        "contact_points": 12,
+        "max_integer_bits": 111,
+        "exact_work_units": 2132,
+        "floating_filters": 0,
+        "exact_fallbacks": 0
+      },
+      "local_statistics": {
+        "raw_sources_checked": 4,
+        "local_cells_checked": 2,
+        "excluded_cells_checked": 1,
+        "radius_bounds_checked": 21,
+        "independent_sector_samples": 16
+      }
+    },
+    {
+      "cpp_layer_samples_rechecked": 87,
+      "canonical_segments": 10,
+      "source_strata": 24,
+      "isolated_points": 0,
+      "face_boundary_segments": 10,
+      "zero_window_covers_checked": 0,
+      "clipped_cover_strata": 30,
+      "name": "m3/interlock_section",
+      "source_occurrences": 1,
+      "rounded_input_coordinates": 0,
+      "python_layer_samples_reverse_checked": 87,
+      "origin_body_state": 1,
+      "origin_topology_state": 1,
+      "python_seconds": 0.027169000008143485,
+      "cpp_build_seconds": 0.00041550002060830593,
+      "cpp_export_seconds": 0.0055608999682590365,
+      "raw_segments": 80,
+      "convex_cells": 3,
+      "subdivision_sizes": {
+        "vertices": 32,
+        "edges": 43,
+        "faces": 12
+      },
+      "statistics": {
+        "raw_segments": 80,
+        "arranged_segments": 60,
+        "intersection_points": 40,
+        "cells": 3,
+        "contact_segments": 24,
+        "contact_points": 24,
+        "max_integer_bits": 4,
+        "exact_work_units": 3367,
+        "floating_filters": 0,
+        "exact_fallbacks": 0
+      },
+      "local_statistics": {
+        "raw_sources_checked": 6,
+        "local_cells_checked": 2,
+        "excluded_cells_checked": 1,
+        "radius_bounds_checked": 14,
+        "independent_sector_samples": 8
+      }
+    }
+  ],
+  "source_aliases": {
+    "m3/thin_L": [
+      "tests/test_m3_global2d.py::_families (RN binary64)"
+    ],
+    "m3/slot_wedge": [
+      "tests/test_m3_global2d.py::_families (RN binary64)"
+    ],
+    "m3/interlock_section": [
+      "tests/test_m3_global2d.py::_families (RN binary64)"
+    ],
+    "m3/tight_fit": [
+      "tests/test_m3_global2d.py::_families (RN binary64)"
+    ],
+    "m3/pocket_hole": [
+      "tests/test_m3_global2d.py::_families (RN binary64)"
+    ],
+    "m3/collinear": [
+      "tests/test_m3_global2d.py::_families (RN binary64)"
+    ]
+  },
+  "scope_note": "RN binary64 input; no claim original non-dyadic rational relations survive RN; identical ordered bit pairs deduplicated with all source aliases retained.",
+  "comparison": "Python-computed maximal E\\O segments/source strata/endpoints/isolated points + exact oriented face-region boundaries + boundary; bidirectional rational layer queries",
+  "elapsed_seconds": 0.41866130009293556
+}

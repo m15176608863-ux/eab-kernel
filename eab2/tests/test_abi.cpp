@@ -184,7 +184,8 @@ void numeric_status_matrix(eab2_context context) {
           range.bits == UINT64_C(0xdeadbeefcafef00d), "range failure is explicit with invalid untouched bits");
     range.item.flags = EAB2_NUMERIC_ALLOW_UNDERFLOW;
     check(range.run(context) == EAB2_OK && range.result.call_status == EAB2_OK &&
-          range.result.bits_count == 1 && range.bits == 0, "explicit underflow opt-in changes validity");
+          range.result.bits_count == 1 && range.bits == 0 &&
+          range.result.display_status == EAB2_DISPLAY_UNDERFLOW_ZERO, "explicit underflow opt-in is separately reported");
     Batch exact;
     check(exact.run(context) == EAB2_OK && exact.result.call_status == EAB2_OK &&
           exact.result.mathematical_status == EAB2_MATH_VALUE && exact.result.display_status == EAB2_DISPLAY_VALID &&
@@ -227,6 +228,185 @@ void numeric_status_matrix(eab2_context context) {
     check(EAB2_MATH_UNPROVED != EAB2_MATH_VALUE && EAB2_MATH_UNPROVED != EAB2_MATH_NOT_COMPUTED,
           "UNPROVED has distinct mathematical status representation");
 }
+void geometry2_matrix(eab2_context context, eab2_context other) {
+    auto info = initialized<eab2_c1_abi_info>();
+    check(eab2_get_c1_abi_info(&info) == EAB2_OK && info.query2_item_size == sizeof(eab2_query2_item) &&
+          info.exact_result_size == sizeof(eab2_exact_result), "C1 ABI size discovery");
+    const eab2_point2_bits square[] = {{0,0}, {UINT64_C(0x3ff0000000000000),0},
+        {UINT64_C(0x3ff0000000000000),UINT64_C(0x3ff0000000000000)}, {0,UINT64_C(0x3ff0000000000000)}};
+    auto input = initialized<eab2_body2_input>();
+    input.vertex_count = 4; input.vertex_stride = sizeof(eab2_point2_bits); input.vertices = square;
+    eab2_body2 a{}, b{}, recycled{};
+    check(eab2_body2_create(context, &input, &a) == EAB2_OK, "first body created");
+    check(eab2_body2_create(context, &input, &b) == EAB2_OK, "second body created");
+    check(eab2_body2_destroy(other, a) == EAB2_INVALID_HANDLE, "cross-context body rejected");
+    auto options = initialized<eab2_entrance2_options>();
+    eab2_entrance2 entrance{};
+    check(eab2_entrance2_create(context, a, b, &options, &entrance) == EAB2_OK, "entrance created");
+    check(eab2_body2_destroy(context, entrance) == EAB2_INVALID_HANDLE, "wrong child type rejected");
+    check(eab2_body2_destroy(context, a) == EAB2_OK, "body independent of entrance copy");
+    check(eab2_body2_create(context, &input, &recycled) == EAB2_OK && recycled.id == a.id &&
+          recycled.generation > a.generation, "body slot reuse advances generation");
+    check(eab2_body2_destroy(context, a) == EAB2_INVALID_HANDLE, "old body rejected after reuse");
+    auto invalid = input; --invalid.vertex_stride;
+    auto failed = b;
+    check(eab2_body2_create(context, &invalid, &failed) == EAB2_INVALID_INPUT && is_null(failed),
+          "body stride failure leaves null token");
+    invalid = input; invalid.vertex_count = UINT64_MAX;
+    check(eab2_body2_create(context, &invalid, &failed) == EAB2_INVALID_INPUT && is_null(failed), "body extent overflow rejected");
+    auto query = initialized<eab2_query2_input>();
+    const eab2_point2_bits points[] = {{0,0}, {UINT64_C(0x3ff0000000000000),0},
+        {UINT64_C(0x4000000000000000),0}, {UINT64_C(0x7ff0000000000000),0}};
+    query.point_count = 4; query.point_stride = sizeof(eab2_point2_bits); query.points = points;
+    eab2_query2_item items[4]{};
+    auto output = initialized<eab2_query2_output>();
+    output.item_capacity = 4; output.item_stride = sizeof(eab2_query2_item); output.items = items;
+    check(eab2_query2_batch(context, entrance, &query, &output) == EAB2_OK && output.item_count == 4,
+          "geometry batch partial success");
+    check(items[0].body_state == EAB2_BODY_OVERLAP && items[0].topology_state == EAB2_TOPOLOGY_INTERIOR,
+          "overlap not invocation error");
+    check(items[1].body_state == EAB2_BODY_CONTACT && items[1].topology_state == EAB2_TOPOLOGY_BOUNDARY,
+          "contact and boundary are separate states");
+    check(items[2].body_state == EAB2_BODY_OUTSIDE && items[2].topology_state == EAB2_TOPOLOGY_OUTSIDE,
+          "outside query");
+    check(items[3].call_status == EAB2_INVALID_INPUT && items[3].mathematical_status == EAB2_MATH_NOT_COMPUTED &&
+          items[3].body_state == UINT32_MAX, "nonfinite query not a false outside result");
+    --query.point_stride; output.item_count = 99; items[0].body_state = 99;
+    check(eab2_query2_batch(context, entrance, &query, &output) == EAB2_INVALID_INPUT &&
+          output.item_count == 99 && items[0].body_state == 99, "geometry structural failure atomic");
+    ++query.point_stride;
+    for (int test = 0; test != 9; ++test) {
+        auto bad_query = query;
+        auto bad_output = output;
+        bad_output.item_count = 99; items[0].body_state = 99;
+        if (test == 0) --bad_query.struct_size;
+        if (test == 1) --bad_output.struct_size;
+        if (test == 2) --bad_output.item_stride;
+        if (test == 3) bad_output.item_capacity = 3;
+        if (test == 4) bad_query.point_count = UINT64_MAX;
+        if (test == 5) bad_output.item_capacity = UINT64_MAX;
+        if (test == 6) bad_query.points = nullptr;
+        if (test == 7) bad_output.items = nullptr;
+        if (test == 8) ++bad_query.abi_version;
+        check(eab2_query2_batch(context, entrance, &bad_query, &bad_output) ==
+              (test == 8 ? EAB2_UNSUPPORTED : EAB2_INVALID_INPUT) && bad_output.item_count == 99 &&
+              items[0].body_state == 99, "C1 query structural matrix atomic");
+    }
+    check(eab2_membership2_batch(context, entrance, &query, &output) == EAB2_OK &&
+          eab2_topology2_batch(context, entrance, &query, &output) == EAB2_OK, "membership topology entry families");
+    auto exact = initialized<eab2_exact_result>();
+    check(eab2_result_export_exact(context, entrance, &exact) == EAB2_OK && exact.byte_count && exact.data &&
+          std::strstr(exact.data, "eab2.c1.exact.v1"), "exact export library allocation");
+    const auto old_result = exact.result;
+    check(eab2_result_destroy(other, exact.result) == EAB2_INVALID_HANDLE, "result owner validated");
+    check(eab2_result_destroy(context, exact.result) == EAB2_OK, "result freed by library");
+    exact = initialized<eab2_exact_result>();
+    check(eab2_local_origin2_exact(context, entrance, &exact) == EAB2_OK && exact.byte_count &&
+          exact.result.id == old_result.id && exact.result.generation > old_result.generation,
+          "local exact result and slot reuse");
+    check(eab2_result_destroy(context, old_result) == EAB2_INVALID_HANDLE, "stale result rejected after reuse");
+    check(eab2_result_destroy(context, exact.result) == EAB2_OK, "local result released");
+    eab2_point2_exact rational{{"1/3",3},{"0/1",3}};
+    auto rational_query = initialized<eab2_query2_exact_input>();
+    rational_query.point_count = 1; rational_query.point_stride = sizeof(eab2_point2_exact); rational_query.points = &rational;
+    check(eab2_query2_exact_batch(context, entrance, &rational_query, &output) == EAB2_OK &&
+          items[0].body_state == EAB2_BODY_OVERLAP, "test rational query without rounding");
+    check(eab2_entrance2_destroy(context, entrance) == EAB2_OK, "entrance released");
+    check(eab2_query2_batch(context, entrance, &query, &output) == EAB2_INVALID_HANDLE, "stale entrance rejected");
+
+    options.flags = EAB2_ENTRANCE_NO_CACHE;
+    eab2_entrance2 uncached{};
+    check(eab2_entrance2_create(context, b, recycled, &options, &uncached) == EAB2_OK,
+          "cache-off option accepted independently of merge/compact");
+    exact = initialized<eab2_exact_result>();
+    check(eab2_result_export_exact(context, uncached, &exact) == EAB2_OK, "uncached first global export");
+    const std::string first_export(exact.data, static_cast<size_t>(exact.byte_count));
+    check(eab2_result_destroy(context, exact.result) == EAB2_OK, "uncached first result released");
+    exact = initialized<eab2_exact_result>();
+    check(eab2_result_export_exact(context, uncached, &exact) == EAB2_OK &&
+          first_export == std::string(exact.data, static_cast<size_t>(exact.byte_count)), "uncached exports semantic equality");
+    check(eab2_result_destroy(context, exact.result) == EAB2_OK, "uncached second result released");
+    exact = initialized<eab2_exact_result>();
+    check(eab2_local_origin2_exact(context, uncached, &exact) == EAB2_OK &&
+          std::strstr(exact.data, "\"global_subdivision_materialized\":false"),
+          "cache-off discards global cache before next local query");
+    check(eab2_result_destroy(context, exact.result) == EAB2_OK, "uncached local result released");
+    check(eab2_query2_batch(context, uncached, &query, &output) == EAB2_OK &&
+          items[1].body_state == EAB2_BODY_CONTACT, "cache-off membership semantics retained");
+    check(eab2_entrance2_destroy(context, uncached) == EAB2_OK, "uncached entrance released");
+    options.flags = 8;
+    check(eab2_entrance2_create(context, b, recycled, &options, &uncached) == EAB2_INVALID_INPUT && is_null(uncached),
+          "unsupported entrance option rejected with null token");
+    check(eab2_body2_destroy(context, b) == EAB2_OK && eab2_body2_destroy(context, recycled) == EAB2_OK, "body cleanup");
+    Batch work;
+    work.item.encoding = EAB2_ENCODING_RATIONAL;
+    work.replace("1/" + std::string(4096, '9'));
+    check(work.run(context) == EAB2_OK && work.result.call_status == EAB2_RESOURCE_LIMIT &&
+          work.result.mathematical_status == EAB2_MATH_NOT_COMPUTED, "decimal work budget not just bytes");
+    Batch aggregate;
+    aggregate.item.encoding = EAB2_ENCODING_RATIONAL;
+    aggregate.replace("1/" + std::string(6000, '9'));
+    eab2_text texts[] = {aggregate.text, aggregate.text};
+    aggregate.item.value_count = 2; aggregate.item.values = texts;
+    check(aggregate.run(context) == EAB2_RESOURCE_LIMIT && aggregate.output.item_count == 99 &&
+          aggregate.bits == UINT64_C(0xdeadbeefcafef00d), "aggregate work budget rejected before parsing");
+}
+void child_context_reuse() {
+    auto options = initialized<eab2_context_options>();
+    eab2_context first{}, second{};
+    check(eab2_context_create(&options, &first) == EAB2_OK, "child lifetime context");
+    const eab2_point2_bits triangle[] = {{0,0}, {UINT64_C(0x3ff0000000000000),0}, {0,UINT64_C(0x3ff0000000000000)}};
+    auto input = initialized<eab2_body2_input>();
+    input.vertex_count = 3; input.vertex_stride = sizeof(eab2_point2_bits); input.vertices = triangle;
+    eab2_body2 old_body{}, new_body{};
+    check(eab2_body2_create(first, &input, &old_body) == EAB2_OK, "child before context release");
+    check(eab2_context_destroy(first) == EAB2_OK, "context release frees owned child payload");
+    check(eab2_context_create(&options, &second) == EAB2_OK && second.id == first.id,
+          "context containing old child slot reused");
+    check(eab2_body2_create(second, &input, &new_body) == EAB2_OK && new_body.id == old_body.id &&
+          new_body.generation != old_body.generation, "child id reused across context generation");
+    check(eab2_body2_destroy(second, old_body) == EAB2_INVALID_HANDLE,
+          "old child cannot cross a reused context id");
+    check(eab2_context_destroy(second) == EAB2_OK, "context RAII final child cleanup");
+}
+
+void limits2_matrix() {
+    auto options = initialized<eab2_context_options>();
+    eab2_context context{};
+    check(eab2_context_create(&options, &context) == EAB2_OK, "limits context created");
+    auto original = initialized<eab2_context_limits2>();
+    check(eab2_context_get_limits2(context, &original) == EAB2_OK && original.max_work_units == 50000000 &&
+          original.max_elements == 2000000 && original.max_integer_bits == 65536, "explicit actual default limits");
+    auto configured = original;
+    configured.max_work_units = 0;
+    check(eab2_context_configure_limits2(context, &configured) == EAB2_INVALID_INPUT,
+          "zero is rejected, not an undocumented default sentinel");
+    const eab2_point2_bits triangle[] = {{0,0}, {UINT64_C(0x3ff0000000000000),0}, {0,UINT64_C(0x3ff0000000000000)}};
+    auto input = initialized<eab2_body2_input>();
+    input.vertex_count = 3; input.vertex_stride = sizeof(eab2_point2_bits); input.vertices = triangle;
+    eab2_body2 body{};
+    check(eab2_body2_create(context, &input, &body) == EAB2_OK, "body under default limits");
+    check(eab2_context_configure_limits2(context, &original) == EAB2_INVALID_INPUT,
+          "limits immutable while any child is live");
+    check(eab2_body2_destroy(context, body) == EAB2_OK, "release before configuration");
+    configured = original; configured.max_integer_bits = 8;
+    check(eab2_context_configure_limits2(context, &configured) == EAB2_OK, "set conservative bit budget");
+    auto observed = initialized<eab2_context_limits2>();
+    check(eab2_context_get_limits2(context, &observed) == EAB2_OK && observed.max_integer_bits == 8,
+          "configured limits exact readback");
+    check(eab2_body2_create(context, &input, &body) == EAB2_RESOURCE_LIMIT && is_null(body),
+          "bit budget throws resource status, not outside/invalid geometry");
+    configured = original; configured.max_elements = 2;
+    check(eab2_context_configure_limits2(context, &configured) == EAB2_OK, "set element budget");
+    check(eab2_body2_create(context, &input, &body) == EAB2_RESOURCE_LIMIT && is_null(body), "input element limit enforced");
+    configured = original; configured.max_work_units = 1;
+    check(eab2_context_configure_limits2(context, &configured) == EAB2_OK, "set exact work budget");
+    check(eab2_body2_create(context, &input, &body) == EAB2_RESOURCE_LIMIT && is_null(body), "body work limit enforced");
+    check(eab2_context_configure_limits2(context, &original) == EAB2_OK &&
+          eab2_body2_create(context, &input, &body) == EAB2_OK, "limits can restore only after failed/no live children");
+    check(eab2_context_destroy(context) == EAB2_OK, "limited context cleanup");
+}
+
 }
 
 int main() {
@@ -238,7 +418,7 @@ int main() {
         info.reserved = 0;
         check(info.context_size == sizeof(eab2_context) && info.pointer_bits == 64 &&
               info.binary64_bits == 64 && info.build_identity[0], "ABI sizes support domain identity");
-        check(info.supported_capabilities == (EAB2_CAP_CONTEXT | EAB2_CAP_TEST_NUMERIC), "test capabilities explicit");
+        check(info.supported_capabilities == (EAB2_CAP_CONTEXT | EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 | EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2), "test capabilities explicit");
         info.requested_capabilities = EAB2_CAP_RHO | EAB2_CAP_SE2 | EAB2_CAP_LP2;
         check(eab2_get_abi_info(&info) == EAB2_UNSUPPORTED &&
               info.unsupported_capabilities == info.requested_capabilities, "unimplemented capabilities unsupported");
@@ -265,6 +445,7 @@ int main() {
         structural_matrix(first);
         numeric_status_matrix(first);
         environment_matrix(first);
+        geometry2_matrix(first, second);
         check(eab2_context_destroy(first) == EAB2_OK, "library frees first context");
         check(eab2_context_destroy(first) == EAB2_INVALID_HANDLE, "double release rejected");
         Batch stale;
@@ -273,15 +454,24 @@ int main() {
         uint64_t required = 0;
         check(eab2_context_get_error(first, &error, nullptr, 0, &required) == EAB2_INVALID_HANDLE,
               "stale error context rejected");
-        check(eab2_context_get_error(second, &error, nullptr, 0, &required) == EAB2_OK && error.code == EAB2_OK,
-              "errors are context-local, not global");
+        check(eab2_context_get_error(second, &error, nullptr, 0, &required) == EAB2_OK && error.code == EAB2_INVALID_HANDLE,
+              "intentional cross-context errors remain context-local");
         check(eab2_context_destroy(second) == EAB2_OK, "library frees second context");
+        eab2_context reused{};
+        check(eab2_context_create(&options, &reused) == EAB2_OK, "context slot reused");
+        check((reused.id == first.id || reused.id == second.id) && reused.generation > second.generation,
+              "reused context slot advances generation");
+        check(eab2_context_destroy(first) == EAB2_INVALID_HANDLE && eab2_context_destroy(second) == EAB2_INVALID_HANDLE,
+              "both old context generations rejected after slot reuse");
+        check(eab2_context_destroy(reused) == EAB2_OK, "release reused context");
         for (unsigned i = 0; i < 256; ++i) {
             eab2_context token{};
-            check(eab2_context_create(&options, &token) == EAB2_OK && token.id != first.id, "generation-safe fresh ownership");
+            check(eab2_context_create(&options, &token) == EAB2_OK && token.generation != first.generation, "generation-safe fresh ownership");
             check(eab2_context_destroy(token) == EAB2_OK && eab2_context_destroy(token) == EAB2_INVALID_HANDLE,
                   "repeated library ownership lifecycle");
         }
+        child_context_reuse();
+        limits2_matrix();
         std::cout << "ABI_TESTS: " << assertions << " assertions, 0 failures\n";
         return 0;
     } catch (const std::exception& error) {

@@ -1,3 +1,6 @@
+#if defined(__AVX__)
+#error eab2 controlled sources require the x64 SSE2 compilation target
+#endif
 #include "fp_contract.hpp"
 
 #include <bit>
