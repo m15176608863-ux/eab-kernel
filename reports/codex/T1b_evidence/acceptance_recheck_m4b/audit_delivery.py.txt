@@ -1,0 +1,124 @@
+"""Finalize local delivery links/hashes and compare current code to tested bytes.
+
+Read-only Git queries; no Git writes or file removals. Run after the report
+and archive index have been updated, then rerun if a deliverable changes.
+"""
+from pathlib import Path
+import hashlib
+import json
+import subprocess
+
+ROOT = Path.cwd().resolve()
+OUT = ROOT / "reports/codex/T1b_evidence/acceptance_recheck_m4b"
+PREFIX = OUT.relative_to(ROOT).as_posix() + "/"
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=ROOT)
+
+
+def dump(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="")
+
+
+def changed_names(base="HEAD"):
+    names = git("diff", "--name-only", "-z", base).decode("utf-8").split("\0")
+    names += git("ls-files", "--others", "--exclude-standard", "-z").decode("utf-8").split("\0")
+    return sorted(set(filter(None, names)))
+
+
+def old_sizes(base):
+    values = {}
+    for line in git("ls-tree", "-rz", "--long", base).decode("utf-8").split("\0"):
+        if not line:
+            continue
+        metadata, name = line.split("\t", 1)
+        values[name] = int(metadata.split()[-1])
+    return values
+
+
+def main():
+    assert git("rev-parse", "HEAD").decode().strip() == "773b760df0e4acd2894f3a4949f0f2953951bfdd"
+    full = json.loads((ROOT / "reports/codex/T1b_evidence/m4b_full/summary.json").read_text("utf-8"))
+    fast = json.loads((ROOT / "reports/codex/T1b_evidence/m4b_fast/summary.json").read_text("utf-8"))
+    assert full["audit"] == fast["audit"] == "GREEN"
+    manifest = json.loads((Path(full["temp"]) / "source_manifest.json").read_text("utf-8"))
+    changed_after = [v["path"] for v in manifest if sha((ROOT / v["path"]).read_bytes()) != v["sha256"]]
+    allowed = {"reports/codex/T1b_report.md", "reports/EVIDENCE_ARCHIVE.md"}
+    assert set(changed_after) <= allowed, changed_after
+    protected_prefixes = ("src/", "tests/", "tools/", "fixtures/", "tests/data/", "docs/")
+    protected = [v for v in manifest if v["path"].startswith(protected_prefixes) or v["path"] == ".gitattributes"]
+    assert all(sha((ROOT / v["path"]).read_bytes()) == v["sha256"] for v in protected)
+    frozen = {}
+    for name in ("docs/eab2_design.md", "docs/eab2_case_v1_tia2d.md", "tools/exact_construction_policy.json", ".gitattributes"):
+        raw = (ROOT / name).read_bytes()
+        assert raw == git("show", "HEAD:" + name)
+        frozen[name] = sha(raw)
+    assert frozen["docs/eab2_design.md"] == "6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac"
+    assert not git("diff", "--name-only", "HEAD", "--", "src", "fixtures").strip()
+    check = subprocess.run(["git", "diff", "--check"], cwd=ROOT, capture_output=True)
+    assert check.returncode == 0, check.stdout + check.stderr
+    dump(OUT / "final_tested_source_audit.json", dict(status="PASS", compared_protected_files=len(protected),
+        changed_after_full=changed_after, changes_after_full_are_reporting_only=True,
+        during_fast_changes=fast["live_tree_changed"], during_full_changes=full["live_tree_changed"],
+        frozen_sha256=frozen, src_and_fixtures_unchanged_from_head=True,
+        head="773b760df0e4acd2894f3a4949f0f2953951bfdd", git_writes_performed=False))
+    for name in ("hygiene.json", "artifact_manifest.json", "artifacts.md"):
+        if not (OUT / name).exists():
+            (OUT / name).write_text("{}\n" if name.endswith("json") else "# Artifacts\n", encoding="utf-8")
+    names = changed_names()
+    lines = ["# T1b 第二轮m4b返修交付清单", "", "当前有效结论见主报告；旧轮及开发期失败日志保留，不拼接。所有本轮新增/修改文件列于下方。", "",
+             "- [中文主报告](file:///D:/eab-wt/cx-e2/reports/codex/T1b_report.md)",
+             "- [当前快档](file:///D:/eab-wt/cx-e2/reports/codex/T1b_evidence/m4b_fast/summary.json)",
+             "- [当前全档四分片](file:///D:/eab-wt/cx-e2/reports/codex/T1b_evidence/m4b_full/summary.json)",
+             "- [外部完整证据目录](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/)",
+             "- [外部逐文件SHA256](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/_manifests/files.sha256.jsonl)", "", "## 本轮文件", ""]
+    for name in names:
+        path = ROOT / name
+        if path.is_file():
+            lines.append(f"- [{name}]({path.as_uri()})")
+    (OUT / "artifacts.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="")
+    names = changed_names()
+    utf8_count = 0
+    for name in names:
+        path = ROOT / name
+        if not path.is_file():
+            continue
+        raw = path.read_bytes()
+        assert len(raw) <= 1_000_000, name
+        if path.suffix.lower() in (".py", ".md", ".json", ".jsonl", ".txt", ".svg"):
+            assert not raw.startswith(b"\xef\xbb\xbf"), name
+            raw.decode("utf-8")
+            utf8_count += 1
+    head_sizes, original_sizes = old_sizes("HEAD"), old_sizes("7f95105")
+    cumulative_names = changed_names("7f95105")
+    for _ in range(12):
+        gross = sum((ROOT / name).stat().st_size for name in names if (ROOT / name).is_file())
+        net = sum(((ROOT / name).stat().st_size if (ROOT / name).is_file() else 0) - head_sizes.get(name, 0) for name in names)
+        cumulative = sum(((ROOT / name).stat().st_size if (ROOT / name).is_file() else 0) - original_sizes.get(name, 0) for name in cumulative_names)
+        assert cumulative <= 5_000_000
+        payload = dict(status="PASS", delivery_status="T1b_DONE", modified_or_added_files=len(names),
+            gross_bytes=gross, net_increment_from_773b760=net, cumulative_net_increment_from_7f95105=cumulative,
+            target_cumulative_bytes=5_000_000, largest_file_bytes=max((ROOT / n).stat().st_size for n in names if (ROOT / n).is_file()),
+            utf8_without_bom_files=utf8_count, git_diff_check="PASS", frozen_contracts_unchanged=True,
+            all_current_code_equals_full_tested_snapshot=True, optional_C_not_done_and_not_blocking=True)
+        dump(OUT / "hygiene.json", payload)
+        entries = []
+        for name in names:
+            path = ROOT / name
+            if not path.is_file() or path == OUT / "artifact_manifest.json":
+                continue
+            raw = path.read_bytes()
+            entries.append(dict(path=name, url=path.as_uri(), bytes=len(raw), sha256=sha(raw)))
+        dump(OUT / "artifact_manifest.json", dict(entries=entries, self_sha_excluded=True))
+    assert all(sha((ROOT / e["path"]).read_bytes()) == e["sha256"] for e in entries)
+    assert payload["gross_bytes"] == sum((ROOT / n).stat().st_size for n in names if (ROOT / n).is_file())
+    print(payload)
+
+
+if __name__ == "__main__":
+    main()

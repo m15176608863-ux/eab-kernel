@@ -112,3 +112,43 @@ Claude 本轮明确批准写入 `D:/eab-evidence/reports/codex/T1a_evidence/`。
 [追加映射](codex/H1_evidence/frozen_inputs_addendum.json)；[当前完整输入清单](codex/H1_evidence/frozen_inputs_manifest.json)；[最终校验](codex/H1_evidence/archive_validation.json)。`archive_result.json` 的 `input_manifest` 是当时读取的路径（当时为 136 项），不是现已追加为 137 项的内容快照；初批专属清单明确记录复原方法，不伪称有未保存的原清单文件哈希。回退时，追加复制项的原件已在外归档，不应再次覆盖它。
 
 单文件上限为 1,000,000 字节；唯一例外是本单冻结、只准机械重键的 `tools/exact_construction_policy.json`。具名门见 [test_repository_size.py](../tests/test_repository_size.py)，包含无 Git 副本中实际写入 1,000,001 字节文件后报红的牙。
+
+## WO-T1b 原轮追加（2026-10-22；历史状态，续单见下节）
+
+获准外目录为 `D:/eab-evidence/reports/codex/T1b_evidence/`，未触碰其他工作树。新大证据直接写外部；H1日志与执行清单采用gzip（mtime=0），压缩后逐字节解压核对，不删除原始临时文件。不改历史T1a数据或来源哈希。
+
+- [外部逐文件SHA256清单](file:///D:/eab-evidence/reports/codex/T1b_evidence/_manifests/t1b_files.sha256.jsonl)；[文件数/总量/清单自身SHA](codex/T1b_evidence/external_archive_summary.json)。清单不包括自身与runtime tmp。
+- [P0最终数据](file:///D:/eab-evidence/reports/codex/T1b_evidence/p0_final.json)：36燕尾政策组合、4凸耳、72逐内块条目、8标准例；完整有理输入/路径/界。探索 `p0_tolerance.json` 不混作最终数据。
+- [P1最终36例](file:///D:/eab-evidence/reports/codex/T1b_evidence/p1_final_20261022/)：gzip逐例精确LP与一阶证书、来源前后清单、进度与完成标记。`p1_scan_20261022`仅为早期探索。
+- [门日志映射及双SHA](codex/T1b_evidence/gate_archive.json)：开工全档GREEN、收尾快档GREEN、收尾全档**RED**原日志均保留，不拼接成新绿。
+- [源码字节快照](codex/T1b_evidence/source_snapshots.json)：全档RED的完整字节导出，以及只修复两份测试helper后的 `postfix_NOT_FULL_VERIFIED_source.zip`；均1154文件、逐成员清单另存。后者没有完整全档复验，不能因其ZIP完整性正确而称验证通过。
+- [无Git字节副本](file:///D:/eab-evidence/reports/codex/T1b_evidence/no_git_postfix/)；[修复后摘要](codex/T1b_evidence/no_git_postfix_summary.json)。无`.git`、PATH中无git；不是新鲜Git worktree/克隆。
+- [回滚锚点](codex/T1b_evidence/rollback.json)：原设计、静态准入、适配器、纯度门与本台账原字节，均与开工HEAD比对。只能在确认没有所有者后续改动后人工恢复，不自动覆盖。
+
+当前只交付Python诊断格式，没有新建正式tia2d-2 C++批次或自行改schema。完整结果、订正与未完成验收项见 [T1b报告](codex/T1b_report.md)；修复后完整快档已GREEN，四分片及Claude独立核查仍待安排，不能将快档或局部复核冒作最终全绿。外目录是本地保存，不是远端备份。
+
+## WO-T1b 第一轮验收续单归档（e757883 后字节；历史快照）
+
+本轮仅在获准的 `T1b_evidence/acceptance_fix/` 新建证据，不覆盖原P0/P1冻结数据或原RED日志；未执行Git写操作。Claude所报原提交新鲜树14848通过及独立A/B核验，按[入口记录](codex/T1b_evidence/acceptance_fix/intake.json)保留来源，不伪称本代理重跑。
+
+- [本轮外部逐文件SHA256](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/_manifests/files.sha256.jsonl)：109文件、44,877,378字节；清单自身SHA `de0f69682b0a13846cbcb5c9310e426b70ca409e1fc07ee09df9d400dd98afdf`，清单目录自身不列入。包含只读e757883回滚archive、验收原脚本、三点升级证书、39厚度样本/18厚块对照、开发期输出及最终完整门日志。
+- [外归档摘要](codex/T1b_evidence/acceptance_fix/external_archive_summary.json)、[门日志映射及双SHA](codex/T1b_evidence/acceptance_fix/gate_archive.json)。日志gzip采用mtime=0，逐个解压与原日志相等；原日志未删，不拼接。
+- [本次全档受测源码ZIP](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/acceptance_full_source.zip)及[逐成员SHA](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/acceptance_full_source_manifest.json)：完整工作字节导出，不是新建Git树；最终报告/本索引的收尾更新不改变受测代码。
+- [当前快档](codex/T1b_evidence/acceptance_fast/summary.json)与[当前四片全档](codex/T1b_evidence/acceptance_full/summary.json)均GREEN：分别8851、14935项，0失败/跳过、模块实际执行66/66、静态0违例。
+- [本轮全部文件链接](codex/T1b_evidence/acceptance_fix/artifacts.md)、[当前字节清单](codex/T1b_evidence/acceptance_fix/artifact_manifest.json)、[净增及卫生](codex/T1b_evidence/acceptance_fix/hygiene.json)。旧轮清单/状态仅描述原快照；本轮最终结论以[T1b报告](codex/T1b_report.md)为准。
+
+本地外归档不等于远端备份；回滚不得覆盖所有者后续变化。未增加正式C++批次、未改tia2d-2 schema、未擅自冻结新增助手接口。可选C未做，不构成本单PARTIAL。
+
+## WO-T1b 第二轮m4b返修归档（773b760 后未提交字节）
+
+本轮只补同一凹障碍内部跨凸片的端点式变异测试与两处措辞；原生产核验器正确，未改生产代码/B数据/schema/静态准入，未执行Git写操作。上一节8851/14935为第一轮历史快照，当前新增测试另以完整门核验。
+
+- [入口及三份原字节回滚备份清单](codex/T1b_evidence/acceptance_recheck_m4b/intake.json)：初始HEAD773b760且干净；对手脚本只读复制，不在用户Temp目录运行或写入。
+- [独立源码变异核验](codex/T1b_evidence/acceptance_recheck_m4b/m4b_process_audit.json)：原版绿，原版对手脚本注入m4b后同一语义门红，正确命中假困住断言。
+- [当前快档](codex/T1b_evidence/m4b_fast/summary.json)、[当前全档四片](codex/T1b_evidence/m4b_full/summary.json)：8853/14937项均GREEN，0失败/跳过、实际执行66/66、静态0违例。
+- [外部逐文件SHA256](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/_manifests/files.sha256.jsonl)：171文件、24,589,094字节，清单SHA `3725f6e3587a8f78446a7938621cf35435b9843435dab6302769149b48b5e1e0`；排除清单目录自身。包含原字节回滚备份、验收脚本及隔离变异副本、日志和受测源码；均在获准外目录。
+- [外归档摘要](codex/T1b_evidence/acceptance_recheck_m4b/external_archive_summary.json)、[门日志映射及双SHA](codex/T1b_evidence/acceptance_recheck_m4b/gate_archive.json)：gzip mtime=0，解压逐字节等于原日志；不删除原日志，不拼接。
+- [当前全档受测源码ZIP](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/m4b_full_source.zip)、[逐成员SHA](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/m4b_full_source_manifest.json)：当前工作树字节导出，不是新建Git树；最终报告/本索引回填不改变受测代码。
+- [全部本轮文件链接](codex/T1b_evidence/acceptance_recheck_m4b/artifacts.md)、[当前文件SHA](codex/T1b_evidence/acceptance_recheck_m4b/artifact_manifest.json)、[受测字节审计](codex/T1b_evidence/acceptance_recheck_m4b/final_tested_source_audit.json)、[净增/卫生](codex/T1b_evidence/acceptance_recheck_m4b/hygiene.json)。最终结论见[T1b报告§6.4](codex/T1b_report.md#64-第二轮复验同一凹障碍内跨片的端点式变异)。
+
+外归档仅为本地保存，不等于远端备份；回滚不得覆盖所有者后续修改。C仍为可选项，不记PARTIAL；旧轮RED及所有来源哈希保留。

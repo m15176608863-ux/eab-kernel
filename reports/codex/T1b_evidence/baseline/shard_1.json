@@ -1,0 +1,30 @@
+{
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "-p",
+    "h1_execution_plugin",
+    "@D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\baseline\\shard_1_nodes.txt",
+    "--basetemp",
+    "D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\baseline\\pytest_1",
+    "--durations=0",
+    "--runslow"
+  ],
+  "exit_code": 0,
+  "seconds": 927.344000000041,
+  "last_line": "3667 passed in 911.54s (0:15:11)",
+  "log": "D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\baseline\\shard_1.txt",
+  "dispatched": 3667,
+  "collected": 3667,
+  "executed": 3667,
+  "complete": true,
+  "node_sets_equal": true,
+  "skip_count": 0,
+  "failed_count": 0
+}

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "reports\\codex\\T1b_evidence\\tmp\\postfix_new_fast",
+    "tests\\test_tia2d_t1b_certificates.py",
+    "tests\\test_tia2d_t1b_erosion.py",
+    "tests\\test_tia2d_t1b_morphology.py",
+    "tests\\test_tia2d_t1b_tolerance.py",
+    "tests\\test_tia2d_t1b_translation.py",
+    "tests/test_kernel_purity.py"
+  ],
+  "exit_code": 0,
+  "seconds": 29.390999999945052,
+  "last_line": "149 passed, 72 deselected in 28.89s"
+}

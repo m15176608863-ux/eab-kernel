@@ -1,0 +1,75 @@
+{
+  "status": "T1b_DONE",
+  "head": "e757883",
+  "git_writes_performed": false,
+  "items": [
+    {
+      "id": "1_A_major",
+      "status": "PASS",
+      "evidence": [
+        "trapping_mutant_red.json",
+        "trapping_targeted.json"
+      ],
+      "result": "diamond rejected; source-internal mixed-pair endpoint mutation killed by semantic assertion"
+    },
+    {
+      "id": "2_A_wording",
+      "status": "PASS",
+      "report_sections": [
+        "3.3",
+        "6.1"
+      ],
+      "evidence": [
+        "g1_straight_paths.json",
+        "trapping_erosion_mutation_attribution.json"
+      ]
+    },
+    {
+      "id": "3_B_explanation_classification",
+      "status": "PASS",
+      "report_sections": [
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.7",
+        "8"
+      ],
+      "evidence": [
+        "p1_classification.json",
+        "morphology_notes.md",
+        "force_blowup_audit.json"
+      ],
+      "exact_closed": 26,
+      "exact_open": 2,
+      "irrational_brackets": 8
+    },
+    {
+      "id": "4_B_thickness",
+      "status": "PASS",
+      "report_section": "4.6",
+      "evidence": [
+        "thickness_summary.json",
+        "thickness_readback.json",
+        "thickness_cross_review.json"
+      ],
+      "bands": 4,
+      "samples": 39,
+      "thick_controls": 18
+    },
+    {
+      "id": "5_current_full_gates",
+      "status": "PASS",
+      "fast_nodes": 8851,
+      "full_nodes": 14935,
+      "failed": 0,
+      "skipped": 0,
+      "static_violations": 0
+    },
+    {
+      "id": "optional_C",
+      "status": "NOT_RUN_NOT_REQUIRED"
+    }
+  ],
+  "trust_boundary": "P0 translation geometry; P1 associated rigid-body limit analysis with rotation; not finite motion or physical material validation"
+}

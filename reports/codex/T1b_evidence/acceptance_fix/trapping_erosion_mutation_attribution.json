@@ -1,0 +1,22 @@
+{
+  "mutation": "_contains_element returns True after only vertex containment",
+  "script": "import inspect,pathlib,sys\nsys.path.insert(0,str(pathlib.Path.cwd()/'src'))\nimport pytest\nfrom eab.kernel2d import erosion\nsource=inspect.getsource(erosion._contains_element)\noriginal='    middle = tuple('\nassert source.count(original)==1\nmutated=source.replace(original,'    return True\\n'+original)\nnamespace=dict(erosion.__dict__)\nexec(compile(mutated,'<erosion-vertices-only-mutant>','exec'),namespace)\nerosion._contains_element=namespace['_contains_element']\nraise SystemExit(pytest.main(['-q','-p','no:cacheprovider','--basetemp',str(pathlib.Path.cwd()/'reports/codex/T1b_evidence/tmp/trapping_erosion_attribution')]+['tests/test_tia2d_t1b_erosion.py::test_element_vertex_only_containment_misses_an_indentation', 'tests/test_tia2d_t1b_erosion.py::test_element_vertices_on_cavity_edges_do_not_certify_filled_containment', 'tests/test_tia2d_t1b_erosion.py::test_rational_octagon_reflex_bevel_closed_form', 'tests/test_tia2d_t1b_erosion.py::test_disconnected_erosion_and_exact_thin_neck_are_rejected', 'tests/test_tia2d_t1b_erosion.py::test_erosion_exact_rigid_motion_and_units', 'tests/test_tia2d_t1b_tolerance.py::test_polygon_knob_reports_actual_segments_and_verified_opposite_states', 'tests/test_tia2d_t1b_erosion.py::test_concave_erosion_against_independent_orthogonal_cell_oracle']))\n",
+  "returncode": 1,
+  "expected_returncode": 1,
+  "seconds": 2.094000000040978,
+  "last_line": "11 failed, 6 passed in 1.65s",
+  "failed_test_lines": [
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_element_vertex_only_containment_misses_an_indentation",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_element_vertices_on_cavity_edges_do_not_certify_filled_containment",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_rational_octagon_reflex_bevel_closed_form[delta0]",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_rational_octagon_reflex_bevel_closed_form[delta1]",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_rational_octagon_reflex_bevel_closed_form[delta2]",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_disconnected_erosion_and_exact_thin_neck_are_rejected[octagon]",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_erosion_exact_rigid_motion_and_units[shift0-element1]",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_erosion_exact_rigid_motion_and_units[shift1-element1]",
+    "FAILED tests/test_tia2d_t1b_erosion.py::test_erosion_exact_rigid_motion_and_units[shift2-element1]",
+    "FAILED tests/test_tia2d_t1b_tolerance.py::test_polygon_knob_reports_actual_segments_and_verified_opposite_states[square]",
+    "FAILED tests/test_tia2d_t1b_tolerance.py::test_polygon_knob_reports_actual_segments_and_verified_opposite_states[octagon]"
+  ],
+  "stdout": "trapping_erosion_mutation_attribution.txt"
+}

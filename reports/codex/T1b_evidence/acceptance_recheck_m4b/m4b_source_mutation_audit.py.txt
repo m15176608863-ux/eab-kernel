@@ -1,0 +1,96 @@
+"""Rerun one semantic gate in original and literal reviewer m4b source copies.
+
+This is a captured verification command, not a deployed production tool.
+All copy and output paths are within the work-order's authorized directories.
+Use a new --label to preserve existing logs; no tree is removed or overwritten.
+"""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def source_hashes(root):
+    return {path.relative_to(root).as_posix(): digest(path)
+            for path in sorted((root / "src").rglob("*.py"))}
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--label", default="m4b_process_audit")
+args = parser.parse_args()
+root = Path(__file__).resolve().parents[4]
+evidence = root / "reports/codex/T1b_evidence/acceptance_recheck_m4b"
+external = Path("D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b")
+audit_root = external / args.label
+audit_root.mkdir(exist_ok=False)
+original = audit_root / "copy"
+original.mkdir()
+shutil.copytree(root / "src", original / "src", ignore=shutil.ignore_patterns("__pycache__"))
+(original / "tests").mkdir()
+(original / "tools").mkdir()
+test_rel = "tests/test_tia2d_t1b_certificates.py"
+shutil.copy2(root / test_rel, original / test_rel)
+shutil.copy2(root / "pyproject.toml", original / "pyproject.toml")
+source_before = source_hashes(root)
+test_before = digest(root / test_rel)
+env = os.environ.copy()
+env.pop("PYTHONPATH", None)
+env["PYTHONDONTWRITEBYTECODE"] = "1"
+env["PYTHONIOENCODING"] = "utf-8"
+env["TEMP"] = str(root / "reports/codex/T1b_evidence/tmp")
+env["TMP"] = env["TEMP"]
+reviewer_script = external / "review_inputs/make_m4b.py"
+build = subprocess.run([sys.executable, str(reviewer_script), str(audit_root)],
+                       cwd=audit_root, env=env, text=True, encoding="utf-8",
+                       errors="replace", capture_output=True)
+assert build.returncode == 0, build.stdout + build.stderr
+mutant = audit_root / "mut/m4b_same_obstacle_pieces"
+node = test_rel + "::test_enclosure_rejects_blocked_vertices_across_one_concave_obstacle_slit"
+semantic_message = "enclosure must reject endpoints in different pieces of one obstacle"
+runs = []
+for label, directory in (("original", original), ("mutant", mutant)):
+    command = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider",
+               "--basetemp", str(root / "reports/codex/T1b_evidence/tmp" /
+                                 (args.label + "_" + label)), node]
+    start = time.monotonic()
+    result = subprocess.run(command, cwd=directory, env=env, text=True,
+                            encoding="utf-8", errors="replace", capture_output=True)
+    output = result.stdout + result.stderr
+    log = evidence / (args.label + "_" + label + ".txt")
+    log.write_text(output, encoding="utf-8", newline="")
+    runs.append({"label": label, "cwd": str(directory), "command": command,
+                 "returncode": result.returncode, "elapsed_seconds": time.monotonic()-start,
+                 "last_line": output.rstrip().splitlines()[-1], "log": str(log),
+                 "log_sha256": digest(log),
+                 "semantic_assertion_failed": "AssertionError: " + semantic_message in output})
+    if label == "original":
+        assert result.returncode == 0 and "1 passed" in output, output
+    else:
+        assert result.returncode == 1 and "1 failed" in output, output
+        assert "AssertionError: " + semantic_message in output, output
+        assert "checked.valid" in output, output
+source_after = source_hashes(root)
+assert source_before == source_after
+assert test_before == digest(root / test_rel)
+original_sources, mutant_sources = source_hashes(original), source_hashes(mutant)
+changed = [name for name in original_sources if original_sources[name] != mutant_sources[name]]
+assert changed == ["src/eab/kernel2d/translation_certificates.py"], changed
+report = {"status": "PASS", "scope": "source-internal reviewer m4b in isolated copy",
+          "reviewer_script": str(reviewer_script), "reviewer_script_sha256": digest(reviewer_script),
+          "production_source_unchanged": source_before == source_after,
+          "production_source_file_count": len(source_before), "test_unchanged": True,
+          "test_sha256": test_before, "changed_mutant_source_files": changed,
+          "original_mutated_file_sha256": original_sources[changed[0]],
+          "mutant_file_sha256": mutant_sources[changed[0]], "runs": runs}
+output_json = evidence / (args.label + ".json")
+output_json.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+print(json.dumps(report, ensure_ascii=False, indent=2))

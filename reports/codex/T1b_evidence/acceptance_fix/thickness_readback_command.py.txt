@@ -1,0 +1,90 @@
+"""Standalone persisted LP arithmetic audit; no eab imports or solver calls.
+
+Usage: python this_file --summary SUMMARY --output AUDIT_JSON
+This verifies serialized certificate arithmetic, not geometric LP assembly
+or the complete critical-basis Sturm continuation implementation.
+"""
+import argparse
+from fractions import Fraction as Q
+import gzip
+import hashlib
+import json
+from pathlib import Path
+
+
+def dot(a, b):
+    return sum((x * y for x, y in zip(a, b)), Q(0))
+
+
+def verify(record):
+    p = record["problem"]
+    A = tuple(tuple(Q(x) for x in row) for row in p["A"])
+    b, c = tuple(map(Q, p["b"])), tuple(map(Q, p["c"]))
+
+    def feasible(values, rhs):
+        x = tuple(map(Q, values))
+        assert len(x) == len(c) and all(value >= 0 for value in x)
+        assert all(len(row) == len(x) for row in A)
+        assert tuple(dot(row, x) for row in A) == rhs
+        return x
+
+    status = record["mathematical_status"]
+    if status == "OPTIMAL":
+        x = feasible(record["exact_x"], b)
+        y = tuple(map(Q, record["exact_y"]))
+        assert len(y) == len(b)
+        assert all(dot(tuple(A[i][j] for i in range(len(b))), y) >= c[j]
+                   for j in range(len(c)))
+        assert dot(c, x) == dot(b, y) == Q(record["exact_value"])
+    elif status == "UNBOUNDED":
+        feasible(record["feasible_point"], b)
+        ray = feasible(record["improving_ray"], (Q(0),) * len(b))
+        assert dot(c, ray) > 0
+    else:
+        raise AssertionError("unsupported persisted certificate status")
+
+
+def walk(value, found):
+    if isinstance(value, dict):
+        if "problem" in value and "mathematical_status" in value:
+            verify(value)
+            key = hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
+            found[key] = value["mathematical_status"]
+        for other in value.values():
+            walk(other, found)
+    elif isinstance(value, list):
+        for other in value:
+            walk(other, found)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--summary", type=Path, required=True)
+parser.add_argument("--output", type=Path, required=True)
+args = parser.parse_args()
+summary = json.loads(args.summary.read_text(encoding="utf-8"))
+assert summary["complete"] and summary["source_pre_post_equal"]
+found = {}
+for item in summary["files"]:
+    raw = Path(item["path"]).read_bytes()
+    assert len(raw) == item["bytes"]
+    assert hashlib.sha256(raw).hexdigest() == item["sha256"]
+    walk(json.loads(gzip.decompress(raw)), found)
+positive = 0
+for row in summary["rows"]:
+    r, a, eta = Q(row["ratio"]), Q(row["relative_amplitude"]), Q(row["asymmetry"])
+    t, n = Q(3, 32), row["periods"]
+    s, rise = t - a * n / (1 - eta), 1 - eta / n
+    shift = t * rise - a
+    expected = max(Q(0), (s - r * (rise + s * shift)) / (1 + r * (s * rise - shift)))
+    assert expected == Q(row["exact_threshold"])
+    assert Q(row["flat_threshold"]) == max(Q(0), t - r * (1 + t * t))
+    positive += expected > 0 and Q(row["flat_threshold"]) == 0
+out = dict(status="PASS", files=len(summary["files"]), samples=len(summary["rows"]),
+    discrete_thick_controls=len(summary["thick_controls"]),
+    flat_zero_tooth_positive_samples=positive, unique_lp_certificates=len(found),
+    optimal=sum(status == "OPTIMAL" for status in found.values()),
+    unbounded=sum(status == "UNBOUNDED" for status in found.values()),
+    scope="serialized matrix primal/dual/ray arithmetic and file integrity; not independent geometry assembly or Sturm implementation",
+    summary_sha256=hashlib.sha256(args.summary.read_bytes()).hexdigest())
+args.output.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8", newline="")
+print(json.dumps(out, indent=2))

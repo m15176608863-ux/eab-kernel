@@ -1,0 +1,241 @@
+FFFFF.F.F.F.FFF..                                                        [100%]
+================================== FAILURES ===================================
+_________ test_element_vertex_only_containment_misses_an_indentation __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000463E8A0>
+
+    def test_element_vertex_only_containment_misses_an_indentation(monkeypatch):
+        """Inject the wrong containment primitive internally, not into its output."""
+        from eab.kernel2d import erosion
+        p = tuple((F(x), F(y)) for x, y in (
+            (0, 0), (6, 0), (6, 6), (4, 6), (4, 2), (2, 2), (2, 6), (0, 6)))
+        k = tuple((2*x, 2*y) for x, y in square_element())
+        # The asymmetric notch misses the element average, but crosses its edge.
+        p = tuple((F(x), F(y)) for x, y in (
+            (0, 0), (6, 0), (6, 6), (F(9, 2), 6),
+            (F(9, 2), 2), (4, 2), (4, 6), (0, 6)))
+>       assert not erosion._contains_element(p, k, (F(3), F(3)))
+E       AssertionError: assert not True
+E        +  where True = <function _contains_element at 0x000000000108A2A0>(((Fraction(0, 1), Fraction(0, 1)), (Fraction(6, 1), Fraction(0, 1)), (Fraction(6, 1), Fraction(6, 1)), (Fraction(9, 2), Fraction(6, 1)), (Fraction(9, 2), Fraction(2, 1)), (Fraction(4, 1), Fraction(2, 1)), ...), ((Fraction(-2, 1), Fraction(-2, 1)), (Fraction(2, 1), Fraction(-2, 1)), (Fraction(2, 1), Fraction(2, 1)), (Fraction(-2, 1), Fraction(2, 1))), (Fraction(3, 1), Fraction(3, 1)))
+E        +    where <function _contains_element at 0x000000000108A2A0> = <module 'eab.kernel2d.erosion' from 'D:\\eab-wt\\cx-e2\\src\\eab\\kernel2d\\erosion.py'>._contains_element
+
+tests\test_tia2d_t1b_erosion.py:133: AssertionError
+___ test_element_vertices_on_cavity_edges_do_not_certify_filled_containment ___
+
+    def test_element_vertices_on_cavity_edges_do_not_certify_filled_containment():
+        from eab.kernel2d import erosion
+        p = tuple((F(x), F(y)) for x, y in (
+            (0, 0), (3, 0), (3, 3), (2, 3), (2, 1), (1, 1), (1, 3), (0, 3)))
+        k = tuple((x/2, y) for x, y in square_element())
+>       assert not erosion._contains_element(p, k, (F(3, 2), F(2)))
+E       AssertionError: assert not True
+E        +  where True = <function _contains_element at 0x000000000108A2A0>(((Fraction(0, 1), Fraction(0, 1)), (Fraction(3, 1), Fraction(0, 1)), (Fraction(3, 1), Fraction(3, 1)), (Fraction(2, 1), Fraction(3, 1)), (Fraction(2, 1), Fraction(1, 1)), (Fraction(1, 1), Fraction(1, 1)), ...), ((Fraction(-1, 2), Fraction(-1, 1)), (Fraction(1, 2), Fraction(-1, 1)), (Fraction(1, 2), Fraction(1, 1)), (Fraction(-1, 2), Fraction(1, 1))), (Fraction(3, 2), Fraction(2, 1)))
+E        +    where <function _contains_element at 0x000000000108A2A0> = <module 'eab.kernel2d.erosion' from 'D:\\eab-wt\\cx-e2\\src\\eab\\kernel2d\\erosion.py'>._contains_element
+
+tests\test_tia2d_t1b_erosion.py:144: AssertionError
+___________ test_rational_octagon_reflex_bevel_closed_form[delta0] ____________
+
+delta = Fraction(1, 16)
+
+    @pytest.mark.parametrize("delta", [F(1, 16), F(1, 4), F(3, 8)])
+    def test_rational_octagon_reflex_bevel_closed_form(delta):
+        result = erode_polygon_exact(L_RING, delta, "octagon")
+        corner = 1-F(5, 12)*delta
+        expected = ((delta, delta), (4-delta, delta), (4-delta, 1-delta),
+                    (corner, 1-delta), (1-delta, corner),
+                    (1-delta, 4-delta), (delta, 4-delta))
+>       assert result.status == "ACCEPTED"
+E       AssertionError: assert 'REJECTED' == 'ACCEPTED'
+E         
+E         - ACCEPTED
+E         + REJECTED
+
+tests\test_tia2d_t1b_erosion.py:80: AssertionError
+___________ test_rational_octagon_reflex_bevel_closed_form[delta1] ____________
+
+delta = Fraction(1, 4)
+
+    @pytest.mark.parametrize("delta", [F(1, 16), F(1, 4), F(3, 8)])
+    def test_rational_octagon_reflex_bevel_closed_form(delta):
+        result = erode_polygon_exact(L_RING, delta, "octagon")
+        corner = 1-F(5, 12)*delta
+        expected = ((delta, delta), (4-delta, delta), (4-delta, 1-delta),
+                    (corner, 1-delta), (1-delta, corner),
+                    (1-delta, 4-delta), (delta, 4-delta))
+>       assert result.status == "ACCEPTED"
+E       AssertionError: assert 'REJECTED' == 'ACCEPTED'
+E         
+E         - ACCEPTED
+E         + REJECTED
+
+tests\test_tia2d_t1b_erosion.py:80: AssertionError
+___________ test_rational_octagon_reflex_bevel_closed_form[delta2] ____________
+
+delta = Fraction(3, 8)
+
+    @pytest.mark.parametrize("delta", [F(1, 16), F(1, 4), F(3, 8)])
+    def test_rational_octagon_reflex_bevel_closed_form(delta):
+        result = erode_polygon_exact(L_RING, delta, "octagon")
+        corner = 1-F(5, 12)*delta
+        expected = ((delta, delta), (4-delta, delta), (4-delta, 1-delta),
+                    (corner, 1-delta), (1-delta, corner),
+                    (1-delta, 4-delta), (delta, 4-delta))
+>       assert result.status == "ACCEPTED"
+E       AssertionError: assert 'REJECTED' == 'ACCEPTED'
+E         
+E         - ACCEPTED
+E         + REJECTED
+
+tests\test_tia2d_t1b_erosion.py:80: AssertionError
+_____ test_disconnected_erosion_and_exact_thin_neck_are_rejected[octagon] _____
+
+element = 'octagon'
+
+    @pytest.mark.parametrize("element", ["square", "octagon"])
+    def test_disconnected_erosion_and_exact_thin_neck_are_rejected(element):
+        thin = erode_polygon_exact(NECK_RING, F(1, 4), element)
+        assert thin.status == "REJECTED"
+        assert thin.reason == "LOWER_DIMENSIONAL_REMNANT"
+        assert thin.polygon == ()
+        split = erode_polygon_exact(NECK_RING, F(3, 8), element)
+        assert split.status == "REJECTED"
+>       assert split.reason == "MULTIPLE_RINGS"
+E       AssertionError: assert 'DEGENERATE_BOUNDARY' == 'MULTIPLE_RINGS'
+E         
+E         - MULTIPLE_RINGS
+E         + DEGENERATE_BOUNDARY
+
+tests\test_tia2d_t1b_erosion.py:109: AssertionError
+_________ test_erosion_exact_rigid_motion_and_units[shift0-element1] __________
+
+element = ((Fraction(-5, 12), Fraction(-1, 1)), (Fraction(5, 12), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-5, 12)), (Fraction(1, 1), Fraction(5, 12)), (Fraction(5, 12), Fraction(1, 1)), (Fraction(-5, 12), Fraction(1, 1)), ...)
+shift = Fraction(0, 1)
+
+    @pytest.mark.parametrize("element", [square_element(), octagon_element()])
+    @pytest.mark.parametrize("shift", [F(0), F(1000), F(100000)])
+    def test_erosion_exact_rigid_motion_and_units(element, shift):
+        """Rotate both body and element; an axis-fixed element is not isotropic."""
+        generator = random.Random(7901)
+        for scale in (F(1, 1024), F(1), F(8)):
+            u = F(generator.randrange(1, 8), generator.randrange(9, 16))
+            c, s = (1-u*u)/(1+u*u), 2*u/(1+u*u)
+            def rotate(p):
+                return c*p[0]-s*p[1], s*p[0]+c*p[1]
+            def transform(p):
+                x, y = rotate(p)
+                return scale*x+shift, scale*y-3*shift/7
+            baseline = erode_polygon_exact(L_RING, F(1, 4), element)
+            moved = erode_polygon_exact(tuple(transform(p) for p in L_RING),
+                                        scale/4, tuple(rotate(p) for p in element))
+>           assert moved.status == "ACCEPTED"
+E           AssertionError: assert 'REJECTED' == 'ACCEPTED'
+E             
+E             - ACCEPTED
+E             + REJECTED
+
+tests\test_tia2d_t1b_erosion.py:163: AssertionError
+_________ test_erosion_exact_rigid_motion_and_units[shift1-element1] __________
+
+element = ((Fraction(-5, 12), Fraction(-1, 1)), (Fraction(5, 12), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-5, 12)), (Fraction(1, 1), Fraction(5, 12)), (Fraction(5, 12), Fraction(1, 1)), (Fraction(-5, 12), Fraction(1, 1)), ...)
+shift = Fraction(1000, 1)
+
+    @pytest.mark.parametrize("element", [square_element(), octagon_element()])
+    @pytest.mark.parametrize("shift", [F(0), F(1000), F(100000)])
+    def test_erosion_exact_rigid_motion_and_units(element, shift):
+        """Rotate both body and element; an axis-fixed element is not isotropic."""
+        generator = random.Random(7901)
+        for scale in (F(1, 1024), F(1), F(8)):
+            u = F(generator.randrange(1, 8), generator.randrange(9, 16))
+            c, s = (1-u*u)/(1+u*u), 2*u/(1+u*u)
+            def rotate(p):
+                return c*p[0]-s*p[1], s*p[0]+c*p[1]
+            def transform(p):
+                x, y = rotate(p)
+                return scale*x+shift, scale*y-3*shift/7
+            baseline = erode_polygon_exact(L_RING, F(1, 4), element)
+            moved = erode_polygon_exact(tuple(transform(p) for p in L_RING),
+                                        scale/4, tuple(rotate(p) for p in element))
+>           assert moved.status == "ACCEPTED"
+E           AssertionError: assert 'REJECTED' == 'ACCEPTED'
+E             
+E             - ACCEPTED
+E             + REJECTED
+
+tests\test_tia2d_t1b_erosion.py:163: AssertionError
+_________ test_erosion_exact_rigid_motion_and_units[shift2-element1] __________
+
+element = ((Fraction(-5, 12), Fraction(-1, 1)), (Fraction(5, 12), Fraction(-1, 1)), (Fraction(1, 1), Fraction(-5, 12)), (Fraction(1, 1), Fraction(5, 12)), (Fraction(5, 12), Fraction(1, 1)), (Fraction(-5, 12), Fraction(1, 1)), ...)
+shift = Fraction(100000, 1)
+
+    @pytest.mark.parametrize("element", [square_element(), octagon_element()])
+    @pytest.mark.parametrize("shift", [F(0), F(1000), F(100000)])
+    def test_erosion_exact_rigid_motion_and_units(element, shift):
+        """Rotate both body and element; an axis-fixed element is not isotropic."""
+        generator = random.Random(7901)
+        for scale in (F(1, 1024), F(1), F(8)):
+            u = F(generator.randrange(1, 8), generator.randrange(9, 16))
+            c, s = (1-u*u)/(1+u*u), 2*u/(1+u*u)
+            def rotate(p):
+                return c*p[0]-s*p[1], s*p[0]+c*p[1]
+            def transform(p):
+                x, y = rotate(p)
+                return scale*x+shift, scale*y-3*shift/7
+            baseline = erode_polygon_exact(L_RING, F(1, 4), element)
+            moved = erode_polygon_exact(tuple(transform(p) for p in L_RING),
+                                        scale/4, tuple(rotate(p) for p in element))
+>           assert moved.status == "ACCEPTED"
+E           AssertionError: assert 'REJECTED' == 'ACCEPTED'
+E             
+E             - ACCEPTED
+E             + REJECTED
+
+tests\test_tia2d_t1b_erosion.py:163: AssertionError
+_ test_polygon_knob_reports_actual_segments_and_verified_opposite_states[square] _
+
+element = 'square'
+
+    @pytest.mark.parametrize("element", ["square", "octagon"])
+    def test_polygon_knob_reports_actual_segments_and_verified_opposite_states(element):
+        geometry = tolerance_knob(segments=4)
+        assert geometry["half_circle_sampling_segments"] == 4
+        assert geometry["bulb_segment_count"] == 8
+        before = evaluate(geometry["moving"], geometry["obstacles"], Q(1, 8), element, True)
+        after = evaluate(geometry["moving"], geometry["obstacles"], Q(1, 4), element, True)
+>       assert before["result"].status == "TRAPPED_TRANSLATION"
+E       AssertionError: assert 'UNPROVED' == 'TRAPPED_TRANSLATION'
+E         
+E         - TRAPPED_TRANSLATION
+E         + UNPROVED
+
+tests\test_tia2d_t1b_tolerance.py:108: AssertionError
+_ test_polygon_knob_reports_actual_segments_and_verified_opposite_states[octagon] _
+
+element = 'octagon'
+
+    @pytest.mark.parametrize("element", ["square", "octagon"])
+    def test_polygon_knob_reports_actual_segments_and_verified_opposite_states(element):
+        geometry = tolerance_knob(segments=4)
+        assert geometry["half_circle_sampling_segments"] == 4
+        assert geometry["bulb_segment_count"] == 8
+        before = evaluate(geometry["moving"], geometry["obstacles"], Q(1, 8), element, True)
+        after = evaluate(geometry["moving"], geometry["obstacles"], Q(1, 4), element, True)
+>       assert before["result"].status == "TRAPPED_TRANSLATION"
+E       AssertionError: assert 'UNPROVED' == 'TRAPPED_TRANSLATION'
+E         
+E         - TRAPPED_TRANSLATION
+E         + UNPROVED
+
+tests\test_tia2d_t1b_tolerance.py:108: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_t1b_erosion.py::test_element_vertex_only_containment_misses_an_indentation
+FAILED tests/test_tia2d_t1b_erosion.py::test_element_vertices_on_cavity_edges_do_not_certify_filled_containment
+FAILED tests/test_tia2d_t1b_erosion.py::test_rational_octagon_reflex_bevel_closed_form[delta0]
+FAILED tests/test_tia2d_t1b_erosion.py::test_rational_octagon_reflex_bevel_closed_form[delta1]
+FAILED tests/test_tia2d_t1b_erosion.py::test_rational_octagon_reflex_bevel_closed_form[delta2]
+FAILED tests/test_tia2d_t1b_erosion.py::test_disconnected_erosion_and_exact_thin_neck_are_rejected[octagon]
+FAILED tests/test_tia2d_t1b_erosion.py::test_erosion_exact_rigid_motion_and_units[shift0-element1]
+FAILED tests/test_tia2d_t1b_erosion.py::test_erosion_exact_rigid_motion_and_units[shift1-element1]
+FAILED tests/test_tia2d_t1b_erosion.py::test_erosion_exact_rigid_motion_and_units[shift2-element1]
+FAILED tests/test_tia2d_t1b_tolerance.py::test_polygon_knob_reports_actual_segments_and_verified_opposite_states[square]
+FAILED tests/test_tia2d_t1b_tolerance.py::test_polygon_knob_reports_actual_segments_and_verified_opposite_states[octagon]
+11 failed, 6 passed in 1.65s

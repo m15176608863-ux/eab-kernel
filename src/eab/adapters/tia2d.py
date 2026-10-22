@@ -469,3 +469,203 @@ inferred independently for each side. No threshold finite differences occur.
         contact_seeds[contact.label] = (by_point[contact.point], dt)
     live = {body.body_id: (Q(0), Q(0), Q(0)) for body in geometry.assembly.bodies}
     return build_limit_seed2(problem, contact_seeds=contact_seeds, live_seeds=live, parameter=parameter)
+
+
+@dataclass(frozen=True)
+class MorphologyProfile2:
+    """True polygonal T1b profiles with independently selected height and period.
+
+    The signed profile mirrors the two left faces onto the two right faces.
+    No smooth surface or finite-motion equivalence is asserted. Gates:
+    test_tia2d_t1b_morphology.py.
+    """
+    assembly: Assembly2
+    family: str
+    amplitude: Q
+    wavelength: Q
+    height: Q
+    tilt: Q
+    phase: Q
+    asymmetry: Q
+    periods: int
+    interfaces: tuple
+    vertex_seeds_amplitude: tuple
+    vertex_seeds_tilt: tuple
+
+
+def g1_morphology(*, family="sawtooth", amplitude=Q(1, 2048), tilt=Q(3, 32),
+                  height=Q(1, 16), wavelength=None, periods=None,
+                  phase=Q(0), asymmetry=Q(1, 2), mu=Q(0),
+                  origin=(Q(5, 8), Q(-3, 8))):
+    """G1 boundaries and load, with rational tilted/shifted polygonal faces.
+
+    For face k, x=-5+2*k+sign[k]*(tilt*(y-height/2)+amplitude*f(y)),
+    sign=(-1,-1,1,1). The tooth rises from 0 to 1 at fractional position
+    asymmetry and returns to 0. Adjacent phase increments are 0, 1/4 or 1/2.
+    The kink instead has f=0 below asymmetry*height and rises linearly to 1.
+    Wavelength is height/periods, with 1, 2 or 4 complete periods; callers
+    may specify either or both, but inconsistent values are rejected.
+    Fractions are retained exactly; nonbinary rational inputs are Python-only.
+    """
+    amplitude, tilt, height = Q(amplitude), Q(tilt), Q(height)
+    phase, asymmetry, mu = Q(phase), Q(asymmetry), Q(mu)
+    if family not in ("sawtooth", "kinked"):
+        raise ValueError("family must be sawtooth or kinked")
+    if amplitude < 0 or tilt < 0 or height <= 0 or mu < 0 or not 0 < asymmetry < 1:
+        raise ValueError("invalid profile dimensions or friction")
+    if phase not in (Q(0), Q(1, 4), Q(1, 2)):
+        raise ValueError("phase must be 0, 1/4 or 1/2")
+    if wavelength is not None:
+        wavelength = Q(wavelength)
+        if wavelength <= 0:
+            raise ValueError("wavelength must be positive")
+        count = height / wavelength
+        if count.denominator != 1 or (periods is not None and count != periods):
+            raise ValueError("height must contain the declared complete periods")
+        periods = int(count)
+    elif periods is None:
+        periods = 1
+    if isinstance(periods, bool) or not isinstance(periods, int) or periods not in (1, 2, 4):
+        raise ValueError("periods must be 1, 2 or 4")
+    wavelength = height / periods
+    if family == "kinked" and (phase != 0 or periods != 1):
+        raise ValueError("kinked uses one nonperiodic face and zero phase")
+    faces = [(((Q(-5), Q(0)), (Q(-5), height)), ((Q(0), Q(0)),) * 2,
+              ((Q(0), Q(0)),) * 2)]
+    for k, sign in enumerate((-1, -1, 1, 1), 1):
+        shift = (k - 1) * phase % 1
+        levels = {Q(0), height}
+        if family == "kinked":
+            levels.add(asymmetry * height)
+        else:
+            for j in range(-1, periods + 2):
+                for corner in (Q(0), asymmetry):
+                    y = (j + corner - shift) * wavelength
+                    if 0 < y < height:
+                        levels.add(y)
+        points, da, dt = [], [], []
+        for y in sorted(levels):
+            if family == "kinked":
+                value = max(Q(0), (y / height - asymmetry) / (1 - asymmetry))
+            else:
+                u = (y / wavelength + shift) % 1
+                value = u / asymmetry if u <= asymmetry else (1 - u) / (1 - asymmetry)
+            points.append((Q(-5 + 2 * k) + sign * (tilt * (y - height / 2) + amplitude * value), y))
+            da.append((sign * value, Q(0)))
+            dt.append((sign * (y - height / 2), Q(0)))
+        faces.append((tuple(points), tuple(da), tuple(dt)))
+    faces.append((((Q(5), Q(0)), (Q(5), height)), ((Q(0), Q(0)),) * 2,
+                  ((Q(0), Q(0)),) * 2))
+    bodies, amplitude_seeds, tilt_seeds = [], [], []
+    o = point2(origin)
+    for i, (left, right) in enumerate(zip(faces, faces[1:])):
+        ring = (left[0][0],) + right[0] + tuple(reversed(left[0][1:]))
+        da = (left[1][0],) + right[1] + tuple(reversed(left[1][1:]))
+        dt = (left[2][0],) + right[2] + tuple(reversed(left[2][1:]))
+        fixed = i in (0, 4)
+        live = (Q(0), Q(-1), o[0]) if i == 2 else (Q(0),) * 3
+        bodies.append(Body2.from_vertices("block_" + str(i + 1), ring,
+            reference_point=o, dof_anchor=o, boundary_type="FIXED_BODY" if fixed else None,
+            dof_mask=(0, 0, 0) if fixed else (1, 1, 1), live=live))
+        amplitude_seeds.append(da)
+        tilt_seeds.append(dt)
+    assembly = _complete(bodies, mu)
+    for i, j in assembly.pairs:
+        if polygons_overlap_exact(bodies[i].vertices, bodies[j].vertices) != (0 if j == i + 1 else -1):
+            raise ValueError("profile dimensions destroy the complete chain contact pattern")
+    return MorphologyProfile2(assembly, family, amplitude, wavelength, height, tilt,
+        phase, asymmetry, periods, tuple(face[0] for face in faces[1:-1]),
+        tuple(amplitude_seeds), tuple(tilt_seeds))
+
+
+def g1_morphology_seed(problem, geometry, parameter):
+    """Differentiate shared vertices and actual L1 edge jets, never LP samples.
+
+    References and the unit vertical load at x=0 are independent of A and t.
+    The caller must retain the contact skeleton validity conditions. Gate:
+    test_t1b_profile_jets_match_exact_affine_matrix_derivatives.
+    """
+    from ..kernel2d.sensitivity import build_limit_seed2
+    if problem.assembly != geometry.assembly:
+        raise ValueError("profile and problem must use the same assembly")
+    if parameter == "amplitude":
+        vertex_seeds = geometry.vertex_seeds_amplitude
+    elif parameter == "tilt":
+        vertex_seeds = geometry.vertex_seeds_tilt
+    else:
+        raise ValueError("profile seed parameter must be amplitude or tilt")
+    by_point, by_body = {}, {}
+    for body, seeds in zip(geometry.assembly.bodies, vertex_seeds):
+        by_body[body.body_id] = body, seeds
+        for p, seed in zip(body.original_vertices, seeds):
+            p = point2(p)
+            if p in by_point and by_point[p] != seed:
+                raise ArithmeticError("inconsistent shared profile vertex derivative")
+            by_point[p] = seed
+    contact_seeds = {}
+    for contact in problem.contact_set.constraints:
+        body, seeds = by_body[contact.label[3]]
+        i, j = contact.label[4]
+        edge = _edge_vector(body.original_vertices[i], body.original_vertices[j])
+        sign = 1 if edge == contact.tangent else -1
+        if tuple(sign * value for value in edge) != contact.tangent:
+            raise ArithmeticError("profile tangent differs from its source edge")
+        dt = tuple(sign * (seeds[j][k] - seeds[i][k]) for k in (0, 1))
+        contact_seeds[contact.label] = (by_point[contact.point], dt)
+    return build_limit_seed2(problem, contact_seeds=contact_seeds, parameter=parameter)
+
+
+def tolerance_dovetail(*, head_width=Q(2), neck_width=Q(1), height=Q(2), wall=Q(2)):
+    """Exact zero-clearance trapezoid with explicit side and lower boundaries.
+
+    This generator alone makes no tolerance-threshold or trapping claim.
+    The opening is above y=height; all rings are counterclockwise.
+    """
+    wk, wn, h, w = Q(head_width), Q(neck_width), Q(height), Q(wall)
+    if not 0 < wn < wk or h <= 0 or w <= 0:
+        raise ValueError("require positive wall/height and 0 < neck_width < head_width")
+    outside = wk / 2 + w
+    moving = ((-wk / 2, Q(0)), (wk / 2, Q(0)), (wn / 2, h), (-wn / 2, h))
+    left = ((-outside, Q(0)), (-wk / 2, Q(0)), (-wn / 2, h), (-outside, h))
+    right = tuple((-x, y) for x, y in reversed(left))
+    floor = ((-outside, -w), (outside, -w), (outside, Q(0)), (-outside, Q(0)))
+    return dict(moving=moving, obstacles=(left, right, floor),
+                names=("left_boundary", "right_boundary", "floor_boundary"))
+
+
+def tolerance_knob(*, segments=8, head_width=Q(2), neck_width=Q(1),
+                   height=Q(2), wall=Q(2)):
+    """A rational chordal circular bulb clipped at its neck, with matching walls.
+
+    Each half circle is sampled with ``segments`` uniform rational half-angle
+    parameters u=-1..1: (x,y)=R*((1-u*u)/(1+u*u),1+2*u/(1+u*u)).
+    The upper neck intersection is linear interpolation on a chord, not an
+    asserted circle point. All conclusions concern this finite polygon only.
+    The returned actual bulb segment count excludes the two straight necks.
+    """
+    wk, wn, h, w = Q(head_width), Q(neck_width), Q(height), Q(wall)
+    if segments not in (4, 8, 16, 32) or not 0 < wn < wk or h < wk or w <= 0:
+        raise ValueError("require 4/8/16/32 segments, positive wall, height >= head_width > neck_width > 0")
+    radius, neck = wk / 2, wn / 2
+    arc = []
+    for k in range(segments + 1):
+        u = Q(2 * k, segments) - 1
+        point = (radius * (1 - u * u) / (1 + u * u),
+                 radius * (1 + 2 * u / (1 + u * u)))
+        if arc and point[1] > radius and point[0] <= neck:
+            previous = arc[-1]
+            ratio = (neck - previous[0]) / (point[0] - previous[0])
+            arc.append((neck, previous[1] + ratio * (point[1] - previous[1])))
+            break
+        arc.append(point)
+    right_face = tuple(arc) + ((neck, h),)
+    left_face = tuple((-x, y) for x, y in right_face)
+    moving = right_face + tuple(reversed(left_face[1:]))
+    outside = radius + w
+    left = ((-outside, Q(0)),) + left_face + ((-outside, h),)
+    right = tuple((-x, y) for x, y in reversed(left))
+    floor = ((-outside, -w), (outside, -w), (outside, Q(0)), (-outside, Q(0)))
+    return dict(moving=moving, obstacles=(left, right, floor),
+                names=("left_boundary", "right_boundary", "floor_boundary"),
+                half_circle_sampling_segments=segments, bulb_segment_count=2 * (len(arc) - 1),
+                source="rational_half_angle_chords_clipped_at_neck")

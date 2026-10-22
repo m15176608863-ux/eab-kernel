@@ -1,0 +1,77 @@
+"""Read saved T1b P1 diagnostics and verify hashes and exact certificate algebra.
+
+Independent standard-library reader: does not import eab, geometry builders,
+contact assembly, LP solving, or the scan's in-memory certificate checker.
+"""
+import argparse
+from fractions import Fraction as Q
+import gzip
+import hashlib
+import json
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("summary", type=Path)
+    parser.add_argument("output", type=Path)
+    args = parser.parse_args()
+    raw = args.summary.read_bytes()
+    summary = json.loads(raw)
+    assert summary["complete"] and summary["source_pre_post_equal"]
+    assert len(summary["rows"]) == len(summary["files"]) == 36
+    results = []
+    dot = lambda u, v: sum((a * b for a, b in zip(u, v)), Q(0))
+    for row, entry in zip(summary["rows"], summary["files"]):
+        path = Path(entry["path"])
+        data = path.read_bytes()
+        assert len(data) == entry["bytes"]
+        assert hashlib.sha256(data).hexdigest() == entry["sha256"] == row["sha256"]
+        case = json.loads(gzip.decompress(data))
+        critical = case["critical"]
+        certificates = 0
+        for name in ("lower_certificate", "upper_certificate", "threshold_certificate"):
+            cert = critical[name]
+            if cert is None:
+                continue
+            problem = cert["problem"]
+            A = [list(map(Q, a)) for a in problem["A"]]
+            b, c = list(map(Q, problem["b"])), list(map(Q, problem["c"]))
+            assert len(A) == len(b) and all(len(a) == len(c) for a in A)
+            if cert["mathematical_status"] == "OPTIMAL":
+                x, y = list(map(Q, cert["exact_x"])), list(map(Q, cert["exact_y"]))
+                assert len(x) == len(c) and len(y) == len(b) and min(x) >= 0
+                assert [dot(a, x) for a in A] == b
+                assert all(sum(A[i][j] * y[i] for i in range(len(b))) >= c[j] for j in range(len(c)))
+                assert dot(b, y) == dot(c, x) == Q(cert["exact_value"])
+            else:
+                assert cert["mathematical_status"] == "UNBOUNDED"
+                x, ray = list(map(Q, cert["feasible_point"])), list(map(Q, cert["improving_ray"]))
+                assert len(x) == len(ray) == len(c) and min(x) >= 0 and min(ray) >= 0
+                assert [dot(a, x) for a in A] == b and all(dot(a, ray) == 0 for a in A)
+                assert dot(c, ray) > 0
+            certificates += 1
+        assert Q(critical["mu_lo"]) < Q(critical["mu_hi"])
+        if critical["exact_threshold"] is not None:
+            value = Q(critical["exact_threshold"])
+            assert Q(critical["mu_lo"]) <= value <= Q(critical["mu_hi"])
+            endpoint = critical["threshold_certificate"]
+            assert Q(endpoint["problem"]["mu"]) == value
+            assert (endpoint["mathematical_status"] == "UNBOUNDED") == critical["attained"]
+        else:
+            assert critical["attained"] is None
+        cone = case["first_order"]
+        matrix = [list(map(Q, a)) for a in cone["matrix"]]
+        generators = [list(map(Q, v)) for v in cone["generators"]]
+        assert cone["mathematical_status"] == "NONZERO_CONE" and generators
+        assert all(any(v) and all(dot(a, v) >= 0 for a in matrix) for v in generators)
+        results.append(dict(case=path.name, certificates=certificates, cone_generators=len(generators), passed=True))
+    payload = dict(passed=True, cases=len(results), certificates=sum(r["certificates"] for r in results),
+                   summary_sha256=hashlib.sha256(raw).hexdigest(), results=results,
+                   boundary="checks stored exact matrices, not independent geometric assembly")
+    args.output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    print(f"P1_READBACK_OK cases={payload['cases']} certificates={payload['certificates']}")
+
+
+if __name__ == "__main__":
+    main()

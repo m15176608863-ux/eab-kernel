@@ -1,0 +1,20 @@
+{
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "reports\\codex\\T1b_evidence\\tmp\\postfix_static",
+    "--runslow",
+    "tests/test_r9fix_construction_static.py::test_all_source_and_test_oracles_use_reviewed_construction_boundary",
+    "tests/test_r12fixb_maintenance.py::test_unrelated_source_comment_keeps_real_repository_gate_green"
+  ],
+  "exit_code": 0,
+  "seconds": 410.405999999959,
+  "last_line": "2 passed in 409.93s (0:06:49)"
+}

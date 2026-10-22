@@ -1,0 +1,51 @@
+--- full_RED/tests/test_tia2d_t1b_morphology.py
++++ postfix/tests/test_tia2d_t1b_morphology.py
+@@ -125,18 +125,27 @@
+     assert certificate_arithmetic(c.threshold_certificate)
+ 
+ 
++def _rotate_exact(p, c, s):
++    return c * p[0] - s * p[1], s * p[0] + c * p[1]
++
++
++def _transform_point(p, c, s, scale, offset):
++    rotated = _rotate_exact(p, c, s)
++    return tuple(scale * v + d for v, d in zip(rotated, offset))
++
++
+ def _frame(assembly, u, scale, offset, force_unit):
+     c, s = (1 - u * u) / (1 + u * u), 2 * u / (1 + u * u)
+-    rotate = lambda p: (c * p[0] - s * p[1], s * p[0] + c * p[1])
+-    point = lambda p: tuple(scale * v + d for v, d in zip(rotate(p), offset))
+     bodies = []
+     for body in assembly.bodies:
+         loads = []
+         for load in (body.dead, body.live):
+-            force = rotate(load[:2])
++            force = _rotate_exact(load[:2], c, s)
+             loads.append((force_unit * force[0], force_unit * force[1], force_unit * scale * load[2]))
+-        bodies.append(Body2.from_vertices(body.body_id, tuple(point(p) for p in body.vertices),
+-            reference_point=point(body.reference_point), dof_anchor=point(body.dof_anchor),
++        bodies.append(Body2.from_vertices(body.body_id,
++            tuple(_transform_point(p, c, s, scale, offset) for p in body.vertices),
++            reference_point=_transform_point(body.reference_point, c, s, scale, offset),
++            dof_anchor=_transform_point(body.dof_anchor, c, s, scale, offset),
+             boundary_type=body.boundary_type, dof_mask=body.dof_mask, dead=loads[0], live=loads[1]))
+     return replace(assembly, bodies=tuple(bodies))
+ 
+--- full_RED/tests/test_tia2d_t1b_tolerance.py
++++ postfix/tests/test_tia2d_t1b_tolerance.py
+@@ -14,9 +14,11 @@
+ 
+ def _verify(sample):
+     result = sample["result"]
+-    checker = verify_trapping_certificate if result.status == "TRAPPED_TRANSLATION" else verify_escape_certificate
+     assert result.status in ("TRAPPED_TRANSLATION", "ESCAPABLE_TRANSLATION")
+-    assert checker(sample["moving"], sample["obstacles"], result.path).valid
++    if result.status == "TRAPPED_TRANSLATION":
++        assert verify_trapping_certificate(sample["moving"], sample["obstacles"], result.path).valid
++    else:
++        assert verify_escape_certificate(sample["moving"], sample["obstacles"], result.path).valid
+ 
+ 
+ @pytest.mark.parametrize("element,expected", [("square", Q(1, 2)), ("octagon", Q(24, 41))])

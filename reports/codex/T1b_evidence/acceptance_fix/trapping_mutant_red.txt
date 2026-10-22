@@ -1,0 +1,36 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______ test_enclosure_rejects_blocked_vertices_with_free_edge_interiors _______
+
+    def test_enclosure_rejects_blocked_vertices_with_free_edge_interiors():
+        """G0 rectangle oracle: blocked diamond vertices, four free edge midpoints."""
+>       _assert_mixed_pair_enclosure_is_rejected()
+
+tests\test_tia2d_t1b_certificates.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def _assert_mixed_pair_enclosure_is_rejected():
+        moving, obstacles, _ = _enclosure()
+        r = F(5, 2)
+        diamond = ((r, 0), (0, r), (-r, 0), (0, -r), (r, 0))
+        # Each vertex lies strictly in a different wall's overlap region. The
+        # midpoints (+/-5/4, +/-5/4), however, leave the complete moving square
+        # inside the open central chamber (-2, 2)^2. Nonzero winding and blocked
+        # vertices therefore do not certify a wholly blocked enclosure curve.
+        for point, obstacle_index in zip(diamond, (3, 1, 2, 0)):
+            assert not certificates.translation_segment_is_free(
+                moving, (obstacles[obstacle_index],), point, point)
+        for a, b in zip(diamond, diamond[1:]):
+            midpoint = ((a[0]+b[0])/2, (a[1]+b[1])/2)
+            assert all(abs(coordinate)+F(1, 4) < 2 for coordinate in midpoint)
+            assert certificates.translation_segment_is_free(moving, obstacles, midpoint, midpoint)
+        checked = certificates.verify_trapping_certificate(moving, obstacles, diamond)
+>       assert not checked.valid, "enclosure must reject endpoints in different convex pairs"
+E       AssertionError: enclosure must reject endpoints in different convex pairs
+E       assert not True
+E        +  where True = CertificateVerification(valid=True, reason='strict enclosure with nonzero winding', checked_segments=4, winding_number=1, witnesses=((3, 0, 0), (1, 0, 0), (2, 0, 0), (0, 0, 0)), ray_direction=None).valid
+
+tests\test_tia2d_t1b_certificates.py:64: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tia2d_t1b_certificates.py::test_enclosure_rejects_blocked_vertices_with_free_edge_interiors
+1 failed in 0.09s

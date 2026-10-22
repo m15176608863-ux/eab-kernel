@@ -1,0 +1,122 @@
+"""Fill the acceptance report only from completed GREEN gate evidence."""
+from pathlib import Path
+import json
+import hashlib
+
+ROOT = Path.cwd()
+BASE = ROOT / "reports/codex/T1b_evidence"
+OUT = BASE / "acceptance_fix"
+
+
+def read(path):
+    return json.loads(path.read_text("utf-8"))
+
+
+def main():
+    fast, full = [read(BASE / name / "summary.json") for name in ("acceptance_fast", "acceptance_full")]
+    assert fast["audit"] == full["audit"] == "GREEN"
+    assert len(fast["shards"]) == 1 and len(full["shards"]) == 4
+    assert full["static"]["last_line"] == "exact construction AST gate: 0 violation(s)"
+    for result in (fast, full):
+        assert result["complete"] and result["module_coverage_complete"]
+        assert not result["export_changed"] and not result["live_tree_changed"]
+        assert all(v["node_sets_equal"] and not v["skip_count"] and not v["failed_count"] for v in result["shards"])
+        assert sum(v["executed"] for v in result["shards"]) == result["collected"]
+    full_coverage = read(BASE / "acceptance_full/module_coverage.json")
+    fast_coverage = read(BASE / "acceptance_fast/module_coverage.json")
+    assert fast_coverage["module_count"] == full_coverage["module_count"] == 66
+    archive = read(OUT / "external_archive_summary.json")
+    report = ROOT / "reports/codex/T1b_report.md"
+    before = report.read_bytes()
+    assert hashlib.sha256(before).hexdigest() == "e623fc6889ea21b891dad27981d83bbe70672acf5e3b06d78ca623b4e919176f"
+    s = before.decode("utf-8")
+    s = s.replace("（验收续单进行中）", "（验收续单完成）", 1)
+    start = s.index("**状态：验收续单进行中。")
+    end = s.index("**", start + 2) + 2
+    status = (f"**状态：T1b_DONE。本次必补项已完成；当前工作字节完整快档{fast['collected']}项、"
+              f"全档四分片{full['collected']}项全部通过，0失败、0跳过，静态构造0违例。"
+              "Claude此前已完成e757883的新鲜树全档和A/B独立复核；本次新增字节另经当前树H1验证，"
+              "不挪用旧绿。C仍未做，按工单不计PARTIAL；未commit。**")
+    s = s[:start] + status + s[end:]
+    s = s.replace("[交付清单](T1b_evidence/artifacts.md)", "[本轮交付清单](T1b_evidence/acceptance_fix/artifacts.md)")
+    s = s.replace("### 6.3 Claude验收与本次续单收尾（待填最终门）", "### 6.3 Claude验收与本次续单最终门")
+    start = s.index("**【待填：当前工作树完整快档最后一行")
+    end = s.index("】**", start) + len("】**")
+    full_lines = "\n".join(v["last_line"] for v in full["shards"])
+    evidence = f'''本次以当前工作树字节为输入，使用原H1四分片运行器的字节导出模式；不是新建Git worktree。运行中导出副本与当前工作树前后哈希均无变化，完整收集、派发、执行节点多重集合相等，快档与全档均0失败/0跳过。模块实际执行审计均为 **66/66**（59函数模块、7声明模块），无缺失导入或执行见证。
+
+| 当前验证 | 结果 |
+|---|---|
+| 完整快档 | GREEN，{fast['collected']}项，H1总用时{fast['elapsed_seconds']:.3f}s |
+| 快慢全档四分片 | GREEN，{full['collected']}项，H1总用时{full['elapsed_seconds']:.3f}s |
+| 静态构造 | 0违例，无新增准入 |
+| 纯度与冻结合同 | 全套具名门通过；设计/schema/policy/.gitattributes原字节不改 |
+| 受测字节 | 两轮运行中export_changed/live_tree_changed均空；收尾仅更新本报告及归档索引，不改变受测代码/测试/工具/夹具 |
+
+当前快档最后一行原样：
+
+```text
+{fast['shards'][0]['last_line']}
+```
+
+当前全档四分片最后一行，按1–4原样：
+
+```text
+{full_lines}
+```
+
+当前CLI静态最后一行原样：
+
+```text
+{full['static']['last_line']}
+```
+
+证据：[完整快档](T1b_evidence/acceptance_fast/summary.json)、[完整全档](T1b_evidence/acceptance_full/summary.json)、[全档实际执行覆盖](T1b_evidence/acceptance_full/module_coverage.json)、[日志和受测源码归档](T1b_evidence/acceptance_fix/gate_archive.json)、[最终代码与受测字节核对](T1b_evidence/acceptance_fix/final_tested_source_audit.json)、[交付卫生/净增量](T1b_evidence/acceptance_fix/hygiene.json)。旧RED不删除、不拼接；本次绿是新名字、独立完整运行。
+
+厚度补充另经内部交叉QA：独立参考LP86次查询、39个持久化样本的阈值及正阈值下侧核对、227个存储矩阵证书实例核验全部通过，见[内部交叉复核](T1b_evidence/acceptance_fix/thickness_cross_review.md)。这不冒称Claude安排的新增独立验收路线，也不替代本次完整门。
+'''
+    s = s[:start] + evidence + s[end:]
+    anchor = "python -X utf8 tools/tia2d_t1b_classification.py --source reports/codex/T1b_evidence/p1_summary.json --output D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/p1_classification_rerun --summary reports/codex/T1b_evidence/acceptance_fix/p1_classification_rerun.json"
+    s = s.replace(anchor, anchor + "\npython -X utf8 tools/tia2d_t1b_thickness.py --output D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/thickness_rerun --summary reports/codex/T1b_evidence/acceptance_fix/thickness_rerun.json --source-revision e757883")
+    s = s.replace("本次补门和工具新增字节必须另经当前树快档/全档，不冒称由原14848绿灯覆盖。", "本次补门和工具新增字节已经另经当前树快档/全档，不冒称由原14848绿灯覆盖。")
+    s = s.replace("T1b_PARTIAL：本次收尾门待完成", "T1b_DONE")
+    assert "待填" not in s and s.rstrip().endswith("T1b_DONE")
+    report.write_text(s, encoding="utf-8", newline="")
+    index = ROOT / "reports/EVIDENCE_ARCHIVE.md"
+    text = index.read_text("utf-8")
+    text = text.replace("## WO-T1b 追加（2026-10-22）", "## WO-T1b 原轮追加（2026-10-22；历史状态，续单见下节）")
+    text += f'''
+## WO-T1b 验收续单归档（e757883 后未提交字节）
+
+本轮仅在获准的 `T1b_evidence/acceptance_fix/` 新建证据，不覆盖原P0/P1冻结数据或原RED日志；未执行Git写操作。Claude所报原提交新鲜树14848通过及独立A/B核验，按[入口记录](codex/T1b_evidence/acceptance_fix/intake.json)保留来源，不伪称本代理重跑。
+
+- [本轮外部逐文件SHA256](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/_manifests/files.sha256.jsonl)：{archive['files']}文件、{archive['bytes']:,}字节；清单自身SHA `{archive['manifest_sha256']}`，清单目录自身不列入。包含只读e757883回滚archive、验收原脚本、三点升级证书、39厚度样本/18厚块对照、开发期输出及最终完整门日志。
+- [外归档摘要](codex/T1b_evidence/acceptance_fix/external_archive_summary.json)、[门日志映射及双SHA](codex/T1b_evidence/acceptance_fix/gate_archive.json)。日志gzip采用mtime=0，逐个解压与原日志相等；原日志未删，不拼接。
+- [本次全档受测源码ZIP](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/acceptance_full_source.zip)及[逐成员SHA](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/acceptance_full_source_manifest.json)：完整工作字节导出，不是新建Git树；最终报告/本索引的收尾更新不改变受测代码。
+- [当前快档](codex/T1b_evidence/acceptance_fast/summary.json)与[当前四片全档](codex/T1b_evidence/acceptance_full/summary.json)均GREEN：分别{fast['collected']}、{full['collected']}项，0失败/跳过、模块实际执行66/66、静态0违例。
+- [本轮全部文件链接](codex/T1b_evidence/acceptance_fix/artifacts.md)、[当前字节清单](codex/T1b_evidence/acceptance_fix/artifact_manifest.json)、[净增及卫生](codex/T1b_evidence/acceptance_fix/hygiene.json)。旧轮清单/状态仅描述原快照；本轮最终结论以[T1b报告](codex/T1b_report.md)为准。
+
+本地外归档不等于远端备份；回滚不得覆盖所有者后续变化。未增加正式C++批次、未改tia2d-2 schema、未擅自冻结新增助手接口。可选C未做，不构成本单PARTIAL。
+'''
+    index.write_text(text, encoding="utf-8", newline="")
+    requirements = {
+        "status": "T1b_DONE", "head": "e757883", "git_writes_performed": False,
+        "items": [
+            {"id": "1_A_major", "status": "PASS", "evidence": ["trapping_mutant_red.json", "trapping_targeted.json"], "result": "diamond rejected; source-internal mixed-pair endpoint mutation killed by semantic assertion"},
+            {"id": "2_A_wording", "status": "PASS", "report_sections": ["3.3", "6.1"], "evidence": ["g1_straight_paths.json", "trapping_erosion_mutation_attribution.json"]},
+            {"id": "3_B_explanation_classification", "status": "PASS", "report_sections": ["4.2", "4.3", "4.4", "4.5", "4.7", "8"], "evidence": ["p1_classification.json", "morphology_notes.md", "force_blowup_audit.json"], "exact_closed": 26, "exact_open": 2, "irrational_brackets": 8},
+            {"id": "4_B_thickness", "status": "PASS", "report_section": "4.6", "evidence": ["thickness_summary.json", "thickness_readback.json", "thickness_cross_review.json"], "bands": 4, "samples": 39, "thick_controls": 18},
+            {"id": "5_current_full_gates", "status": "PASS", "fast_nodes": fast["collected"], "full_nodes": full["collected"], "failed": 0, "skipped": 0, "static_violations": 0},
+            {"id": "optional_C", "status": "NOT_RUN_NOT_REQUIRED"}
+        ],
+        "trust_boundary": "P0 translation geometry; P1 associated rigid-body limit analysis with rotation; not finite motion or physical material validation"
+    }
+    (OUT / "requirements.json").write_text(json.dumps(requirements, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="")
+    plan = OUT / "plan.md"
+    p = plan.read_text("utf-8").replace("3. **进行中**：", "3. 已完成：").replace("4. 待执行：", "4. **进行中**：")
+    plan.write_text(p, encoding="utf-8", newline="")
+    print("REPORT_GATES_FILLED", fast["collected"], full["collected"], "T1b_DONE")
+
+
+if __name__ == "__main__":
+    main()

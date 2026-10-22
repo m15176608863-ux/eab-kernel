@@ -1,0 +1,85 @@
+"""Archive completed acceptance gate logs and source bytes without Git writes.
+
+Run with Python from the repository root. Existing unequal archives fail.
+No original log or source is deleted. Manifests exclude their own files.
+"""
+from pathlib import Path
+import gzip
+import hashlib
+import json
+import zipfile
+
+ROOT = Path.cwd().resolve()
+LOCAL = ROOT / "reports/codex/T1b_evidence/acceptance_fix"
+EXTERNAL = Path("D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix").resolve()
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def dump(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="")
+
+
+def main():
+    archives = []
+    for name in ("acceptance_fast", "acceptance_full"):
+        summary = json.loads((ROOT / "reports/codex/T1b_evidence" / name / "summary.json").read_text("utf-8"))
+        assert summary["complete"] and summary["audit"] == "GREEN"
+        source = Path(summary["source"]).resolve()
+        temporary = Path(summary["temp"]).resolve()
+        assert source.is_relative_to(ROOT / "reports/codex/T1b_evidence/tmp")
+        assert temporary.is_relative_to(ROOT / "reports/codex/T1b_evidence/tmp")
+        target = EXTERNAL / "gate_logs" / name
+        target.mkdir(parents=True, exist_ok=True)
+        for path in sorted(temporary.iterdir()):
+            if not path.is_file():
+                continue
+            raw = path.read_bytes()
+            encoded = gzip.compress(raw, mtime=0)
+            dest = target / (path.name + ".gz")
+            if dest.exists():
+                assert dest.read_bytes() == encoded
+            else:
+                dest.write_bytes(encoded)
+            assert gzip.decompress(dest.read_bytes()) == raw
+            archives.append(dict(source=str(path), archived=str(dest), raw_bytes=len(raw),
+                                 raw_sha256=sha(raw), compressed_bytes=len(encoded), compressed_sha256=sha(encoded)))
+        if name == "acceptance_full":
+            manifest = json.loads((temporary / "source_manifest.json").read_text("utf-8"))
+            bundle = EXTERNAL / "acceptance_full_source.zip"
+            if not bundle.exists():
+                with zipfile.ZipFile(bundle, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as output:
+                    for entry in manifest:
+                        raw = (source / entry["path"]).read_bytes()
+                        assert sha(raw) == entry["sha256"]
+                        output.writestr(entry["path"], raw)
+            with zipfile.ZipFile(bundle) as check:
+                assert sorted(check.namelist()) == sorted(e["path"] for e in manifest)
+                assert all(sha(check.read(e["path"])) == e["sha256"] for e in manifest)
+            dump(EXTERNAL / "acceptance_full_source_manifest.json", manifest)
+            snapshot = dict(path=str(bundle), bytes=bundle.stat().st_size,
+                            sha256=sha(bundle.read_bytes()), files=len(manifest),
+                            method="H1 current-working-byte export; not a fresh Git tree")
+    dump(LOCAL / "gate_archive.json", dict(status="PASS", archives=archives, full_source=snapshot,
+         originals_deleted=False, old_RED_logs_untouched=True))
+    inventory = []
+    for path in sorted(EXTERNAL.rglob("*")):
+        if not path.is_file() or "_manifests" in path.relative_to(EXTERNAL).parts:
+            continue
+        raw = path.read_bytes()
+        inventory.append(dict(path=str(path), relative_path=path.relative_to(EXTERNAL).as_posix(),
+                              bytes=len(raw), sha256=sha(raw)))
+    directory = EXTERNAL / "_manifests"
+    directory.mkdir(exist_ok=True)
+    file_manifest = directory / "files.sha256.jsonl"
+    file_manifest.write_text("".join(json.dumps(v, ensure_ascii=False) + "\n" for v in inventory), encoding="utf-8", newline="")
+    dump(LOCAL / "external_archive_summary.json", dict(status="PASS", files=len(inventory),
+        bytes=sum(v["bytes"] for v in inventory), manifest=str(file_manifest),
+        manifest_sha256=sha(file_manifest.read_bytes()), self_manifest_excluded=True))
+    print("ARCHIVE_PASS", len(archives), "gate-log files;", len(inventory), "external files")
+
+
+if __name__ == "__main__":
+    main()
