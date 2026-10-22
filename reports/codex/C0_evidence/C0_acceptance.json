@@ -1,0 +1,36 @@
+{
+  "schema": "eab2.c0.acceptance.v1",
+  "implementation_verification": "PASS",
+  "milestone_exit": "PARTIAL",
+  "native_test_lines": [
+    "EAB2_NUMERIC_TESTS checks=544 failed=0",
+    "FP_ENVIRONMENT: FTZ=reject DAZ=reject ROUND_MODES=3_reject MASK_BITS_7_12=6_reject HOST_STATE=unchanged",
+    "ABI_TESTS: 689 assertions, 0 failures",
+    "C_HEADER_PRODUCTION_DLL checks=7 failures=0",
+    "C_HEADER_STATIC checks=7 failures=0"
+  ],
+  "diff_last_line": "EAB2_DIFF samples=4483 bits=6003 mismatches=0 status=PASS",
+  "fast_last_line": "8690 passed in 251.72s (0:04:11)",
+  "full_shard_last_lines": [
+    "3667 passed in 936.99s (0:15:36)",
+    "3667 passed in 778.07s (0:12:58)",
+    "3666 passed in 1298.96s (0:21:38)",
+    "3666 passed in 735.46s (0:12:15)"
+  ],
+  "full_nodes": 14666,
+  "python_source_and_design_unchanged": true,
+  "static_last_line": "exact construction AST gate: 0 violation(s)",
+  "mutation_killed": 3,
+  "production_numeric_export_absent": true,
+  "fresh_git_checkout": false,
+  "independent_adversarial_review_performed": false,
+  "open_items": [
+    "Claude 安排非作者独立对抗核查并达到 0 critical / 0 major",
+    "所有者按获准流程安排新鲜 worktree/克隆复现"
+  ],
+  "optional_items_not_implemented": [
+    "CertifiedValue",
+    "Dual<W>",
+    "Body2"
+  ]
+}

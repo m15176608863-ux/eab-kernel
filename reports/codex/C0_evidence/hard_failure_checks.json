@@ -1,0 +1,44 @@
+[
+  {
+    "name": "missing_dll",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/eab2_diff.py"
+    ],
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "last_line": "eab2_diff.py: error: the following arguments are required: --dll"
+  },
+  {
+    "name": "production_dll_not_test",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/eab2_diff.py",
+      "--dll",
+      "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll"
+    ],
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "last_line": "EAB2_DIFF HARD_FAILURE: AttributeError: function 'eab2_numeric_batch' not found"
+  },
+  {
+    "name": "outside_evidence_root",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/h1_run_gates.py",
+      "--name",
+      "rejected",
+      "--evidence-root",
+      ".."
+    ],
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "last_line": "h1_run_gates.py: error: evidence-root must be a subdirectory of workspace reports/codex"
+  }
+]
