@@ -1,0 +1,194 @@
+"""Independent stdlib readback of persisted T1b acceptance diagnostics.
+
+Checks stored LP matrices, polynomial root witnesses and source hashes.
+Does not import eab, build geometry, solve an LP, or certify material physics.
+Run this text file with Python from the repository root after generation.
+"""
+from pathlib import Path
+from fractions import Fraction as Q
+from math import isqrt
+import gzip
+import hashlib
+import json
+
+OUT = Path("reports/codex/T1b_evidence/acceptance_fix")
+
+
+def trim(a):
+    a = list(a)
+    while len(a) > 1 and a[-1] == 0:
+        a.pop()
+    return a
+
+
+def evaluate(a, x):
+    v = Q(0)
+    for c in reversed(a):
+        v = v * x + c
+    return v
+
+
+def divide(a, b):
+    a, b = trim(a), trim(b)
+    quotient = [Q(0)] * max(1, len(a) - len(b) + 1)
+    while any(a) and len(a) >= len(b):
+        shift, value = len(a) - len(b), a[-1] / b[-1]
+        quotient[shift] = value
+        for i, c in enumerate(b):
+            a[shift + i] -= value * c
+        a = trim(a)
+    return trim(quotient), a
+
+
+def root_count(a, lo, hi):
+    a = trim(a)
+    if len(a) <= 1:
+        return 0
+    assert evaluate(a, lo) and evaluate(a, hi)
+    chain = [a, [i * a[i] for i in range(1, len(a))]]
+    while any(chain[-1]):
+        remainder = divide(chain[-2], chain[-1])[1]
+        if not any(remainder):
+            break
+        chain.append([-v for v in remainder])
+    def variations(x):
+        signs = [1 if v > 0 else -1 for p in chain if (v := evaluate(p, x))]
+        return sum(a != b for a, b in zip(signs, signs[1:]))
+    return variations(lo) - variations(hi)
+
+
+def dot(a, b):
+    assert len(a) == len(b)
+    return sum((x * y for x, y in zip(a, b)), Q(0))
+
+
+def verify_certificate(cert):
+    problem = cert["problem"]
+    A = [list(map(Q, a)) for a in problem["A"]]
+    b, c = list(map(Q, problem["b"])), list(map(Q, problem["c"]))
+    assert len(A) == len(b) and all(len(a) == len(c) for a in A)
+    if cert["mathematical_status"] == "OPTIMAL":
+        x, y = list(map(Q, cert["exact_x"])), list(map(Q, cert["exact_y"]))
+        assert len(y) == len(b) and min(x) >= 0
+        assert [dot(a, x) for a in A] == b
+        assert all(sum(A[i][j] * y[i] for i in range(len(b))) >= c[j] for j in range(len(c)))
+        assert dot(b, y) == dot(c, x) == Q(cert["exact_value"])
+    else:
+        assert cert["mathematical_status"] == "UNBOUNDED"
+        x, ray = list(map(Q, cert["feasible_point"])), list(map(Q, cert["improving_ray"]))
+        assert min(x) >= 0 and min(ray) >= 0
+        assert [dot(a, x) for a in A] == b and all(dot(a, ray) == 0 for a in A)
+        assert dot(c, ray) > 0
+
+
+def walk_certificates(value, seen):
+    if isinstance(value, dict):
+        if isinstance(value.get("problem"), dict) and "A" in value["problem"] and "mathematical_status" in value:
+            key = json.dumps(value, sort_keys=True)
+            if key not in seen:
+                verify_certificate(value)
+                seen.add(key)
+        for v in value.values():
+            walk_certificates(v, seen)
+    elif isinstance(value, list):
+        for v in value:
+            walk_certificates(v, seen)
+
+
+def read_case(path, sha):
+    path = Path(path)
+    raw = path.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == sha
+    case = json.loads(gzip.decompress(raw))
+    certificates = set()
+    walk_certificates(case, certificates)
+    assert certificates
+    cone = case.get("first_order") if isinstance(case, dict) else None
+    if cone is not None:
+        matrix = [list(map(Q, a)) for a in cone["matrix"]]
+        generators = [list(map(Q, v)) for v in cone["generators"]]
+        assert cone["mathematical_status"] == "NONZERO_CONE" and generators
+        assert all(any(v) and all(dot(a, v) >= 0 for a in matrix) for v in generators)
+    return case, dict(path=str(path), sha256=sha, distinct_lp_certificates=len(certificates))
+
+
+def main():
+    acceptance = json.loads((OUT / "p1_classification.json").read_text("utf-8"))
+    old_raw = Path(acceptance["original_summary"]).read_bytes()
+    assert hashlib.sha256(old_raw).hexdigest() == acceptance["original_summary_sha256"]
+    old = json.loads(old_raw)
+    upgrades = {v["case_index_zero_based"]: v for v in acceptance["upgrades"]}
+    rows = []
+    for index, row in enumerate(acceptance["rows"]):
+        entry = upgrades.get(index, old["files"][index])
+        case, info = read_case(entry["path"], row["sha256"])
+        if row["mu_exact"] is not None:
+            critical = case["critical"]
+            assert Q(critical["exact_threshold"]) == Q(row["mu_exact"])
+            assert Q(critical["threshold_certificate"]["problem"]["mu"]) == Q(row["mu_exact"])
+            assert (critical["threshold_certificate"]["mathematical_status"] == "UNBOUNDED") == row["attained"]
+        rows.append(info)
+    degrees = []
+    for classified in acceptance["critical_basis_classification"]:
+        index = classified["case_index_zero_based"]
+        factor = list(map(Q, classified["coefficients_ascending"]))
+        lo, hi = map(Q, classified["isolating_interval"])
+        assert root_count(factor, lo, hi) == 1
+        degree = len(factor) - 1
+        assert degree == classified["degree"]
+        witness = classified["irreducibility"]
+        if degree == 1:
+            assert evaluate(factor, Q(witness["rational_root"])) == 0
+            assert Q(acceptance["rows"][index]["mu_exact"]) == Q(witness["rational_root"])
+        elif degree == 2:
+            disc = factor[1] ** 2 - 4 * factor[0] * factor[2]
+            assert disc.denominator == 1 and disc > 0
+            assert isqrt(disc.numerator) ** 2 != disc.numerator
+            degrees.append(degree)
+        else:
+            assert degree == 3
+            prime = witness["prime"]
+            assert prime > 1 and all(prime % k for k in range(2, isqrt(prime) + 1))
+            assert factor[-1].numerator % prime
+            residues = [evaluate(factor, Q(i)).numerator % prime for i in range(prime)]
+            assert all(residues) and residues == witness["nonzero_evaluation_residues"]
+            degrees.append(degree)
+        original_case, _ = read_case(old["files"][index]["path"], old["files"][index]["sha256"])
+        for branch in original_case["critical"]["critical_polynomials"]:
+            denominator = list(map(Q, branch["determinant"]))
+            sample = lo if branch["kind"] == "mechanism" else hi
+            assert evaluate(denominator, sample)
+            for number, raw_poly in enumerate([branch["determinant"]] + branch["numerators"]):
+                poly = list(map(Q, raw_poly))
+                if not any(poly):
+                    continue
+                if number:
+                    assert evaluate(poly, sample) / evaluate(denominator, sample) >= 0
+                while len(poly) >= len(factor):
+                    quotient, remainder = divide(poly, factor)
+                    if any(remainder):
+                        break
+                    poly = quotient
+                assert root_count(poly, lo, hi) == 0
+    thickness = json.loads((OUT / "thickness_summary.json").read_text("utf-8"))
+    assert thickness["complete"] and thickness["source_pre_post_equal"]
+    thickness_rows = []
+    for entry in thickness["files"]:
+        case, info = read_case(entry["path"], entry["sha256"])
+        if isinstance(case, dict) and "exact_threshold" in case:
+            assert case["attained"] is True
+            assert Q(case["threshold_certificate"]["problem"]["mu"]) == Q(case["exact_threshold"])
+            assert case["threshold_certificate"]["mathematical_status"] == "UNBOUNDED"
+        thickness_rows.append(info)
+    payload = dict(status="PASS", morphology_cases=len(rows), rational_upgrades=len(upgrades),
+        irrational_degrees=degrees, thickness_files=len(thickness_rows),
+        lp_certificate_instances=sum(r["distinct_lp_certificates"] for r in rows + thickness_rows),
+        morphology=rows, thickness=thickness_rows,
+        boundary="independent stored exact matrix/polynomial arithmetic; not independent geometric assembly",
+        reader_development_correction="initial reader expected every gzip root to be a dict; the thick-control batch is a list; corrected and rerun in full")
+    (OUT / "acceptance_readback.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    print({k: v for k, v in payload.items() if k not in ("morphology", "thickness")})
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,11 @@
+{
+  "mutation": "_witness permits endpoints in different convex pairs",
+  "script": "import inspect, pathlib, sys\nsys.path.insert(0,str(pathlib.Path.cwd()/'src'))\nimport pytest\nfrom eab.kernel2d import translation_certificates as certificates\nsource=inspect.getsource(certificates._witness)\noriginal=\"if _strict_pair_segment(a, b, start, end):\"\nreplacement=\"if _strict_pair_segment(a, b, start, start) and any(_strict_pair_segment(c, d, end, end) for other in other_parts for c in first_parts for d in other):\"\nassert source.count(original)==1\nnamespace=dict(certificates.__dict__)\nexec(compile(source.replace(original,replacement),'<mixed-pair-trapping-mutant>','exec'),namespace)\ncertificates._witness=namespace['_witness']\nraise SystemExit(pytest.main(['-q','-p','no:cacheprovider','--basetemp',str(pathlib.Path.cwd()/'reports/codex/T1b_evidence/tmp/trapping_mutant_red'),'tests/test_tia2d_t1b_certificates.py::test_enclosure_rejects_blocked_vertices_with_free_edge_interiors']))\n",
+  "returncode": 1,
+  "expected_returncode": 1,
+  "seconds": 0.515999999945052,
+  "last_line": "1 failed in 0.09s",
+  "semantic_assertion_failed": true,
+  "stdout": "trapping_mutant_red.txt",
+  "test_sha256": "29047e3058255c31df8aa55764eff69d6c6145c3f5d7e7242e364f9dbbb385c9"
+}

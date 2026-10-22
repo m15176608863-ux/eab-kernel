@@ -1,0 +1,10 @@
+{
+  "mutation": "_witness permits endpoints in different convex pairs",
+  "script": "import inspect, pathlib, sys\nsys.path.insert(0,str(pathlib.Path.cwd()/'src'))\nimport pytest\nfrom eab.kernel2d import translation_certificates as certificates\nsource=inspect.getsource(certificates._witness)\noriginal=\"if _strict_pair_segment(a, b, start, end):\"\nreplacement=(\"if _strict_pair_segment(a, b, start, start) and any(\n\"\n\"                        _strict_pair_segment(c, d, end, end)\n\"\n\"                        for other in other_parts for c in first_parts for d in other):\")\nassert source.count(original)==1\nnamespace=dict(certificates.__dict__)\nexec(compile(source.replace(original,replacement),'<mixed-pair-trapping-mutant>','exec'),namespace)\ncertificates._witness=namespace['_witness']\nraise SystemExit(pytest.main(['-q','-p','no:cacheprovider','--basetemp',str(pathlib.Path.cwd()/'reports/codex/T1b_evidence/tmp/trapping_mutant_red'),'tests/test_tia2d_t1b_certificates.py::test_enclosure_rejects_blocked_vertices_with_free_edge_interiors']))\n",
+  "returncode": 1,
+  "expected_returncode": 1,
+  "seconds": 0.030999999959021807,
+  "last_line": "SyntaxError: unterminated string literal (detected at line 7)",
+  "semantic_assertion_failed": false,
+  "stdout": "trapping_mutant_red.txt"
+}

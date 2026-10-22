@@ -61,7 +61,7 @@ def certificate_arithmetic(result):
     return False
 
 
-def diagnose(*, max_steps=40, mobility=True, **parameters):
+def diagnose(*, max_steps=48, mobility=True, **parameters):
     start = time.perf_counter()
     geometry = g1_morphology(**parameters)
     assembly = geometry.assembly
@@ -109,7 +109,7 @@ def diagnose(*, max_steps=40, mobility=True, **parameters):
 
 
 def scan_parameters():
-    """One-dimensional design curves plus targeted cross-parameter controls."""
+    """Ideal-model sampled parameter curves and targeted controls."""
     cases = []
     for tilt in (Q(3, 32), Q(11, 128)):
         for amplitude in (Q(1, 4096), Q(1, 2048), Q(1, 1024)):
@@ -175,7 +175,7 @@ def plot_curves(rows, output):
         ax.set_ylabel("critical friction coefficient")
         ax.grid(alpha=0.25)
         ax.legend(fontsize=8)
-    fig.suptitle("T1b true polygon profiles: h=1/16, fixed ends, associated flow\n"
+    fig.suptitle("T1b ideal-model sampled parameter curves: h/ell=1/32, n=1 only\n"
                  "Filled: exact closed; cross: exact open; hollow: certified bracket", fontsize=10)
     fig.savefig(output / "p1_design_curves.png", dpi=160)
     fig.savefig(output / "p1_design_curves.svg")
@@ -192,7 +192,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--summary", type=Path, required=True)
-    parser.add_argument("--max-steps", type=int, default=40)
+    parser.add_argument("--max-steps", type=int, default=48)
     parser.add_argument("--source-revision", required=True)
     parser.add_argument("--figures", type=Path)
     args = parser.parse_args()

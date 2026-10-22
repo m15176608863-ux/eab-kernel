@@ -1,0 +1,465 @@
+{
+  "complete": true,
+  "function_modules": [
+    "src/eab/adapters/bdda2d.py",
+    "src/eab/adapters/bdda2d_affine.py",
+    "src/eab/adapters/bdda2d_motion.py",
+    "src/eab/adapters/tia2d.py",
+    "src/eab/adapters/tia3d.py",
+    "src/eab/construction.py",
+    "src/eab/contact_record.py",
+    "src/eab/dual.py",
+    "src/eab/kernel2d/affine_motion.py",
+    "src/eab/kernel2d/algebraic.py",
+    "src/eab/kernel2d/assembly.py",
+    "src/eab/kernel2d/contacts.py",
+    "src/eab/kernel2d/covers.py",
+    "src/eab/kernel2d/critical.py",
+    "src/eab/kernel2d/entrance.py",
+    "src/eab/kernel2d/erosion.py",
+    "src/eab/kernel2d/exact.py",
+    "src/eab/kernel2d/g0.py",
+    "src/eab/kernel2d/g0_oracle.py",
+    "src/eab/kernel2d/geom.py",
+    "src/eab/kernel2d/global_entrance.py",
+    "src/eab/kernel2d/lock.py",
+    "src/eab/kernel2d/m5c_certificates.py",
+    "src/eab/kernel2d/m5d_exit_certificate.py",
+    "src/eab/kernel2d/mobility.py",
+    "src/eab/kernel2d/model_robustness.py",
+    "src/eab/kernel2d/motion.py",
+    "src/eab/kernel2d/motion_exit.py",
+    "src/eab/kernel2d/se2.py",
+    "src/eab/kernel2d/sensitivity.py",
+    "src/eab/kernel2d/statics.py",
+    "src/eab/kernel2d/translation_certificates.py",
+    "src/eab/kernel2d/translation_space.py",
+    "src/eab/kernel3d/boundary.py",
+    "src/eab/kernel3d/covers3.py",
+    "src/eab/kernel3d/entrance3.py",
+    "src/eab/kernel3d/entrance_topology.py",
+    "src/eab/kernel3d/exact_geom.py",
+    "src/eab/kernel3d/exact_sweep.py",
+    "src/eab/kernel3d/frozen.py",
+    "src/eab/kernel3d/g03.py",
+    "src/eab/kernel3d/g03_exact.py",
+    "src/eab/kernel3d/g03_exit_oracle.py",
+    "src/eab/kernel3d/g03_surface_oracle.py",
+    "src/eab/kernel3d/geom3.py",
+    "src/eab/kernel3d/global_entrance.py",
+    "src/eab/limit.py",
+    "src/eab/limit_multi.py",
+    "src/eab/lp.py",
+    "src/eab/margin.py",
+    "src/eab/numeric_decode.py",
+    "src/eab/numeric_domain.py",
+    "src/eab/oracle_construction.py",
+    "src/eab/predicates.py",
+    "src/eab/rational3.py",
+    "src/eab/readers/bdda3d.py",
+    "src/eab/readers/bdda_df.py",
+    "src/eab/readers/bdda_geom.py",
+    "src/eab/readers/tf_probe.py"
+  ],
+  "declarative_modules": [
+    "src/eab/__init__.py",
+    "src/eab/adapters/__init__.py",
+    "src/eab/adapters/bdda3d.py",
+    "src/eab/adapters/tf.py",
+    "src/eab/kernel2d/__init__.py",
+    "src/eab/kernel3d/__init__.py",
+    "src/eab/readers/__init__.py"
+  ],
+  "missing_function_calls": [],
+  "missing_module_execution": [],
+  "missing_imports": [],
+  "errors": [],
+  "function_witnesses": {
+    "src/eab/construction.py": {
+      "function": "scalar_rational",
+      "line": 16,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/numeric_domain.py": {
+      "function": "exact_input",
+      "line": 24,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/readers/bdda_geom.py": {
+      "function": "strip_duplicate_vertices",
+      "line": 49,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/kernel2d/geom.py": {
+      "function": "coord_scale",
+      "line": 30,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/kernel2d/covers.py": {
+      "function": "enumerate_covers",
+      "line": 298,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/predicates.py": {
+      "function": "cross2_sign",
+      "line": 33,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/kernel2d/g0.py": {
+      "function": "g0_distance_completeness",
+      "line": 215,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/kernel2d/g0_oracle.py": {
+      "function": "translate",
+      "line": 22,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/oracle_construction.py": {
+      "function": "scalar_exact",
+      "line": 90,
+      "nodeid": "tests/test_bb52_g1.py::test_geometry_reconstruction"
+    },
+    "src/eab/contact_record.py": {
+      "function": "records_to_json",
+      "line": 209,
+      "nodeid": "tests/test_contact_record.py::test_raw_codes_survive_even_when_mode_vocabulary_collides"
+    },
+    "src/eab/kernel3d/covers3.py": {
+      "function": "closest_point_of_convex_hull_to_origin",
+      "line": 406,
+      "nodeid": "tests/test_covers3_e5a.py::test_exact_simplex_never_absorbs_an_exterior_origin[1e-16-1e-09]"
+    },
+    "src/eab/kernel3d/geom3.py": {
+      "function": "dot",
+      "line": 72,
+      "nodeid": "tests/test_covers3_e5a.py::test_exact_simplex_never_absorbs_an_exterior_origin[1e-16-1e-09]"
+    },
+    "src/eab/rational3.py": {
+      "function": "fraction_vectors",
+      "line": 12,
+      "nodeid": "tests/test_covers3_e5a.py::test_exact_simplex_never_absorbs_an_exterior_origin[1e-16-1e-09]"
+    },
+    "src/eab/kernel3d/exact_geom.py": {
+      "function": "triangulate",
+      "line": 227,
+      "nodeid": "tests/test_covers3_e5a.py::test_exact_edge_arc_keeps_endpoint_distinct_from_strict_interior[1e-30]"
+    },
+    "src/eab/kernel3d/g03.py": {
+      "function": "g0_convex3",
+      "line": 127,
+      "nodeid": "tests/test_covers3_g0_vote2.py::test_vote2_local_facets_equal_hull_facets_on_random_pairs[2]"
+    },
+    "src/eab/kernel3d/g03_exact.py": {
+      "function": "difference_hull",
+      "line": 128,
+      "nodeid": "tests/test_covers3_g0_vote2.py::test_vote2_local_facets_equal_hull_facets_on_random_pairs[2]"
+    },
+    "src/eab/margin.py": {
+      "function": "body_distance",
+      "line": 430,
+      "nodeid": "tests/test_covers3_membership.py::test_rotated_tetra_box_keeps_every_E_vertex_and_the_vv3_pair[6]"
+    },
+    "src/eab/kernel3d/frozen.py": {
+      "function": "_normalized_difference",
+      "line": 246,
+      "nodeid": "tests/test_covers3_strict_lowdim.py::test_small_gap_vertex_over_ridge_keeps_the_true_nearest_pair[1e-05-R0-t1000_1]"
+    },
+    "src/eab/dual.py": {
+      "function": "seed",
+      "line": 49,
+      "nodeid": "tests/test_dual.py::test_val_only_branches_do_not_leak_into_arithmetic"
+    },
+    "src/eab/kernel3d/exact_sweep.py": {
+      "function": "translate_exact",
+      "line": 21,
+      "nodeid": "tests/test_e5a2_interlock_bridge.py::test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile[offset0-1000.0-0.0]"
+    },
+    "src/eab/adapters/tia3d.py": {
+      "function": "escape_height_covers",
+      "line": 292,
+      "nodeid": "tests/test_e5a2_interlock_bridge.py::test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile[offset0-1000.0-0.0]"
+    },
+    "src/eab/kernel3d/global_entrance.py": {
+      "function": "global_entrance",
+      "line": 675,
+      "nodeid": "tests/test_e5a2_interlock_bridge.py::test_returned_lift_is_safe_for_actual_float_translation_against_independent_profile[offset0-1000.0-0.0]"
+    },
+    "src/eab/numeric_decode.py": {
+      "function": "loads",
+      "line": 40,
+      "nodeid": "tests/test_end_to_end_cb2.py::test_fixture_geometry_gives_exactly_four_corner_contacts[cb2_sliding]"
+    },
+    "src/eab/limit.py": {
+      "function": "contacts_from_covers",
+      "line": 391,
+      "nodeid": "tests/test_end_to_end_cb2.py::test_fixture_geometry_gives_exactly_four_corner_contacts[cb2_sliding]"
+    },
+    "src/eab/lp.py": {
+      "function": "_fl",
+      "line": 498,
+      "nodeid": "tests/test_end_to_end_cb2.py::test_fixture_geometry_gives_exactly_four_corner_contacts[cb2_sliding]"
+    },
+    "src/eab/kernel3d/entrance3.py": {
+      "function": "first_entrance3",
+      "line": 230,
+      "nodeid": "tests/test_entrance3.py::test_box_dropping_onto_a_face_is_a_face_face_entrance_with_four_members[0.25]"
+    },
+    "src/eab/kernel3d/entrance_topology.py": {
+      "function": "entrance_membership3",
+      "line": 146,
+      "nodeid": "tests/test_entrance3.py::test_box_dropping_onto_a_face_is_a_face_face_entrance_with_four_members[0.25]"
+    },
+    "src/eab/readers/bdda_df.py": {
+      "function": "read_df22_csv",
+      "line": 107,
+      "nodeid": "tests/test_g4_multistep.py::test_f038_sliding_block_no_open_close_events"
+    },
+    "src/eab/kernel2d/m5d_exit_certificate.py": {
+      "function": "exit_order_certificate",
+      "line": 104,
+      "nodeid": "tests/test_h1_adopted_semantics.py::test_c1_b_ring_convexity_uses_b_radius_when_a_is_exact"
+    },
+    "src/eab/kernel2d/global_entrance.py": {
+      "function": "__init__",
+      "line": 302,
+      "nodeid": "tests/test_h1_entrance_symmetry.py::test_shi_displacement_reflection_matches_independent_oracle_for_nonconvex_entrance[rotation0-translation0-scale2]"
+    },
+    "src/eab/kernel2d/se2.py": {
+      "function": "__post_init__",
+      "line": 67,
+      "nodeid": "tests/test_int1_semantics.py::test_quadratic_rational_branch_keeps_the_selected_se2_entrance"
+    },
+    "src/eab/kernel2d/exact.py": {
+      "function": "polygons_overlap_exact",
+      "line": 276,
+      "nodeid": "tests/test_int1_semantics.py::test_quadratic_rational_branch_keeps_the_selected_se2_entrance"
+    },
+    "src/eab/kernel2d/algebraic.py": {
+      "function": "p_mul",
+      "line": 51,
+      "nodeid": "tests/test_int1_semantics.py::test_quadratic_rational_branch_keeps_the_selected_se2_entrance"
+    },
+    "src/eab/kernel2d/motion.py": {
+      "function": "__post_init__",
+      "line": 51,
+      "nodeid": "tests/test_int1_semantics.py::test_quadratic_rational_branch_keeps_the_selected_se2_entrance"
+    },
+    "src/eab/kernel2d/affine_motion.py": {
+      "function": "fit_affine",
+      "line": 66,
+      "nodeid": "tests/test_int1_semantics.py::test_affine_delta_is_linf_not_l1_for_two_component_residuals[scale2]"
+    },
+    "src/eab/adapters/bdda2d_affine.py": {
+      "function": "__post_init__",
+      "line": 24,
+      "nodeid": "tests/test_int1_semantics.py::test_internal_int1_mutants_fail_the_designated_semantic_assertion[residual_correction_sign-corrected path exactly closes original snapshot endpoint]"
+    },
+    "src/eab/kernel3d/g03_surface_oracle.py": {
+      "function": "separated_distance",
+      "line": 154,
+      "nodeid": "tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[0]"
+    },
+    "src/eab/kernel3d/g03_exit_oracle.py": {
+      "function": "contact_planes",
+      "line": 28,
+      "nodeid": "tests/test_interlocking.py::test_g0_distance_completeness_on_concave_interlocking_pair[0]"
+    },
+    "src/eab/kernel2d/entrance.py": {
+      "function": "first_entrance",
+      "line": 141,
+      "nodeid": "tests/test_kernel2d_convex_ray_exact.py::test_convex_ray_resolves_tiny_slopes_and_misses[0.0-1024.0]"
+    },
+    "src/eab/limit_multi.py": {
+      "function": "limit_load_multi",
+      "line": 134,
+      "nodeid": "tests/test_limit_arch.py::test_high_friction_arch_collapses_by_the_best_hinge_mechanism[2.0-N5]"
+    },
+    "src/eab/kernel3d/boundary.py": {
+      "function": "explicit_boundary",
+      "line": 147,
+      "nodeid": "tests/test_m3b_boundary3d.py::test_boundary_fraction_constructions_transform_under_exact_rotation_units_translation[scale0-1000000]"
+    },
+    "src/eab/adapters/bdda2d.py": {
+      "function": "__post_init__",
+      "line": 58,
+      "nodeid": "tests/test_m4_bdda_adapter.py::test_static_domain_window_matches_independent_exact_oracle[d00-A1-False]"
+    },
+    "src/eab/kernel2d/motion_exit.py": {
+      "function": "shortest_exit_fast",
+      "line": 106,
+      "nodeid": "tests/test_m4c_exit.py::test_fast_exit_matches_independent_rectangle_and_tight_seam_formulas[factor0]"
+    },
+    "src/eab/adapters/bdda2d_motion.py": {
+      "function": "rational_half_angle",
+      "line": 105,
+      "nodeid": "tests/test_m5b_motion.py::test_half_angle_has_independent_taylor_enclosure_and_zero_exactness[theta0]"
+    },
+    "src/eab/kernel2d/model_robustness.py": {
+      "function": "chord_paths",
+      "line": 48,
+      "nodeid": "tests/test_m5b_replay.py::test_p3_endpoint_closure_budget_mutation_dies_on_wiring_assertion"
+    },
+    "src/eab/kernel2d/m5c_certificates.py": {
+      "function": "single_cover_certificate",
+      "line": 174,
+      "nodeid": "tests/test_m5c_certificates.py::test_near_ties_and_endpoint_ties_are_never_signed[radius0]"
+    },
+    "src/eab/readers/tf_probe.py": {
+      "function": "load_records",
+      "line": 79,
+      "nodeid": "tests/test_r13fixb_readers_oracles.py::test_reader_unrepresentable_numeric_fields_raise_quantity_named_error[tf_probe-1e-400]"
+    },
+    "src/eab/readers/bdda3d.py": {
+      "function": "record_from_entrance",
+      "line": 27,
+      "nodeid": "tests/test_r13fixb_readers_oracles.py::test_reader_unrepresentable_numeric_fields_raise_quantity_named_error[bdda3d-1e-400]"
+    },
+    "src/eab/adapters/tia2d.py": {
+      "function": "morphology_geometry",
+      "line": 393,
+      "nodeid": "tests/test_tia2d_amplitude_retry.py::test_amplitude_retry_positive_branch_is_not_a_crossing_or_unique_labeled_basis[TIA-G2]"
+    },
+    "src/eab/kernel2d/assembly.py": {
+      "function": "point2",
+      "line": 12,
+      "nodeid": "tests/test_tia2d_amplitude_retry.py::test_amplitude_retry_positive_branch_is_not_a_crossing_or_unique_labeled_basis[TIA-G2]"
+    },
+    "src/eab/kernel2d/contacts.py": {
+      "function": "assemble_contact_set2",
+      "line": 376,
+      "nodeid": "tests/test_tia2d_amplitude_retry.py::test_amplitude_retry_positive_branch_is_not_a_crossing_or_unique_labeled_basis[TIA-G2]"
+    },
+    "src/eab/kernel2d/statics.py": {
+      "function": "critical_parameter",
+      "line": 224,
+      "nodeid": "tests/test_tia2d_amplitude_retry.py::test_amplitude_retry_positive_branch_is_not_a_crossing_or_unique_labeled_basis[TIA-G2]"
+    },
+    "src/eab/kernel2d/mobility.py": {
+      "function": "first_order_free_twists",
+      "line": 211,
+      "nodeid": "tests/test_tia2d_amplitude_retry.py::test_amplitude_retry_positive_branch_is_not_a_crossing_or_unique_labeled_basis[TIA-G2]"
+    },
+    "src/eab/kernel2d/sensitivity.py": {
+      "function": "build_limit_seed2",
+      "line": 50,
+      "nodeid": "tests/test_tia2d_amplitude_retry.py::test_amplitude_retry_positive_branch_is_not_a_crossing_or_unique_labeled_basis[TIA-G2]"
+    },
+    "src/eab/kernel2d/critical.py": {
+      "function": "affine_matrix2",
+      "line": 86,
+      "nodeid": "tests/test_tia2d_amplitude_retry.py::test_amplitude_retry_positive_branch_is_not_a_crossing_or_unique_labeled_basis[TIA-G2]"
+    },
+    "src/eab/kernel2d/lock.py": {
+      "function": "translation_lock_certificate",
+      "line": 207,
+      "nodeid": "tests/test_tia2d_cases.py::test_draft_case_certificates_nulls_and_wallclock_are_not_display_numbers[TIA-G5]"
+    },
+    "src/eab/kernel2d/translation_certificates.py": {
+      "function": "translation_segment_is_free",
+      "line": 162,
+      "nodeid": "tests/test_tia2d_t1b_certificates.py::test_escape_rejects_a_segment_with_only_free_endpoints"
+    },
+    "src/eab/kernel2d/erosion.py": {
+      "function": "erode_polygon_exact",
+      "line": 215,
+      "nodeid": "tests/test_tia2d_t1b_erosion.py::test_convex_rectangle_erosion_closed_form[delta0-octagon]"
+    },
+    "src/eab/kernel2d/translation_space.py": {
+      "function": "translation_component",
+      "line": 183,
+      "nodeid": "tests/test_tia2d_t1b_tolerance.py::test_dovetail_closed_form_attainment_and_dyadic_certificates[True-octagon-expected1]"
+    }
+  },
+  "module_witnesses": {
+    "src/eab/margin.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_r15fix_geometry.py::test_r15_o03_reintroduced_float_early_return_is_killed"
+    },
+    "src/eab/adapters/tia3d.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_r15fix_geometry.py::test_r15_scan_bare_reference_removed_overflow_check_is_killed"
+    },
+    "src/eab/readers/tf_probe.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_tf_reader.py::test_tf_row_gate_has_teeth_through_the_reader[drop_first_stage_row]"
+    },
+    "src/eab/kernel3d/g03.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_covers3_membership.py::test_rotated_support_dimension_gate_catches_internal_degenerate_miscount"
+    },
+    "src/eab/oracle_construction.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_r13fixb_readers_oracles.py::test_oracle_early_rounding_mutation_is_rejected_inside_ratio"
+    },
+    "src/eab/adapters/bdda2d.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_r13fixb_readers_oracles.py::test_adapter_early_rounding_mutation_hits_its_numeric_assertion"
+    },
+    "src/eab/limit_multi.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_limit_multi.py::test_self_check_catches_a_column_that_forgets_the_reaction"
+    },
+    "src/eab/dual.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_r6fix_dual_lp.py::test_r6fix11_mutation_removed_constant_power_branch_is_caught"
+    },
+    "src/eab/__init__.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_h1_module_execution.py::test_declarative_modules_execute_in_fast_test"
+    },
+    "src/eab/adapters/__init__.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_h1_module_execution.py::test_declarative_modules_execute_in_fast_test"
+    },
+    "src/eab/readers/__init__.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_h1_module_execution.py::test_declarative_modules_execute_in_fast_test"
+    },
+    "src/eab/kernel2d/__init__.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_h1_module_execution.py::test_declarative_modules_execute_in_fast_test"
+    },
+    "src/eab/kernel3d/__init__.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_h1_module_execution.py::test_declarative_modules_execute_in_fast_test"
+    },
+    "src/eab/adapters/bdda3d.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_h1_module_execution.py::test_declarative_modules_execute_in_fast_test"
+    },
+    "src/eab/adapters/tf.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_h1_module_execution.py::test_declarative_modules_execute_in_fast_test"
+    },
+    "src/eab/readers/bdda_geom.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_r13fixb_readers_oracles.py::test_duplicate_branch_early_rounding_mutation_has_the_right_teeth"
+    },
+    "src/eab/lp.py": {
+      "function": "<module>",
+      "line": 1,
+      "nodeid": "tests/test_r6fix_dual_lp.py::test_r6fix12_mutation_removed_empty_problem_witness_is_caught"
+    }
+  },
+  "module_count": 66,
+  "imported_count": 66,
+  "function_covered_count": 59,
+  "declarative_covered_count": 7
+}

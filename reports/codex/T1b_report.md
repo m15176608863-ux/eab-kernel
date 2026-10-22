@@ -1,21 +1,21 @@
-# WO-T1b：TIA 二维制造公差困住与非退化形貌
+# WO-T1b：TIA 二维制造公差困住与非退化形貌（验收续单完成）
 
-**一句话结论：给定的有理多边形例子已能用独立核验的路径判断“还能否逃出”，并找到真正随齿形变化的摩擦阈值；这些结果只属于平移几何和 profile1 理想模型，不是转动锁定或实际材料强度证明。**
+**一句话结论：A 用独立核验的几何证书判断给定多边形能否仅靠平移逃出；B 是含转动、无限抗压、关联流动的理想刚体极限分析，原36个高宽比1:32的薄块算例虽经独立程序全部复算吻合、齿形也确实改变摩擦阈值，但无齿对照本来就有非零阈值，主要解释是 T1a 细长块推力线公式的推广，不是新的普适形貌规律，更不能直接套用到厚块、真实材料或有限运动。**
 
-**交付状态为 PARTIAL：收尾全档两项静态门失败，已仅改写测试辅助函数并作定向复核，但按“一次收尾全档”的成本合同没有追加完整四分片复验；不能把修复前快档绿或修复后定向绿写成最终全绿。**
+**状态：T1b_DONE。本次必补项已完成；当前工作字节完整快档8851项、全档四分片14935项全部通过，0失败、0跳过，静态构造0违例。Claude此前已完成e757883的新鲜树全档和A/B独立复核；本次新增字节另经当前树H1验证，不挪用旧绿。C仍未做，按工单不计PARTIAL；未commit。**
 
-本报告由 Codex 执行，供 Claude 交接审阅。开工基线 `7f9510502ba265e53b5be8de4be22308dfe65f9a`；工作树 `D:/eab-wt/cx-e2`。初次检查干净，未执行任何 Git 写命令。原设计 SHA-256 为 `6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac`，设计及 tia2d-2 schema 均未修改。成果由**未提交工作字节**生成，基线提交不是这些新成果的来源提交；最终数据保存实际源码前后 SHA256。
+本报告由 Codex 执行，供 Claude 交接审阅。原轮开工基线 `7f9510502ba265e53b5be8de4be22308dfe65f9a`；工作树 `D:/eab-wt/cx-e2`。原成果最初由未提交工作字节生成，保存了实际源码前后 SHA256；随后 **Claude** 将其保存为本地提交 `e757883ac20fd0b3fa553ce1c3c24a94c1e55c8f`（“T1b 待验收”）。续单入口已核该 HEAD 与干净状态，回滚锚点为其只读 archive，见[入口及来源审计](T1b_evidence/acceptance_fix/intake.json)。Codex 两轮均未执行 Git 写命令。原设计 SHA-256 为 `6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac`，设计及 tia2d-2 schema 仍不改；本次新增证据不得倒标成旧基线提交生成。
 
 ## 1. 口径、范围与交付导航
 
 - 力学沿用 profile1：刚体、小变形、无限抗压、无黏聚、恒定 μ、关联流动。UNBOUNDED 不是锁定；一阶可动性不是有限运动。
 - P0 固定其余块，仅询问一个块的全局平移空间；G5 力控端板在这个几何询问中也固定。腐蚀政策只决定墙/端板是否缩小，其他普通邻块始终腐蚀。
 - 单位任意但自洽，所有几何、δ、证书坐标均为有理数。图上小数仅供显示；精确输入不由图或舍入数还原。
-- 实测运行时 Python 3.12.10；数值代码纯标准库，只有设计曲线使用 matplotlib。
+- 实测运行时 Python 3.12.10；数值代码纯标准库，只有理想模型的采样参数曲线使用 matplotlib。
 - 仅写本工作树及获准的 `D:/eab-evidence/reports/codex/T1b_evidence/`；不写姊妹仓库，不新增静态构造准入，不改既有数学合同。
 - 没有生成新的 C++ 正式批次。新增诊断数据**不冒用 tia2d-2 schema**，新公共字段均列在第8节供 Claude 决定。
 
-关键成果：[P0小汇总](T1b_evidence/p0_final_summary.json)、[P0完整输入及证书](file:///D:/eab-evidence/reports/codex/T1b_evidence/p0_final.json)、[P1小汇总](T1b_evidence/p1_summary.json)、[P1完整证书](file:///D:/eab-evidence/reports/codex/T1b_evidence/p1_final_20261022/)、[设计曲线](T1b_evidence/p1_figures/p1_design_curves.png)、[交付清单](T1b_evidence/artifacts.md)。逐文件完整性与外部映射见 [EVIDENCE_ARCHIVE](../EVIDENCE_ARCHIVE.md)。
+关键成果：[P0小汇总](T1b_evidence/p0_final_summary.json)、[P0完整输入及证书](file:///D:/eab-evidence/reports/codex/T1b_evidence/p0_final.json)、[P1原始冻结小汇总](T1b_evidence/p1_summary.json)、[P1验收分类及升级](T1b_evidence/acceptance_fix/p1_classification.json)、[理想模型的采样参数曲线](T1b_evidence/acceptance_fix/p1_figures/p1_design_curves.png)、[本轮交付清单](T1b_evidence/acceptance_fix/artifacts.md)。原36例完整证书仍保存在[旧批次](file:///D:/eab-evidence/reports/codex/T1b_evidence/p1_final_20261022/)，三项升级证书另存[新批次](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/p1_classification_final/)，未覆盖历史冻结证据。逐文件完整性与外部映射见 [EVIDENCE_ARCHIVE](../EVIDENCE_ARCHIVE.md)。
 
 ## 2. A：精确腐蚀、自由空间与独立证书
 
@@ -122,7 +122,7 @@ G1 取 Koureas 布置 t=3/32、h=1；G5 取 n=3/5/7、h=1。四种K/边界政策
 | G5，n=5 | block_1、block_2、block_3、block_4、block_5 | 同上 |
 | G5，n=7 | block_1、block_2、block_3、block_4、block_5、block_6、block_7 | 同上 |
 
-共18内块×4政策=72条目、144次状态查询。部分G1路径需绕行，不能用一条局部入口射线替代；数据明确保存 `direct_free_path/arrangement_free_path`。困住集为空时输出 `empty_trapped_set_already_escapable_at_zero`，不把空集上确界写成0；不借用 LP 的 UNBOUNDED 作判断。
+共18内块×4政策=72条目、144次状态查询。部分G1保存的路径来自**排列搜索而非直接射线搜索**，数据区分 `direct_free_path/arrangement_free_path`；这只因为直接搜索先试8个固定方向，不代表几何上必须绕行。G1块2、4分别沿 `(-3/32,1)`、`(3/32,1)`，块3沿 `(0,1)` 即可直线逃出。新增 `test_g1_inner_blocks_have_exact_straight_escape_certificates` 逐块核验δ=0的单段证书；原24个G1政策/公差样点也按这三方向读回核验，见[直射线路径证据](T1b_evidence/acceptance_fix/g1_straight_paths.json)。困住集为空时输出 `empty_trapped_set_already_escapable_at_zero`，不把空集上确界写成0；不借用 LP 的 UNBOUNDED 作判断。
 
 ### 3.4 两个具名标准例
 
@@ -131,11 +131,11 @@ G1 取 Koureas 布置 t=3/32、h=1；G5 取 n=3/5/7、h=1。四种K/边界政策
 
 原“任意正公差立即逃逸”的不可能性订正见第7节；具名门和所有8组政策结果见 P0 小汇总。
 
-## 4. B：非退化形貌族、曲线与导数
+## 4. B：含转动的刚体极限分析、采样参数曲线与导数
 
 ### 4.1 定义与适用边界
 
-采用薄块 h=1/16、水平名义间距ℓ=2，公开改变细长比以避免厚块直接落入零阈值退化域。边界仍是两端 FIXED_BODY，中块在x=0受竖向单位活载，无恒载；参考点与实际LP锚点为 `(5/8,−3/8)`。
+原36构型采用薄块 h=1/16、水平名义间距ℓ=2，即 **h/ℓ=1/32**；这公开改变了细长比，非零基线不能归功于齿形。边界仍是两端 FIXED_BODY，中块在x=0受竖向单位活载，无恒载；参考点与实际LP锚点为 `(5/8,−3/8)`。B允许各自由块平移与转动，是 profile1 的刚体极限分析，与A固定其余块、只允许单块平移的几何问题不同。
 
 四个内部界面 `xk(y)=−5+2k+σk[t(y−h/2)+A fk(y)]`，σ=(-1,-1,1,1)。
 
@@ -145,9 +145,15 @@ G1 取 Koureas 布置 t=3/32、h=1；G5 取 n=3/5/7、h=1。四种K/边界政策
 - 相邻界面相位增量φ∈{0,1/4,1/2}。
 - kinked：`f=max(0,(y/h−η)/(1−η))`，仅两直段，不声称光滑。
 
-所有配合面共享同一组有理顶点，完整轮廓与邻接 CONTACT 均精确核查。36构型是设计曲线与交叉补点，**不是五维全笛卡尔网格**。完整定义、36逐例阈值/模式/导数及具名门见 [P1详解](T1b_evidence/p1_report.md) 和 [精确小汇总](T1b_evidence/p1_summary.json)。
+所有配合面共享同一组有理顶点，完整轮廓与邻接 CONTACT 均精确核查。36构型是采样参数曲线与交叉补点，**不是五维全笛卡尔网格**。原始定义与结果见[原P1详解](T1b_evidence/p1_report.md)；解释、阈值分类与本次升级以本节和[验收订正说明](T1b_evidence/acceptance_fix/morphology_notes.md)、[分类汇总](T1b_evidence/acceptance_fix/p1_classification.json)为准，旧文与旧数据只作历史来源。
 
-### 4.2 非退化性与模式
+### 4.2 非零基线来自薄块，齿形改变的是已有阈值
+
+两个 **A=0** 控制已是非零，且恰等于 T1a 细长块闭式
+
+`μflat=t−(h/ℓ)(1+t²)`。
+
+在h/ℓ=1/32下，t=3/32得到 **2039/32768**，t=11/128得到 **28551/524288**，均为闭阈。因此“非零”首先来自细长效应，不是齿形创造；本节原36例证明的是齿形改变该基线。真正“无齿零而有齿正”的厚度窄带另列§4.6。
 
 固定 t=3/32、φ=0、η=1/2、n=1：
 
@@ -158,29 +164,97 @@ G1 取 Koureas 布置 t=3/32、h=1；G5 取 n=3/5/7、h=1。四种K/边界政策
 | 1/2048 | 1/128 | 16359/262144 | 闭 |
 | 1/1024 | 1/64 | 767/16384 | 闭 |
 
-所以齿幅影响并非恒零，也不能概括为单调增/减。A=1/2048的同相对称二周期/四周期阈值分别为319/8188和201/52352。φ=1/2、A=1/1024出现精确**开阈**：t=3/32时1/16，t=11/128时7/128。
+这些离散点确实随齿幅变化，但所谓“非单调”来自两个承力顶点分支切换，不是发现新的普适形貌规律。A=1/2048的同相对称二周期/四周期阈值分别为319/8188和201/52352。φ=1/2、A=1/1024出现精确**开阈**：t=3/32时1/16，t=11/128时7/128；其控制侧的推力线升高为零，另一侧不必为零，详见§4.3。
 
-36项共25个精确阈值（23闭、2开）及11个认证括号；未证明精确根的11项开闭为null，括号宽度为2^-40，保存下端有界证书及上端无界射线，未把中点当精确阈值。全部一阶状态 NONZERO_CONE；所存低端机制均含平移与转动，模式 `associated_translation_rotation` 指这些已保存机制，不声称唯一破坏机制或有限运动存在。
+36项经本次分类为 **28个精确有理阈值（26闭、2开）+8个无理根认证括号**，后者为6个不可约二次根、2个不可约三次根，仍保持宽度2^-40的有理括号及attained=null。保存下端有界证书和上端无界射线，不把中点当根，也不从无理性猜开闭。全部一阶状态 NONZERO_CONE；所存低端机制均含平移与转动，模式 `associated_translation_rotation` 指这些已保存机制，不声称唯一破坏机制或有限运动存在。
 
-T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈。没有重算或改写整个冻结历史网格。具名门：`test_t1b_nondegenerate_shape_and_t1a_zero_control`、`test_t1b_phase_changes_actual_threshold_and_preserves_an_open_endpoint`、慢门 `test_t1b_design_curve_cases_have_exact_certificates_and_mobility`。
+T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈；这与上述T1a**细长平直块**对照是两个不同对照，不应混为“所有T1a都是零”。没有重算或改写整个冻结历史网格。具名门包括 `test_t1b_nondegenerate_shape_and_t1a_zero_control`、`test_t1b_phase_changes_actual_threshold_and_preserves_an_open_endpoint`、`test_t1b_two_point_rule_flat_control_and_branch_switch_window`，以及慢门 `test_t1b_design_curve_cases_have_exact_certificates_and_mobility`。
 
-![P1设计曲线](T1b_evidence/p1_figures/p1_design_curves.png)
+![理想模型的采样参数曲线](T1b_evidence/acceptance_fix/p1_figures/p1_design_curves.png)
 
-图：固定h=1/16的一周期切片，展示A/λ、t、相位、η；实点为精确闭阈，叉号为精确开阈，空心为认证括号。连线只连接采样，不宣称中间线性；近重合的曲线不表示精确相等。PNG已目视核验，SVG同图导出但未单独光栅核验；数值判断使用JSON。
+图：**理想模型的采样参数曲线，h/ℓ=1/32，图中只含n=1**；固定端、关联流动，展示A/λ、t、相位、η。实点为精确闭阈，叉号为精确开阈，空心为无理根认证括号。连线仅连接采样，不宣称中间线性或连续设计定律；近重合不表示精确相等。新PNG已实际打开核验，SVG另作XML解析而未单独光栅核验；数值判断使用JSON。
 
-### 4.3 手推闭式与认证导数
+### 4.3 统一的两点推力线规则及其分支导数
 
-仅对一周期、同相、对称锯齿的实测**上半齿面控制分支**，取H=h/2、s=t−2A/h。侧块两压力合力共线，控制端点的水平/竖直间距为ℓ−sH与H，因此 `q=H/(ℓ−sH)`。未归一化库仑锥边界给 `q=(s−μ)/(1+sμ)`。消元：
+侧块在两个承力顶点间传递共线合力。令所压齿面的有效坡度为s_c、推力线弦的升跨比为q，则相应接触支路满足
 
-`μbranch=s−(H/ℓ)(1+s²)`；
+**`μ=(s_c−q)/(1+s_c q)`。**
+
+一般实现对弦两端各取相邻可压齿面，用 `abs(cross(N,d))/dot(N,d)` 核方向需求，两端取最大、允许顶点对取最小，再取左右侧较大需求。这是一条解释承力方向的规则，不是替代完整LP的独立几何oracle；仍须原/对偶证书核整体平衡。它准确解释原25个精确阈值和本次升级的3个有理闭阈，合计28例，具名门 `test_t1b_twenty_eight_exact_thresholds_match_two_point_rule`。多周期、非对称、相位所改变的是承力顶点、所压齿面及有效弦，不是这条方向规则本身；不能忽略中块平衡的8例另见§4.5。
+
+对于一周期、同相、对称锯齿的**上半齿面控制分支II**，取H=h/2、s=t−2A/h。控制端点水平/竖直间距为ℓ−sH与H，所以 `q=H/(ℓ−sH)`。代入统一规则消元：
+
+`μII=s−(H/ℓ)(1+s²)`；
 
 `dμ/dt=1−2(H/ℓ)s`，`dμ/dA=−(2/h)[1−2(H/ℓ)s]`。
 
-必须有ℓ−sH>0、正分支，并且该控制端点组对整组装有效、其他齿面不先控制。六个具名点逐点吻合生产精确证书；没有证明整个参数域都属于此分支，A=1/4096已不能套用。
+这只是T1a细长块式的 **t→s、h→h/2** 特例。必须有ℓ−sH>0、正分支，并且该控制端点组对整组装有效、其他齿面不先控制。六个具名点逐点吻合生产精确证书；没有把整个参数域归为此分支，A=1/4096点实际上在另一分支。
+
+小齿幅下的全高弦分支I为 `μI=(t+2A/h−q0)/(1+(t+2A/h)q0)`、`q0=h/(ℓ−th)`。在基准t=3/32、h=1/16、ℓ=2下，两分支一增一减，交点由 `μI(A*)=μII(A*)` 定义；精确二进有理夹逼见分类JSON，显示值为 **A*≈0.00024726634384967746=1.0128029444×(1/4096)**。A=1/4096处到右侧切换点仅约 **3.12571885×10^-6**，该点的正导数只可作这个局部分支附近的导数，不能外推成宽幅值区间规律。
+
+φ=1/2的两个开阈例中，**控制侧**最优推力线升高为零，q=0所以μ=s；并不是左右侧同时零升高。零升高极限不能用有限接触力平衡正竖向荷载，故阈值本身不取到。开阈接触力发散的量级另见§4.7。
 
 基准A=1/2048、t=3/32得到 `μcrit=16359/262144`、`dμ/dA=−2043/64`、`dμ/dt=2043/2048`。生产通过 T1a 的 `implicit_certificate` 合同认证，非阈值差商。共享顶点的A/t jets实际传到切向、法向、接触点及力矩；原始矩阵导数另用精确二次多项式中心差核对。
 
-23个正形貌点的A/t两导数均获smooth认证；11个括号点两者均未证。两个A=0控制的A方向改变骨架，保持null；t方向不改骨架，分别认证509/512、2037/2048。任何导数都不得跨活动证书/骨架切换外推。
+升级后三个有理点也获得既有阈值导数合同认证：**A方向smooth共26点，t方向smooth共28点**；8个无理括号点的导数仍未证。两个A=0控制的A方向改变骨架，保持null；t方向不改骨架，分别认证509/512、2037/2048。任何导数都不得跨活动证书/骨架切换外推。
+
+### 4.4 原11个括号点：3个有理闭阈与8个无理根
+
+下列编号采用验收脚本的 **zero-based case index**，不是Markdown表格从1计数的行号：
+
+| case index | 精确根 | 取到性 |
+|---:|---:|---|
+| 13 | 131009/2097408 | 闭 |
+| 16 | 98283/2097664 | 闭 |
+| 30 | 326839/6291456 | 闭 |
+
+候选必须是临界基多项式的精确零点，且通过基的单侧符号延拓和临界点原始LP精确证书；不是把较窄括号或近似有理拟合冒充认证。工具细分默认从40次改为48次，`critical_parameter`内核及既有合同未改。仅这3项实时重算并另存gzip，派生汇总其余33行沿用冻结证据，不伪称本次数据生成重新计算全部36例；具名测试另实际逐例核验。
+
+其余index 1、2、5、10、11、14为不可约二次根，index 19、22为不可约三次根。二次判别式为非平方；三次分别有模61、模17保次且无根的不可约见证。精确gcd去除明确无关因子后，目标括号内Sturm计数为1；下侧对偶基及上侧承载射线基的每个行列式/分子去除根因子后均无其他根，由端点符号证明单侧证书延拓到同一根。完整整系数多项式、因子阶数、不可约见证及括号保存在[分类证据](T1b_evidence/acceptance_fix/p1_classification.json)，逐项表见[分类说明](T1b_evidence/acceptance_fix/morphology_notes.md)。**无理端点的开闭仍未认证**，正确输出仍是括号与attained=null。
+
+具名门：`test_t1b_three_rational_brackets_upgrade_by_exact_critical_basis`、`test_t1b_eight_irrational_roots_keep_certified_brackets`、`test_t1b_coupled_phase_cubic_has_modular_irreducibility_witness`。
+
+### 4.5 单列效应：左右推力线经中块平衡耦合
+
+8个相位交错例的中块力与力矩平衡耦合左右侧独立最优推力线，完整LP阈值严格高于逐侧两点规则给出的值；这8例恰是上述无理根，而非浮点或括号误差。差值的精确上下界均为正，约在 **1.40434×10^-8～6.35693×10^-4** 范围内。n=4、φ=1/4例高于逐侧推力线值约 **9.73488%**（以推力线值为分母；以完整LP阈值为分母则约8.87%）。因此多数原36例是细长块公式在不同承力顶点上的推广，但不能把所有构型都降为互不耦合的两点公式。数值差及两端推力线均保存在分类JSON；本结论仅覆盖这8个具名输入，不声称任意相位都产生正耦合增量或无理根。
+
+### 4.6 补充厚度窄带：平直为零而加齿后为正
+
+固定t=3/32、ℓ=2、φ=0，令r=h/ℓ、a=A/h；随r改变h和A而保持a、周期数n、非对称度η不变。这不是原图固定h的另一个读法。对四个具名固定族，在解析域 `0<r≤3/16` 中，“平直μcrit=0而加齿μcrit>0”的带为：
+
+| a=A/h | n | η | 精确厚度带r（左闭右开） | 下界处有齿μcrit |
+|---:|---:|---:|---|---:|
+| 1/64 | 1 | 1/2 | [96/1033,32/257) | 131/8264 |
+| 1/128 | 1 | 1/4 | [96/1033,16/145) | 163/12396 |
+| 1/256 | 2 | 1/2 | [96/1033,1280/12373) | 4201/528512 |
+| 1/256 | 2 | 1/4 | [96/1033,64/677) | 1/708 |
+
+共同下界 `rflat=t/(1+t²)=96/1033≈0.09293`：平直界面在此已取到零阈，而四族有齿阈值仍严格正，故包含下界。右端各族已取到零阈，故不包含上界；第一个上界32/257约0.12451。这精确刻画的是所列固定族，而非把“约0.09～0.125”当通用区间。另用a=1/64、n=2、η=1/2或1/4作负对照，齿形零阈边界分别128/3079、1280/21589，均低于平直边界，因而**没有**这类创造阈值带；不能声称加齿必然更难运动。
+
+**边界推导。** 以z=y/h归一化，界面偏移 `g(z)=t(z−1/2)+a f(z)`。侧块把正水平合力归一为1，其接触力与力矩用 `(q,b)` 表示，`q=Fy/Fx`、`b=z+qg(z)`。μ=0时只有 `s_up=t+an/η`、`s_down=t−an/(1−η)` 两个q值；齿面端点的 `(q,b)` 凸包竖向截宽D(q)在这两个q间是仿射函数。侧块平衡条件为 `rD(q)≥q`，所以临界r在端点取得：
+
+`rtooth=min(s_up/D_up,s_down/D_down)`，
+
+其中 `D_up=[1−(1−η)/n](1+s_up t)+s_up a`，`D_down=(1−η/n)(1+s_down t)−s_down a`。镜像配对供给中块力与力矩平衡；域内两坡度严格正，排除了μ→0时零荷载自应力无界造成的“开零阈”，从而r低于该边界时阈值确为正。六族在0<r≤3/16内还满足 `|hg(z)|<1/32`，不会使间距2的界面交叉或边界体退化，接触拓扑前提明确。这一零摩擦边界是限定六族/区间的全带解析结论；正μ的具体阈值仍逐点用原始LP与单侧基延拓认证，不把边界式扩写成任意参数的μ(r)闭式。完整必要性、充分性与紧致性说明见[厚度带推导](T1b_evidence/acceptance_fix/thickness_notes.md)。
+
+带内几个精确样点如下，各行平直阈值为0、所列有齿阈值均为**闭阈**：
+
+| 固定族(a,n,η) | r | 有齿μcrit |
+|---|---:|---:|
+| (1/64,1,1/2) | 3/32 | 253/16384 |
+| (1/64,1,1/2) | 28864/265481 | 131/16528 |
+| (1/128,1,1/4) | 15224/149785 | 163/24792 |
+| (1/256,2,1/2) | 1255024/12781309 | 51978973/13078020224 |
+| (1/256,2,1/4) | 65552/699341 | 677/958628 |
+
+第一行约0.01544，是“形貌创造阈值”的清楚例子，而不是原薄块非零基线的重复包装。扫描共39个厚度样点，另有6族×r∈{3/16,1/4,1/2}共18个厚块闭零对照。39样点及厚块对照保存40份gzip；[小汇总](T1b_evidence/acceptance_fix/thickness_summary.json)记录每点精确输入、阈值、取到性和SHA，[外部完整证书](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/thickness_final/)不改旧冻结批次。具名门为 `test_t1b_thickness_band_exact_wrench_boundaries`、`test_t1b_thickness_band_flat_zero_teeth_positive_exact_certificates`、`test_t1b_thickness_band_open_upper_and_closed_lower`、`test_t1b_thickness_two_period_large_tooth_has_no_creation_band` 和 `test_t1b_thickness_discrete_thick_controls_remain_closed_zero`；定向结果 `41 passed in 16.80s`。
+
+### 4.7 物理解释的局限与不安全侧
+
+1. **开阈附近所需接触力发散。** 对φ=1/2、A=1/1024、t=3/32、μ*=1/16的开阈例，重跑验收者 `force_blowup.py`，μ*+2^-10、μ*+2^-20、μ*+2^-30时得到约 **656、6.7×10^5、6.9×10^8倍单位荷载** 的法向力尺度。这在无限抗压模型里合法，却不是有限强度材料的可行承载。精确口径脚注：原脚本最小化的是法向力绝对水平分量和U，显示值分别656.19682、672003.58894、688131732.2353；并非直接最小化欧氏总法向力N。本例所有所用面满足|s|≤1/8，故对相应最小值有 `U≤N≤(√65/8)U<1.008U`，上述总法向力量级近似误差界小于0.8%。见[重跑日志](T1b_evidence/acceptance_fix/force_blowup.txt)与[量纲/目标审计](T1b_evidence/acceptance_fix/force_blowup_audit.json)。
+2. **微齿在刚体模型中仍完全有效。** 本族A≤h/64也不产生材料压溃、弹性圆钝或接触面积损失；局部有效摩擦角贡献只取决于齿面坡度，所以微小但尖锐的齿面仍能完整生效。但整体阈值还含推力线升跨比q及承力顶点，不能概括为全局结果完全不依赖A。
+3. **厚块不能直接套用。** 本次六个固定族分别取h/ℓ∈{3/16,1/4,1/2}，18个离散厚块对照全部为闭零阈；与对手厚度扫描的观察一致。原图h/ℓ=1/32的非零值不是厚块锁定或实际产品性能证据；这18点不证明无限的h/ℓ≥3/16范围，更不是所有厚块和任意齿形的定理。
+4. **关联流动的方向。** 此处关联流动阈值是相应非关联库仑阈值的下界，即以所需摩擦衡量属于**不安全侧**；不能将关联流动证书自动当作真实非关联材料的安全验证。
 
 ## 5. C：可选项
 
@@ -193,20 +267,25 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈。没有重算
 | 真实源码内部变异/反例 | 报红的语义门 |
 |---|---|
 | 困住段允许触及开贯入边界（≤/≥改为</>） | `test_mutation_accepting_nonstrict_enclosure_is_killed`：严格屏障应拒绝接触 |
+| 困住段只查两端，允许两端分属不同凸片 | `test_enclosure_rejects_blocked_vertices_with_free_edge_interiors` 与 `test_mutation_checking_trapping_endpoints_in_different_pairs_is_killed`：菱形四顶点在墙片内、每条边却穿过自由空间 |
 | 逃逸段只检查两端 | `test_mutation_checking_only_escape_endpoints_is_killed`：两端自由、中段贯入应拒绝 |
 | 障碍并集替换凸包 | `test_mutation_hull_obstruction_is_detected_by_semantic_escape_gate`：已知可绕行的C形出口不能丢失；独立核验仍阻止假困住 |
-| 只查结构元顶点而漏凹槽 | 腐蚀门的独立矩形覆盖与U形槽语义回归 |
+| 只查结构元顶点而漏凹槽 | U形槽两门、八边形斜角与细颈、八边形刚体运动、凸耳测试；**不是**独立矩形覆盖oracle，详见下文 |
 | 连续调用消费生成器变空障碍 | `test_tia2d_t1b_certificates.py` 的迭代器入口回归 |
 
 变异修改运行中的被测函数源码，原语义断言失败；不是产出后塞假数据、哈希不符或解序巧合。元门使用随机有理半角旋转、平移0/10³/10⁵及独立几何/荷载单位缩放；P1还将2^-20特征尺度与10⁵坐标同现。腐蚀变换必须同步旋转K；轴固定方形K本来就不各向同性。
 
-### 6.2 执行证据
+新增菱形闭环为 `(5/2,0)→(0,5/2)→(−5/2,0)→(0,−5/2)→(5/2,0)`。四顶点分别在不同墙的严格贯入区，四条边中点 `(±5/4,±5/4)` 连同半边长1/4的移动方形都严格位于中央空腔。真实核验器拒绝；运行时从真实 `_witness` 源码注入混片端点变异后，同一语义断言确实报红，独立进程最后一行 `1 failed in 0.09s`。这修复的是测试缺口，生产核验器本来已正确。
+
+顶点式腐蚀变异的定向实际重放为 `11 failed, 6 passed in 1.65s`；矩形覆盖oracle的两个例子都仍绿。真实捕获门是 `test_element_vertex_only_containment_misses_an_indentation`、`test_element_vertices_on_cavity_edges_do_not_certify_filled_containment`、`test_rational_octagon_reflex_bevel_closed_form`（3例）、`test_disconnected_erosion_and_exact_thin_neck_are_rejected[octagon]`、`test_erosion_exact_rigid_motion_and_units`（3个八边形例）和 `test_polygon_knob_reports_actual_segments_and_verified_opposite_states`（2例）。[A订正说明及原始红灯证据](T1b_evidence/acceptance_fix/trapping_fix.md)记录真实报红位置，不把脚手架错误当变异杀伤。
+
+### 6.2 原轮执行证据（历史记录，不覆盖续单新字节）
 
 | 验证 | 实测与边界 |
 |---|---|
 | 开工全档 | GREEN，14665节点，四分片，0失败/跳过；1437.984s，HEAD只读archive字节导出 |
 | 修复前收尾快档 | GREEN，8800节点；66/66模块有实际执行见证，源副本/当时工作字节均未变 |
-| 收尾全档（必须保留RED） | 14848节点，14846通过、2失败、0跳过；四片派发/收集/执行多重集合相等；1338.094s |
+| 原轮收尾全档（必须保留RED） | 14848节点，14846通过、2失败、0跳过；四片派发/收集/执行多重集合相等；1338.094s |
 | 全档覆盖审计 | 原始66/66导入与函数/模块执行见证齐全，但两个失败journal使complete=false，不能报覆盖审计GREEN |
 | 全档失败根因 | 两个新测试helper包含不受闭子集支持的assigned lambda/动态函数选择，共13条AST诊断；既有两道仓库门正确报红 |
 | 最小修复 | 仅将 `test_tia2d_t1b_morphology.py` 与 `test_tia2d_t1b_tolerance.py` 的helper改为具名函数/显式if；无生产源、工具、schema或fixture修改，无新增准入 |
@@ -216,7 +295,7 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈。没有重算
 | 修复后无Git字节副本 | PATH中无git且无.git；`111 passed, 72 deselected in 20.98s`；源码前后未变，不是新鲜Git树 |
 | P0最终生成与独立回读 | 120算例/政策条目；生成19.432s，整个src+工具前后SHA一致；逐个重核332样点及80括号端点，共412证书（140 T含晃动界、272 E）通过 |
 | P1最终生成与独立回读 | 36构型，124.712s，67源文件前后SHA一致；独立标准库回读36 gzip、97份LP证书和全部保存锥生成元通过 |
-| 设计/静态准入/字节卫生 | 冻结设计SHA不变、policy原字节不变；最终卫生与净增实测见[交付审计](T1b_evidence/hygiene.json) |
+| 原轮设计/静态准入/字节卫生 | 当轮冻结设计SHA不变、policy原字节不变；历史净增见[原轮交付审计](T1b_evidence/hygiene.json)，本次验收续单另作审计 |
 
 原始完整快档（修复前）最后一行：
 
@@ -224,13 +303,13 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈。没有重算
 8800 passed in 274.03s (0:04:34)
 ```
 
-修复后当前完整快档最后一行：
+原轮helper修复后完整快档最后一行：
 
 ```text
 8800 passed in 274.81s (0:04:34)
 ```
 
-收尾全档四分片最后一行，按1–4**原样**（不能挑出绿片或拿定向结果拼接）：
+原轮RED收尾全档四分片最后一行，按1–4**原样**（不能挑出绿片或拿定向结果拼接）：
 
 ```text
 1 failed, 3711 passed in 984.12s (0:16:24)
@@ -239,17 +318,63 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈。没有重算
 3712 passed in 779.61s (0:12:59)
 ```
 
-该次CLI静态末行也原样保留：`exact construction AST gate: 13 violation(s)`。修复后两原失败门实际调用全库扫描并断言0，不能把其pytest末行伪装为一次未运行的CLI末行。修复后**未追加**完整四分片，遵守本单收尾全档一次的成本合同；这就是当前PARTIAL的主要缺口。
+该次CLI静态末行也原样保留：`exact construction AST gate: 13 violation(s)`。修复后两原失败门实际调用全库扫描并断言0，不能把其pytest末行伪装为一次未运行的CLI末行。Codex在原轮未追加完整四分片，遵守当时“一次收尾全档”的成本合同，故当轮如实交付PARTIAL；**这一历史缺口后来由Claude的新鲜树全档补齐**，不再写成尚未发生。新增字节的本次收尾另见§6.3。
 
-证据：[快档](T1b_evidence/final_fast/summary.json)、[全档RED](T1b_evidence/final_full/summary.json)、[定向修复](T1b_evidence/postfix_static.json)、[当前快档](T1b_evidence/postfix_fast/summary.json)、[无Git](T1b_evidence/no_git_postfix_summary.json)、[P0回读](T1b_evidence/p0_readback.json)、[P1回读](T1b_evidence/p1_readback_audit.json)、[全档后字节差异](T1b_evidence/post_gate_source_check.json)。
+证据：[快档](T1b_evidence/final_fast/summary.json)、[全档RED](T1b_evidence/final_full/summary.json)、[定向修复](T1b_evidence/postfix_static.json)、[当轮修复后快档](T1b_evidence/postfix_fast/summary.json)、[无Git](T1b_evidence/no_git_postfix_summary.json)、[P0回读](T1b_evidence/p0_readback.json)、[P1回读](T1b_evidence/p1_readback_audit.json)、[全档后字节差异](T1b_evidence/post_gate_source_check.json)。
+
+### 6.3 Claude验收与本次续单最终门
+
+Claude的本轮验收反馈：其保存的 `e757883` 新鲜工作树已经完成 `--runslow` 四分片 **14848 passed、0 failed、0 skipped**；A/B两名对手均确认数字与证书正确，仅要求补门和订正解释。A对手用自写检查器核对约90万腐蚀网格点0失配、308逃逸及176困住证书全部通过、燕尾/凸耳闭式及阈值处可逃逸吻合，并对18个内块独立找到逃逸路线；B独立LP为36/36吻合。以上是**Claude提供的验收事实**，不是Codex本次重新执行全量独立检查所得；计数范围也不与§6.2原P0回读混算。对手脚本及来源SHA已只读归档，见[入口清单](T1b_evidence/acceptance_fix/intake.json)。
+
+本次A完整证书测试文件定向结果为 `33 passed in 0.16s`，包括新增菱形门、源码内变异门及3个G1直射线参数例；修改文件静态扫描0违例。厚度新增门定向为 `41 passed in 16.80s`。全库预收尾静态CLI已经实际执行，末行 `exact construction AST gate: 0 violation(s)`；不新增准入。
+
+独立标准库落盘回读覆盖36份形貌证书与40份厚度gzip，核验229个LP证书实例（每文件内部去重）；另对11个临界根独立复核Sturm根数、不可约见证及两侧基多项式去根因子后的无额外根条件，全部通过。厚度单独回读核验118份唯一LP证书亦通过。见[统一回读结果](T1b_evidence/acceptance_fix/acceptance_readback.json)、[可复跑回读源码](T1b_evidence/acceptance_fix/acceptance_readback.py.txt)、[厚度回读结果](T1b_evidence/acceptance_fix/thickness_readback.json)。这是对存储的原始矩阵/证书算术独立核验，不冒称又独立推导了所有几何到LP装配。
+
+本次以当前工作树字节为输入，使用原H1四分片运行器的字节导出模式；不是新建Git worktree。运行中导出副本与当前工作树前后哈希均无变化，完整收集、派发、执行节点多重集合相等，快档与全档均0失败/0跳过。模块实际执行审计均为 **66/66**（59函数模块、7声明模块），无缺失导入或执行见证。
+
+| 当前验证 | 结果 |
+|---|---|
+| 完整快档 | GREEN，8851项，H1总用时301.234s |
+| 快慢全档四分片 | GREEN，14935项，H1总用时1430.156s |
+| 静态构造 | 0违例，无新增准入 |
+| 纯度与冻结合同 | 全套具名门通过；设计/schema/policy/.gitattributes原字节不改 |
+| 受测字节 | 两轮运行中export_changed/live_tree_changed均空；收尾仅更新本报告及归档索引，不改变受测代码/测试/工具/夹具 |
+
+当前快档最后一行原样：
+
+```text
+8851 passed in 288.75s (0:04:48)
+```
+
+当前全档四分片最后一行，按1–4原样：
+
+```text
+3734 passed in 910.90s (0:15:10)
+3734 passed in 780.31s (0:13:00)
+3734 passed in 1288.25s (0:21:28)
+3733 passed in 744.79s (0:12:24)
+```
+
+当前CLI静态最后一行原样：
+
+```text
+exact construction AST gate: 0 violation(s)
+```
+
+证据：[完整快档](T1b_evidence/acceptance_fast/summary.json)、[完整全档](T1b_evidence/acceptance_full/summary.json)、[全档实际执行覆盖](T1b_evidence/acceptance_full/module_coverage.json)、[日志和受测源码归档](T1b_evidence/acceptance_fix/gate_archive.json)、[最终代码与受测字节核对](T1b_evidence/acceptance_fix/final_tested_source_audit.json)、[交付卫生/净增量](T1b_evidence/acceptance_fix/hygiene.json)。旧RED不删除、不拼接；本次绿是新名字、独立完整运行。
+
+厚度补充另经内部交叉QA：独立参考LP86次查询、39个持久化样本的阈值及正阈值下侧核对、227个存储矩阵证书实例核验全部通过，见[内部交叉复核](T1b_evidence/acceptance_fix/thickness_cross_review.md)。这不冒称Claude安排的新增独立验收路线，也不替代本次完整门。
+
 
 ## 7. 工单订正清单
 
 1. **δ*=0标准例不可满足原强解释**：若δ=0有严格闭折线屏障，屏障为开O内紧集；有限个严格凸片覆盖具有正裕量，连续小腐蚀后仍成立。因此存在ε>0继续困住。用正但很小的δ*及预设制造公差下逃逸替代；没有改设计合同。
 2. **逃逸终点距离标准补强**：仅“很远”不自动证明已到无界分量。核验同时要求在原始差顶点包围盒外，并给明确无限射线；这是更强证书，不是放宽要求。
 3. **空困住集**：G1/G5所查内块δ=0已可逃逸，δ*记null/无意义，不填0。
-4. **非退化需要公开改变细长比及取向**：采用薄块和左右镜像倾斜族；不是给原厚块同相族换名称。
-5. **并非每点可认证精确根/开闭/导数**：11点保留认证括号及null。开阈确实出现；不把所有阈值涂成闭。
+4. **原36例的非零基线须归给细长效应**：采用薄块和左右镜像倾斜族，无齿控制已经恰等于T1a细长块公式；齿形主要改变承力顶点与推力线，不是给原厚块同相族换名称，也不是新普适形貌规律。
+5. **原11括号点需分类而非笼统“未证精确根”**：3个已认证为有理闭阈，另8个证明为不可约二次/三次根并保留认证括号；这8根开闭及导数仍未证。开阈2例确实存在，不把所有阈值涂成闭。
+6. **搜索路径不等于必须路径**：G1排列搜索产生的三点路径不能用来声称必须绕行，已补单段直射线证书门。
+7. **局部斜率与整体幅值效应分开**：微齿的局部有效角贡献只依赖齿面坡度；整体阈值仍取决于推力线q与承力顶点。原“非单调”来自具体分支切换，局部导数不得跨切换推广。
 
 ## 8. 建议并入设计的新增清单（未经自动批准）
 
@@ -262,11 +387,12 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈。没有重算
 | kernel2d/translation_certificates.py | `translation_segment_is_free`、`translation_segment_strictly_blocked`、`verify_escape_certificate`、`verify_trapping_certificate`、`verify_wobble_bounds` |
 | CertificateVerification | `valid,reason,checked_segments,winding_number,witnesses,ray_direction`；witness索引属于独立分片，不要求复制生产标签序 |
 | WobbleBoundsVerification | `valid,reason,area_lower,area_upper,diameter_squared_lower,diameter_squared_upper` |
-| adapters/tia2d.py | `tolerance_dovetail`、`tolerance_knob`；后者报告实际弦数和半圆采样数；`g1_morphology`、`g1_morphology_seed`、`MorphologyProfile2` |
-| MorphologyProfile2 | `assembly,family,amplitude,wavelength,height,tilt,phase,asymmetry,periods,interfaces,vertex_seeds_amplitude,vertex_seeds_tilt` |
+| adapters/tia2d.py | `tolerance_dovetail`、`tolerance_knob`；后者报告实际弦数和半圆采样数；均为算例适配器，不向内核倒灌域语义 |
 | 私有诊断 | P0阈值事件/边界腐蚀标志/实际腐蚀输入；P1阈值/导数/模式/一阶及来源清单。仅工具格式，不修改tia2d-2 |
 
 现有类型/枚举/函数/schema不改；未发现必须违反冻结设计才能完成的事项。静态门中新增模块数由47更新为50，完整导入可达性集合相等断言保留，禁词与白名单未削弱；`exact_construction_policy.json` 原字节不改。
+
+**降为适配器/工具助手，不建议冻结入设计合同：** `g1_morphology`、`MorphologyProfile2`及其 `g1_morphology_seed`。`MorphologyProfile2`中的 `assembly,family,amplitude,wavelength,height,tilt,phase,asymmetry,periods,interfaces,vertex_seeds_amplitude,vertex_seeds_tilt` 只是本次参数扫描与灵敏度传递助手字段，不作为稳定公共schema承诺。临界基分类、推力线解释及厚度带扫描也属工具层研究诊断，不自行升级tia2d-2。
 
 ## 9. 可复跑命令、归档与遗留
 
@@ -278,11 +404,12 @@ $env:TMP=$env:TEMP
 python -X utf8 tools/tia2d_t1b_run_gates.py --name new_fast
 python -X utf8 tools/tia2d_t1b_run_gates.py --name new_full --runslow
 python -X utf8 tools/tia2d_t1b_tolerance.py --output D:/eab-evidence/reports/codex/T1b_evidence/p0_new.json --summary reports/codex/T1b_evidence/p0_new_summary.json
-python -X utf8 tools/tia2d_t1b_morphology.py --output D:/eab-evidence/reports/codex/T1b_evidence/p1_new --summary reports/codex/T1b_evidence/p1_new_summary.json --source-revision 7f9510502ba265e53b5be8de4be22308dfe65f9a --max-steps 40
+python -X utf8 tools/tia2d_t1b_classification.py --source reports/codex/T1b_evidence/p1_summary.json --output D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/p1_classification_rerun --summary reports/codex/T1b_evidence/acceptance_fix/p1_classification_rerun.json
+python -X utf8 tools/tia2d_t1b_thickness.py --output D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/thickness_rerun --summary reports/codex/T1b_evidence/acceptance_fix/thickness_rerun.json --source-revision e757883
 ```
 
 数据目录必须新建；中断或源码守卫变化整次作废，不能拼接。逐例/逐分片进度落盘；大证据留获准外目录，仓库只留报告、图和小汇总；回滚原字节及清单保留，不自动覆盖用户后续变化。
 
-遗留：资源限额之外输入仍可能UNPROVED；面积/直径只给保守界；11个P1点的精确根/开闭/导数未证（已有认证括号）；任意参数域闭式、真实材料/非关联摩擦、有限转动与圆弧极限均未证明。**Claude安排的一路独立对抗核查及所有者新鲜Git树验证尚未执行**；本轮字节导出、无Git验证和内部QA不能替代它们，不能据此宣布合并验收通过。
+遗留：资源限额之外输入仍可能UNPROVED；面积/直径只给保守界；8个P1无理端点的开闭与导数未证（根的次数/不可约性及认证括号已给）；任意参数域闭式、真实材料/非关联摩擦、有限转动与圆弧极限均未证明。**Claude对原提交的独立对抗核查与新鲜Git树验证已经执行**；本次补门和工具新增字节已经另经当前树快档/全档，不冒称由原14848绿灯覆盖。C项仍可选，不因未做C记PARTIAL。
 
-T1b_PARTIAL：修复后的快慢全档四分片复验未执行；Claude独立对抗核查及所有者新鲜Git树核验待安排
+T1b_DONE

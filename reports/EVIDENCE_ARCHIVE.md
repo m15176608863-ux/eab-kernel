@@ -113,7 +113,7 @@ Claude 本轮明确批准写入 `D:/eab-evidence/reports/codex/T1a_evidence/`。
 
 单文件上限为 1,000,000 字节；唯一例外是本单冻结、只准机械重键的 `tools/exact_construction_policy.json`。具名门见 [test_repository_size.py](../tests/test_repository_size.py)，包含无 Git 副本中实际写入 1,000,001 字节文件后报红的牙。
 
-## WO-T1b 追加（2026-10-22）
+## WO-T1b 原轮追加（2026-10-22；历史状态，续单见下节）
 
 获准外目录为 `D:/eab-evidence/reports/codex/T1b_evidence/`，未触碰其他工作树。新大证据直接写外部；H1日志与执行清单采用gzip（mtime=0），压缩后逐字节解压核对，不删除原始临时文件。不改历史T1a数据或来源哈希。
 
@@ -126,3 +126,15 @@ Claude 本轮明确批准写入 `D:/eab-evidence/reports/codex/T1a_evidence/`。
 - [回滚锚点](codex/T1b_evidence/rollback.json)：原设计、静态准入、适配器、纯度门与本台账原字节，均与开工HEAD比对。只能在确认没有所有者后续改动后人工恢复，不自动覆盖。
 
 当前只交付Python诊断格式，没有新建正式tia2d-2 C++批次或自行改schema。完整结果、订正与未完成验收项见 [T1b报告](codex/T1b_report.md)；修复后完整快档已GREEN，四分片及Claude独立核查仍待安排，不能将快档或局部复核冒作最终全绿。外目录是本地保存，不是远端备份。
+
+## WO-T1b 验收续单归档（e757883 后未提交字节）
+
+本轮仅在获准的 `T1b_evidence/acceptance_fix/` 新建证据，不覆盖原P0/P1冻结数据或原RED日志；未执行Git写操作。Claude所报原提交新鲜树14848通过及独立A/B核验，按[入口记录](codex/T1b_evidence/acceptance_fix/intake.json)保留来源，不伪称本代理重跑。
+
+- [本轮外部逐文件SHA256](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/_manifests/files.sha256.jsonl)：109文件、44,877,378字节；清单自身SHA `de0f69682b0a13846cbcb5c9310e426b70ca409e1fc07ee09df9d400dd98afdf`，清单目录自身不列入。包含只读e757883回滚archive、验收原脚本、三点升级证书、39厚度样本/18厚块对照、开发期输出及最终完整门日志。
+- [外归档摘要](codex/T1b_evidence/acceptance_fix/external_archive_summary.json)、[门日志映射及双SHA](codex/T1b_evidence/acceptance_fix/gate_archive.json)。日志gzip采用mtime=0，逐个解压与原日志相等；原日志未删，不拼接。
+- [本次全档受测源码ZIP](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/acceptance_full_source.zip)及[逐成员SHA](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/acceptance_full_source_manifest.json)：完整工作字节导出，不是新建Git树；最终报告/本索引的收尾更新不改变受测代码。
+- [当前快档](codex/T1b_evidence/acceptance_fast/summary.json)与[当前四片全档](codex/T1b_evidence/acceptance_full/summary.json)均GREEN：分别8851、14935项，0失败/跳过、模块实际执行66/66、静态0违例。
+- [本轮全部文件链接](codex/T1b_evidence/acceptance_fix/artifacts.md)、[当前字节清单](codex/T1b_evidence/acceptance_fix/artifact_manifest.json)、[净增及卫生](codex/T1b_evidence/acceptance_fix/hygiene.json)。旧轮清单/状态仅描述原快照；本轮最终结论以[T1b报告](codex/T1b_report.md)为准。
+
+本地外归档不等于远端备份；回滚不得覆盖所有者后续变化。未增加正式C++批次、未改tia2d-2 schema、未擅自冻结新增助手接口。可选C未做，不构成本单PARTIAL。

@@ -45,6 +45,26 @@ def _assert_segment_obstruction_is_rejected():
     assert "segment enters" in checked.reason
 
 
+def _assert_mixed_pair_enclosure_is_rejected():
+    moving, obstacles, _ = _enclosure()
+    r = F(5, 2)
+    diamond = ((r, 0), (0, r), (-r, 0), (0, -r), (r, 0))
+    # Each vertex lies strictly in a different wall's overlap region. The
+    # midpoints (+/-5/4, +/-5/4), however, leave the complete moving square
+    # inside the open central chamber (-2, 2)^2. Nonzero winding and blocked
+    # vertices therefore do not certify a wholly blocked enclosure curve.
+    for point, obstacle_index in zip(diamond, (3, 1, 2, 0)):
+        assert not certificates.translation_segment_is_free(
+            moving, (obstacles[obstacle_index],), point, point)
+    for a, b in zip(diamond, diamond[1:]):
+        midpoint = ((a[0]+b[0])/2, (a[1]+b[1])/2)
+        assert all(abs(coordinate)+F(1, 4) < 2 for coordinate in midpoint)
+        assert certificates.translation_segment_is_free(moving, obstacles, midpoint, midpoint)
+    checked = certificates.verify_trapping_certificate(moving, obstacles, diamond)
+    assert not checked.valid, "enclosure must reject endpoints in different convex pairs"
+    assert "strict convex-pair" in checked.reason
+
+
 def test_enclosure_has_strict_witnesses():
     moving, obstacles, path = _enclosure()
     checked = certificates.verify_trapping_certificate(moving, obstacles, path)
@@ -57,6 +77,11 @@ def test_enclosure_has_strict_witnesses():
 
 def test_enclosure_rejects_boundary_contact():
     _assert_touching_enclosure_is_rejected()
+
+
+def test_enclosure_rejects_blocked_vertices_with_free_edge_interiors():
+    """G0 rectangle oracle: blocked diamond vertices, four free edge midpoints."""
+    _assert_mixed_pair_enclosure_is_rejected()
 
 
 def test_escape_rejects_a_segment_with_only_free_endpoints():
@@ -86,6 +111,19 @@ def test_escape_boundary_contact_is_allowed_but_arbitrarily_small_penetration_is
     epsilon = F(1, 2**80)
     obstacle = tuple((x, y-epsilon) for x, y in obstacle)
     assert not certificates.verify_escape_certificate(moving, (obstacle,), ((0, 0), (20, 0))).valid
+
+
+@pytest.mark.parametrize("body_index,horizontal", [(1, -F(3, 32)), (2, F(0)), (3, F(3, 32))])
+def test_g1_inner_blocks_have_exact_straight_escape_certificates(body_index, horizontal):
+    """At zero tolerance all three G1 interiors escape along one exact ray."""
+    from eab.adapters.tia2d import g1
+    assembly = g1(t=F(3, 32))
+    moving = assembly.bodies[body_index].vertices
+    obstacles = tuple(body.vertices for index, body in enumerate(assembly.bodies)
+                      if index != body_index)
+    path = ((0, 0), (64*horizontal, F(64)))
+    checked = certificates.verify_escape_certificate(moving, obstacles, path)
+    assert checked.valid and checked.checked_segments == 1
 
 
 def test_enclosure_rejects_zero_winding_unclosed_path_and_occupied_origin():
@@ -181,6 +219,24 @@ def test_mutation_checking_only_escape_endpoints_is_killed(monkeypatch):
     monkeypatch.setattr(certificates, "_pair_segment_enters", namespace["_pair_segment_enters"])
     with pytest.raises(AssertionError, match="escape must check the interior of every segment"):
         _assert_segment_obstruction_is_rejected()
+
+
+def test_mutation_checking_trapping_endpoints_in_different_pairs_is_killed(monkeypatch):
+    source = inspect.getsource(certificates._witness)
+    original = "if _strict_pair_segment(a, b, start, end):"
+    assert source.count(original) == 1
+    # Corrupt the production witness search itself: allow the end to use any
+    # other convex pair instead of the start's pair. Keep a real start witness
+    # rather than fabricating a verifier result after the check.
+    replacement = ("if _strict_pair_segment(a, b, start, start) and any(\n"
+                   "                        _strict_pair_segment(c, d, end, end)\n"
+                   "                        for other in other_parts for c in first_parts for d in other):")
+    mutated = source.replace(original, replacement)
+    namespace = dict(certificates.__dict__)
+    exec(compile(mutated, "<mixed-pair-trapping-mutant>", "exec"), namespace)
+    monkeypatch.setattr(certificates, "_witness", namespace["_witness"])
+    with pytest.raises(AssertionError, match="enclosure must reject endpoints in different convex pairs"):
+        _assert_mixed_pair_enclosure_is_rejected()
 
 
 def test_verifier_imports_no_production_geometry():
