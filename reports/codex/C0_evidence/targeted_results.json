@@ -1,0 +1,63 @@
+[
+  {
+    "name": "build_final",
+    "command": [
+      "cmd",
+      "/c",
+      "eab2\\build_eab2.bat"
+    ],
+    "exit_code": 0,
+    "seconds": 3.0628506999928504,
+    "last_line": "C_HEADER_STATIC checks=7 failures=0"
+  },
+  {
+    "name": "diff",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/eab2_diff.py",
+      "--dll",
+      "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2_test.dll",
+      "--output",
+      "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\diff.json"
+    ],
+    "exit_code": 0,
+    "seconds": 0.4943225000752136,
+    "last_line": "EAB2_DIFF samples=4483 bits=6003 mismatches=0 status=PASS"
+  },
+  {
+    "name": "delivery_audit",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/eab2_audit.py",
+      "--output",
+      "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\delivery_audit.json"
+    ],
+    "exit_code": 0,
+    "seconds": 0.1750330999493599,
+    "last_line": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=9"
+  },
+  {
+    "name": "focused_gates",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\pytest_focused",
+      "tests/test_repository_size.py",
+      "tests/test_kernel_purity.py"
+    ],
+    "exit_code": 0,
+    "seconds": 7.86330009996891,
+    "last_line": "42 passed in 7.42s"
+  }
+]

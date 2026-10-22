@@ -1,0 +1,357 @@
+{
+  "schema": "eab2.c0.mutation_check.v1",
+  "role": "implementation-author semantic gate sensitivity; not independent adversarial review",
+  "run_name": "c0_r2",
+  "source": "D:\\eab-wt\\cx-c0\\eab2",
+  "run_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2",
+  "report": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\mutation_c0_r2.json",
+  "mutants": [
+    {
+      "name": "scalar_tie_parity",
+      "defect": "Reverse the exact-halfway integer parity decision inside scalar_rational.",
+      "source_copy": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity",
+      "copy_manifest": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity_copied_sha256.json",
+      "copied_source_and_vendor_equal_original": true,
+      "target": "eab2_test_numeric",
+      "expected_semantic_marker": "failed=1 detail=scalar RN cell",
+      "steps": [
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "-S",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity",
+            "-B",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build",
+            "-G",
+            "Ninja",
+            "-DCMAKE_MAKE_PROGRAM=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+            "-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 1.449676,
+          "stdout_last_line": "-- Build files have been written to: D:/eab-wt/cx-c0/reports/codex/C0_evidence/tmp/mutations/c0_r2/scalar_tie_parity/build",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity_configure.log",
+          "stdout_sha256": "33bc3fbd9658f973094d9b41d99e930e8eaeb3e90fd0190776c2b1136cbca67c",
+          "stdout_bytes": 882,
+          "phase": "configure"
+        },
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "--build",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build",
+            "--target",
+            "eab2_test_numeric",
+            "--verbose"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 1.674783,
+          "stdout_last_line": "[5/5] C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_numeric.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj  /out:eab2_test_numeric.exe /implib:eab2_test_numeric.lib /pdb:eab2_test_numeric.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity_build.log",
+          "stdout_sha256": "2301b5efadc5a34cf7934e52ade36e0267456f8b0a36a633b53e800e16f8fa13",
+          "stdout_bytes": 77858,
+          "phase": "build"
+        },
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+            "-C",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build",
+            "-t",
+            "commands",
+            "eab2_test_numeric"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 0.016148,
+          "stdout_last_line": "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_numeric.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj  /out:eab2_test_numeric.exe /implib:eab2_test_numeric.lib /pdb:eab2_test_numeric.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity_compiler_commands.log",
+          "stdout_sha256": "c4f8854652df2b7555e13d27cf5b5f6fbbc2cbdbf8cdcb25791c0f2b5330e7ab",
+          "stdout_bytes": 3572,
+          "phase": "compiler_commands"
+        },
+        {
+          "command": [
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build\\eab2_test_numeric.exe"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build",
+          "exit_code": 1,
+          "timed_out": false,
+          "seconds": 0.070244,
+          "stdout_last_line": "EAB2_NUMERIC_TESTS checks=17 failed=1 detail=scalar RN cell",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity_test.log",
+          "stdout_sha256": "2a6e7842d9b7c704279eb04d8650baff0614c229bc7740988f5672de0572d646",
+          "stdout_bytes": 61,
+          "phase": "semantic_test"
+        }
+      ],
+      "passed": true,
+      "mutation": {
+        "file": "src/numeric.cpp",
+        "old": "(twice_remainder == denominator && significand.odd())",
+        "new": "(twice_remainder == denominator && !significand.odd())",
+        "occurrences_before": 1,
+        "source_sha256_before": "2fd8bfbb1c4edb7b152f4f57f8c51c2af784be9392db6ceb076d23e9eede08d6",
+        "source_sha256_after": "dc0104aec75386eddd643f8b30de7487d64dc26aec35a0e33f2dcbcf42677a69",
+        "replacement_count": 1
+      },
+      "changed_files_in_copy": [
+        "src/numeric.cpp"
+      ],
+      "actual_compiler_commands": [
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj /FdCMakeFiles\\eab2_test_numeric.dir\\ /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\tests\\test_numeric.cpp",
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_core.dir\\src\\numeric.cpp.obj /FdCMakeFiles\\eab2_core.dir\\eab2_core.pdb /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\src\\numeric.cpp",
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_core.dir\\src\\fp_contract.cpp.obj /FdCMakeFiles\\eab2_core.dir\\eab2_core.pdb /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\scalar_tie_parity\\src\\fp_contract.cpp",
+        "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\lib.exe /nologo /machine:x64 /out:eab2_core.lib CMakeFiles\\eab2_core.dir\\src\\numeric.cpp.obj CMakeFiles\\eab2_core.dir\\src\\fp_contract.cpp.obj && cd .\"",
+        "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_numeric.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj  /out:eab2_test_numeric.exe /implib:eab2_test_numeric.lib /pdb:eab2_test_numeric.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\""
+      ]
+    },
+    {
+      "name": "compound_early_rounding",
+      "defect": "Round representable normalized term and offset before subtracting; retain exact fallback for intermediate range errors.",
+      "source_copy": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding",
+      "copy_manifest": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding_copied_sha256.json",
+      "copied_source_and_vendor_equal_original": true,
+      "target": "eab2_test_numeric",
+      "expected_semantic_marker": "failed=1 detail=difference default underflow: did not fail",
+      "steps": [
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "-S",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding",
+            "-B",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build",
+            "-G",
+            "Ninja",
+            "-DCMAKE_MAKE_PROGRAM=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+            "-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 1.166062,
+          "stdout_last_line": "-- Build files have been written to: D:/eab-wt/cx-c0/reports/codex/C0_evidence/tmp/mutations/c0_r2/compound_early_rounding/build",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding_configure.log",
+          "stdout_sha256": "11285ebcc8ecfd14b6bb4b78cc16e0cc8173194ceaeb0fc9351f927e0b7b8b82",
+          "stdout_bytes": 888,
+          "phase": "configure"
+        },
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "--build",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build",
+            "--target",
+            "eab2_test_numeric",
+            "--verbose"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 1.667024,
+          "stdout_last_line": "[5/5] C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_numeric.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj  /out:eab2_test_numeric.exe /implib:eab2_test_numeric.lib /pdb:eab2_test_numeric.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding_build.log",
+          "stdout_sha256": "792d04a6987f4933aee252332a88c8dc3da406641c4526d8f00ea2d4b4e10062",
+          "stdout_bytes": 78837,
+          "phase": "build"
+        },
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+            "-C",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build",
+            "-t",
+            "commands",
+            "eab2_test_numeric"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 0.016948,
+          "stdout_last_line": "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_numeric.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj  /out:eab2_test_numeric.exe /implib:eab2_test_numeric.lib /pdb:eab2_test_numeric.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding_compiler_commands.log",
+          "stdout_sha256": "99a3042e587df9455405c8ddda251b61e564722aab0a2b9baa1e3206d0ed6bcd",
+          "stdout_bytes": 3662,
+          "phase": "compiler_commands"
+        },
+        {
+          "command": [
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build\\eab2_test_numeric.exe"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build",
+          "exit_code": 1,
+          "timed_out": false,
+          "seconds": 0.185727,
+          "stdout_last_line": "EAB2_NUMERIC_TESTS checks=498 failed=1 detail=difference default underflow: did not fail",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding_test.log",
+          "stdout_sha256": "db759c155f4fc3791bfd0e6a1907f81601d451d56285a8e6a40b990985962603",
+          "stdout_bytes": 90,
+          "phase": "semantic_test"
+        }
+      ],
+      "passed": true,
+      "mutation": {
+        "file": "src/numeric.cpp",
+        "old": "    return scalar_algebraic([&](const Rational& q) { return compare_signed_root(c, nn, offset + q); }, allow_underflow);",
+        "new": "    // MUTANT: incorrectly round both terms before their cancellation.\n    // Retain the exact fallback only if an intermediate display is out of range.\n    // This isolates double rounding rather than failing on an incidental overflow.\n    try {\n        auto root = sqrt_rational(c * c / nn, true);\n        if (c.sign() < 0) root |= negative_bit;\n        const auto rounded_offset = scalar_rational(offset, true);\n        return scalar_rational(decode_binary64(root) - decode_binary64(rounded_offset), allow_underflow);\n    } catch (const Error& error) {\n        if (error.code != 4) throw;\n        return scalar_algebraic([&](const Rational& q) { return compare_signed_root(c, nn, offset + q); }, allow_underflow);\n    }",
+        "occurrences_before": 1,
+        "source_sha256_before": "2fd8bfbb1c4edb7b152f4f57f8c51c2af784be9392db6ceb076d23e9eede08d6",
+        "source_sha256_after": "cbea8f2a64181db6fd2ffd15a870ca662158c47decedfefec56964ffc2ccbc8d",
+        "replacement_count": 1
+      },
+      "changed_files_in_copy": [
+        "src/numeric.cpp"
+      ],
+      "actual_compiler_commands": [
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj /FdCMakeFiles\\eab2_test_numeric.dir\\ /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\tests\\test_numeric.cpp",
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_core.dir\\src\\numeric.cpp.obj /FdCMakeFiles\\eab2_core.dir\\eab2_core.pdb /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\src\\numeric.cpp",
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_core.dir\\src\\fp_contract.cpp.obj /FdCMakeFiles\\eab2_core.dir\\eab2_core.pdb /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\compound_early_rounding\\src\\fp_contract.cpp",
+        "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\lib.exe /nologo /machine:x64 /out:eab2_core.lib CMakeFiles\\eab2_core.dir\\src\\numeric.cpp.obj CMakeFiles\\eab2_core.dir\\src\\fp_contract.cpp.obj && cd .\"",
+        "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_numeric.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_numeric.dir\\tests\\test_numeric.cpp.obj  /out:eab2_test_numeric.exe /implib:eab2_test_numeric.lib /pdb:eab2_test_numeric.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\""
+      ]
+    },
+    {
+      "name": "missing_daz_guard",
+      "defect": "Remove only the DAZ mask bit from the entry self-test; retain every other environment check.",
+      "source_copy": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard",
+      "copy_manifest": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard_copied_sha256.json",
+      "copied_source_and_vendor_equal_original": true,
+      "target": "eab2_test_abi",
+      "expected_semantic_marker": "ABI_TESTS FAILED: DAZ rejected",
+      "steps": [
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "-S",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard",
+            "-B",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build",
+            "-G",
+            "Ninja",
+            "-DCMAKE_MAKE_PROGRAM=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+            "-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 1.14154,
+          "stdout_last_line": "-- Build files have been written to: D:/eab-wt/cx-c0/reports/codex/C0_evidence/tmp/mutations/c0_r2/missing_daz_guard/build",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard_configure.log",
+          "stdout_sha256": "ab34abf587d564bf2b97c0dc4e4d46d32bc4a24c9dda014942bf726a6f25a9ca",
+          "stdout_bytes": 882,
+          "phase": "configure"
+        },
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "--build",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build",
+            "--target",
+            "eab2_test_abi",
+            "--verbose"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 1.699664,
+          "stdout_last_line": "[7/7] C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_abi.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_abi.dir\\tests\\test_abi.cpp.obj  /out:eab2_test_abi.exe /implib:eab2_test_abi.lib /pdb:eab2_test_abi.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_test.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard_build.log",
+          "stdout_sha256": "db9450f239bb17d48978359e5b3aae79d0526aab006e265e083c97403524cf53",
+          "stdout_bytes": 97020,
+          "phase": "build"
+        },
+        {
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+            "-C",
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build",
+            "-t",
+            "commands",
+            "eab2_test_abi"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 0.017087,
+          "stdout_last_line": "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_abi.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_abi.dir\\tests\\test_abi.cpp.obj  /out:eab2_test_abi.exe /implib:eab2_test_abi.lib /pdb:eab2_test_abi.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_test.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard_compiler_commands.log",
+          "stdout_sha256": "9c0cc884f8ac6d496c8acaa70550d7b486bcaf83bb47c4b7d0265c08212fa681",
+          "stdout_bytes": 5179,
+          "phase": "compiler_commands"
+        },
+        {
+          "command": [
+            "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build\\eab2_test_abi.exe"
+          ],
+          "working_directory": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build",
+          "exit_code": 1,
+          "timed_out": false,
+          "seconds": 0.04233,
+          "stdout_last_line": "ABI_TESTS FAILED: DAZ rejected (after 86 assertions)",
+          "stdout_log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard_test.log",
+          "stdout_sha256": "37075f5442b1b431b75f81b1035f4835430de76a9e3f32c90783281cf219737a",
+          "stdout_bytes": 54,
+          "phase": "semantic_test"
+        }
+      ],
+      "passed": true,
+      "mutation": {
+        "file": "src/fp_contract.cpp",
+        "old": "(original & (0x8000U | 0x0040U | 0x6000U)) != 0",
+        "new": "(original & (0x8000U | 0x6000U)) != 0",
+        "occurrences_before": 1,
+        "source_sha256_before": "99d38046aab22a8de8405b79e6c8e49e7ed732b1b9776e095032ea5c70d5aa18",
+        "source_sha256_after": "4be542c116de5f17fed1521574a4f9d0924ae29f054b4938bccefaf809bbeb3b",
+        "replacement_count": 1
+      },
+      "changed_files_in_copy": [
+        "src/fp_contract.cpp"
+      ],
+      "actual_compiler_commands": [
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -DEAB2_ENABLE_TEST_API -DEAB2_USE_DLL -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_test_abi.dir\\tests\\test_abi.cpp.obj /FdCMakeFiles\\eab2_test_abi.dir\\ /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\tests\\test_abi.cpp",
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -DEAB2_BUILD_DLL -DEAB2_ENABLE_TEST_API -Deab2_test_EXPORTS -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_test.dir\\src\\c_api.cpp.obj /FdCMakeFiles\\eab2_test.dir\\ /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\src\\c_api.cpp",
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_core.dir\\src\\numeric.cpp.obj /FdCMakeFiles\\eab2_core.dir\\eab2_core.pdb /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\src\\numeric.cpp",
+        "C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DBOOST_MP_STANDALONE -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\src -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\third_party\\boost_multiprecision_1_86_0\\include -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\build\\generated -ID:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\include /DWIN32 /D_WINDOWS /EHsc /O2 /DNDEBUG -std:c++20 -MD /utf-8 /permissive- /fp:precise /W4 /EHsc /showIncludes /FoCMakeFiles\\eab2_core.dir\\src\\fp_contract.cpp.obj /FdCMakeFiles\\eab2_core.dir\\eab2_core.pdb /FS -c D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\missing_daz_guard\\src\\fp_contract.cpp",
+        "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\lib.exe /nologo /machine:x64 /out:eab2_core.lib CMakeFiles\\eab2_core.dir\\src\\numeric.cpp.obj CMakeFiles\\eab2_core.dir\\src\\fp_contract.cpp.obj && cd .\"",
+        "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_dll --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test.dir\\src\\c_api.cpp.obj  /out:eab2_test.dll /implib:eab2_test.lib /pdb:eab2_test.pdb /dll /version:0.0 /machine:x64 /INCREMENTAL:NO  eab2_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+        "C:\\WINDOWS\\system32\\cmd.exe /C \"cd . && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\\eab2_test_abi.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~4\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\eab2_test_abi.dir\\tests\\test_abi.cpp.obj  /out:eab2_test_abi.exe /implib:eab2_test_abi.lib /pdb:eab2_test_abi.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  eab2_test.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\""
+      ]
+    }
+  ],
+  "passed": true,
+  "original_manifest": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\original_source_vendor_sha256.json",
+  "original_manifest_sha256": "6376e2eea3323a05f189cd063954ee372e560a2465ae43c10489b6f2afdc1912",
+  "original_file_count": 89,
+  "toolchain": {
+    "setup_command": [
+      "C:\\WINDOWS\\system32\\cmd.exe",
+      "/d",
+      "/c",
+      "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp\\mutations\\c0_r2\\environment_setup.bat"
+    ],
+    "setup_batch_sha256": "582f0b2c178e92c14dd8352e40f98dde5b77af4a40eaf19788c51cf9332eaa53",
+    "setup_exit_code": 0,
+    "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+    "cmake": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+    "ninja": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+    "toolset": "14.44.35207",
+    "temp": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp",
+    "tmp": "D:\\eab-wt\\cx-c0\\reports\\codex\\C0_evidence\\tmp",
+    "environment_output_saved": false
+  },
+  "original_source_and_vendor_unchanged": true,
+  "original_changed_files": [],
+  "seconds": 11.011195
+}

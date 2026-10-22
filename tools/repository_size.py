@@ -9,7 +9,7 @@ import re
 import subprocess
 
 LIMIT = 1_000_000
-DELIVERABLE_ROOTS = ("src", "tests", "tools", "fixtures", "docs", "reports")
+DELIVERABLE_ROOTS = ("src", "tests", "tools", "fixtures", "docs", "reports", "eab2")
 ALLOW_OVERSIZE = {
     "tools/exact_construction_policy.json":
         "Existing static-construction admission policy is frozen by WO-H1; mechanical rekeys only, no new admissions.",

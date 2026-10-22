@@ -104,7 +104,9 @@ def run(command, source, env, logfile, timeout=10800):
 
 def source_names():
     names = subprocess.check_output(["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=ROOT).decode("utf-8").split("\0")
+    evidence_prefix = EVIDENCE.relative_to(ROOT).as_posix() + "/"
     return sorted({name for name in names if name and not name.startswith("reports/codex/H1_evidence/")
+                   and not name.startswith(evidence_prefix)
                    and (ROOT / name).is_file()})
 
 
@@ -127,10 +129,18 @@ def snapshot(destination):
 
 
 def main():
+    global EVIDENCE
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--name", required=True)
     parser.add_argument("--runslow", action="store_true")
+    parser.add_argument("--evidence-root", default="reports/codex/H1_evidence",
+                        help="workspace reports/codex subdirectory; also owns TEMP/TMP")
     args = parser.parse_args()
+    evidence = (ROOT / args.evidence_root).resolve()
+    reports_root = (ROOT / "reports/codex").resolve()
+    if evidence == reports_root or not evidence.is_relative_to(reports_root):
+        parser.error("evidence-root must be a subdirectory of workspace reports/codex")
+    EVIDENCE = evidence
     if not hasattr(sys, "monitoring"):
         parser.error("execution coverage requires Python 3.12+; no unverified GREEN is emitted")
     if Path(args.name).name != args.name or args.name in (".", ".."):

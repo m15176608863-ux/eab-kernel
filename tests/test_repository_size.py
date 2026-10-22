@@ -17,8 +17,9 @@ def test_every_tracked_or_deliverable_file_is_at_most_one_megabyte_except_frozen
     assert_deliverable_sizes(ROOT)
 
 
-def test_no_git_export_gate_reads_actual_files_and_catches_oversized_candidate(tmp_path):
-    source = tmp_path / "src" / "eab" / "size_mutant.py"
+@pytest.mark.parametrize("relative", ("src/eab/size_mutant.py", "eab2/third_party/size_mutant.hpp"))
+def test_no_git_export_gate_reads_actual_files_and_catches_oversized_candidate(tmp_path, relative):
+    source = tmp_path / relative
     source.parent.mkdir(parents=True)
     source.write_bytes(b"#" * LIMIT)
     assert_deliverable_sizes(tmp_path)
@@ -26,7 +27,7 @@ def test_no_git_export_gate_reads_actual_files_and_catches_oversized_candidate(t
     source.write_bytes(b"#" * (LIMIT + 1))
     with pytest.raises(AssertionError, match="deliverable file exceeds") as caught:
         assert_deliverable_sizes(tmp_path)
-    assert "src/eab/size_mutant.py" in str(caught.value)
+    assert relative in str(caught.value)
 
 
 def test_export_ignores_only_declared_runtime_outputs_and_keeps_other_evidence(tmp_path):
