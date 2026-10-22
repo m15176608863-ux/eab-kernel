@@ -1,0 +1,51 @@
+"""Check delivered Markdown targets and every archived external file hash."""
+from pathlib import Path
+import hashlib
+import json
+import re
+from urllib.parse import unquote, urlparse
+
+root = Path.cwd().resolve()
+out = root / "reports/codex/T1b_evidence/acceptance_recheck_m4b"
+documents = [root / "reports/codex/T1b_report.md", root / "reports/EVIDENCE_ARCHIVE.md",
+             out / "artifacts.md"]
+links = []
+missing = []
+for path in documents:
+    text = path.read_text("utf-8")
+    # Mathematical/code strings containing [x](...) are not Markdown links.
+    text = re.sub(r"```.*?```", "", text, flags=re.S)
+    text = re.sub(r"`[^`]*`", "", text)
+    for raw in re.findall(r"\[[^\]\n]+\]\(([^)\n]+)\)", text):
+        url = urlparse(raw)
+        if url.scheme in ("https", "http", "mailto") or not url.path:
+            continue
+        if url.scheme == "file":
+            decoded = unquote(url.path)
+            if re.match(r"^/[A-Za-z]:", decoded):
+                decoded = decoded[1:]
+            target = Path(decoded)
+        else:
+            target = (path.parent / unquote(url.path)).resolve()
+        row = dict(document=str(path), link=raw, target=str(target), exists=target.exists())
+        links.append(row)
+        if not row["exists"]:
+            missing.append(row)
+archive = json.loads((out / "external_archive_summary.json").read_text("utf-8"))
+manifest = Path(archive["manifest"])
+assert hashlib.sha256(manifest.read_bytes()).hexdigest() == archive["manifest_sha256"]
+entries = [json.loads(line) for line in manifest.read_text("utf-8").splitlines()]
+assert len(entries) == archive["files"]
+for entry in entries:
+    data = Path(entry["path"]).read_bytes()
+    assert len(data) == entry["bytes"]
+    assert hashlib.sha256(data).hexdigest() == entry["sha256"], entry["path"]
+assert sum(e["bytes"] for e in entries) == archive["bytes"]
+result = dict(status="PASS" if not missing else "FAIL", checked_local_file_links=len(links),
+              missing=missing, external_hashes_verified=len(entries),
+              external_manifest_sha256=archive["manifest_sha256"],
+              anchors_not_validated=True, links=links)
+(out / "final_link_check.json").write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n",
+                                          encoding="utf-8", newline="")
+assert not missing, missing
+print("LINKS_AND_ARCHIVE_PASS", len(links), "links;", len(entries), "external hashes")

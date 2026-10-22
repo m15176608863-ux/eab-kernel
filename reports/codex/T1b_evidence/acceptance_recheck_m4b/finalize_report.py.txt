@@ -1,0 +1,119 @@
+"""Fill final report only after both independent current runs are complete GREEN."""
+from pathlib import Path
+import json
+
+ROOT = Path.cwd().resolve()
+BASE = ROOT / "reports/codex/T1b_evidence"
+OUT = BASE / "acceptance_recheck_m4b"
+
+
+def read(path):
+    with path.open(encoding="utf-8", newline="") as stream:
+        return stream.read()
+
+
+def load(path):
+    return json.loads(read(path))
+
+
+def replace_once(text, old, new):
+    assert text.count(old) == 1, old
+    return text.replace(old, new)
+
+
+fast, full = (load(BASE / n / "summary.json") for n in ("m4b_fast", "m4b_full"))
+assert len(fast["shards"]) == 1 and len(full["shards"]) == 4
+for data in (fast, full):
+    assert data["audit"] == "GREEN" and data["complete"]
+    assert data["module_coverage_complete"]
+    assert data["export_changed"] == data["live_tree_changed"] == []
+    assert sum(s["executed"] for s in data["shards"]) == data["collected"]
+    for shard in data["shards"]:
+        assert shard["complete"] and shard["node_sets_equal"] and shard["exit_code"] == 0
+        assert shard["failed_count"] == shard["skip_count"] == 0
+        assert shard["last_line"] == read(Path(shard["log"])).strip().splitlines()[-1]
+for name in ("m4b_fast", "m4b_full"):
+    coverage = load(BASE / name / "module_coverage.json")
+    assert coverage["complete"] and coverage["module_count"] == coverage["imported_count"] == 66
+    assert coverage["function_covered_count"] == 59 and coverage["declarative_covered_count"] == 7
+assert full["static"]["exit_code"] == 0
+assert full["static"]["last_line"] == "exact construction AST gate: 0 violation(s)"
+mutation = load(OUT / "m4b_process_audit.json")
+assert mutation["status"] == "PASS" and mutation["production_source_unchanged"]
+assert mutation["test_unchanged"] and mutation["runs"][1]["semantic_assertion_failed"]
+assert [r["returncode"] for r in mutation["runs"]] == [0, 1]
+assert load(OUT / "m4b_changed_test_static.json")["issue_count"] == 0
+archive = load(OUT / "external_archive_summary.json")
+assert archive["status"] == "PASS"
+original_line = read(OUT / "m4b_original_tests.txt").strip().splitlines()[-1]
+fast_line = fast["shards"][0]["last_line"]
+full_lines = "\n".join(s["last_line"] for s in full["shards"])
+section = f"""本轮定向证书文件最后一行 `{original_line}`，修改测试的静态扫描0违例。源码内m4b变异门通过；另在获准外目录的隔离副本中，直接调用对手原版 `make_m4b.py` 注入同一缺陷，以同一个具名语义测试运行独立pytest进程：原版 `{mutation['runs'][0]['last_line']}`，变异 `{mutation['runs'][1]['last_line']}`。变异直接失败于 `AssertionError: enclosure must reject endpoints in different pieces of one obstacle`，不是源码哈希、构造或环境错误。原版绿灯同时覆盖生产可逃逸状态、人工给定直线及产出路径的独立逃逸核验；66个生产源码文件与测试原件前后哈希一致。
+
+见[独立源码变异审计](T1b_evidence/acceptance_recheck_m4b/m4b_process_audit.json)、[原始语义红灯](T1b_evidence/acceptance_recheck_m4b/m4b_process_audit_mutant.txt)、[可复跑变异脚本](T1b_evidence/acceptance_recheck_m4b/m4b_source_mutation_audit.py.txt)、[原版证书文件全测](T1b_evidence/acceptance_recheck_m4b/m4b_original_tests.txt)。
+
+本轮完整快档及快慢全档使用**当前工作树字节导出**运行，不是新建Git树；两次均核对导出副本和当前工作树前后不变。收集/派发/执行节点多重集合相等，0失败、0跳过，实际执行覆盖66/66（59函数模块、7声明模块）。未改生产代码、冻结数据、设计/schema或静态准入；收尾仅回填本报告、归档索引及独立证据目录。
+
+| 本轮最终验证 | 结果 |
+|---|---|
+| 完整快档 | GREEN，{fast['collected']}项，H1总用时{fast['elapsed_seconds']:.3f}s |
+| 快慢全档四分片 | GREEN，{full['collected']}项，H1总用时{full['elapsed_seconds']:.3f}s |
+| 静态构造CLI | 0违例，无新增准入 |
+| 字节守卫 | export_changed/live_tree_changed均空；最终代码等于全档受测字节 |
+
+本轮快档最后一行原样：
+
+```text
+{fast_line}
+```
+
+本轮全档四分片最后一行，按1–4原样：
+
+```text
+{full_lines}
+```
+
+本轮静态CLI最后一行原样：
+
+```text
+{full['static']['last_line']}
+```
+
+证据：[完整快档](T1b_evidence/m4b_fast/summary.json)、[完整四片全档](T1b_evidence/m4b_full/summary.json)、[实际执行覆盖](T1b_evidence/m4b_full/module_coverage.json)、[命令及运行状态](T1b_evidence/acceptance_recheck_m4b/final_gate_runs.json)、[归档映射](T1b_evidence/acceptance_recheck_m4b/gate_archive.json)、[最终受测字节审计](T1b_evidence/acceptance_recheck_m4b/final_tested_source_audit.json)、[净增/卫生](T1b_evidence/acceptance_recheck_m4b/hygiene.json)。旧轮RED与GREEN原样保留；本轮绿色结果来自新名字的两次独立完整运行，不拼接。"""
+report_path = ROOT / "reports/codex/T1b_report.md"
+report = read(report_path)
+report = replace_once(report, "（第二轮复验返修中）", "（第二轮复验返修完成）")
+old_status = next(line for line in report.splitlines() if line.startswith("**状态："))
+new_status = (f"**状态：T1b_DONE。本次m4b同障碍补门已完成：原版绿、对手源码内变异语义红；"
+              f"当前完整快档{fast['collected']}、全档四片{full['collected']}全部通过，0失败/跳过，静态0违例。"
+              "§6.4记录本轮实测末行；旧轮记录保留，不冒作当前验证。未commit。**")
+report = replace_once(report, old_status, new_status)
+report = replace_once(report, "Codex 两轮均未执行 Git 写命令。", "Codex 各轮均未执行 Git 写命令；本次入口为Claude保存的773b760，见§6.4。")
+report = replace_once(report, "[本轮交付清单](T1b_evidence/acceptance_fix/artifacts.md)",
+                      "[本轮交付清单](T1b_evidence/acceptance_recheck_m4b/artifacts.md)")
+report = replace_once(report, "**【M4B待填：原版定向绿、源码内同障碍m4b语义红、完整快档及四分片末行、静态/执行覆盖/字节守卫、归档审计。】**", section)
+report = replace_once(report, "T1b_PARTIAL：第二轮m4b补门收尾验证中", "T1b_DONE")
+assert report.rstrip().endswith("T1b_DONE") and "M4B待填" not in report
+report_path.write_text(report, encoding="utf-8", newline="")
+
+index_path = ROOT / "reports/EVIDENCE_ARCHIVE.md"
+index = read(index_path)
+index = replace_once(index, "## WO-T1b 验收续单归档（e757883 后未提交字节）",
+                      "## WO-T1b 第一轮验收续单归档（e757883 后字节；历史快照）")
+index += f"""
+## WO-T1b 第二轮m4b返修归档（773b760 后未提交字节）
+
+本轮只补同一凹障碍内部跨凸片的端点式变异测试与两处措辞；原生产核验器正确，未改生产代码/B数据/schema/静态准入，未执行Git写操作。上一节8851/14935为第一轮历史快照，当前新增测试另以完整门核验。
+
+- [入口及三份原字节回滚备份清单](codex/T1b_evidence/acceptance_recheck_m4b/intake.json)：初始HEAD773b760且干净；对手脚本只读复制，不在用户Temp目录运行或写入。
+- [独立源码变异核验](codex/T1b_evidence/acceptance_recheck_m4b/m4b_process_audit.json)：原版绿，原版对手脚本注入m4b后同一语义门红，正确命中假困住断言。
+- [当前快档](codex/T1b_evidence/m4b_fast/summary.json)、[当前全档四片](codex/T1b_evidence/m4b_full/summary.json)：{fast['collected']}/{full['collected']}项均GREEN，0失败/跳过、实际执行66/66、静态0违例。
+- [外部逐文件SHA256](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/_manifests/files.sha256.jsonl)：{archive['files']}文件、{archive['bytes']:,}字节，清单SHA `{archive['manifest_sha256']}`；排除清单目录自身。包含原字节回滚备份、验收脚本及隔离变异副本、日志和受测源码；均在获准外目录。
+- [外归档摘要](codex/T1b_evidence/acceptance_recheck_m4b/external_archive_summary.json)、[门日志映射及双SHA](codex/T1b_evidence/acceptance_recheck_m4b/gate_archive.json)：gzip mtime=0，解压逐字节等于原日志；不删除原日志，不拼接。
+- [当前全档受测源码ZIP](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/m4b_full_source.zip)、[逐成员SHA](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_recheck_m4b/m4b_full_source_manifest.json)：当前工作树字节导出，不是新建Git树；最终报告/本索引回填不改变受测代码。
+- [全部本轮文件链接](codex/T1b_evidence/acceptance_recheck_m4b/artifacts.md)、[当前文件SHA](codex/T1b_evidence/acceptance_recheck_m4b/artifact_manifest.json)、[受测字节审计](codex/T1b_evidence/acceptance_recheck_m4b/final_tested_source_audit.json)、[净增/卫生](codex/T1b_evidence/acceptance_recheck_m4b/hygiene.json)。最终结论见[T1b报告§6.4](codex/T1b_report.md#64-第二轮复验同一凹障碍内跨片的端点式变异)。
+
+外归档仅为本地保存，不等于远端备份；回滚不得覆盖所有者后续修改。C仍为可选项，不记PARTIAL；旧轮RED及所有来源哈希保留。
+"""
+index_path.write_text(index, encoding="utf-8", newline="")
+print("REPORT_FINALIZED", fast["collected"], full["collected"], "T1b_DONE")

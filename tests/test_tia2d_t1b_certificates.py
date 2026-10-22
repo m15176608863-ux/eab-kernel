@@ -65,6 +65,40 @@ def _assert_mixed_pair_enclosure_is_rejected():
     assert "strict convex-pair" in checked.reason
 
 
+def _assert_same_obstacle_mixed_piece_enclosure_is_rejected():
+    from eab.kernel2d.translation_space import translation_component
+    moving = _rectangle(-F(1, 4), -F(1, 4), F(1, 4), F(1, 4))
+    obstacle = ((3, 1), (3, 3), (-3, 3), (-3, -3), (3, -3), (3, -1),
+                (2, -1), (2, -2), (-2, -2), (-2, 2), (2, 2), (2, 1))
+    r, half_side = F(5, 2), F(1, 4)
+    path = ((r, -r), (r, r), (-r, r), (-r, -r), (r, -r))
+    # Rectangle oracle, independent of triangulation and production E/O:
+    # each translated corner square is strictly inside a wall, since both
+    # coordinate magnitudes lie in (2, 3). The first edge passes through the
+    # slit at (5/2, 0), whose whole square lies in (2, 3) x (-1, 1).
+    for point in path[:-1]:
+        assert all(2 < abs(value)-half_side and abs(value)+half_side < 3
+                   for value in point)
+        assert certificates.translation_segment_strictly_blocked(
+            moving, (obstacle,), point, point)
+    gap = (r, F(0))
+    assert 2 < gap[0]-half_side < gap[0]+half_side < 3
+    assert -1 < gap[1]-half_side < gap[1]+half_side < 1
+    assert certificates.translation_segment_is_free(moving, (obstacle,), gap, gap)
+    checked = certificates.verify_trapping_certificate(moving, (obstacle,), path)
+    assert not checked.valid, "enclosure must reject endpoints in different pieces of one obstacle"
+    assert "strict convex-pair" in checked.reason
+    # Every translation (u, 0), u >= 0, avoids the left wall (u-1/4 > -2)
+    # and the upper/lower walls (|y| <= 1/4 < 1); this is an analytic escape
+    # ray, not a conclusion inferred from the production component search.
+    assert -half_side > -2 and half_side < 1
+    assert certificates.verify_escape_certificate(
+        moving, (obstacle,), ((0, 0), (20, 0))).valid
+    result = translation_component(moving, (obstacle,))
+    assert result.status == "ESCAPABLE_TRANSLATION"
+    assert certificates.verify_escape_certificate(moving, (obstacle,), result.path).valid
+
+
 def test_enclosure_has_strict_witnesses():
     moving, obstacles, path = _enclosure()
     checked = certificates.verify_trapping_certificate(moving, obstacles, path)
@@ -82,6 +116,16 @@ def test_enclosure_rejects_boundary_contact():
 def test_enclosure_rejects_blocked_vertices_with_free_edge_interiors():
     """G0 rectangle oracle: blocked diamond vertices, four free edge midpoints."""
     _assert_mixed_pair_enclosure_is_rejected()
+
+
+def test_enclosure_rejects_blocked_vertices_across_one_concave_obstacle_slit():
+    """G0 C-ring rectangle oracle: blocked corners, free slit and rightward ray.
+
+    The primary oracle uses rectangle bounds, without the production E/O
+    construction or the verifier's ear/SAT primitives. The production search
+    and independent escape verifier must agree with this analytic escape.
+    """
+    _assert_same_obstacle_mixed_piece_enclosure_is_rejected()
 
 
 def test_escape_rejects_a_segment_with_only_free_endpoints():
@@ -237,6 +281,26 @@ def test_mutation_checking_trapping_endpoints_in_different_pairs_is_killed(monke
     monkeypatch.setattr(certificates, "_witness", namespace["_witness"])
     with pytest.raises(AssertionError, match="enclosure must reject endpoints in different convex pairs"):
         _assert_mixed_pair_enclosure_is_rejected()
+
+
+def test_mutation_checking_trapping_endpoints_in_same_obstacle_pieces_is_killed(monkeypatch):
+    source = inspect.getsource(certificates._witness)
+    header = "def _witness(first_parts, other_parts, start, end):\n"
+    assert source.count(header) == 1
+    # m4b corrupts the witness search before its original strict segment
+    # check, allowing independent convex-pair witnesses in ONE obstacle.
+    replacement = header + (
+        "    for oi, parts in enumerate(other_parts):\n"
+        "        hit_start = any(_strict_pair_segment(a, b, start, start) for a in first_parts for b in parts)\n"
+        "        hit_end = any(_strict_pair_segment(c, d, end, end) for c in first_parts for d in parts)\n"
+        "        if hit_start and hit_end:\n"
+        "            return oi, 0, 0\n")
+    mutated = source.replace(header, replacement)
+    namespace = dict(certificates.__dict__)
+    exec(compile(mutated, "<same-obstacle-pieces-trapping-mutant>", "exec"), namespace)
+    monkeypatch.setattr(certificates, "_witness", namespace["_witness"])
+    with pytest.raises(AssertionError, match="enclosure must reject endpoints in different pieces of one obstacle"):
+        _assert_same_obstacle_mixed_piece_enclosure_is_rejected()
 
 
 def test_verifier_imports_no_production_geometry():

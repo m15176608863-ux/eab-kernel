@@ -1,0 +1,42 @@
+"""Run one complete fast gate, then one complete four-shard full gate.
+
+Run from repository root. Each name must be new; a failed run stops the sequence.
+All commands, start times and completion states are preserved on disk.
+"""
+from datetime import datetime, timezone
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+root = Path.cwd().resolve()
+output = root / "reports/codex/T1b_evidence/acceptance_recheck_m4b"
+temp = root / "reports/codex/T1b_evidence/tmp"
+env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1",
+           PYTHONUNBUFFERED="1", TEMP=str(temp), TMP=str(temp))
+runs = []
+for name, extra in (("m4b_fast", []), ("m4b_full", ["--runslow"])):
+    command = [sys.executable, "-B", "-X", "utf8", "tools/tia2d_t1b_run_gates.py",
+               "--name", name, *extra]
+    log = output / (name + "_runner.txt")
+    assert not log.exists(), "Do not overwrite a previous run"
+    assert not (root / "reports/codex/T1b_evidence" / name).exists()
+    row = dict(name=name, command=command, started_utc=datetime.now(timezone.utc).isoformat(),
+               status="RUNNING", log=str(log))
+    runs.append(row)
+    result = output / "final_gate_runs.json"
+    result.write_text(json.dumps(runs, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+    print("START", name, row["started_utc"], flush=True)
+    start = time.monotonic()
+    with log.open("w", encoding="utf-8", newline="") as stream:
+        process = subprocess.run(command, cwd=root, env=env, stdout=stream, stderr=subprocess.STDOUT)
+    row.update(returncode=process.returncode, elapsed_seconds=time.monotonic()-start,
+               status="COMPLETE" if process.returncode == 0 else "FAILED",
+               completed_utc=datetime.now(timezone.utc).isoformat())
+    result.write_text(json.dumps(runs, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+    print("END", name, row["status"], row["elapsed_seconds"], flush=True)
+    if process.returncode:
+        raise SystemExit(process.returncode)
+print("FINAL_GATES_COMPLETE", flush=True)

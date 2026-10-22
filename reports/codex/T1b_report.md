@@ -1,10 +1,10 @@
-# WO-T1b：TIA 二维制造公差困住与非退化形貌（验收续单完成）
+# WO-T1b：TIA 二维制造公差困住与非退化形貌（第二轮复验返修完成）
 
-**一句话结论：A 用独立核验的几何证书判断给定多边形能否仅靠平移逃出；B 是含转动、无限抗压、关联流动的理想刚体极限分析，原36个高宽比1:32的薄块算例虽经独立程序全部复算吻合、齿形也确实改变摩擦阈值，但无齿对照本来就有非零阈值，主要解释是 T1a 细长块推力线公式的推广，不是新的普适形貌规律，更不能直接套用到厚块、真实材料或有限运动。**
+**一句话结论：A 用独立核验的几何证书判断给定多边形能否仅靠平移逃出；B 是含转动、无限抗压、关联流动的理想刚体极限分析，原36个高宽比1:32的薄块算例虽经独立程序全部复算吻合、齿形也确实改变摩擦阈值，但A=0无齿对照本来就有非零阈值且恰等于T1a细长块公式，主要解释是 T1a 细长块推力线公式的推广，不是新的普适形貌规律，更不能直接套用到厚块、真实材料或有限运动。**
 
-**状态：T1b_DONE。本次必补项已完成；当前工作字节完整快档8851项、全档四分片14935项全部通过，0失败、0跳过，静态构造0违例。Claude此前已完成e757883的新鲜树全档和A/B独立复核；本次新增字节另经当前树H1验证，不挪用旧绿。C仍未做，按工单不计PARTIAL；未commit。**
+**状态：T1b_DONE。本次m4b同障碍补门已完成：原版绿、对手源码内变异语义红；当前完整快档8853、全档四片14937全部通过，0失败/跳过，静态0违例。§6.4记录本轮实测末行；旧轮记录保留，不冒作当前验证。未commit。**
 
-本报告由 Codex 执行，供 Claude 交接审阅。原轮开工基线 `7f9510502ba265e53b5be8de4be22308dfe65f9a`；工作树 `D:/eab-wt/cx-e2`。原成果最初由未提交工作字节生成，保存了实际源码前后 SHA256；随后 **Claude** 将其保存为本地提交 `e757883ac20fd0b3fa553ce1c3c24a94c1e55c8f`（“T1b 待验收”）。续单入口已核该 HEAD 与干净状态，回滚锚点为其只读 archive，见[入口及来源审计](T1b_evidence/acceptance_fix/intake.json)。Codex 两轮均未执行 Git 写命令。原设计 SHA-256 为 `6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac`，设计及 tia2d-2 schema 仍不改；本次新增证据不得倒标成旧基线提交生成。
+本报告由 Codex 执行，供 Claude 交接审阅。原轮开工基线 `7f9510502ba265e53b5be8de4be22308dfe65f9a`；工作树 `D:/eab-wt/cx-e2`。原成果最初由未提交工作字节生成，保存了实际源码前后 SHA256；随后 **Claude** 将其保存为本地提交 `e757883ac20fd0b3fa553ce1c3c24a94c1e55c8f`（“T1b 待验收”）。续单入口已核该 HEAD 与干净状态，回滚锚点为其只读 archive，见[入口及来源审计](T1b_evidence/acceptance_fix/intake.json)。Codex 各轮均未执行 Git 写命令；本次入口为Claude保存的773b760，见§6.4。原设计 SHA-256 为 `6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac`，设计及 tia2d-2 schema 仍不改；本次新增证据不得倒标成旧基线提交生成。
 
 ## 1. 口径、范围与交付导航
 
@@ -15,7 +15,7 @@
 - 仅写本工作树及获准的 `D:/eab-evidence/reports/codex/T1b_evidence/`；不写姊妹仓库，不新增静态构造准入，不改既有数学合同。
 - 没有生成新的 C++ 正式批次。新增诊断数据**不冒用 tia2d-2 schema**，新公共字段均列在第8节供 Claude 决定。
 
-关键成果：[P0小汇总](T1b_evidence/p0_final_summary.json)、[P0完整输入及证书](file:///D:/eab-evidence/reports/codex/T1b_evidence/p0_final.json)、[P1原始冻结小汇总](T1b_evidence/p1_summary.json)、[P1验收分类及升级](T1b_evidence/acceptance_fix/p1_classification.json)、[理想模型的采样参数曲线](T1b_evidence/acceptance_fix/p1_figures/p1_design_curves.png)、[本轮交付清单](T1b_evidence/acceptance_fix/artifacts.md)。原36例完整证书仍保存在[旧批次](file:///D:/eab-evidence/reports/codex/T1b_evidence/p1_final_20261022/)，三项升级证书另存[新批次](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/p1_classification_final/)，未覆盖历史冻结证据。逐文件完整性与外部映射见 [EVIDENCE_ARCHIVE](../EVIDENCE_ARCHIVE.md)。
+关键成果：[P0小汇总](T1b_evidence/p0_final_summary.json)、[P0完整输入及证书](file:///D:/eab-evidence/reports/codex/T1b_evidence/p0_final.json)、[P1原始冻结小汇总](T1b_evidence/p1_summary.json)、[P1验收分类及升级](T1b_evidence/acceptance_fix/p1_classification.json)、[理想模型的采样参数曲线](T1b_evidence/acceptance_fix/p1_figures/p1_design_curves.png)、[本轮交付清单](T1b_evidence/acceptance_recheck_m4b/artifacts.md)。原36例完整证书仍保存在[旧批次](file:///D:/eab-evidence/reports/codex/T1b_evidence/p1_final_20261022/)，三项升级证书另存[新批次](file:///D:/eab-evidence/reports/codex/T1b_evidence/acceptance_fix/p1_classification_final/)，未覆盖历史冻结证据。逐文件完整性与外部映射见 [EVIDENCE_ARCHIVE](../EVIDENCE_ARCHIVE.md)。
 
 ## 2. A：精确腐蚀、自由空间与独立证书
 
@@ -267,7 +267,8 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈；这与上述
 | 真实源码内部变异/反例 | 报红的语义门 |
 |---|---|
 | 困住段允许触及开贯入边界（≤/≥改为</>） | `test_mutation_accepting_nonstrict_enclosure_is_killed`：严格屏障应拒绝接触 |
-| 困住段只查两端，允许两端分属不同凸片 | `test_enclosure_rejects_blocked_vertices_with_free_edge_interiors` 与 `test_mutation_checking_trapping_endpoints_in_different_pairs_is_killed`：菱形四顶点在墙片内、每条边却穿过自由空间 |
+| 困住段只查两端，允许端点分属**不同障碍**的凸片 | 上一轮跨障碍门 `test_enclosure_rejects_blocked_vertices_with_free_edge_interiors` 与 `test_mutation_checking_trapping_endpoints_in_different_pairs_is_killed`：菱形四顶点分别在四面墙内、边中点自由；不宣称它覆盖同一凹障碍内部的跨片缺陷 |
+| 困住段只查两端，允许端点分属**同一凹障碍**的不同凸片对（m4b） | 本轮 `test_enclosure_rejects_blocked_vertices_across_one_concave_obstacle_slit` 与 `test_mutation_checking_trapping_endpoints_in_same_obstacle_pieces_is_killed`：单个C形障碍内的闭路右边穿过开缝；必须拒绝伪困住证书，并核原布置可逃逸 |
 | 逃逸段只检查两端 | `test_mutation_checking_only_escape_endpoints_is_killed`：两端自由、中段贯入应拒绝 |
 | 障碍并集替换凸包 | `test_mutation_hull_obstruction_is_detected_by_semantic_escape_gate`：已知可绕行的C形出口不能丢失；独立核验仍阻止假困住 |
 | 只查结构元顶点而漏凹槽 | U形槽两门、八边形斜角与细颈、八边形刚体运动、凸耳测试；**不是**独立矩形覆盖oracle，详见下文 |
@@ -275,7 +276,7 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈；这与上述
 
 变异修改运行中的被测函数源码，原语义断言失败；不是产出后塞假数据、哈希不符或解序巧合。元门使用随机有理半角旋转、平移0/10³/10⁵及独立几何/荷载单位缩放；P1还将2^-20特征尺度与10⁵坐标同现。腐蚀变换必须同步旋转K；轴固定方形K本来就不各向同性。
 
-新增菱形闭环为 `(5/2,0)→(0,5/2)→(−5/2,0)→(0,−5/2)→(5/2,0)`。四顶点分别在不同墙的严格贯入区，四条边中点 `(±5/4,±5/4)` 连同半边长1/4的移动方形都严格位于中央空腔。真实核验器拒绝；运行时从真实 `_witness` 源码注入混片端点变异后，同一语义断言确实报红，独立进程最后一行 `1 failed in 0.09s`。这修复的是测试缺口，生产核验器本来已正确。
+上一轮新增菱形闭环为 `(5/2,0)→(0,5/2)→(−5/2,0)→(0,−5/2)→(5/2,0)`。四顶点分别在不同墙的严格贯入区，四条边中点 `(±5/4,±5/4)` 连同半边长1/4的移动方形都严格位于中央空腔。真实核验器拒绝；运行时从真实 `_witness` 源码注入混片端点变异后，同一语义断言确实报红，独立进程最后一行 `1 failed in 0.09s`。这修复的是测试缺口，生产核验器本来已正确。
 
 顶点式腐蚀变异的定向实际重放为 `11 failed, 6 passed in 1.65s`；矩形覆盖oracle的两个例子都仍绿。真实捕获门是 `test_element_vertex_only_containment_misses_an_indentation`、`test_element_vertices_on_cavity_edges_do_not_certify_filled_containment`、`test_rational_octagon_reflex_bevel_closed_form`（3例）、`test_disconnected_erosion_and_exact_thin_neck_are_rejected[octagon]`、`test_erosion_exact_rigid_motion_and_units`（3个八边形例）和 `test_polygon_knob_reports_actual_segments_and_verified_opposite_states`（2例）。[A订正说明及原始红灯证据](T1b_evidence/acceptance_fix/trapping_fix.md)记录真实报红位置，不把脚手架错误当变异杀伤。
 
@@ -322,7 +323,7 @@ T1a同相G2/G3/G4各重跑一个原族代表，均仍为闭零阈；这与上述
 
 证据：[快档](T1b_evidence/final_fast/summary.json)、[全档RED](T1b_evidence/final_full/summary.json)、[定向修复](T1b_evidence/postfix_static.json)、[当轮修复后快档](T1b_evidence/postfix_fast/summary.json)、[无Git](T1b_evidence/no_git_postfix_summary.json)、[P0回读](T1b_evidence/p0_readback.json)、[P1回读](T1b_evidence/p1_readback_audit.json)、[全档后字节差异](T1b_evidence/post_gate_source_check.json)。
 
-### 6.3 Claude验收与本次续单最终门
+### 6.3 第一轮验收续单最终门（历史，773b760复验前）
 
 Claude的本轮验收反馈：其保存的 `e757883` 新鲜工作树已经完成 `--runslow` 四分片 **14848 passed、0 failed、0 skipped**；A/B两名对手均确认数字与证书正确，仅要求补门和订正解释。A对手用自写检查器核对约90万腐蚀网格点0失配、308逃逸及176困住证书全部通过、燕尾/凸耳闭式及阈值处可逃逸吻合，并对18个内块独立找到逃逸路线；B独立LP为36/36吻合。以上是**Claude提供的验收事实**，不是Codex本次重新执行全量独立检查所得；计数范围也不与§6.2原P0回读混算。对手脚本及来源SHA已只读归档，见[入口清单](T1b_evidence/acceptance_fix/intake.json)。
 
@@ -365,6 +366,51 @@ exact construction AST gate: 0 violation(s)
 
 厚度补充另经内部交叉QA：独立参考LP86次查询、39个持久化样本的阈值及正阈值下侧核对、227个存储矩阵证书实例核验全部通过，见[内部交叉复核](T1b_evidence/acceptance_fix/thickness_cross_review.md)。这不冒称Claude安排的新增独立验收路线，也不替代本次完整门。
 
+
+
+### 6.4 第二轮复验：同一凹障碍内跨片的端点式变异
+
+Claude将上一轮返修保存为 `773b760df0e4acd2894f3a4949f0f2953951bfdd`，本次入口已核HEAD及干净状态。其定向复验确认三项有理升级、厚度窄带、推力线解释与措辞均通过独立LP，但m4b骗过此前130项T1b困住测试及静态门；这是所有者给出的复验结论，不冒称本代理又重算了B。原验收脚本只读归档，备份/来源见[本轮入口记录](T1b_evidence/acceptance_recheck_m4b/intake.json)。
+
+反例仅含一个C形凹障碍：外框 `[-3,3]²` 去掉中央 `(-2,2)²`，右壁再开 `x∈[2,3],y∈(-1,1)` 的缝。移动方块为 `[-1/4,1/4]²`，待核闭路是 `(5/2,-5/2)→(5/2,5/2)→(-5/2,5/2)→(-5/2,-5/2)→(5/2,-5/2)`。四角均严格贯入同一障碍，而右边中点 `(5/2,0)` 连同整个移动方块位于开缝中，所以非零绕数与各顶点在O内都不足以证明整条闭路在O内。新门还检查原版生产 `translation_component` 为 `ESCAPABLE_TRANSLATION`，并独立核验其逃逸路径。
+
+本轮变异严格保留“同一个障碍”的限制：对每个障碍的凸片集，分别寻找包含起点和终点的凸片对，再错误放行整段。它与上一轮允许跨障碍的变异是不同缺陷，二者分别有具名语义门；生产核验器原本正确，本轮不改生产代码或冻结证据，也不因本轮补门声称任意可能变异都已覆盖。
+
+本轮定向证书文件最后一行 `35 passed in 0.16s`，修改测试的静态扫描0违例。源码内m4b变异门通过；另在获准外目录的隔离副本中，直接调用对手原版 `make_m4b.py` 注入同一缺陷，以同一个具名语义测试运行独立pytest进程：原版 `1 passed in 0.12s`，变异 `1 failed in 0.20s`。变异直接失败于 `AssertionError: enclosure must reject endpoints in different pieces of one obstacle`，不是源码哈希、构造或环境错误。原版绿灯同时覆盖生产可逃逸状态、人工给定直线及产出路径的独立逃逸核验；66个生产源码文件与测试原件前后哈希一致。
+
+见[独立源码变异审计](T1b_evidence/acceptance_recheck_m4b/m4b_process_audit.json)、[原始语义红灯](T1b_evidence/acceptance_recheck_m4b/m4b_process_audit_mutant.txt)、[可复跑变异脚本](T1b_evidence/acceptance_recheck_m4b/m4b_source_mutation_audit.py.txt)、[原版证书文件全测](T1b_evidence/acceptance_recheck_m4b/m4b_original_tests.txt)。
+
+本轮完整快档及快慢全档使用**当前工作树字节导出**运行，不是新建Git树；两次均核对导出副本和当前工作树前后不变。收集/派发/执行节点多重集合相等，0失败、0跳过，实际执行覆盖66/66（59函数模块、7声明模块）。未改生产代码、冻结数据、设计/schema或静态准入；收尾仅回填本报告、归档索引及独立证据目录。
+
+| 本轮最终验证 | 结果 |
+|---|---|
+| 完整快档 | GREEN，8853项，H1总用时325.312s |
+| 快慢全档四分片 | GREEN，14937项，H1总用时1448.344s |
+| 静态构造CLI | 0违例，无新增准入 |
+| 字节守卫 | export_changed/live_tree_changed均空；最终代码等于全档受测字节 |
+
+本轮快档最后一行原样：
+
+```text
+8853 passed in 312.68s (0:05:12)
+```
+
+本轮全档四分片最后一行，按1–4原样：
+
+```text
+3735 passed in 952.36s (0:15:52)
+3734 passed in 783.71s (0:13:03)
+3734 passed in 1302.50s (0:21:42)
+3734 passed in 739.98s (0:12:19)
+```
+
+本轮静态CLI最后一行原样：
+
+```text
+exact construction AST gate: 0 violation(s)
+```
+
+证据：[完整快档](T1b_evidence/m4b_fast/summary.json)、[完整四片全档](T1b_evidence/m4b_full/summary.json)、[实际执行覆盖](T1b_evidence/m4b_full/module_coverage.json)、[命令及运行状态](T1b_evidence/acceptance_recheck_m4b/final_gate_runs.json)、[归档映射](T1b_evidence/acceptance_recheck_m4b/gate_archive.json)、[最终受测字节审计](T1b_evidence/acceptance_recheck_m4b/final_tested_source_audit.json)、[净增/卫生](T1b_evidence/acceptance_recheck_m4b/hygiene.json)。旧轮RED与GREEN原样保留；本轮绿色结果来自新名字的两次独立完整运行，不拼接。
 
 ## 7. 工单订正清单
 
@@ -410,6 +456,6 @@ python -X utf8 tools/tia2d_t1b_thickness.py --output D:/eab-evidence/reports/cod
 
 数据目录必须新建；中断或源码守卫变化整次作废，不能拼接。逐例/逐分片进度落盘；大证据留获准外目录，仓库只留报告、图和小汇总；回滚原字节及清单保留，不自动覆盖用户后续变化。
 
-遗留：资源限额之外输入仍可能UNPROVED；面积/直径只给保守界；8个P1无理端点的开闭与导数未证（根的次数/不可约性及认证括号已给）；任意参数域闭式、真实材料/非关联摩擦、有限转动与圆弧极限均未证明。**Claude对原提交的独立对抗核查与新鲜Git树验证已经执行**；本次补门和工具新增字节已经另经当前树快档/全档，不冒称由原14848绿灯覆盖。C项仍可选，不因未做C记PARTIAL。
+遗留：资源限额之外输入仍可能UNPROVED；面积/直径只给保守界；8个P1无理端点的开闭与导数未证（根的次数/不可约性及认证括号已给）；任意参数域闭式、真实材料/非关联摩擦、有限转动与圆弧极限均未证明。**Claude对原提交的独立对抗核查与新鲜Git树验证已经执行**；第一轮新增字节已按§6.3验证；本次m4b补门再以§6.4的独立完整运行验证，不冒称由旧绿灯覆盖。C项仍可选，不因未做C记PARTIAL。
 
 T1b_DONE

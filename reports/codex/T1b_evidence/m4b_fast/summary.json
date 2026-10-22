@@ -1,0 +1,45 @@
+{
+  "audit": "GREEN",
+  "complete": true,
+  "collected": 8853,
+  "shards": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-p",
+        "h1_execution_plugin",
+        "@D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\m4b_fast\\shard_1_nodes.txt",
+        "--basetemp",
+        "D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\m4b_fast\\pytest_1",
+        "--durations=0"
+      ],
+      "exit_code": 0,
+      "seconds": 318.89100000006147,
+      "last_line": "8853 passed in 312.68s (0:05:12)",
+      "log": "D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\m4b_fast\\shard_1.txt",
+      "dispatched": 8853,
+      "collected": 8853,
+      "executed": 8853,
+      "complete": true,
+      "node_sets_equal": true,
+      "skip_count": 0,
+      "failed_count": 0
+    }
+  ],
+  "static": null,
+  "module_coverage_complete": true,
+  "elapsed_seconds": 325.31200000003446,
+  "source": "D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\m4b_fast\\source",
+  "temp": "D:\\eab-wt\\cx-e2\\reports\\codex\\T1b_evidence\\tmp\\m4b_fast",
+  "export_changed": [],
+  "live_tree_changed": [],
+  "fresh_git_checkout": false,
+  "version": "h1-gates-1"
+}
