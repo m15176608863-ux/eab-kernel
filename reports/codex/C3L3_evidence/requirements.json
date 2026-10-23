@@ -1,0 +1,119 @@
+{
+  "work_order": "WO-C3L3",
+  "implementation_status": "P0_P1_DELIVERED_P2_REPORTED",
+  "acceptance_status": "PARTIAL_OWNER_GATES_PENDING",
+  "requirements": [
+    {
+      "id": "P0-1",
+      "status": "PASS",
+      "evidence": [
+        "cpp_tests.json",
+        "differential.json"
+      ],
+      "gate": "test_statics.cpp::matrix_and_certificates/g5_closed_form_and_masks"
+    },
+    {
+      "id": "P0-2",
+      "status": "PASS",
+      "evidence": [
+        "cpp_tests.json",
+        "differential.json"
+      ],
+      "gate": "test_statics.cpp::matrix_and_certificates; verify_limit"
+    },
+    {
+      "id": "P0-3",
+      "status": "PASS",
+      "evidence": [
+        "cpp_tests.json",
+        "differential.json"
+      ],
+      "gate": "test_critical.cpp::binary_grid/polynomial_guards/threshold_contracts"
+    },
+    {
+      "id": "P0-4",
+      "status": "PASS",
+      "evidence": [
+        "differential.json"
+      ],
+      "limit_queries": 217,
+      "critical_queries_including_one_call_error": 171,
+      "mismatch": 0
+    },
+    {
+      "id": "P0-5",
+      "status": "PASS",
+      "evidence": [
+        "cpp_tests.json",
+        "delivery_audit.json"
+      ],
+      "gate": "test_c3l3_abi.cpp; test_c_header.c"
+    },
+    {
+      "id": "P1-6",
+      "status": "PASS",
+      "evidence": [
+        "differential.json",
+        "cpp_tests.json"
+      ],
+      "gate": "rigid_units_and_anchor_translation/invariant_thresholds; metamorphic"
+    },
+    {
+      "id": "P1-7",
+      "status": "PASS",
+      "evidence": [
+        "differential.json",
+        "cpp_tests.json"
+      ],
+      "gate": "valid_implications_and_reverse_counterexample"
+    },
+    {
+      "id": "P2-8",
+      "status": "REPORTED_NOT_A_GATE",
+      "evidence": [
+        "scale.json"
+      ],
+      "rows": 60,
+      "columns": 1441
+    }
+  ],
+  "owner_pending": [
+    "fresh Git tree or clone verification arranged by owner",
+    "single independent adversarial review arranged by Claude"
+  ],
+  "explicit_non_deliverables": [
+    "general L4 derivatives/evaluate_sensitivity2",
+    "full algebraic root engine",
+    "optional self-stress attachment",
+    "stable published ABI"
+  ],
+  "verification": {
+    "baseline": {
+      "audit": "GREEN",
+      "collected": 15035,
+      "last_lines": [
+        "3759 passed in 818.19s (0:13:38)",
+        "3759 passed in 1090.41s (0:18:10)",
+        "3759 passed in 993.06s (0:16:33)",
+        "3758 passed in 1550.29s (0:25:50)"
+      ]
+    },
+    "final_fast": {
+      "audit": "GREEN",
+      "collected": 8972,
+      "last_lines": [
+        "8972 passed in 323.81s (0:05:23)"
+      ]
+    },
+    "final_full": {
+      "audit": "GREEN",
+      "collected": 15056,
+      "last_lines": [
+        "3764 passed in 1431.68s (0:23:51)",
+        "3764 passed in 762.24s (0:12:42)",
+        "3764 passed in 1087.77s (0:18:07)",
+        "3764 passed in 977.77s (0:16:17)"
+      ]
+    }
+  }
+}

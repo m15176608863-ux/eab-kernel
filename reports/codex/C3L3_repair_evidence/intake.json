@@ -1,0 +1,106 @@
+{
+  "work_order": "WO-C3L3 acceptance repair",
+  "target": "Kill closed/open continuation mutants; certify broad-bracket differences without weakening production; final build/diff/fast/full4 and truthful report",
+  "base_commit": "c8718bb0850328defd8f0cc16fb4f3a09e922975",
+  "entry_clean": true,
+  "scope": [
+    "eab2/tests/test_critical.cpp",
+    "tools/eab2_c3l3_critical_mutations.py",
+    "tools/eab2_c3l3_diff.py",
+    "tests/test_eab2_c3l3_harness.py",
+    "tools/eab2_c3l3_thickness.py",
+    "reports/codex/C3L3_report.md",
+    "reports/EVIDENCE_ARCHIVE.md",
+    "reports/codex/C3L3_repair_evidence",
+    "reports/codex/C3L3_evidence/differential*",
+    "tests/data/eab2_c3l3_thickness_summary.json"
+  ],
+  "non_goals": [
+    "production C++ changes",
+    "src/eab changes",
+    "git writes",
+    "install/download",
+    "weaken threshold proof",
+    "claim owner reacceptance"
+  ],
+  "success_criteria": [
+    "two named null-threshold regressions",
+    "seven internal mutants caught by designated semantic assertions",
+    "wide bracket all orientations/steps0..6/mu_max1/8..4 plus Farkas",
+    "20 reported asymmetries traced and nonnull proof independently verified",
+    "both nonnull remain exact equal and invalid proof rejected",
+    "7 exact thickness +18 controls",
+    "complete build/old five families plus new families/fast/full4 all green",
+    "no production changes; total candidate delta over1b6b4f3 <=2MB"
+  ],
+  "verification_commands": [
+    "eab2/build_eab2.bat",
+    "python tools/eab2_c3l3_diff.py --dll <absolute eab2.dll> --family all --output <authority>",
+    "python tools/h1_run_gates.py --name repair_fast --evidence-root reports/codex/C3L3_repair_evidence",
+    "python tools/h1_run_gates.py --name repair_full --runslow --evidence-root reports/codex/C3L3_repair_evidence"
+  ],
+  "rollback_anchor": {
+    "commit": "c8718bb0850328defd8f0cc16fb4f3a09e922975",
+    "backup": "reports\\codex\\C3L3_repair_evidence\\tmp\\rollback"
+  },
+  "baseline_provenance": {
+    "original_work_order_baseline": "reports/codex/C3L3_evidence/baseline/summary.json",
+    "owner_reported_fresh_c8718bb": "input/C3L3_acceptance.md",
+    "owner_reported_full_count": 15056,
+    "new_opening_full_run": false,
+    "reason": "Continuation of original work order; original opening full already executed, owner supplied fresh c8718bb full baseline; avoid redundant full run"
+  },
+  "steps": [
+    {
+      "name": "inspect acceptance and define scoped regressions",
+      "state": "completed"
+    },
+    {
+      "name": "repair gates and comparison policy",
+      "state": "completed"
+    },
+    {
+      "name": "build and authoritative differential/fast/full4",
+      "state": "completed"
+    },
+    {
+      "name": "Chinese report and append-only evidence closeout",
+      "state": "completed"
+    }
+  ],
+  "estimated_final_full_seconds": 1600,
+  "estimate_basis": "previous final full 1583.046s; wide family is separate differential",
+  "input_files": [
+    {
+      "source": "C:\\Users\\m1517\\AppData\\Local\\Temp\\claude\\C--Agent--claude\\659f270b-c2f6-43a9-9717-6dc28c605be4\\scratchpad\\c3l3_accept\\C3L3_acceptance.md",
+      "copy": "reports\\codex\\C3L3_repair_evidence\\input\\C3L3_acceptance.md",
+      "bytes": 18247,
+      "sha256": "9b4a19a3861dcbc4ec339e6180653f00788da9c7c4f122b09bb6450b157b38d6"
+    },
+    {
+      "source": "C:\\Users\\m1517\\AppData\\Local\\Temp\\claude\\C--Agent--claude\\659f270b-c2f6-43a9-9717-6dc28c605be4\\scratchpad\\c3l3_accept\\critical\\scripts\\mutate.py",
+      "copy": "reports\\codex\\C3L3_repair_evidence\\input\\critical\\scripts\\mutate.py",
+      "bytes": 6255,
+      "sha256": "c2cbe639f0d730c17ef7f54374da1f3465fdb94cdfa88029a3e5e03dd469ef01"
+    },
+    {
+      "source": "C:\\Users\\m1517\\AppData\\Local\\Temp\\claude\\C--Agent--claude\\659f270b-c2f6-43a9-9717-6dc28c605be4\\scratchpad\\c3l3_accept\\critical\\scripts\\m_compare.py",
+      "copy": "reports\\codex\\C3L3_repair_evidence\\input\\critical\\scripts\\m_compare.py",
+      "bytes": 2640,
+      "sha256": "984be6da0be2a650bce3d422c9477ad04fc38febb030ebdc7d767aa58a076be0"
+    },
+    {
+      "source": "C:\\Users\\m1517\\AppData\\Local\\Temp\\claude\\C--Agent--claude\\659f270b-c2f6-43a9-9717-6dc28c605be4\\scratchpad\\c3l3_accept\\critical\\scripts\\adv.py",
+      "copy": "reports\\codex\\C3L3_repair_evidence\\input\\critical\\scripts\\adv.py",
+      "bytes": 16185,
+      "sha256": "9411c7a01c5e776c7af0d54b94e30f0841584bf300b92a09fd6a8e67cc53decb"
+    },
+    {
+      "source": "C:\\Users\\m1517\\AppData\\Local\\Temp\\claude\\C--Agent--claude\\659f270b-c2f6-43a9-9717-6dc28c605be4\\scratchpad\\c3l3_accept\\critical\\scripts\\quad.py",
+      "copy": "reports\\codex\\C3L3_repair_evidence\\input\\critical\\scripts\\quad.py",
+      "bytes": 3734,
+      "sha256": "c6e07ff0fa32437bc989c2d95ab41d7860dee94d0068852749b2649d67cadad7"
+    }
+  ],
+  "remaining_owner_action": "Claude re-review of repaired critical path"
+}

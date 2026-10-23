@@ -1,0 +1,33 @@
+{
+  "schema": "eab2.c3l3.repair_hygiene.v1",
+  "status": "PASS",
+  "base_commit": "1b6b4f32ff3c5716f8e3a24ad73dd3cf6081f39c",
+  "repair_head": "c8718bb0850328defd8f0cc16fb4f3a09e922975",
+  "calculation": "Current modified/new nonignored candidate bytes minus baseline blob bytes, including verified deletions; not Git history/pack size.",
+  "candidate_files": 142,
+  "current_files": 139,
+  "deleted_files": [
+    "reports/codex/C3L3_evidence/differential.json",
+    "reports/codex/C3L3_evidence/differential.log",
+    "reports/codex/C3L3_evidence/differential.progress.json"
+  ],
+  "maximum_file_limit_bytes": 1000000,
+  "overall_net_limit_bytes": 2000000,
+  "utf8_no_bom_and_consistent_per_file_newlines": true,
+  "batch_ascii": true,
+  "no_compiler_binaries_in_candidates": true,
+  "git_diff_check": true,
+  "totals": {
+    "1b6b4f32ff3c5716f8e3a24ad73dd3cf6081f39c": {
+      "current_candidate_bytes": 1472372,
+      "base_candidate_bytes": 169012,
+      "net_bytes": 1303360
+    },
+    "c8718bb0850328defd8f0cc16fb4f3a09e922975": {
+      "current_candidate_bytes": 1472372,
+      "base_candidate_bytes": 901586,
+      "net_bytes": 570786
+    }
+  },
+  "maximum_candidate_file_bytes": 106486
+}

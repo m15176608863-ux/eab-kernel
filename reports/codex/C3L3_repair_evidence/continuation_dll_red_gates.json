@@ -1,0 +1,190 @@
+{
+  "schema": "eab2.c3l3.repair_continuation_dll_rejection.v1",
+  "checker_sha256": "f9e66ec40e78107836f66b1e5368f465624975e08d1d42348559bb2d915f6649",
+  "checker_unchanged": true,
+  "build_summary_sha256": "7c6ec8dacc9a2ae459c85fdea51c7aeeebf87c6ca3a960102c812045caa3c2c4",
+  "build": {
+    "schema": "eab2.c3l3.repair_continuation_dll_build.v1",
+    "build_identity": "eab2-c3l3;compiler=MSVC-19.44.35227.0;toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20;repair-mutant",
+    "c_api_source_sha256": "4083d70194dffc50aa12d1c23fab920951b52f243b31e5b9b2afcb3a7b0edc6b",
+    "c_api_unchanged": true,
+    "command": [
+      "cl /nologo /std:c++20 /O2 /DNDEBUG /MD /utf-8 /permissive- /fp:precise /W4 /EHsc /DBOOST_MP_STANDALONE /I\"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\" /I\"D:\\eab-wt\\cx-c0\\eab2\\src\" /I\"D:\\eab-wt\\cx-c0\\eab2\\include\" /I\"D:\\eab-wt\\cx-c0\\eab2\\third_party\\boost_multiprecision_1_86_0\\include\" /DEAB2_BUILD_DLL /c \"D:\\eab-wt\\cx-c0\\eab2\\src\\c_api.cpp\" /Fo:c_api.obj",
+      "link /nologo /DLL /OUT:\"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\closed_no_lower_continuation\\eab2.dll\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\c_api.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation\\critical.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\"",
+      "dumpbin /nologo /exports \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\closed_no_lower_continuation\\eab2.dll\" > \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\closed_no_lower_continuation\\exports.log\"",
+      "link /nologo /DLL /OUT:\"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\open_no_upper_ray\\eab2.dll\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\c_api.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray\\critical.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj\" \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj\"",
+      "dumpbin /nologo /exports \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\open_no_upper_ray\\eab2.dll\" > \"D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\open_no_upper_ray\\exports.log\""
+    ],
+    "build_exit_code": 0,
+    "seconds": 2.5284624999621883,
+    "formal_build_dependency": false,
+    "reused_objects_from_this_isolated_run": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1",
+    "production_exports_only": true,
+    "variants": [
+      {
+        "name": "closed_no_lower_continuation",
+        "dll": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\closed_no_lower_continuation\\eab2.dll",
+        "critical_mutant_sha256": "96e6a0d80667205818948da7c0c61813c8913ea08157487b16de663f84a542ec",
+        "replacement": {
+          "before": "const bool closed = at.mathematical_status == \"UNBOUNDED\" && (candidate == Rational(0) || below.has_value());",
+          "after": "const bool closed = at.mathematical_status == \"UNBOUNDED\";",
+          "count": 1,
+          "character_offset": 16767
+        },
+        "fresh_run_object_sha256": {
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj": "74dd1171c49b833234f8ecf32ac61cc39677c15baafbdbb2c25fffd174bd23cc",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj": "7d2593370ddf8ea3b5d030d00c930d630a03f5246449984428e1765622c61bfb",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj": "8b24c9e864b6420f2083febcefd717dfd43041b1f8a80f139b14be204fbe7ee4",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj": "6a18e180af89dd484ccad5999614a19af286af6e00734661b48e6fd393b3fe93",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj": "7a06f53ec9f160a6f9af8f832e2061da7d77e3a707e9536a3b12d325b847ed98",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj": "7a80af1b1ecbbcc7abb637c1b75cb11298e18b03086d8b039da370db95dce902",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj": "d159a710dacbf171bfb85ca0600e2fa61dc3bbcc833f5c2df5ecfd802044c1b2",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\closed_no_lower_continuation\\critical.obj": "3cddee687517cda08f583d521f23fbf22195d32f028e373597dd788855ef419c"
+        },
+        "dll_sha256": "414f8a9d078cf5e858d99d2db644d2c21c2a005696a866a49b744190ccc00734",
+        "exports": [
+          "eab2_assemble_contact_set2",
+          "eab2_assembly2_create",
+          "eab2_assembly2_destroy",
+          "eab2_body2_create",
+          "eab2_body2_destroy",
+          "eab2_contact_set2_destroy",
+          "eab2_contact_set2_export_exact",
+          "eab2_context_configure_limits2",
+          "eab2_context_create",
+          "eab2_context_destroy",
+          "eab2_context_get_error",
+          "eab2_context_get_limits2",
+          "eab2_critical_parameter",
+          "eab2_entrance2_create",
+          "eab2_entrance2_destroy",
+          "eab2_first_order_mobility",
+          "eab2_get_abi_info",
+          "eab2_get_c1_abi_info",
+          "eab2_get_c3l1_abi_info",
+          "eab2_get_c3l3_abi_info",
+          "eab2_local_origin2_exact",
+          "eab2_membership2_batch",
+          "eab2_query2_batch",
+          "eab2_query_lock",
+          "eab2_result_destroy",
+          "eab2_result_export_exact",
+          "eab2_self_test",
+          "eab2_solve_limit2",
+          "eab2_topology2_batch"
+        ]
+      },
+      {
+        "name": "open_no_upper_ray",
+        "dll": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\open_no_upper_ray\\eab2.dll",
+        "critical_mutant_sha256": "a0a0d184aa34aab001d0aba92806647d28cf2182c5131a8ef65c3c89e60e08df",
+        "replacement": {
+          "before": "const bool opened = at.mathematical_status == \"OPTIMAL\" && !nonzero(zero.b) && above && candidate < hi;",
+          "after": "const bool opened = at.mathematical_status == \"OPTIMAL\" && !nonzero(zero.b) && candidate < hi;",
+          "count": 1,
+          "character_offset": 16885
+        },
+        "fresh_run_object_sha256": {
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\numeric.obj": "74dd1171c49b833234f8ecf32ac61cc39677c15baafbdbb2c25fffd174bd23cc",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\fp_contract.obj": "7d2593370ddf8ea3b5d030d00c930d630a03f5246449984428e1765622c61bfb",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2.obj": "8b24c9e864b6420f2083febcefd717dfd43041b1f8a80f139b14be204fbe7ee4",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\geometry2_local.obj": "6a18e180af89dd484ccad5999614a19af286af6e00734661b48e6fd393b3fe93",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\opt.obj": "7a06f53ec9f160a6f9af8f832e2061da7d77e3a707e9536a3b12d325b847ed98",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\l1.obj": "7a80af1b1ecbbcc7abb637c1b75cb11298e18b03086d8b039da370db95dce902",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\common\\statics.obj": "d159a710dacbf171bfb85ca0600e2fa61dc3bbcc833f5c2df5ecfd802044c1b2",
+          "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_mutations_20261023_r1\\open_no_upper_ray\\critical.obj": "c52a6134f95f1ad52707dffc7deb91c57160e33927abc765a6e70ca5d54302a6"
+        },
+        "dll_sha256": "d70f0e5fe5c09e860304472a935b02ba9168a19d6501af5e13f0ef8d38458d6f",
+        "exports": [
+          "eab2_assemble_contact_set2",
+          "eab2_assembly2_create",
+          "eab2_assembly2_destroy",
+          "eab2_body2_create",
+          "eab2_body2_destroy",
+          "eab2_contact_set2_destroy",
+          "eab2_contact_set2_export_exact",
+          "eab2_context_configure_limits2",
+          "eab2_context_create",
+          "eab2_context_destroy",
+          "eab2_context_get_error",
+          "eab2_context_get_limits2",
+          "eab2_critical_parameter",
+          "eab2_entrance2_create",
+          "eab2_entrance2_destroy",
+          "eab2_first_order_mobility",
+          "eab2_get_abi_info",
+          "eab2_get_c1_abi_info",
+          "eab2_get_c3l1_abi_info",
+          "eab2_get_c3l3_abi_info",
+          "eab2_local_origin2_exact",
+          "eab2_membership2_batch",
+          "eab2_query2_batch",
+          "eab2_query_lock",
+          "eab2_result_destroy",
+          "eab2_result_export_exact",
+          "eab2_self_test",
+          "eab2_solve_limit2",
+          "eab2_topology2_batch"
+        ]
+      }
+    ]
+  },
+  "rows": [
+    {
+      "name": "closed_no_lower_continuation",
+      "dll_sha256": "414f8a9d078cf5e858d99d2db644d2c21c2a005696a866a49b744190ccc00734",
+      "query": {
+        "kind": "critical",
+        "mu_max_bits": "3fe8000000000000",
+        "max_steps": 4
+      },
+      "model": {
+        "orientation": "koureas",
+        "t": "3/32",
+        "height": "1/16"
+      },
+      "native_false_certificate_path": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\closed_no_lower_continuation\\native_false_certificate.json",
+      "native_false_certificate_sha256": "a7f6c6a9e754f7f974cbe63ac36d2f3cdc80bfe20fa2f134fa6ce616ce8decbf",
+      "native_false_certificate_bytes": 20735,
+      "python_threshold": null,
+      "python_attained": null,
+      "mutant_threshold": "3/32",
+      "mutant_attained": true,
+      "expected_exception": "closed threshold needs bounded continuation",
+      "actual_exception_type": "ValueError",
+      "actual_exception": "closed threshold needs bounded continuation",
+      "dispositions": [],
+      "rejected": true
+    },
+    {
+      "name": "open_no_upper_ray",
+      "dll_sha256": "d70f0e5fe5c09e860304472a935b02ba9168a19d6501af5e13f0ef8d38458d6f",
+      "query": {
+        "kind": "critical",
+        "mu_max_bits": "3ff0000000000000",
+        "max_steps": 1
+      },
+      "model": {
+        "orientation": "unreversed",
+        "t": "3/16",
+        "height": "1"
+      },
+      "native_false_certificate_path": "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l3_repair_critical_dll_r1\\open_no_upper_ray\\native_false_certificate.json",
+      "native_false_certificate_sha256": "51788cf91d453eddd75fd0a413fea9777df9aa560bcafbfe25e9946f9fb5fd55",
+      "native_false_certificate_bytes": 13475,
+      "python_threshold": null,
+      "python_attained": null,
+      "mutant_threshold": "0/1",
+      "mutant_attained": false,
+      "expected_exception": "open threshold needs feasible point and improving continuation",
+      "actual_exception_type": "ValueError",
+      "actual_exception": "open threshold needs feasible point and improving continuation",
+      "dispositions": [],
+      "rejected": true
+    }
+  ],
+  "independent_adversarial_review": false,
+  "production_source_modified": false,
+  "all_rejected": true,
+  "final_line": "C3L3_CONTINUATION_DLL_RED_GATES_OK rejected=2 admitted=0"
+}

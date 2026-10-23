@@ -1,9 +1,10 @@
 @echo off
-rem WO-C3L1: pinned VS2022 Community CMake/Ninja, MSVC 14.44.35207 x64.
+rem WO-C3L3: pinned VS2022 Community CMake/Ninja, MSVC 14.44.35207 x64.
 rem Pure ASCII. No clean/delete option; build products remain under eab2/build.
 setlocal
 set "VSDIR=C:\Program Files\Microsoft Visual Studio\2022\Community"
 set "CMAKE=%VSDIR%\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
+set "CTEST=%VSDIR%\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\ctest.exe"
 set "NINJA=%VSDIR%\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe"
 if not exist "%CMAKE%" exit /b 2
 if not exist "%NINJA%" exit /b 2
@@ -26,21 +27,5 @@ if errorlevel 1 exit /b %errorlevel%
 if errorlevel 1 exit /b %errorlevel%
 "%CMAKE%" -E chdir build "%NINJA%" -t commands
 if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_numeric.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_abi.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_c_header.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_c_header_static.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_geometry2.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_geometry2_local.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_opt.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_l1.exe
-if errorlevel 1 exit /b %errorlevel%
-build\eab2_test_c3l1_abi.exe
+"%CMAKE%" -E chdir build "%CTEST%" --output-on-failure
 exit /b %errorlevel%

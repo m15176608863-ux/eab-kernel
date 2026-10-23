@@ -55,6 +55,8 @@ extern "C" {
 #define EAB2_CAP_LOCK2 UINT64_C(2048)
 #define EAB2_CAP_MOBILITY2 UINT64_C(4096)
 #define EAB2_CAP_TEST_OPT UINT64_C(8192)
+#define EAB2_CAP_LIMIT2 UINT64_C(16384)
+#define EAB2_CAP_CRITICAL_PARAMETER UINT64_C(32768)
 #define EAB2_CAP_RHO UINT64_C(65536)
 #define EAB2_CAP_SE2 UINT64_C(131072)
 #define EAB2_CAP_LP2 UINT64_C(262144)
@@ -249,6 +251,39 @@ EAB2_API eab2_call_status eab2_query_lock(eab2_context context, eab2_assembly2 a
     const eab2_lock2_input* input, eab2_exact_result* output);
 EAB2_API eab2_call_status eab2_first_order_mobility(eab2_context context,
     eab2_contact_set2 contacts, eab2_exact_result* output);
+
+/* C3-L3 working ABI. Loads are wrenches about each frozen reference_point,
+ * in the exact body order of the ContactSet2 assembly; fixed-body loads are
+ * retained but do not create equilibrium rows. All scalar inputs are finite
+ * binary64 bit patterns. No rational threshold is rounded back into an input. */
+typedef struct eab2_body_load2 {
+    uint64_t dead_bits[3]; uint64_t live_bits[3];
+} eab2_body_load2;
+typedef struct eab2_limit2_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t mu_bits;
+    uint64_t body_count; uint64_t body_stride; const eab2_body_load2* loads;
+} eab2_limit2_input;
+#define EAB2_PARAMETER_MU UINT32_C(1)
+typedef struct eab2_critical_parameter_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t mu_max_bits; uint64_t max_steps;
+    uint64_t body_count; uint64_t body_stride; const eab2_body_load2* loads;
+    uint32_t parameter; uint32_t reserved;
+} eab2_critical_parameter_input;
+typedef struct eab2_c3l3_abi_info {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t body_load2_size; uint32_t limit2_input_size;
+    uint32_t critical_parameter_input_size; uint32_t reserved;
+} eab2_c3l3_abi_info;
+EAB2_API eab2_call_status eab2_get_c3l3_abi_info(eab2_c3l3_abi_info* info);
+/* Atomic result publication: failed calls leave output unchanged. Successful
+ * unresolved/UNPROVED/INFEASIBLE/UNBOUNDED results still have call_status=OK.
+ * The exact JSON and result token follow result_destroy ownership rules. */
+EAB2_API eab2_call_status eab2_solve_limit2(eab2_context context,
+    eab2_contact_set2 contacts, const eab2_limit2_input* input, eab2_exact_result* output);
+EAB2_API eab2_call_status eab2_critical_parameter(eab2_context context,
+    eab2_contact_set2 contacts, const eab2_critical_parameter_input* input, eab2_exact_result* output);
 
 #ifdef __cplusplus
 }

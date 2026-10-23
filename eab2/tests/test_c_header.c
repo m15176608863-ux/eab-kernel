@@ -13,7 +13,9 @@ int main(void) {
     eab2_context_limits2 limits; eab2_c1_abi_info c1; eab2_c3l1_abi_info c3;
     eab2_assembly_body2 entry; eab2_assembly2_input assembly_input; eab2_assembly2 assembly;
     eab2_contact_set2 contacts; eab2_lock2_input lock_input;
-    INIT(info); info.requested_capabilities=EAB2_CAP_CONTEXT|EAB2_CAP_LIMITS2|EAB2_CAP_ASSEMBLY2|EAB2_CAP_CONTACTSET2|EAB2_CAP_LOCK2|EAB2_CAP_MOBILITY2;
+    eab2_c3l3_abi_info c3l3; eab2_body_load2 load; eab2_limit2_input limit;
+    eab2_critical_parameter_input critical;
+    INIT(info); info.requested_capabilities=EAB2_CAP_CONTEXT|EAB2_CAP_LIMITS2|EAB2_CAP_ASSEMBLY2|EAB2_CAP_CONTACTSET2|EAB2_CAP_LOCK2|EAB2_CAP_MOBILITY2|EAB2_CAP_LIMIT2|EAB2_CAP_CRITICAL_PARAMETER;
     CHECK(eab2_get_abi_info(&info)==EAB2_OK);
     CHECK(info.context_size==sizeof(context) && info.binary64_bits==64);
     CHECK(!(info.supported_capabilities & (EAB2_CAP_TEST_NUMERIC|EAB2_CAP_TEST_EXACT2|EAB2_CAP_TEST_OPT)));
@@ -45,6 +47,14 @@ int main(void) {
     CHECK(eab2_query_lock(context,assembly,&lock_input,&exact)==EAB2_OK);
     CHECK(eab2_result_destroy(context,exact.result)==EAB2_OK);
     INIT(exact);CHECK(eab2_first_order_mobility(context,contacts,&exact)==EAB2_OK);
+    CHECK(eab2_result_destroy(context,exact.result)==EAB2_OK);
+    INIT(c3l3); CHECK(eab2_get_c3l3_abi_info(&c3l3)==EAB2_OK);
+    CHECK(c3l3.body_load2_size==sizeof(load) && c3l3.limit2_input_size==sizeof(limit) && c3l3.critical_parameter_input_size==sizeof(critical));
+    memset(&load,0,sizeof(load)); INIT(limit);limit.body_count=1;limit.body_stride=sizeof(load);limit.loads=&load;
+    INIT(exact);CHECK(eab2_solve_limit2(context,contacts,&limit,&exact)==EAB2_OK && exact.mathematical_status==EAB2_MATH_UNBOUNDED);
+    CHECK(eab2_result_destroy(context,exact.result)==EAB2_OK);
+    INIT(critical);critical.body_count=1;critical.body_stride=sizeof(load);critical.loads=&load;critical.parameter=EAB2_PARAMETER_MU;
+    INIT(exact);CHECK(eab2_critical_parameter(context,contacts,&critical,&exact)==EAB2_OK && exact.mathematical_status==EAB2_MATH_VALUE);
     CHECK(eab2_result_destroy(context,exact.result)==EAB2_OK);
     CHECK(eab2_contact_set2_destroy(context,contacts)==EAB2_OK);
     CHECK(eab2_assembly2_destroy(context,assembly)==EAB2_OK);

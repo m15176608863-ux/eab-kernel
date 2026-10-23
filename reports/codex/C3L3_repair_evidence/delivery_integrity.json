@@ -1,0 +1,177 @@
+{
+  "schema": "eab2.c3l3.repair_integrity.v1",
+  "status": "PASS",
+  "acceptance_status": "PARTIAL_CRITICAL_REVIEW_PENDING",
+  "base_commit": "1b6b4f32ff3c5716f8e3a24ad73dd3cf6081f39c",
+  "repair_head": "c8718bb0850328defd8f0cc16fb4f3a09e922975",
+  "checked_artifact_hashes": 139,
+  "frozen_production_files": 86,
+  "src_eab_eab2_src_and_design_unchanged_from_HEAD": true,
+  "design_sha256": "6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac",
+  "complete_build_source": {
+    "manifest_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/tmp/complete_build_source_manifest.json",
+    "manifest_sha256": "1a3a2fe7f04033731caaa1a9b5389dd63273eadfb931d1a5e2bbb8efd2a12160",
+    "files": 1909,
+    "changed_existing": [
+      "reports/EVIDENCE_ARCHIVE.md",
+      "reports/codex/C3L3_report.md"
+    ],
+    "added_non_evidence": [],
+    "allowed_report_changes": [
+      "reports/EVIDENCE_ARCHIVE.md",
+      "reports/codex/C3L3_report.md"
+    ],
+    "code_unchanged": true
+  },
+  "final_fast": {
+    "audit": "GREEN",
+    "collected": 8996,
+    "shards": 1,
+    "node_multisets_recomputed": true,
+    "coverage_recomputed": true,
+    "module_count": 66,
+    "snapshot": {
+      "manifest_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/tmp/final_fast/source_manifest.json",
+      "manifest_sha256": "133416146d5e4ed490a2264ef377b90e4df7b13dce32b025ae364317d67ca5c9",
+      "files": 1909,
+      "changed_existing": [
+        "reports/EVIDENCE_ARCHIVE.md",
+        "reports/codex/C3L3_report.md"
+      ],
+      "added_non_evidence": [],
+      "allowed_report_changes": [
+        "reports/EVIDENCE_ARCHIVE.md",
+        "reports/codex/C3L3_report.md"
+      ],
+      "code_unchanged": true
+    },
+    "last_lines": [
+      "8996 passed in 320.26s (0:05:20)"
+    ]
+  },
+  "final_full": {
+    "audit": "GREEN",
+    "collected": 15080,
+    "shards": 4,
+    "node_multisets_recomputed": true,
+    "coverage_recomputed": true,
+    "module_count": 66,
+    "snapshot": {
+      "manifest_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/tmp/final_full/source_manifest.json",
+      "manifest_sha256": "133416146d5e4ed490a2264ef377b90e4df7b13dce32b025ae364317d67ca5c9",
+      "files": 1909,
+      "changed_existing": [
+        "reports/EVIDENCE_ARCHIVE.md",
+        "reports/codex/C3L3_report.md"
+      ],
+      "added_non_evidence": [],
+      "allowed_report_changes": [
+        "reports/EVIDENCE_ARCHIVE.md",
+        "reports/codex/C3L3_report.md"
+      ],
+      "code_unchanged": true
+    },
+    "last_lines": [
+      "3770 passed in 1447.72s (0:24:07)",
+      "3770 passed in 770.28s (0:12:50)",
+      "3770 passed in 1084.42s (0:18:04)",
+      "3770 passed in 986.76s (0:16:26)"
+    ]
+  },
+  "differential": {
+    "authority_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/differential.json.gz",
+    "sha256": "c1b132229370ee7539cc772f3f5acc7a213669bdfbf63ed9799a53339c626241",
+    "compressed_sha256": "ae77cacd91ef037d51dd85cf66911af8477ec7cbd9df14391a382ffd11527b19",
+    "counts": {
+      "limit": 292,
+      "critical": 2528
+    },
+    "family_counts": {
+      "formal/TIA-G1/limit": 27,
+      "formal/TIA-G1/critical": 27,
+      "formal/TIA-G5/limit": 27,
+      "formal/TIA-G5/critical": 27,
+      "formal/named_regression/limit": 7,
+      "formal/named_regression/critical": 7,
+      "formal/TIA-G2/limit": 15,
+      "formal/TIA-G2/critical": 15,
+      "formal/TIA-G3/limit": 15,
+      "formal/TIA-G3/critical": 15,
+      "formal/TIA-G4/limit": 15,
+      "formal/TIA-G4/critical": 15,
+      "formal/contract_coverage/limit": 8,
+      "formal/contract_coverage/critical": 8,
+      "t1b/limit": 36,
+      "t1b/critical": 36,
+      "closed_g5/limit": 6,
+      "plate/limit": 2,
+      "closed_g1/critical": 9,
+      "metamorphic/limit": 19,
+      "metamorphic/critical": 12,
+      "implication1/limit": 6,
+      "implication2/limit": 24,
+      "implication3/limit": 6,
+      "converse/limit": 4,
+      "wide_g1/critical": 2310,
+      "wide_incline/critical": 16,
+      "wide_quadratic/critical": 6,
+      "thickness/limit": 75,
+      "thickness/critical": 25
+    },
+    "mismatches": 0,
+    "source_pre_post_equal": true,
+    "current_source_hashes_verified": true,
+    "dll_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/tmp/complete_build_source/eab2/build/eab2.dll",
+    "dll_sha256": "bcb0b93e7177db9311ace348f85cb64e2fa59d270db774693080ca439a47c03b",
+    "last_line": "C3L3_DIFF limit=292 critical=2528 mismatch=0"
+  },
+  "archive": {
+    "manifest_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/archive_manifest.json",
+    "manifest_sha256": "075982548d7b97caff36a6a43f80d5cbd5de5e14224304c9140729330260ab5c",
+    "files": 107,
+    "hashes_and_decompression_verified": true,
+    "tested_source_zip_verified": true,
+    "tested_source_zip_uri": "file:///D:/eab-evidence/reports/codex/C3L3_evidence/acceptance_repair_20261023/final_runs/final_full_tested_source.zip",
+    "local_archive_not_remote_backup": true
+  },
+  "previous_archive": {
+    "manifest_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/previous_archive.json",
+    "manifest_sha256": "071dea8e679684fb31904c59d1ea36ad670725254668f1eebb5a7ba240eda270",
+    "files": 65,
+    "hashes_and_decompression_verified": true,
+    "original_HEAD_bytes_verified": true,
+    "historical_evidence_not_relabelled": true
+  },
+  "links": {
+    "scope": "Main report all links; other Markdown only links added since c8718bb. Historical unchanged links are not relabelled current.",
+    "checked_local_links": 220,
+    "missing_links": [],
+    "resolved_deleted_historical_links": []
+  },
+  "repair_red_gates": {
+    "mutations": 7,
+    "intended_assertions_verified": true,
+    "dll_false_proofs_rejected": 2,
+    "final_checker_sha256": "f9e66ec40e78107836f66b1e5368f465624975e08d1d42348559bb2d915f6649",
+    "archive_queue_files": 27,
+    "mutation_last_line": "C3L3_CRITICAL_MUTATIONS_OK caught=7 escaped=0",
+    "dll_red_gate_last_line": "C3L3_CONTINUATION_DLL_RED_GATES_OK rejected=2 admitted=0",
+    "independent_adversarial_review": false
+  },
+  "verification_last_lines": {
+    "complete_build": "Total Test time (real) =   4.16 sec",
+    "cpp_statics": "C3L3_STATICS_OK checks=3916",
+    "cpp_critical": "C3L3_CRITICAL_OK checks=346",
+    "cpp_c3l3_abi": "EAB2_C3L3_ABI checks=128 failed=0",
+    "delivery_audit": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=23",
+    "differential": "C3L3_DIFF limit=292 critical=2528 mismatch=0",
+    "final_fast": "shard 1: 8996 passed in 320.26s (0:05:20)",
+    "final_full": "exact construction AST gate: 0 violation(s)"
+  },
+  "owner_fresh_c8718bb_full_reported": true,
+  "owner_fresh_c8718bb_evidence_uri": "file:///D:/eab-wt/cx-c0/reports/codex/C3L3_repair_evidence/input/C3L3_acceptance.md",
+  "owner_fresh_c8718bb_reported_test_count": 15056,
+  "repair_fresh_git_checkout_performed": false,
+  "repaired_critical_claude_re_review_performed": false,
+  "acceptance_note": "Owner c8718bb fresh-tree baseline and prior statics closure are historical facts; this repair audit is not Claude's new critical acceptance."
+}

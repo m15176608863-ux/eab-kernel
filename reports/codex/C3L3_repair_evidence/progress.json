@@ -1,0 +1,137 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "complete_build",
+      "command": [
+        "C:\\WINDOWS\\system32\\cmd.exe",
+        "/d",
+        "/c",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build_eab2.bat"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build.log",
+      "returncode": 0,
+      "elapsed_seconds": 11.784347534179688,
+      "last_line": "Total Test time (real) =   4.16 sec",
+      "sha256": "b4f2fa9a5b98cd3d503e2e68b6456de5cc3289100b8d82df57288aaf22afd732"
+    },
+    {
+      "name": "cpp_statics",
+      "command": [
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build\\eab2_test_statics.exe"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\cpp_statics.log",
+      "returncode": 0,
+      "elapsed_seconds": 0.2859032154083252,
+      "last_line": "C3L3_STATICS_OK checks=3916",
+      "sha256": "f5e9a85307d8a6f8cf626e4cdab9142a0b4ab66684efbb82ab5bf77496b669f3"
+    },
+    {
+      "name": "cpp_critical",
+      "command": [
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build\\eab2_test_critical.exe"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\cpp_critical.log",
+      "returncode": 0,
+      "elapsed_seconds": 2.228616237640381,
+      "last_line": "C3L3_CRITICAL_OK checks=346",
+      "sha256": "3c05c9f774a520cca2edbc8f7ae968eecb210296294c02d7c498f21c90fd3f8d"
+    },
+    {
+      "name": "cpp_c3l3_abi",
+      "command": [
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build\\eab2_test_c3l3_abi.exe"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\cpp_c3l3_abi.log",
+      "returncode": 0,
+      "elapsed_seconds": 0.007996082305908203,
+      "last_line": "EAB2_C3L3_ABI checks=128 failed=0",
+      "sha256": "2f39fc763f7aa44af086363c761d0834563a96708f4db94f7c5c4c7c89606566"
+    },
+    {
+      "name": "delivery_audit",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\tools\\eab2_audit.py",
+        "--build",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\delivery_audit.json"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\delivery_audit.log",
+      "returncode": 0,
+      "elapsed_seconds": 0.8344662189483643,
+      "last_line": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=23",
+      "sha256": "b1a3d4416eb7e6cd6cd5b3ee5ce15e8a09bfe2a9f3271d248a2aac3a78bdfe30"
+    },
+    {
+      "name": "differential",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_c3l3_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\complete_build_source\\eab2\\build\\eab2.dll",
+        "--family",
+        "all",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\differential.json"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\differential.log",
+      "returncode": 0,
+      "elapsed_seconds": 588.2140448093414,
+      "last_line": "C3L3_DIFF limit=292 critical=2528 mismatch=0",
+      "sha256": "65c6b1d9952603533e66aa8147ed4eb55aba6fd24637ae9730dc60d5b37a4e31"
+    },
+    {
+      "name": "final_fast",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "final_fast",
+        "--evidence-root",
+        "reports/codex/C3L3_repair_evidence"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\final_fast.log",
+      "returncode": 0,
+      "elapsed_seconds": 340.51337242126465,
+      "last_line": "shard 1: 8996 passed in 320.26s (0:05:20)",
+      "sha256": "89871059746570c23f95ea63deb9da73ddeba9da3a430684b675eb0df0f3c3a6"
+    },
+    {
+      "name": "final_full",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "final_full",
+        "--evidence-root",
+        "reports/codex/C3L3_repair_evidence",
+        "--runslow"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_repair_evidence\\tmp\\final_full.log",
+      "returncode": 0,
+      "elapsed_seconds": 1609.8522419929504,
+      "last_line": "exact construction AST gate: 0 violation(s)",
+      "sha256": "863de4dcd5e960359bb6ed4ddd4bc936f65d9191defa8421f7a637c996f32931"
+    }
+  ],
+  "live_source_pre_post_equal": true,
+  "fresh_git_checkout": false
+}

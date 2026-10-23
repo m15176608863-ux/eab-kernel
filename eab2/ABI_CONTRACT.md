@@ -1,4 +1,4 @@
-# eab2 C0 / C1 / C3-L1 工作 ABI 合同
+# eab2 C0 / C1 / C3-L1 / C3-L3 工作 ABI 合同
 
 这是设计 §5.4 的 C0 工作接口，不是 C3 发布产品 ABI 冻结。公共 C 头只含固定宽度整数、长度与指针；无 C++ bool、STL、Boost、异常或 enum 布局。全部入口捕获 C++ 异常。调用方仍须提供真实有效且足够大的、互不重叠的描述符和缓冲区；本单不是恶意地址/宿主接缝加固。
 
@@ -108,3 +108,18 @@ Assembly≤1024 bodies，candidate pair/neighbor count≤context.max_elements；
 NO_COMPACT 导出仅作诊断；不把未压缩排布当规范接触骨架产品输出。C1 差分现检查 exterior_state 与 CONTACT 剖分层/接触骨架集合一致，见 `tools/eab2_c1_exact.py::verify_contact_layers/compare_exports`。
 
 并发验证：test-only `test_context_rendezvous` 在真实 context 计算锁内设置两方会合；`test_c3l1_abi.cpp::concurrent_contexts` 用不同 context 的两个线程证明确实重叠，不以两个串行成功调用冒充并行。测试超时只报测试失败，无数学结论；此入口不在生产 DLL。
+
+
+## C3-L3 增量合同（仍为工作 ABI）
+
+不扩大已有结构。新增能力位 LIMIT2=16384、CRITICAL_PARAMETER=32768，以及 `eab2_get_c3l3_abi_info` 查询三个新描述符尺寸。`solve_limit2` 与 `critical_parameter` 在正式/测试 DLL 和静态库均可用；不把通用 LP 测试入口升级为生产 LP2。具名门：`test_c3l3_abi.cpp::contract/resource_limit/unresolved`、`test_c_header.c`、`tools/eab2_audit.py`。
+
+- `eab2_body_load2` 为 dead/live 各三项有限 binary64 位模式，顺序 fx、fy、关于**冻结 reference_point** 的力矩。数组与 ContactSet2 快照的 body 顺序/数量严格一致，固定体也占记录；count、stride、指针、乘法溢出检查，不补零/截断。装配转到物理 dof_anchor 的虚功坐标，只保留自由 DOF 平衡行。
+- `eab2_limit2_input` 为 header、mu_bits、body_count/body_stride/loads。mu 非负有限。`eab2_solve_limit2(context, contacts, input, output)` 拒无效/过期/跨 context/错类型的句柄；不接受裸接触列表冒充 complete。
+- `eab2_critical_parameter_input` 为 header、mu_max_bits、max_steps、body_count/body_stride/loads、parameter/reserved。只支持 EAB2_PARAMETER_MU=1，其余返回 UNSUPPORTED，**不发布数学 JSON**。max_steps=0 合法；超过 4096 返回 RESOURCE_LIMIT；reserved 必须为零。非 binary64 的精确阈值只保存在有理证书字段，不回灌 double 查询。
+- 调用失败保持整个 exact-result 输出原样，无半初始化 token。调用成功的 OPTIMAL、INFEASIBLE、UNBOUNDED、UNPROVED、MECHANICAL_UNRESOLVED 保留数学语义；critical 的 CERTIFIED 映射为 VALUE，不可行域为 INFEASIBLE。data/byte_count/结果句柄按已有库侧释放合同。
+- `LimitResult2` 与 Python 字段同义，额外导出 `problem` 原始 exact A/b/c/行列标签/参考点/锚点及 OPTIMAL 的 `mechanism=exact_y`。机构核 `G^T y>=0, live^T y>=1`，非最优不附机构。有限 exact_value 不强制舍入为 double；display_status=EXACT 仅指有理输出。无界只给 x0 与 alpha=1 改进射线，不给伪有限容量或锁定结论。
+- critical 同时导出 canonical mu_lo/mu_hi 与 mu_lo_bits/mu_hi_bits，两套必须精确一致。attained 为 true/false/null；exact_threshold、单侧多项式证明、bisection_termination、threshold_proof_reason 分开。input_resolution_limit 可与已证明的开/闭阈并存。一般代数根对象仍未实现。
+- 限额沿用 context 几何工作/矩阵元素/整数位长预算和 opt 每次调用默认 1,000,000 次主元预算；critical 私有入口整数 scope 贯穿多项式延拓。**LP 算术和多项式算术并不逐次消费 GeometryWorkScope.step；max_work_units 不是整个 L3 的统一运算/墙钟预算。** 4096 次二分上限不保证运行时间，资源拒签不产生数学结论。
+
+差分独立解析原始几何/荷载 bits 重建矩阵，非唯一证书按定义核验。临界基以精确有理高斯求值和度数界核多项式恒等式，以单侧 Sturm 核开闭证明。见 `tools/eab2_c3l3_diff.py::verify_limit/verify_branch/verify_critical`、`tests/test_eab2_c3l3_harness.py`。profile1 是关联流动上界模型，不是安全承载力。发布稳定 ABI、真实宿主接入、所有者新鲜树与独立对抗签字不由本工作接口自动满足。

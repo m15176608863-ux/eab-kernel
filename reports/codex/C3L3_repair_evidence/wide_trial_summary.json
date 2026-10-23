@@ -1,0 +1,748 @@
+{
+  "schema": "eab2.c3l3.wide_directional_trial.v1",
+  "authority": "Superseded directional trial: complete run before the subsequent metadata-contract guard; final all-family rerun by root is authoritative.",
+  "raw_output": "tmp/wide.json",
+  "raw_sha256": "59288e9bf24518a85b68c673fb744d7fd93f3d320fc0cf4a7546f50731ad7e84",
+  "raw_bytes": 2199215,
+  "source_sha256": {
+    "tools\\eab2_c3l3_diff.py": "afbe425b17061c8fc59d4149492c64f9de59a7c7bd744f9cc0f9561be43ed40c",
+    "tools\\eab2_c3l1_diff.py": "1e0c5b6ed4a03ce58140cbadf7a00f944390df427a8e2f1a2e9d5a592086ae9e",
+    "tools\\eab2_c3l1_abi.py": "25e4ef0c0defa6b80be9b9cbb30a82590adb5740687738530dbb5f6d7e429262",
+    "tools\\tia2d_t1b_morphology.py": "0c4c78be16b1b14e9a32d8edced62f9185d1abd2aefe34ac91686845b75e4730",
+    "src\\eab\\kernel2d\\statics.py": "d70d12dec967d8a77160184fd6e46f805521f331851676c43e95948bc8860e06",
+    "src\\eab\\kernel2d\\critical.py": "e6fe3c9881f57075cb20bff6893b464988fee8273423c8b8c435db4ee718b9e0",
+    "src\\eab\\kernel2d\\contacts.py": "db62916c110325232418c803eb50eba2356a34ebb744a60fa518847747a8a934",
+    "src\\eab\\kernel2d\\assembly.py": "1d842ac31b80229019408e28226b8214880c58b345210a9c7c4338495be2c171",
+    "src\\eab\\lp.py": "01340c78b381e854c277bcf27949df93711caf2af8ceba2c6ae624e0f8aa4b85",
+    "src\\eab\\adapters\\tia2d.py": "c53ea6b7652d32dc0715e902159f36ed4450da1ce76b087e938cd597b3a57b5d",
+    "tools\\eab2_c3l3_thickness.py": "fc55c8c8478adb5982741c8f57154d747ca24f5e6a64c10df94410055f0d3dcb",
+    "tests\\data\\eab2_c3l3_thickness_summary.json": "64b39696af3b91b459726d6ac58515c7edc67264669196ada32216c35bb1a920"
+  },
+  "source_pre_post_equal": true,
+  "last_line": "C3L3_DIFF limit=0 critical=2332 mismatch=0",
+  "seconds": 407.97046470001806,
+  "counts": {
+    "critical": 2332
+  },
+  "family_counts": {
+    "wide_g1/critical": 2310,
+    "wide_incline/critical": 16,
+    "wide_quadratic/critical": 6
+  },
+  "g1_orientation_queries": {
+    "koureas": 770,
+    "unreversed": 770,
+    "reverse_i1": 770
+  },
+  "mismatches": [],
+  "all_enrichment_count": 73,
+  "enrichment_proved_sides": {
+    "cpp": 73
+  },
+  "historical_twenty": [
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=0.5/steps=1",
+      "case_id": "wide/g1/koureas/0/1",
+      "query_index": 22,
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/4"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=1.0/steps=0",
+      "case_id": "wide/g1/koureas/0/1",
+      "query_index": 35,
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 0
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=1.0/steps=2",
+      "case_id": "wide/g1/koureas/0/1",
+      "query_index": 37,
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/4"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=4.0/steps=0",
+      "case_id": "wide/g1/koureas/0/1",
+      "query_index": 63,
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 0
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "4/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=4.0/steps=1",
+      "case_id": "wide/g1/koureas/0/1",
+      "query_index": 64,
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 1
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "2/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/koureas/0/1/mumax=4.0/steps=2",
+      "case_id": "wide/g1/koureas/0/1",
+      "query_index": 65,
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 2
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=0.5/steps=1",
+      "case_id": "wide/g1/unreversed/0/1",
+      "query_index": 22,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/4"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=1.0/steps=0",
+      "case_id": "wide/g1/unreversed/0/1",
+      "query_index": 35,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 0
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=1.0/steps=2",
+      "case_id": "wide/g1/unreversed/0/1",
+      "query_index": 37,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/4"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=4.0/steps=0",
+      "case_id": "wide/g1/unreversed/0/1",
+      "query_index": 63,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 0
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "4/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=4.0/steps=1",
+      "case_id": "wide/g1/unreversed/0/1",
+      "query_index": 64,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 1
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "2/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/0/1/mumax=4.0/steps=2",
+      "case_id": "wide/g1/unreversed/0/1",
+      "query_index": 65,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 2
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/1/4/1/2/mumax=0.5/steps=1",
+      "case_id": "wide/g1/unreversed/1/4/1/2",
+      "query_index": 22,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "1/4",
+        "h": "1/2",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "1/4",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "1/4",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "1/4",
+        "mu_hi": "1/2"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/unreversed/1/4/1/2/mumax=1.0/steps=2",
+      "case_id": "wide/g1/unreversed/1/4/1/2",
+      "query_index": 37,
+      "input_parameters": {
+        "orientation": "unreversed",
+        "t": "1/4",
+        "h": "1/2",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "1/4",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "1/4",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "1/4",
+        "mu_hi": "1/2"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=0.5/steps=1",
+      "case_id": "wide/g1/reverse_i1/0/1",
+      "query_index": 22,
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/2",
+        "max_steps": 1
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/4"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=1.0/steps=0",
+      "case_id": "wide/g1/reverse_i1/0/1",
+      "query_index": 35,
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 0
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=1.0/steps=2",
+      "case_id": "wide/g1/reverse_i1/0/1",
+      "query_index": 37,
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "1/1",
+        "max_steps": 2
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/4"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=4.0/steps=0",
+      "case_id": "wide/g1/reverse_i1/0/1",
+      "query_index": 63,
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 0
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "4/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=4.0/steps=1",
+      "case_id": "wide/g1/reverse_i1/0/1",
+      "query_index": 64,
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 1
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "2/1"
+      },
+      "semantic_mismatches": 0
+    },
+    {
+      "acceptance_id": "sweep/g1/reverse_i1/0/1/mumax=4.0/steps=2",
+      "case_id": "wide/g1/reverse_i1/0/1",
+      "query_index": 65,
+      "input_parameters": {
+        "orientation": "reverse_i1",
+        "t": "0/1",
+        "h": "1/1",
+        "mu_max": "4/1",
+        "max_steps": 2
+      },
+      "disposition": {
+        "classification": "verified_nonunique_basis_enrichment",
+        "proved_side": "cpp",
+        "exact_threshold": "0/1",
+        "attained": false,
+        "verification": "original_geometry_LP_polynomial_identities_and_one_sided_Sturm",
+        "normalized_fields": [
+          "exact_threshold",
+          "attained",
+          "threshold_certificate",
+          "threshold_proof_reason"
+        ],
+        "python_threshold": null,
+        "cpp_threshold": "0/1",
+        "python_attained": null,
+        "cpp_attained": false,
+        "mu_lo": "0/1",
+        "mu_hi": "1/1"
+      },
+      "semantic_mismatches": 0
+    }
+  ],
+  "named_major_cases": [
+    {
+      "case_id": "wide/g1/koureas/3/32/1/16",
+      "family": "wide_g1",
+      "query_index": 32,
+      "kind": "critical",
+      "mathematical_status": "CERTIFIED",
+      "differences": [],
+      "python_seconds": 0.18626909994054586,
+      "cpp_seconds": 0.0888175000436604,
+      "python_timing": "cold query with prebuilt contacts",
+      "mu_lo": "3/64",
+      "mu_hi": "3/32",
+      "python_threshold": null,
+      "python_attained": null,
+      "python_queries": 7,
+      "cpp_queries": 7,
+      "proof_dispositions": [],
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "3/32",
+        "h": "1/16",
+        "mu_max": "3/4",
+        "max_steps": 4
+      },
+      "named_regression": "major_closed_lower_continuation_2039_over_32768",
+      "exact_threshold": null,
+      "attained": null,
+      "reason": "iteration_limit",
+      "bisection_termination": "iteration_limit",
+      "threshold_proof_reason": null
+    },
+    {
+      "case_id": "wide/g1/koureas/3/8/1/4",
+      "family": "wide_g1",
+      "query_index": 15,
+      "kind": "critical",
+      "mathematical_status": "CERTIFIED",
+      "differences": [],
+      "python_seconds": 0.15663870004937053,
+      "cpp_seconds": 0.062002699938602746,
+      "python_timing": "cold query with prebuilt contacts",
+      "mu_lo": "3/16",
+      "mu_hi": "3/8",
+      "python_threshold": null,
+      "python_attained": null,
+      "python_queries": 4,
+      "cpp_queries": 4,
+      "proof_dispositions": [],
+      "input_parameters": {
+        "orientation": "koureas",
+        "t": "3/8",
+        "h": "1/4",
+        "mu_max": "3/8",
+        "max_steps": 1
+      },
+      "named_regression": "major_closed_lower_continuation_119_over_512",
+      "exact_threshold": null,
+      "attained": null,
+      "reason": "iteration_limit",
+      "bisection_termination": "iteration_limit",
+      "threshold_proof_reason": null
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-"""Read-only C0/C1/C3-L1 delivery/build audit; writes only an explicitly requested JSON.
+"""Read-only C0/C1/C3-L1/C3-L3 delivery/build audit; writes only an explicitly requested JSON.
 
 No downloads, Git writes, source rewrites, or numeric oracle helpers. The audit
 checks the actual final compiler commands, private vendor bytes, and DLL exports.
@@ -101,7 +101,8 @@ def main():
               "eab2_result_export_exact", "eab2_result_destroy", "eab2_local_origin2_exact",
               "eab2_get_c3l1_abi_info", "eab2_assembly2_create", "eab2_assembly2_destroy",
               "eab2_assemble_contact_set2", "eab2_contact_set2_destroy", "eab2_contact_set2_export_exact",
-              "eab2_query_lock", "eab2_first_order_mobility"]
+              "eab2_query_lock", "eab2_first_order_mobility",
+              "eab2_get_c3l3_abi_info", "eab2_solve_limit2", "eab2_critical_parameter"]
     for name in public:
         if not hasattr(production, name):
             findings.append(f"missing production export: {name}")

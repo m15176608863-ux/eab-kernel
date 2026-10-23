@@ -1,0 +1,59 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "differential",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_c3l3_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll",
+        "--family",
+        "all",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_evidence\\differential.json"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 141.0537383556366,
+      "last_line": "C3L3_DIFF limit=217 critical=171 mismatch=0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_evidence\\differential.log"
+    },
+    {
+      "name": "final_fast",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "final_fast",
+        "--evidence-root",
+        "reports/codex/C3L3_evidence"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 349.62598991394043,
+      "last_line": "shard 1: 8972 passed in 323.81s (0:05:23)",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_evidence\\final_fast.log"
+    },
+    {
+      "name": "final_full",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "final_full",
+        "--runslow",
+        "--evidence-root",
+        "reports/codex/C3L3_evidence"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 1590.2811636924744,
+      "last_line": "exact construction AST gate: 0 violation(s)",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L3_evidence\\final_full.log"
+    }
+  ]
+}
