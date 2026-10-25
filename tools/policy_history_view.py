@@ -10,7 +10,8 @@ import json
 from pathlib import Path
 
 
-COUNTS = {"imports": 648, "members": 432, "waivers": 3522,
+# T2a owner-approved append: 3522 historical plus 137 reviewed sites; no projection change.
+COUNTS = {"imports": 648, "members": 432, "waivers": 3659,
           "renewals": 106, "mutation_instrumentation_reviews": 2}
 
 
