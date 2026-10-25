@@ -1,6 +1,7 @@
 #pragma once
 #include "statics.hpp"
 #include <array>
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <vector>
@@ -35,6 +36,10 @@ struct ThresholdProof2 {
     std::string reason = "exact_basis_continuation";
 };
 struct CriticalParameter2 {
+    // Original search domain, never a narrowed bisection bracket.
+    Rational original_mu_min{0};
+    std::optional<Rational> original_mu_max;
+    std::optional<std::uint64_t> original_mu_max_bits;
     std::string call_status = "OK", mathematical_status = "UNPROVED";
     // Rational storage, but every populated bracket endpoint is binary64 exact.
     std::optional<Rational> mu_lo, mu_hi;
@@ -57,6 +62,7 @@ CriticalParameter2 critical_parameter(const contact::ContactSet2& contacts,
     std::size_t max_steps = 64, const std::string& param = "mu",
     const opt::Options& options = {});
 std::string export_exact(const CriticalParameter2& result);
+std::string export_search_domain(const CriticalParameter2& result);
 
 // Private proof helpers also exposed to the C++ semantic/adversarial gates.
 namespace critical_detail {

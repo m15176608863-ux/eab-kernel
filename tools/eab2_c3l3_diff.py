@@ -38,6 +38,10 @@ def exact_wire(value):
         return exact_wire(Q(value))
     result = wire(value)
     if isinstance(result, dict):
+        if {"mu_min_binary64", "mu_max_binary64", "exact_mu_min", "exact_mu_max"} <= set(result):
+            # Original binary64 input values are display fields, not derived
+            # rational quantities. Preserve them alongside their exact binding.
+            return {k: v if k in ("mu_min", "mu_max") else exact_wire(v) for k, v in result.items()}
         return {k: exact_wire(v) for k, v in result.items()}
     if isinstance(result, list):
         return [exact_wire(v) for v in result]
@@ -354,6 +358,9 @@ def endpoint(result, name):
 
 
 def verify_critical(model, contacts, result):
+    if "search_domain" in result:
+        from eab2_branch_verify import check_domain
+        check_domain(result["search_domain"])
     lo, hi = endpoint(result, "mu_lo"), endpoint(result, "mu_hi")
     if lo is not None and hi is not None:
         require(Q(0) <= lo <= hi, "invalid critical bracket order")
@@ -441,6 +448,11 @@ def semantic(value):
             result[key] = semantic(item)
         elif key == "validity_conditions":
             result[key] = sorted(item)
+        elif key == "search_domain" and item is not None:
+            # JSON's 1 and 1.0 denote the same exactly bound display number;
+            # bit patterns and exact endpoints were independently checked.
+            result[key] = {name: exact_wire(Q(value)) if name in ("mu_min", "mu_max") else value
+                           for name, value in item.items()}
         elif key not in ("mu_lo", "mu_hi"):
             result[key] = item
     if "attained" in value:
@@ -482,6 +494,14 @@ def compare(kind, model, contacts, expected, actual, query=None, dispositions=No
         verify_limit(model, contacts, mu, expected, (query or {}).get("problem"))
         verify_limit(model, contacts, mu, actual)
     else:
+        if query is not None:
+            # Frozen pre-fix records have no additive original-domain field.
+            # Bind that field from the frozen INPUT, never the C++ bracket.
+            domain = original_search_domain(query)
+            if "search_domain" not in expected:
+                expected = dict(expected, search_domain=domain)
+            require(expected["search_domain"] == domain, "Python original search domain input binding")
+            require(actual.get("search_domain") == domain, "C++ original search domain input binding")
         verify_critical(model, contacts, expected)
         verify_critical(model, contacts, actual)
     left, right = semantic(expected), semantic(actual)
@@ -505,6 +525,31 @@ def compare(kind, model, contacts, expected, actual, query=None, dispositions=No
         if dispositions is not None:
             dispositions.append(disposition)
     return differences(left, right)
+
+
+def original_search_domain(query):
+    encoded = query.get("mu_max_bits", "3ff0000000000000").lower()
+    maximum = double_bits(encoded)
+    return dict(mu_min=0.0, mu_max=maximum, exact_mu_min="0/1", exact_mu_max=exact_wire(Q(maximum)),
+                mu_min_binary64="0000000000000000", mu_max_binary64=encoded)
+
+
+def require_python_proof_floor(kind, expected, actual):
+    """Keep frozen proof capability, separately from symmetric proof validity.
+
+    Call only after independent certificate verification. Nonunique witnesses
+    may differ, but a previously certified exact threshold/directional slope
+    must not silently become null. No blanket or wildcard exception exists.
+    """
+    fields = ("exact_threshold",) if kind == "critical" else (
+        "directional_derivative", "right_derivative", "left_derivative") if kind == "sensitivity" else ()
+    required = [field for field in fields if expected.get(field) is not None
+                and (kind != "sensitivity" or expected.get("quality") == "exact_jet")]
+    for field in required:
+        require(actual.get(field) is not None, "frozen Python proof capability regression: " + field)
+    if required and kind == "sensitivity":
+        require(actual.get("quality") == "exact_jet", "frozen Python proof capability regression: quality")
+    return dict(required_fields=required, checked=len(required), exceptions=[])
 
 
 class BodyLoad(C.Structure):
@@ -934,6 +979,9 @@ def run(dll, cases, output):
                     delta = []
                 else:
                     delta = compare(query["kind"], model, contacts, expected, actual, query, dispositions)
+                proof_floor = None
+                if not call_error and (family.startswith("formal/") or family == "t1b"):
+                    proof_floor = require_python_proof_floor(query["kind"], expected, actual)
                 if "expected_value" in query:
                     require(actual["exact_value"] == query["expected_value"], "independent closed G5/plate formula")
                 if "expected_threshold" in query:
@@ -976,6 +1024,8 @@ def run(dll, cases, output):
                            mathematical_status=actual.get("mathematical_status"), differences=delta,
                            python_seconds=py_seconds, cpp_seconds=cpp_seconds,
                            python_timing="frozen original" if family.startswith("formal/") else "cold query with prebuilt contacts")
+                if proof_floor is not None:
+                    row["proof_capability_floor"] = proof_floor
                 if query["kind"] == "critical" and not call_error:
                     row["mu_lo"] = exact_wire(endpoint(actual, "mu_lo"))
                     row["mu_hi"] = exact_wire(endpoint(actual, "mu_hi"))
@@ -1036,6 +1086,8 @@ def run(dll, cases, output):
         source_sha256=hashes, source_pre_post_equal=unchanged, counts=dict(counts),
         family_counts=dict(families), mismatches=mismatches, queries=rows,
         acceptance_enhancements=enhancement_records,
+        proof_capability_floor=dict(scope="frozen formal and T1b", exceptions=[],
+            checked_fields=sum(row.get("proof_capability_floor", {}).get("checked", 0) for row in rows)),
         comparison_notes=["C++ mechanism attachment equals independently verified exact_y; no Python duplicate field required",
             "Critical basis polynomials are nonunique; identities and exact one-sided Sturm continuation are verified instead of coefficient equality",
             "A null/non-null critical proof availability difference is allowed only after independent proof verification, with a per-instance disposition; endpoints and other semantics remain strict",

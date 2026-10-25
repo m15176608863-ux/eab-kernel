@@ -4,7 +4,7 @@ The codec preserves the approved schema without implying batch acceptance. Certi
 rationals, input bits are binary64, and timings are neither certificates nor
 estimates of a C++ implementation. Geometry generators live in adapters/tia2d.
 """
-from dataclasses import fields, is_dataclass
+from dataclasses import fields, is_dataclass, replace
 from fractions import Fraction as Q
 import hashlib
 import json
@@ -247,7 +247,7 @@ def comparison_contract(kind):
     elif kind == "sensitivity":
         rules.update({"result." + field: "verify_certificate" for field in
             ("forward_certificate", "reverse_certificate", "primal_recession_ray", "dual_recession_ray",
-             "implicit_components", "selected_piece", "piece_jacobians")})
+             "implicit_components", "selected_piece", "piece_jacobians", "branch_certificate")})
         rules["result.tied_labels"] = rules["result.near_labels"] = "set"
     return dict(default="exact", rules=rules)
 
@@ -379,8 +379,10 @@ production LimitSeed2, its LimitProblem2, target, and valid directions.
     seed = spec.get("seed")
     if not isinstance(seed, LimitSeed2):
         raise ValueError("sensitivity query requires an exact LimitSeed2")
-    seed = LimitSeed2(tuple(tuple(Q(v) for v in row) for row in seed.dA),
-                      tuple(Q(v) for v in seed.db), tuple(Q(v) for v in seed.dc), seed.parameter)
+    # Preserve the original affine primitives retained by the production
+    # builder; recreating only dA/db/dc would discard higher-order K data.
+    seed = replace(seed, dA=tuple(tuple(Q(v) for v in row) for row in seed.dA),
+                   db=tuple(Q(v) for v in seed.db), dc=tuple(Q(v) for v in seed.dc))
     target = spec.get("target", "limit")
     if target not in ("limit", "critical"):
         raise ValueError("sensitivity target must be limit or critical")
@@ -399,8 +401,8 @@ production LimitSeed2, its LimitProblem2, target, and valid directions.
     if mu_seed is not None and (target != "critical" or not isinstance(mu_seed, LimitSeed2)):
         raise ValueError("threshold_mu_seed requires a critical query and LimitSeed2")
     if mu_seed is not None:
-        mu_seed = LimitSeed2(tuple(tuple(Q(v) for v in row) for row in mu_seed.dA),
-                             tuple(Q(v) for v in mu_seed.db), tuple(Q(v) for v in mu_seed.dc), mu_seed.parameter)
+        mu_seed = replace(mu_seed, dA=tuple(tuple(Q(v) for v in row) for row in mu_seed.dA),
+                          db=tuple(Q(v) for v in mu_seed.db), dc=tuple(Q(v) for v in mu_seed.dc))
     parameter = spec.get("parameter", seed.parameter)
     if not isinstance(parameter, str) or not parameter:
         raise ValueError("sensitivity parameter must be a nonempty name")
@@ -501,6 +503,8 @@ def build_case(assembly, case_id, *, lock_bodies=(), include_critical=False, mu_
     for query in queries:
         query.setdefault("geometry_seed", geometry_seed(assembly))
         query["comparison_contract"] = comparison_contract(query["kind"])
+        if query["kind"] == "sensitivity" and "threshold_query_ref" in query:
+            query["comparison_contract"]["rules"]["result.tied_labels"] = "verify_certificate"
         query["assembly_ref"] = dict(id=input_hash, version="input-1")
         if query["kind"] != "lock":
             query["contact_set_ref"] = dict(id=contact_hash, version="contact-1")

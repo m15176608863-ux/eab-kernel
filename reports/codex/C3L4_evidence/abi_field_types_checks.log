@@ -1,0 +1,6 @@
+$ "C:\Program Files\Python312\python.exe" -X utf8 -m pytest -q -p no:cacheprovider --basetemp D:\eab-wt\cx-c0\reports\codex\C3L4_evidence\tmp\pytest_release_field_types tests/test_eab2_release_abi.py
+..........................                                               [100%]
+26 passed in 0.12s
+
+$ "C:\Program Files\Python312\python.exe" -X utf8 tools/eab2_release_abi.py --dll D:\eab-wt\cx-c0\eab2\build\eab2.dll --output D:\eab-wt\cx-c0\reports\codex\C3L4_evidence\release_abi.json
+EAB2_RELEASE_ABI status=PASS exports=31 structures=28 findings=0

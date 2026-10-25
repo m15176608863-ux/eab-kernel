@@ -1,0 +1,11 @@
+{
+  "classification": "verification-tool path-scope error",
+  "ctest": "15/15 passed",
+  "source_math_change": false,
+  "findings": 570,
+  "all_findings_in_preexisting_ignored_build": true,
+  "original_report": "reports\\codex\\C3L4_evidence\\tmp\\clarified_final\\build_audit.json",
+  "original_report_sha256": "3aef0619d489074a0197746b23d841f16080d31caa23db6dd9c56f092954c553",
+  "fix": "Exclude the established ignored eab2/build tree from authored encoding scan even when --build selects a nested fresh build. Compiler, dependency, DLL and export checks unchanged.",
+  "disposition": "Whole cpp phase will rerun under a new build/log directory; no concatenation"
+}

@@ -341,38 +341,6 @@ def _solve_exact(matrix, rhs):
     return [row[-1] for row in rows]
 
 
-def _check_exported_implicit(case, query):
-    """Replay -phi_p/phi_mu directly from decoded matrices and both seeds."""
-    assert query["threshold_query_ref"] == "critical"
-    assert query["threshold_certificate_ref"] == dict(query="critical", field="result.threshold_certificate")
-    critical = next(q for q in case["queries"] if q["kind"] == "critical")["result"]
-    endpoint = critical["threshold_certificate"]
-    _check_exact_limit(dict(result=endpoint, problem=endpoint["problem"],
-                            mathematical_status=endpoint["mathematical_status"]))
-    problem, result = endpoint["problem"], query["result"]
-    A, c = _qmatrix(problem["A"]), _qvector(problem["c"])
-    branch = critical["threshold_proof"]["upper_basis" if critical["attained"] else "lower_basis"]
-    basis, entering = branch["basis"], branch["entering"]
-    m = len(A)
-    B = [[row[j] for j in basis] for row in A]
-    dual = not critical["attained"]
-    matrix = [[B[j][i] for j in range(m)] for i in range(m)] if dual else B
-    rhs = [c[j] for j in basis] if dual else [-row[entering] for row in A]
-    state = _solve_exact(matrix, rhs)
-    computed = []
-    for key in ("threshold_mu_seed", "seed"):
-        seed = query[key]
-        _check_seed_encoding(seed)
-        dA, dc = _qmatrix(seed["dA"]), _qvector(seed["dc"])
-        rhs = ([dc[basis[k]] - sum(dA[i][basis[k]] * state[i] for i in range(m)) for k in range(m)] if dual else
-               [-dA[i][entering] - sum(dA[i][basis[k]] * state[k] for k in range(m)) for i in range(m)])
-        change = _solve_exact(matrix, rhs)
-        computed.append([sum(dA[i][k] * state[i] + A[i][k] * change[i] for i in range(m)) - dc[k]
-                         for k in range(len(c))] if dual else change)
-    for label, slope, dmu, dp, index in result["implicit_components"]:
-        assert label == branch["labels"][index]
-        assert Q(dmu) == computed[0][index] and Q(dp) == computed[1][index]
-        assert Q(slope) == -Q(dp) / Q(dmu)
 
 
 @pytest.mark.parametrize("orientation,height,parameter,expected", [
@@ -380,6 +348,7 @@ def _check_exported_implicit(case, query):
     ("koureas", Q(1, 4), "h", -Q(17, 32)),
 ])
 def test_critical_derivative_exports_exact_seed_endpoint_and_branch_references(orientation, height, parameter, expected):
+    from tia2d_seed import geometry_seed
     assembly = g1(t=Q(1, 4), height=height, orientation=orientation)
     critical = critical_parameter(assembly, max_steps=20)
     problem = critical.threshold_certificate.problem
@@ -393,14 +362,42 @@ def test_critical_derivative_exports_exact_seed_endpoint_and_branch_references(o
             dt = tuple(v / height for v in contact.tangent)
         seeds[contact.label] = (dp, dt)
     seed = build_limit_seed2(problem, contact_seeds=seeds, parameter=parameter)
-    spec = dict(seed=seed, problem=problem, target="critical", validity_conditions=("shared interface seeds",))
+    # Explicit original-vertex path, including outer boundary vertices; the
+    # independent K replay cannot reconstruct high orders from dA alone.
+    by_point = {contact.point: seeds[contact.label][0] for contact in problem.contact_set.constraints}
+    vertices = {(body.body_id, i): by_point.get(point, (Q(0), point[1] / height if parameter == "h" else Q(0)))
+                for body in assembly.bodies for i, point in enumerate(body.original_vertices or body.vertices)}
+    raw_seed = geometry_seed(assembly, parameter, vertices=vertices)
+    spec = dict(seed=seed, problem=problem, target="critical", validity_conditions=("shared interface seeds",), geometry_seed=raw_seed)
     case = json.loads(encode_case(build_case(assembly, "implicit-seed", include_critical=True,
                                             _sensitivity_queries=(spec,))))
     query = next(q for q in case["queries"] if q["kind"] == "sensitivity")
-    assert query["result"]["method"] == "implicit_certificate"
+    assert query["result"]["method"] == "branch_certificate"
     assert Q(query["result"]["right_derivative"]) == Q(query["result"]["left_derivative"]) == expected
     assert query["declared_validity_conditions"] == ["shared interface seeds"]
-    _check_exported_implicit(case, query)
+    assert query["comparison_contract"]["rules"]["result.branch_certificate"] == "verify_certificate"
+    assert query["comparison_contract"]["rules"]["result.tied_labels"] == "verify_certificate"
+    assert not any(key.startswith("_") for key in query["seed"])
+    # Independent oracle: sparse Fraction polynomials rebuilt from raw bits,
+    # not production seed/LP helpers or derived dA/db/dc.
+    from eab2_branch_verify import verify_certificate
+    assert query["threshold_query_ref"] == "critical"
+    assert query["threshold_certificate_ref"] == dict(query="critical", field="result.threshold_certificate")
+    critical = next(q for q in case["queries"] if q["kind"] == "critical")["result"]
+    endpoint = critical["threshold_certificate"]
+    _check_exact_limit(dict(result=endpoint, problem=endpoint["problem"],
+                            mathematical_status=endpoint["mathematical_status"]))
+    bodies = []
+    for body in case["assembly"]["bodies"]:
+        bodies.append(dict(body_id=body["body_id"], vertices=[[Q(struct.unpack(">d", bytes.fromhex(v))[0])
+            for v in point] for point in body["vertices_xy_bits"]], dof_mask=body["dof_mask"],
+            boundary_type=body["boundary_type"], reference_point=body["reference_point"],
+            dof_anchor=body["dof_anchor"], dead=body["dead"], live=body["live"]))
+    ids = [b["body_id"] for b in bodies]
+    contacts = next(q["result"]["constraints"] for q in case["queries"] if q["kind"] == "assembly")
+    contacts = [dict(item, a=ids.index(item["a"]), b=ids.index(item["b"])) for item in contacts]
+    assert verify_certificate(bodies, contacts, query["geometry_seed"], endpoint["problem"]["column_labels"],
+                              critical, query["result"], mu_max_binary64=next(q["mu_max_bits"] for q in case["queries"] if q["kind"] == "critical")) == 2
 
 
 def test_extra_seeds_reject_wrong_problem_missing_threshold_and_unknown_inputs():

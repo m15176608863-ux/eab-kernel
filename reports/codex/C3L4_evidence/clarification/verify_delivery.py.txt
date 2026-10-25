@@ -1,0 +1,95 @@
+"""Final read-back verification. Does not rerun numeric work or write Git."""
+from pathlib import Path
+import gzip, hashlib, json, re, zipfile
+from urllib.parse import unquote,urlparse
+ROOT=next(p for p in Path(__file__).resolve().parents if (p/"src/eab").is_dir())
+E=ROOT/"reports/codex/C3L4_evidence"
+
+def read(path):
+    data=path.read_bytes()
+    return json.loads(gzip.decompress(data) if path.suffix==".gz" else data)
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def main():
+    verified=[]
+    for row in read(E/"pack_manifest.json")["rows"]:
+        path=E/row["artifact"];data=path.read_bytes()
+        assert len(data)==row["artifact_bytes"] and sha(path)==row["artifact_sha256"],path
+        raw=gzip.decompress(data) if path.suffix==".gz" else data
+        assert len(raw)==row["bytes"] and hashlib.sha256(raw).hexdigest()==row["sha256"],path
+        verified.append(row["artifact"])
+    history=read(E/"clarification/history_mapping.json")
+    assert sha(Path(history["archive"]))==history["archive_sha256"]
+    with zipfile.ZipFile(history["archive"]) as z:
+        for row in history["files"]:
+            data=z.read(row["archive_member"])
+            assert len(data)==row["bytes"] and hashlib.sha256(data).hexdigest()==row["sha256"]
+    runs=[]
+    for name in ("baseline_full","final_fast","final_full","clarified_fast","clarified_full"):
+        summary=read(E/name/"summary.json");archive=read(E/name/"archive_manifest.json")
+        assert summary["complete"]
+        assert summary["audit"]==("RED" if name=="final_full" else "GREEN")
+        assert not summary["export_changed"] and not summary["live_tree_changed"]
+        assert all(s["complete"] and s["node_sets_equal"] and not s["skip_count"] for s in summary["shards"])
+        if name!="final_full":
+            assert summary["module_coverage_complete"] and all(s["failed_count"]==0 for s in summary["shards"])
+            assert summary["static"] is None or summary["static"]["last_line"]=="exact construction AST gate: 0 violation(s)"
+        assert archive["source_summary_sha256"]==sha(E/name/"summary.json")
+        for row in archive["files"]:
+            path=Path(row["archive"]);assert path.stat().st_size==row["bytes"] and sha(path)==row["sha256"]
+        runs.append(dict(name=name,audit=summary["audit"],collected=summary["collected"],shards=len(summary["shards"]),failed=sum(s["failed_count"] for s in summary["shards"]),skipped=sum(s["skip_count"] for s in summary["shards"]),node_multisets_equal=True,raw_files=len(archive["files"])))
+    archive=read(E/"clarification/tested_source_archive.json")
+    assert sha(Path(archive["archive"]))==archive["archive_sha256"] and archive["all_members_sha256_verified"]
+    source_manifest=read(E/"clarification/verification_sources.json.gz")
+    assert all(sha(ROOT/name)==digest for name,digest in source_manifest.items())
+    phases=[read(E/"clarification"/name) for name in ("cpp_execution.json","completed_layers_reuse.json","closeout_execution.json")]
+    assert all(p["complete"] and p["source_pre_post_equal"] for p in phases)
+    dlls={p["dll_sha256"] for p in phases};assert len(dlls)==1
+    dll=next(iter(dlls));assert sha(ROOT/"eab2/build/clarified_r2/eab2.dll")==dll
+    release=read(E/"release_abi.json");consumer=read(E/"consumer.json");isolation=read(E/"consumer_isolation.json")
+    assert release["status"]=="PASS" and release["dll_sha256"]==dll and release["export_count"]==31 and release["structure_count"]==28
+    assert consumer["status"]=="PASS" and consumer["mismatch"]==0 and len(consumer["cases"])==6 and consumer["sensitivity_queries"]==18 and consumer["dll_sha256"]==dll
+    assert isolation["file_count"]==10 and isolation["python_isolated"] and isolation["site_disabled"] and isolation["exit_code"]==0
+    assert next(r["sha256"] for r in isolation["files"] if r["path"]=="eab2.dll")==dll
+    for row in isolation["files"]:
+        assert sha(ROOT/row["source"])==row["sha256"] and sha(Path(isolation["stage"])/row["path"])==row["sha256"]
+    assert sha(E/"consumer.json")==isolation["consumer_output_sha256"]
+    l4=read(E/"differential/l4.json.gz");assert l4["complete"] and l4["cpp_executed"] and l4["source_pre_post_equal"]
+    assert l4["dll_sha256"]==dll and len(l4["queries"])==402 and not l4["mismatches"]
+    labels=l4["threshold_label_comparison"];assert labels["disposition_count"]==len(labels["dispositions"])==32
+    assert all(r["semantic_fields_equal"] and r["classification"]=="verified_basis_dependent_threshold_labels" for r in labels["dispositions"])
+    excluded=l4["abi_input_domain_exclusions"];assert len(excluded)==32 and len({r["source_name"] for r in excluded})==32
+    assert all(r["classification"]=="ABI_INPUT_DOMAIN_EXCLUSION" and r["reason"]=="non_binary64_exact_input" for r in excluded)
+    mut=read(E/"clarification/certificate_mutations.json");assert mut["complete"] and mut["source_pre_post_equal"]
+    assert mut["last_line"]=="C3L4_CERTIFICATE_MUTATIONS_OK baseline=2 rejected=8 semantic_failures=9"
+    report=ROOT/"reports/codex/C3L4_report.md";text=report.read_text("utf8")
+    assert "<!-- CLARIFIED_" not in text and "<!-- FINAL_PYTHON -->" not in text
+    assert text.splitlines()[-1]=="C3L4_DONE"
+    net=re.search(r"<!-- NET_BYTES -->([0-9]+)<!-- /NET_BYTES -->",text)
+    hygiene=read(E/"hygiene.json")
+    assert net and int(net.group(1))==hygiene["actual_candidate_net_bytes"]
+    assert hygiene["within_target"] and not hygiene["utf8_bom_newline_findings"]
+    assert not hygiene["oversized_files_except_existing_policy"]
+    for row in hygiene["files"]:
+        path=ROOT/row["path"];data=path.read_bytes() if path.is_file() else b""
+        assert len(data)==row["bytes"],path
+        if row["sha256"] is not None:
+            assert hashlib.sha256(data).hexdigest()==row["sha256"],path
+    missing=[]
+    for doc in (report,E/"deliverables.md",ROOT/"reports/EVIDENCE_ARCHIVE.md"):
+        for link in re.findall(r"\]\(([^)]+)\)",doc.read_text("utf8")):
+            if link.startswith(("https:","http:","#")) or "<" in link: continue
+            target=Path(unquote(urlparse(link).path).lstrip("/")) if link.startswith("file:") else doc.parent/unquote(link.split("#")[0])
+            if not target.exists(): missing.append(dict(document=str(doc),link=link))
+    # Existing archive-index historical links may point into documented external
+    # fallback storage. New report and delivery links must all resolve locally.
+    current_missing=[row for row in missing if row["document"]!=str(ROOT/"reports/EVIDENCE_ARCHIVE.md")]
+    assert not current_missing,current_missing
+    result=dict(schema="eab2.c3l4.delivery-integrity.v2",status="PASS",work_order_status=text.splitlines()[-1],pack_artifacts_verified=len(verified),history_files_verified=len(history["files"]),h1_archives=runs,tested_source_zip_sha_verified=True,verification_source_files=len(source_manifest),release_dll_sha256=dll,release_exports=31,release_structures=28,l4_queries=402,l4_mismatches=0,basis_label_dispositions=32,abi_domain_exclusions=32,missing_delivery_links=current_missing,report_last_line=text.splitlines()[-1],note="Historical RED is retained. Current fast/full and restarted L4 are complete; five complete r2 layers are reused as explicitly authorized. Source unchanged during runs. This is author verification, not owner fresh-Git or independent acceptance.")
+    (E/"delivery_integrity.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
+    print("C3L4_DELIVERY_INTEGRITY status=PASS l4=402 mismatch=0 dispositions=32 excluded=32")
+
+if __name__=="__main__":
+    main()

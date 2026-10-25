@@ -1,0 +1,22 @@
+{
+  "completed_stages": [
+    "build",
+    "lower"
+  ],
+  "execution_paths": [
+    "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_fix_evidence\\tmp\\c3l4fix_final_r4\\build\\execution.json",
+    "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_fix_evidence\\tmp\\c3l4fix_final_r4\\lower\\execution.json"
+  ],
+  "post_completed_stage_changes": [
+    "tools\\eab2_branch_verify.py",
+    "tools\\eab2_c3l4_meta_mutations.py",
+    "tests\\test_eab2_branch_verify.py",
+    "tests\\test_eab2_c3l4_branch_symmetry.py"
+  ],
+  "compiled_and_production_sources_unchanged": true,
+  "reason": "Only independent L4 checker/type-validation tests and metamorphic mutation expected exception class changed after completed stages. Build/CTest/ABI/consumer and C0/C1/LP/L1/L3 runtime inputs unchanged. A negative-test fixture aggregate reason was aligned to isolate its intended exact_jet assertion.",
+  "dll": "D:\\eab-wt\\cx-c0\\eab2\\build\\c3l4fix_final_r4\\eab2.dll",
+  "dll_sha256": "b9a8d979da516e84c60652f875dcfe0697b4c681a6247791e095a98126a9e454",
+  "l4": "Interrupted r4 INVALID, rerun whole L4 with current checker against same DLL",
+  "next_tag": "c3l4fix_final_r5"
+}

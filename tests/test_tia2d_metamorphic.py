@@ -201,7 +201,7 @@ def test_critical_open_closed_threshold_and_shared_t_seed_exact_frame_covariance
     seed = build_limit_seed2(result.threshold_certificate.problem, contact_seeds=seeds, parameter="t")
     derivative = evaluate_sensitivity2(result, seed, parameter="t")
     assert derivative.left_derivative == derivative.right_derivative == slope
-    assert derivative.method == "implicit_certificate"
+    assert derivative.method == "branch_certificate"
 
 
 def test_random_rotated_rn_inputs_use_actual_edge_and_wrench_oracle_not_old_threshold():

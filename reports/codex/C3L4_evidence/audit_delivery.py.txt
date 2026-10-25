@@ -1,0 +1,112 @@
+"""Read-only Git inventory plus scoped delivery reports; no Git writes.
+
+Run after the H1 source freeze finishes. Net bytes mean current candidate-tree
+bytes minus base-tree blob bytes, NOT the sum of changed/new file sizes.
+"""
+from pathlib import Path
+import hashlib
+import json
+import subprocess
+
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "src/eab").is_dir())
+EVIDENCE = ROOT / "reports/codex/C3L4_evidence"
+BASE = "b34c966957b681b45cdb13acaaa09bfc1d6c5fe6"
+AUDIT = EVIDENCE / "hygiene.json"
+INDEX = EVIDENCE / "deliverables.md"
+
+
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=ROOT)
+
+
+def names():
+    return sorted(set(filter(None, git("ls-files", "--cached", "--others",
+                                      "--exclude-standard", "-z").decode("utf8").split("\0"))))
+
+
+def main():
+    assert git("rev-parse", "HEAD").decode().strip() == BASE
+    assert git("rev-parse", "--abbrev-ref", "HEAD").decode().strip() == "eab2-c3l4"
+    protected = ("src/eab", "docs/eab2_design.md", "tools/exact_construction_policy.json")
+    assert not git("diff", BASE, "--", *protected), "Protected mathematical/source contract changed"
+    subprocess.run(["git", "diff", "--check"], cwd=ROOT, check=True)
+    base = {}
+    for record in filter(None, git("ls-tree", "-rlz", BASE).split(b"\0")):
+        meta, path = record.split(b"\t", 1)
+        mode, kind, blob, size = meta.split()
+        assert kind == b"blob"
+        base[path.decode("utf8")] = dict(bytes=int(size), blob=blob.decode())
+    # Create the two report targets before computing the actual candidate set.
+    if not AUDIT.exists():
+        AUDIT.write_bytes(b"{}\n")
+    if not INDEX.exists():
+        INDEX.write_bytes(b"# Delivery inventory\n")
+    changed = set(filter(None, git("diff", "--name-only", "-z", BASE).decode("utf8").split("\0")))
+    changed.update(name for name in names() if name not in base)
+    lines = ["# WO-C3L4 交付清单", "", "状态以主报告最后一行为准；未执行 Git 写操作。", "",
+             "下列为本单全部修改/新增的非 ignored 候选文件。编译产物、临时探针和字节导出不入库。", "",
+             "- [主报告](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_report.md)",
+             "- [实际净增与逐文件 SHA256](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/hygiene.json)",
+             "", "## 全部文件", ""]
+    for name in sorted(changed):
+        path = ROOT / name
+        lines.append(f"- [{name}]({path.as_uri()})" if path.exists() else f"- 已删除：`{name}`")
+    lines += ["", "## 不入库位置", "",
+              "- [本单原始运行 tmp](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/tmp/)",
+              "- [构建/变异/consumer 字节副本](file:///D:/eab-wt/cx-c0/eab2/build/)",
+              "- [H1 原始日志追加归档](file:///D:/eab-evidence/reports/codex/C3L4_evidence/20261023_run1/)",
+              "- [本次裁定续办归档](file:///D:/eab-evidence/reports/codex/C3L4_evidence/clarification_20261023/)", ""]
+    INDEX.write_bytes("\n".join(lines).encode("utf8"))
+    for _ in range(10):
+        current = {name: (ROOT / name).stat().st_size for name in names() if (ROOT / name).is_file()}
+        problems, rows = [], []
+        for name in sorted(changed):
+            path = ROOT / name
+            data = path.read_bytes() if path.is_file() else b""
+            old = base.get(name, {}).get("bytes", 0)
+            if path.suffix in {".py", ".txt", ".md", ".json", ".cpp", ".hpp", ".h", ".c", ".bat"}:
+                try:
+                    data.decode("utf8")
+                except UnicodeDecodeError:
+                    problems.append(name + ": invalid UTF8")
+                if data.startswith(b"\xef\xbb\xbf"):
+                    problems.append(name + ": BOM")
+                if b"\r\n" in data and b"\n" in data.replace(b"\r\n", b""):
+                    problems.append(name + ": mixed newlines")
+                if path.suffix == ".bat" and not data.isascii():
+                    problems.append(name + ": non-ASCII batch")
+            if path.suffix.lower() in {".dll", ".exe", ".obj", ".lib", ".pdb"}:
+                problems.append(name + ": compiled output in delivery")
+            rows.append(dict(path=name, url=path.as_uri(), base_bytes=old, bytes=len(data),
+                net_bytes=len(data)-old, base_blob=base.get(name, {}).get("blob"),
+                sha256=None if path == AUDIT else hashlib.sha256(data).hexdigest()))
+        large = [dict(path=name, bytes=size) for name, size in current.items()
+                 if size > 1_000_000 and name != "tools/exact_construction_policy.json"]
+        assert not large and not problems, (large, problems)
+        base_bytes = sum(value["bytes"] for value in base.values())
+        result = dict(schema="eab2.c3l4.delivery-audit.v1", base_commit=BASE,
+            git_writes_performed=False, definition="all tracked paths plus nonignored new files; no staging/commit",
+            base_tree_bytes=base_bytes, candidate_tree_bytes=sum(current.values()),
+            actual_candidate_net_bytes=sum(current.values())-base_bytes,
+            tracked_paths_net_bytes=sum(current.get(name, 0) for name in base)-base_bytes,
+            new_file_bytes=sum(size for name, size in current.items() if name not in base),
+            candidate_file_count=len(current), changed_file_count=len(rows),
+            target_max_net_bytes=2_000_000, within_target=sum(current.values())-base_bytes <= 2_000_000,
+            protected_source_unchanged=list(protected), utf8_bom_newline_findings=problems,
+            oversized_files_except_existing_policy=large,
+            self_hash_note="hygiene.json has no self hash; its exact bytes are included in net size",
+            files=rows)
+        encoded = (json.dumps(result, ensure_ascii=False, indent=2) + "\n").encode("utf8")
+        previous = AUDIT.read_bytes()
+        AUDIT.write_bytes(encoded)
+        if previous == encoded:
+            break
+    else:
+        raise RuntimeError("self-size inventory did not converge")
+    assert result["within_target"]
+    assert sum(row["net_bytes"] for row in rows) == result["actual_candidate_net_bytes"]
+    print(f"C3L4_DELIVERY_AUDIT net_bytes={result['actual_candidate_net_bytes']} files={len(rows)} findings=0")
+
+
+if __name__ == "__main__":
+    main()

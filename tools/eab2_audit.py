@@ -1,4 +1,4 @@
-"""Read-only C0/C1/C3-L1/C3-L3 delivery/build audit; writes only an explicitly requested JSON.
+"""Read-only C0/C1/C3-L1/C3-L3/C3-L4 build audit; writes an explicitly requested JSON.
 
 No downloads, Git writes, source rewrites, or numeric oracle helpers. The audit
 checks the actual final compiler commands, private vendor bytes, and DLL exports.
@@ -15,6 +15,25 @@ import sys
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def encoding_findings(path, data):
+    findings = []
+    if data.startswith((b"\xef\xbb\xbf", b"\xff\xfe", b"\xfe\xff")):
+        findings.append(f"unexpected BOM: {path}")
+    if b"\r\n" in data and b"\n" in data.replace(b"\r\n", b""):
+        findings.append(f"mixed newline convention: {path}")
+    try:
+        data.decode("ascii" if Path(path).suffix == ".bat" else "utf-8")
+    except UnicodeError:
+        findings.append(f"encoding contract failed: {path}")
+    return findings
+
+
+def delivered_logs(root):
+    """Authored C3-L4 evidence only; ignored tmp/build logs are not delivery."""
+    return sorted(p for directory in (root / "reports/codex").glob("C3L4*_evidence")
+                  for p in directory.rglob("*.log") if not {"tmp", "build"}.intersection(p.relative_to(directory).parts))
 
 
 def main():
@@ -102,7 +121,8 @@ def main():
               "eab2_get_c3l1_abi_info", "eab2_assembly2_create", "eab2_assembly2_destroy",
               "eab2_assemble_contact_set2", "eab2_contact_set2_destroy", "eab2_contact_set2_export_exact",
               "eab2_query_lock", "eab2_first_order_mobility",
-              "eab2_get_c3l3_abi_info", "eab2_solve_limit2", "eab2_critical_parameter"]
+              "eab2_get_c3l3_abi_info", "eab2_solve_limit2", "eab2_critical_parameter",
+              "eab2_get_c3l4_abi_info", "eab2_evaluate_sensitivity2"]
     for name in public:
         if not hasattr(production, name):
             findings.append(f"missing production export: {name}")
@@ -130,19 +150,17 @@ def main():
     for name in ("exact.hpp", "c_api.cpp", "fp_contract.cpp"):
         if "#if defined(__AVX__)" not in (ROOT / "eab2/src" / name).read_text("utf-8"):
             findings.append(f"controlled-source AVX compile guard absent: {name}")
+    # A caller may select a fresh nested build directory. The established
+    # ignored build tree can still contain earlier binaries and mutation jobs;
+    # those are never authored source, irrespective of the selected DLL.
     authored = [p for p in (ROOT / "eab2").rglob("*") if p.is_file()
-                and not p.is_relative_to(build) and not p.is_relative_to(vendor)]
+                and not p.is_relative_to(build)
+                and not p.is_relative_to(ROOT / "eab2/build")
+                and not p.is_relative_to(vendor)]
     authored += sorted((ROOT / "tools").glob("eab2_*.py"))
+    authored += delivered_logs(ROOT)
     for path in authored:
-        data = path.read_bytes()
-        if data.startswith(b"\xef\xbb\xbf"):
-            findings.append(f"unexpected UTF-8 BOM: {path.relative_to(ROOT)}")
-        if b"\r\n" in data and b"\n" in data.replace(b"\r\n", b""):
-            findings.append(f"mixed newline convention: {path.relative_to(ROOT)}")
-        try:
-            data.decode("ascii" if path.suffix == ".bat" else "utf-8")
-        except UnicodeError:
-            findings.append(f"encoding contract failed: {path.relative_to(ROOT)}")
+        findings += encoding_findings(path.relative_to(ROOT), path.read_bytes())
     sys.path.insert(0, str(ROOT / "tools"))
     from repository_size import assert_deliverable_sizes
     try:
@@ -163,6 +181,7 @@ def main():
         "production_numeric_absent": not hasattr(production, "eab2_numeric_batch"),
         "testing_numeric_present": hasattr(testing, "eab2_numeric_batch"),
         "encoding_files": len(authored),
+        "delivered_logs_checked": [p.relative_to(ROOT).as_posix() for p in delivered_logs(ROOT)],
         "dll_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                        for p in (build / "eab2.dll", build / "eab2_test.dll")},
     }

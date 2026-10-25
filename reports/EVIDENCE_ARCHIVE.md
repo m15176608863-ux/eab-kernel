@@ -201,3 +201,62 @@ Claude 提供 c8718bb 新鲜树构建/五层差分/全档15056绿及两路验收
 - 修复内容及原样末行见[主报告](codex/C3L3_report.md)；[最终交付索引](codex/C3L3_repair_evidence/deliverables.md)、[字节与链接审计](codex/C3L3_repair_evidence/delivery_integrity.json)、[卫生账](codex/C3L3_repair_evidence/hygiene.json)给出当前候选。`c8718bb` 新鲜树与静力验收已据所有者来函记录；本轮临界参数路返修仍待 Claude 复验，不以作者自查签署独立验收。
 
 无Git写操作；外归档为本地保存，不是远端备份。
+
+## WO-C3L4（2026-10-23）追加映射
+
+本单 H1 原始日志、收集/执行节点记录和受测源文件清单按原字节追加到
+`D:/eab-evidence/reports/codex/C3L4_evidence/20261023_run1/<run>/`，不覆盖不同内容，不删除源文件；逐件复制前后 SHA256 相同。
+每个运行完成后才产生对应清单：[开工全档](codex/C3L4_evidence/baseline_full/archive_manifest.json)、收尾快档 / 收尾全档（已被修复轮结果取代、从树中移除，逐字节映射见 [superseded_prior_outputs.json](codex/C3L4_fix_evidence/superseded_prior_outputs.json)）。
+[归档脚本](codex/C3L4_evidence/archive_h1.py.txt) 支持上述三个历史运行名及本次明确授权的 `clarified_fast` / `clarified_full`；完整源字节导出仍在 ignored tmp，不称所有者新鲜 Git 树。
+
+[收尾受测源码 ZIP 记录](codex/C3L4_evidence/tested_source_archive.json) 另保存 1981 个成员，逐成员 SHA 与受测 source_manifest 一致；快档与全档使用相同源清单。它保留的是静态测试装配修复前的受测版本，原全档 RED 不被替换；最终两个测试文件的等价修复与定向验证另列本单报告。
+
+六层差分每层的唯一拟交付完整数据保存在 [C3L4 differential](codex/C3L4_evidence/differential/) 的 gzip 中；[压缩前后清单](codex/C3L4_evidence/pack_manifest.json.gz) 记录原 SHA、压缩 SHA 和字节数，已解压回验。旧 L4 的 32 项 tied_labels 红项原始字节已存入下述续办回退 ZIP，不因归档改状态/哈希来过门；当前权威目录只由新完成的运行替换。中间接线/探针输出只留 ignored tmp，不并入权威结果。
+[主报告](codex/C3L4_report.md) 和 [交付清单](codex/C3L4_evidence/deliverables.md) 记录实际完成边界及最终净增。外部归档只是本地保存，不是远端备份。
+
+### WO-C3L4 Claude 裁定续办（同一 b34c966 工作树）
+
+- [续办入口与回退 SHA](codex/C3L4_evidence/clarification/intake.json)：修改前的 120 项交付文件逐字节核验后追加到 [prior_delivery.zip](file:///D:/eab-evidence/reports/codex/C3L4_evidence/clarification_20261023/prior_handoff/prior_delivery.zip)，包括旧报告、旧严格 32 失配数据、原逐文件清单与比较器。历史文件按 ZIP 中原仓库相对路径定位，不改写旧结果。
+- 新运行名为 `clarified_fast` / `clarified_full`；仅完成后将原始日志、节点及源清单追加到 `D:/eab-evidence/reports/codex/C3L4_evidence/clarification_20261023/<run>/`，对应本树各运行的 `archive_manifest.json`。最终受测源码另存完整 ZIP，每成员核 SHA。
+- [串行构建/六层/H1 执行器](codex/C3L4_evidence/clarification/run_verification.py.txt) 与 [进度目录](codex/C3L4_evidence/clarification/) 保留实际命令、进度、退出码和原样末行；未完成记录不能被当作通过。
+- 本次阈值基依赖 tied_labels 逐侧独立核证后登记合法表示差异，旧 RED 与新比较口径区分；32 个非 binary64 输入按设计逐条列为 ABI 域外，不伪造成运行通过数。
+
+### WO-C3L4 裁定轮最终收尾归档
+
+- [最终快档原始清单](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/clarified_fast/archive_manifest.json)：9109项GREEN，5份原始文件、10,510,087 B；[最终全档原始清单](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/clarified_full/archive_manifest.json)：15193项、四片全部GREEN，15份原始文件、17,516,029 B，静态构造0违例。执行节点多重集合与收集一致、0 failed/skip，逐模块实际执行完整，源前后不变。
+- [最终受测源码ZIP记录](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/clarification/tested_source_archive.json)：1983成员、23,055,873 B，逐成员SHA核验；[完整ZIP](file:///D:/eab-evidence/reports/codex/C3L4_evidence/clarification_20261023/clarified_full/tested_source.zip) SHA-256 `8bd4defa21383cc38685add3a267265e166f1ac403a63fb6de38fad82b80411d`。快/全档源清单相同，保留全档后仅文档/证据回填的边界，不称新鲜Git树。
+- [被授权复用的完整r2五层](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/clarification/completed_layers_reuse.json) 与 [L4从头复跑/最终H1执行](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/clarification/closeout_execution.json) 分别保存，不拼接中断L4；最终L4 402查询/0失配、32项合法跨基标签台账及32项ABI域外清单见 [L4汇总](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/clarification/l4_summary.md)。
+- [25份被替换/退役历史文件的精确ZIP映射](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_evidence/clarification/history_mapping.json.gz) 保留旧字节及SHA；当前权威每层只留一份完整gzip，历史RED不改写。未commit，所有者新鲜Git树及非作者对抗核查由Claude负责，待所有者验收，不计为Codex执行PARTIAL。
+
+## WO-C3L4-fix 定理审查停止实施（2026-10-23，cb14522）
+
+- [修复轮报告](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_fix_report.md)记录双无穷小定理在mu*=mu_max时的实际profile1反例；依Claude工单停下等待边界合同裁定，未改生产实现。
+- [开工全档归档清单](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_fix_evidence/baseline_full/archive_manifest.json)：15193项、4分片GREEN、0failed/skip、静态0违例；15份原始日志/节点/源清单逐件复制核SHA，原临时源未删。它不是修后验收。
+- [外部相同清单](file:///D:/eab-evidence/reports/codex/C3L4_fix_evidence/20261023_domain_block/baseline_full/manifest.json)及 [受测源码ZIP](file:///D:/eab-evidence/reports/codex/C3L4_fix_evidence/20261023_domain_block/baseline_full/tested_source.zip)只在本单新目录追加，2119成员逐项核SHA，不称新鲜Git树。
+- [独立K证明发布映射](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_fix_evidence/proof_publish.json)、[真实几何脚本身份/编码记录](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_fix_evidence/boundary_geometry_probe_manifest.json)、本轮逐文件清单（已压缩归档，映射见 [historical_compaction.json](file:///D:/eab-wt/cx-c0/reports/codex/C3L4_fix_evidence/historical_compaction.json)）保留取证范围。旧轮结果及旧归档不覆盖，旧UTF16日志minor尚未处理。
+
+外部路径是本地归档，不是远端备份；没有Git写操作，回退不得覆盖所有者后续修改。
+
+## WO-C3L4-fix 续裁定与集成历史（2026-10-23）
+
+以上“停止实施”为续裁定前历史，不能作为当前实现状态。原 BLOCKED 报告及被压缩取证文件见 [历史精确映射](codex/C3L4_fix_evidence/ruling_resume.json) 与 [本树压缩清单](codex/C3L4_fix_evidence/historical_compaction.json)；旧 `deliverables.md`、两个反例 JSON 等按清单在外部 ZIP 中读取，不再保留重复本地副本。
+
+- [旧 RED / UTF-16 归档映射](codex/C3L4_fix_evidence/abi_minor_history.json)：19 个原始成员已逐件核验，外部 ZIP SHA-256 `01cdba67d17b5af5c6c5819b2a78d7c71c3f22b37580ce7b48fb62d48adc5f68`。当前取证日志为 UTF-8 无 BOM、LF；最终哈希采用映射的 `utf8_log_final_sha256`，原字节未覆盖。
+- [本轮集成历史映射](codex/C3L4_fix_evidence/integration_history.json)：两份真实字节快照及 RED/INVALID 日志、节点、执行与自有 PID 终止记录共 4292 成员，逐成员 SHA 核验；[追加 ZIP](file:///D:/eab-evidence/reports/codex/C3L4_fix_evidence/integration_history_20261023_r3/history.zip) SHA-256 `44cc544adb9f8e1f2dc591eba031457fceac561ceb514080b0c6fa70ae75bcf0`。原样末行 `24 failed, 9203 passed in 800.83s (0:13:20)` 是历史 RED，第一次未完成快档及中断构建/差分同属无效证据，未拼接为通过。
+- 两个被取代快档目录只留历史 README；7 个 JSON 在核验归档后移除。可复跑脚本见 [archive_integration_history.py.txt](codex/C3L4_fix_evidence/archive_integration_history.py.txt)。忽略目录的原始临时文件未删，未将编译产物收入此归档。
+
+最终修后验收应读取修复轮报告与新运行清单，而不是上述历史 RED。新鲜 Git 树及非作者对抗核查仍待所有者验收。
+
+### WO-C3L4-fix 四项旧 JSON 精确迁移（2026-10-23）
+
+- [逐文件路径、字节与 SHA 映射](codex/C3L4_fix_evidence/superseded_prior_outputs.json)覆盖且仅覆盖旧 `checks/static_repair_verification.json`、`hygiene.json`、`tied_labels_forensics.json`、`checks/build_audit.json`；总计 **211,565 B**。574 个 authored 运行/测试/构建文本文件重检，无这四项文件名依赖；同名 `.log`、consumer 与冻结测试输入不移动。
+- 四份 JSON 先追加复制到[本单专属外部目录](file:///D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023/)，全部逐字节及 SHA-256 读回相等，再逐项复核工作树绝对路径与源 SHA，仅移除这四份本地副本。[外部 manifest](file:///D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023/manifest.json) SHA-256 为 `11f7d445fdc55cd5d30d2a70ba41ce5bb81f9489e8c9adbbd7b1ff1113e9f01d`；已存在不同字节拒绝覆盖。
+- [固定四目标的可复跑脚本](codex/C3L4_fix_evidence/archive_superseded_prior_outputs.py.txt)保留精确尺寸/SHA、依赖重检、复制/删除前验证与不存在路径恢复边界。旧结果/结论/SHA 不改写，旧报告链接改指相同外部 JSON；源清单中的历史相对路径通过本映射解释。此迁移不升级历史结果为本轮通过，不把旧净增当修复轮最终净增。
+
+无 Git 写、无递归删除、无编译产物归档；外部路径仅为本地保存，不是远端备份。回退只可恢复映射指定且当前不存在的原路径，核 SHA，绝不覆盖所有者后续修改。
+
+### WO-C3L4-fix-close 64b499f 历史 JSON 无损压缩（2026-10-24）
+
+真实净增超限后，仅将旧 C3L4_evidence 的三份 module_coverage、abi_static_repair、checks/mutations、pack_manifest、clarification/history_mapping 与 checks/harness_static_equivalence 共八份 JSON 压为同目录 `.json.gz`，逐字节解压回验后移除原副本。原始 100,295 B → gzip 19,896 B，节省 80,399 B；数据、历史结论与原 SHA 不改写，不升级为本轮通过。
+
+[逐文件路径/字节/SHA 映射](codex/C3L4_fix_evidence/historical_compaction.json) 的 `close_64b499f_gzip` 保存原路径与压缩路径；目录清单和旧 harness 文档链接同步，两份主报告不改。回退只向不存在的原路径解压并核原 SHA，不能覆盖后续修改。未写外部目录，冻结语料/准入不动。

@@ -1,0 +1,137 @@
+{
+  "complete": true,
+  "source_pre_post_equal": true,
+  "source_manifest_sha256": "b212e190ac5860ad08e9f06466dabc1b53bd134a7a5c3e8b3739100a1f1fb3b8",
+  "source_file_count": 638,
+  "dll_sha256": "b08c5558572831b52f17a60253e2ce1ede450a31eed800d8a5b3b053124c75df",
+  "test_dll_sha256": "95fcb7b6e979c0d54d19b1cc29fd3403014781fb942bd25caee8a0ea00a8915e",
+  "runs": [
+    {
+      "name": "build_ctest",
+      "command": [
+        "cmd.exe",
+        "/c",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\fresh_build.bat"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\build_ctest.log",
+      "complete": true,
+      "pid": 21828,
+      "seconds": 16.03478129999712,
+      "exit_code": 0,
+      "last_line": "Total Test time (real) =   6.54 sec",
+      "log_sha256": "caa49fb646573c2581779f1d612edd272957d53c09066fd12024eb5cd12982c2"
+    },
+    {
+      "name": "sensitivity",
+      "command": [
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\eab2_test_sensitivity.exe"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\sensitivity.log",
+      "complete": true,
+      "pid": 34068,
+      "seconds": 4.005215599900112,
+      "exit_code": 0,
+      "last_line": "sensitivity: 263 checks passed",
+      "log_sha256": "9a002333084ac1a6b3d23807e87d46a96c15a15d70877a7d98484c6c33e64297"
+    },
+    {
+      "name": "geometry_seed",
+      "command": [
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\eab2_test_geometry_seed.exe"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\geometry_seed.log",
+      "complete": true,
+      "pid": 40464,
+      "seconds": 2.004655000055209,
+      "exit_code": 0,
+      "last_line": "C3L4_GEOMETRY_SEED_OK checks=42",
+      "log_sha256": "823b18b51c0b81a131f1d588bd6f08c2a9be00dd2ece90b18a3d462b3a8d65e6"
+    },
+    {
+      "name": "c3l4_abi",
+      "command": [
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\eab2_test_c3l4_abi.exe"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\c3l4_abi.log",
+      "complete": true,
+      "pid": 27624,
+      "seconds": 2.005028499988839,
+      "exit_code": 0,
+      "last_line": "EAB2_C3L4_ABI checks=87 failed=0",
+      "log_sha256": "947af2a8e76280328fbc3085a4811263483566b321089567134baa3aee67a43a"
+    },
+    {
+      "name": "build_audit",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_audit.py",
+        "--build",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\build_audit.json"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\build_audit.log",
+      "complete": true,
+      "pid": 32420,
+      "seconds": 2.010286599979736,
+      "exit_code": 0,
+      "last_line": "EAB2_DELIVERY_AUDIT status=PASS findings=0 vendor_files=71 compiler_commands=28",
+      "log_sha256": "9b74ecbd0ea349dfb85acc5f9ee80a8c8db38319aad798a3dd99da34039695b8"
+    },
+    {
+      "name": "release_abi",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_release_abi.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\eab2.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\release_abi.json"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\release_abi.log",
+      "complete": true,
+      "pid": 41956,
+      "seconds": 2.0104794999351725,
+      "exit_code": 0,
+      "last_line": "EAB2_RELEASE_ABI status=PASS exports=31 structures=28 findings=0",
+      "log_sha256": "9778a64b871f2ea82eceafc09d9e3989c7e7387e065f3bcb67b8862ca8042612"
+    },
+    {
+      "name": "consumer_isolation",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-I",
+        "-S",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\eab2_tia_consumer.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\eab2.dll",
+        "--header",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\c_api.h",
+        "--fixtures",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\fixtures",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\consumer.json"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\consumer_isolation.log",
+      "complete": true,
+      "pid": 9996,
+      "seconds": 2.0107565000653267,
+      "exit_code": 0,
+      "last_line": "EAB2_TIA_CONSUMER cases=6 sensitivity=18 mismatch=0",
+      "log_sha256": "07789b1a7063e220e0290dc8422c9a910ed29239963983ee18c4914fc28de807"
+    }
+  ]
+}

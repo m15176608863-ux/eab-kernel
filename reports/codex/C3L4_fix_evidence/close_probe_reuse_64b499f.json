@@ -1,0 +1,34 @@
+{
+  "last_line": "C3L4_PROBE_REUSE_CPP_OK baseline=1 killed=1 survived=0 json_records=4",
+  "scope": "white-box original reuse fragment; not end-to-end solver",
+  "source_sha256": "a00652cdaa46d50c5876cf33f8c408e3bd46ed8005b01004995b4efd0c4ad893",
+  "core_sha256": "818fb345e706b5d832e9a06492ad189e9cb6c8f76b415ea8d3548d7d27ad023d",
+  "original_fragment_sha256": "ccbb1d19b0c1a542e258e82a637308d98b8f8724c3f4be5a11bebb021d6e83c2",
+  "byte_exact_original_fragment": true,
+  "cases": [
+    {
+      "name": "baseline",
+      "compile_exit": 0,
+      "test_exit": 0,
+      "semantic_failure": null,
+      "fragment_sha256": "ccbb1d19b0c1a542e258e82a637308d98b8f8724c3f4be5a11bebb021d6e83c2",
+      "source_sha256": "a00652cdaa46d50c5876cf33f8c408e3bd46ed8005b01004995b4efd0c4ad893",
+      "executable_sha256": "c3ec3d16b2d74daf5909bf0637c65555796498e91f33b370accb42bc61567543",
+      "executable_mtime_ns": 1792819791133594800,
+      "build_started_ns": 1792819788254304000,
+      "json_sha256": "2577a9fd8e7c91908fb755d29d309a1b97b3e217fd4725cf467715ba367837ef"
+    },
+    {
+      "name": "omit_internal_probe_guard",
+      "compile_exit": 0,
+      "test_exit": 0,
+      "semantic_failure": "reused probe-negative basis must be skipped",
+      "fragment_sha256": "5aa6c1609d6cba77222e1d0b62d35ca74691a344022ab9a1c312d99de5d1e1a8",
+      "source_sha256": "c1cd630275c1baa11cfdc9e4b7ffd321a09e3989cab15d7942b3fd05b016c384",
+      "executable_sha256": "0942236fb0d5bea8d51704da39a9eb185303d65e4708d1c8521581577034a256",
+      "executable_mtime_ns": 1792819794075424900,
+      "build_started_ns": 1792819791229631100,
+      "json_sha256": "f75f7471cc56f4f08152e2e5d5610c0bb8ff6dd0a291c7a9530bb6283d4752ac"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-# eab2 C3-L3：精确二维接触与 profile1 极限分析（工作版本）
+# eab2 C3-L4：精确二维接触、profile1 极限分析与敏感性
 
-范围以 [设计 §8.2/§8.5](../docs/eab2_design.md) 为准。Python `src/eab` 为独立裁判；本目录不导入、调用或修改姊妹引擎。当前不是完整力学接触引擎；C1 增加二维一般凹简单环 E/O 与局部查询，C3-L1 增加横切精确 LP、完整点接触装配、局部平移锁定证书与一阶法向可动性；C3-L3 增加 profile1 静力装配、极限载荷三态证书和 μ 临界参数（有理基多项式与单侧 Sturm 证明）。不含 L4 完整敏感性、一般代数根引擎、浮点过滤或宿主接入。
+范围以 [设计 §8.2/§8.5](../docs/eab2_design.md) 为准。Python `src/eab` 为参照裁判；本目录不导入、调用或修改姊妹引擎。当前不是完整力学接触引擎；C1 增加二维一般凹简单环 E/O 与局部查询，C3-L1 增加横切精确 LP、完整点接触装配、局部平移锁定证书与一阶法向可动性；C3-L3 增加 profile1 静力装配、极限载荷三态证书和 μ 临界参数（有理基多项式与单侧 Sturm 证明）。C3-L4 已实现精确 LP 敏感性、几何种子传播和 ctypes 全链使用者，发布 ABI v1 的布局技术基线见 [冻结表](ABI_CONTRACT.md#发布-abi-v1-冻结表)。多分支阈值导数的修复及实际验收状态见 [修复轮报告](../reports/codex/C3L4_fix_report.md)，不能把先前 Python/C++ 同错的差分绿当作分支完备性证明。不含一般代数根引擎、浮点过滤或实际宿主集成。
 
 ## 构建与复跑
 
@@ -18,9 +18,12 @@ python -X utf8 tools/eab2_audit.py --output eab2/build/tmp/recheck/delivery_audi
 
 - `eab2_core.lib`：同工具链内部数值静态核心；`eab2_test_numeric.exe` 直接链接该库。
 - CMake target `eab2_static`（`eab2_static.lib` + 传递链接 `eab2_core`）：静态 C 生命周期接口。手工链接时须同时提供两个 `.lib`，使用 CMake target 则自动传递。
-- `eab2.dll`：生命周期/能力、C1 body/E/双三态/精确结果/0 处局部及 C3-L1/C3-L3 接口；**不导出 numeric_batch、query2_exact_batch 、covers2_exact 或 opt_solve_exact**。
+- `eab2.dll`：生命周期/能力、C1 body/E/双三态/精确结果/0 处局部及 C3-L1/C3-L3/C3-L4 接口；**不导出 numeric_batch、query2_exact_batch 、covers2_exact 或 opt_solve_exact**。
 - `eab2_test.dll`：另加测试专用 numeric_batch、query2_exact_batch、covers2_exact 与 opt_solve_exact，不能作为稳定发布 ABI。
 - `eab2_test_abi.exe`：DLL ABI/坏 FP 环境测试；`eab2_test_c_header.exe` / `eab2_test_c_header_static.exe`：纯 C 头及正式 DLL/静态链接验证。
+- `eab2_test_sensitivity.exe`：默认 CTest 只跑轻量版分支完备性用例（一个共享方向例加一对开阈独立梁，约三分钟）；完整扫描（两种厚度、全部单面、开 / 闭阈成对、三种权重，约二十分钟）用 `eab2_test_sensitivity.exe --branch-sweep` 单独运行，且 L4 `branch` 差分族逐查询覆盖同一组例。
+
+发布 DLL 使用 `/MD`，宿主须已具备 **Microsoft Visual C++ 2015–2022 x64 运行库**（`MSVCP140.dll`、`VCRUNTIME140.dll`、`VCRUNTIME140_1.dll`）。本仓库不自动安装或下载运行库；不是只复制一个 DLL 就保证任意 Windows 主机可运行。
 
 ## 已实现且有具名测试守护的边界
 
@@ -42,10 +45,10 @@ python -X utf8 tools/eab2_audit.py --output eab2/build/tmp/recheck/delivery_audi
 ## 尚未证明 / 无门与退出限制
 
 - 未声称全输入域数值证明、性能预算、跨编译器可复现、任意错误编译配置可由探针识别。
-- LP 已输出精确 OPTIMAL/Farkas/UNBOUNDED 证书；几何与 L1 可输出 OVERLAP/UNPROVED/MECHANICAL_UNRESOLVED。NO_EVENT 路径与 L4 完整敏感性仍未实现；L3 仅支持具名门守护的 profile1，不支持 profile2/非关联摩擦。
+- LP 已输出精确 OPTIMAL/Farkas/UNBOUNDED 证书；几何与 L1 可输出 OVERLAP/UNPROVED/MECHANICAL_UNRESOLVED。NO_EVENT 路径仍未实现；L3/L4 仅支持具名门守护的 profile1，不支持 profile2/非关联摩擦。不能认证的阈值方向必须保留 unresolved，不用单一临界基的斜率替代完整方向证书。
 - `scalar_algebraic` 只有精确比较器→RN 边界，不是代数根引擎；无代数根 CertifiedValue 或 Dual 可选项。
 - 内部缺陷注入是实现者的测试敏感性检查，不能代替 Claude 安排的非作者独立对抗核查。
-- 本树/字节导出验证不能代替所有者安排的新鲜 worktree/克隆复现。最终工单状态和实际证据见 [C3L3_report.md](../reports/codex/C3L3_report.md)。
+- 本树/字节导出验证不能代替所有者安排的新鲜 worktree/克隆复现。历史与当前工单状态分别见 [C3L4_report.md](../reports/codex/C3L4_report.md) 和 [C3L4_fix_report.md](../reports/codex/C3L4_fix_report.md)，待所有者验收。
 
 
 ## C1 与 C0 小项
@@ -82,3 +85,19 @@ DLL 字节不承诺跨树复现（本轮未增加 `/Brepro`）；复现以受测
 | 静力与阈值的内部源码缺陷被指定语义红门捕获 | `tools/eab2_c3l3_statics_mutations.py`、`tools/eab2_c3l3_critical_mutations.py`（实现者自检，不是独立核查） |
 
 正式差分：`python tools/eab2_c3l3_diff.py --dll "$PWD/eab2/build/eab2.dll" --output eab2/build/tmp/recheck/c3l3_diff.json`。`tools/eab2_c3l3_scale.py` 只作 P2 冷进程规模/耗时报告，**不设性能门**。未证明全输入域正确性、一般代数根精确值、有限样本以外的性能预算或非关联模型安全性。profile1 的 UNBOUNDED 不等于锁定，也不是有限承载力。
+
+## C3-L4 与发布 ABI 验证入口
+
+| 范围 | 具名门 / 独立入口 |
+|---|---|
+| 固定基、回收锥与 Mills/Freund，几何种子传播 | `tests/test_sensitivity.cpp`、`tests/test_geometry_seed.cpp`；`tools/eab2_c3l4_diff.py` |
+| 阈值纯恒/活载种子与下端不可行的对偶见证 | `test_sensitivity.cpp::branch_pure_load_jet_corpus_regression/branch_infeasible_lower_dual_with_load_jet` |
+| certified 方向必须同时携带下端对偶、上端点与射线；缺项不输出值 | `tests/test_threshold_branch.py::test_certified_direction_without_witnesses_is_never_a_value`；`test_sensitivity.cpp::branch_face2_regression` 的 JSON 非空检查 |
+| 非对称有限承载的 `asym_limit_dead_live` 通道（有精确有限 limit 时追加） | `tests/test_eab2_c3l4_asymmetric.py::test_asymmetric_case_preparation_does_not_claim_a_referee_or_certified_slope`；`tools/eab2_c3l4_diff.py` 的 asymmetric 族 |
+| 种子尺寸/步长、结果生命周期、原子错误 | `tests/test_c3l4_abi.cpp` |
+| 全部导出、常量、返回类型、结构字段冻结 | `tools/eab2_release_abi.py`；`tests/test_eab2_release_abi.py` |
+| 只用标准库 ctypes 与发布 DLL 的全链 | `tools/eab2_tia_consumer.py`；`test_consumer_derived_seed_presence_is_iff_not_optional` |
+
+发布 ABI 审计可用 `python -I -S tools/eab2_release_abi.py --dll <绝对路径/eab2.dll> --output <ignored目录/release.json>`，不导入 consumer 或差分 harness。consumer 可用同样隔离模式运行；二者不需要 `src/eab`、pybind 或姊妹代码。旧 C3-L4 单基隐函数证明不是本次分支修复的证据，当前各门的实际执行末行以修复轮报告为准。
+
+64b499f 的定向顶点获取、固定探测点及复用基探测一致性机制见 [设计澄清](../docs/eab2_design_amendment_20261023.md#4-输出与独立复核) 与 [接口对账](../reports/codex/C3L4_fix_evidence/cpp_interface_audit.md)。有限候选搜索不保证分支完备，新增能力的全族接受仍等所有者 L4 分片结果，不列为全输入域已证明命题。

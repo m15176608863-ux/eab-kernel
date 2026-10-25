@@ -33,7 +33,7 @@ from eab.kernel2d.contacts import assemble_contact_set2
 from eab.kernel2d.exact import polygons_overlap_exact
 from eab.kernel2d.lock import translation_lock_certificate
 from eab.kernel2d.mobility import first_order_free_twists
-from eab.kernel2d.sensitivity import LimitSeed2, evaluate_sensitivity2
+from eab.kernel2d.sensitivity import LimitSeed2, build_limit_seed2, evaluate_sensitivity2
 from eab.kernel2d.statics import critical_parameter, limit_load_ideal_exact_2d
 
 
@@ -357,6 +357,95 @@ def read_seed(raw):
                                                tuple(_vec(raw["db"])), tuple(_vec(raw["dc"])), raw["parameter"])
 
 
+def _plain_certificate(value):
+    """Plain boundary for the independent polynomial checker, not a codec."""
+    if isinstance(value, Q):
+        return str(value.numerator) + "/" + str(value.denominator)
+    if is_dataclass(value):
+        return {f.name: _plain_certificate(getattr(value, f.name)) for f in fields(value)
+                if not f.name.startswith("_") and f.name not in ("assembly", "contact_set", "problem")}
+    if isinstance(value, (list, tuple)):
+        return [_plain_certificate(v) for v in value]
+    if isinstance(value, dict):
+        if set(value) == {"bits", "exact"}:
+            decoded = read_double(value["bits"])
+            require(Q(decoded) == read_fraction(value["exact"]), "certificate float binding")
+            return decoded
+        return {key: _plain_certificate(v) for key, v in value.items()}
+    return value
+
+
+def verify_threshold_branch(assembly, contacts, problem, query, critical, value, stats, mu_max_binary64):
+    """Check full K residuals from original vertices, not the first LP jet."""
+    if value.branch_certificate is None:
+        require(value.right_derivative is None and value.left_derivative is None,
+                "threshold derivative lacks branch certificate")
+        return
+    from eab2_branch_verify import verify_certificate
+    bodies = [dict(body_id=b.body_id, vertices=_plain_certificate(b.original_vertices or b.vertices),
+        reference_point=_plain_certificate(b.reference_point), dof_anchor=_plain_certificate(b.dof_anchor),
+        dead=_plain_certificate(b.dead), live=_plain_certificate(b.live), dof_mask=list(b.dof_mask),
+        boundary_type=b.boundary_type) for b in assembly.bodies]
+    arguments = (bodies, _plain_certificate(contacts.constraints), query["geometry_seed"],
+                 _plain_certificate(problem.column_labels), _plain_certificate(critical))
+    try:
+        count = verify_certificate(*arguments, _plain_certificate(value), mu_max_binary64=mu_max_binary64)
+        if "branch_certificate" in query["result"]:
+            verify_certificate(*arguments, _plain_certificate(query["result"]), mu_max_binary64=mu_max_binary64)
+    except (AssertionError, KeyError, TypeError, ValueError) as error:
+        raise ValueError("readback mismatch: branch certificate: " + str(error)) from error
+    stats["branch_certified_directions"] = stats.get("branch_certified_directions", 0) + count
+
+
+def legacy_result_projection(query, raw, value, stats):
+    """Explicit pre-fix projection; never replace old semantic derivative values.
+
+    Frozen files are untouched. Every replaced basis-dependent field is returned
+    in the replay ledger. A changed value/category/quality/reason still fails and
+    requires a separate reviewed erratum; missing K evidence never proves a value.
+    """
+    raw = dict(raw)
+    changes = []
+    if query["kind"] == "critical" and "search_domain" not in raw:
+        # The fresh domain is bound to the original query input, not its bracket.
+        require(value.search_domain["mu_max_binary64"] == query["mu_max_bits"], "legacy original search domain")
+        raw["search_domain"] = value.search_domain
+        # compare_result expects the legacy binary64 wire form, not a float.
+        raw["search_domain"] = dict(raw["search_domain"])
+        for name in ("mu_min", "mu_max"):
+            number = raw["search_domain"][name]
+            raw["search_domain"][name] = dict(bits=struct.pack(">d", number).hex(),
+                exact=str(Q(number).numerator) + "/" + str(Q(number).denominator))
+        changes.append(dict(field="search_domain", old=None, new=_plain_certificate(value.search_domain)))
+    if query["kind"] == "sensitivity" and "branch_certificate" not in raw:
+        if not query.get("threshold_query_ref"):
+            require(value.branch_certificate is None, "legacy non-threshold unexpected K evidence")
+            raw["branch_certificate"] = None
+            changes.append(dict(field="branch_certificate", old="absent", new=None))
+        else:
+            require(raw["method"] == "implicit_certificate" and value.branch_certificate is not None,
+                    "legacy threshold requires fresh branch certificate")
+            old_conditions = set(raw["validity_conditions"])
+            require(old_conditions == set(value.validity_conditions) | {
+                "临界证书基非奇异", "所列越零分量及方向保持有效"}, "legacy threshold condition transition")
+            # Only representation/proof-contract fields change here. In
+            # particular slopes, quality, classification and reason remain raw.
+            for field in ("method", "validity_conditions", "tied_labels", "implicit_components",
+                          "selected_piece", "piece_jacobians", "branch_certificate"):
+                new = _plain_certificate(getattr(value, field))
+                changes.append(dict(field=field, old=raw.get(field), new=new))
+                raw[field] = new
+            # The ordinary comparator expects float wrappers inside the domain.
+            for name in ("mu_min", "mu_max"):
+                number = raw["branch_certificate"]["search_domain"][name]
+                raw["branch_certificate"]["search_domain"][name] = dict(
+                    bits=struct.pack(">d", number).hex(), exact=str(Q(number).numerator) + "/" + str(Q(number).denominator))
+    if changes:
+        stats.setdefault("legacy_projection_ledger", []).append(dict(
+            kind=query["kind"], parameter=raw.get("parameter"), changes=changes))
+    return raw
+
+
 def read_label(raw):
     if isinstance(raw, list):
         return tuple(read_label(v) for v in raw)
@@ -387,8 +476,9 @@ def verify_geometry_seed(assembly, query, problem=None):
     """Decode C3 input jets and independently differentiate force-at-anchor rows.
 
     Only original vertices, endpoint labels and exact arithmetic are used. This
-    path imports neither codec/geometry-jet encoders nor build_limit_seed2. It
-    checks the derived expected dA/db/dc, including moving-anchor load terms.
+    derivative oracle imports no codec/geometry-jet encoders and does not use
+    build_limit_seed2. After that independent check, the public builder retains
+    these original contact/load/anchor primitives for full K evaluation.
     """
     jet = query["geometry_seed"]
     require(isinstance(jet, dict), "geometry_seed required")
@@ -431,7 +521,7 @@ def verify_geometry_seed(assembly, query, problem=None):
         anchor = loads["dof_anchor"][body.body_id]
         values = (derivative[0], derivative[1], derivative[2] - cross(offset, derivative) - cross(anchor, wrench))
         return [values[k] for k, free in enumerate(body.dof_mask) if free and body.boundary_type != "FIXED_BODY"]
-    columns = []
+    columns, contact_seeds = [], {}
     dmu = read_fraction(jet["mu"][0])
     for contact in problem.contact_set.constraints:
         body = next(b for b in assembly.bodies if b.body_id == contact.label[3])
@@ -442,6 +532,7 @@ def verify_geometry_seed(assembly, query, problem=None):
         require(tuple(orientation * v for v in edge) == contact.tangent, "original unnormalized edge")
         tangent = contact.tangent
         dt = tuple(orientation * (velocities[(body.body_id, j)][k] - velocities[(body.body_id, i)][k]) for k in (0, 1))
+        contact_seeds[contact.label] = (points[contact.point], dt)
         for sign in (-1, 1):
             force = (-tangent[1] + sign * problem.mu * tangent[0], tangent[0] + sign * problem.mu * tangent[1])
             df = (-dt[1] + sign * (dmu * tangent[0] + problem.mu * dt[0]),
@@ -468,6 +559,11 @@ def verify_geometry_seed(assembly, query, problem=None):
             dof_anchor=[[["0/1"] * 2 for _ in body_ids]], mu=["1/1"])
         verify_geometry_seed(assembly, dict(kind="sensitivity", geometry_seed=unit,
             result=dict(parameter="mu"), seed=query["threshold_mu_seed"]), problem)
+    rebuilt = build_limit_seed2(problem, mu_seed=dmu, contact_seeds=contact_seeds,
+        dead_seeds=loads["dead"], live_seeds=loads["live"],
+        anchor_seeds=loads["dof_anchor"], parameter=parameters[0])
+    compare_result(query["seed"], rebuilt, "geometry-derived production LP seed")
+    return rebuilt
 
 
 def verify_comparison_contract(query):
@@ -499,6 +595,10 @@ def verify_comparison_contract(query):
     sets, certificates = groups[kind]
     expected.update(("result." + field, "set") for field in sets)
     expected.update(("result." + field, "verify_certificate") for field in certificates)
+    if kind == "sensitivity" and "branch_certificate" in query["result"]:
+        expected["result.branch_certificate"] = "verify_certificate"
+        if query.get("threshold_query_ref"):
+            expected["result.tied_labels"] = "verify_certificate"
     if kind == "critical":
         expected["result.queries"] = "informational"
     require(contract["rules"] == expected, "frozen comparison rule map")
@@ -638,7 +738,10 @@ declared by scope. Each worker process calls this once and times one target.
         target = critical_parameter(assembly, threshold["param"], contact_set=contacts, mu_max=read_double(threshold["mu_max_bits"]))
     else:
         target = limit_load_ideal_exact_2d(assembly, contacts)
-    seed, mu_seed = read_seed(query["seed"]), read_seed(query.get("threshold_mu_seed"))
+    problem = (target.threshold_certificate.problem if query.get("threshold_query_ref")
+               and target.threshold_certificate is not None else getattr(target, "problem", None))
+    seed = verify_geometry_seed(assembly, query, problem)
+    mu_seed = read_seed(query.get("threshold_mu_seed"))
     return lambda: evaluate_sensitivity2(target, seed, parameter=raw["parameter"], threshold_mu_seed=mu_seed,
         positive_direction_valid=query["direction_domain"]["positive"],
         negative_direction_valid=query["direction_domain"]["negative"],
@@ -698,7 +801,7 @@ def verify_case(case):
             target = fresh[query.get("limit_query_ref", query.get("threshold_query_ref"))]
             problem = (target.threshold_certificate.problem if query.get("threshold_query_ref")
                        and target.threshold_certificate is not None else getattr(target, "problem", None))
-            verify_geometry_seed(assembly, query, problem)
+            rebuilt_seed = verify_geometry_seed(assembly, query, problem)
         else:
             verify_geometry_seed(assembly, query)
         observables = dict(assembly="zero_window_contact_set", first_order="first_order_normal_cone",
@@ -725,7 +828,7 @@ def verify_case(case):
             raw = _restore_lock(raw, moving, neighbors)
         elif kind == "sensitivity":
             target = fresh[query.get("limit_query_ref", query.get("threshold_query_ref"))]
-            value = evaluate_sensitivity2(target, read_seed(query["seed"]),
+            value = evaluate_sensitivity2(target, rebuilt_seed,
                 parameter=raw["parameter"], threshold_mu_seed=read_seed(query.get("threshold_mu_seed")),
                 positive_direction_valid=query["direction_domain"]["positive"],
                 negative_direction_valid=query["direction_domain"]["negative"],
@@ -733,9 +836,12 @@ def verify_case(case):
             if query.get("limit_query_ref"):
                 verify_mills(query, by_kind["limit"], stats)
                 verify_recession(query, by_kind["limit"], stats)
+            else:
+                verify_threshold_branch(assembly, contacts, problem, query, target, value, stats, by_kind["critical"]["mu_max_bits"])
         else:
             require(kind in fresh, "unknown query kind")
             value = fresh[kind]
+        raw = legacy_result_projection(query, raw, value, stats)
         compare_result(raw, value, kind, stats)
         verify_cones(kind, query["result"], stats)
         require(query["call_status"] == value.call_status and query["mathematical_status"] == value.mathematical_status

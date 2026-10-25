@@ -15,11 +15,16 @@ int main(void) {
     eab2_contact_set2 contacts; eab2_lock2_input lock_input;
     eab2_c3l3_abi_info c3l3; eab2_body_load2 load; eab2_limit2_input limit;
     eab2_critical_parameter_input critical;
+    eab2_c3l4_abi_info c3l4;
     INIT(info); info.requested_capabilities=EAB2_CAP_CONTEXT|EAB2_CAP_LIMITS2|EAB2_CAP_ASSEMBLY2|EAB2_CAP_CONTACTSET2|EAB2_CAP_LOCK2|EAB2_CAP_MOBILITY2|EAB2_CAP_LIMIT2|EAB2_CAP_CRITICAL_PARAMETER;
     CHECK(eab2_get_abi_info(&info)==EAB2_OK);
     CHECK(info.context_size==sizeof(context) && info.binary64_bits==64);
     CHECK(!(info.supported_capabilities & (EAB2_CAP_TEST_NUMERIC|EAB2_CAP_TEST_EXACT2|EAB2_CAP_TEST_OPT)));
     CHECK(eab2_self_test()==EAB2_OK);
+    INIT(c3l4); CHECK(eab2_get_c3l4_abi_info(&c3l4)==EAB2_OK);
+    CHECK((info.supported_capabilities&EAB2_CAP_SENSITIVITY2)!=0);
+    CHECK(c3l4.string_array_size==sizeof(eab2_string_array) && c3l4.sensitivity_vertex2_size==sizeof(eab2_sensitivity_vertex2)
+        && c3l4.sensitivity_channel2_size==sizeof(eab2_sensitivity_channel2) && c3l4.sensitivity2_input_size==sizeof(eab2_sensitivity2_input));
     INIT(options); CHECK(eab2_context_create(&options,&context)==EAB2_OK);
     INIT(c1); CHECK(eab2_get_c1_abi_info(&c1)==EAB2_OK);
     INIT(c3); CHECK(eab2_get_c3l1_abi_info(&c3)==EAB2_OK);

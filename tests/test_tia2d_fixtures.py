@@ -38,6 +38,12 @@ def test_frozen_gzip_sha_strict_parse_and_fixed_exact_replays():
         result = verify_case(frozen_cases[name])
         assert result["status"] == "PASS" and result["queries"] >= 4
         assert result["fields_compared"] > 100
+        if name == "g1_slender":
+            assert result["branch_certified_directions"] == 4
+            ledger = result["legacy_projection_ledger"]
+            assert any(item["kind"] == "critical" for item in ledger)
+            assert {item["parameter"] for item in ledger if item["kind"] == "sensitivity"
+                    and any(change["field"] == "method" for change in item["changes"])} == {"t", "h"}
 
     # Coverage states are facts about the frozen approved batch, never source
     # hashes. The fixed examples above also replay nonunique certificates.

@@ -1,0 +1,288 @@
+{
+  "schema": "eab2.c3l4.cold-timing.v1",
+  "complete": true,
+  "samples_per_backend_case": 1,
+  "performance_gate": false,
+  "source_commit": "b34c966+uncommitted C3L4",
+  "dll_sha256": "f6c109bfcc17edf4b8343c4cfa4c56f565bd725f3d1fcce75f0ad623b17df0cd",
+  "script_sha256": "6247ed154b1356264278f4d9ff40bf8755cb7437aa9cb618ec588428864c17be",
+  "caveats": [
+    "one cold-process sample per case/backend",
+    "C++ includes ABI+JSON; Python does not",
+    "primal excludes contact construction; derivative includes exact seed propagation",
+    "small representative queries, not a large-assembly throughput benchmark"
+  ],
+  "rows": [
+    {
+      "backend": "cpp",
+      "case_id": "g1_slender",
+      "target": "critical",
+      "bodies": 5,
+      "rows": 9,
+      "columns": 17,
+      "channels": 2,
+      "geometry_seconds": 0.006301200017333031,
+      "primal_seconds": 0.3612951999530196,
+      "derivative_seconds": 0.0026273999828845263,
+      "state": "CERTIFIED",
+      "exact_value": "15/128",
+      "derivatives": [
+        {
+          "parameter": "t",
+          "differentiability": "smooth",
+          "right": "15/16",
+          "left": "15/16"
+        },
+        {
+          "parameter": "h",
+          "differentiability": "smooth",
+          "right": "-17/32",
+          "left": "-17/32"
+        }
+      ],
+      "cold_process_seconds": 0.4871625999221578,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_scale.py",
+        "--backend",
+        "cpp",
+        "--case",
+        "g1_slender",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll"
+      ]
+    },
+    {
+      "backend": "python",
+      "case_id": "g1_slender",
+      "target": "critical",
+      "bodies": 5,
+      "rows": 9,
+      "columns": 17,
+      "channels": 2,
+      "geometry_seconds": 0.05043669999577105,
+      "primal_seconds": 0.3468944999622181,
+      "derivative_seconds": 0.00601669994648546,
+      "state": "CERTIFIED",
+      "exact_value": "15/128",
+      "derivatives": [
+        {
+          "parameter": "t",
+          "differentiability": "smooth",
+          "right": "15/16",
+          "left": "15/16"
+        },
+        {
+          "parameter": "h",
+          "differentiability": "smooth",
+          "right": "-17/32",
+          "left": "-17/32"
+        }
+      ],
+      "cold_process_seconds": 0.5214410999324173,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_scale.py",
+        "--backend",
+        "python",
+        "--case",
+        "g1_slender",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll"
+      ]
+    },
+    {
+      "backend": "cpp",
+      "case_id": "g5_n3_mu1",
+      "target": "limit",
+      "bodies": 5,
+      "rows": 10,
+      "columns": 17,
+      "channels": 3,
+      "geometry_seconds": 0.0053758000722154975,
+      "primal_seconds": 0.00329949997831136,
+      "derivative_seconds": 0.1585888999979943,
+      "state": "OPTIMAL",
+      "exact_value": "1/2",
+      "derivatives": [
+        {
+          "parameter": "mu",
+          "differentiability": "smooth",
+          "right": "2/1",
+          "left": "2/1"
+        },
+        {
+          "parameter": "P",
+          "differentiability": "smooth",
+          "right": "1/2",
+          "left": "1/2"
+        },
+        {
+          "parameter": "h",
+          "differentiability": "smooth",
+          "right": "0/1",
+          "left": "0/1"
+        }
+      ],
+      "cold_process_seconds": 0.28076180000789464,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_scale.py",
+        "--backend",
+        "cpp",
+        "--case",
+        "g5_n3_mu1",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll"
+      ]
+    },
+    {
+      "backend": "python",
+      "case_id": "g5_n3_mu1",
+      "target": "limit",
+      "bodies": 5,
+      "rows": 10,
+      "columns": 17,
+      "channels": 3,
+      "geometry_seconds": 0.05028259998653084,
+      "primal_seconds": 0.002438700059428811,
+      "derivative_seconds": 0.17965910001657903,
+      "state": "OPTIMAL",
+      "exact_value": "1/2",
+      "derivatives": [
+        {
+          "parameter": "mu",
+          "differentiability": "smooth",
+          "right": "2/1",
+          "left": "2/1"
+        },
+        {
+          "parameter": "P",
+          "differentiability": "smooth",
+          "right": "1/2",
+          "left": "1/2"
+        },
+        {
+          "parameter": "h",
+          "differentiability": "smooth",
+          "right": "0/1",
+          "left": "0/1"
+        }
+      ],
+      "cold_process_seconds": 0.3502056000288576,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_scale.py",
+        "--backend",
+        "python",
+        "--case",
+        "g5_n3_mu1",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll"
+      ]
+    },
+    {
+      "backend": "cpp",
+      "case_id": "g5_n3_mu2",
+      "target": "limit",
+      "bodies": 5,
+      "rows": 10,
+      "columns": 17,
+      "channels": 3,
+      "geometry_seconds": 0.005622000084258616,
+      "primal_seconds": 0.002757699927315116,
+      "derivative_seconds": 0.1373555000172928,
+      "state": "OPTIMAL",
+      "exact_value": "2/1",
+      "derivatives": [
+        {
+          "parameter": "mu",
+          "differentiability": "one_sided",
+          "right": "0/1",
+          "left": "2/1"
+        },
+        {
+          "parameter": "P",
+          "differentiability": "smooth",
+          "right": "2/1",
+          "left": "2/1"
+        },
+        {
+          "parameter": "h",
+          "differentiability": "one_sided",
+          "right": "0/1",
+          "left": "2/1"
+        }
+      ],
+      "cold_process_seconds": 0.26207229995634407,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_scale.py",
+        "--backend",
+        "cpp",
+        "--case",
+        "g5_n3_mu2",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll"
+      ]
+    },
+    {
+      "backend": "python",
+      "case_id": "g5_n3_mu2",
+      "target": "limit",
+      "bodies": 5,
+      "rows": 10,
+      "columns": 17,
+      "channels": 3,
+      "geometry_seconds": 0.04930909990798682,
+      "primal_seconds": 0.0026257000863552094,
+      "derivative_seconds": 0.15944229997694492,
+      "state": "OPTIMAL",
+      "exact_value": "2/1",
+      "derivatives": [
+        {
+          "parameter": "mu",
+          "differentiability": "one_sided",
+          "right": "0/1",
+          "left": "2/1"
+        },
+        {
+          "parameter": "P",
+          "differentiability": "smooth",
+          "right": "2/1",
+          "left": "2/1"
+        },
+        {
+          "parameter": "h",
+          "differentiability": "one_sided",
+          "right": "0/1",
+          "left": "2/1"
+        }
+      ],
+      "cold_process_seconds": 0.3274530000053346,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_scale.py",
+        "--backend",
+        "python",
+        "--case",
+        "g5_n3_mu2",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll"
+      ]
+    }
+  ],
+  "last_line": "C3L4_TIMING_REPORTED pairs=3 cold_processes=6"
+}

@@ -1,0 +1,994 @@
+{
+  "format": "eab2.c3l4.clarified-l4-readonly-summary.v1",
+  "source": "reports/codex/C3L4_evidence/tmp/clarified_closeout_1/l4.json",
+  "source_bytes": 686993,
+  "source_sha256": "286dc40618edc56ab99ad4e94a97614f1513350cea4eb1ae43b3192a305e416d",
+  "dll_sha256": "b08c5558572831b52f17a60253e2ce1ede450a31eed800d8a5b3b053124c75df",
+  "complete": true,
+  "last_line": "C3L4_DIFF sensitivity=402 mismatch=0",
+  "seconds": 171.10915109992493,
+  "models": 175,
+  "queries": 402,
+  "mismatches": 0,
+  "families": [
+    {
+      "family": "formal/TIA-G1",
+      "models": 27,
+      "queries": 75,
+      "smooth": 14,
+      "one_sided": 0,
+      "singular": 8,
+      "unresolved": 53,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 42
+    },
+    {
+      "family": "formal/TIA-G5",
+      "models": 27,
+      "queries": 69,
+      "smooth": 55,
+      "one_sided": 2,
+      "singular": 10,
+      "unresolved": 2,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 171
+    },
+    {
+      "family": "formal/named_regression",
+      "models": 7,
+      "queries": 11,
+      "smooth": 3,
+      "one_sided": 0,
+      "singular": 5,
+      "unresolved": 3,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 9
+    },
+    {
+      "family": "formal/TIA-G2",
+      "models": 15,
+      "queries": 39,
+      "smooth": 0,
+      "one_sided": 0,
+      "singular": 3,
+      "unresolved": 36,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 0
+    },
+    {
+      "family": "formal/TIA-G3",
+      "models": 15,
+      "queries": 39,
+      "smooth": 0,
+      "one_sided": 0,
+      "singular": 3,
+      "unresolved": 36,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 0
+    },
+    {
+      "family": "formal/TIA-G4",
+      "models": 15,
+      "queries": 39,
+      "smooth": 0,
+      "one_sided": 0,
+      "singular": 3,
+      "unresolved": 36,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 0
+    },
+    {
+      "family": "formal/contract_coverage",
+      "models": 8,
+      "queries": 8,
+      "smooth": 1,
+      "one_sided": 0,
+      "singular": 4,
+      "unresolved": 3,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 3
+    },
+    {
+      "family": "t1b",
+      "models": 36,
+      "queries": 72,
+      "smooth": 54,
+      "one_sided": 0,
+      "singular": 0,
+      "unresolved": 18,
+      "mismatches": 0,
+      "label_dispositions": 32,
+      "proof_floor_fields": 162
+    },
+    {
+      "family": "thickness",
+      "models": 25,
+      "queries": 50,
+      "smooth": 2,
+      "one_sided": 0,
+      "singular": 0,
+      "unresolved": 48,
+      "mismatches": 0,
+      "label_dispositions": 0,
+      "proof_floor_fields": 6
+    }
+  ],
+  "differentiability_counts": {
+    "unresolved": 235,
+    "singular": 36,
+    "smooth": 129,
+    "one_sided": 2
+  },
+  "proof_capability_floor": {
+    "checked_fields": 393,
+    "exceptions": []
+  },
+  "verified_implicit_queries": 70,
+  "verified_sides": 140,
+  "caller_tied_labels": "empty in frozen implicit queries; public ABI caller-label contract unchanged",
+  "disposition_queries": 32,
+  "disposition_models": 16,
+  "disposition_ledger": [
+    {
+      "case_id": "t1b/00",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "534254080/16785409",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/00",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4071/4097",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/04",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-2145254336/67125249",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/04",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "8183/8193",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/07",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-536575776/16785409",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 1,
+      "cpp_components": 1,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/07",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4093/4097",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 1,
+      "cpp_components": 1,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/09",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "534515488/16785409",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/09",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4073/4097",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/13",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-2145516664/67125249",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/13",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "2728/2731",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/16",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-536641358/16785409",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 1,
+      "cpp_components": 1,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/16",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "8187/8194",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 1,
+      "cpp_components": 1,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/18",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-267486016/4190209",
+      "semantic_fields_equal": true,
+      "python_labels": 4,
+      "python_components": 4,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/18",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "2041/2047",
+      "semantic_fields_equal": true,
+      "python_labels": 4,
+      "python_components": 4,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/20",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-1071252544/16769025",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/20",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4087/4095",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/21",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-106945488/836405",
+      "semantic_fields_equal": true,
+      "python_labels": 5,
+      "python_components": 5,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/21",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4083/4090",
+      "semantic_fields_equal": true,
+      "python_labels": 5,
+      "python_components": 5,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/23",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-2140086080/16736281",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/23",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4085/4091",
+      "semantic_fields_equal": true,
+      "python_labels": 2,
+      "python_components": 2,
+      "cpp_labels": 2,
+      "cpp_components": 2,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/24",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-85/4",
+      "semantic_fields_equal": true,
+      "python_labels": 5,
+      "python_components": 5,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/24",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "255/256",
+      "semantic_fields_equal": true,
+      "python_labels": 5,
+      "python_components": 5,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/26",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "2135434208/67125249",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/26",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "8141/8193",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/27",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "533727456/16785409",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/27",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4069/4097",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/30",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "-2721/128",
+      "semantic_fields_equal": true,
+      "python_labels": 5,
+      "python_components": 5,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/30",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "8163/8192",
+      "semantic_fields_equal": true,
+      "python_labels": 5,
+      "python_components": 5,
+      "cpp_labels": 4,
+      "cpp_components": 4,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/32",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "2136481312/67125249",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/32",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "2715/2731",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/33",
+      "query_index": 0,
+      "parameter": "amplitude",
+      "D_plus": "533989232/16785409",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    },
+    {
+      "case_id": "t1b/33",
+      "query_index": 1,
+      "parameter": "tilt",
+      "D_plus": "4071/4097",
+      "semantic_fields_equal": true,
+      "python_labels": 3,
+      "python_components": 3,
+      "cpp_labels": 3,
+      "cpp_components": 3,
+      "both_sides_complete_and_phi_checked": true
+    }
+  ],
+  "abi_input_domain_exclusions": [
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_00_00.json.gz",
+      "ratio": "392183/4231168",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-405015579/135397376"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_00_01.json.gz",
+      "ratio": "96/1033",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3090/1033"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_00_02.json.gz",
+      "ratio": "26768/265481",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-1587867/530962"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_00_03.json.gz",
+      "ratio": "28864/265481",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-793737/265481"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_00_04.json.gz",
+      "ratio": "30960/265481",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-1587081/530962"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_00_05.json.gz",
+      "ratio": "32/257",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-768/257"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_00_06.json.gz",
+      "ratio": "131329/1052672",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-100662525/33685504"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_01_00.json.gz",
+      "ratio": "392183/4231168",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-405015579/135397376"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_01_01.json.gz",
+      "ratio": "96/1033",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3090/1033"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_01_02.json.gz",
+      "ratio": "14572/149785",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3583911/1198280"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_01_03.json.gz",
+      "ratio": "15224/149785",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-1791711/599140"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_01_04.json.gz",
+      "ratio": "15876/149785",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3582933/1198280"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_01_05.json.gz",
+      "ratio": "16/145",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-867/290"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_01_06.json.gz",
+      "ratio": "65681/593920",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 42,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-56819277/19005440"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_02_00.json.gz",
+      "ratio": "392183/4231168",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-405015579/135397376"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_02_01.json.gz",
+      "ratio": "96/1033",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3090/1033"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_02_02.json.gz",
+      "ratio": "1221416/12781309",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-152917677/51125236"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_02_03.json.gz",
+      "ratio": "1255024/12781309",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-76452537/25562618"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_02_04.json.gz",
+      "ratio": "1288632/12781309",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-152892471/51125236"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_02_05.json.gz",
+      "ratio": "1280/12373",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-36999/12373"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_02_06.json.gz",
+      "ratio": "5255253/50679808",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-4849495809/1621753856"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_03_00.json.gz",
+      "ratio": "392183/4231168",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-405015579/135397376"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_03_01.json.gz",
+      "ratio": "96/1033",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3090/1033"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_03_02.json.gz",
+      "ratio": "65272/699341",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-8367615/2797364"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_03_03.json.gz",
+      "ratio": "65552/699341",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-4183755/1398682"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_03_04.json.gz",
+      "ratio": "65832/699341",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-8367405/2797364"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_03_05.json.gz",
+      "ratio": "64/677",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-2025/677"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_03_06.json.gz",
+      "ratio": "262821/2772992",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-265418769/88735744"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_04_00.json.gz",
+      "ratio": "96/1033",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3090/1033"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_04_01.json.gz",
+      "ratio": "4635/33056",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3159471/1057792"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_05_00.json.gz",
+      "ratio": "96/1033",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3090/1033"
+      }
+    },
+    {
+      "classification": "ABI_INPUT_DOMAIN_EXCLUSION",
+      "source_summary": "reports/codex/T1b_evidence/acceptance_fix/thickness_summary.json",
+      "input_fixture": "tests/data/eab2_c3l3_thickness_summary.json",
+      "source_name": "thickness_05_01.json.gz",
+      "ratio": "4635/33056",
+      "reason": "non_binary64_exact_input",
+      "failed_fields": 66,
+      "first_failure": {
+        "body_id": "block_1",
+        "field": "vertices[1][0]",
+        "exact": "-3159471/1057792"
+      }
+    }
+  ],
+  "existing_harness_last_line": "81 passed in 12.32s",
+  "existing_checker_mutations_last_line": "C3L4_CERTIFICATE_MUTATIONS_OK baseline=2 rejected=8 semantic_failures=9",
+  "source_checks": [
+    {
+      "evidence": "l4",
+      "checked": 30,
+      "current_source_mismatches": []
+    },
+    {
+      "evidence": "harness_tests",
+      "checked": 2,
+      "current_source_mismatches": []
+    },
+    {
+      "evidence": "checker_mutations",
+      "checked": 8,
+      "current_source_mismatches": []
+    }
+  ],
+  "scope": "read-only parsing and exact rational component arithmetic; no solver, DLL, pytest or full-run re-execution"
+}

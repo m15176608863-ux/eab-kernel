@@ -1,0 +1,99 @@
+{
+  "status": "PASS",
+  "scope": "minimal byte copy, NOT a Git fresh tree",
+  "stage": "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-I",
+    "-S",
+    "-X",
+    "utf8",
+    "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\eab2_tia_consumer.py",
+    "--dll",
+    "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\eab2.dll",
+    "--header",
+    "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\c_api.h",
+    "--fixtures",
+    "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\fixtures",
+    "--output",
+    "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_final_r2\\consumer.json"
+  ],
+  "cwd": "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone",
+  "python_isolated": true,
+  "site_disabled": true,
+  "seconds": 2.0107565000653267,
+  "last_line": "EAB2_TIA_CONSUMER cases=6 sensitivity=18 mismatch=0",
+  "exit_code": 0,
+  "files": [
+    {
+      "path": "eab2_tia_consumer.py",
+      "source": "tools/eab2_tia_consumer.py",
+      "bytes": 23916,
+      "sha256": "a6348edbfc6e6721b734296d7bdbc2cd5eded05ee7e2008e84414c7be3eb1db5"
+    },
+    {
+      "path": "c_api.h",
+      "source": "eab2/include/eab2/c_api.h",
+      "bytes": 15112,
+      "sha256": "6d70c524f1914302e06363806032c4139e884967f7377c5369c9ce0b4c1b1993"
+    },
+    {
+      "path": "eab2.dll",
+      "source": "eab2/build/clarified_r2/eab2.dll",
+      "bytes": 1009152,
+      "sha256": "b08c5558572831b52f17a60253e2ce1ede450a31eed800d8a5b3b053124c75df"
+    },
+    {
+      "path": "fixtures/manifest.json",
+      "source": "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/manifest.json",
+      "bytes": 42794,
+      "sha256": "e69eed74a224faec9e63cab888de8fea3175ebcc33f534e426fb5909364a0f26"
+    },
+    {
+      "path": "fixtures/g1_unreversed_t1.part001.json.gz",
+      "source": "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g1_unreversed_t1.part001.json.gz",
+      "bytes": 11959,
+      "sha256": "c3e873c0edad7a68e4b0a749f26a1558f0f1d238b82a5cf37164269ffbaced7a"
+    },
+    {
+      "path": "fixtures/g1_slender.part001.json.gz",
+      "source": "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g1_slender.part001.json.gz",
+      "bytes": 12409,
+      "sha256": "8a72e843555ed0b81f8330b12439c5fb7ab683eef729a81b8a4bde36ae32e04c"
+    },
+    {
+      "path": "fixtures/g5_n3_mu0.part001.json.gz",
+      "source": "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu0.part001.json.gz",
+      "bytes": 9556,
+      "sha256": "0366d16afb4bcef89e9d0da4ad0d64a4694e1cf3f75a14424766fb04a494debf"
+    },
+    {
+      "path": "fixtures/g5_n3_mu1.part001.json.gz",
+      "source": "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu1.part001.json.gz",
+      "bytes": 9293,
+      "sha256": "cc8d00c7fc1d9418df63d8d460cef4a1ae1da0b836b7d31ab210b61339fc3d55"
+    },
+    {
+      "path": "fixtures/g5_n3_mu2.part001.json.gz",
+      "source": "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu2.part001.json.gz",
+      "bytes": 9343,
+      "sha256": "d631237c3d746cb6f5ef760bc474cef7f3d4b9cb6690c990217384dc7c784949"
+    },
+    {
+      "path": "fixtures/g5_n3_mu3.part001.json.gz",
+      "source": "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu3.part001.json.gz",
+      "bytes": 9281,
+      "sha256": "5f870036bcf9cf74fae8eb3cfaae35d3dcfdc2756bbf27196314d3e8b1ac0f49"
+    }
+  ],
+  "file_count": 10,
+  "omitted": [
+    "src",
+    "differential harness",
+    "pybind",
+    "sibling repositories",
+    "test DLL"
+  ],
+  "raw_log_sha256": "07789b1a7063e220e0290dc8422c9a910ed29239963983ee18c4914fc28de807",
+  "consumer_output_sha256": "ffc5f7452c1c4832c639aaf998a0d71e31e30066f5578b53879caba38e2916a8"
+}

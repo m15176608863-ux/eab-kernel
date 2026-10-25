@@ -1,0 +1,80 @@
+{
+  "work_order": "WO-C3L4",
+  "base": "b34c966957b681b45cdb13acaaa09bfc1d6c5fe6",
+  "branch": "eab2-c3l4",
+  "target": "Exact C++ sensitivity, original-geometry jets, frozen-corpus comparison, independent release-DLL consumer, release ABI freeze with verified evidence",
+  "scope": [
+    "eab2",
+    "tools",
+    "tests",
+    "docs as needed",
+    "reports/codex/C3L4_report.md",
+    "reports/codex/C3L4_evidence"
+  ],
+  "non_goals": [
+    "No Git writes",
+    "No sibling writes",
+    "No installs/downloads",
+    "No Python mathematical contract changes",
+    "No release freeze before consumer verification"
+  ],
+  "rollback_anchor": "Clean b34c966 plus per-file delivery inventory; no automatic reset or checkout",
+  "success_criteria": [
+    "P0 1-6 verified",
+    "P1 metamorphic and internal-mutation gates",
+    "P2 measured or explicit missing",
+    "C++ tests + six differential layers",
+    "Python baseline/final 4 shards + fast with zero failed/skipped and equal node multisets",
+    "Honest net-byte audit and complete Chinese report"
+  ],
+  "verification": [
+    "baseline_full and clarified_fast/clarified_full H1 summaries with complete raw archive manifests",
+    "clarification/cpp_execution.json: full fresh r2 build, CTest and consumer/ABI",
+    "clarification/completed_layers_reuse.json plus closeout_execution.json: five authorized complete layers and whole restarted L4",
+    "clarification/harness_tests.json and certificate_mutations.json",
+    "delivery_integrity.json and hygiene.json: read-back hashes, links, actual candidate net bytes"
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "name": "entry and Python four-shard baseline",
+      "status": "complete"
+    },
+    {
+      "id": 2,
+      "name": "exact sensitivity and geometry propagation",
+      "status": "complete"
+    },
+    {
+      "id": 3,
+      "name": "differential proof floor and independent consumer ABI",
+      "status": "complete"
+    },
+    {
+      "id": 4,
+      "name": "metamorphic, mutations, six layers, final H1",
+      "status": "complete"
+    },
+    {
+      "id": 5,
+      "name": "report and hygiene",
+      "status": "complete"
+    }
+  ],
+  "complete": true,
+  "updated_utc": "2026-10-23T03:52:51.164515+00:00",
+  "baseline_summary": "baseline_full/summary.json",
+  "p0_status": "Verified; six differential layers complete, restarted L4 402/0; final fast 9109 and full 15193 GREEN",
+  "execution_closed": true,
+  "status": "DONE",
+  "pending": [],
+  "final_report": "reports/codex/C3L4_report.md",
+  "post_repair_targeted": "118 passed in 393.27s (0:06:33)",
+  "post_repair_static": "exact construction AST gate: 0 violation(s)",
+  "owner_acceptance_boundary": [
+    "Owner-arranged fresh Git tree",
+    "Claude-arranged non-author adversarial review"
+  ],
+  "clarification_intake": "clarification/intake.json",
+  "owner_acceptance_status": "Pending owner acceptance; outside Codex execution completion per latest explicit ruling"
+}

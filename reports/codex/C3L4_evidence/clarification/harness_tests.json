@@ -1,0 +1,23 @@
+{
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp",
+    "reports\\codex\\C3L4_evidence\\tmp\\clarification\\pytest_harness_caller_final",
+    "tests/test_eab2_c3l4_harness.py"
+  ],
+  "exit_code": 0,
+  "seconds": 12.778842399944551,
+  "last_line": "81 passed in 12.32s",
+  "single_file_static_issues": [],
+  "source_sha256": {
+    "tests\\test_eab2_c3l4_harness.py": "710a9c0b278b2a1722a74cf7150a62bf822aecad745bdbfbe6951f6d4a6b0e6b",
+    "tools/eab2_c3l4_diff.py": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7"
+  }
+}

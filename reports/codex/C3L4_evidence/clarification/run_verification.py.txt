@@ -1,0 +1,115 @@
+"""WO-C3L4 clarification: serial, finite runs with persistent journals.
+No Git writes, deletions, installation, or unrelated process termination.
+"""
+from pathlib import Path
+import argparse, gzip, hashlib, json, os, shutil, subprocess, sys, time
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "src/eab").is_dir())
+E = ROOT / "reports/codex/C3L4_evidence"
+OUT = E / "tmp/clarified_final_r2"
+BUILD = ROOT / "eab2/build/clarified_r2"
+DLL = BUILD / "eab2.dll"
+TEST_DLL = BUILD / "eab2_test.dll"
+PY = [sys.executable, "-X", "utf8"]
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf8")
+
+def source_hashes():
+    names = subprocess.check_output(["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=ROOT).decode("utf8").split("\0")
+    return {n: sha(ROOT/n) for n in sorted(set(names)) if n and n.startswith(("eab2/", "src/", "tools/", "tests/")) and (ROOT/n).is_file()}
+
+def run(name, command, records, phase, cwd=ROOT):
+    log = OUT / (name + ".log")
+    assert not log.exists(), "New phase/run name required: " + str(log)
+    record = dict(name=name, command=list(map(str,command)), cwd=str(cwd), log=str(log), complete=False)
+    records.append(record)
+    journal = E / "clarification" / (phase + "_execution.json")
+    write(journal, dict(complete=False, runs=records))
+    start=time.perf_counter()
+    env=dict(os.environ, PYTHONIOENCODING="utf-8", TEMP=str(OUT/"temp"), TMP=str(OUT/"temp"))
+    with log.open("xb") as stream:
+        child = subprocess.Popen(command, cwd=cwd, env=env, stdout=stream, stderr=subprocess.STDOUT)
+        record["pid"]=child.pid
+        while child.poll() is None:
+            record["seconds"]=time.perf_counter()-start
+            write(journal, dict(complete=False, runs=records))
+            time.sleep(2)
+    lines=log.read_text("utf8",errors="replace").splitlines()
+    record.update(complete=True, exit_code=child.returncode, seconds=time.perf_counter()-start,
+                  last_line=lines[-1] if lines else "", log_sha256=sha(log))
+    write(journal, dict(complete=False, runs=records))
+    print(name + ": " + record["last_line"], flush=True)
+    if child.returncode:
+        raise RuntimeError("Verification failed: " + name + " exit=" + str(child.returncode))
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--phase", choices=("cpp", "layers", "python"), required=True)
+    phase=parser.parse_args().phase
+    OUT.mkdir(parents=True,exist_ok=True); (OUT/"temp").mkdir(exist_ok=True)
+    records=[]; before=source_hashes()
+    manifest=E/"clarification/verification_sources.json.gz"
+    raw=json.dumps(before,sort_keys=True).encode()
+    if manifest.exists():
+        assert gzip.decompress(manifest.read_bytes())==raw, "Verification source lock changed"
+    else:
+        manifest.write_bytes(gzip.compress(raw,mtime=0))
+    try:
+        if phase=="cpp":
+            assert not BUILD.exists(), "Fresh build directory already exists"
+            vs=Path("C:/Program Files/Microsoft Visual Studio/2022/Community")
+            cm=vs/"Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+            ct=cm.with_name("ctest.exe")
+            ninja=vs/"Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
+            lines=["@echo off", "setlocal", 'set "PATH=%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer;%PATH%"', 'if defined CL exit /b 2', 'if defined _CL_ exit /b 2',
+                   'call "'+str(vs/"VC/Auxiliary/Build/vcvars64.bat")+'" -vcvars_ver=14.44.35207',
+                   'if errorlevel 1 exit /b %errorlevel%', 'set "VSLANG=1033"',
+                   '"'+str(cm)+'" --version', '"'+str(ninja)+'" --version', 'where cl',
+                   '"'+str(cm)+'" -S "'+str(ROOT/"eab2")+'" -B "'+str(BUILD)+'" -G Ninja -DCMAKE_MAKE_PROGRAM="'+str(ninja)+'" -DCMAKE_BUILD_TYPE=Release',
+                   'if errorlevel 1 exit /b %errorlevel%',
+                   '"'+str(cm)+'" --build "'+str(BUILD)+'" --verbose', 'if errorlevel 1 exit /b %errorlevel%',
+                   '"'+str(cm)+'" -E chdir "'+str(BUILD)+'" "'+str(ninja)+'" -t commands',
+                   'if errorlevel 1 exit /b %errorlevel%',
+                   '"'+str(ct)+'" --test-dir "'+str(BUILD)+'" --output-on-failure', 'exit /b %errorlevel%']
+            batch=OUT/"fresh_build.bat"; batch.write_bytes(("\r\n".join(lines)+"\r\n").encode("ascii"))
+            run("build_ctest", ["cmd.exe", "/c", str(batch)], records, phase)
+            for name in ("sensitivity", "geometry_seed", "c3l4_abi"):
+                run(name,[str(BUILD/("eab2_test_"+name+".exe"))],records,phase)
+            run("build_audit",PY+["tools/eab2_audit.py","--build",str(BUILD),"--output",str(OUT/"build_audit.json")],records,phase)
+            run("release_abi",PY+["tools/eab2_release_abi.py","--dll",str(DLL),"--output",str(OUT/"release_abi.json")],records,phase)
+            old=json.loads((E/"consumer_isolation.json").read_text("utf8")); stage=BUILD/"consumer_standalone"; stage.mkdir()
+            files=[]
+            for row in old["files"]:
+                source=DLL if row["path"]=="eab2.dll" else ROOT/row["source"]
+                dest=stage/row["path"]; dest.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copyfile(source,dest); assert sha(dest)==sha(source)
+                files.append(dict(path=row["path"],source=source.relative_to(ROOT).as_posix(),bytes=dest.stat().st_size,sha256=sha(dest)))
+            cmd=[sys.executable,"-I","-S","-X","utf8",str(stage/"eab2_tia_consumer.py"),"--dll",str(stage/"eab2.dll"),"--header",str(stage/"c_api.h"),"--fixtures",str(stage/"fixtures"),"--output",str(OUT/"consumer.json")]
+            run("consumer_isolation",cmd,records,phase,stage)
+            write(OUT/"consumer_isolation.json",dict(status="PASS",scope="minimal byte copy, NOT a Git fresh tree",stage=str(stage),command=cmd,cwd=str(stage),python_isolated=True,site_disabled=True,**{k:records[-1][k] for k in ("seconds","last_line","exit_code")},files=files,file_count=len(files),omitted=old["omitted"],raw_log_sha256=sha(OUT/"consumer_isolation.log"),consumer_output_sha256=sha(OUT/"consumer.json")))
+        elif phase=="layers":
+            for name,tool,args,dll in [
+                ("c0","eab2_diff.py",[],TEST_DLL),
+                ("c1","eab2_diff_c1.py",["--metamorphic","--source-commit","b34c966+WO-C3L4-clarified"],TEST_DLL),
+                ("lp","eab2_opt_diff.py",["--source-commit","b34c966+WO-C3L4-clarified"],TEST_DLL),
+                ("l1","eab2_c3l1_diff.py",["--dataset","all"],DLL),
+                ("l3","eab2_c3l3_diff.py",["--family","all"],DLL),
+                ("l4","eab2_c3l4_diff.py",["--family","all"],DLL)]:
+                run(name,PY+["tools/"+tool,"--dll",str(dll),"--output",str(OUT/(name+".json"))]+args,records,phase)
+            run("public_meta",PY+["tools/eab2_c3l4_meta.py","--dll",str(DLL),"--output",str(OUT/"public_meta.json")],records,phase)
+            run("cold_timing",PY+["tools/eab2_c3l4_scale.py","--dll",str(DLL),"--output",str(OUT/"cold_timing.json")],records,phase)
+        else:
+            for name,flags in [("clarified_fast",[]),("clarified_full",["--runslow"])]:
+                run(name,PY+["tools/h1_run_gates.py","--name",name,"--evidence-root",str(E)]+flags,records,phase)
+    finally:
+        after=source_hashes(); same=before==after
+        write(E/"clarification"/(phase+"_execution.json"),dict(complete=len(records)=={"cpp":7,"layers":8,"python":2}[phase] and all(r.get("exit_code")==0 for r in records),source_pre_post_equal=same,source_manifest_sha256=hashlib.sha256(json.dumps(before,sort_keys=True).encode()).hexdigest(),source_file_count=len(before),dll_sha256=sha(DLL) if DLL.exists() else None,test_dll_sha256=sha(TEST_DLL) if TEST_DLL.exists() else None,runs=records))
+    assert same, "Source changed while verifying"
+    print("C3L4_CLARIFIED_PHASE phase="+phase+" status=PASS",flush=True)
+
+if __name__=="__main__":
+    main()

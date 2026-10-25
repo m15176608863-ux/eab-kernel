@@ -93,40 +93,41 @@ def test_last_allowed_bisection_step_retains_resolution_reason_and_proof_reason(
 
 
 @pytest.mark.parametrize("missing", [None, ()])
-def test_threshold_derivative_declines_absent_or_empty_nondegenerate_continuation(missing):
+def test_matrix_only_threshold_seed_cannot_be_certified_by_continuation_metadata(missing):
     critical, seed, mu_seed = _two_crossings()
     proof = replace(critical.threshold_proof, upper_signs=missing)
     result = evaluate_sensitivity2(replace(critical, threshold_proof=proof), seed, threshold_mu_seed=mu_seed)
     assert result.differentiability == "unresolved"
-    assert result.reason == "critical_basis_continuation_unproved"
+    assert result.reason == "threshold_affine_primitives_required"
     assert result.directional_derivative is None
 
 
-def test_threshold_derivative_distinguishes_degenerate_proof_from_absence():
+def test_single_point_continuation_does_not_make_matrix_only_seed_certifiable():
     critical, seed, mu_seed = _two_crossings()
     proof = replace(critical.threshold_proof, upper_signs=(), upper_interval=(Q(1), Q(1)))
     result = evaluate_sensitivity2(replace(critical, threshold_proof=proof), seed, threshold_mu_seed=mu_seed)
-    assert result.differentiability == "tie" and result.implicit_components
+    assert result.differentiability == "unresolved"
+    assert result.reason == "threshold_affine_primitives_required"
 
 
-def test_threshold_derivative_declines_negative_endpoint_ratio_and_missing_basis():
+def test_bad_single_basis_metadata_cannot_make_matrix_only_seed_certifiable():
     critical, seed, mu_seed = _two_crossings()
     branch = replace(critical.threshold_proof.upper_basis, numerators=((-Q(2), Q(1)), (-Q(1), Q(1))))
     proof = replace(critical.threshold_proof, upper_basis=branch)
     result = evaluate_sensitivity2(replace(critical, threshold_proof=proof), seed, threshold_mu_seed=mu_seed)
     assert result.differentiability == "unresolved"
-    assert result.reason == "critical_basis_infeasible_at_threshold"
+    assert result.reason == "threshold_affine_primitives_required"
     proof = replace(critical.threshold_proof, upper_basis=None)
     result = evaluate_sensitivity2(replace(critical, threshold_proof=proof), seed, threshold_mu_seed=mu_seed)
     assert result.differentiability == "unresolved"
-    assert result.reason == "critical_basis_unavailable"
+    assert result.reason == "threshold_affine_primitives_required"
 
 
 def test_zero_boundary_reason_does_not_claim_missing_threshold_or_certified_slope():
     critical = critical_parameter(g1(t=Q(1, 4)))
     assert critical.exact_threshold == 0 and critical.threshold_certificate is not None
     result = evaluate_sensitivity2(critical, parameter="height")
-    assert result.reason == "threshold_on_domain_boundary_without_proof"
+    assert result.reason == "exact_threshold_basis_and_seed_required"
     assert result.differentiability == "unresolved" and result.directional_derivative is None
 
 

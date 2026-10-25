@@ -1,0 +1,67 @@
+COMMAND "C:\Program Files\Python312\python.exe" -X utf8 -m pytest --collect-only -q -p no:cacheprovider --basetemp D:\eab-wt\cx-c0\reports\codex\C3L4_evidence\tmp\abi_static_repair\collect_before tests/test_eab2_release_abi.py
+tests/test_eab2_release_abi.py::test_release_pe_reads_all_names_not_only_a_known_symbol_allowlist
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[unnamed]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[forward]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[duplicate]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[ordinal]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[rva]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[machine]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[truncated]
+tests/test_eab2_release_abi.py::test_release_frozen_contract_matches_public_header_and_all_struct_fields
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[extra_export]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[missing_export]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[capability]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[size]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[offset]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[signature]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[version]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[const char* data-expected0]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[char const * data-expected1]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[const eab2_string * const * values-expected2]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[uint64_t data[2][3]-expected3]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[uint64_t * items[3]-expected4]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_same_size_offset_field_type_drift[const uint32_t* data]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_same_size_offset_field_type_drift[char* data]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_same_size_offset_field_type_drift[const char** data]
+tests/test_eab2_release_abi.py::test_independent_consumer_imports_only_stdlib_not_python_referee_or_harness
+tests/test_eab2_release_abi.py::test_independent_consumer_default_covers_open_closed_singular_switch_and_both_modes
+
+26 tests collected in 0.05s
+
+COMMAND "C:\Program Files\Python312\python.exe" -X utf8 -m pytest --collect-only -q -p no:cacheprovider --basetemp D:\eab-wt\cx-c0\reports\codex\C3L4_evidence\tmp\abi_static_repair\collect_after tests/test_eab2_release_abi.py
+tests/test_eab2_release_abi.py::test_release_pe_reads_all_names_not_only_a_known_symbol_allowlist
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[unnamed]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[forward]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[duplicate]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[ordinal]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[rva]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[machine]
+tests/test_eab2_release_abi.py::test_release_pe_rejects_nonconforming_export_tables[truncated]
+tests/test_eab2_release_abi.py::test_release_frozen_contract_matches_public_header_and_all_struct_fields
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[extra_export]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[missing_export]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[capability]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[size]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[offset]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[signature]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_contract_drift_not_just_missing_known_symbols[version]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[const char* data-expected0]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[char const * data-expected1]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[const eab2_string * const * values-expected2]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[uint64_t data[2][3]-expected3]
+tests/test_eab2_release_abi.py::test_release_canonical_field_types_preserve_const_pointer_depth_and_array_shape[uint64_t * items[3]-expected4]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_same_size_offset_field_type_drift[const uint32_t* data]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_same_size_offset_field_type_drift[char* data]
+tests/test_eab2_release_abi.py::test_release_gate_rejects_same_size_offset_field_type_drift[const char** data]
+tests/test_eab2_release_abi.py::test_independent_consumer_imports_only_stdlib_not_python_referee_or_harness
+tests/test_eab2_release_abi.py::test_independent_consumer_default_covers_open_closed_singular_switch_and_both_modes
+
+26 tests collected in 0.06s
+
+COMMAND "C:\Program Files\Python312\python.exe" -X utf8 -m pytest -q -p no:cacheprovider --basetemp D:\eab-wt\cx-c0\reports\codex\C3L4_evidence\tmp\abi_static_repair\pytest_26 tests/test_eab2_release_abi.py
+..........................                                               [100%]
+26 passed in 0.11s
+
+PE_BYTE_EQUIVALENCE copies=2 size=1024 equal=true assembly_ast_equal=true
+
+ABI_STATIC_SCAN issues=0 nodeids=26 unchanged=true

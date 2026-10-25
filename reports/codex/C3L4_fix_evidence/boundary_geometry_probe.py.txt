@@ -1,0 +1,149 @@
+"""Read-only physical realization of the threshold theorem domain counterexample.
+
+Uses the existing public Python geometry/contact/statics path. Expected balance
+and dual/ray checks below are elementary Fraction arithmetic, not copied LP
+solver or sensitivity routines. No production file is changed.
+"""
+from __future__ import annotations
+
+from fractions import Fraction as Q
+from hashlib import sha256
+from pathlib import Path
+import json
+import os
+import sys
+
+ROOT = Path(__file__).resolve().parents[3]
+HERE = Path(__file__).resolve().parent
+TEMP = HERE / "tmp" / "boundary_geometry_probe"
+TEMP.mkdir(parents=True, exist_ok=True)
+os.environ["TEMP"] = os.environ["TMP"] = str(TEMP)
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(ROOT / "src"))
+
+from eab.kernel2d.assembly import Assembly2, Body2
+from eab.kernel2d.contacts import assemble_contact_set2
+from eab.kernel2d.statics import critical_parameter, limit_load_ideal_exact_2d
+
+
+def encode(value):
+    if isinstance(value, Q):
+        return f"{value.numerator}/{value.denominator}"
+    if isinstance(value, (tuple, list)):
+        return [encode(item) for item in value]
+    if isinstance(value, dict):
+        return {key: encode(item) for key, item in value.items()}
+    return value
+
+
+def model(t):
+    moving = Body2.from_vertices(
+        "moving", ((2, 3), (3, 3), (3, 4), (2, 4)),
+        reference_point=(Q(3, 8), Q(-5, 8)),
+        dof_anchor=(Q(7, 16), Q(9, 16)), dof_mask=(1, 1, 0),
+        live=(1, -t, 0),
+    )
+    support = Body2.from_vertices(
+        "support", ((2, 2), (3, 2), (3, 3), (2, 3)),
+        boundary_type="FIXED_BODY", dof_mask=(0, 0, 0),
+    )
+    assembly = Assembly2((moving, support), ((0, 1),), "complete")
+    contacts = assemble_contact_set2(assembly)
+    assert contacts.status == "RESOLVED" and len(contacts.constraints) == 2
+    assert all(contact.tangent == (Q(1), Q(0)) for contact in contacts.constraints)
+    return assembly, contacts
+
+
+def verify_limit(result):
+    assert result.call_status == "OK"
+    p = result.problem
+    if result.status == "OPTIMAL":
+        x, y = result.exact_x, result.exact_y
+        assert all(value >= 0 for value in x)
+        assert tuple(sum(a * v for a, v in zip(row, x)) for row in p.A) == p.b
+        assert all(sum(p.A[i][j] * y[i] for i in range(len(p.b))) >= p.c[j]
+                   for j in range(len(p.c)))
+        assert sum(c * v for c, v in zip(p.c, x)) == sum(b * v for b, v in zip(p.b, y)) == 0
+    else:
+        assert result.status == "UNBOUNDED"
+        x, ray = result.feasible_point, result.improving_ray
+        assert all(value >= 0 for value in x + ray)
+        assert tuple(sum(a * v for a, v in zip(row, x)) for row in p.A) == p.b
+        assert all(sum(a * v for a, v in zip(row, ray)) == 0 for row in p.A)
+        assert ray[-1] == 1
+
+
+def query(t, mu):
+    assembly, contacts = model(t)
+    result = limit_load_ideal_exact_2d(assembly, contacts, mu=mu)
+    verify_limit(result)
+    expected = ((-mu, mu, -mu, mu, Q(1)), (Q(1), Q(1), Q(1), Q(1), -t))
+    assert result.problem.A == expected
+    assert result.problem.b == (0, 0) and result.problem.c == (0, 0, 0, 0, 1)
+    assert result.status == ("UNBOUNDED" if mu * t >= 1 else "OPTIMAL")
+    return {
+        "t": t, "mu": mu, "status": result.status,
+        "A": result.problem.A, "b": result.problem.b, "c": result.problem.c,
+        "row_labels": result.problem.row_labels, "column_labels": result.problem.column_labels,
+        "exact_x": result.exact_x, "exact_y": result.exact_y,
+        "feasible_point": result.feasible_point, "improving_ray": result.improving_ray,
+    }
+
+
+def main():
+    source_paths = (
+        "src/eab/kernel2d/assembly.py", "src/eab/kernel2d/contacts.py",
+        "src/eab/kernel2d/statics.py", "src/eab/kernel2d/critical.py",
+        "src/eab/kernel2d/sensitivity.py", "src/eab/lp.py",
+    )
+    source_pre = {name: sha256((ROOT / name).read_bytes()).hexdigest() for name in source_paths}
+    rows = []
+    for epsilon in (Q(0), Q(1, 16), Q(1, 256), Q(1, 4096)):
+        t = 1 - epsilon
+        assembly, contacts = model(t)
+        critical = critical_parameter(assembly, contact_set=contacts, mu_max=1, max_steps=16)
+        if not epsilon:
+            assert critical.exact_threshold == 1 and critical.attained is True
+        else:
+            assert critical.reason == "bounded_on_domain"
+            assert critical.exact_threshold is None and critical.mu_hi is None
+        rows.append({
+            "epsilon": epsilon, "t": t, "true_unrestricted_threshold": 1 / t,
+            "bounded_domain": [0, 1], "critical_call_status": critical.call_status,
+            "critical_status": critical.status, "critical_reason": critical.reason,
+            "exact_threshold": critical.exact_threshold, "attained": critical.attained,
+            "queries": critical.queries, "domain_upper_limit": query(t, Q(1)),
+            "unrestricted_threshold_limit": query(t, 1 / t),
+        })
+    epsilon, eta = Q(1, 256), Q(1, 16)
+    low, high = 1 + (1 - eta) * epsilon, 1 + (1 + eta) * epsilon
+    assert Q(1) < low < 1 / (1 - epsilon) < high
+    probes = [query(1 - epsilon, low), query(1 - epsilon, high)]
+    source_post = {name: sha256((ROOT / name).read_bytes()).hexdigest() for name in source_paths}
+    assert source_post == source_pre
+    result = {
+        "complete": True, "kind": "read_only_actual_geometry_domain_counterexample",
+        "base_commit": "cb14522bda2e23e233ba475e0a4aae48d02dd0a0",
+        "geometry": {"moving": [[2, 3], [3, 3], [3, 4], [2, 4]],
+                     "support": [[2, 2], [3, 2], [3, 3], [2, 3]],
+                     "moving_mask": [1, 1, 0], "support_mask": [0, 0, 0],
+                     "live": ["1", "-t", "0"], "dead": [0, 0, 0]},
+        "primitive_path": "t=1-epsilon; moving live_y=-1+epsilon; all geometry fixed",
+        "row_reduction": "Duplicate endpoint columns collapse to [-mu,+mu,1]; [1,1,-t].",
+        "formula": "UNBOUNDED iff mu*t>=1 for t>0; mucrit_unrestricted=1/t.",
+        "samples": rows,
+        "finite_bracket_illustration": {"epsilon": epsilon, "eta": eta, "s": 1,
+                                         "mu_minus": low, "mu_plus": high,
+                                         "both_outside_declared_domain": True, "probes": probes},
+        "source_sha256_pre": source_pre, "source_sha256_post": source_post,
+        "production_source_unchanged": True,
+        "script_sha256": sha256(Path(__file__).read_bytes()).hexdigest(),
+        "conclusion": "At epsilon=0 the declared-domain threshold is attained at 1; for every 0<epsilon<1 the domain's unbounded set is empty. Finite outside-domain brackets cannot certify a finite derivative of that domain-restricted threshold.",
+    }
+    out = HERE / "boundary_geometry_probe.json"
+    out.write_text(json.dumps(encode(result), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("C3L4FIX_BOUNDARY_GEOMETRY_CONFIRMED cases=4 limit_checks=10 source_unchanged=true")
+
+
+if __name__ == "__main__":
+    main()

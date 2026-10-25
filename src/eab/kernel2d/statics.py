@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from fractions import Fraction
+import struct
 
 from eab import lp
 from eab.construction import scalar_rational
@@ -74,6 +75,8 @@ class CriticalParameter2:
     bisection_termination: str | None = None
     threshold_proof_reason: str | None = None
     validity_conditions: tuple = ()
+    search_domain: object = None
+    _search_domain_binding: tuple = ()
 
     @property
     def status(self):
@@ -222,6 +225,27 @@ free-plate masks, load transformations and all three LP certificates.
 
 
 def critical_parameter(assembly, param="mu", *, mu_max=1.0, max_steps=64, contact_set=None):
+    """Bind the original closed binary64 search domain, not a narrowed bracket."""
+    result = _critical_parameter(assembly, param, mu_max=mu_max,
+                                 max_steps=max_steps, contact_set=contact_set)
+    try:
+        upper = Fraction(mu_max)
+        if upper < 0 or not _is_binary64(upper):
+            return result
+        displayed = mu_max if isinstance(mu_max, float) else scalar_rational(upper, allow_underflow=True)
+        digits = "0123456789abcdef"
+        domain = {"mu_min": 0.0, "mu_max": displayed,
+                  "exact_mu_min": "0/1", "exact_mu_max": str(upper.numerator) + "/" + str(upper.denominator),
+                  "mu_min_binary64": "0000000000000000",
+                  "mu_max_binary64": "".join(digits[byte >> 4] + digits[byte & 15]
+                                             for byte in struct.pack(">d", displayed))}
+        binding = (Fraction(0), upper, domain["mu_min_binary64"], domain["mu_max_binary64"])
+        return replace(result, search_domain=domain, _search_domain_binding=binding)
+    except (ValueError, OverflowError, TypeError):
+        return result
+
+
+def _critical_parameter(assembly, param="mu", *, mu_max=1.0, max_steps=64, contact_set=None):
     """Certified binary64 bracket; no exact threshold is inferred from width.
 
 Only nested exact friction cones justify monotonicity. Both endpoints retain
