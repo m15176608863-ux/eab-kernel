@@ -1,0 +1,71 @@
+{
+  "schema": "eab2.c3l4.delivery-integrity.v2",
+  "status": "PASS",
+  "work_order_status": "C3L4_DONE",
+  "pack_artifacts_verified": 28,
+  "history_files_verified": 25,
+  "h1_archives": [
+    {
+      "name": "baseline_full",
+      "audit": "GREEN",
+      "collected": 15080,
+      "shards": 4,
+      "failed": 0,
+      "skipped": 0,
+      "node_multisets_equal": true,
+      "raw_files": 15
+    },
+    {
+      "name": "final_fast",
+      "audit": "GREEN",
+      "collected": 9070,
+      "shards": 1,
+      "failed": 0,
+      "skipped": 0,
+      "node_multisets_equal": true,
+      "raw_files": 5
+    },
+    {
+      "name": "final_full",
+      "audit": "RED",
+      "collected": 15154,
+      "shards": 4,
+      "failed": 2,
+      "skipped": 0,
+      "node_multisets_equal": true,
+      "raw_files": 15
+    },
+    {
+      "name": "clarified_fast",
+      "audit": "GREEN",
+      "collected": 9109,
+      "shards": 1,
+      "failed": 0,
+      "skipped": 0,
+      "node_multisets_equal": true,
+      "raw_files": 5
+    },
+    {
+      "name": "clarified_full",
+      "audit": "GREEN",
+      "collected": 15193,
+      "shards": 4,
+      "failed": 0,
+      "skipped": 0,
+      "node_multisets_equal": true,
+      "raw_files": 15
+    }
+  ],
+  "tested_source_zip_sha_verified": true,
+  "verification_source_files": 638,
+  "release_dll_sha256": "b08c5558572831b52f17a60253e2ce1ede450a31eed800d8a5b3b053124c75df",
+  "release_exports": 31,
+  "release_structures": 28,
+  "l4_queries": 402,
+  "l4_mismatches": 0,
+  "basis_label_dispositions": 32,
+  "abi_domain_exclusions": 32,
+  "missing_delivery_links": [],
+  "report_last_line": "C3L4_DONE",
+  "note": "Historical RED is retained. Current fast/full and restarted L4 are complete; five complete r2 layers are reused as explicitly authorized. Source unchanged during runs. This is author verification, not owner fresh-Git or independent acceptance."
+}

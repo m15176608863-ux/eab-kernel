@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\pytest_release_field_types",
+        "tests/test_eab2_release_abi.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.5335661999415606,
+      "last_line": "26 passed in 0.12s"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_release_abi.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\eab2.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\release_abi.json"
+      ],
+      "returncode": 0,
+      "seconds": 0.06954769999720156,
+      "last_line": "EAB2_RELEASE_ABI status=PASS exports=31 structures=28 findings=0"
+    }
+  ],
+  "consumer_source_hashes_unchanged": {
+    "tools/eab2_tia_consumer.py": true,
+    "eab2/include/eab2/c_api.h": true,
+    "eab2/build/eab2.dll": true,
+    "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/manifest.json": true,
+    "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g1_unreversed_t1.part001.json.gz": true,
+    "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g1_slender.part001.json.gz": true,
+    "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu0.part001.json.gz": true,
+    "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu1.part001.json.gz": true,
+    "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu2.part001.json.gz": true,
+    "fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64/g5_n3_mu3.part001.json.gz": true
+  },
+  "consumer_rerun_required": false,
+  "source_sha256": {
+    "tools/eab2_release_abi.py": "9dfa4275cb964ff82f052d0c915394c2353b369e30b5ac65e6013f352161f20f",
+    "tests/test_eab2_release_abi.py": "2a0bbd73873a1089960dee4a44d3f76122fb6ba434a4ed0f1cb47f17ef894bcf",
+    "eab2/ABI_CONTRACT.md": "f8fa8d06627ede95893bef190257ec1c8ad63f7a2cd1fbfa8fff87874b0d1bd1"
+  }
+}

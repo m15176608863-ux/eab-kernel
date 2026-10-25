@@ -1,0 +1,33 @@
+[
+  {
+    "name": "final_fast",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/h1_run_gates.py",
+      "--name",
+      "final_fast",
+      "--evidence-root",
+      "reports/codex/C3L4_evidence"
+    ],
+    "exit_code": 0,
+    "seconds": 318.5086997000035
+  },
+  {
+    "name": "final_full",
+    "command": [
+      "C:\\Program Files\\Python312\\python.exe",
+      "-X",
+      "utf8",
+      "tools/h1_run_gates.py",
+      "--name",
+      "final_full",
+      "--runslow",
+      "--evidence-root",
+      "reports/codex/C3L4_evidence"
+    ],
+    "exit_code": 1,
+    "seconds": 1251.2020643000724
+  }
+]

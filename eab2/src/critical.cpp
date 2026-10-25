@@ -4,6 +4,7 @@
 #include "critical.hpp"
 #include "numeric.hpp"
 #include <algorithm>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
@@ -374,7 +375,7 @@ CriticalParameter2 finish_critical(const contact::ContactSet2& contacts, const L
 }
 } // namespace
 
-CriticalParameter2 critical_parameter(const contact::ContactSet2& contacts, const Loads2& loads,
+static CriticalParameter2 critical_parameter_impl(const contact::ContactSet2& contacts, const Loads2& loads,
     const Rational& mu_max, std::size_t max_steps, const std::string& param, const opt::Options& options) {
     geometry2::GeometryWorkScope work(contacts.assembly.limits);
     exact::IntegerLimitScope integers(contacts.assembly.limits.max_integer_bits);
@@ -425,6 +426,14 @@ CriticalParameter2 critical_parameter(const contact::ContactSet2& contacts, cons
     }
     const auto reason = critical_detail::binary_midpoint(lo, hi) ? "iteration_limit" : "input_resolution_limit";
     return finish_critical(contacts, loads, lo, hi, low, high, reason, count, options);
+}
+
+CriticalParameter2 critical_parameter(const contact::ContactSet2& contacts, const Loads2& loads,
+    const Rational& mu_max, std::size_t max_steps, const std::string& param, const opt::Options& options) {
+    auto result = critical_parameter_impl(contacts, loads, mu_max, max_steps, param, options);
+    result.original_mu_max = mu_max;
+    if (critical_detail::is_binary64(mu_max)) result.original_mu_max_bits = numeric::scalar_rational(mu_max, true);
+    return result;
 }
 
 namespace {
@@ -481,6 +490,21 @@ std::string bits_json(const std::optional<Rational>& q) {
     return out.str();
 }
 } // namespace
+std::string export_search_domain(const CriticalParameter2& r) {
+    if (!r.original_mu_max || !critical_detail::is_binary64(*r.original_mu_max)) return "null";
+    const auto bits = r.original_mu_max_bits.value_or(numeric::scalar_rational(*r.original_mu_max, true));
+    double value;
+    static_assert(sizeof(value) == sizeof(bits));
+    std::memcpy(&value, &bits, sizeof(value));
+    std::ostringstream number;
+    number << std::setprecision(17) << value;
+    auto displayed = number.str();
+    if (displayed.find_first_of(".eE") == std::string::npos) displayed += ".0";
+    std::ostringstream raw_bits; raw_bits << '"' << std::hex << std::setfill('0') << std::setw(16) << bits << '"';
+    return "{\"mu_min\":0.0,\"mu_max\":" + displayed +
+        ",\"exact_mu_min\":\"0/1\",\"exact_mu_max\":" + js(*r.original_mu_max) +
+        ",\"mu_min_binary64\":\"0000000000000000\",\"mu_max_binary64\":" + raw_bits.str() + '}';
+}
 std::string export_exact(const CriticalParameter2& r) {
     return "{\"call_status\":" + quote(r.call_status) + ",\"mathematical_status\":" + quote(r.mathematical_status) +
         ",\"mu_lo\":" + optional_json(r.mu_lo) + ",\"mu_hi\":" + optional_json(r.mu_hi) +
@@ -495,6 +519,7 @@ std::string export_exact(const CriticalParameter2& r) {
         ",\"threshold_proof\":" + (r.threshold_proof ? proof_json(*r.threshold_proof) : "null") +
         ",\"bisection_termination\":" + optional_json(r.bisection_termination) +
         ",\"threshold_proof_reason\":" + optional_json(r.threshold_proof_reason) +
-        ",\"validity_conditions\":" + array_json(r.validity_conditions, [](const auto& s) { return quote(s); }) + '}';
+        ",\"validity_conditions\":" + array_json(r.validity_conditions, [](const auto& s) { return quote(s); }) +
+        ",\"search_domain\":" + export_search_domain(r) + '}';
 }
 } // namespace eab2::statics

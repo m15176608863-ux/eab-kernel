@@ -1,0 +1,97 @@
+"""Rerunnable evidence only; do not change either solver or comparison policy."""
+import argparse
+from collections import Counter
+import hashlib
+import gzip
+import json
+from pathlib import Path
+import sys
+
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "src/eab").is_dir())
+sys.path.insert(0, str(ROOT / "tools"))
+from eab2_c3l4_abi import C3L4Dll
+from eab2_c3l4_diff import (attached_base, expected_channel, t1b_cases, verify_batch,
+                          verify_sensitivity, compare_sensitivity, label_set)
+from eab2_c3l3_diff import verify_critical
+from eab2_c3l3_thickness import input_fingerprint
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dll", type=Path, required=True)
+    parser.add_argument("--differential", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    raw = args.differential.read_bytes()
+    if args.differential.suffix == ".gz":
+        raw = gzip.decompress(raw)
+    differential = json.loads(raw)
+    records = differential["mismatches"]
+    assert len(records) == 32
+    assert all("error" not in record and record["differences"] and all(
+        delta["path"].startswith("result.tied_labels") for delta in record["differences"]) for record in records)
+    summary = dict(format="eab2.c3l4.tied-labels.forensics.v1", complete=False,
+        differential=str(args.differential), differential_sha256=hashlib.sha256(raw).hexdigest(),
+        original_last_line=differential["last_line"],
+        all_differences_are_tied_labels=True, mismatched_queries=len(records),
+        models=sorted({record["case_id"] for record in records}),
+        field_counts=dict(Counter(delta["path"] for record in records for delta in record["differences"])),
+        affected_queries=[dict(case_id=record["case_id"], query_index=record["query_index"],
+            fields=sorted({delta["path"] for delta in record["differences"]})) for record in records],
+        strict_mismatch_waived=False)
+    case = next(t1b_cases({"t1b/00"}))
+    expected = attached_base(case["bases"]["critical"])
+    dll = C3L4Dll(args.dll)
+    try:
+        ah = dll.assembly(case["model"])
+        ch = dll.contacts(ah)
+        token, actual = dll.base_query(ch, case["model"], case["bases"]["critical"])
+        queries = [query for _, query in case["queries"]]
+        batch = dll.sensitivity(token, queries)
+        verify_batch(batch, queries)
+        sides = dict(python=expected, cpp=actual)
+        for base in sides.values():
+            verify_critical(case["model"], case["contacts"], base)
+        assert expected["exact_threshold"] == actual["exact_threshold"] and expected["attained"] == actual["attained"]
+        specimen = dict(case_id=case["case_id"], geometry_source=case["source"],
+            input_sha256=input_fingerprint(case["model"]), exact_threshold=expected["exact_threshold"],
+            attained=expected["attained"], dll_sha256=dll.sha256, build_identity=dll.identity,
+            both_original_geometry_critical_certificates_verified=True, sides={}, parameters=[])
+        for side, base in sides.items():
+            role = "upper_basis" if base["attained"] else "lower_basis"
+            branch = base["threshold_proof"][role]
+            specimen["sides"][side] = dict(branch_role=role, branch=branch,
+                threshold_certificate_status=base["threshold_certificate"]["mathematical_status"],
+                continuation_reason=base["threshold_proof_reason"],
+                threshold_basis=base["threshold_certificate"]["basis"])
+        for query, cpp in zip(queries, batch["channels"]):
+            python = expected_channel(query)
+            verify_sensitivity(case["model"], case["contacts"], expected, query, python)
+            verify_sensitivity(case["model"], case["contacts"], actual, query, cpp)
+            delta, floor = compare_sensitivity(case, actual, query, cpp)
+            assert delta and all(item["path"].startswith("result.tied_labels") for item in delta)
+            fields = ("right_derivative", "left_derivative", "directional_derivative", "quality",
+                      "differentiability", "reason", "validity_conditions")
+            assert all(python["result"][field] == cpp["result"][field] for field in fields)
+            evidence = dict(parameter=query["result"]["parameter"],
+                common_fields={field: python["result"][field] for field in fields},
+                both_original_geometry_seeds_and_implicit_components_verified=True,
+                strict_differences=delta, proof_capability_floor=floor, sides={})
+            for side, channel in (("python", python), ("cpp", cpp)):
+                result = channel["result"]
+                assert label_set(result["tied_labels"]) == label_set([row[0] for row in result["implicit_components"]])
+                evidence["sides"][side] = {field: result[field] for field in
+                    ("selected_piece", "tied_labels", "implicit_components", "piece_jacobians")}
+                evidence["sides"][side]["all_crossing_labels_retained"] = True
+            specimen["parameters"].append(evidence)
+        summary["specimen"] = specimen
+        summary["complete"] = True
+    finally:
+        dll.close()
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("C3L4_TIED_LABEL_FORENSICS cases=16 queries=32 specimen=2 independently_verified=true strict_mismatch_waived=false")
+
+
+if __name__ == "__main__":
+    main()

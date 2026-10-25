@@ -1,0 +1,50 @@
+"""Owner-authorized closeout: reuse completed phases; restart interrupted L4."""
+from pathlib import Path
+import gzip,hashlib,json,os,subprocess,sys,time
+ROOT=next(p for p in Path(__file__).resolve().parents if (p/"src/eab").is_dir())
+E=ROOT/"reports/codex/C3L4_evidence"
+OUT=E/"tmp/clarified_closeout_1"
+DLL=ROOT/"eab2/build/clarified_r2/eab2.dll"
+
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def read(p):return json.loads(p.read_text("utf8"))
+def write(p,v):p.write_text(json.dumps(v,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
+def main():
+    assert not OUT.exists(),"Use a new run directory"
+    OUT.mkdir(parents=True);(OUT/"temp").mkdir()
+    sources=json.loads(gzip.decompress((E/"clarification/verification_sources.json.gz").read_bytes()))
+    assert all(sha(ROOT/n)==h for n,h in sources.items())
+    cpp=read(E/"clarification/cpp_execution.json");assert cpp["complete"] and cpp["source_pre_post_equal"] and sha(DLL)==cpp["dll_sha256"]
+    old=read(E/"clarification/layers_execution.json");assert [r["name"] for r in old["runs"]]==["c0","c1","lp","l1","l3","l4"]
+    assert not old["runs"][-1]["complete"]
+    saved=E/"clarification/interrupted_layers_execution.json";assert not saved.exists();saved.write_bytes((E/"clarification/layers_execution.json").read_bytes())
+    reused=[]
+    for row in old["runs"][:-1]:
+        assert row["complete"] and row["exit_code"]==0 and sha(Path(row["log"]))==row["log_sha256"]
+        assert Path(row["log"]).read_text("utf8").splitlines()[-1]==row["last_line"]
+        data=E/"tmp/clarified_final_r2"/(row["name"]+".json");assert data.is_file()
+        reused.append(dict(**row,output=str(data),output_sha256=sha(data)))
+    write(E/"clarification/completed_layers_reuse.json",dict(complete=True,owner_authorized_reuse=True,source_pre_post_equal=True,source_manifest_sha256=cpp["source_manifest_sha256"],dll_sha256=sha(DLL),runs=reused,invalidated=dict(name="l4",reason="Selected model is at capacity; process ended; entire run discarded per owner instruction",last_progress=read(E/"tmp/clarified_final_r2/l4.progress.json"),reused_partial_rows=0)))
+    records=[];journal=E/"clarification/closeout_execution.json";py=[sys.executable,"-X","utf8"]
+    plan=[("l4",py+["tools/eab2_c3l4_diff.py","--dll",str(DLL),"--output",str(OUT/"l4.json"),"--family","all"]),
+          ("clarified_fast",py+["tools/h1_run_gates.py","--name","clarified_fast","--evidence-root",str(E)]),
+          ("clarified_full",py+["tools/h1_run_gates.py","--name","clarified_full","--runslow","--evidence-root",str(E)])]
+    try:
+        for name,command in plan:
+            log=OUT/(name+".log");record=dict(name=name,command=command,cwd=str(ROOT),log=str(log),complete=False);records.append(record)
+            start=time.perf_counter()
+            with log.open("xb") as stream:
+                proc=subprocess.Popen(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONIOENCODING="utf-8",TEMP=str(OUT/"temp"),TMP=str(OUT/"temp")))
+                record["pid"]=proc.pid
+                while proc.poll() is None:
+                    record["seconds"]=time.perf_counter()-start;write(journal,dict(complete=False,runs=records));time.sleep(2)
+            record.update(complete=True,exit_code=proc.returncode,seconds=time.perf_counter()-start,last_line=log.read_text("utf8",errors="replace").splitlines()[-1],log_sha256=sha(log))
+            write(journal,dict(complete=False,runs=records));print(name+": "+record["last_line"],flush=True)
+            if proc.returncode:raise RuntimeError(name+" failed; preserve this run and investigate")
+    finally:
+        same=all(sha(ROOT/n)==h for n,h in sources.items())
+        write(journal,dict(complete=len(records)==3 and all(r.get("exit_code")==0 for r in records),source_pre_post_equal=same,source_manifest_sha256=cpp["source_manifest_sha256"],dll_sha256=sha(DLL),runs=records))
+    assert same
+    print("C3L4_CLOSEOUT status=PASS",flush=True)
+
+if __name__=="__main__":main()

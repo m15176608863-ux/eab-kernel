@@ -1,0 +1,39 @@
+{
+  "version": "c3l4fix-superseded-prior-outputs-v1",
+  "historical_only": true,
+  "reason": "Superseded historical JSON; preserve original conclusions and hashes, not new acceptance evidence",
+  "archive_directory": "D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023",
+  "files": [
+    {
+      "original": "reports/codex/C3L4_evidence/checks/static_repair_verification.json",
+      "archive": "D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023/static_repair_verification.json",
+      "bytes": 72924,
+      "sha256": "7ca4aa84a759b885cdbce9b8400c3c1a2cf3b347e249ea375a1c72cde69fd6a6"
+    },
+    {
+      "original": "reports/codex/C3L4_evidence/hygiene.json",
+      "archive": "D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023/hygiene.json",
+      "bytes": 59333,
+      "sha256": "d93612125c582692bfe4f479356a9f307bb1d41d894fd04d35036cea6eea5571"
+    },
+    {
+      "original": "reports/codex/C3L4_evidence/tied_labels_forensics.json",
+      "archive": "D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023/tied_labels_forensics.json",
+      "bytes": 47762,
+      "sha256": "5501161884f61e9c5685973cbc33905a5f29fe478b877fb9a20a28e6fadc3ced"
+    },
+    {
+      "original": "reports/codex/C3L4_evidence/checks/build_audit.json",
+      "archive": "D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023/build_audit.json",
+      "bytes": 31546,
+      "sha256": "5689844004fc0bd58f5dd5c929a2b29e1498e18100ca7467a815193122cf455a"
+    }
+  ],
+  "original_bytes": 211565,
+  "verification": "All four copied files read back byte-for-byte and SHA-256 before any source removal",
+  "source_files_removed": 4,
+  "runtime_dependency_name_hits": 0,
+  "archive_manifest_sha256": "11f7d445fdc55cd5d30d2a70ba41ce5bb81f9489e8c9adbbd7b1ff1113e9f01d",
+  "rollback": "Restore only a named absent original path, verify SHA, never overwrite later owner changes",
+  "script": "reports/codex/C3L4_fix_evidence/archive_superseded_prior_outputs.py.txt"
+}

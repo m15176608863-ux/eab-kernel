@@ -1,0 +1,116 @@
+"""Append-only historical RED/INVALID archive; reruns verify before pruning.
+
+Run with Python from any directory. Only the two listed historical JSON
+directories may be pruned. No tmp input, source snapshot or process is changed.
+The ZIP's manifest records every member's original path, size and SHA-256.
+"""
+import hashlib
+import json
+from pathlib import Path
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[3]
+BASE = ROOT / "reports/codex/C3L4_fix_evidence"
+MAP = BASE / "integration_history.json"
+DEST = Path("D:/eab-evidence/reports/codex/C3L4_fix_evidence/integration_history_20261023_r3")
+RUNS = ("final_fast", "c3l4fix_final_r3_fast")
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def verify(mapping):
+    archive = Path(mapping["archive"])
+    assert sha(archive.read_bytes()) == mapping["archive_sha256"]
+    with zipfile.ZipFile(archive) as zipped:
+        manifest_bytes = zipped.read("MEMBER_MANIFEST.json")
+        assert sha(manifest_bytes) == mapping["member_manifest_sha256"]
+        manifest = json.loads(manifest_bytes)
+        assert set(zipped.namelist()) == {r["path"] for r in manifest} | {"MEMBER_MANIFEST.json"}
+        assert len(zipped.namelist()) == len(manifest) + 1
+        for row in manifest:
+            data = zipped.read(row["path"])
+            assert len(data) == row["bytes"] and sha(data) == row["sha256"], row["path"]
+    return manifest
+
+
+def create():
+    paths, removed, snapshots = [], [], {}
+    for run in RUNS:
+        folder = BASE / run
+        paths.extend(sorted(folder.glob("*.json")))
+        removed.extend(p.relative_to(ROOT).as_posix() for p in folder.glob("*.json"))
+        paths.extend(folder.glob("README.md"))
+        temp = BASE / "tmp" / run
+        paths.extend(sorted(p for p in temp.iterdir() if p.is_file()))
+        source = json.loads((temp / "source_manifest.json").read_text(encoding="utf-8-sig"))
+        for row in source:
+            p = (temp / "source" / row["path"]).resolve()
+            assert p.is_relative_to((temp / "source").resolve())
+            data = p.read_bytes()
+            assert len(data) == row["bytes"] and sha(data) == row["sha256"], str(p)
+            paths.append(p)
+        snapshots[run] = dict(members=len(source), bytes=sum(r["bytes"] for r in source),
+                             completed=False if run == "final_fast" else True,
+                             acceptance="INVALID" if run == "final_fast" else "RED")
+    paths.extend(p for p in (BASE / "tmp/c3l4fix_final_r3").rglob("*") if p.is_file())
+    paths.extend(p for p in (BASE / "tmp/c3l4fix_final_r1/python").iterdir() if p.is_file())
+    paths.extend(BASE / "tmp" / name for name in (
+        "final_runs_invalidated.json", "final_r3_l4_invalidated.json", "final_r3_integration_invalidated.json"))
+    paths = sorted(set(p.resolve() for p in paths))
+    assert len(removed) == 7
+    assert not DEST.exists(), "Never overwrite a previous archive"
+    rows = []
+    for p in paths:
+        assert p.is_relative_to(BASE.resolve()) and p.suffix.lower() not in (".exe", ".dll", ".lib", ".obj", ".pdb")
+        data = p.read_bytes()
+        rows.append(dict(path=p.relative_to(ROOT).as_posix(), bytes=len(data), sha256=sha(data)))
+    summary = json.loads((BASE / RUNS[1] / "summary.json").read_text(encoding="utf-8"))
+    last = summary["shards"][0]["last_line"]
+    assert summary["audit"] == "RED" and last == "24 failed, 9203 passed in 800.83s (0:13:20)"
+    manifest = (json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
+    DEST.mkdir(parents=True, exist_ok=False)
+    archive = DEST / "history.zip"
+    with zipfile.ZipFile(archive, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zipped:
+        for p, row in zip(paths, rows):
+            data = p.read_bytes()
+            assert sha(data) == row["sha256"], "Source changed during archive"
+            zipped.writestr(row["path"], data)
+        zipped.writestr("MEMBER_MANIFEST.json", manifest)
+    mapping = dict(version="c3l4fix-integration-history-v1", archive=str(archive),
+        archive_sha256=sha(archive.read_bytes()), archive_bytes=archive.stat().st_size,
+        member_manifest="MEMBER_MANIFEST.json", member_manifest_sha256=sha(manifest),
+        members=len(rows), original_bytes=sum(r["bytes"] for r in rows), snapshots=snapshots,
+        r3_fast_last_line=last, historical_only=True, no_green_acceptance=True,
+        pruned_json=[row for row in rows if row["path"] in removed],
+        rollback="Extract the named original member only to an absent path; verify SHA; never overwrite later owner changes.")
+    verify(mapping)
+    with (DEST / "mapping.json").open("x", encoding="utf-8", newline="\n") as stream:
+        stream.write(json.dumps(mapping, ensure_ascii=False, indent=2) + "\n")
+    MAP.write_text(json.dumps(mapping, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    return mapping
+
+
+def main():
+    mapping = json.loads(MAP.read_text(encoding="utf-8")) if MAP.exists() else create()
+    verify(mapping)
+    allowed = {(BASE / run).resolve() for run in RUNS}
+    for row in mapping["pruned_json"]:
+        p = (ROOT / row["path"]).resolve()
+        assert p.parent in allowed and p.suffix == ".json" and p.is_relative_to(ROOT.resolve())
+        if p.exists():
+            assert sha(p.read_bytes()) == row["sha256"], "Do not remove changed evidence"
+            p.unlink()
+    for run in RUNS:
+        state = "INVALID: interrupted, incomplete; cannot splice or count as acceptance" if run == "final_fast" else "RED: complete pytest run, 24 failures; not acceptance"
+        text = ("# 历史 RED / INVALID（非最终验收）\n\n" + state + "\n\n"
+                + (mapping["r3_fast_last_line"] + "\n\n" if run == RUNS[1] else "The original state remains complete=false in the archive.\n\n")
+                + "Original JSON, logs, PID records, executed nodes and tested source bytes are preserved in the append-only archive.\n\n"
+                + "[Exact archive mapping](../integration_history.json) · [Rerunnable archiver](../archive_integration_history.py.txt)\n")
+        (BASE / run / "README.md").write_text(text, encoding="utf-8", newline="\n")
+    print("C3L4_INTEGRATION_HISTORY members=" + str(mapping["members"]) + " pruned_json=7 verified=1 historical_only=1")
+
+
+if __name__ == "__main__":
+    main()

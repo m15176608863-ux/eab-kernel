@@ -1,0 +1,75 @@
+"""Append completed baseline bytes under this work order's H1 archive only."""
+from pathlib import Path
+import hashlib
+import json
+import shutil
+import zipfile
+
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "src/eab").is_dir())
+E = ROOT / "reports/codex/C3L4_fix_evidence"
+OUT = Path("D:/eab-evidence/reports/codex/C3L4_fix_evidence/20261023_domain_block/baseline_full")
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    summary_path = E / "baseline_full/summary.json"
+    summary = json.loads(summary_path.read_text("utf8"))
+    assert summary["complete"] and not summary["export_changed"] and not summary["live_tree_changed"]
+    source = Path(summary["source"]).resolve()
+    temp = Path(summary["temp"]).resolve()
+    assert source.is_relative_to((E / "tmp").resolve()) and temp.is_relative_to((E / "tmp").resolve())
+    assert OUT.resolve().is_relative_to(Path("D:/eab-evidence").resolve())
+    OUT.mkdir(parents=True, exist_ok=True)
+    paths = {temp / "collection.txt", temp / "source_manifest.json"}
+    paths.update(temp.glob("shard_*.txt"))
+    paths.update(temp.glob("shard_*_execution.json"))
+    if summary["static"] is not None:
+        paths.add(Path(summary["static"]["log"]))
+    records = []
+    for path in sorted(paths):
+        target = OUT / path.name
+        before = sha(path)
+        if target.exists():
+            assert sha(target) == before, "No overwrite of different archive bytes"
+        else:
+            with path.open("rb") as src, target.open("xb") as dst:
+                shutil.copyfileobj(src, dst)
+        assert sha(path) == sha(target) == before
+        records.append(dict(source=path.relative_to(ROOT).as_posix(), archive=target.as_posix(),
+                            bytes=path.stat().st_size, sha256=before))
+    members = json.loads((temp / "source_manifest.json").read_text("utf8"))
+    archive = OUT / "tested_source.zip"
+    if not archive.exists():
+        with zipfile.ZipFile(archive, "x", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+            for row in members:
+                path = source / row["path"]
+                assert path.resolve().is_relative_to(source) and sha(path) == row["sha256"]
+                z.write(path, row["path"])
+    with zipfile.ZipFile(archive) as z:
+        assert sorted(z.namelist()) == sorted(r["path"] for r in members)
+        for row in members:
+            data = z.read(row["path"])
+            assert len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"]
+    result = dict(schema="eab2.c3l4fix.h1-baseline-archive.v1", base_commit="cb14522bda2e23e233ba475e0a4aae48d02dd0a0",
+                  run="baseline_full", tool=summary["version"], source_summary_sha256=sha(summary_path),
+                  audit=summary["audit"], complete=True, raw_bytes_preserved=True, source_deleted=False,
+                  files=records, raw_total_bytes=sum(r["bytes"] for r in records),
+                  tested_source=dict(path=archive.as_posix(), bytes=archive.stat().st_size,
+                                     sha256=sha(archive), members=len(members), all_member_hashes_verified=True),
+                  fresh_git_checkout=False)
+    encoded = (json.dumps(result, indent=2) + "\n").encode("utf8")
+    target = OUT / "manifest.json"
+    if target.exists():
+        assert target.read_bytes() == encoded
+    else:
+        with target.open("xb") as out:
+            out.write(encoded)
+    (E / "baseline_full/archive_manifest.json").write_bytes(encoded)
+    print(f"C3L4FIX_BASELINE_ARCHIVE files={len(records)} source_members={len(members)} verified=true")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,92 @@
+"""One-process fast tier plus static gate; no full run, Git writes or process kills.
+
+Run from repository root: python reports/codex/C3L4_fix_evidence/close_fast_runner.py.txt
+Logs, execution journals and continuous progress stay in ignored tmp/close_fast.
+"""
+from collections import Counter
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[3]
+EVIDENCE = ROOT / "reports/codex/C3L4_fix_evidence"
+OUT = EVIDENCE / "tmp/close_fast"
+OUT.mkdir(parents=True, exist_ok=False)
+sys.path.insert(0, str(ROOT / "tools"))
+from h1_module_coverage import audit_module_coverage
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8", newline="\n")
+
+
+def source_hashes():
+    paths = [p for folder in ("src", "tools", "tests", "eab2/src", "eab2/include", "eab2/tests")
+             for p in (ROOT / folder).rglob("*") if p.is_file() and p.suffix in {".py", ".cpp", ".h", ".hpp"}]
+    return {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
+
+
+env = dict(os.environ, TEMP=str(OUT), TMP=str(OUT), PYTHONDONTWRITEBYTECODE="1",
+           PYTHONIOENCODING="utf-8", PYTHONUNBUFFERED="1",
+           PYTHONPATH=os.pathsep.join((str(ROOT / "src"), str(ROOT / "tools"))),
+           H1_EXECUTION=str(OUT / "execution.json"), H1_PROGRESS=str(OUT / "test_progress.json"))
+for name in ("BDDA_DETECT", "BDDA_DETECT_SHADOW", "BDDA_SHADOW_PATH"):
+    env.pop(name, None)
+before = source_hashes()
+write(OUT / "source_before.json", before)
+result = dict(complete=False, scope="single-process default fast tier, current workspace (not fresh Git tree)",
+              full_four_shards_started=False, commands=[])
+
+
+def run(name, command):
+    log = OUT / (name + ".log")
+    row = dict(name=name, command=command, log=str(log), complete=False)
+    result["commands"].append(row)
+    start = time.monotonic()
+    with log.open("wb") as stream:
+        process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT)
+        row["pid"] = process.pid
+        while process.poll() is None:
+            row["seconds"] = time.monotonic() - start
+            write(OUT / "progress.json", result)
+            time.sleep(5)
+    raw = log.read_bytes()
+    row.update(complete=True, exit_code=process.returncode, seconds=time.monotonic() - start,
+               last_line=raw.decode("utf-8", errors="replace").splitlines()[-1],
+               bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
+    write(OUT / "progress.json", result)
+    print(row["last_line"], flush=True)
+    return row
+
+
+py = [sys.executable, "-X", "utf8"]
+fast = run("pytest_fast", py + ["-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "h1_execution_plugin",
+                                 "--basetemp", str(OUT / "pytest")])
+journal = json.loads((OUT / "execution.json").read_text("utf-8"))
+calls = [item["nodeid"] for item in journal["reports"] if item["when"] == "call"]
+coverage = audit_module_coverage(ROOT, [journal])
+write(OUT / "module_coverage.json", coverage)
+result.update(collected=len(journal["collected"]), executed=len(calls),
+              node_multisets_equal=Counter(journal["collected"]) == Counter(calls),
+              skipped=sum(item["outcome"] == "skipped" for item in journal["reports"]),
+              failed=sum(item["outcome"] == "failed" for item in journal["reports"]),
+              module_coverage={key: coverage[key] for key in ("complete", "module_count", "imported_count",
+                  "function_covered_count", "declarative_covered_count", "missing_function_calls",
+                  "missing_module_execution", "missing_imports", "errors")})
+static = run("exact_construction", py + ["tools/check_exact_construction.py"])
+result["source_pre_post_equal"] = before == source_hashes()
+result["source_manifest_sha256"] = hashlib.sha256((OUT / "source_before.json").read_bytes()).hexdigest()
+result["complete"] = True
+good = (fast["exit_code"] == static["exit_code"] == 0 and journal["complete"] and result["node_multisets_equal"]
+        and not result["skipped"] and not result["failed"] and coverage["complete"] and result["source_pre_post_equal"])
+result["status"] = "PASS" if good else "FAIL"
+result["last_line"] = (f"C3L4_CLOSE_FAST status={result['status']} collected={result['collected']} "
+                       f"executed={result['executed']} skipped={result['skipped']} failed={result['failed']}")
+write(EVIDENCE / "close_fast.json", result)
+write(OUT / "progress.json", result)
+print(result["last_line"], flush=True)
+raise SystemExit(0 if good else 1)

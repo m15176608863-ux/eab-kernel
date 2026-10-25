@@ -1,0 +1,68 @@
+"""Append-only raw H1 journals. No source edits, deletions, Git writes or reruns."""
+from pathlib import Path
+import argparse
+import hashlib
+import json
+import shutil
+
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "src/eab").is_dir())
+EVIDENCE = ROOT / "reports/codex/C3L4_evidence"
+ARCHIVE = Path("D:/eab-evidence/reports/codex/C3L4_evidence/20261023_run1")
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run", required=True, choices=("baseline_full", "final_fast", "final_full", "clarified_fast", "clarified_full"))
+    args = parser.parse_args()
+    summary_file = EVIDENCE / args.run / "summary.json"
+    summary = json.loads(summary_file.read_text("utf8"))
+    assert summary["complete"], "Never archive an unfinished run as complete"
+    source = (EVIDENCE / "tmp" / args.run).resolve()
+    archive_root = ARCHIVE if not args.run.startswith("clarified_") else Path("D:/eab-evidence/reports/codex/C3L4_evidence/clarification_20261023")
+    destination = (archive_root / args.run).resolve()
+    assert source.is_relative_to((EVIDENCE / "tmp").resolve())
+    assert destination.is_relative_to(Path("D:/eab-evidence").resolve())
+    files = {source / "collection.txt", source / "source_manifest.json"}
+    if summary.get("static") is not None:
+        files.add(source / "exact_construction.txt")
+    for pattern in ("shard_*.txt", "shard_*_execution.json"):
+        files.update(source.glob(pattern))
+    assert all(p.is_file() for p in files)
+    destination.mkdir(parents=True, exist_ok=True)
+    records = []
+    for path in sorted(files):
+        target = destination / path.name
+        assert path.resolve().is_relative_to(source) and target.resolve().is_relative_to(destination)
+        before = sha(path)
+        if target.exists():
+            assert sha(target) == before, "Refuse to overwrite different archive bytes"
+        else:
+            # Exclusive creation keeps a concurrent owner file from being overwritten.
+            with path.open("rb") as stream, target.open("xb") as output:
+                shutil.copyfileobj(stream, output)
+        assert sha(path) == sha(target) == before
+        records.append(dict(source=path.relative_to(ROOT).as_posix(),
+            archive=target.as_posix(), bytes=path.stat().st_size, sha256=before))
+    result = dict(schema="eab2.c3l4.h1-archive.v1", run=args.run,
+        base_commit="b34c966957b681b45cdb13acaaa09bfc1d6c5fe6", tool="h1-gates-1",
+        source_summary_sha256=sha(summary_file), raw_bytes_preserved=True,
+        source_deleted=False, files=records, total_bytes=sum(row["bytes"] for row in records))
+    encoded = (json.dumps(result, indent=2) + "\n").encode("utf8")
+    external_manifest = destination / "manifest.json"
+    if external_manifest.exists():
+        assert external_manifest.read_bytes() == encoded
+    else:
+        with external_manifest.open("xb") as stream:
+            stream.write(encoded)
+    local_manifest = EVIDENCE / args.run / "archive_manifest.json"
+    local_manifest.write_bytes(encoded)
+    assert local_manifest.read_bytes() == external_manifest.read_bytes()
+    print(f"H1_ARCHIVE run={args.run} files={len(records)} bytes={result['total_bytes']} verified=true")
+
+
+if __name__ == "__main__":
+    main()

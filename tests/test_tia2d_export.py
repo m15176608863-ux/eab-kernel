@@ -188,7 +188,10 @@ def test_geometry_vertex_load_anchor_jets_rebuild_every_non_mu_seed(case_id):
         jet = request["geometry_seed"]
         assert jet["vertex_ids"] == sorted(jet["vertex_ids"])
         assert jet["parameters"] == [request["parameter"]]
-        assert propagate_geometry_seed(request["problem"], jet) == request["seed"]
+        actual, expected = propagate_geometry_seed(request["problem"], jet), request["seed"]
+        assert (actual.dA, actual.db, actual.dc, actual.parameter) == (
+            expected.dA, expected.db, expected.dc, expected.parameter)
+        assert expected.affine_path is not None
 
 
 def test_geometry_jet_propagation_has_teeth_for_shared_vertices_loads_and_anchors():
@@ -206,7 +209,9 @@ def test_geometry_jet_propagation_has_teeth_for_shared_vertices_loads_and_anchor
     pressure = next(request for request in requests if request["parameter"] == "P")
     bad = deepcopy(pressure["geometry_seed"])
     bad["dead"][0][-1][0] = "0/1"
-    assert propagate_geometry_seed(result.problem, bad) != pressure["seed"]
+    actual, expected = propagate_geometry_seed(result.problem, bad), pressure["seed"]
+    assert (actual.dA, actual.db, actual.dc, actual.parameter) != (
+        expected.dA, expected.db, expected.dc, expected.parameter)
 
 
 @pytest.mark.parametrize("name,status", (("farkas_free_dead", "INFEASIBLE"),

@@ -217,7 +217,12 @@ def _g1_seed(problem, spec, parameter):
 def _sensitivity_factory(spec, model, geometry):
     def checked(requests):
         for request in requests:
-            if propagate_geometry_seed(request["problem"], request["geometry_seed"]) != request["seed"]:
+            derived = propagate_geometry_seed(request["problem"], request["geometry_seed"])
+            expected = request["seed"]
+            # The public jet contract is these four fields. Private affine
+            # primitives are retained for K certificates, not seed equality.
+            if (derived.dA, derived.db, derived.dc, derived.parameter) != (
+                    expected.dA, expected.db, expected.dc, expected.parameter):
                 raise ArithmeticError("geometry seed propagation differs from the production LP seed")
         return requests
     def requests(limit_result, critical_result):

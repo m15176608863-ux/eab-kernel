@@ -1,0 +1,32 @@
+"""Append the exact successful final H1 export; no rerun and no source deletion."""
+from pathlib import Path
+import hashlib,json,zipfile
+ROOT=next(p for p in Path(__file__).resolve().parents if (p/"src/eab").is_dir())
+E=ROOT/"reports/codex/C3L4_evidence"
+
+def main():
+    full=json.loads((E/"clarified_full/summary.json").read_text("utf8"))
+    fast=json.loads((E/"clarified_fast/summary.json").read_text("utf8"))
+    assert full["audit"]==fast["audit"]=="GREEN" and full["complete"] and fast["complete"]
+    manifests=[Path(s["temp"])/"source_manifest.json" for s in (fast,full)]
+    assert manifests[0].read_bytes()==manifests[1].read_bytes()
+    rows=json.loads(manifests[1].read_text("utf8")); source=Path(full["source"]).resolve()
+    assert source.is_relative_to((E/"tmp").resolve())
+    out=Path("D:/eab-evidence/reports/codex/C3L4_evidence/clarification_20261023/clarified_full/tested_source.zip")
+    assert out.resolve().is_relative_to(Path("D:/eab-evidence").resolve())
+    out.parent.mkdir(parents=True,exist_ok=True)
+    with zipfile.ZipFile(out,"x",compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+        for row in rows:
+            p=source/row["path"]
+            assert hashlib.sha256(p.read_bytes()).hexdigest()==row["sha256"]
+            z.write(p,row["path"])
+    with zipfile.ZipFile(out) as z:
+        assert sorted(z.namelist())==sorted(r["path"] for r in rows)
+        for row in rows:
+            assert hashlib.sha256(z.read(row["path"])).hexdigest()==row["sha256"]
+    result=dict(schema="eab2.c3l4.tested-source-archive.v1",archive=str(out),archive_bytes=out.stat().st_size,archive_sha256=hashlib.sha256(out.read_bytes()).hexdigest(),members=len(rows),all_members_sha256_verified=True,fast_full_source_equal=True,fresh_git_checkout=False,source_manifest_sha256=hashlib.sha256(manifests[1].read_bytes()).hexdigest(),note="Final clarified test-source byte export; report/evidence may be filled after runs; not a Git fresh tree")
+    (E/"clarification/tested_source_archive.json").write_text(json.dumps(result,indent=2)+"\n",encoding="utf8")
+    print("C3L4_TESTED_SOURCE_ARCHIVE members="+str(len(rows))+" verified=true")
+
+if __name__=="__main__":
+    main()

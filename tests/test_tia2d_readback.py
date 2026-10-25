@@ -227,6 +227,24 @@ def test_reader_rebuilds_implicit_unit_mu_seed_not_only_geometry_parameter():
         reader.verify_case(case)
 
 
+def test_reader_threshold_raw_primitives_and_both_K_sides_are_replayed():
+    """The reader checks K polynomials independently, not only dA or a slope."""
+    from tia2d_export import registered_specs, build_registered_case
+    case = build_registered_case(next(s for s in registered_specs() if s["case_id"] == "g1_unreversed_t2"))
+    result = reader.verify_case(case)
+    assert result["branch_certified_directions"] == 4
+    assert not result.get("legacy_projection_ledger")
+    index = next(i for i, q in enumerate(case["queries"]) if q.get("threshold_query_ref"))
+    call, expected = reader.prepare_query(case, index)
+    value = call()
+    reader.compare_result(expected, value)
+    assert value.branch_certificate is not None
+    # Keep the semantic numbers untouched: erase only the upper witness.
+    case["queries"][index]["result"]["branch_certificate"]["forward"]["upper"]["ray"]["numerators"] = []
+    with pytest.raises(ValueError, match="branch certificate"):
+        reader.verify_case(case)
+
+
 def test_comparison_contract_cannot_downgrade_mathematics_to_information():
     case = build_case(g5(), "comparison-policy")
     case["queries"][0]["comparison_contract"]["rules"]["result.**"] = "informational"

@@ -1,0 +1,378 @@
+{
+  "format": "eab2.c3l4.certificate-mutations.v1",
+  "complete": true,
+  "source_sha256": {
+    "tools/eab2_c3l4_diff.py": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+    "tools/eab2_c3l4_certificate_mutations.py": "1928ffa2d637e7a83d6e91e6da3df91b6fa04eb86d29aaf52fb46e3889ed528c",
+    "tests/test_eab2_c3l4_harness.py": "710a9c0b278b2a1722a74cf7150a62bf822aecad745bdbfbe6951f6d4a6b0e6b",
+    "tools/eab2_c3l1_diff.py": "1e0c5b6ed4a03ce58140cbadf7a00f944390df427a8e2f1a2e9d5a592086ae9e",
+    "tools/eab2_c3l3_diff.py": "5f987f5a774fafe4def1eaf8c9313c1baf92b21962a44be96ef4a7ebde3d3015",
+    "src/eab/kernel2d/sensitivity.py": "94896d1db3742aba8e707a9534388b87596662a0deb4d107539fc8c9b67d8f18",
+    "src/eab/kernel2d/critical.py": "e6fe3c9881f57075cb20bff6893b464988fee8273423c8b8c435db4ee718b9e0",
+    "tests/data/eab2_c3l4_threshold_basis_witness.json": "d30b27ccb5a0c984297961a9fd3371ecdab295f8de7fae4b122cdd5ec48896df"
+  },
+  "source_pre_post_equal": true,
+  "independent_checker_not_production_solver": true,
+  "cases": [
+    {
+      "name": "baseline",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "replacements": [],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_alternate_threshold_basis_labels_are_verified_and_recorded",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_declared_threshold_labels_preserve_caller_contract",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[duplicate-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[extra-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[missing-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[polynomial-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[sturm-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_non_threshold_tied_labels_remain_strict"
+      ],
+      "expected_semantic_failure": null,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\baseline\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\baseline\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_alternate_threshold_basis_labels_are_verified_and_recorded",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_declared_threshold_labels_preserve_caller_contract",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[duplicate-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[extra-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[missing-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[polynomial-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[sturm-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_non_threshold_tied_labels_remain_strict"
+      ],
+      "exit_code": 0,
+      "last_line": "10 passed in 2.19s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "baseline/pytest.log"
+    },
+    {
+      "name": "skip_python_sensitivity_certificate",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "6cdd553d3c728299064302ac15e6431ece0a8c3f2e3446971c5d6d605d20c7bf",
+      "replacements": [
+        {
+          "before": "    verify_sensitivity(case[\"model\"], case[\"contacts\"], expected_base, query, expected_channel(query))",
+          "after": "    # Mutant: trust the expected-side sensitivity certificate."
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-python]"
+      ],
+      "expected_semantic_failure": "DID NOT RAISE",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_python_sensitivity_certificate\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_python_sensitivity_certificate\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-python]"
+      ],
+      "exit_code": 1,
+      "last_line": "1 failed in 0.24s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "skip_python_sensitivity_certificate/pytest.log"
+    },
+    {
+      "name": "skip_cpp_sensitivity_certificate",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "34da5d5f5757c6dd67e4560b735d3fd696f5d9c90a3d76e61282d27629ed8945",
+      "replacements": [
+        {
+          "before": "    problem, seed = verify_sensitivity(case[\"model\"], case[\"contacts\"], base, query, channel)",
+          "after": "    problem, seed = None, None  # Mutant: trust the actual-side certificate."
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]"
+      ],
+      "expected_semantic_failure": "DID NOT RAISE",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_cpp_sensitivity_certificate\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_cpp_sensitivity_certificate\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]"
+      ],
+      "exit_code": 1,
+      "last_line": "1 failed in 0.24s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "skip_cpp_sensitivity_certificate/pytest.log"
+    },
+    {
+      "name": "set_dedup_hides_duplicate_crossing",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "10a2a6dd034414faf8c5c4e6df37db0579120b254c47ea36783e7a817449e567",
+      "replacements": [
+        {
+          "before": "require(len(result[\"tied_labels\"]) == len(label_set(result[\"tied_labels\"])) and\n            label_set(result[\"tied_labels\"]) == label_set(expected_labels),",
+          "after": "require(label_set(result[\"tied_labels\"]) == label_set(expected_labels),"
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[duplicate-cpp]"
+      ],
+      "expected_semantic_failure": "DID NOT RAISE",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\set_dedup_hides_duplicate_crossing\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\set_dedup_hides_duplicate_crossing\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[duplicate-cpp]"
+      ],
+      "exit_code": 1,
+      "last_line": "1 failed in 0.26s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "set_dedup_hides_duplicate_crossing/pytest.log"
+    },
+    {
+      "name": "omit_crossing_label_exactness",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "81342a8f90b00e2fe139d20eea2c59a7e7c1f0e03534ca3ee4c51ac43175c6ae",
+      "replacements": [
+        {
+          "before": "label_set(result[\"tied_labels\"]) == label_set(expected_labels),",
+          "after": "True,  # Mutant: do not require exactly all crossing labels."
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[extra-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[missing-cpp]"
+      ],
+      "expected_semantic_failure": "DID NOT RAISE",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\omit_crossing_label_exactness\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\omit_crossing_label_exactness\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[extra-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[missing-cpp]"
+      ],
+      "exit_code": 1,
+      "last_line": "2 failed in 0.38s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "omit_crossing_label_exactness/pytest.log"
+    },
+    {
+      "name": "omit_component_slope_equations",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "88f7b377e536cd2dfef85f2aee3e92ca55be13caa39cfd2b74cf20d84a62ea6e",
+      "replacements": [
+        {
+          "before": "    require(result[\"implicit_components\"] == components, \"implicit components/phi derivatives\")",
+          "after": "    # Mutant: omit the full component/phi/slope equality."
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]"
+      ],
+      "expected_semantic_failure": "DID NOT RAISE",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\omit_component_slope_equations\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\omit_component_slope_equations\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]"
+      ],
+      "exit_code": 1,
+      "last_line": "1 failed in 0.25s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "omit_component_slope_equations/pytest.log"
+    },
+    {
+      "name": "skip_python_critical_certificate",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "a7747a17dab2693202df346b2b8de335e5a9afe873b575d92ba83848ddc5da32",
+      "replacements": [
+        {
+          "before": "        verify_critical(case[\"model\"], case[\"contacts\"], expected_base)",
+          "after": "        # Mutant: trust the expected-side LP/polynomial/Sturm proof."
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[polynomial-python]"
+      ],
+      "expected_semantic_failure": "DID NOT RAISE",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_python_critical_certificate\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_python_critical_certificate\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[polynomial-python]"
+      ],
+      "exit_code": 1,
+      "last_line": "1 failed in 0.21s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "skip_python_critical_certificate/pytest.log"
+    },
+    {
+      "name": "skip_cpp_critical_certificate",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "ee537949f4184d8f288a86027b08515413658a993f559c2bf8bdc3a6c42e6cd5",
+      "replacements": [
+        {
+          "before": "        verify_critical(case[\"model\"], case[\"contacts\"], base)",
+          "after": "        # Mutant: trust the actual-side LP/polynomial/Sturm proof."
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[sturm-cpp]"
+      ],
+      "expected_semantic_failure": "DID NOT RAISE",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_cpp_critical_certificate\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\skip_cpp_critical_certificate\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[sturm-cpp]"
+      ],
+      "exit_code": 1,
+      "last_line": "1 failed in 0.21s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "skip_cpp_critical_certificate/pytest.log"
+    },
+    {
+      "name": "ignore_non_threshold_tied_labels",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "84ae64060fdbf13169efcaeb78233f5a694f3c00d33b9e7ca6c7fb07d936e621",
+      "replacements": [
+        {
+          "before": "basis_dependent = kind == \"critical\" and expected[\"method\"] == actual[\"method\"] == \"implicit_certificate\"",
+          "after": "basis_dependent = True  # Mutant: waive ties for every result family."
+        }
+      ],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_non_threshold_tied_labels_remain_strict"
+      ],
+      "expected_semantic_failure": "AssertionError",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\ignore_non_threshold_tied_labels\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\ignore_non_threshold_tied_labels\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_non_threshold_tied_labels_remain_strict"
+      ],
+      "exit_code": 1,
+      "last_line": "1 failed in 0.14s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "ignore_non_threshold_tied_labels/pytest.log"
+    },
+    {
+      "name": "restored_baseline",
+      "source": "tools/eab2_c3l4_diff.py",
+      "source_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "mutant_sha256": "d434800c8c83da5608461223745262544060e6c9117e08b92276da8cab90d9c7",
+      "replacements": [],
+      "gates": [
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_alternate_threshold_basis_labels_are_verified_and_recorded",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_declared_threshold_labels_preserve_caller_contract",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[duplicate-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[extra-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[missing-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[polynomial-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[sturm-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_non_threshold_tied_labels_remain_strict"
+      ],
+      "expected_semantic_failure": null,
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\isolated_checker_driver.py",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\restored_baseline\\checker.py",
+        "D:\\eab-wt\\cx-c0\\tools\\eab2_c3l4_diff.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\tmp\\c3l4_certificate_mutations_r2\\restored_baseline\\tmp\\pytest",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_alternate_threshold_basis_labels_are_verified_and_recorded",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_declared_threshold_labels_preserve_caller_contract",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[component_slope-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[duplicate-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[extra-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rejects_false_labels_and_slopes[missing-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[polynomial-python]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_each_threshold_side_rechecks_full_critical_proof[sturm-cpp]",
+        "tests/test_eab2_c3l4_harness.py::test_c3l4_non_threshold_tied_labels_remain_strict"
+      ],
+      "exit_code": 0,
+      "last_line": "10 passed in 2.20s",
+      "source_pre_post_equal": true,
+      "semantic_outcome_verified": true,
+      "log": "restored_baseline/pytest.log"
+    }
+  ],
+  "seconds": 11.18733559991233,
+  "last_line": "C3L4_CERTIFICATE_MUTATIONS_OK baseline=2 rejected=8 semantic_failures=9"
+}

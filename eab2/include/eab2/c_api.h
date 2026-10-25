@@ -60,6 +60,7 @@ extern "C" {
 #define EAB2_CAP_RHO UINT64_C(65536)
 #define EAB2_CAP_SE2 UINT64_C(131072)
 #define EAB2_CAP_LP2 UINT64_C(262144)
+#define EAB2_CAP_SENSITIVITY2 UINT64_C(524288)
 #define EAB2_HANDLE_CONTEXT UINT32_C(1)
 #define EAB2_HANDLE_BODY2 UINT32_C(2)
 #define EAB2_HANDLE_ENTRANCE2 UINT32_C(3)
@@ -210,6 +211,8 @@ typedef struct eab2_string { const char* data; uint64_t length; } eab2_string;
 #define EAB2_PROFILE1 UINT32_C(1)
 #define EAB2_ASSEMBLY_COMPLETE UINT32_C(1)
 #define EAB2_ASSEMBLY_EXPLICIT_PAIRS UINT32_C(2)
+/* EAB2_ASSEMBLY_COMPLETE must be combined with EAB2_ASSEMBLY_EXPLICIT_PAIRS
+   (flags = 3); flags = 1 alone is rejected as INVALID_INPUT. */
 /* Mask bit 0=x, bit 1=y, bit 2=rotation; 1 means free. Both points explicit. */
 typedef struct eab2_assembly_body2 {
     uint32_t struct_size; uint32_t abi_version;
@@ -284,6 +287,50 @@ EAB2_API eab2_call_status eab2_solve_limit2(eab2_context context,
     eab2_contact_set2 contacts, const eab2_limit2_input* input, eab2_exact_result* output);
 EAB2_API eab2_call_status eab2_critical_parameter(eab2_context context,
     eab2_contact_set2 contacts, const eab2_critical_parameter_input* input, eab2_exact_result* output);
+
+/* C3-L4: exact seed channels, bound to a retained solve_limit2 or
+ * critical_parameter result token. No primal/critical re-solve occurs.
+ * Strings have explicit byte lengths. Exact values are reduced n/d, d>0.
+ * Every stride must equal sizeof(the element), not merely be large enough. */
+typedef struct eab2_string_array {
+    uint64_t value_count; uint64_t value_stride; const eab2_string* values;
+} eab2_string_array;
+typedef struct eab2_sensitivity_vertex2 {
+    eab2_string body_id; uint64_t vertex_id;
+} eab2_sensitivity_vertex2;
+typedef struct eab2_sensitivity_channel2 {
+    uint32_t struct_size; uint32_t abi_version;
+    eab2_string parameter;
+    uint32_t positive_direction_valid; uint32_t negative_direction_valid;
+    eab2_string_array validity_conditions; eab2_string_array tied_labels;
+} eab2_sensitivity_channel2;
+typedef struct eab2_sensitivity2_input {
+    uint32_t struct_size; uint32_t abi_version;
+    uint64_t parameter_count; uint64_t output_count; uint64_t channel_count;
+    uint64_t body_count; uint64_t vertex_count;
+    uint64_t channel_stride; const eab2_sensitivity_channel2* channels;
+    eab2_string_array body_ids;
+    uint64_t vertex_stride; const eab2_sensitivity_vertex2* vertex_ids;
+    eab2_string_array vertices; eab2_string_array dead; eab2_string_array live;
+    eab2_string_array dof_anchor; eab2_string_array mu;
+} eab2_sensitivity2_input;
+typedef struct eab2_c3l4_abi_info {
+    uint32_t struct_size; uint32_t abi_version;
+    uint32_t string_array_size; uint32_t sensitivity_vertex2_size;
+    uint32_t sensitivity_channel2_size; uint32_t sensitivity2_input_size;
+    uint32_t reserved; uint32_t reserved2;
+} eab2_c3l4_abi_info;
+/* v1: P>=1, output_count=1, channel_count=P; distinct parameter names.
+ * body_ids sorted by UTF-8 body ID, vertex_ids by (body ID, original ID),
+ * both exactly equal the retained snapshot. Fixed row-major seed shapes:
+ * vertices[P][V][2], dead/live[P][B][3], dof_anchor[P][B][2], mu[P].
+ * Caller tied_labels are strings; derived critical labels stay structured.
+ * JSON has explicit counts and a [output][channel] row-major Jacobian;
+ * unavailable/non-smooth Jacobian elements are null, not fabricated zero.
+ * Failure leaves output unchanged. Result/context destruction owns cleanup. */
+EAB2_API eab2_call_status eab2_get_c3l4_abi_info(eab2_c3l4_abi_info* info);
+EAB2_API eab2_call_status eab2_evaluate_sensitivity2(eab2_context context,
+    eab2_result base_result, const eab2_sensitivity2_input* input, eab2_exact_result* output);
 
 #ifdef __cplusplus
 }

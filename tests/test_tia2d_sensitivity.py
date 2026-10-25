@@ -150,16 +150,25 @@ def test_g1_threshold_derivative_uses_the_attained_side_certificate(
                                   mu_max=1.0, max_steps=20)
     seed = _g1_seed(critical.threshold_certificate.problem, Q(1, 4), height, parameter)
     derivative = evaluate_sensitivity2(critical, seed, parameter=parameter, tied_labels=("shared",))
-    assert derivative.method == "implicit_certificate"
-    assert derivative.selected_piece[0] == kind
+    assert derivative.method == "branch_certificate"
     assert derivative.differentiability == "smooth"
     assert derivative.left_derivative == derivative.right_derivative == expected
-    assert derivative.tied_labels[0] == "shared"
-    assert derivative.implicit_components
-    assert all(slope == expected and slope == -dp / dmu
-               for label, slope, dmu, dp, index in derivative.implicit_components)
-    if orientation in ("koureas", "unreversed"):
-        assert len(derivative.implicit_components) >= 2
+    assert "shared" not in derivative.tied_labels  # Caller text is not a certified constraint label.
+    for direction, value in (("forward", expected), ("reverse", -expected)):
+        certificate = derivative.branch_certificate[direction]
+        assert certificate["status"] == "certified" and Q(certificate["s"]) == value
+        assert certificate["lower"] and certificate["upper"]["point"] and certificate["upper"]["ray"]
+        for branch in certificate["candidate_branches"]:
+            for item in branch["components"]:
+                assert Q(item["s"]) == value
+                if branch.get("singular", False):
+                    # A singular acquired basis reports the exact leading
+                    # polynomial of the component instead of an invented
+                    # first-order quotient; the certified slope is its root.
+                    coefficients = [Q(v) for v in item["leading_polynomial"]]
+                    assert sum(a * value ** k for k, a in enumerate(coefficients)) == 0
+                else:
+                    assert value == -Q(item["partial_parameter"]) / Q(item["partial_mu"])
 
 
 def _two_crossings(polynomial=(-Q(1), Q(1))):
@@ -179,27 +188,26 @@ def _two_crossings(polynomial=(-Q(1), Q(1))):
     return critical, seed, mu_seed
 
 
-def test_competing_threshold_components_are_not_replaced_by_first_label():
+def test_matrix_only_competing_threshold_components_are_not_a_branch_proof():
     critical, seed, mu_seed = _two_crossings()
     derivative = evaluate_sensitivity2(critical, seed, parameter="p", threshold_mu_seed=mu_seed)
-    assert derivative.differentiability == "tie"
-    assert derivative.reason == "competing_threshold_slopes"
-    assert derivative.tied_labels == ("first", "second")
-    assert derivative.piece_jacobians == (("first", Q(1)), ("second", Q(2)))
+    assert derivative.differentiability == "unresolved"
+    assert derivative.reason == "threshold_affine_primitives_required"
+    assert derivative.quality != "exact_jet"
     assert derivative.directional_derivative is None
 
 
-def test_zero_implicit_denominator_and_singular_critical_basis_have_no_slope():
+def test_matrix_only_zero_implicit_denominator_and_singular_basis_have_no_slope():
     critical, seed, mu_seed = _two_crossings((-Q(1), Q(3), -Q(3), Q(1)))
     mu_seed = replace(mu_seed, dA=((Q(0), Q(0), Q(0)), (Q(0), Q(0), Q(0))))
     derivative = evaluate_sensitivity2(critical, seed, parameter="p", threshold_mu_seed=mu_seed)
-    assert derivative.differentiability == "singular"
-    assert derivative.reason == "zero_implicit_denominator"
+    assert derivative.differentiability == "unresolved"
+    assert derivative.reason == "threshold_affine_primitives_required"
     assert derivative.directional_derivative is None
     branch = replace(critical.threshold_proof.upper_basis, determinant=(-Q(1), Q(1)))
     critical = replace(critical, threshold_proof=replace(critical.threshold_proof, upper_basis=branch))
     derivative = evaluate_sensitivity2(critical, seed, parameter="p", threshold_mu_seed=mu_seed)
-    assert derivative.reason == "critical_basis_singular"
+    assert derivative.reason == "threshold_affine_primitives_required"
 
 
 def test_threshold_slope_needs_exact_root_and_valid_exact_seed():

@@ -1,0 +1,1347 @@
+{
+  "status": "PASS",
+  "consumer": "independent_stdlib_ctypes",
+  "python_isolated": true,
+  "imports_contract": "No src/eab, pybind, sibling or differential-harness imports",
+  "dll": "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\consumer_standalone\\eab2.dll",
+  "dll_sha256": "b08c5558572831b52f17a60253e2ce1ede450a31eed800d8a5b3b053124c75df",
+  "header_sha256": "6d70c524f1914302e06363806032c4139e884967f7377c5369c9ce0b4c1b1993",
+  "build_identity": "eab2-c3l4;compiler=MSVC-19.44.35227.0;toolset=14.44;isa=x64-SSE2;boost=1.86.0-et_off;fp=precise-contract_off;crt=MD;cxx=20",
+  "capability_mask": 581501,
+  "structures": {
+    "eab2_context": 32,
+    "eab2_context_options": 16,
+    "eab2_error_info": 72,
+    "eab2_body2_input": 40,
+    "eab2_entrance2_options": 16,
+    "eab2_query2_input": 32,
+    "eab2_query2_item": 16,
+    "eab2_query2_output": 40,
+    "eab2_exact_result": 64,
+    "eab2_point2_bits": 16,
+    "eab2_assembly_body2": 96,
+    "eab2_assembly2_input": 64,
+    "eab2_pair2": 16,
+    "eab2_lock2_input": 40,
+    "eab2_string": 16,
+    "eab2_body_load2": 48,
+    "eab2_limit2_input": 40,
+    "eab2_critical_parameter_input": 56,
+    "eab2_string_array": 24,
+    "eab2_sensitivity_vertex2": 24,
+    "eab2_sensitivity_channel2": 80,
+    "eab2_sensitivity2_input": 224
+  },
+  "cases": [
+    {
+      "case_id": "g1_unreversed_t1",
+      "status": "PASS",
+      "pair_queries": 10,
+      "chain_checks": 7,
+      "sensitivity_queries": 3,
+      "limit_status": "OPTIMAL",
+      "exact_value": "0/1",
+      "exact_threshold": "1/32",
+      "attained": false,
+      "entrance": [
+        {
+          "a": "block_1",
+          "b": "block_2",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_1",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_4",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_5",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_3",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_2",
+          "b": "block_4",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_5",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_3",
+          "b": "block_4",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_3",
+          "b": "block_5",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_4",
+          "b": "block_5",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        }
+      ],
+      "chain": [
+        {
+          "kind": "assembly",
+          "observable": "zero_window_contact_set",
+          "moving_body": null,
+          "mathematical_status": "RESOLVED",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "first_order",
+          "observable": "first_order_normal_cone",
+          "moving_body": null,
+          "mathematical_status": "NONZERO_CONE",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "limit",
+          "observable": "live_load_multiplier",
+          "moving_body": null,
+          "mathematical_status": "OPTIMAL",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_3",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_4",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "critical",
+          "observable": "friction_unboundedness_threshold",
+          "moving_body": null,
+          "mathematical_status": "CERTIFIED",
+          "refinement": null,
+          "status": "PASS"
+        }
+      ],
+      "sensitivity": [
+        {
+          "observable": "d_live_load_multiplier_d_mu",
+          "differentiability": "singular",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": null,
+            "D_minus": null
+          },
+          "derivative": null,
+          "reason": "possibly_discontinuous",
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_mu_crit_d_t",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "1/1",
+            "D_minus": "-1/1"
+          },
+          "derivative": "1/1",
+          "reason": null,
+          "tied_labels": [
+            [
+              [
+                "block_4",
+                "block_5",
+                [
+                  "191/64",
+                  "1/1"
+                ],
+                "block_4",
+                [
+                  1,
+                  2
+                ]
+              ],
+              1
+            ],
+            [
+              [
+                "block_4",
+                "block_5",
+                [
+                  "193/64",
+                  "0/1"
+                ],
+                "block_4",
+                [
+                  1,
+                  2
+                ]
+              ],
+              1
+            ]
+          ],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "shared_interface_parameter",
+            "nonnegative_t",
+            "positive_h",
+            "临界证书基非奇异",
+            "所列越零分量及方向保持有效"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_mu_crit_d_h",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "0/1",
+            "D_minus": "0/1"
+          },
+          "derivative": "0/1",
+          "reason": null,
+          "tied_labels": [
+            [
+              [
+                "block_4",
+                "block_5",
+                [
+                  "191/64",
+                  "1/1"
+                ],
+                "block_4",
+                [
+                  1,
+                  2
+                ]
+              ],
+              1
+            ],
+            [
+              [
+                "block_4",
+                "block_5",
+                [
+                  "193/64",
+                  "0/1"
+                ],
+                "block_4",
+                [
+                  1,
+                  2
+                ]
+              ],
+              1
+            ]
+          ],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "shared_interface_parameter",
+            "nonnegative_t",
+            "positive_h",
+            "临界证书基非奇异",
+            "所列越零分量及方向保持有效"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "seconds": 0.7276530000381172
+    },
+    {
+      "case_id": "g1_slender",
+      "status": "PASS",
+      "pair_queries": 10,
+      "chain_checks": 7,
+      "sensitivity_queries": 3,
+      "limit_status": "UNBOUNDED",
+      "exact_value": null,
+      "exact_threshold": "15/128",
+      "attained": true,
+      "entrance": [
+        {
+          "a": "block_1",
+          "b": "block_2",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_1",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_4",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_5",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_3",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_2",
+          "b": "block_4",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_5",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_3",
+          "b": "block_4",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_3",
+          "b": "block_5",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_4",
+          "b": "block_5",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        }
+      ],
+      "chain": [
+        {
+          "kind": "assembly",
+          "observable": "zero_window_contact_set",
+          "moving_body": null,
+          "mathematical_status": "RESOLVED",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "first_order",
+          "observable": "first_order_normal_cone",
+          "moving_body": null,
+          "mathematical_status": "NONZERO_CONE",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "limit",
+          "observable": "live_load_multiplier",
+          "moving_body": null,
+          "mathematical_status": "UNBOUNDED",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_3",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_4",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "critical",
+          "observable": "friction_unboundedness_threshold",
+          "moving_body": null,
+          "mathematical_status": "CERTIFIED",
+          "refinement": null,
+          "status": "PASS"
+        }
+      ],
+      "sensitivity": [
+        {
+          "observable": "d_live_load_multiplier_d_mu",
+          "differentiability": "unresolved",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": null,
+            "D_minus": null
+          },
+          "derivative": null,
+          "reason": "finite_optimum_required",
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_mu_crit_d_t",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "15/16",
+            "D_minus": "-15/16"
+          },
+          "derivative": "15/16",
+          "reason": null,
+          "tied_labels": [
+            [
+              [
+                "block_1",
+                "block_2",
+                [
+                  "-97/32",
+                  "1/4"
+                ],
+                "block_1",
+                [
+                  1,
+                  2
+                ]
+              ],
+              1
+            ],
+            [
+              [
+                "block_3",
+                "block_4",
+                [
+                  "31/32",
+                  "0/1"
+                ],
+                "block_3",
+                [
+                  1,
+                  2
+                ]
+              ],
+              -1
+            ]
+          ],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "shared_interface_parameter",
+            "nonnegative_t",
+            "positive_h",
+            "临界证书基非奇异",
+            "所列越零分量及方向保持有效"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_mu_crit_d_h",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "-17/32",
+            "D_minus": "17/32"
+          },
+          "derivative": "-17/32",
+          "reason": null,
+          "tied_labels": [
+            [
+              [
+                "block_1",
+                "block_2",
+                [
+                  "-97/32",
+                  "1/4"
+                ],
+                "block_1",
+                [
+                  1,
+                  2
+                ]
+              ],
+              1
+            ],
+            [
+              [
+                "block_3",
+                "block_4",
+                [
+                  "31/32",
+                  "0/1"
+                ],
+                "block_3",
+                [
+                  1,
+                  2
+                ]
+              ],
+              -1
+            ]
+          ],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "shared_interface_parameter",
+            "nonnegative_t",
+            "positive_h",
+            "临界证书基非奇异",
+            "所列越零分量及方向保持有效"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "seconds": 0.4075688999146223
+    },
+    {
+      "case_id": "g5_n3_mu0",
+      "status": "PASS",
+      "pair_queries": 10,
+      "chain_checks": 10,
+      "sensitivity_queries": 3,
+      "limit_status": "OPTIMAL",
+      "exact_value": "0/1",
+      "exact_threshold": null,
+      "attained": null,
+      "entrance": [
+        {
+          "a": "left_boundary",
+          "b": "block_1",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_2",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_2",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_1",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_3",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_2",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_3",
+          "b": "right_plate",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        }
+      ],
+      "chain": [
+        {
+          "kind": "assembly",
+          "observable": "zero_window_contact_set",
+          "moving_body": null,
+          "mathematical_status": "RESOLVED",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "first_order",
+          "observable": "first_order_normal_cone",
+          "moving_body": null,
+          "mathematical_status": "NONZERO_CONE",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "limit",
+          "observable": "live_load_multiplier",
+          "moving_body": null,
+          "mathematical_status": "OPTIMAL",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_1",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_3",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "right_plate",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "critical",
+          "observable": "friction_unboundedness_threshold",
+          "moving_body": null,
+          "mathematical_status": "CERTIFIED",
+          "refinement": null,
+          "status": "PASS"
+        }
+      ],
+      "sensitivity": [
+        {
+          "observable": "d_live_load_multiplier_d_mu",
+          "differentiability": "singular",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": null,
+            "D_minus": null
+          },
+          "derivative": null,
+          "reason": "possibly_discontinuous",
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_P",
+          "differentiability": "singular",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": null,
+            "D_minus": null
+          },
+          "derivative": null,
+          "reason": "possibly_discontinuous",
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_h",
+          "differentiability": "singular",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": null,
+            "D_minus": null
+          },
+          "derivative": null,
+          "reason": "possibly_discontinuous",
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "seconds": 0.03677489992696792
+    },
+    {
+      "case_id": "g5_n3_mu1",
+      "status": "PASS",
+      "pair_queries": 10,
+      "chain_checks": 8,
+      "sensitivity_queries": 3,
+      "limit_status": "OPTIMAL",
+      "exact_value": "1/2",
+      "exact_threshold": null,
+      "attained": null,
+      "entrance": [
+        {
+          "a": "left_boundary",
+          "b": "block_1",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_2",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_2",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_1",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_3",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_2",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_3",
+          "b": "right_plate",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        }
+      ],
+      "chain": [
+        {
+          "kind": "assembly",
+          "observable": "zero_window_contact_set",
+          "moving_body": null,
+          "mathematical_status": "RESOLVED",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "first_order",
+          "observable": "first_order_normal_cone",
+          "moving_body": null,
+          "mathematical_status": "NONZERO_CONE",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "limit",
+          "observable": "live_load_multiplier",
+          "moving_body": null,
+          "mathematical_status": "OPTIMAL",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_1",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_3",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "right_plate",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "critical",
+          "observable": "friction_unboundedness_threshold",
+          "moving_body": null,
+          "mathematical_status": "CERTIFIED",
+          "refinement": null,
+          "status": "PASS"
+        }
+      ],
+      "sensitivity": [
+        {
+          "observable": "d_live_load_multiplier_d_mu",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "2/1",
+            "D_minus": "-2/1"
+          },
+          "derivative": "2/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_P",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "1/2",
+            "D_minus": "-1/2"
+          },
+          "derivative": "1/2",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_h",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "0/1",
+            "D_minus": "0/1"
+          },
+          "derivative": "0/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "seconds": 0.19574540003668517
+    },
+    {
+      "case_id": "g5_n3_mu2",
+      "status": "PASS",
+      "pair_queries": 10,
+      "chain_checks": 8,
+      "sensitivity_queries": 3,
+      "limit_status": "OPTIMAL",
+      "exact_value": "2/1",
+      "exact_threshold": null,
+      "attained": null,
+      "entrance": [
+        {
+          "a": "left_boundary",
+          "b": "block_1",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_2",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_2",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_1",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_3",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_2",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_3",
+          "b": "right_plate",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        }
+      ],
+      "chain": [
+        {
+          "kind": "assembly",
+          "observable": "zero_window_contact_set",
+          "moving_body": null,
+          "mathematical_status": "RESOLVED",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "first_order",
+          "observable": "first_order_normal_cone",
+          "moving_body": null,
+          "mathematical_status": "NONZERO_CONE",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "limit",
+          "observable": "live_load_multiplier",
+          "moving_body": null,
+          "mathematical_status": "OPTIMAL",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_1",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_3",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "right_plate",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "critical",
+          "observable": "friction_unboundedness_threshold",
+          "moving_body": null,
+          "mathematical_status": "CERTIFIED",
+          "refinement": null,
+          "status": "PASS"
+        }
+      ],
+      "sensitivity": [
+        {
+          "observable": "d_live_load_multiplier_d_mu",
+          "differentiability": "one_sided",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "0/1",
+            "D_minus": "-2/1"
+          },
+          "derivative": "0/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_P",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "2/1",
+            "D_minus": "-2/1"
+          },
+          "derivative": "2/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_h",
+          "differentiability": "one_sided",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "0/1",
+            "D_minus": "-2/1"
+          },
+          "derivative": "0/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "seconds": 0.17602190002799034
+    },
+    {
+      "case_id": "g5_n3_mu3",
+      "status": "PASS",
+      "pair_queries": 10,
+      "chain_checks": 8,
+      "sensitivity_queries": 3,
+      "limit_status": "OPTIMAL",
+      "exact_value": "2/1",
+      "exact_threshold": null,
+      "attained": null,
+      "entrance": [
+        {
+          "a": "left_boundary",
+          "b": "block_1",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_2",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "left_boundary",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "block_2",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_1",
+          "b": "block_3",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_1",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_2",
+          "b": "block_3",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        },
+        {
+          "a": "block_2",
+          "b": "right_plate",
+          "body_state": "OUTSIDE",
+          "topology_state": "OUTSIDE"
+        },
+        {
+          "a": "block_3",
+          "b": "right_plate",
+          "body_state": "CONTACT",
+          "topology_state": "BOUNDARY"
+        }
+      ],
+      "chain": [
+        {
+          "kind": "assembly",
+          "observable": "zero_window_contact_set",
+          "moving_body": null,
+          "mathematical_status": "RESOLVED",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "first_order",
+          "observable": "first_order_normal_cone",
+          "moving_body": null,
+          "mathematical_status": "NONZERO_CONE",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "limit",
+          "observable": "live_load_multiplier",
+          "moving_body": null,
+          "mathematical_status": "OPTIMAL",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_1",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_2",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "block_3",
+          "mathematical_status": "NOT_SEPARABLE_TRANSLATION",
+          "refinement": "SEAM_SLIDING",
+          "status": "PASS"
+        },
+        {
+          "kind": "lock",
+          "observable": "local_translation_separation",
+          "moving_body": "right_plate",
+          "mathematical_status": "REMOVABLE_TRANSLATION",
+          "refinement": null,
+          "status": "PASS"
+        },
+        {
+          "kind": "critical",
+          "observable": "friction_unboundedness_threshold",
+          "moving_body": null,
+          "mathematical_status": "CERTIFIED",
+          "refinement": null,
+          "status": "PASS"
+        }
+      ],
+      "sensitivity": [
+        {
+          "observable": "d_live_load_multiplier_d_mu",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "0/1",
+            "D_minus": "0/1"
+          },
+          "derivative": "0/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_P",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "2/1",
+            "D_minus": "-2/1"
+          },
+          "derivative": "2/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        },
+        {
+          "observable": "d_live_load_multiplier_d_h",
+          "differentiability": "smooth",
+          "quality": "exact_jet",
+          "directional_values": {
+            "D_plus": "2/1",
+            "D_minus": "-2/1"
+          },
+          "derivative": "2/1",
+          "reason": null,
+          "tied_labels": [],
+          "validity_conditions": [
+            "L1接触骨架不变",
+            "axial_only_plate",
+            "frozen_reference_points"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "seconds": 0.20982610003557056
+    }
+  ],
+  "sensitivity_queries": 18,
+  "mismatch": 0
+}

@@ -93,7 +93,7 @@ def test_t1b_upper_tooth_hand_wrench_threshold_and_implicit_derivatives(tilt, am
                                   ("amplitude", -2 / g.height * (1 - 2 * h / ell * slope))):
         seed = g1_morphology_seed(c.threshold_certificate.problem, g, parameter)
         answer = evaluate_sensitivity2(c, seed, parameter=parameter)
-        assert answer.method == "implicit_certificate"
+        assert answer.method == "branch_certificate"
         assert answer.differentiability == "smooth"
         assert answer.left_derivative == answer.right_derivative == derivative
 

@@ -1,0 +1,63 @@
+"""Publish one authoritative copy of new results after verified completion.
+Old changed delivery bytes were independently verified in prior_delivery.zip.
+"""
+from pathlib import Path
+import gzip, hashlib, json, shutil, zipfile
+ROOT=next(p for p in Path(__file__).resolve().parents if (p/"src/eab").is_dir())
+E=ROOT/"reports/codex/C3L4_evidence"
+RAW=E/"tmp/clarified_final_r2"
+CLOSE=E/"tmp/clarified_closeout_1"
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+def main():
+    intake=json.loads((E/"clarification/intake.json").read_text("utf8"))
+    zpath=Path(intake["rollback_archive"])
+    assert sha(zpath.read_bytes())==intake["rollback_archive_sha256"]
+    for name in ("cpp_execution.json","completed_layers_reuse.json"):
+        run=json.loads((E/"clarification"/name).read_text("utf8"))
+        assert run["complete"] and run["source_pre_post_equal"]
+    closeout=json.loads((E/"clarification/closeout_execution.json").read_text("utf8"))
+    assert closeout["runs"][0]["name"]=="l4" and closeout["runs"][0]["complete"] and closeout["runs"][0]["exit_code"]==0
+    old=json.loads((E/"pack_manifest.json").read_text("utf8"))
+    replacements={}
+    for name in ("c0","c1","lp","l1","l3","l4"):
+        for ext in ("json","log"):
+            replacements["differential/"+name+"."+ext+".gz"]=name+"."+ext
+    replacements.update({"checks/build_ctest.log.gz":"build_ctest.log", "consumer.json":"consumer.json", "consumer_isolation.json":"consumer_isolation.json", "consumer_isolation.log.gz":"consumer_isolation.log", "release_abi.json":"release_abi.json", "checks/build_audit.json":"build_audit.json"})
+    for name in ("sensitivity","geometry_seed","c3l4_abi"):
+        replacements["checks/cpp_"+name+".log"]=name+".log"
+    retired={"differential/l3_t1b_full.json.gz", "differential/l3_t1b_full.log.gz", "differential/l3_t1b_full_execution.json"}
+    old_records=[]
+    with zipfile.ZipFile(zpath) as z:
+        for artifact in sorted(set(replacements)|retired|{"differential/execution.json", "checks/cpp_named.json"}):
+            target=E/artifact
+            if not target.exists():
+                continue
+            member=target.relative_to(ROOT).as_posix()
+            raw=target.read_bytes(); assert z.read(member)==raw, "Prior archive mismatch: "+member
+            old_records.append(dict(path=member,bytes=len(raw),sha256=sha(raw),archive_member=member))
+    rows=[r for r in old["rows"] if r["artifact"] not in replacements and r["artifact"] not in retired]
+    for artifact,original in replacements.items():
+        source=(CLOSE if artifact.startswith("differential/l4.") else RAW)/original; data=source.read_bytes()
+        packed=gzip.compress(data,compresslevel=9,mtime=0) if artifact.endswith(".gz") else data
+        target=E/artifact; target.parent.mkdir(parents=True,exist_ok=True); target.write_bytes(packed)
+        assert (gzip.decompress(packed) if artifact.endswith(".gz") else packed)==data
+        rows.append(dict(original=source.relative_to(E).as_posix(),artifact=artifact,bytes=len(data),sha256=sha(data),artifact_bytes=len(packed),artifact_sha256=sha(packed)))
+    # These exact, ZIP-verified files are superseded by the complete L3 all-family run.
+    for artifact in retired:
+        target=(E/artifact).resolve(); assert target.is_relative_to((E/"differential").resolve())
+        if target.exists():
+            target.unlink()
+    runs=json.loads((E/"clarification/completed_layers_reuse.json").read_text("utf8"))["runs"]+[closeout["runs"][0]]
+    (E/"differential/execution.json").write_text(json.dumps(runs[:6],indent=2)+"\n",encoding="utf8")
+    named=json.loads((E/"clarification/cpp_execution.json").read_text("utf8"))["runs"][1:4]
+    (E/"checks/cpp_named.json").write_text(json.dumps(named,indent=2)+"\n",encoding="utf8")
+    (E/"pack_manifest.json").write_text(json.dumps(dict(schema=old["schema"],rows=rows),indent=2)+"\n",encoding="utf8")
+    history=dict(schema="eab2.c3l4.clarification.history.v1",archive=intake["rollback_archive"],archive_sha256=intake["rollback_archive_sha256"],note="Prior strict-comparison 32 mismatches retained unchanged in ZIP; only new complete runs are authoritative in current differential directory",files=old_records)
+    (E/"clarification/history_mapping.json").write_text(json.dumps(history,indent=2)+"\n",encoding="utf8")
+    print("C3L4_PUBLISH artifacts="+str(len(replacements))+" prior_files="+str(len(old_records))+" verified=true")
+
+if __name__=="__main__":
+    main()

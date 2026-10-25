@@ -71,8 +71,8 @@ def test_parent_package_imports_are_checked_for_every_kernel_module(tmp_path):
     shutil.copytree(ROOT / "src" / "eab", copied / "eab", ignore=shutil.ignore_patterns("__pycache__"))
     expected = {p.relative_to(copied).as_posix() for p in (copied / "eab").rglob("*.py")
                 if p.relative_to(copied / "eab").parts[0].removesuffix(".py") in KERNEL_ROOTS}
-    # Original 47 plus exact erosion, translation search, independent verifier.
-    assert len(expected) == 50 and "eab/predicates.py" in expected
+    # Original 50 plus full ordered-field arithmetic and branch certificates.
+    assert len(expected) == 52 and "eab/predicates.py" in expected
     path = copied / "eab" / "contact_record.py"
     with path.open("a", encoding="utf-8", newline="") as stream:
         stream.write("\nfrom .adapters import bdda2d\n")

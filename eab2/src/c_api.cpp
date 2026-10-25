@@ -10,6 +10,8 @@
 #include "opt.hpp"
 #include "statics.hpp"
 #include "critical.hpp"
+#include "sensitivity.hpp"
+#include "geometry_seed.hpp"
 
 #include <algorithm>
 #include <atomic>
@@ -17,6 +19,7 @@
 #include <cstring>
 #include <limits>
 #include <memory>
+#include <map>
 #include <mutex>
 #include <new>
 #include <string>
@@ -45,6 +48,9 @@ struct Object {
     std::unique_ptr<std::string> json;
     std::unique_ptr<eab2::contact::Assembly2> assembly;
     std::unique_ptr<eab2::contact::ContactSet2> contacts;
+    std::unique_ptr<eab2::statics::LimitResult2> limit_result;
+    std::unique_ptr<eab2::statics::CriticalParameter2> critical_result;
+    std::shared_ptr<const eab2::contact::ContactSet2> sensitivity_contacts;
 };
 struct ContextState {
     std::mutex mutex;
@@ -100,7 +106,7 @@ uint64_t capabilities() noexcept {
     uint64_t result = EAB2_CAP_CONTEXT | EAB2_CAP_BODY2 | EAB2_CAP_ENTRANCE2 |
         EAB2_CAP_QUERY2 | EAB2_CAP_EXPORT_EXACT | EAB2_CAP_LOCAL2 | EAB2_CAP_LIMITS2 |
         EAB2_CAP_ASSEMBLY2 | EAB2_CAP_CONTACTSET2 | EAB2_CAP_LOCK2 | EAB2_CAP_MOBILITY2 |
-        EAB2_CAP_LIMIT2 | EAB2_CAP_CRITICAL_PARAMETER;
+        EAB2_CAP_LIMIT2 | EAB2_CAP_CRITICAL_PARAMETER | EAB2_CAP_SENSITIVITY2;
 #ifdef EAB2_ENABLE_TEST_API
     result |= EAB2_CAP_TEST_NUMERIC | EAB2_CAP_TEST_EXACT2 | EAB2_CAP_TEST_OPT;
 #endif
@@ -231,6 +237,11 @@ uint32_t reject_c1(ContextState& state, uint32_t code, const char* field, const 
     set_error(state, code, field, index, message);
     return code;
 }
+struct IndexedInputError : std::runtime_error {
+    uint32_t code; std::string field; uint64_t index;
+    IndexedInputError(uint32_t c, std::string f, uint64_t i, const std::string& message)
+        : std::runtime_error(message), code(c), field(std::move(f)), index(i) {}
+};
 template<class Function> uint32_t c1_call(eab2_context context, Function function, bool requires_fp = true) noexcept {
     try {
         ContextAccess access(context);
@@ -243,6 +254,10 @@ template<class Function> uint32_t c1_call(eab2_context context, Function functio
         eab2::exact::IntegerLimitScope integer_scope(state->limits.max_integer_bits);
         eab2::geometry2::GeometryWorkScope work_scope(state->limits);
         return function(*state);
+    } catch (const IndexedInputError& error) {
+        ContextAccess access(context);
+        const auto state = access.get();
+        return state ? reject_c1(*state, error.code, error.field.c_str(), error.what(), error.index) : EAB2_INVALID_HANDLE;
     } catch (const eab2::exact::ResourceLimit& error) {
         return record_exception(context, EAB2_RESOURCE_LIMIT, error.what());
     } catch (const eab2::numeric::Error& error) {
@@ -632,10 +647,16 @@ uint32_t l1_math(const std::optional<std::string>& name) {
     return EAB2_MATH_VALUE;
 }
 uint32_t save_exact(ContextState& state, eab2_context context, std::string json,
-                    uint32_t math, eab2_exact_result* output) {
+                    uint32_t math, eab2_exact_result* output,
+                    std::unique_ptr<eab2::statics::LimitResult2> limit = {},
+                    std::unique_ptr<eab2::statics::CriticalParameter2> critical = {},
+                    std::shared_ptr<const eab2::contact::ContactSet2> contacts = {}) {
     Object created;
     created.type = EAB2_HANDLE_RESULT;
     created.json = std::make_unique<std::string>(std::move(json));
+    created.limit_result = std::move(limit);
+    created.critical_result = std::move(critical);
+    created.sensitivity_contacts = std::move(contacts);
     const auto* data = created.json->c_str();
     const auto count = created.json->size();
     const auto token = add_object(state, context, std::move(created));
@@ -933,10 +954,14 @@ extern "C" EAB2_API eab2_call_status eab2_solve_limit2(eab2_context context,
         eab2::statics::Loads2 loads;
         const auto decoded = decode_loads(state, *found->contacts, input->body_count, input->body_stride, input->loads, loads);
         if (decoded != EAB2_OK) return decoded;
-        const auto result = eab2::statics::limit_load_ideal_exact_2d(*found->contacts, loads, mu);
+        auto result = eab2::statics::limit_load_ideal_exact_2d(*found->contacts, loads, mu);
         if (result.call_status != "OK")
             return reject_c1(state, l3_status(result.call_status), "limit", result.reason.value_or("limit query failed").c_str());
-        return save_exact(state, context, eab2::statics::export_exact(result), l3_math(result.mathematical_status), output);
+        auto json = eab2::statics::export_exact(result);
+        const auto math = l3_math(result.mathematical_status);
+        auto snapshot = std::make_shared<eab2::contact::ContactSet2>(*found->contacts);
+        return save_exact(state, context, std::move(json), math, output,
+            std::make_unique<eab2::statics::LimitResult2>(std::move(result)), {}, std::move(snapshot));
     });
 }
 extern "C" EAB2_API eab2_call_status eab2_critical_parameter(eab2_context context,
@@ -959,9 +984,235 @@ extern "C" EAB2_API eab2_call_status eab2_critical_parameter(eab2_context contex
         eab2::statics::Loads2 loads;
         const auto decoded = decode_loads(state, *found->contacts, input->body_count, input->body_stride, input->loads, loads);
         if (decoded != EAB2_OK) return decoded;
-        const auto result = eab2::statics::critical_parameter(*found->contacts, loads, mu_max, static_cast<size_t>(input->max_steps));
+        auto result = eab2::statics::critical_parameter(*found->contacts, loads, mu_max, static_cast<size_t>(input->max_steps));
+        result.original_mu_max_bits = input->mu_max_bits;
         if (result.call_status != "OK")
             return reject_c1(state, l3_status(result.call_status), "critical", result.reason.value_or("critical query failed").c_str());
-        return save_exact(state, context, eab2::statics::export_exact(result), l3_math(result.mathematical_status), output);
+        auto json = eab2::statics::export_exact(result);
+        const auto math = l3_math(result.mathematical_status);
+        auto snapshot = std::make_shared<eab2::contact::ContactSet2>(*found->contacts);
+        return save_exact(state, context, std::move(json), math, output, {},
+            std::make_unique<eab2::statics::CriticalParameter2>(std::move(result)), std::move(snapshot));
+    });
+}
+
+namespace {
+uint64_t l4_product(uint64_t a, uint64_t b) {
+    if (b && a > std::numeric_limits<size_t>::max() / b)
+        throw eab2::numeric::Error(EAB2_INVALID_INPUT, "sensitivity dimension multiplication overflow");
+    return a * b;
+}
+struct SeedTextBudget {
+    uint64_t bytes = 0, square = 0;
+    std::string take(const eab2_string& value, bool utf8, const char* field, uint64_t index) {
+        if (!value.data || !value.length)
+            throw IndexedInputError(EAB2_INVALID_INPUT, field, index, "empty sensitivity text");
+        if (value.length > 4096 || value.length > UINT64_C(4194304) - bytes ||
+            value.length * value.length > UINT64_C(67108864) - square)
+            throw IndexedInputError(EAB2_RESOURCE_LIMIT, field, index, "sensitivity aggregate text parsing budget");
+        bytes += value.length; square += value.length * value.length;
+        std::string text(value.data, static_cast<size_t>(value.length));
+        if (utf8 && (!valid_utf8(text) || text.find('\0') != std::string::npos))
+            throw IndexedInputError(EAB2_INVALID_INPUT, field, index, "invalid sensitivity UTF-8 text");
+        return text;
+    }
+};
+void l4_array(const eab2_string_array& values, uint64_t expected, size_t limit, const char* field, uint64_t index = UINT64_MAX) {
+    if (values.value_count != expected || values.value_stride != sizeof(eab2_string) ||
+        !c1_extent(values.value_count, values.value_stride) || (expected && !values.values))
+        throw IndexedInputError(EAB2_INVALID_INPUT, field, index, "sensitivity array count/stride/pointer mismatch");
+    if (expected > limit)
+        throw IndexedInputError(EAB2_RESOURCE_LIMIT, field, index, "sensitivity array element budget");
+}
+std::string l4_quote(const std::string& text) {
+    static constexpr char hex[] = "0123456789abcdef";
+    std::string out = "\"";
+    for (const unsigned char value : text) {
+        if (value == '"' || value == '\\') { out += '\\'; out += static_cast<char>(value); }
+        else if (value < 32) { out += "\\u00"; out += hex[value >> 4]; out += hex[value & 15]; }
+        else out += static_cast<char>(value);
+    }
+    return out + '"';
+}
+std::string l4_vector(const eab2::statics::Vector& values) {
+    std::string out = "[";
+    for (size_t i = 0; i < values.size(); ++i) {
+        if (i) out += ',';
+        out += l4_quote(values[i].canonical());
+    }
+    return out + ']';
+}
+std::string l4_seed(const std::optional<eab2::statics::LimitSeed2>& seed) {
+    if (!seed) return "null";
+    std::string out = "{\"parameter\":" + l4_quote(seed->parameter) + ",\"dA\":[";
+    for (size_t i = 0; i < seed->dA.size(); ++i) {
+        if (i) out += ',';
+        out += l4_vector(seed->dA[i]);
+    }
+    return out + "],\"db\":" + l4_vector(seed->db) + ",\"dc\":" + l4_vector(seed->dc) + '}';
+}
+}
+extern "C" EAB2_API eab2_call_status eab2_get_c3l4_abi_info(eab2_c3l4_abi_info* info) {
+    const auto status = header(info);
+    if (status != EAB2_OK) return status;
+    if (info->reserved || info->reserved2) return EAB2_INVALID_INPUT;
+    *info = {sizeof(eab2_c3l4_abi_info), EAB2_ABI_VERSION, sizeof(eab2_string_array),
+        sizeof(eab2_sensitivity_vertex2), sizeof(eab2_sensitivity_channel2),
+        sizeof(eab2_sensitivity2_input), 0, 0};
+    return EAB2_OK;
+}
+extern "C" EAB2_API eab2_call_status eab2_evaluate_sensitivity2(eab2_context context,
+    eab2_result base_result, const eab2_sensitivity2_input* input, eab2_exact_result* output) {
+    return c1_call(context, [&](ContextState& state) {
+        const auto* found = object(state, context, base_result, EAB2_HANDLE_RESULT);
+        if (!found || (!found->limit_result && !found->critical_result) || !found->sensitivity_contacts)
+            return reject_c1(state, EAB2_INVALID_HANDLE, "base_result", "retained typed L3 result required");
+        const auto in_status = header(input), out_status = header(output);
+        if (in_status != EAB2_OK) return reject_c1(state, in_status, "input", "invalid sensitivity input header");
+        if (out_status != EAB2_OK) return reject_c1(state, out_status, "output", "invalid sensitivity output header");
+        const auto& contacts = *found->sensitivity_contacts;
+        const uint64_t p = input->parameter_count, b = input->body_count, v = input->vertex_count;
+        uint64_t expected_vertices = 0;
+        for (const auto& body : contacts.assembly.bodies) expected_vertices += body.geometry.vertices.size();
+        if (!p || input->output_count != 1 || input->channel_count != p ||
+            b != contacts.assembly.bodies.size() || v != expected_vertices ||
+            input->channel_stride != sizeof(eab2_sensitivity_channel2) ||
+            !c1_extent(p, input->channel_stride) || !input->channels ||
+            input->vertex_stride != sizeof(eab2_sensitivity_vertex2) ||
+            !c1_extent(v, input->vertex_stride) || (v && !input->vertex_ids))
+            return reject_c1(state, EAB2_INVALID_INPUT, "dimensions", "invalid parameter/output/channel/body/vertex dimensions");
+        // Reject the independent channel budget before any dimension product
+        // or array access; a huge but extent-valid p must retain named detail.
+        if (p > 1024 || p > state.limits.max_elements)
+            return reject_c1(state, EAB2_RESOURCE_LIMIT, "parameter_count", "sensitivity parameter/channel budget exceeded");
+        const auto pv2 = l4_product(l4_product(p, v), 2);
+        const auto pb3 = l4_product(l4_product(p, b), 3);
+        const auto pb2 = l4_product(l4_product(p, b), 2);
+        l4_array(input->body_ids, b, state.limits.max_elements, "body_ids");
+        l4_array(input->vertices, pv2, state.limits.max_elements, "vertices");
+        l4_array(input->dead, pb3, state.limits.max_elements, "dead");
+        l4_array(input->live, pb3, state.limits.max_elements, "live");
+        l4_array(input->dof_anchor, pb2, state.limits.max_elements, "dof_anchor");
+        l4_array(input->mu, p, state.limits.max_elements, "mu");
+        if (pv2 > state.limits.max_elements - p || pb3 > (state.limits.max_elements - p - pv2) / 2 ||
+            pb2 > state.limits.max_elements - p - pv2 - 2 * pb3)
+            return reject_c1(state, EAB2_RESOURCE_LIMIT, "seeds", "sensitivity aggregate element/channel budget");
+
+        SeedTextBudget budget;
+        std::vector<std::string> ids;
+        for (uint64_t i = 0; i < b; ++i) ids.push_back(budget.take(input->body_ids.values[i], true, "body_ids", i));
+        std::vector<std::pair<std::string, size_t>> vertices;
+        for (uint64_t i = 0; i < v; ++i) {
+            const auto& vertex = input->vertex_ids[i];
+            if (vertex.vertex_id > std::numeric_limits<size_t>::max())
+                return reject_c1(state, EAB2_INVALID_INPUT, "vertex_ids", "vertex ID outside platform range", i);
+            vertices.emplace_back(budget.take(vertex.body_id, true, "vertex_ids", i), static_cast<size_t>(vertex.vertex_id));
+        }
+        auto parse = [&](const eab2_string_array& values, uint64_t at) {
+            const char* field = &values == &input->mu ? "mu" : &values == &input->vertices ? "vertices" :
+                &values == &input->dead ? "dead" : &values == &input->live ? "live" : "dof_anchor";
+            const auto text = budget.take(values.values[at], false, field, at);
+            try { return eab2::numeric::parse_rational(text); }
+            catch (const eab2::exact::ResourceLimit& error) { throw IndexedInputError(EAB2_RESOURCE_LIMIT, field, at, error.what()); }
+            catch (const eab2::numeric::Error& error) { throw IndexedInputError(error.code, field, at, error.what()); }
+            catch (const std::invalid_argument& error) { throw IndexedInputError(EAB2_INVALID_INPUT, field, at, error.what()); }
+        };
+        std::vector<std::string> expected_ids;
+        std::vector<std::pair<std::string, size_t>> expected_vertex_ids;
+        std::map<std::pair<std::string, size_t>, eab2::statics::Point> raw_points;
+        for (const auto& body : contacts.assembly.bodies) {
+            expected_ids.push_back(body.body_id);
+            for (size_t k = 0; k < body.geometry.vertices.size(); ++k) {
+                const auto id = std::make_pair(body.body_id, body.geometry.original_vertex_ids[k]);
+                expected_vertex_ids.push_back(id); raw_points[id] = body.geometry.vertices[k];
+            }
+        }
+        std::sort(expected_ids.begin(), expected_ids.end()); std::sort(expected_vertex_ids.begin(), expected_vertex_ids.end());
+        for (size_t k = 0; k < ids.size(); ++k) if (ids[k] != expected_ids[k])
+            return reject_c1(state, EAB2_INVALID_INPUT, "body_ids", "body identity order mismatch", k);
+        for (size_t k = 0; k < vertices.size(); ++k) if (vertices[k] != expected_vertex_ids[k])
+            return reject_c1(state, EAB2_INVALID_INPUT, "vertex_ids", "original vertex identity order mismatch", k);
+        std::vector<eab2::statics::GeometrySeed2> seeds;
+        std::vector<eab2::statics::SensitivityOptions2> options;
+        std::set<std::string> parameters;
+        for (uint64_t channel = 0; channel < p; ++channel) {
+            const auto& source = input->channels[channel];
+            const auto status = header(&source);
+            if (status != EAB2_OK) return reject_c1(state, status, "channels", "invalid sensitivity channel header", channel);
+            if (source.positive_direction_valid > 1 || source.negative_direction_valid > 1)
+                return reject_c1(state, EAB2_INVALID_INPUT, "channels", "direction flags must be zero or one", channel);
+            eab2::statics::GeometrySeed2 seed;
+            eab2::statics::SensitivityOptions2 option;
+            seed.parameter = option.parameter = budget.take(source.parameter, true, "parameter", channel);
+            if (!parameters.insert(seed.parameter).second)
+                return reject_c1(state, EAB2_INVALID_INPUT, "parameter", "duplicate parameter name", channel);
+            option.positive_direction_valid = source.positive_direction_valid != 0;
+            option.negative_direction_valid = source.negative_direction_valid != 0;
+            l4_array(source.validity_conditions, source.validity_conditions.value_count, state.limits.max_elements, "validity_conditions", channel);
+            l4_array(source.tied_labels, source.tied_labels.value_count, state.limits.max_elements, "tied_labels", channel);
+            for (uint64_t i = 0; i < source.validity_conditions.value_count; ++i)
+                option.validity_conditions.push_back(budget.take(source.validity_conditions.values[i], true, "validity_conditions", i));
+            for (uint64_t i = 0; i < source.tied_labels.value_count; ++i)
+                option.tied_labels.emplace_back(budget.take(source.tied_labels.values[i], true, "tied_labels", i));
+            seed.mu = parse(input->mu, channel);
+            if (found->critical_result && seed.mu != eab2::exact::Rational(0))
+                return reject_c1(state, EAB2_INVALID_INPUT, "mu", "threshold query does not admit a friction seed", channel);
+            for (uint64_t i = 0; i < v; ++i) seed.vertices.push_back({vertices[i].first, vertices[i].second,
+                {parse(input->vertices, (channel * v + i) * 2), parse(input->vertices, (channel * v + i) * 2 + 1)}});
+            for (uint64_t i = 0; i < b; ++i) {
+                eab2::statics::BodySeed2 body;
+                body.body_id = ids[i];
+                for (uint64_t k = 0; k < 3; ++k) {
+                    body.dead[k] = parse(input->dead, (channel * b + i) * 3 + k);
+                    body.live[k] = parse(input->live, (channel * b + i) * 3 + k);
+                }
+                for (uint64_t k = 0; k < 2; ++k) body.dof_anchor[k] = parse(input->dof_anchor, (channel * b + i) * 2 + k);
+                seed.bodies.push_back(std::move(body));
+            }
+            std::map<eab2::statics::Point, eab2::statics::Point> shared;
+            for (size_t k = 0; k < seed.vertices.size(); ++k) {
+                const auto& item = seed.vertices[k]; const auto point = raw_points.at({item.body_id, item.vertex_id});
+                const auto [at, inserted] = shared.emplace(point, item.derivative);
+                if (!inserted && at->second != item.derivative)
+                    return reject_c1(state, EAB2_INVALID_INPUT, "vertices", "geometry jet breaks a shared vertex", (channel * v + k) * 2);
+            }
+            try { eab2::statics::validate_geometry_seed2(contacts, seed); }
+            catch (const std::invalid_argument& error) { return reject_c1(state, EAB2_INVALID_INPUT, "vertices", error.what(), channel); }
+            seeds.push_back(std::move(seed)); options.push_back(std::move(option));
+        }
+        const eab2::statics::LimitProblem2* problem = nullptr;
+        if (found->limit_result && found->limit_result->problem) problem = &*found->limit_result->problem;
+        if (found->critical_result && found->critical_result->threshold_certificate &&
+            found->critical_result->threshold_certificate->problem)
+            problem = &*found->critical_result->threshold_certificate->problem;
+        std::string json = "{\"sensitivity_model\":\"ideal_exact_2d\",\"parameter_count\":" + std::to_string(p) +
+            ",\"output_count\":1,\"channel_count\":" + std::to_string(p) +
+            ",\"jacobian_layout\":\"output_major_channel_minor\",\"jacobian_shape\":[1," + std::to_string(p) + "],\"channels\":[";
+        std::string jacobian = "[";
+        for (size_t i = 0; i < seeds.size(); ++i) {
+            std::optional<eab2::statics::LimitSeed2> derived, mu_seed;
+            if (problem) {
+                derived = eab2::statics::propagate_geometry_seed2(*problem, seeds[i]);
+                if (found->critical_result) {
+                    auto unit_mu = seeds[i]; unit_mu.parameter = "mu"; unit_mu.mu = 1;
+                    for (auto& vertex : unit_mu.vertices) vertex.derivative = {0, 0};
+                    for (auto& body : unit_mu.bodies) { body.dead = {0, 0, 0}; body.live = {0, 0, 0}; body.dof_anchor = {0, 0}; }
+                    mu_seed = eab2::statics::propagate_geometry_seed2(*problem, unit_mu);
+                }
+            }
+            const auto result = found->limit_result ?
+                eab2::statics::evaluate_sensitivity2(*found->limit_result, derived, options[i]) :
+                eab2::statics::evaluate_sensitivity2(*found->critical_result, derived, mu_seed, options[i]);
+            if (result.call_status != "OK")
+                return reject_c1(state, l3_status(result.call_status), "sensitivity", result.reason.value_or("sensitivity failed").c_str(), i);
+            if (i) { json += ','; jacobian += ','; }
+            json += "{\"parameter\":" + l4_quote(seeds[i].parameter) + ",\"result\":" + eab2::statics::export_exact(result) +
+                ",\"derived_seed\":" + l4_seed(derived) + ",\"threshold_mu_seed\":" + l4_seed(mu_seed) + '}';
+            jacobian += result.differentiability == "smooth" && result.quality == "exact_jet" && result.directional_derivative ?
+                l4_quote(result.directional_derivative->canonical()) : "null";
+        }
+        json += "],\"jacobian\":" + jacobian + "]}";
+        const auto math = found->limit_result ? l3_math(found->limit_result->mathematical_status) : l3_math(found->critical_result->mathematical_status);
+        return save_exact(state, context, std::move(json), math, output);
     });
 }

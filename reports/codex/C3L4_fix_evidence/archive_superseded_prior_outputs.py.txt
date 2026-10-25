@@ -1,0 +1,122 @@
+"""H1: copy/readback then remove exactly four authorized historical JSON files.
+
+Run with Python from any cwd. Existing equal archive bytes are reusable;
+different archive/source bytes fail without overwrite. No Git or recursive
+delete. Rerun verifies the same archive even after the four sources are absent.
+"""
+from pathlib import Path
+import hashlib
+import json
+
+ROOT = Path(__file__).resolve().parents[3]
+EXPECTED_ROOT = Path("D:/eab-wt/cx-c0")
+ARCHIVE = Path("D:/eab-evidence/reports/codex/C3L4_fix_evidence/superseded_prior_outputs_20261023")
+FILES = (
+    ("reports/codex/C3L4_evidence/checks/static_repair_verification.json", 72924,
+     "7ca4aa84a759b885cdbce9b8400c3c1a2cf3b347e249ea375a1c72cde69fd6a6"),
+    ("reports/codex/C3L4_evidence/hygiene.json", 59333,
+     "d93612125c582692bfe4f479356a9f307bb1d41d894fd04d35036cea6eea5571"),
+    ("reports/codex/C3L4_evidence/tied_labels_forensics.json", 47762,
+     "5501161884f61e9c5685973cbc33905a5f29fe478b877fb9a20a28e6fadc3ced"),
+    ("reports/codex/C3L4_evidence/checks/build_audit.json", 31546,
+     "5689844004fc0bd58f5dd5c929a2b29e1498e18100ca7467a815193122cf455a"),
+)
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def exact_file(path, size, digest):
+    raw = path.read_bytes()
+    require(len(raw) == size and sha(raw) == digest, "byte identity mismatch: " + str(path))
+    return raw
+
+
+def append_equal(path, raw):
+    if path.exists():
+        require(path.read_bytes() == raw, "refuse different existing archive/mapping: " + str(path))
+    else:
+        with path.open("xb") as stream:
+            stream.write(raw)
+    require(path.read_bytes() == raw, "readback mismatch: " + str(path))
+
+
+def encoded(value):
+    return (json.dumps(value, indent=2, ensure_ascii=True) + "\n").encode("utf-8")
+
+
+def main():
+    require(ROOT == EXPECTED_ROOT.resolve(), "wrong workspace")
+    require(ARCHIVE.resolve() == ARCHIVE.absolute(), "archive redirected outside its named directory")
+    # Source/API/build text is not permitted to depend on these four outputs.
+    # The similarly named .log is intentionally retained for an encoding test.
+    suffixes = {".py", ".cpp", ".hpp", ".h", ".cmake", ".txt", ".json"}
+    names = tuple(Path(relative).name for relative, _, _ in FILES)
+    inspected = 0
+    for folder in ("src", "tools", "tests", "eab2"):
+        for path in sorted((ROOT / folder).rglob("*")):
+            relative = path.relative_to(ROOT)
+            if "build" in relative.parts or "third_party" in relative.parts:
+                continue
+            if not path.is_file() or path.suffix not in suffixes:
+                continue
+            text = path.read_text("utf-8-sig")
+            inspected += 1
+            require(not any(name in text for name in names), "runtime dependency requires review: " + str(relative))
+
+    sources, rows, originals = [], [], {}
+    for relative, size, digest in FILES:
+        source = ROOT / relative
+        require(source.resolve() == ROOT / relative and source.resolve().is_relative_to(ROOT),
+                "source escaped the exact workspace target: " + relative)
+        destination = ARCHIVE / source.name
+        require(destination.resolve().is_relative_to(ARCHIVE), "archive member escaped target")
+        if source.exists():
+            originals[relative] = exact_file(source, size, digest)
+        else:
+            originals[relative] = exact_file(destination, size, digest)
+        json.loads(originals[relative])
+        sources.append((source, destination, size, digest))
+        rows.append(dict(original=relative, archive=destination.as_posix(), bytes=size, sha256=digest))
+
+    ARCHIVE.mkdir(parents=True, exist_ok=True)
+    for (relative, _, _), (_, destination, size, digest) in zip(FILES, sources):
+        append_equal(destination, originals[relative])
+        require(exact_file(destination, size, digest) == originals[relative], "archive not byte-identical")
+    archive_manifest = dict(version="c3l4fix-superseded-prior-outputs-v1", historical_only=True,
+        reason="Superseded historical JSON; preserve original conclusions and hashes, not new acceptance evidence",
+        archive_directory=ARCHIVE.as_posix(), files=rows, original_bytes=sum(row["bytes"] for row in rows),
+        verification="All four copied files read back byte-for-byte and SHA-256 before any source removal")
+    manifest_bytes = encoded(archive_manifest)
+    append_equal(ARCHIVE / "manifest.json", manifest_bytes)
+
+    # Verify ALL source/archive pairs again before the first narrowly scoped
+    # unlink. Each target is rechecked immediately before its own unlink too.
+    for source, destination, size, digest in sources:
+        exact_file(destination, size, digest)
+        if source.exists():
+            exact_file(source, size, digest)
+    for source, destination, size, digest in sources:
+        require(source.resolve() == source and source.resolve().is_relative_to(ROOT),
+                "delete target escaped the authorized workspace")
+        if source.exists():
+            require(exact_file(source, size, digest) == exact_file(destination, size, digest), "pre-unlink mismatch")
+            source.unlink()
+    require(all(not source.exists() for source, _, _, _ in sources), "source removal incomplete")
+    mapping = dict(archive_manifest, source_files_removed=4, runtime_dependency_name_hits=0,
+        archive_manifest_sha256=sha(manifest_bytes),
+        rollback="Restore only a named absent original path, verify SHA, never overwrite later owner changes",
+        script="reports/codex/C3L4_fix_evidence/archive_superseded_prior_outputs.py.txt")
+    append_equal(ROOT / "reports/codex/C3L4_fix_evidence/superseded_prior_outputs.json", encoded(mapping))
+    print("ARCHIVE_DEPENDENCY_SCAN files=" + str(inspected) + " hits=0")
+    print("C3L4FIX_SUPERSEDED_ARCHIVE files=4 bytes=211565 verified=4 removed=4 dependency_hits=0")
+
+
+if __name__ == "__main__":
+    main()

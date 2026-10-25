@@ -1,0 +1,74 @@
+{
+  "complete": true,
+  "source_pre_post_equal": true,
+  "source_manifest_sha256": "b212e190ac5860ad08e9f06466dabc1b53bd134a7a5c3e8b3739100a1f1fb3b8",
+  "dll_sha256": "b08c5558572831b52f17a60253e2ce1ede450a31eed800d8a5b3b053124c75df",
+  "runs": [
+    {
+      "name": "l4",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/eab2_c3l4_diff.py",
+        "--dll",
+        "D:\\eab-wt\\cx-c0\\eab2\\build\\clarified_r2\\eab2.dll",
+        "--output",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_closeout_1\\l4.json",
+        "--family",
+        "all"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_closeout_1\\l4.log",
+      "complete": true,
+      "pid": 26060,
+      "seconds": 172.05770769994706,
+      "exit_code": 0,
+      "last_line": "C3L4_DIFF sensitivity=402 mismatch=0",
+      "log_sha256": "52376e6ad776e534a150d4e35acd90500d9ac6f41451e348da390c091f548317"
+    },
+    {
+      "name": "clarified_fast",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "clarified_fast",
+        "--evidence-root",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_closeout_1\\clarified_fast.log",
+      "complete": true,
+      "pid": 14640,
+      "seconds": 376.1306075999746,
+      "exit_code": 0,
+      "last_line": "shard 1: 9109 passed in 353.42s (0:05:53)",
+      "log_sha256": "44b0134d029e484357d88cce8320138fa9aa8f3d82923e9485aee4dfc72c9431"
+    },
+    {
+      "name": "clarified_full",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "tools/h1_run_gates.py",
+        "--name",
+        "clarified_full",
+        "--runslow",
+        "--evidence-root",
+        "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence"
+      ],
+      "cwd": "D:\\eab-wt\\cx-c0",
+      "log": "D:\\eab-wt\\cx-c0\\reports\\codex\\C3L4_evidence\\tmp\\clarified_closeout_1\\clarified_full.log",
+      "complete": true,
+      "pid": 27032,
+      "seconds": 1712.5876738999505,
+      "exit_code": 0,
+      "last_line": "exact construction AST gate: 0 violation(s)",
+      "log_sha256": "258a2956f5959861e483ce5df03735942927fc27e49f78be0b9c7167f236bbe2"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "version": "c3l4fix-integration-history-v1",
+  "archive": "D:\\eab-evidence\\reports\\codex\\C3L4_fix_evidence\\integration_history_20261023_r3\\history.zip",
+  "archive_sha256": "44cc544adb9f8e1f2dc591eba031457fceac561ceb514080b0c6fa70ae75bcf0",
+  "archive_bytes": 50007383,
+  "member_manifest": "MEMBER_MANIFEST.json",
+  "member_manifest_sha256": "9effa133d2a30beab9e0197a122343a2eb234f28eed8db42e8e5c414de34d5b0",
+  "members": 4292,
+  "original_bytes": 125621847,
+  "snapshots": {
+    "final_fast": {
+      "members": 2119,
+      "bytes": 53082254,
+      "completed": false,
+      "acceptance": "INVALID"
+    },
+    "c3l4fix_final_r3_fast": {
+      "members": 2119,
+      "bytes": 53088073,
+      "completed": true,
+      "acceptance": "RED"
+    }
+  },
+  "r3_fast_last_line": "24 failed, 9203 passed in 800.83s (0:13:20)",
+  "historical_only": true,
+  "no_green_acceptance": true,
+  "pruned_json": [
+    {
+      "path": "reports/codex/C3L4_fix_evidence/c3l4fix_final_r3_fast/module_coverage.json",
+      "bytes": 19932,
+      "sha256": "d90bf1c433727bfa79abb8e69acc9c645af7c154f9929387da0c38a868ef4765"
+    },
+    {
+      "path": "reports/codex/C3L4_fix_evidence/c3l4fix_final_r3_fast/shard_1.json",
+      "bytes": 840,
+      "sha256": "888046edfbac87c771e1d42521ecde81416baf8b15b1f07aaa60df9b32ba902b"
+    },
+    {
+      "path": "reports/codex/C3L4_fix_evidence/c3l4fix_final_r3_fast/shard_1_progress.json",
+      "bytes": 224,
+      "sha256": "dfe299f150be263ff5bb99ba15e2f5b1eb6548948579ae48ffe7f91e9eb2b883"
+    },
+    {
+      "path": "reports/codex/C3L4_fix_evidence/c3l4fix_final_r3_fast/state.json",
+      "bytes": 46,
+      "sha256": "730d1a268cb27735d3f99da03de999056708ef1c33caf1a0e136653f110dfad4"
+    },
+    {
+      "path": "reports/codex/C3L4_fix_evidence/c3l4fix_final_r3_fast/summary.json",
+      "bytes": 1505,
+      "sha256": "e8fdd96ec50e084ac9c034e89894fe2de326cf773b9114f3dd01823cbbce7523"
+    },
+    {
+      "path": "reports/codex/C3L4_fix_evidence/final_fast/shard_1_progress.json",
+      "bytes": 306,
+      "sha256": "446ae2914eea192a07582154ba4edf683295f941de1660512703824b9948be45"
+    },
+    {
+      "path": "reports/codex/C3L4_fix_evidence/final_fast/state.json",
+      "bytes": 167,
+      "sha256": "adb00fe7b43c6bbbb1df9cff95764ab74bf1f1a9061961b032b8859c45a4a5fb"
+    }
+  ],
+  "rollback": "Extract the named original member only to an absent path; verify SHA; never overwrite later owner changes."
+}

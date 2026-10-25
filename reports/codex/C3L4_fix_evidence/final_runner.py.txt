@@ -1,0 +1,69 @@
+"""Sequential, logged verification. Each interrupted stage is invalid; use a new tag."""
+import argparse, hashlib, json, os, shutil, subprocess, sys, time
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[3]
+if not (ROOT/'src/eab').is_dir():
+    ROOT=Path.cwd()
+p=argparse.ArgumentParser();p.add_argument('--stage',choices=('build','lower','l4','meta','mutations','python'),required=True);p.add_argument('--tag',required=True);p.add_argument('--build-tag');a=p.parse_args()
+out=ROOT/'reports/codex/C3L4_fix_evidence/tmp'/a.tag/a.stage
+out.mkdir(parents=True,exist_ok=False)
+build=ROOT/'eab2/build'/(a.build_tag or a.tag)
+py=[sys.executable,'-X','utf8']
+env=dict(os.environ,PYTHONIOENCODING='utf-8',PYTHONUTF8='1',TEMP=str(out/'temp'),TMP=str(out/'temp'));(out/'temp').mkdir()
+files=[f for parent in ('src','tools','tests','eab2/src','eab2/include','eab2/tests') for f in (ROOT/parent).rglob('*') if f.is_file() and f.suffix in ('.py','.cpp','.hpp','.h','.c')]
+files += [ROOT/'eab2/CMakeLists.txt']
+hashes={str(f.relative_to(ROOT)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files}
+manifest=dict(complete=False,stage=a.stage,tag=a.tag,source_sha256=hashes,commands=[])
+def save():
+    (out/'execution.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+def run(name,command,cwd=ROOT):
+    row=dict(name=name,command=list(map(str,command)),cwd=str(cwd),complete=False,log=str(out/(name+'.log')))
+    manifest['commands'].append(row);save();start=time.perf_counter()
+    with Path(row['log']).open('wb') as f:
+        process=subprocess.Popen(command,cwd=cwd,env=env,stdout=f,stderr=subprocess.STDOUT)
+        row['pid']=process.pid;save()
+        while process.poll() is None:
+            row['seconds']=time.perf_counter()-start;save();time.sleep(5)
+    data=Path(row['log']).read_bytes();lines=data.decode('utf-8',errors='replace').splitlines()
+    row.update(complete=True,exit_code=process.returncode,seconds=time.perf_counter()-start,last_line=lines[-1] if lines else '',log_sha256=hashlib.sha256(data).hexdigest());save()
+    print(name+': '+row['last_line'],flush=True)
+    if process.returncode:
+        raise RuntimeError(name+' failed; not acceptance')
+def tool(name,path,extra=(),dll=True):
+    cmd=py+[str(ROOT/path)]
+    if dll: cmd+=['--dll',str(build/('eab2_test.dll' if name in ('c0','c1','lp') else 'eab2.dll'))]
+    run(name,cmd+list(extra)+['--output',str(out/(name+'.json'))])
+if a.stage=='build':
+    temp=ROOT/'eab2/build/tmp'/a.tag;temp.mkdir(parents=True,exist_ok=True)
+    batch=temp/'build.cmd'
+    batch.write_bytes(('@echo off\r\ncall "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" -vcvars_ver=14.44 >nul\r\nif errorlevel 1 exit /b 90\r\ncmake -S eab2 -B '+str(build)+' -G Ninja -DCMAKE_BUILD_TYPE=Release\r\nif errorlevel 1 exit /b %errorlevel%\r\ncmake --build '+str(build)+' --parallel 3\r\nexit /b %errorlevel%\r\n').encode('ascii'))
+    run('build',['cmd.exe','/d','/c',str(batch)])
+    ctest=next(line.split('=',1)[1] for line in (build/'CMakeCache.txt').read_text('utf-8').splitlines() if line.startswith('CMAKE_CTEST_COMMAND:INTERNAL='))
+    run('ctest',[ctest,'--test-dir',str(build),'-V','--output-on-failure'])
+    for name in ('geometry_seed','c3l4_abi'):run(name,[str(build/('eab2_test_'+name+'.exe'))])
+    tool('build_audit','tools/eab2_audit.py',['--build',str(build)],False)
+    run('release_abi',[sys.executable,'-I','-S',str(ROOT/'tools/eab2_release_abi.py'),'--dll',str(build/'eab2.dll'),'--output',str(out/'release_abi.json')])
+    standalone=build/'consumer_standalone';standalone.mkdir()
+    for src,name in ((ROOT/'tools/eab2_tia_consumer.py','eab2_tia_consumer.py'),(ROOT/'eab2/include/eab2/c_api.h','c_api.h'),(build/'eab2.dll','eab2.dll')):shutil.copy2(src,standalone/name)
+    shutil.copytree(ROOT/'fixtures/eab2_cases/tia2d-2/formal_20261019_02/binary64',standalone/'fixtures')
+    run('consumer',[sys.executable,'-I','-S',str(standalone/'eab2_tia_consumer.py'),'--dll',str(standalone/'eab2.dll'),'--header',str(standalone/'c_api.h'),'--fixtures',str(standalone/'fixtures'),'--output',str(out/'consumer.json')],standalone)
+elif a.stage=='lower':
+    tool('c0','tools/eab2_diff.py')
+    tool('c1','tools/eab2_diff_c1.py',['--metamorphic','--source-commit','cb14522+WO-C3L4-fix'])
+    tool('lp','tools/eab2_opt_diff.py',['--source-commit','cb14522+WO-C3L4-fix'])
+    tool('l1','tools/eab2_c3l1_diff.py',['--dataset','all'])
+    tool('l3','tools/eab2_c3l3_diff.py',['--family','all'])
+elif a.stage=='l4':
+    tool('l4','tools/eab2_c3l4_diff.py',['--family','all'])
+    tool('l4_stable','tools/eab2_c3l4_stable.py',['--executable',str(build/'eab2_test_sensitivity.exe')],False)
+elif a.stage=='meta':tool('meta','tools/eab2_c3l4_meta.py')
+elif a.stage=='mutations':
+    for name,path,extra in [('branch','tools/eab2_branch_mutations.py',['--core',str(build/'eab2_core.lib')]),('legacy','tools/eab2_c3l4_mutations.py',['--core',str(build/'eab2_core.lib')]),('meta','tools/eab2_c3l4_meta_mutations.py',['--build',str(build)])]:
+        run(name,py+[str(ROOT/path)]+extra+['--output',str(ROOT/'eab2/build/tmp'/(a.tag+'_'+name))])
+elif a.stage=='python':
+    for name,extra in [(a.tag+'_fast',[]),(a.tag+'_full',['--runslow'])]:
+        run(name,py+[str(ROOT/'tools/h1_run_gates.py'),'--name',name,'--evidence-root','reports/codex/C3L4_fix_evidence']+extra)
+manifest['source_pre_post_equal']=all((ROOT/n).is_file() and hashlib.sha256((ROOT/n).read_bytes()).hexdigest()==v for n,v in hashes.items())
+manifest['complete']=True;save()
+if not manifest['source_pre_post_equal']:raise RuntimeError('source changed during stage: INVALIDATE')
+print('C3L4FIX_STAGE_'+a.stage.upper()+'_OK',flush=True)

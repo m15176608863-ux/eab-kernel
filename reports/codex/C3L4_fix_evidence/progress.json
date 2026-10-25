@@ -1,0 +1,101 @@
+{
+  "work_order": "WO-C3L4-fix",
+  "base_commit": "cb14522bda2e23e233ba475e0a4aae48d02dd0a0",
+  "size_base": "b34c966957b681b45cdb13acaaa09bfc1d6c5fe6",
+  "branch": "eab2-c3l4",
+  "target": "Branch-complete threshold directional sensitivities certified over Q(eta)(epsilon); independent verification, regressions and acceptance fixes",
+  "scope": [
+    "src/eab threshold sensitivity only",
+    "eab2",
+    "tools",
+    "tests",
+    "docs amendment/ABI/README",
+    "reports"
+  ],
+  "non_goals": [
+    "No unrelated Python mathematics changes",
+    "No design canonical edits",
+    "No Git writes",
+    "No sibling writes",
+    "No installs/downloads",
+    "No terminating unrelated processes"
+  ],
+  "success": [
+    "Both derivative directions require exact bracket certificates",
+    "Specified reproductions and closed-threshold cases",
+    "Frozen corpus, asymmetric seeds and independent certificate verifier",
+    "Named internal mutations and acceptance minor fixes",
+    "Full build, six layers, release ABI/consumer, fast and full four-shard tests",
+    "Chinese report and <=2000000 net bytes from b34c966"
+  ],
+  "verification": [
+    "tools/h1_run_gates.py --name baseline_full --runslow --evidence-root reports/codex/C3L4_fix_evidence",
+    "Targeted gates after baseline; full final validation recorded later"
+  ],
+  "rollback_anchor": "Clean cb14522 immutable Git objects; no automated reset/checkout",
+  "design_sha256": "6d174ecc4f1326d5bac21c56c8d333485fb50bbaef3a12150e94eaff14cb4dac",
+  "steps": [
+    {
+      "name": "Inspect and baseline four shards",
+      "status": "complete"
+    },
+    {
+      "name": "Theorem applicability and exact certificate contract",
+      "status": "complete"
+    },
+    {
+      "name": "Python/C++ implementation and independent harness",
+      "status": "complete"
+    },
+    {
+      "name": "Regressions, mutation and minor acceptance gates implemented",
+      "status": "complete"
+    },
+    {
+      "name": "Complete build/six layers/fast/full verification",
+      "status": "in_progress"
+    },
+    {
+      "name": "Archive, reports and actual net-byte audit",
+      "status": "pending"
+    }
+  ],
+  "complete": false,
+  "implementation_status": "FROZEN_R16_PY_DOMAIN_PROBE_CPP_SQUAREFREE",
+  "blocker": null,
+  "implementation_started": true,
+  "pending_clarification": null,
+  "baseline_note": "Completed GREEN 15193 after discovery without source changes; not fix acceptance",
+  "status": "IN_PROGRESS",
+  "baseline_summary": "baseline_full/summary.json",
+  "report": "reports/codex/C3L4_fix_report.md",
+  "updated_utc": "2026-10-23T11:54:26.512654+00:00",
+  "ruling": "ruling_resume.md",
+  "integration_notes": [
+    "final_r1 CTest launch failed because ctest not in parent PATH; fixed by CMakeCache absolute path",
+    "final_r2 build/lower and final_r1 Python fast interrupted deliberately after confirmed C++ unavailable threshold metadata mismatch; all incomplete stages INVALIDATED, no stitching",
+    "Only verified root-owned PID trees terminated; ownership evidence in tmp/final_runs_invalidated.json",
+    "C++ Critical preflight corrected and frozen; fresh c3l4fix_final_r3 build, CTest, six-layer and Python verification running",
+    "r3 fast completed RED: 24 failed, 9203 passed in 800.83s; no full4 started. Failures were private seed metadata equality, reader additive-schema migration and legacy projection.",
+    "r3 meta completed RED at additive branch_certificate schema entry; frozen slopes preserved during repair.",
+    "r3 L4 interrupted after exact Python integer recession coordinate serialization failure; 9-query repaired replay mismatch=0.",
+    "r3 incomplete build/lower/mutations stopped only after PID+creation+command ownership verification; no stitching. r15 adds early parameter-count resource rejection and explicit min mutant differential CLI proof.",
+    "Integration repairs frozen: 200 reader/export/fixture/purity tests green; 64/163 full meta green; ray replay9/0; ABI101; branch7 and retained5 mutants green. Fresh r4 build started; final Python fast/full deferred until integration layers complete.",
+    "r4 complete build/CTest15/ABI31/consumer6x18 and C0/C1/LP/L1/L3 all GREEN; source hashes stable during completed stages. Only L4 checker/types tests and mutation exception expectation changed afterward; compiled sources/DLL unchanged. r4 L4 deliberately interrupted and INVALID; whole L4 will rerun under r5 using --build-tag r4. Current checker prepared39 tests green, broader applied check running.",
+    "Applied checker/harness/symmetry retest131 passed in184.24s. r5 meta64/163/0 and all14 internal mutation defects rejected. Complete L4 r5 restarted from zero using same r4 DLL; no Python final run started yet. Four old report outputs archived byte-verified, freeing211565 raw bytes.",
+    "r5 L4 progressed239/0 on frozen production; final H1fast then full4 launched concurrently on24-core host. No authored/doc edits outside this evidence root while H1 snapshots run.",
+    "Final H1fast GREEN:9259 passed in854.48s, nodes equal/coverage complete/no skips/no failures. Full4 now running; L4 complete-to-date314queries/0mismatch (not final).",
+    "Final H1full GREEN15349:3838passed1646.06s;3837passed1351.13s;3837passed1989.88s;3837passed1357.64s; exact construction AST0. Complete node multisets/coverage/no skips/fails/source changes. Only all-family L4 plus final archive/report audit remain.",
+    "r5 full L4 invalidated after first asymmetric geometry revealed Python candidate discovery prematurely skipped all probes for s=0 at mu*=0; prior416queries/0 are progress only, never acceptance. C++ seven nonzero directional values independently K-verified and red-flag checked.",
+    "Only owned r5 L4 parent12224/child44788 were stopped after PID/creation/command checks; evidence tmp/final_r5_l4_invalidated.json. Python candidate discovery repaired while retaining exact original-domain final certification. Positive new tests produced correct slopes but initially failed parameter-binding test setup, now targeted repair.",
+    "r5 fast/full GREEN results are historical pre-new-repair; fresh r6 final stages planned after targeted asymmetric verification.",
+    "New domain-probe targeted tests:5passed13.46s; restoring early continue killed by two real None-versus1/32 assertions. First asymmetric replay now face/vertex pass but random0 triggers C++ capability floor: repaired Python independently certifies R3/128,L-7/128 whereas C++ lacked reverse candidate.",
+    "C++ root cause: nonsquarefree Sturm candidate polynomial eta^2*(eta-7/128) lost positive root at repeated zero. Exact squarefree reduction before candidate isolation is being repaired; original polynomial remains certificate evidence. No floor or K condition relaxed.",
+    "r6 build interrupted/INVALIDATED only owned PID7932,25668,10148 verified; evidence tmp/final_r6_build_invalidated.json. Final all-family driver reordered to asymmetric,branch,formal,t1b,thickness (all exactly once), six driver tests passed0.14s; fresh r7 planned.",
+    "Production frozen after Python domain discovery + C++ squarefree candidate isolation. New internal mutations killed both regressions. Fresh first-asymmetric six-query exact comparison/K/floor/red-flag result C3L4_DIFF sensitivity=6 mismatch=0 in344.518s. Fresh c3l4fix_final_r7 build started; all final stages use r7 with zero source hash exceptions.",
+    "r7 BUILD+LOWER complete GREEN, source hashes stable: CTest15/15, geometry76, ABI101, build audit0, release31/28, consumer6/18/0; C0 4483/0,C1 657/0,LP745/0,L1 186/186/404/0,L3 292/2528/0. r7 meta/mutations running; L4 now new families first (12queries/0 so far, not final). Current repaired Python H1 still pending.",
+    "r7 meta64/163/0 and all14 mandatory internal mutations complete GREEN, source hashes stable. r7 P2 four fresh processes complete with current DLL1770eac58034e7fdc1ed124c98e61ede43c9052bab78ccaff117ac5d1998fe1f (observational only). r7 Python fast then full4 launched; no edits outside this evidence root until snapshots finish. L4 remains running, not acceptance yet.",
+    "r7 H1fast complete GREEN:9268 passed in831.96s (0:13:51), node multisets/coverage complete,0skip/0fail, source snapshots unchanged. Final full4 now running. All-family L4 new-asymmetric prefix18/0 completed at2029.74s (progress only); exact candidate+red-flag workload is slow, no weakening or premature acceptance.",
+    "r7 final H1 full4 complete GREEN15358, no skips/fails, node multisets and module execution complete, source/export unchanged:3840passed1729.96s;3840passed985.47s;3839passed1373.94s;3839passed1282.69s; exact construction AST0. Complete source-fixed build/lower/meta/mutations/ABI/consumer/fast/full4 now available; only full L4 (36/0 progress), derived tables, archive/net/report remain."
+  ]
+}

@@ -1,0 +1,207 @@
+"""Read-only theorem audit: exact profile1 counterexample at mu_max.
+
+Standard library only. No production geometry, LP, symbolic algebra or
+sensitivity code is imported. Sparse polynomial keys are (epsilon, eta)
+degrees; their lexicographically first nonzero coefficient fixes the ordered
+field sign for 0 < epsilon << eta << 1. No coefficient is truncated.
+"""
+from fractions import Fraction as Q
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+
+def poly(value):
+    value = Q(value)
+    return {(0, 0): value} if value else {}
+
+
+def add(left, right):
+    result = dict(left)
+    for power, value in right.items():
+        result[power] = result.get(power, Q(0)) + value
+        if not result[power]:
+            del result[power]
+    return result
+
+
+def multiply(left, right):
+    result = {}
+    for (i, j), a in left.items():
+        for (k, l), b in right.items():
+            power = (i + k, j + l)
+            result[power] = result.get(power, Q(0)) + a * b
+            if not result[power]:
+                del result[power]
+    return result
+
+
+def negate(value):
+    return {power: -coefficient for power, coefficient in value.items()}
+
+
+def polynomial_sign(value):
+    if not value:
+        return 0
+    coefficient = value[min(value)]
+    return 1 if coefficient > 0 else -1
+
+
+def fraction(value, denominator=None):
+    denominator = poly(1) if denominator is None else denominator
+    assert denominator, "zero rational-function denominator"
+    return value, denominator
+
+
+def plus(left, right):
+    return fraction(add(multiply(left[0], right[1]), multiply(right[0], left[1])),
+                    multiply(left[1], right[1]))
+
+
+def minus(left, right):
+    return plus(left, fraction(negate(right[0]), right[1]))
+
+
+def times(left, right):
+    return fraction(multiply(left[0], right[0]), multiply(left[1], right[1]))
+
+
+def divide(left, right):
+    assert right[0], "division by zero rational function"
+    return fraction(multiply(left[0], right[1]), multiply(left[1], right[0]))
+
+
+def sign(value):
+    return polynomial_sign(value[0]) * polynomial_sign(value[1])
+
+
+def dot(left, right):
+    result = fraction(poly(0))
+    for a, b in zip(left, right):
+        result = plus(result, times(a, b))
+    return result
+
+
+def wire(value):
+    def coefficients(p):
+        return [[i, j, str(a.numerator) + "/" + str(a.denominator)]
+                for (i, j), a in sorted(p.items())]
+    return dict(numerator=coefficients(value[0]), denominator=coefficients(value[1]),
+                exact_lexicographic_sign=sign(value))
+
+
+def evaluate(value, epsilon, eta):
+    def polynomial(p):
+        return sum((a * epsilon ** i * eta ** j for (i, j), a in p.items()), Q(0))
+    return polynomial(value[0]) / polynomial(value[1])
+
+
+def qwire(value):
+    return str(value.numerator) + "/" + str(value.denominator)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    allowed = (Path(__file__).resolve().parent / "tmp").resolve()
+    output = args.output.resolve()
+    assert output.is_relative_to(allowed), "audit output must stay in this evidence/tmp"
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    zero, one, two = (fraction(poly(v)) for v in (0, 1, 2))
+    epsilon, eta = fraction({(1, 0): Q(1)}), fraction({(0, 1): Q(1)})
+    t = minus(one, epsilon)
+    lower_mu = plus(one, times(minus(one, eta), epsilon))
+    upper_mu = plus(one, times(plus(one, eta), epsilon))
+
+    def matrix(mu):
+        return ((minus(zero, mu), mu, one), (one, one, minus(zero, t)))
+
+    A_lower, A_upper = matrix(lower_mu), matrix(upper_mu)
+    c, b = (zero, zero, one), (zero, zero)
+    denominator = minus(one, times(t, lower_mu))
+    y = (divide(one, denominator), divide(lower_mu, denominator))
+    lower_slacks = tuple(minus(dot(column, y), objective) for column, objective in zip(zip(*A_lower), c))
+    assert all(sign(value) >= 0 for value in lower_slacks), "(a): exact dual feasibility"
+    assert [sign(value) for value in lower_slacks] == [0, 1, 0]
+
+    x0 = (zero, zero, zero)
+    ray = (divide(plus(t, divide(one, upper_mu)), two),
+           divide(minus(t, divide(one, upper_mu)), two), one)
+    primal_equalities = tuple(minus(dot(row, x0), rhs) for row, rhs in zip(A_upper, b))
+    ray_equalities = tuple(dot(row, ray) for row in A_upper)
+    alpha_equality = minus(ray[-1], one)
+    assert all(not value[0] for value in primal_equalities + ray_equalities + (alpha_equality,)), "(b): all exact identities"
+    assert all(sign(value) >= 0 for value in x0 + ray), "(b): exact nonnegativity"
+    assert sign(minus(lower_mu, one)) == sign(minus(upper_mu, one)) == 1, "both certificate points lie above mu_max"
+
+    # A(mu) is affine in mu. This single dual family is feasible for EVERY
+    # mu in [0,1], not merely for the rational sample points below. Endpoint
+    # slack nonnegativity proves every intermediate affine slack nonnegative.
+    domain_y = (divide(one, epsilon), divide(one, epsilon))
+    endpoint_slacks = []
+    for mu in (zero, one):
+        slacks = tuple(minus(dot(column, domain_y), objective)
+                       for column, objective in zip(zip(*matrix(mu)), c))
+        assert all(sign(value) >= 0 for value in slacks)
+        endpoint_slacks.append(slacks)
+    slack_mu_coefficients = tuple((at_zero, minus(at_one, at_zero))
+                                 for at_zero, at_one in zip(*endpoint_slacks))
+
+    # Additional rational substitutions corroborate the formal calculation;
+    # they are not the proof of the derivative or of interval-wide feasibility.
+    samples = []
+    for ek, hk in ((8, 3), (12, 4), (16, 5)):
+        e, h = Q(1, 2 ** ek), Q(1, 2 ** hk)
+        lo, hi, load = (evaluate(value, e, h) for value in (lower_mu, upper_mu, t))
+        ys = tuple(evaluate(value, e, h) for value in y)
+        rs = tuple(evaluate(value, e, h) for value in ray)
+        check_a = (-lo * ys[0] + ys[1], lo * ys[0] + ys[1], ys[0] - load * ys[1] - 1)
+        check_b = (-hi * rs[0] + hi * rs[1] + rs[2], rs[0] + rs[1] - load * rs[2])
+        assert all(v >= 0 for v in check_a) and all(v == 0 for v in check_b)
+        assert all(v >= 0 for v in rs) and rs[-1] == 1 and lo > 1 and hi > 1
+        domain_checks = []
+        for mu in (Q(0), Q(1, 4), Q(1, 2), Q(3, 4), Q(1)):
+            values = ((1 - mu) / e, (1 + mu) / e, Q(0))
+            assert all(v >= 0 for v in values)
+            domain_checks.append(dict(mu=qwire(mu), dual_slacks=list(map(qwire, values))))
+        assert 1 / load > 1
+        samples.append(dict(epsilon=qwire(e), eta=qwire(h), t=qwire(load),
+            mu_lower=qwire(lo), mu_upper=qwire(hi), dual_slacks=list(map(qwire, check_a)),
+            ray=list(map(qwire, rs)), ray_equalities=list(map(qwire, check_b)),
+            unrestricted_threshold=qwire(1 / load), domain_samples=domain_checks))
+
+    last = "THEOREM_DOMAIN_COUNTEREXAMPLE_OK lower_dual=1 upper_primal_ray=1 domain_unbounded_set_empty=1 finite_s_contradicted=1"
+    result = dict(format="eab2.c3l4fix.theorem-domain-counterexample.v1", complete=True,
+        source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        python=sys.version.split()[0], imports="standard library only",
+        coefficient_order="[epsilon_degree,eta_degree,exact_numerator/denominator]",
+        ordered_field="Q(eta)(epsilon), 0 < epsilon << eta << 1; no truncation",
+        model=dict(A="[[-mu,+mu,1],[1,1,-t]]", b=["0/1", "0/1"], c=["0/1", "0/1", "1/1"],
+                   mu_max="1/1", base_t="1/1", base_threshold="1/1", attained=True,
+                   path="t=1-epsilon; live=(1,-t), so raw live_y seed=+1", claimed_s="1/1"),
+        lower=dict(mu=wire(lower_mu), determinant_factor=wire(denominator),
+                   dual=list(map(wire, y)), dual_slacks=list(map(wire, lower_slacks))),
+        upper=dict(mu=wire(upper_mu), feasible_point=list(map(wire, x0)), ray=list(map(wire, ray)),
+                   feasible_equalities=list(map(wire, primal_equalities)),
+                   ray_equalities=list(map(wire, ray_equalities)), alpha_equals_one=wire(alpha_equality)),
+        outside_domain=dict(lower_minus_mu_max=wire(minus(lower_mu, one)),
+                            upper_minus_mu_max=wire(minus(upper_mu, one))),
+        domain_proof=dict(dual=list(map(wire, domain_y)),
+            slack_coefficients_ascending_mu=[[wire(v) for v in row] for row in slack_mu_coefficients],
+            endpoint_slacks=[[wire(v) for v in row] for row in endpoint_slacks],
+            reasoning="Every slack is affine in mu and nonnegative at 0 and 1; hence the dual is feasible for all mu in [0,1]. Zero primal is feasible, so all domain LPs are OPTIMAL at 0, never UNBOUNDED.",
+            validity="For every real 0 < epsilon < 1; eta is irrelevant to the domain-wide dual.",
+            threshold="inf(empty)=+infinity in the extended-real convention; otherwise undefined",
+            consequence="D_plus is not the finite rational s=1 certified by the theorem as written."),
+        rational_substitutions=samples, last_line=last)
+    output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    output.with_suffix(".log").write_text(last + "\n", encoding="utf-8")
+    print(last)
+
+
+if __name__ == "__main__":
+    main()
