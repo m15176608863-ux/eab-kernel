@@ -260,3 +260,29 @@ Claude 提供 c8718bb 新鲜树构建/五层差分/全档15056绿及两路验收
 真实净增超限后，仅将旧 C3L4_evidence 的三份 module_coverage、abi_static_repair、checks/mutations、pack_manifest、clarification/history_mapping 与 checks/harness_static_equivalence 共八份 JSON 压为同目录 `.json.gz`，逐字节解压回验后移除原副本。原始 100,295 B → gzip 19,896 B，节省 80,399 B；数据、历史结论与原 SHA 不改写，不升级为本轮通过。
 
 [逐文件路径/字节/SHA 映射](codex/C3L4_fix_evidence/historical_compaction.json) 的 `close_64b499f_gzip` 保存原路径与压缩路径；目录清单和旧 harness 文档链接同步，两份主报告不改。回退只向不存在的原路径解压并核原 SHA，不能覆盖后续修改。未写外部目录，冻结语料/准入不动。
+
+## WO-T2a（2026-10-25）：原BLOCKED交付历史（续裁定前）
+
+本节保留续裁定前的交付叙述；下文“当前166项”“policy不改”均指当时状态，不代表续裁定后的最终状态。原报告、清单和审计字节见[原BLOCKED交付ZIP](file:///D:/eab-evidence/reports/codex/T2a_evidence/ruling_resume_20261025/blocked_delivery_anchor.zip)及[入口SHA](file:///D:/eab-evidence/reports/codex/T2a_evidence/ruling_resume_20261025/intake.json)；当前状态见本节后的续裁定收尾记录。
+
+本单只新增Python路径原语、测试和T2工具；既有数学API、C++/eab2、静态策略及分析器未改。完整记录见[中文报告](file:///D:/eab-wt/cx-e2/reports/codex/T2a_report.md)及[全部交付链接](file:///D:/eab-wt/cx-e2/reports/codex/T2a_evidence/artifacts.md)。**10例数值证书通过不等于工单验收：当前166项冻结静态诊断、旧纯度固定模块计数52与新增后53不一致，收尾全仓快/全档没有执行。**
+
+- [开工源ZIP](file:///D:/eab-evidence/reports/codex/T2a_evidence/baseline_anchor/source.zip)由干净 `239ec30863db52d531531f77003da46fc3441908` 的2398份被跟踪文件逐字节生成；[成员SHA与入口记录](file:///D:/eab-evidence/reports/codex/T2a_evidence/baseline_anchor/manifest.json)。它是字节快照，不是新鲜Git树。
+- [开工H1全档四片](file:///D:/eab-evidence/reports/codex/T2a_evidence/baseline_full/)保存原始日志、收集/执行节点、逐模块监测与源清单；结果以完成的summary为准，不与收尾混称。
+- [完整13条交付证书](file:///D:/eab-evidence/reports/codex/T2a_evidence/certificates/)：10个指定样本全接受；门洞等号/上侧接受、下侧伪造路径拒收。JSON有理数为字符串，保存生产基线提交和实际未提交源SHA；[原生产及独立oracle记录](file:///D:/eab-evidence/reports/codex/T2a_evidence/verification_01/)不覆写，交付版仅规范门洞尾段整数坐标为有理字符串，值/结果相同及双SHA见[序列化映射](file:///D:/eab-evidence/reports/codex/T2a_evidence/certificates/serialization_manifest.json)。仓内仅留[两条固定小子集](file:///D:/eab-wt/cx-e2/tests/data/t2a_escape_replay.json)，测试实际重跑，不钉当前源码哈希。
+- [166项诊断](file:///D:/eab-evidence/reports/codex/T2a_evidence/static_01.json)、[最小复现](file:///D:/eab-evidence/reports/codex/T2a_evidence/static_minimal_repro.json)、[定向验证](file:///D:/eab-evidence/reports/codex/T2a_evidence/targeted_checks/)、[作者QA](file:///D:/eab-evidence/reports/codex/T2a_evidence/author_qa.json)均保留原状态；静态policy字节和总准入数不改。
+- [外部逐文件SHA/路径清单](file:///D:/eab-evidence/reports/codex/T2a_evidence/artifact_manifest.json)覆盖持久证据（不递归列tmp运行副本）；每条`relative_path`相对本单外部根。源快照成员由独立manifest覆盖，tmp中的运行源另按H1 source_manifest定位。
+- [工作树交付审计](file:///D:/eab-wt/cx-e2/reports/codex/T2a_evidence/delivery_audit.json)记录新增/修改清单、净增、UTF-8及原受保护文件字节未变。原证据不删除、不篡改哈希；外部只是本地归档，不是远端备份。
+
+回滚只逐文件对照开工ZIP，不能覆盖后续所有者修改；Codex无commit/push/reset/checkout/stash/worktree/branch写操作。
+
+### WO-T2a 续裁定收尾（2026-10-25，同一239ec30工作树）
+
+- 所有者批准证明缺口逐站审查后，按AST节点和最小外围源码SHA追加 **137项**（生产44、测试辅助93）；rounded/浮点构造汇点准入 **0**。旧3522条、其他策略字段及三静态分析器字节不变。[逐站账本与逐规则计数](file:///D:/eab-wt/cx-e2/reports/codex/T2a_evidence/static_admissions.json)、[报告§10](file:///D:/eab-wt/cx-e2/reports/codex/T2a_report.md#t2a-static-admission-review)、[写入审查记录](file:///D:/eab-evidence/reports/codex/T2a_evidence/ruling_resume_20261025/admission_authoring.json)。纯度仅52→53；历史策略视图总数仅3522→3659配套维护，投影逻辑和历史指纹不变。
+- [收尾快档](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast_r2/summary.json)：9415项；[收尾全档四片](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/summary.json)：15521项。均GREEN、0 failed/skip，收集/分派/实际call节点多重集合相同，69个模块实际执行覆盖完整，现场与导出源前后不变；全档静态原样末行 `exact construction AST gate: 0 violation(s)`。所有原日志、执行记录与源清单在各run目录逐项保存，不拼接运行。
+- 首轮 [resume_final_fast](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast/state.json)因900s上限作废，保留其失败进度和原日志；11项历史计数失败及其机械修正见[修前](file:///D:/eab-evidence/reports/codex/T2a_evidence/ruling_resume_20261025/history_counter_before.json)、[修后](file:///D:/eab-evidence/reports/codex/T2a_evidence/ruling_resume_20261025/history_counter_after.json)。它不计作通过证据。
+- 快档与全档源清单一致；全档[受测字节ZIP](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/tested_source.zip)及[逐成员核验记录](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/tested_source_archive.json)保留运行时版本。运行后只回填报告、归档、交付清单/审计；`src/`、`tests/`、`tools/`及准入账本仍为受测原字节。此为字节导出，**不是所有者新鲜Git树**。
+- 原13条证书JSON及序列化映射共14文件的SHA仍与续工前快照相等；10个指定T1b平移困住样本的286段、858次生产及888次独立oracle核验结论未改。不为文档重算全量冻结数值，也不把它们升级为刚体临界公差或SE(2)困住结论。
+- 当前[逐文件SHA/路径清单](file:///D:/eab-evidence/reports/codex/T2a_evidence/artifact_manifest.json)覆盖本次持久外部证据（排除tmp及清单自身）和仓内交付；源ZIP成员另由对应source_manifest覆盖。[交付审计](file:///D:/eab-wt/cx-e2/reports/codex/T2a_evidence/delivery_audit.json)重新核对完整日志、节点、模块覆盖、受测代码、冻结证书、UTF-8无BOM与净增≤5MB；4项原有文件修改严格限于归档登记、准入policy、纯度计数及历史计数视图。
+
+本单执行完成；所有者新鲜Git树、一路独立对抗验收及T1b正式追加勘误仍由Claude负责。未commit、未改C++或既有数学API，未干预非本代理启动的进程。外部归档是本地保存而非远程备份；回滚必须先对照SHA并保护所有者后续修改。

@@ -1,0 +1,258 @@
+{
+  "status": "DONE_OWNER_REVIEW_PENDING",
+  "base_commit": "239ec30863db52d531531f77003da46fc3441908",
+  "baseline_audit": "GREEN",
+  "baseline_nodes": 15421,
+  "unchanged_preexisting_files": 2394,
+  "changed_preexisting": [
+    "reports/EVIDENCE_ARCHIVE.md",
+    "tests/test_kernel_purity.py",
+    "tools/exact_construction_policy.json",
+    "tools/policy_history_view.py"
+  ],
+  "policy_unchanged": false,
+  "policy_change": "owner-approved exact-reuse site reviews only",
+  "historical_waivers_unchanged": true,
+  "other_policy_fields_unchanged": true,
+  "static_admissions": {
+    "total": 137,
+    "src": 44,
+    "tests": 93,
+    "by_rule": {
+      "closed-import-call": 26,
+      "closed-unknown-member": 10,
+      "closed-method-call": 12,
+      "closed-dynamic-call": 8,
+      "closed-runtime-reflection": 1,
+      "closed-unknown-call": 1,
+      "closed-unproved-call": 79
+    },
+    "src_by_rule": {
+      "closed-import-call": 4,
+      "closed-unknown-member": 4,
+      "closed-method-call": 4,
+      "closed-dynamic-call": 2,
+      "closed-runtime-reflection": 1,
+      "closed-unknown-call": 1,
+      "closed-unproved-call": 28
+    },
+    "tests_by_rule": {
+      "closed-import-call": 22,
+      "closed-method-call": 8,
+      "closed-unproved-call": 51,
+      "closed-unknown-member": 6,
+      "closed-dynamic-call": 6
+    }
+  },
+  "analyzer_hashes": {
+    "tools/check_exact_construction.py": "cc6143a27369f1247718b2e48ae80f3afb7b5060b23de845437a53b5a0768517",
+    "tools/exact_construction_subset.py": "35e6262a7c36ea5f20679f047dd6f030feeb6fcbe8be7813573212829b503274",
+    "tools/exact_construction_flow.py": "814f00ab607726c7753fa86ddedc08fd728eb48c4e57b8a61dda55140c3cd1db"
+  },
+  "analyzers_unchanged": true,
+  "source_sha256": "14bfd823dda1c438ffd136128f73545236d5e2bbbb428a3b1eb5e09efc79bbdf",
+  "frozen_certificate_hashes_unchanged": true,
+  "frozen_certificate_files": 14,
+  "purity_change": "52 to 53 for se2_paths only",
+  "protected_math_apis_unchanged": true,
+  "cpp_unchanged": true,
+  "owner_review_pending": true,
+  "no_git_writes": true,
+  "fresh_git_checkout": false,
+  "utf8_no_bom": true,
+  "mixed_newlines": false,
+  "canonical_certificate_coordinates_are_strings": true,
+  "missing_local_links": [],
+  "added_files": [
+    {
+      "path": "reports/codex/T2a_evidence/artifacts.md",
+      "bytes": 5662,
+      "sha256": "027ae2f995b29127b3aab303b98e24b62fe98259d08977a6867790fee24afc9b"
+    },
+    {
+      "path": "reports/codex/T2a_evidence/static_admissions.json",
+      "bytes": 139756,
+      "sha256": "571931cc45b1dd393f414c3b72346bbccf39e7a71742373659ba4f3e452f3a33"
+    },
+    {
+      "path": "reports/codex/T2a_evidence/summary.json",
+      "bytes": 10304,
+      "sha256": "49df25df43f03a6c4c301e25450c9804e1866df8031fc22590962bc1db12ddee"
+    },
+    {
+      "path": "reports/codex/T2a_report.md",
+      "bytes": 32664,
+      "sha256": "898afb8caa5c1ff6ef2bce7f7b7a0d17bdc607f627c2958c9a54a954ef974321"
+    },
+    {
+      "path": "src/eab/kernel2d/se2_paths.py",
+      "bytes": 13796,
+      "sha256": "14bfd823dda1c438ffd136128f73545236d5e2bbbb428a3b1eb5e09efc79bbdf"
+    },
+    {
+      "path": "tests/data/t2a_escape_replay.json",
+      "bytes": 29699,
+      "sha256": "bf9ffbf76792abd344906448478686725322b2ba806a843b6c52bdd0d22a7168"
+    },
+    {
+      "path": "tests/t2a_independent_oracle.py",
+      "bytes": 6247,
+      "sha256": "44b480d44f3a10a77406768da30e4e6f4bb9c1e0cf51c78659bd0a132b9d160e"
+    },
+    {
+      "path": "tests/t2a_oracle_audit.py",
+      "bytes": 4115,
+      "sha256": "ca2d2bb6b4e422d4bbe8e79fd07039b406d7de11605f10b2d71eb12999425f91"
+    },
+    {
+      "path": "tests/t2a_truth_geometry.py",
+      "bytes": 2033,
+      "sha256": "f58bab8bc77b72efffc6b32d7c1a6885c3a2791e683c9738fb87e51146c2a896"
+    },
+    {
+      "path": "tests/test_t2a_escape.py",
+      "bytes": 8296,
+      "sha256": "338a3fe423c5373687f350541e4a481507f2af1e515109450620a83062325722"
+    },
+    {
+      "path": "tests/test_t2a_metamorphic.py",
+      "bytes": 4820,
+      "sha256": "8d7e070f439d0ad5c54b60b2afead096913bc3b022b6db69673638c70ecc6c73"
+    },
+    {
+      "path": "tests/test_t2a_mutations.py",
+      "bytes": 4393,
+      "sha256": "e91a92e5908e6120cfb743629eecf211306ac827d6f829ccd3de14d9f5c35607"
+    },
+    {
+      "path": "tests/test_t2a_oracle.py",
+      "bytes": 5481,
+      "sha256": "22f967f09c23d6ac2cb34f752ec1f95edc8abb851d359b39992c96f157b3f936"
+    },
+    {
+      "path": "tests/test_t2a_penetration.py",
+      "bytes": 7555,
+      "sha256": "e5e2353d3b579c487fe4fa4d8ac1b7e724c2d9b00d5a6234c8e3431d44798c7a"
+    },
+    {
+      "path": "tests/test_t2a_policy_history.py",
+      "bytes": 1955,
+      "sha256": "c5acfd67c26cc7aa4b6de165bfe3b07656bc4db31938b7a7a547aff21ea39e6a"
+    },
+    {
+      "path": "tests/test_t2a_replay.py",
+      "bytes": 2557,
+      "sha256": "823b4408c530b3ca8be0e447cb94e0385a8891e9ced5d73387f233c20337efdd"
+    },
+    {
+      "path": "tests/test_t2a_static_admissions.py",
+      "bytes": 13635,
+      "sha256": "f446b5ba6fecc15e77482c2f84f1e2c66937d84461d8f3814cf09ba35ef387e0"
+    },
+    {
+      "path": "tests/test_t2a_tools.py",
+      "bytes": 3206,
+      "sha256": "e215a49f637fc4332dc9778d03c828f12e4b2923be6f43cd96a18948cb3d4b38"
+    },
+    {
+      "path": "tests/test_t2a_truth.py",
+      "bytes": 5679,
+      "sha256": "73026d8046c2fc16a1c41ff225d37daac49fae937c88e2b5dd922490474427ad"
+    },
+    {
+      "path": "tools/t2_delivery_audit.py",
+      "bytes": 16535,
+      "sha256": "5475aad8eca29b7e2cb62593e4f75b01b096bdc1804a411cc6f9a1875bd4346a"
+    },
+    {
+      "path": "tools/t2_performance.py",
+      "bytes": 6878,
+      "sha256": "afbf8e294f4a6da74056a85b0ecebfda6621ef764f7b27758cd5e9ad92680561"
+    },
+    {
+      "path": "tools/t2_run_gates.py",
+      "bytes": 7486,
+      "sha256": "0252d2f75d4292ad7265f8994a14c72299edad7c3914b54df406760d2d0ea667"
+    },
+    {
+      "path": "tools/t2_se2_diagnostics.py",
+      "bytes": 7063,
+      "sha256": "204b3de38594ab8fe4391f5ef1ac730a1421594b6a4ce887e6698859fe2a3dd4"
+    },
+    {
+      "path": "tools/t2_se2_grid.py",
+      "bytes": 13957,
+      "sha256": "c69df27c4b69212668d938488e6d07dc8ab07ba458a0cdfc38963d3ff756426d"
+    },
+    {
+      "path": "tools/t2_static_conflict.py",
+      "bytes": 6025,
+      "sha256": "b72ebaa95f2df1e39007c789d4521fd3f70e03bddb1cd366e527d3a418be7e65"
+    },
+    {
+      "path": "tools/t2_verify_evidence.py",
+      "bytes": 8286,
+      "sha256": "e94f5ee40370e9f7294a81247fd36cb057aa6d306bf59ce83744095accfdb602"
+    }
+  ],
+  "modified_files": [
+    {
+      "path": "reports/EVIDENCE_ARCHIVE.md",
+      "bytes": 51085,
+      "sha256": "a586517f9ad54af480050c1109183ce7ad6e1288636fc79096399db0889a58f4"
+    },
+    {
+      "path": "tests/test_kernel_purity.py",
+      "bytes": 8163,
+      "sha256": "54e1defaf6f3c13072baa7d9331de6b2de49a1f215c962b543d1528ac1ff8875"
+    },
+    {
+      "path": "tools/exact_construction_policy.json",
+      "bytes": 3777545,
+      "sha256": "621df0519431552c8cea255cf756f1bcb5c3acc90cb301ff0048649b1916cc5d"
+    },
+    {
+      "path": "tools/policy_history_view.py",
+      "bytes": 2236,
+      "sha256": "55216ddc47fb2624ebc59c91c556c7e7aa66ec84a4a56405a25bc41c3570cff8"
+    }
+  ],
+  "tracked_byte_delta": 114053,
+  "local_net_bytes_excluding_this_audit": 482136,
+  "external_manifest": "file:///D:/eab-evidence/reports/codex/T2a_evidence/artifact_manifest.json",
+  "final_repository_fast": {
+    "audit": "GREEN",
+    "collected": 9415,
+    "executed": 9415,
+    "shard_count": 1,
+    "skip_count": 0,
+    "failed_count": 0,
+    "node_multisets_equal": true,
+    "module_coverage_complete": true,
+    "summary": "file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast_r2/summary.json",
+    "last_lines": [
+      "9415 passed in 1451.20s (0:24:11)"
+    ],
+    "static_last_line": null
+  },
+  "final_repository_full": {
+    "audit": "GREEN",
+    "collected": 15521,
+    "executed": 15521,
+    "shard_count": 4,
+    "skip_count": 0,
+    "failed_count": 0,
+    "node_multisets_equal": true,
+    "module_coverage_complete": true,
+    "summary": "file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/summary.json",
+    "last_lines": [
+      "3881 passed in 1458.26s (0:24:18)",
+      "3880 passed in 1863.95s (0:31:03)",
+      "3880 passed in 1534.40s (0:25:34)",
+      "3880 passed in 1949.65s (0:32:29)"
+    ],
+    "static_last_line": "exact construction AST gate: 0 violation(s)"
+  },
+  "local_net_bytes": 490638,
+  "within_5mb_net_budget": true
+}
