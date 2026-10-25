@@ -46,7 +46,7 @@ def test_local_review_fixture(monkeypatch):
 
 
 def test_unrelated_source_comment_keeps_real_repository_gate_green(tmp_path):
-    copy_root = tmp_path / "comment_repository_copy"
+    copy_root = tmp_path / "repo"
     for folder in ("src", "tests", "tools"):
         shutil.copytree(ROOT / folder, copy_root / folder)
     assert gate.scan_repository(copy_root) == [], "R12FIXb baseline must be green without policy regeneration"
