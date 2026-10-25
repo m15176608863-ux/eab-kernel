@@ -1,6 +1,8 @@
 # WO-T2b-V：SE(2) 笼证书独立核验器报告
 
-**一句话结论：按所有者续裁定，P0条件组自检与隔离范围已闭合，八例独立燕尾腐蚀及规范化实例已补齐，本单P0/P1全部完成；相关快档与本单新文件静态门通过，生产对账及新鲜树全仓门仍由所有者另行执行。**
+**一句话结论：验收返修完成，核验器源码零改动；521项相关测试通过，95项单点变异均已复跑，除有前置依赖证明的接受集合等价项外全部被语义测试杀死。**
+
+> 阅读口径：§1～11保留上一轮交付事实（当时基线与文件状态），不冒充本轮执行结果；2026-10-26验收返修的当前基线、修改范围、测试和变异结果以§12为准。所有者现已将前轮成果提交为6d313f1，本会话仍未commit。
 
 ## 1. 合同、范围与回退锚点
 
@@ -542,5 +544,218 @@ exact construction AST gate: 0 violation(s)
 ```
 
 证据：[测试完整日志](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/continuation/pytest_final.log)；[JUnit逐节点](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/continuation/pytest_final.xml)；[机器测试结果](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/continuation/test_results.json)；[新文件静态逐文件结果](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/continuation/static_final.json)；[确切命令及环境](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/continuation/verification_command.json)。pytest始终禁cacheprovider、显式basetemp，TEMP/TMP均指向本单外部tmp，禁写pyc。前轮性能未重跑，核验器源码SHA256不变。
+
+## 12. 验收返修（2026-10-26）
+
+### 12.1 裁定、边界与当前基线
+
+所有者验收提供：新鲜树全仓静态0违例、相关测试加纯度/文档指针门528 passed，8个燕尾实例与T2a证书几何8/8相等；差分9042例无核验错误、两边接受2191份相同且独立真值确认困住；逐行健全性109攻击均按预期拒收。**这些是所有者提供的验收结果，不是本会话重跑结果。** 本轮只修复变异牙不足，不重新实施生产对账。
+
+当前基线`6d313f1a22520ad066bfc1c67ab8dc1d5175404d`、分支`t2b-v`，开工只读Git核对工作树干净；[回退快照与范围合同](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/baseline.json)。仅修改本单旧测试的断言、新增测试与JSON、更新本报告及外部证据；不改核验器、不改引理、不改三个静态分析器或policy，无commit/checkout/reset等Git写操作，无结束他人进程。核验器SHA256仍为`a7c08891a29a562ac3c10378628fb04f2d8c6c4bb52594d78d4990b8f62304ad`。
+
+只读取准许的独立实现、引理、几何与新给定核查工具/数据；未查看任何生产核验器、kernel2d实现或另一工作树。为执行所有者工具，按只读Git路径清单将仓库字节复制到本单证据下私有目录，不展示/分析禁读源码；没有.git，不声称是新鲜Git工作树。工具只在私有worker修改核验器副本，每次结束恢复；根工作树核验器前后哈希相同。
+
+### 12.2 五重大与可能重大：独立首错反例
+
+下表每一项都已实测**真核验器按指定condition/check拒收，对应单项变异接受**；不是仅用另一错误遮蔽，也不是仅靠静态/源码哈希杀伤。五个high-room核查输入只做紧凑JSON序列化，解析后的实例与证书保持相等；其余独立构造详见复现脚本。V601/V607共用同一个起点碰撞、Γ不过原点且绕数1的反例。
+
+| 变异 | 预期条件/check | 实际条件/check | 对应单变异 | 具名测试 | 数据 |
+|---|---|---|---|---|---|
+| A17 | V0/homotopy_vertex_count | V0/homotopy_vertex_count | OK | test_A17_growing_homotopy_vertex_count_cannot_hide_reversed_tail | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/major_A17.cert.json) |
+| V503 | V5/homotopy_strict | V5/homotopy_strict | OK | test_V503_last_quadrilateral_cannot_hide_a_free_chord_sweep | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/major_V503.cert.json) |
+| V304 | V3/disk_polygon | V3/disk_polygon | OK | test_V304_last_invariant_disk_vertex_is_not_an_unchecked_spike | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/major_V304.cert.json) |
+| V203 | V2/rotated_containment | V2/rotated_containment | OK | test_V203_last_rotated_kernel_vertex_is_not_an_unchecked_spike | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/major_V203.cert.json) |
+| V105 | V1/rotation_bound | V1/rotation_bound | OK | test_V105_disk_first_mixed_kernel_still_requires_rotation_bound | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/major_V105.cert.json) |
+| A05 | V0/radius_bound | V0/radius_bound | OK | test_acceptance_a05_radius_checks_last_vertex_not_only_prefix | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/geometry_a05.cert.json) |
+| V302 | V3/disk_host | V3/disk_host | OK | test_acceptance_v302_disk_host_requires_nonnegative_support | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/geometry_v302.cert.json) |
+| V601 | V6/start_free | V6/start_free | OK | test_acceptance_v601_v607_start_collision_without_origin_crossing | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/geometry_start_free.cert.json) |
+| V607 | V6/start_free | V6/start_free | OK | test_acceptance_v601_v607_start_collision_without_origin_crossing | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/geometry_start_free.cert.json) |
+| A07 | V0/partition_disjoint | V0/partition_disjoint | OK | test_acceptance_a07_overlap_rejected_even_when_area_sum_matches | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/geometry_a07.cert.json) |
+| A08 | V0/partition_boundary | V0/partition_boundary | OK | test_acceptance_a08_boundary_rejected_even_when_area_sum_matches | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/geometry_a08.cert.json) |
+| V502 | V5/homotopy_strict | V5/homotopy_strict | OK | test_homotopy_quad_must_check_its_fourth_vertex_v502 | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/forged_V502.cert.json) |
+| V506 | V5/homotopy_strict | V5/homotopy_strict | OK | test_capped_chain_interval_side_mapping_must_not_swap_v506 | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/forged_V506.cert.json) |
+| J14 | V0/ref_kind | V0/ref_kind | OK | test_J14_unknown_two_item_reference_cannot_fall_through_to_right | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/schema_J14.cert.json) |
+| V205 | V2/rotated_containment | V2/rotated_containment | OK | test_chart_two_host_sign_must_not_be_discarded_v205 | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/forged_V205.cert.json) |
+| V103 | V1/rotation_bound | V1/rotation_bound | OK | test_rotation_bound_must_include_lower_endpoint_v103 | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/forged_V103.cert.json) |
+| V608 | V6/start_winding | V6/start_winding | OK | test_acceptance_v608_winding_uses_selected_interval_not_first | [证书](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/geometry_v608.cert.json) |
+
+具体分离：A05仅最后顶点超半径界；A07两个内部重叠片的面积和恰等于母体；A08剪切片与母体等面积但越出母体边；V302全部平方距离界成立而存在负支撑；V502用同一片对的四点结果为[真,真,真,假]；V506正确I1判失败，错误换I2则四点全真；V103有严格夹界上端界≤ρ²<下端界；V608真实起始区间为2且绕数0，区间1绕数1。
+
+完整单变异记录：[五重大与文法侧别](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/forgery_tests/independent_kills.json)；[几何7项](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/geometry/geometry_mutant_acceptance.json)；[转动与连接](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/rotation/rotation_results.json)；[四点/端点精确算术](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/rotation/geometric_witness_audit.json)。独立轻量复审：[18项质量复审](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/quality_review.md)（不冒充正式新一轮所有者验收）。
+
+### 12.3 次要变异及新增正例
+
+| 变异 | 补门内容 | 实际杀伤类型 |
+|---|---|---|
+| J07 | JSON整数半径2不能当有理字符串 | 真V0/rational_type；变异OK |
+| J15 | 见证额外第三项 | 真V0/witness_arity；变异OK |
+| J16 | 点坐标额外第三项 | 真V0/point_length；变异OK |
+| C05 | 封口链总长恰为4 | 真CHAIN/chain_span；变异推迟至V5/homotopy_strict，属于首错杀而非接受 |
+| C09 | 重复一份完整合法封口 | 真CHAIN/cap_set；变异OK |
+| A22 | 多一份结构合法区间 | 真V0/interval_count；变异IndexError，属于异常杀而非接受 |
+| A24 | start_interval=0 | 真V0/start_index；变异CHAIN/start_interval_contains_zero，属于首错杀而非接受 |
+| A13 | 自接触双瓣母体，三角片面积和恰相等 | 真V0/simple_ring；变异OK，不再列为等价 |
+| V505 | 起/末封口分别使用不存在的left/right | 两例真V5/reference_side；变异均OK |
+| V106 | 非零u_c正例 | 真正例OK；变异V1/rotation_bound误拒 |
+| V507 | 闭链首尾exact正例 | 真正例OK；变异V5/exact_chart误拒 |
+
+A13新增远处未参与见证的障碍母环A=(100,0)、B=(102,0)、C=(102,2)、D=(101,0)、E=(100,2)：D在非相邻边AB内部，顶点互异且无相邻回折；分片ADE与DBC内部不交，各面积1，总面积恰等于母体有向面积2。删非相邻相交检查即接受；[A13结果](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/topology_A13.result.json)。A22/A24/C05明确不称为变异接受；它们通过接口/首错合同的断言杀死。V106/V507只需正例误拒即可证明非等价，不编造不可能的反例接受。
+
+| 正例要求 | 具名测试 | 实际 | 证书 |
+|---|---|---|---|
+| u_c≠0且rotated片实际用于V4 | test_nonzero_chart_centers_with_used_rotated_kernels_accept | OK | [asymmetric_closed](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/asymmetric_closed.cert.json) |
+| 非中心对称移动体在图2使用rotated片 | test_noncentrally_symmetric_body_chart_two_rotated_kernels_accept | OK | [asymmetric_closed](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/asymmetric_closed.cert.json) |
+| N=2封口链、两区间内核不同 | test_two_interval_low_room_capped_chain_accepts | OK | [split_low_room](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/split_low_room.cert.json) |
+| 内部断点与首尾均用exact连接 | test_internal_and_closed_seam_exact_connections_accept | OK | [asymmetric_closed](file:///D:/eab-wt/cx-t2bv/tests/data/t2b_acceptance/asymmetric_closed.cert.json) |
+
+`asymmetric_closed`含64个区间；独立移动体为(1,0)、(3/4,3/4)、(0,1)、(−1,0)、(0,−1)五边形，障碍来自许可diamond_plates真值函数，(−3/4,−3/4)不在顶点集，确非中心对称。每个区间u_c非零，两图均有被V4实际引用的rotated片，所有内部连接及首尾连接用exact。`split_low_room`实例由本单low_room独立构造，断点−1/23、0、1/23，两段内核不同且封口接受。测试逐值核对JSON实例与独立构造，正例不是照抄核查方实例。[生成方法与边界说明](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/rotation/rotation_notes.md)。
+
+### 12.4 旧测试首错补强与N≤0口径
+
+已给现有起点自由两项、划分四项、顶点数两项及障碍缺片一项，共9项测试补明确`where.check`断言；`partition_interior_point`原测试已有该断言。不能再以另一个V0/V6失败冒充目标检查有牙。分别涉及`start_free`、`partition_area`、`partition_disjoint`、`partition_boundary`、`homotopy_vertex_count`、`partition_nonempty`。
+
+具名新增`test_v0_single_zero_breakpoint_rejects_start_index_before_chain_nonempty`将断点设为["0"]、intervals/links/caps为空、start_interval=1，钉住**V0/start_index**。因为N=0时无整数n0满足1≤n0≤N，V0在CHAIN之前拒收；CHAIN的N≥1检查不可达，保持既有行为、不改引理或核验器。
+
+### 12.5 全部95项变异结果与等价证明
+
+执行所有者提供且SHA256逐字相同的`mutants.py`、`run_mutants.py`，在自有仓库字节副本中逐个应用全部95项替换；每个变异运行全部521个测试节点，累计49495节点，0 skip，节点多重集合逐次核对一致。所有被杀项至少有一个非静态语义测试失败，**静态/hash-only杀伤为0**。测试及数据在全跑后与副本清单哈希一致。
+
+按所给summary.json逐项统计，原文件含36个n_failed=0条目（与验收文字中的33不同，保留原文件、不改写历史数字）；本轮以95项逐项结果为准。当前88项杀死、7项等价存活、0未解释存活。
+
+| ID | 检查 | 判定 | 非静态测试失败数 | 首个语义杀伤测试 / 等价依据 |
+|---|---|---|---:|---|
+| J01 | duplicate_key | 杀死 | 6 | test_t2b_v_json_parser::test_json_parser_rejects_duplicate_decoded_keys_at_every_depth[{"x":1,"x":2}] |
+| J02 | integer_token | 杀死 | 2 | test_t2b_v_json_parser::test_json_parser_rejects_noncanonical_raw_number_tokens[00] |
+| J03 | json_input | 杀死 | 2 | test_t2b_v_json_parser::test_json_parser_rejects_malformed_json_syntax[true false] |
+| J04 | rational_grammar | 杀死 | 8 | test_t2b_v_schema::test_noncanonical_rational_rejected[1/-2] |
+| J05 | rational_grammar(len) | 杀死 | 1 | test_t2b_v_schema::test_rational_decoded_length_limit |
+| J06 | rational_canonical | 杀死 | 1 | test_t2b_v_schema::test_noncanonical_rational_rejected[3/1] |
+| J07 | rational_type | 杀死 | 1 | test_t2b_v_acceptance_schema::test_J07_valid_radius_as_json_integer_is_rejected_as_rational_type |
+| J08 | integer_type(bool) | 杀死 | 12 | test_t2b_v_schema::test_index_type_nonnegative_and_bool_exclusion[True-start] |
+| J09 | integer_type(neg) | 杀死 | 2 | test_t2b_v_schema::test_index_type_nonnegative_and_bool_exclusion[-1-at] |
+| J10 | missing_key | 杀死 | 15 | test_t2b_v_schema::test_every_top_level_key_required[format] |
+| J11 | unknown_key | 杀死 | 8 | test_t2b_v_schema::test_unknown_keys_rejected_at_every_object_schema[top] |
+| J12 | format | 杀死 | 1 | test_t2b_v_schema::test_unknown_fixed_tags_are_v0[format] |
+| J13 | chain_kind | 杀死 | 1 | test_t2b_v_schema::test_unknown_fixed_tags_are_v0[chain] |
+| J14 | ref_kind | 杀死 | 1 | test_t2b_v_acceptance_schema::test_J14_unknown_two_item_reference_cannot_fall_through_to_right |
+| J15 | witness_arity | 杀死 | 1 | test_t2b_v_acceptance_schema::test_J15_extra_witness_entry_is_not_silently_ignored |
+| J16 | point_length | 杀死 | 1 | test_t2b_v_acceptance_schema::test_J16_extra_point_coordinate_is_not_silently_ignored |
+| A01 | instance_binding | 杀死 | 11 | test_t2b_v_chain::test_v0_geometry_binding_rejects_cyclic_shift |
+| A02 | instance_binding(obst) | 杀死 | 2 | test_t2b_v_schema::test_geometry_binding_rejects_cyclic_reindexing[obstacles] |
+| A03 | radius_positive | 杀死 | 1 | test_t2b_v_geometry::test_v0_negative_radius_of_needle |
+| A04 | radius_bound | 杀死 | 7 | test_t2b_v_acceptance_geometry::test_acceptance_a05_radius_checks_last_vertex_not_only_prefix |
+| A05 | radius_bound(last) | 杀死 | 1 | test_t2b_v_acceptance_geometry::test_acceptance_a05_radius_checks_last_vertex_not_only_prefix |
+| A06 | partition_area | 杀死 | 1 | test_t2b_v_geometry::test_v0_partition_missing_piece_area |
+| A07 | partition_disjoint | 杀死 | 2 | test_t2b_v_acceptance_geometry::test_acceptance_a07_overlap_rejected_even_when_area_sum_matches |
+| A08 | partition_boundary | 杀死 | 3 | test_t2b_v_acceptance_geometry::test_acceptance_a08_boundary_rejected_even_when_area_sum_matches |
+| A09 | partition_interior_point | 杀死 | 1 | test_t2b_v_geometry::test_v0_partition_mean_must_be_strictly_inside_parent |
+| A10 | partition_nonempty | 杀死 | 1 | test_t2b_v_chain::test_v0_obstacle_without_any_partition_piece |
+| A11 | ring_distinct | 等价 | 0 | 凸环若重复顶点：重复不相邻时，将其中一个视为另一个起边的其余顶点，叉积为 0；重复相邻时该边长为 0，对任一其余顶点叉积仍为 0，均违背 strict_convex_ring。简单环若重复不相邻顶点，其从重复点出发的两条不相邻边相交。若重复相邻顶点且 k>=4，则零边前后两条边不相邻、在该点相交；若 k=3，则三个点中至多两个不同，有向面积为 0。故重复顶点总由剩余门拒收；无重复者原 guard 恒真。 |
+| A12 | strict_convex_ring | 杀死 | 1 | test_t2b_v_geometry::test_v0_ccw_piece_has_collinear_triple |
+| A13 | simple_ring | 杀死 | 1 | test_t2b_v_acceptance_topology::test_a13_nonadjacent_self_contact_with_exact_partition_is_rejected |
+| A14 | ring_positive_area | 杀死 | 1 | test_t2b_v_geometry::test_v0_simple_mother_needs_positive_signed_area |
+| A15 | loop_closed | 杀死 | 3 | test_t2b_v_chain::test_v0_barrier_requires_explicit_closing_vertex |
+| A16 | loop_length | 杀死 | 1 | test_t2b_v_geometry::test_v0_loop_needs_at_least_one_explicit_segment |
+| A17 | homotopy_vertex_count | 杀死 | 1 | test_t2b_v_acceptance_major::test_A17_growing_homotopy_vertex_count_cannot_hide_reversed_tail |
+| A18 | homotopy_length | 杀死 | 3 | test_t2b_v_chain::test_v0_link_must_have_at_least_two_lines |
+| A19 | homotopy_witness_rows | 杀死 | 1 | test_t2b_v_schema::test_witnesses_mandatory_exact_shape[short-link] |
+| A20 | homotopy_witness_count | 杀死 | 1 | test_t2b_v_schema::test_quadrilateral_witness_row_exact_shape[short] |
+| A21 | barrier_witness_count | 杀死 | 1 | test_t2b_v_schema::test_witnesses_mandatory_exact_shape[short-interval] |
+| A22 | interval_count | 杀死 | 1 | test_t2b_v_acceptance_schema::test_A22_extra_otherwise_valid_interval_is_rejected_before_chart_indexing |
+| A23 | kernel_nonempty | 等价 | 0 | 每区间屏障至少两顶点，故至少一段；barrier_witness_count 要求见证数恰等于段数，因此至少一项见证。其内核下标须满足 0<=k<len(pieces)。若 pieces 为空，此不等式无解，即使 kernel_nonempty 被删除仍在 V0/index_range 拒收。非空时原 guard 恒真。 |
+| A24 | start_index | 杀死 | 1 | test_t2b_v_acceptance_schema::test_A24_zero_start_interval_is_v0_not_later_chain_rejection |
+| A25 | at_index | 杀死 | 1 | test_t2b_v_schema::test_index_out_of_bounds_is_v0[at] |
+| A26 | disk_radius_positive | 杀死 | 1 | test_t2b_v_geometry::test_v0_nonnull_disk_radius_must_be_positive |
+| A27 | nonzero_axis | 等价 | 0 | SAT 轴仅来自合法严格凸环边，或合法简单母环的一条边（作为两端点线段）；这些边端点不同，法向 (dy,-dx) 必非零。体坐标平移、世界坐标平移及精确转动都是单射，保持边非零。允许重复点/零长段的屏障与同伦折线只作为平移查询点，不作为 _axes 的环参数。故通过剩余环门且到达完整接受路径的所有轴均非零，删除 guard 不扩张接受集合。 |
+| A28 | index_range(exact) | 杀死 | 1 | test_t2b_v_schema::test_index_out_of_bounds_is_v0[exact] |
+| C01 | breakpoints_increasing | 等价 | 0 | 同一区间的两个端点均减去同一个中点选定图偏移 o，所以 u_plus-u_minus=lambda_upper-lambda_lower。剩余 interval_chart 要求 -1<=u_minus<u_plus<=1，直接推出 lambda_lower<lambda_upper；相等端点仍失败。因此 < 改 <= 不会新增被接受区间。 |
+| C02 | interval_chart | 杀死 | 2 | test_t2b_v_chain::test_chain_interval_crosses_chart_boundary_one |
+| C03 | interval_chart(upper) | 杀死 | 1 | test_t2b_v_chain::test_chain_interval_crosses_chart_boundary_one |
+| C04 | chain_span(closed) | 杀死 | 1 | test_t2b_v_chain::test_chain_closed_total_span_not_four |
+| C05 | chain_span(capped) | 杀死 | 1 | test_t2b_v_chain::test_chain_capped_total_span_four_is_strictly_forbidden |
+| C06 | start_interval_contains_zero | 杀死 | 2 | test_t2b_v_chain::test_chain_start_interval_does_not_contain_zero |
+| C07 | capped_zero_interior | 杀死 | 1 | test_t2b_v_chain::test_chain_zero_at_cap_endpoint_not_strictly_inside_arc |
+| C08 | link_set | 杀死 | 1 | test_t2b_v_chain::test_chain_duplicate_link_item |
+| C09 | cap_set | 杀死 | 1 | test_t2b_v_acceptance_schema::test_C09_duplicate_valid_cap_is_not_accepted_as_an_at_set |
+| C10 | link_endpoints(right) | 杀死 | 1 | test_t2b_v_chain::test_chain_link_final_line_differs_from_right_barrier |
+| C11 | link_endpoints(seam) | 杀死 | 4 | test_t2b_v_geometry::test_v4_loop_vertex_in_free_region |
+| C12 | cap_start | 杀死 | 2 | test_t2b_v_chain::test_chain_start_cap_first_line_differs_from_first_barrier |
+| C13 | cap_constant | 杀死 | 1 | test_t2b_v_chain::test_chain_cap_final_line_is_not_constant |
+| C14 | chain_nonempty | 等价 | 0 | V0 在进入 CHAIN 前要求数学下标 n0 满足 1<=n0<=N，其中 N=len(breakpoints)-1。这个整数存在即推出 N>=1。若 N<=0，start_index 已拒；畸形字段先由解码门拒。因此到达可接受 CHAIN 的输入上 chain_nonempty 恒真。 |
+| V101 | rho_nonnegative | 杀死 | 7 | test_t2b_v_exact_geometry::test_json_order_places_rotated_piece_failure_before_rho_if_piece_is_first |
+| V102 | rotation_bound | 杀死 | 5 | test_t2b_v_acceptance_major::test_V105_disk_first_mixed_kernel_still_requires_rotation_bound |
+| V103 | rotation_bound(u-) | 杀死 | 1 | test_t2b_v_acceptance_rotation::test_rotation_bound_must_include_lower_endpoint_v103 |
+| V104 | rotation_bound(factor) | 杀死 | 3 | test_t2b_v_acceptance_rotation::test_rotation_bound_must_include_lower_endpoint_v103 |
+| V105 | rotation_bound(mixed) | 杀死 | 2 | test_t2b_v_acceptance_major::test_V105_disk_first_mixed_kernel_still_requires_rotation_bound |
+| V106 | rotation_bound(center) | 杀死 | 10 | test_t2b_v_acceptance_geometry::test_acceptance_v608_winding_uses_selected_interval_not_first |
+| V201 | rotated_containment | 杀死 | 9 | test_t2b_v_acceptance_major::test_V203_last_rotated_kernel_vertex_is_not_an_unchecked_spike |
+| V202 | rotated_containment(sign) | 杀死 | 2 | test_t2b_v_acceptance_major::test_V203_last_rotated_kernel_vertex_is_not_an_unchecked_spike |
+| V203 | rotated_containment(last) | 杀死 | 1 | test_t2b_v_acceptance_major::test_V203_last_rotated_kernel_vertex_is_not_an_unchecked_spike |
+| V204 | rotated_containment(uc) | 杀死 | 25 | test_t2b_v_acceptance_geometry::test_acceptance_v608_winding_uses_selected_interval_not_first |
+| V205 | rotated_containment(sign2) | 杀死 | 4 | test_t2b_v_acceptance_rotation::test_nonzero_chart_centers_with_used_rotated_kernels_accept |
+| V206 | rotated_containment(pieces) | 杀死 | 5 | test_t2b_v_acceptance_rotation::test_chart_two_host_sign_must_not_be_discarded_v205 |
+| V301 | disk_host | 杀死 | 8 | test_t2b_v_acceptance_geometry::test_acceptance_v302_disk_host_requires_nonnegative_support |
+| V302 | disk_host(sign) | 杀死 | 1 | test_t2b_v_acceptance_geometry::test_acceptance_v302_disk_host_requires_nonnegative_support |
+| V303 | disk_polygon | 杀死 | 2 | test_t2b_v_acceptance_major::test_V304_last_invariant_disk_vertex_is_not_an_unchecked_spike |
+| V304 | disk_polygon(last) | 杀死 | 1 | test_t2b_v_acceptance_major::test_V304_last_invariant_disk_vertex_is_not_an_unchecked_spike |
+| V401 | barrier_strict | 杀死 | 10 | test_t2b_v_geometry::test_v4_loop_vertex_in_free_region |
+| V402 | barrier_strict(first) | 杀死 | 1 | test_t2b_v_geometry::test_v4_segment_endpoints_require_the_same_pair |
+| V403 | barrier_strict(last seg) | 杀死 | 4 | test_t2b_v_schema::test_four_hand_certificates_accepted[doorway] |
+| V404 | barrier_strict(contact) | 杀死 | 2 | test_t2b_v_geometry::test_doorway_equal_width_invariant_disk_is_rejected |
+| V501 | homotopy_strict | 杀死 | 11 | test_t2b_v_acceptance_major::test_V503_last_quadrilateral_cannot_hide_a_free_chord_sweep |
+| V502 | homotopy_strict(3pts) | 杀死 | 3 | test_t2b_v_acceptance_major::test_V503_last_quadrilateral_cannot_hide_a_free_chord_sweep |
+| V503 | homotopy_strict(last quad) | 杀死 | 1 | test_t2b_v_acceptance_major::test_V503_last_quadrilateral_cannot_hide_a_free_chord_sweep |
+| V504 | homotopy_strict(last step) | 杀死 | 6 | test_t2b_v_geometry::test_v5_left_index_out_of_range_not_v0 |
+| V505 | reference_side | 杀死 | 2 | test_t2b_v_acceptance_schema::test_V505_start_cap_forbidden_left_has_an_otherwise_valid_quad |
+| V506 | reference(left/right swap) | 杀死 | 1 | test_t2b_v_acceptance_rotation::test_capped_chain_interval_side_mapping_must_not_swap_v506 |
+| V507 | exact_chart(seam) | 杀死 | 3 | test_t2b_v_acceptance_rotation::test_nonzero_chart_centers_with_used_rotated_kernels_accept |
+| V508 | exact_chart | 等价 | 0 | CHAIN 已验证每区间两个端点均在其中点选定图的 [-1,1]。exact 在 at=0 取 I1 的左端；在 1<=at<=N 取 I_at 的右端，特别 at=N 取 I_N 而不是 I1。at 集合及范围先由 V0/CHAIN 固定。因此 _reference 所求 parameter 正是一个已验证端点图坐标，必在 [-1,1]，该 guard 在完整通过前置检查后恒真。 |
+| V509 | caps skipped | 杀死 | 8 | test_t2b_v_acceptance_major::test_V503_last_quadrilateral_cannot_hide_a_free_chord_sweep |
+| V601 | start_free | 杀死 | 3 | test_t2b_v_acceptance_geometry::test_acceptance_v601_v607_start_collision_without_origin_crossing |
+| V602 | loop_avoids_origin | 等价 | 0 | CHAIN 保证所选 I_n0 含一个转角零的提升。V0/V1/V2 与引理 1、V3 与引理 2 保证每个该区间内核含于零转角的真实移动体。V4 每段两端都在同一个开凸贯入片 M 中，故全段都在 M 中；若屏障段经过 t=0，则真实移动体在初始位姿与障碍内部相交。这与未删除的 V6/start_free 矛盾（合法划分使片级自由等价于母体自由）。故所有通过剩余检查的输入自动避开原点。 |
+| V603 | start_winding | 杀死 | 6 | test_t2b_v_acceptance_geometry::test_acceptance_v608_winding_uses_selected_interval_not_first |
+| V604 | winding(half-open) | 杀死 | 35 | test_t2b_v_acceptance_geometry::test_acceptance_v302_disk_host_requires_nonnegative_support |
+| V605 | winding(last seg) | 杀死 | 72 | test_t2b_v_acceptance_geometry::test_acceptance_v302_disk_host_requires_nonnegative_support |
+| V606 | winding(downward) | 杀死 | 1 | test_t2b_v_exact_geometry::test_signed_half_open_winding_with_repeated_and_zero_length_segments |
+| V607 | weak_separated(always) | 杀死 | 8 | test_t2b_v_acceptance_geometry::test_acceptance_v601_v607_start_collision_without_origin_crossing |
+| V608 | start_free(n0 loop) | 杀死 | 1 | test_t2b_v_acceptance_geometry::test_acceptance_v608_winding_uses_selected_interval_not_first |
+
+等价仅指完整入口的**接受集合**相同，不承诺首错、check id或counts相同；因此A10仍可被增强的`partition_nonempty`诊断门杀死。所有存活均在所有者预先允许的8项之内；下面也给出依赖证明。
+
+| ID | 本轮结果 | 保留前提 | 接受集合等价推导 |
+|---|---|---|---|
+| A10 | 杀死（诊断变化） | ring_positive_area、partition_area | 母体经简单环门且有向面积严格为正。若其片集为空，面积累加初值为 0；A10 仅删除非空 guard，不删除随后 total_area == area2(parent)。故 0 不等于正面积，partition_area 必拒。反之片集非空时原 guard 恒真，删除不影响接受。 |
+| A11 | 等价存活 | ring_length、strict_convex_ring、simple_ring、ring_positive_area | 凸环若重复顶点：重复不相邻时，将其中一个视为另一个起边的其余顶点，叉积为 0；重复相邻时该边长为 0，对任一其余顶点叉积仍为 0，均违背 strict_convex_ring。简单环若重复不相邻顶点，其从重复点出发的两条不相邻边相交。若重复相邻顶点且 k>=4，则零边前后两条边不相邻、在该点相交；若 k=3，则三个点中至多两个不同，有向面积为 0。故重复顶点总由剩余门拒收；无重复者原 guard 恒真。 |
+| A23 | 等价存活 | loop_length、barrier_witness_count、integer_type、index_range | 每区间屏障至少两顶点，故至少一段；barrier_witness_count 要求见证数恰等于段数，因此至少一项见证。其内核下标须满足 0<=k<len(pieces)。若 pieces 为空，此不等式无解，即使 kernel_nonempty 被删除仍在 V0/index_range 拒收。非空时原 guard 恒真。 |
+| A27 | 等价存活 | ring_distinct、strict_convex_ring、simple_ring | SAT 轴仅来自合法严格凸环边，或合法简单母环的一条边（作为两端点线段）；这些边端点不同，法向 (dy,-dx) 必非零。体坐标平移、世界坐标平移及精确转动都是单射，保持边非零。允许重复点/零长段的屏障与同伦折线只作为平移查询点，不作为 _axes 的环参数。故通过剩余环门且到达完整接受路径的所有轴均非零，删除 guard 不扩张接受集合。 |
+| C01 | 等价存活 | interval_chart | 同一区间的两个端点均减去同一个中点选定图偏移 o，所以 u_plus-u_minus=lambda_upper-lambda_lower。剩余 interval_chart 要求 -1<=u_minus<u_plus<=1，直接推出 lambda_lower<lambda_upper；相等端点仍失败。因此 < 改 <= 不会新增被接受区间。 |
+| C14 | 等价存活 | integer_type、start_index | V0 在进入 CHAIN 前要求数学下标 n0 满足 1<=n0<=N，其中 N=len(breakpoints)-1。这个整数存在即推出 N>=1。若 N<=0，start_index 已拒；畸形字段先由解码门拒。因此到达可接受 CHAIN 的输入上 chain_nonempty 恒真。 |
+| V508 | 等价存活 | at_index、link_set、cap_set、interval_chart | CHAIN 已验证每区间两个端点均在其中点选定图的 [-1,1]。exact 在 at=0 取 I1 的左端；在 1<=at<=N 取 I_at 的右端，特别 at=N 取 I_N 而不是 I1。at 集合及范围先由 V0/CHAIN 固定。因此 _reference 所求 parameter 正是一个已验证端点图坐标，必在 [-1,1]，该 guard 在完整通过前置检查后恒真。 |
+| V602 | 等价存活 | V0 合法划分及半径界、start_interval_contains_zero、V1、V2、V3、barrier_strict、start_free | CHAIN 保证所选 I_n0 含一个转角零的提升。V0/V1/V2 与引理 1、V3 与引理 2 保证每个该区间内核含于零转角的真实移动体。V4 每段两端都在同一个开凸贯入片 M 中，故全段都在 M 中；若屏障段经过 t=0，则真实移动体在初始位姿与障碍内部相交。这与未删除的 V6/start_free 矛盾（合法划分使片级自由等价于母体自由）。故所有通过剩余检查的输入自动避开原点。 |
+
+逐项完整失败节点与原始末行：[审计汇总JSON](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/mutation_summary.json)；[所有者工具原始结果](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/mutation_run/results/summary.json)；[95份JUnit](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/mutation_run/results)；[副本及输入哈希](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/mutation_copy.json)；[执行命令/环境/耗时](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/mutants_command.json)；[等价证明全文](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/equivalence_notes.md)。
+
+### 12.6 收尾门末行（原样）与交付
+
+相关测试：
+```text
+521 passed in 16.19s
+```
+静态门（仅本单新实现与测试，含本轮新增文件）：
+```text
+exact construction AST gate: 0 violation(s)
+```
+所有者变异工具最后一行：
+```text
+V608 start_free(n0 loop) KILLED 1 | 1 failed, 520 passed in 15.94s
+```
+变异汇总门最后一行：
+```text
+T2BV_MUTATION_GATE: 95 checked; 88 killed; 7 equivalent; 0 unexplained survivors; 0 static-only kills
+```
+
+新增静态准入0、逐规则计数{}；没有浮点汇点准入。pytest始终使用`-p no:cacheprovider`及显式`--basetemp`，TEMP/TMP指向本单证据tmp，`PYTHONDONTWRITEBYTECODE=1`。本轮不重算上一轮2000区间性能，不冒称重跑全仓528项/差分9042项。Windows生成的JUnit失败文本及工具summary含CRLF，先将95份XML及summary原始字节存入[原始输出归档](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/mutation_raw_xml.zip)，再仅把公开XML/JSON换行统一为LF；[逐文件审计](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/junit_lf_audit.json)验证95棵XML解析树及JSON值完全不变，没有改结果、拼接运行或重算证据。
+
+日志：[pytest_final.log](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/pytest_final.log)；[static_final.json](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/static_final.json)；[mutants_full.log](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/mutants_full.log)。当前文件、SHA256、净增、UTF-8无BOM/LF及允许写域核验：[本轮交付清单](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/DELIVERABLES.md)；[本轮机器清单](file:///D:/eab-evidence/reports/codex/T2b_V_evidence/acceptance_repair_20261026/manifest.json)。所有者后续安排新鲜树及正式返修验收；本会话未commit。引理疑点：无。
 
 T2BV_DONE

@@ -243,20 +243,23 @@ def test_v0_square_traversed_twice():
 def test_v0_partition_missing_piece_area():
     instance, certificate = cage_copy(HAND_CAGES)
     certificate["moving_pieces"][0] = certificate["moving_pieces"][0][:3]
-    expect_rejection(instance, certificate, "V0")
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "partition_area"
 
 
 def test_v0_partition_overlapping_pieces():
     instance, certificate = cage_copy(HAND_CAGES)
     certificate["moving_pieces"].append(json.loads(json.dumps(certificate["moving_pieces"][0])))
-    expect_rejection(instance, certificate, "V0")
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "partition_disjoint"
 
 
 def test_v0_partition_piece_outside_parent():
     instance, certificate = cage_copy(HAND_CAGES)
     certificate["radius"] = "100"
     certificate["moving_pieces"] = [rectangle(-2, F(1, 4), 2, F(3, 4))]
-    expect_rejection(instance, certificate, "V0")
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "partition_boundary"
 
 
 def test_v0_parent_edge_crosses_piece_through_two_vertices():
@@ -273,7 +276,8 @@ def test_v0_parent_edge_crosses_piece_through_two_vertices():
     set_moving(instance, certificate, parent)
     certificate["center"] = ["0", "0"]
     certificate["moving_pieces"] = [child]
-    expect_rejection(instance, certificate, "V0")
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "partition_boundary"
 
 
 def test_v0_point_must_have_exactly_two_coordinates():
@@ -528,7 +532,8 @@ def test_v6_start_pose_has_interior_intersection():
     instance, certificate = cage_copy(HAND_CAGES)
     point = certificate["intervals"][0]["loop"][0]
     translated_start(instance, certificate, F(point[0]), F(point[1]))
-    expect_rejection(instance, certificate, "V6")
+    result = expect_rejection(instance, certificate, "V6")
+    assert result["where"]["check"] == "start_free"
 
 
 def test_v6_start_loop_has_zero_winding():
@@ -556,7 +561,8 @@ def test_origin_crossing_v4_valid_first_fails_v6_start_pose():
     point = certificate["intervals"][0]["loop"][0]
     translated_start(instance, certificate, F(point[0]), F(point[1]))
     assert certificate["intervals"][0]["loop"][0] == ["0", "0"]
-    expect_rejection(instance, certificate, "V6")
+    result = expect_rejection(instance, certificate, "V6")
+    assert result["where"]["check"] == "start_free"
 
 
 def test_cross_input_replay_of_doorway_threshold_is_v0():

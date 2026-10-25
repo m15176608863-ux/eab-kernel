@@ -43,14 +43,16 @@ def test_v0_link_adjacent_polyline_vertex_counts_disagree():
     line.insert(1, json.loads(json.dumps(line[0])))
     item["chain"].insert(1, line)
     item["witnesses"].append(json.loads(json.dumps(item["witnesses"][0])))
-    expect_rejection(instance, certificate, "V0")
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "homotopy_vertex_count"
 
 
 def test_v0_cap_adjacent_polyline_vertex_counts_disagree():
     instance, certificate = build_low_room_cage()
     item = certificate["caps"][0]
     item["chain"][1].insert(1, json.loads(json.dumps(item["chain"][1][0])))
-    expect_rejection(instance, certificate, "V0")
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "homotopy_vertex_count"
 
 
 def test_v0_link_must_have_at_least_two_lines():
@@ -93,7 +95,40 @@ def test_v0_obstacle_without_any_partition_piece():
             for witness in group:
                 if witness[1] >= len(pieces):
                     witness[1] = 0
-    expect_rejection(instance, certificate, "V0")
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "partition_nonempty"
+
+
+def test_v0_single_zero_breakpoint_rejects_start_index_before_chain_nonempty():
+    """Lemma §7: N=0 has no legal start_interval, so V0 precedes CHAIN."""
+    instance, certificate = cage_copy(HAND_CAGES)
+    certificate["chain"]["breakpoints"] = ["0"]
+    certificate["intervals"] = []
+    certificate["links"] = []
+    certificate["caps"] = []
+    certificate["start_interval"] = 1
+    result = expect_rejection(instance, certificate, "V0")
+    assert result["where"]["check"] == "start_index"
+
+
+def test_chain_capped_total_span_four_is_strictly_forbidden():
+    """C05 must not defer this CHAIN defect to a later geometric condition."""
+    instance, certificate = cage_copy(HAND_CAGES)
+    certificate["chain"]["kind"] = "capped"
+    certificate["links"].pop()
+    for at, interval in ((0, certificate["intervals"][0]),
+                         (2, certificate["intervals"][1])):
+        line = json.loads(json.dumps(interval["loop"]))
+        constant = []
+        for unused in line:
+            constant.append(json.loads(json.dumps(line[0])))
+        row = []
+        for unused_kernel, obstacle in interval["witnesses"]:
+            row.append([["disk"], obstacle])
+        certificate["caps"].append({"at": at, "chain": [line, constant],
+                                     "witnesses": [row]})
+    result = expect_rejection(instance, certificate, "CHAIN")
+    assert result["where"]["check"] == "chain_span"
 
 
 def test_chain_breakpoints_not_strictly_increasing():
