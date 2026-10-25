@@ -319,6 +319,8 @@ def _cap(loop, cells, resources, deadline):
     target = (F(0), F(0))
     if _witness(cells, (target,)) is None:
         return None, "cap_target_is_not_strictly_covered"
+    if resources.max_cap_steps < 8:
+        raise SearchLimit("homotopy_step_limit")
     steps = 8
     while steps <= resources.max_cap_steps:
         chain = [loop]

@@ -1,6 +1,6 @@
 {
   "source": "certificates/science_02/summary.json",
-  "acceptance": "production_only_pending_independent",
+  "acceptance": "production_and_independent_verified",
   "complete_scan": true,
   "rows": [
     {
@@ -15,7 +15,7 @@
       "relative_width_to_translation_star": "231/640",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -30,7 +30,7 @@
       "relative_width_to_translation_star": "591/2560",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -45,7 +45,7 @@
       "relative_width_to_translation_star": "2597/6400",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -60,7 +60,7 @@
       "relative_width_to_translation_star": "147/320",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -75,7 +75,7 @@
       "relative_width_to_translation_star": "10701/40960",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -90,7 +90,7 @@
       "relative_width_to_translation_star": "68593/245760",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -105,7 +105,7 @@
       "relative_width_to_translation_star": "4277/12288",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -120,7 +120,7 @@
       "relative_width_to_translation_star": "312473/614400",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -135,7 +135,7 @@
       "relative_width_to_translation_star": "519/12800",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     },
     {
@@ -150,8 +150,41 @@
       "relative_width_to_translation_star": "1363/30720",
       "intervals": 2,
       "uses_caps": false,
-      "acceptance": "production_only_pending_independent",
+      "acceptance": "production_and_independent_verified",
       "outside_bracket": "UNPROVED"
     }
-  ]
+  ],
+  "supplementary_bounds": [
+    {
+      "case_id": "d03",
+      "delta_cage": "1/4",
+      "delta_escape": "21/50",
+      "delta_translation_star": "3/7",
+      "width": "17/100",
+      "relative_width_to_translation_star": "119/300",
+      "intervals": 4,
+      "uses_caps": true,
+      "acceptance": "production_and_independent_verified",
+      "outside_bracket": "UNPROVED",
+      "certificate_directory": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d03",
+      "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
+    },
+    {
+      "case_id": "d08",
+      "delta_cage": "13/128",
+      "delta_escape": "11377/51200",
+      "delta_translation_star": "12/49",
+      "width": "6177/51200",
+      "relative_width_to_translation_star": "100891/204800",
+      "intervals": 2,
+      "uses_caps": true,
+      "acceptance": "production_and_independent_verified",
+      "outside_bracket": "UNPROVED",
+      "certificate_directory": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d08",
+      "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
+    }
+  ],
+  "historical_rows_frozen_except_current_acceptance": true,
+  "work_order_status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
+  "acceptance_scope": "Individual mathematical cage certificates; not whole-repository gate acceptance"
 }

@@ -1,0 +1,340 @@
+{
+  "schema": "eab.t2b.continuation-summary/1",
+  "status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
+  "baseline_head": "5c0f80f4c4eea9406c672dd28954eb1722961fbe",
+  "facts": {
+    "original_cage_files": 25,
+    "supplementary_cage_files": 2,
+    "original_instance_pairs": 121,
+    "new_d07_instance_pairs": 4,
+    "total_instance_pairs": 125,
+    "diagnostic_saved_instances": 14,
+    "independently_constructed_diagnostic_instances": 12,
+    "production_corpus_pairs": 130,
+    "independent_corpus_pairs": 505,
+    "positive_capture_calls": 192,
+    "positive_capture_unique_pairs": 71,
+    "cross_mismatches": 0,
+    "escape_paths": 13,
+    "independent_infinite_ray_claim": false,
+    "supplementary_cage_performance": [
+      {
+        "case_id": "d03",
+        "delta_cage": "1/4",
+        "generation_seconds": 7.165003399946727,
+        "verification_seconds": 1.7451459999429062,
+        "intervals": 4,
+        "interval_loop_vertices": 388,
+        "all_polyline_vertices": 13580,
+        "source_proposal": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d03\\proposal.json",
+        "source_certificate": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d03\\certificate.json"
+      },
+      {
+        "case_id": "d08",
+        "delta_cage": "13/128",
+        "generation_seconds": 4.858030900009908,
+        "verification_seconds": 2.0455401999643072,
+        "intervals": 2,
+        "interval_loop_vertices": 514,
+        "all_polyline_vertices": 17990,
+        "source_proposal": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d08\\proposal.json",
+        "source_certificate": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d08\\certificate.json"
+      }
+    ],
+    "diagnostic_source_snapshots": [
+      {
+        "original_path": "D:\\eab-wt\\cx-e2\\tools\\t2b_bottleneck_diagnostics.py",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\0_t2b_bottleneck_diagnostics.py",
+        "sha256": "75b7205f9212bb65f0cb9f5d24414509c6a04064f0bbf5bddfc707981e2498c4"
+      },
+      {
+        "original_path": "D:\\eab-wt\\cx-e2\\tools\\t2b_cage_proposer.py",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\1_t2b_cage_proposer.py",
+        "sha256": "c163c33a304718d858f34897da205ec941c9f6c25dcf8b252721ccfedd7fc908"
+      },
+      {
+        "original_path": "D:\\eab-wt\\cx-e2\\src\\eab\\kernel2d\\se2_cage.py",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\2_se2_cage.py",
+        "sha256": "c7552ed5e2e993d2bd80950efdef170423b9a672a81227476e4ea9ede156123c"
+      },
+      {
+        "original_path": "D:\\eab-wt\\cx-e2\\tests\\t2b_independent_cage_verifier.py",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\3_t2b_independent_cage_verifier.py",
+        "sha256": "a7c08891a29a562ac3c10378628fb04f2d8c6c4bb52594d78d4990b8f62304ad"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\science_02\\summary.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\4_summary.json",
+        "sha256": "db953cd8409e1343e37ec95412c54768fe39486267cd0c9b67242f268db4298f"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d01.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d01_escape_candidate.json",
+        "sha256": "d80320fec4746ae71fa036640bb9953d4f3643395173bf8c48d8c115978e25ed"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d02.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d02_escape_candidate.json",
+        "sha256": "e3e6fa6537a6c2a75ccedf923c38ec9686e30fdd7c134d2fdf9d43b83318ffd1"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d03.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d03_escape_candidate.json",
+        "sha256": "e566ac4c8a7fe620a855ed9bf857d54b8a9540ff27ddde3d6c86d69b688a3dde"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d04.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d04_escape_candidate.json",
+        "sha256": "d344f6ae4619749c90f1b47d3a4136f3e9d18cdd01afe3f23d6175bf262b83eb"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d05.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d05_escape_candidate.json",
+        "sha256": "18491f16de278a8719d46ac550b2d3b171f93a690f0a9e38c687c0ac91faf5bc"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d06.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d06_escape_candidate.json",
+        "sha256": "a39764ebbf8fad1cdf0fa495f834cca28ded0d1693fa198429bce5c4d2916536"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d07.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d07_escape_candidate.json",
+        "sha256": "6fbc98ec8630a1930cf0540e7391f2e664eb06db0b5f497da82c50ad7507519a"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\d08.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\d08_escape_candidate.json",
+        "sha256": "50b6d8f50de753008de8a5263f875da59e1f7483540875780dbe0e97f82724af"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\k01.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\k01_escape_candidate.json",
+        "sha256": "889043e4215f32056255188faf1562c1064a275d642a3b6fda8c202875e5184f"
+      },
+      {
+        "original_path": "D:\\eab-evidence\\reports\\codex\\T2a_evidence\\certificates\\k02.json",
+        "snapshot": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_snapshot\\k02_escape_candidate.json",
+        "sha256": "2b30106cca94bc6446ebdf1eeda40ea24914a11b2bf5529d0e03acaa3e8b9d1c"
+      }
+    ],
+    "resource_before_last_line": "3 failed, 1 passed in 0.58s",
+    "resource_after_last_line": "67 passed in 13.79s",
+    "supplementary_bounds": [
+      {
+        "case_id": "d03",
+        "delta_cage": "1/4",
+        "delta_escape": "21/50",
+        "delta_translation_star": "3/7",
+        "width": "17/100",
+        "relative_width_to_translation_star": "119/300",
+        "intervals": 4,
+        "uses_caps": true,
+        "acceptance": "production_and_independent_verified",
+        "outside_bracket": "UNPROVED",
+        "certificate_directory": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d03",
+        "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
+      },
+      {
+        "case_id": "d08",
+        "delta_cage": "13/128",
+        "delta_escape": "11377/51200",
+        "delta_translation_star": "12/49",
+        "width": "6177/51200",
+        "relative_width_to_translation_star": "100891/204800",
+        "intervals": 2,
+        "uses_caps": true,
+        "acceptance": "production_and_independent_verified",
+        "outside_bracket": "UNPROVED",
+        "certificate_directory": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d08",
+        "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
+      }
+    ]
+  },
+  "blocker": {
+    "status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
+    "baseline_head": "5c0f80f4c4eea9406c672dd28954eb1722961fbe",
+    "failing_nodeid": "tests/test_t2b_v_static_admissions.py::test_t2b_v_static_analyzers_and_policy_are_byte_unchanged",
+    "expected_policy_sha256": "621df0519431552c8cea255cf756f1bcb5c3acc90cb301ff0048649b1916cc5d",
+    "baseline_and_current_policy_sha256": "1610328c764c644c38d38ea11ffcc9fc5818370c44bd43d2a220ee3335437e6c",
+    "policy_entries": 3757,
+    "clean_intake_reproduction": {
+      "complete": true,
+      "baseline_head": "5c0f80f4c4eea9406c672dd28954eb1722961fbe",
+      "reproduces_in_clean_intake_zip": true,
+      "independent_test_unchanged": true,
+      "source_files_unchanged": true,
+      "mathematical_verifier_disagreement": false,
+      "rows": [
+        {
+          "path": "tools/check_exact_construction.py",
+          "expected_in_readonly_test": "cc6143a27369f1247718b2e48ae80f3afb7b5060b23de845437a53b5a0768517",
+          "clean_intake_and_current_sha256": "cc6143a27369f1247718b2e48ae80f3afb7b5060b23de845437a53b5a0768517",
+          "same_as_intake": true,
+          "matches_test_expectation": true
+        },
+        {
+          "path": "tools/exact_construction_subset.py",
+          "expected_in_readonly_test": "35e6262a7c36ea5f20679f047dd6f030feeb6fcbe8be7813573212829b503274",
+          "clean_intake_and_current_sha256": "35e6262a7c36ea5f20679f047dd6f030feeb6fcbe8be7813573212829b503274",
+          "same_as_intake": true,
+          "matches_test_expectation": true
+        },
+        {
+          "path": "tools/exact_construction_flow.py",
+          "expected_in_readonly_test": "814f00ab607726c7753fa86ddedc08fd728eb48c4e57b8a61dda55140c3cd1db",
+          "clean_intake_and_current_sha256": "814f00ab607726c7753fa86ddedc08fd728eb48c4e57b8a61dda55140c3cd1db",
+          "same_as_intake": true,
+          "matches_test_expectation": true
+        },
+        {
+          "path": "tools/exact_construction_policy.json",
+          "expected_in_readonly_test": "621df0519431552c8cea255cf756f1bcb5c3acc90cb301ff0048649b1916cc5d",
+          "clean_intake_and_current_sha256": "1610328c764c644c38d38ea11ffcc9fc5818370c44bd43d2a220ee3335437e6c",
+          "same_as_intake": true,
+          "matches_test_expectation": false
+        }
+      ],
+      "resolution": "Owner must correct or rule on the immutable test expectation; this work order does not modify it."
+    },
+    "minimal_reproduction": {
+      "complete": true,
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp",
+        "D:/eab-evidence/reports/codex/T2b_evidence/tmp/independent_policy_pin_minimal",
+        "tests/test_t2b_v_static_admissions.py::test_t2b_v_static_analyzers_and_policy_are_byte_unchanged"
+      ],
+      "exit_code": 1,
+      "seconds": 0.4717454001074657,
+      "last_line": "1 failed in 0.08s",
+      "expected_policy_sha256": "621df0519431552c8cea255cf756f1bcb5c3acc90cb301ff0048649b1916cc5d",
+      "actual_policy_sha256": "1610328c764c644c38d38ea11ffcc9fc5818370c44bd43d2a220ee3335437e6c",
+      "policy_unchanged_from_intake": true,
+      "no_readonly_edits": true
+    },
+    "interrupted_fast": {
+      "status": "INVALIDATED_INTERRUPTED_AFTER_READONLY_TEST_FAILURE",
+      "complete": false,
+      "archive_complete": true,
+      "run_pass_claim": false,
+      "reason": "Owner requires stopping on an error in immutable independent files; policy SHA assertion conflicts with unchanged clean intake.",
+      "stopped_session": 69279,
+      "stop_method": "Ctrl-C sent only to the exec session started for this fast/full pipeline",
+      "process_check": "No remaining process with either exact run name; full run directory absent.",
+      "original_runner_state_is_stale": true,
+      "partial_progress": {
+        "complete": false,
+        "elapsed_seconds": 1003.1089999999385,
+        "collected": 10269,
+        "calls": 9830,
+        "failed": 1,
+        "skipped": 0,
+        "current": "tests/test_tia2d_export.py::test_formal_single_body_roles_free_only_the_named_body[3-TIA-G4]",
+        "started_epoch": 1792948810.9530122,
+        "last_event_epoch": 1792948810.9530122
+      },
+      "source_files": 2614,
+      "export_and_live_sources_identical_at_stop": true,
+      "source_archive_sha256": "e0bff88dd7f8ce2305440d3cb87402f82fc0ea2cc10ed4a01858e740c854b8cd",
+      "raw_archive_sha256": "bde0a21e2e2f0a6c29f2754c27770a745358e8a95a85e39662ab057da78fd6f6",
+      "raw_to_lf": [
+        {
+          "path": "collection.progress.json",
+          "raw_sha256": "1cfaa249206cad0957220dc79da844b73b6b712f0e7bd17e83161bb3d151d143",
+          "lf_sha256": "c120570cc656900b0e950b308500d8431af1d33b2e6d331325cb44541216e712",
+          "raw_bytes": 572,
+          "lf_bytes": 552
+        },
+        {
+          "path": "collection.txt",
+          "raw_sha256": "9e2654abf1621c3746a9b67adaedde6b19879fde9768a64d5172161effbd22df",
+          "lf_sha256": "fb72e878c778b0c3ae0b9615308345db693b4246bc87885b80f38e1aca2f166a",
+          "raw_bytes": 1150813,
+          "lf_bytes": 1140542
+        },
+        {
+          "path": "shard_1.progress.json",
+          "raw_sha256": "ea49c797cd65500d2fedd4244e58a8aa0d5476e153e1d686143c670db3eac93f",
+          "lf_sha256": "2201503a2f3d1e84f1b1786b23bd20b6186fbde76979024d19539433eb84d860",
+          "raw_bytes": 77,
+          "lf_bytes": 72
+        },
+        {
+          "path": "shard_1.txt",
+          "raw_sha256": "ecbd8489c707e5bb9469a4c8192772a63bd0505207ac8ecd912caa13d2ccafb2",
+          "lf_sha256": "77940ccb097b814c85f77d447e66a25292394739bb58ad354673346df9e59230",
+          "raw_bytes": 11054,
+          "lf_bytes": 10918
+        },
+        {
+          "path": "shard_1_nodes.txt",
+          "raw_sha256": "3a67642a02aba1bf102601e3c19ce7e2df50941e24590ce5a7a76475a8192f83",
+          "lf_sha256": "8ee0f71011ddcc48bb2050fe487c819561abaa62c3f28e45ca35fc2f8109157b",
+          "raw_bytes": 1150755,
+          "lf_bytes": 1140486
+        },
+        {
+          "path": "shard_1_progress.json",
+          "raw_sha256": "1b0199f33e1f2fbd44d51595cc4d02c15f88c2868c779833a90ec25b9ea95447",
+          "lf_sha256": "1b0199f33e1f2fbd44d51595cc4d02c15f88c2868c779833a90ec25b9ea95447",
+          "raw_bytes": 304,
+          "lf_bytes": 304
+        },
+        {
+          "path": "source_manifest.json",
+          "raw_sha256": "451ce30f5ab9e280ca3f3eb47f49f871b1f8e1cdc6f8c9b061b21859a34a5194",
+          "lf_sha256": "3b5853a8fa5cd49928b775b3c9956dd720b658ee62e8d33d43fdb2b81ce4b038",
+          "raw_bytes": 469131,
+          "lf_bytes": 456059
+        },
+        {
+          "path": "state.json",
+          "raw_sha256": "0c4ced859899e85aa2e49a55c7508ef8ed2166d69dfcfd77f0b06cb40932ab8a",
+          "lf_sha256": "69530b32e0bb37d2efc534523ef78804106ed376fe9c8e9c80565d5835f4c09c",
+          "raw_bytes": 74,
+          "lf_bytes": 69
+        }
+      ],
+      "minimal_reproduction": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\blocker_independent_policy_pin\\summary.json",
+      "resumption_rule": "After owner correction/ruling, rerun fast and full under new names; never splice this run."
+    },
+    "full_run_status": "NOT_RUN",
+    "final_static_status": "NOT_RUN",
+    "preflight_static_only": {
+      "exit_code": 0,
+      "last_line": "exact construction AST gate: 0 violation(s)",
+      "seconds": 181.23383779998403,
+      "purpose": "preflight; final full run remains required"
+    },
+    "mathematical_verifier_disagreement": false,
+    "mathematical_counterexample_found": false,
+    "current_whole_repository_pass_claim": false,
+    "source_archive_member_integrity_checked": true,
+    "completed_runtime_module_coverage_claim": false,
+    "source_manifests_fast_full_equal": null
+  },
+  "current_whole_repository_pass_claim": false,
+  "final_runs_complete": false,
+  "source_manifests_equal": null,
+  "owner_review_claim": false,
+  "source_inputs": {
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\summary.json": "8305f71e99acc68653e73c75ac87712a3e02ca8e0bb59f76dc26b8c23258ca34",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\diagnostics\\final_03\\source_manifest.json": "dfc5688d6bb5d7f0fd407652bac84710acb921be4df39e29db267b2240a8bfd9",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\our_corpus\\results.json": "0b19f39dbcb32d5c5564ed44bbfbc53510587318bd9eb2f8a75d8f06829cc507",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\our_corpus\\positive_capture\\summary.json": "9dd59281535c38f2ace2ac60c63227329bf039cd34d916d09ea374af1a17b52f",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\v_corpus\\inventory.json": "88bf66bab5193cb9782f37231b6fdc38c100d29e26d889a0fb40dc2c1f039f38",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\instance_escape\\run_01\\summary.json": "f77221c67e0ab8fe64e4aa697fc9d646ff7eb654d7839073715079ef00a8bb2d",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\new_certificates_copy.json": "f23cd5547a990a66825b453b82ab689b5bf953d0499fa8f5b59b2ae4b9bece26",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\blocker_independent_policy_pin\\summary.json": "f24c7c5104484291400ab58030941e10be8bc248e0842313f6b23f0b4f301602",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\blocker_independent_policy_pin\\baseline_reproduction.json": "ff52723aa1426124d2b50359d21e08fbf680175fd29ec8dbe0473b0b98fc3f8c",
+    "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\t2b_dual_final_fast_20261026\\INTERRUPTED_INVALID_RUN.json": "af8d792cd4903cb3b336501e4426c942fa9fb68b50afcee1f4f8c845372a1c3c"
+  }
+}

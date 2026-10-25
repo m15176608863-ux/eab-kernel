@@ -76,3 +76,17 @@
 - [tools/t2b_run_gates.py](file:///D:/eab-wt/cx-e2/tools/t2b_run_gates.py)
 - [tools/t2b_science.py](file:///D:/eab-wt/cx-e2/tools/t2b_science.py)
 - [tools/t2b_static_review.py](file:///D:/eab-wt/cx-e2/tools/t2b_static_review.py)
+
+<!-- T2B_CONTINUATION_5c0f80f_BLOCKED -->
+### WO-T2b 独立合入续单：BLOCKED（2026-10-26，HEAD 5c0f80f）
+
+本段仅追加本次实测记录，不改历史结论。原25份与新d03/d08两份笼证书均双核验；8燕尾族125个不同δ实例相等；13条逃逸按有限独立oracle及生产无限尾射线边界复核。双方语料0判定/条件代码不一致；我方192次有效调用单列（71不同字节对），不与130/505组计数相加作去重总数。10例加d07四内点P1诊断已完成。
+
+- [中文报告](file:///D:/eab-wt/cx-e2/reports/codex/T2b_report.md) · [续单机器摘要](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/continuation_summary.json) · [逐项核查](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/requirements.json)
+- [终版14点诊断](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/final_03/summary.json) · [新笼证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/diagnostic_03) · [逐件来源SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/new_certificates_copy.json)
+- [阻塞最小复现](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/summary.json) · [干净基线ZIP复现](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/baseline_reproduction.json)：只读独立测试policy期望SHA与干净开工基线及当前未改policy不符；最小pytest复现原样末行 `1 failed in 0.08s`。不是引理数学分歧，未发现数学反例。
+- [中断作废声明](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/INTERRUPTED_INVALID_RUN.json)：快档收集10269项，停止进度9830 calls、1 failed、0 skipped，Ctrl-C后作废；没有最终pytest末行。全档目录未创建、最终静态未运行。旧绿和非冻结静态预检0不替代当前通过。
+- [中断源码ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_source.zip) SHA `e0bff88dd7f8ce2305440d3cb87402f82fc0ea2cc10ed4a01858e740c854b8cd`；[中断日志原字节ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_raw_bytes.zip) SHA `bde0a21e2e2f0a6c29f2754c27770a745358e8a95a85e39662ab057da78fd6f6`；[中断源码清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/source_manifest.json)。2614成员与清单尺寸/SHA核对；这是中断快照，不是通过测试的源码。原日志保留后再LF导出，raw parser输入不规范化。
+- [交付文件审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/resume_delivery_audit.json) · [逐文件SHA清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/resume_artifact_manifest.json)。续单新增静态准入0；89项独立只读文件、既有生产数学源码、policy、三分析器和只读合同不改。文件完整性/范围审计不冒称全仓测试通过。
+
+当前 `T2B_BLOCKED`；等待所有者裁定只读测试字节锚，之后须新run名重新执行快档/全档，不拼接。新鲜Git树及一路独立对抗验收未声称完成；本地证据不是远程备份，未作Git写。

@@ -1,14 +1,16 @@
 # WO-T2b：SE(2) 笼证书与刚体临界公差双侧括号
 
-**一句话结论：10例都已有经生产核验的“困住下界—逃逸上界”，其中7例上界收窄；独立核验器尚未合入，整单双核验验收仍未完成。**
+**当前工单状态：BLOCKED。** 本次仅回填报告与机器状态，不将中断运行记为通过。已完数学与P1诊断证据保留；只读独立测试的policy字节锚与开工基线不兼容，需所有者裁定。禁止执行原DONE回填脚本。
 
-开工日期：2026-10-25；收尾：2026-10-26（Asia/Singapore）。执行：Codex；所有者：Claude。本文按已完成运行回填；不把待办写成结果。
+**一句话结论：10例的“困住下界—逃逸上界”已完成双路复核，原25份与诊断新增2份笼证书全部双核验通过，d03与d08的下界另有提高；括号仍有宽度，不能据此声称临界值已求出。**
+
+开工日期：2026-10-25；阻塞交付记录：2026-10-26（Asia/Singapore）。执行：Codex；所有者：Claude。本文区分已完专项证据与未完成全仓收尾；不把中断或待办写成通过。
 
 ## 1. 开工合同、范围、回退与归属
 
 | 项目 | 记录 |
 |---|---|
-| 目标 | P0 精确笼核验、有限提议器、真值/伪造/变异门、十例双侧括号；P1 可选 |
+| 目标 | P0 精确笼核验、有限提议器、真值/伪造/变异门、十例双侧括号；2026-10-26续裁定补做双核验与P1瓶颈诊断 |
 | 实查基线 | `codex-work`，HEAD `146cc76b6e25598f00564438dee7f3282ad52e34`，开工干净；Python 3.12.10 |
 | 写域 | `D:/eab-wt/cx-e2` 与 `D:/eab-evidence/reports/codex/T2b_evidence/` |
 | 非目标 | C++/eab2、既有数学函数语义、理论合同修改、多体运动、精确墙函数、临界值等号或新颖性表述 |
@@ -17,6 +19,12 @@
 | 新鲜树边界 | 本代理只使用字节快照/导出，不作 Git 写操作，不宣称所有者新鲜 worktree 验收 |
 
 [机器工作合同](file:///D:/eab-evidence/reports/codex/T2b_evidence/work_contract.json)。`docs/t2b_cage_lemma.md` 第 5 版为只读理论合同；正确性论证引用其 §4，不另写替代理论。SE(2) 指定路径首入归本仓库 M5a；石根华原文归属沿用 T2a D1–D3、D6–D8。单块、邻居固定；块在自身坐标中按 δK 腐蚀；有理八边形 K 为标题模型，方形 K 仅为 T1b 对照。
+
+### 1.1 独立核验器合入后的续工基线
+
+所有者将原交付提交为 `ce14142`，合入已验收的 WO-T2b-V（main `1361e91`）后通知续工。本次实查 `codex-work`、HEAD `5c0f80f4c4eea9406c672dd28954eb1722961fbe`、工作树干净。另保留[2579文件续工ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/baseline_anchor/source.zip)、[成员与89项独立只读文件SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/baseline_anchor/manifest.json)、[续工合同](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/contract.json)。不修改独立实现、独立测试/实例/数据或原生产数学代码。
+
+独立核验一律经其原始文件解析入口 `load_json`（或调用它的 `_load_result`），保留重复键及整数原记号检查；不将普通 `json.load` 结果直接送入 `verify_cage`。只将成功状态 `ACCEPTED` 与 `OK` 视作语义相同，拒收条件 `V0/CHAIN/V1…V6` 必须逐字相同；check id、reason、where及实现计数不要求相同。
 
 ## 2. 生产核验器与合同对照
 
@@ -54,9 +62,15 @@
 
 科学扫描来源仍保留修复前的提议器ZIP，不改历史源码哈希：198个成功下界探针均为N=2（上限8），最大生成含核验0.142683 s（上限2 s），未触及这两项缺陷；生产核验器字节未改。修复后以真值/固定小回放验证，不为报告重算全量冻结科学扫描。
 
+### 3.1 续单低资源边界修复
+
+续单发现 `_cap` 在 `max_cap_steps∈{0,1,7}` 时跳过循环，随后读取未赋值的 `failed`，抛出 `UnboundLocalError`。在 `steps=8` 前仅增加两行 `<8` 的 `SearchLimit("homotopy_step_limit")` 守卫，转为提议器原有 `UNPROVED` 资源出口；`max_cap_steps≥8` 分支逐字不变，不改核验器或数学合同。
+
+修前具名门末行 `3 failed, 1 passed in 0.58s`；修后资源、提议器、双核验门合跑末行 `67 passed in 13.79s`。证据见 [前红后绿与两行差异](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/resource_edge_repair)。`diagnostics/final_03` 用修前提议器、128步参数；该分支没有触及缺陷，保留其历史源码快照，不把来源改成修后SHA，也不为文档重算14点。
+
 ## 4. 真值门
 
-理论输入来自引理 §5 与 `tests/t2a_truth_geometry.py`；新增低/高房间精确环在[生产侧真值几何](file:///D:/eab-wt/cx-e2/tests/t2b_truth_geometry_prod.py)。未读取 WO-T2b-V 的任何文件。
+理论输入来自引理 §5 与 `tests/t2a_truth_geometry.py`；新增低/高房间精确环在[生产侧真值几何](file:///D:/eab-wt/cx-e2/tests/t2b_truth_geometry_prod.py)。原生产交付构造时未读取 WO-T2b-V；本次在所有者合入通知后只读调用独立实现。
 
 <!-- T2B_TRUTH_BEGIN -->
 | 真值输入 | δ | 引理预期 | 程序/证书 | N | 屏障段/连接四点 |
@@ -72,12 +86,12 @@
 
 **合计：5 份笼证书、3 条接受的逃逸路径。** 低房间独立构造为 N=1、Γ 9 顶点、每端8步缩放，转角端点对应半角参数 ±1/23；不复用非作者证书。
 
-[终版真值与计数](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/truth_02/summary.json)；每项实例/证书/逃逸路径见[对应目录](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/truth_02/)。所有笼证书状态仍为 `production_only_pending_independent`。
+[终版真值与计数](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/truth_02/summary.json)；每项实例/证书/逃逸路径见[对应目录](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/truth_02/)。本次5份笼证书全部独立 `OK`，生产仍为 `ACCEPTED`；三条逃逸均复核通过。历史原始JSON中的 `production_only_pending_independent` 是产生时状态，保留来源字节不改；当前验收状态由[逐份双核验记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/our_corpus/results.json)补充，不再列为待办。
 <!-- T2B_TRUTH_END -->
 
 每个被接受的真值笼另核 T1b 平移困住；低房间只圆提议必须 `UNPROVED`，成功必须封口链。高房间与门洞等号/上侧需实际通过 `verify_se2_escape` 的逐段路径和无穷尾射线，不以图示代替。
 
-## 5. 十例科学表（独立复核待办）
+## 5. 十例科学表（入表笼证书双核验通过）
 
 [扫描工具](file:///D:/eab-wt/cx-e2/tools/t2b_science.py)复用未改的 `t2_se2_grid.CASES/geometry`：`tia2d` 生成器 + 精确 `erosion`。所有 δ 保持同一有理中心 `(0,1)`。从零以 `1/32` 粗步上扫，在最后成功/首个未证之间二分到 `1/256` 网格（k=8≤20），分别运行只圆与完整提议；“未证”不是困住上界。上界从 T2a 已验 δ 重新精确核验，再尝试三次向下二分的逃逸提议。只接受实际核验通过的上界。
 
@@ -97,7 +111,7 @@
 | k01 | 方形；0 | 75/256 | 75/256 | 3923/12800 | 1/3 | 173/12800 | 519/12800 | 2 | 否 |
 | k02 | 八边形；0 | 93/256 | 93/256 | 977/2560 | 12/29 | 47/2560 | 1363/30720 | 2 | 否 |
 
-标题模型八边形 K 为 d05–d08、k02；其余为方形对照。全部10例本次 `δ_cage=δ_disk`，仅表示此资源/网格下区间链没有提高下界，不能推断圆判据完备。7例逃逸上界收窄（d02、d05–d08、k01、k02），其余保留重核通过的 T2a 上界。
+标题模型八边形 K 为 d05–d08、k02；其余为方形对照。原science_02扫描时全部10例 `δ_cage=δ_disk`，仅表示此资源/网格下区间链没有提高下界，不能推断圆判据完备。7例逃逸上界收窄（d02、d05–d08、k01、k02），其余保留重核通过的 T2a 上界。
 
 终版扫描总耗时 **132.8529 s**，源文件运行前后字节不变。每例下界实例为 `science_02/<ID>/instance.json`、证书为 `certificate.json`；圆证书另列 `disk_instance.json/disk_certificate.json`，逃逸端点/路径另列 `escape_instance.json/escape_candidate.json`。每个成功的下界探针都另核 `TRAPPED_TRANSLATION`；10个最终逃逸端点的笼提议均为 `UNPROVED`。
 
@@ -106,19 +120,45 @@
 固定小子集实际回放两份证书（八边形 d07 和低房间封口），比较完整状态、计数及有理端点，不钉当前源码：[输入](file:///D:/eab-wt/cx-e2/tests/data/t2b_cage_replay.json)、[具名门](file:///D:/eab-wt/cx-e2/tests/test_t2b_replay.py)。来源提交/工具与源ZIP保留在外置目录，不将历史哈希改成当前哈希。
 <!-- T2B_SCIENCE_END -->
 
+### 5.1 入表证书、实例与逃逸复核
+
+- **25/25笼文件接受**：truth_02的5份、science_02的10份下界与10份只圆证书，均生产 `ACCEPTED`、独立 `OK`。表中有理数、原证书和原扫描源ZIP不变；没有用后来的源码哈希覆盖旧来源。
+- **8个燕尾族、121个不同 `(case, δ)` 实例相等**：覆盖此次科学扫描用到的全部成功/失败下界与上界探针，包括73个不同成功下界点（原198条成功记录中有重复），以及24份保存的cage/disk/escape端点实例。生产实例与 `dovetail_instance` 经 `canonical_instance` 比较逐项相等。[实例明细](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/instance_escape/run_01/instances.json)。
+- **凸耳k01/k02无独立任意δ实例构造器**：本次实例仍由生产生成器给出；其起始几何在T2a中曾按竖条剖分独立核查。这一历史核查不能升级为本次任意δ的独立生成。
+- **13条逃逸通过**：10条科学上界与3条真值路径，共396段、1204次生产片对检查、1249次独立oracle调用，有限段语义、并列标签/精确事件时刻和所有中间端点位姿一致。独立oracle核的是有限刚体段与尾射线前缀；无限尾射线仍由现有生产精确平移核验器接受，不声称新增了独立无限射线证明。[完整复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/instance_escape/run_01/summary.json)。
+
+快档[具名双核验门](file:///D:/eab-wt/cx-e2/tests/test_t2b_dual_verifier.py)固定保存5份真值及10份下界，另核8个燕尾族的cage/escape两端、8类拒收条件和4种原始JSON记号；44项定向通过。冻结数据只核自身完整性，不钉当前源码，不依赖Git或外置目录。[输入与历史来源](file:///D:/eab-wt/cx-e2/tests/data/t2b_dual_cases/manifest.json)。
+
+### 5.2 续单新增的双核验下界（不改冻结原表）
+
+瓶颈诊断增加资源后，在原“首未证δ”处找到以下两份封口笼证书；两核验器均接受，且平移另核为 `TRAPPED_TRANSLATION`。原 science_02 表和外置JSON仍为冻结历史结果；此表是补充结论，不改原 δ_disk。上界继续使用§5.1已复核的逃逸证书。
+
+| ID | 新 δ_cage | δ_esc | δ*_T | 新宽度 | 相对宽度 | N | 封口 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| d03 | 1/4 | 21/50 | 3/7 | 17/100 | 119/300 | 4 | 是 |
+| d08 | 13/128 | 11377/51200 | 12/49 | 6177/51200 | 100891/204800 | 2 | 是 |
+
+所以最终入表为**原25份笼文件＋2份新下界证书**双核验通过，不是27个独立几何实例。[新增证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/diagnostic_03)，[逐字节复制与SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/new_certificates_copy.json)，[诊断实例复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/instance_escape/diagnostic_instances_final_03/summary.json)。8个燕尾族原121个不同 `(case,δ)` 加4个新d07内点，共125个不同δ实例独立比对相等；14份诊断保存实例中12份有独立燕尾构造器且全部相等。凸耳两例与无限尾射线的独立性边界仍按§5.1保留。
+
 ## 6. 变异与伪造集
 
 [24 项具名变异门](file:///D:/eab-wt/cx-e2/tests/test_t2b_mutations.py)在运行中编译生产源码的内部变体：原版同一语义 guard 先绿，再要求指定语义 AssertionError 红；不接受源码哈希或偶然异常为杀变异证据。[39 份精确伪造](file:///D:/eab-wt/cx-e2/tests/data/t2b_forgeries/)逐项断言拒收编号；[对应表](file:///D:/eab-evidence/reports/codex/T2b_evidence/tests_summary.json)覆盖引理各版修订类别。
 
 零轴门直接进入生产 SAT 辅助函数，因为合法公共入口的严格凸守卫已把重复顶点先拒；这是内部防线门，不冒称删除它就能越过仍在的前置守卫。绕数 +2 和 −2 都须接受，不能用奇偶性代替带符号整数。起点贯入门确认已通过 V4/V5 并在 V6 拒收，排除前置数据错误遮挡。
 
-## 7. P1 诊断与性能
+### 6.1 双方语料交叉
 
-各探测记录含生成/核验耗时、区间数、是否封口、折线顶点数与有限搜索失败原因。时间仅为本机诊断，不作性能保证；基线测试并行负载会影响耗时。完整失效盖标签与逐角度瓶颈诊断列入可选 P1 未做项，不计 P0 PARTIAL。
+生产侧初轮130次配对（25份入表、39份伪造、66份附加正例）全部判定/条件代码一致。独立侧505次配对（462个字节不同的实例/证书对；67接受、438拒收）也全部一致，包含acceptance与hand_cages全部保存样例、独立非变异测试实际生成输入、35份变异测试的原版输入，以及解析/CLI补集。409项独立非变异测试实际执行通过；故意禁用守卫后的变异核验器不参与原版判定对拍。
 
-### 7.1 下界证书性能（诊断）
+[生产侧逐项记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/our_corpus/results.json) · [独立侧覆盖清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/v_corpus/inventory.json)。这些是有限语料实测，不将所有者先前9042例差分或95项变异的验收数字冒称本次重跑结果。
 
-| ID | 生成含核验/s | 其中核验/s | 区间数 | 区间Γ总顶点数 | 全部折线顶点数 | 首个未证δ |
+补充运行我方6个原测试文件，245项通过；仅在未变异生产原函数上捕获192次有效调用，独立文件解析核验192次 `OK`，共71个不同原始(instance,certificate)字节对。覆盖这6个原测试文件中全部实际正例构造，动态编译的禁守卫变体从未参与对拍。新资源8步正例及两份新诊断证书另外双核验，不计入这192次。这192次不是与原130次、独立侧505次合并去重后的总数，三组计数分别保留。[逐nodeid捕获记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/our_corpus/positive_capture/summary.json)。
+
+## 7. 瓶颈诊断与对 T2c 的含义
+
+### 7.1 原 science_02 扫描性能（历史诊断）
+
+| ID | 生成含核验/s | 其中核验/s | 区间数 | 区间Γ总顶点数 | 全部折线顶点数 | 原扫描首未证δ |
 |---|---:|---:|---:|---:|---:|---:|
 | d01 | 0.016996 | 0.005793 | 2 | 14 | 42 | 47/256 |
 | d02 | 0.020707 | 0.007161 | 2 | 14 | 42 | 1/4 |
@@ -131,7 +171,118 @@
 | k01 | 0.124002 | 0.024209 | 2 | 22 | 66 | 19/64 |
 | k02 | 0.124061 | 0.023290 | 2 | 22 | 66 | 47/128 |
 
-区间Γ顶点数含闭合重复端点；全部折线顶点数另加连接/封口链中每条折线（按序列计数，不去重）。完整10例“失败角度—严格见证段—盖标签”诊断 **未做（P1可选）**。仅保留 d07 的 δ=53/256 单次20秒探索：连接区间3、step22/128、segment77找不到四点见证；该失败不是不可逃结论，且只有运行后source SHA、没有运行时源快照，不升级为终版科学依据。[探索记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/diagnostics/d07_53_256_exploratory_01.json)。
+上述为冻结 science_02 的原测量，不是本续单最终性能。顶点计数含闭合重复端点，全部折线计数包含连接/封口且不去重。旧d07单次探索不替代下面的完整final_03；本次P1已实际补做。
+
+### 7.2 续单两份新笼证书性能（诊断）
+
+以下直接读取原 `proposal.diagnostic` 的生成含核验秒数与核验秒数，不重跑计时。区间数和顶点数由对应原证书精确计数；全部折线顶点数等于各区间Γ顶点数，加所有links/caps内每条chain折线顶点数，包含闭合重复端点，不去重。
+
+| ID | δ_cage | 生成含核验/s | 其中核验/s | N | 区间Γ总顶点数 | 全部折线顶点数 |
+|---|---:|---:|---:|---:|---:|---:|
+| d03 | 1/4 | 7.165003 | 1.745146 | 4 | 388 | 13580 |
+| d08 | 13/128 | 4.858031 | 2.045540 | 2 | 514 | 17990 |
+
+[两份原proposal及证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/diagnostic_03)。[内部数值复算记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/review.json)核对14点读数、444项V1/比值和334个原点样本；这是内部只读复算，不是所有者安排的里程碑独立对抗验收。
+
+### 瓶颈诊断与对 T2c 的含义（续单实测）
+
+切片与失败读数均为**诊断**，不能单独形成困住结论；仅下述两份新双核验笼证书提供新增困住下界。以 `final_03` 为唯一完整测量轮；14 点均完成，源码输入 SHA256 在运行前后相同。`pilot_d01` 为开发试测；`final_01` 因观测器连接角标注被外层局部变量覆盖而停止，`final_02` 为切换原 T2a 角范围而在首例结束前停止；两轮均明列作废，未拼接结果。本轮测量时既有核验器、提议器和原科学表未改；其后提议器低资源边界修复的来源版本须与此轮历史快照分列。
+
+#### 测量定义与边界
+
+- 每点原提议器采用合作式 20 s 预算、最多 32 区间、每折线 1025 顶点、连接/封口最多 128 步、4 次细化。观测器临时包裹 `_cells`/`_witness`，不改变返回判定；观测开销计入预算，20 s 不是强制打断的硬实时上限。
+- 角范围来自**原 WO-T2a** 的 `certificates/<id>.json`，不是后续缩小上界的路径；逐段有理复合旋转保存全部累计角端点。原路径只提供角范围，绝不声称该路径在本次较小 δ 下仍可达。
+- 在该范围按有理 λ 分 8 段，并在图边界拆段，检查端点与中点；另加实际捕获失败区间的端点/中点。ρ=0 只用精确转动片，不加不变圆片。候选 Γ 须逐段具有同一严格片对见证、闭合且对原点绕数非零。未找到只表示该有限构造未证。
+- 对固定 ρ=0 Γ 及固定片对，逐条宿主半平面统一内移 `ρ × 有理欧氏法向范数上界`，用精确算术重新检查全部端点严格 SAT。12 次二分给成功/失败 ρ 包络；失败上界再次实际检查。若搜索上限仍成功，仅报单侧成功下界，不冒称最大值。容量定义是本 Γ/本见证/本有理内移构造的容量，不是所有 Γ 的最优值。
+- 需求量为 V1 **规定的最小充分收缩界** `ρ_V1 = 2r sqrt(max ((u−u_mid)^2/((1+u²)(1+u_mid²))))`。保存其有理平方；平方根、比值与归一 SAT 排名仅为诊断浮点。比较同一中点区间原宽与 1/2、1/4 宽。严格约束的失败边界不当成等号成功。
+- 比值 >1 仅说明所选 Γ/见证在当前收缩构造下损失余量，不能证明引理方法全局太松；比值 ≤1 仅关于 V2/V4 局部覆盖，不含连接/封口。所有采样切片成功也不证明全转角范围成立。部分角度的 t=0 已贯入，绕原点屏障成功不等于该角存在原点自由分量。
+- 失败盖选取规则：在该次实际查询点中，对每个片对取所有 SAT 轴/点的最小欧氏归一重叠量，再选最大者；并列保留生成顺序。保存原始精确分子、法向平方、支撑顶点索引，可复算。它是“最接近覆盖”的诊断标签，不是分离证书。
+
+#### 10 个首未证点与 d07 的 4 个内点
+
+下表的比值取**实际最后捕获失败所处区间**；若该处没有可用区间/ρ=0 屏障，则明确未定义。已成功的新证书行改列采样区间，不虚构最终失败。`采样屏障` 包含额外失败区间样本；`t=0贯入` 只计这些样本。
+
+|例/点|δ|20 s 提议结果|采样屏障|t=0贯入|比值所用 λ 区间|ρ_V1/容量（原宽）|区间宽/4 后|
+|---|---:|---|---:|---:|---|---|---|
+|d01/first_unproved|47/256|UNPROVED|27/27|22|['-1/8', '0']|[1.3307, 1.3377]|[0.33232, 0.33406]|
+|d02/first_unproved|1/4|UNPROVED|23/23|16|['-1/8', '-1/16']|[0.40767, 0.40898]|[0.10174, 0.10207]|
+|d03/first_unproved|1/4|CERTIFIED_CAGE|23/23|4|['35/312', '5/39']|[0.12266, 0.12313]|[0.030645, 0.030761]|
+|d04/first_unproved|27/256|UNPROVED|23/23|15|['-1/8', '-1/16']|[0.47638, 0.47817]|[0.11889, 0.11934]|
+|d05/first_unproved|1/4|UNPROVED|23/24|16|['-1/8', '-1/16']|[0.45426, 0.45589]|[0.11337, 0.11378]|
+|d06/first_unproved|47/128|UNPROVED|25/25|15|['-1/2', '-7/16']|[0.32471, 0.32571]|[0.08047, 0.080717]|
+|d07/first_unproved|53/256|UNPROVED|28/28|21|['-1/16', '0']|[0.61214, 0.61508]|[0.15299, 0.15373]|
+|d07/interior_1|2929/12800|UNPROVED|25/25|20|['-1', '-15/16']|[1.8127, 1.8631]|[0.4479, 0.46034]|
+|d07/interior_2|1629/6400|UNPROVED|22/25|17|['-1', '-15/16']|未取得ρ₀屏障，未定义|未取得ρ₀屏障，未定义|
+|d07/interior_3|3587/12800|UNPROVED|21/25|15|['-1', '-15/16']|未取得ρ₀屏障，未定义|未取得ρ₀屏障，未定义|
+|d07/interior_4|979/3200|UNPROVED|21/25|15|['-1', '-15/16']|未取得ρ₀屏障，未定义|未取得ρ₀屏障，未定义|
+|d08/first_unproved|13/128|CERTIFIED_CAGE|21/21|2|['49/1096', '7/137']|[0.044096, 0.044245]|[0.011023, 0.01106]|
+|k01/first_unproved|19/64|UNPROVED|20/20|0|['-1', '-15/16']|[1.765, 1.8127]|[0.43612, 0.4479]|
+|k02/first_unproved|47/128|UNPROVED|20/20|0|['-1', '-15/16']|[2.2357, 2.3128]|[0.55241, 0.57146]|
+
+#### 原 T2a 转角范围的独立读数（不混入额外失败角）
+
+本表仅取 `sample_origin=escape_angle_range_grid` 的 8 个区间及其 17 个端点/中点。下面的最小/最大比值包络分别由各中点比值下/上界取 min/max；“最差区间”按最大比值上界排序，是包络意义的最差候选，非连续角优化。缩宽/4仍固定原中点Γ。无法构造ρ=0屏障的具体角单列；该角的容量比值未定义，绝不由别的角替代。比值汇总仅覆盖已经取得Γ的中点。
+
+|例/点|原T2a源δ|原λ范围|原范围采样成功|额外样本成功|原范围ρ0未证角|中点比值最小值包络|中点比值最大值包络|最差中点区间|缩宽/4后最大包络|法向上界最大相对因子|
+|---|---:|---|---:|---:|---|---|---|---|---|---:|
+|d01/first_unproved|3/10|['0', '169/213']|17/17|10/10|无|[0.52206, 0.52377]|[1.1556, 1.1624]|['169/1704', '169/852']|[0.28766, 0.28934]|1.00000023702|
+|d02/first_unproved|2/5|['0', '85/113']|17/17|6/6|无|[0.53881, 0.54032]|[2.1909, 2.228]|['595/904', '85/113']|[0.53884, 0.54797]|1.00000001006|
+|d03/first_unproved|21/50|['0', '5/39']|17/17|6/6|无|[0.093237, 0.093503]|[0.12266, 0.12313]|['35/312', '5/39']|[0.030645, 0.030761]|1.00000018586|
+|d04/first_unproved|1/5|['0', '94/121']|17/17|6/6|无|[0.3824, 0.38341]|[1.0097, 1.0149]|['47/484', '47/242']|[0.25138, 0.25268]|1.00000021585|
+|d05/first_unproved|9/20|['0', '59/113']|17/17|6/7|无|[0.32347, 0.32425]|[0.4724, 0.47409]|['59/904', '59/452']|[0.11788, 0.1183]|1.00000001006|
+|d06/first_unproved|11/20|['0', '7/8']|17/17|8/8|无|[0.47173, 0.47306]|[1.0173, 1.022]|['7/64', '7/32']|[0.25299, 0.25417]|1.00000016465|
+|d07/first_unproved|7/20|['0', '40/51']|17/17|11/11|无|[0.54121, 0.54292]|[1.1561, 1.1629]|['5/51', '10/51']|[0.28782, 0.28951]|1.00000002628|
+|d07/interior_1|7/20|['0', '40/51']|17/17|8/8|无|[0.57777, 0.57973]|[1.3923, 1.4021]|['5/51', '10/51']|[0.3466, 0.34906]|1.00000028427|
+|d07/interior_2|7/20|['0', '40/51']|17/17|5/8|无|[0.63107, 0.63341]|[1.8829, 1.901]|['5/51', '10/51']|[0.46873, 0.47324]|1.00000052158|
+|d07/interior_3|7/20|['0', '40/51']|16/17|5/8|['40/51']|[0.70091, 0.70379]|[4.3024, 4.4458]|['35/51', '40/51']|[1.0571, 1.0924]|1.00000010191|
+|d07/interior_4|7/20|['0', '40/51']|16/17|5/8|['40/51']|[0.79916, 0.80291]|[26.675, 33.344]|['35/51', '40/51']|[6.5543, 8.1929]|1.00000035004|
+|d08/first_unproved|6/25|['0', '7/137']|17/17|4/4|无|[0.038024, 0.038135]|[0.044096, 0.044245]|['49/1096', '7/137']|[0.011023, 0.01106]|1.00000034328|
+|k01/first_unproved|8/25|['0', '13/74']|17/17|3/3|无|[0.44142, 0.44583]|[22.372, 44.744]|['39/592', '13/148']|[5.5898, 11.18]|1.00000706448|
+|k02/first_unproved|2/5|['0', '11/63']|17/17|3/3|无|[0.66486, 0.67509]|[7.4316, 8.9179]|['11/252', '11/168']|[1.8572, 2.2286]|1.00000422752|
+
+法向相对因子为 `有理范数上界 / sqrt(精确法向平方)` 的最大诊断值；原始实例、旋转λ、有理范数上界算法及源快照可重算每条边，表中浮点仅显示舍入。因子接近1不等于对所有几何误差作上界证明。
+原范围采样中，d07内点3与4仅在λ=40/51没有构造出ρ=0屏障，其余原范围样本均取得严格绕数屏障；额外负角失败不能混称为原T2a角范围失败。端点未证处不做容量比值，已取得的其他中点比值仍单独列示。
+
+#### 实际失败位置与盖标签
+
+- **d01/first_unproved，δ=47/256**：最后捕获 `_connect`，λ区间=['-1/8', '0']，λ端点=0，连接/封口 at=4，段=77，步=3/16。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=1、parent内片=0、扁平片=1；限制特征 edge-edge，移动支撑顶点=[1, 2]，障碍支撑顶点=[0, 1]，归一重叠=-0.013377。
+  - 最后**完成**尝试返回：`{"mode": "capped:1/4:8", "detail": {"reason": "connection_four_point_witness_missing", "where": {"step": 22, "segment": 77, "steps": 128}, "interval": 3}}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d02/first_unproved，δ=1/4**：最后捕获 `_cap`，λ区间=['-1/8', '-1/16']，λ端点=-1/8，连接/封口 at=0，段=74，步=43/64。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=1、parent内片=0、扁平片=1；限制特征 vertex-edge，移动支撑顶点=[2]，障碍支撑顶点=[0, 1]，归一重叠=-0.010952。
+  - 最后**完成**尝试返回：`{"mode": "capped:1/16:4", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d03/first_unproved，δ=1/4**：本轮成功，不存在最终失败位置。新证书通过生产与独立核验器，并复核为 `TRAPPED_TRANSLATION`；原有限预算扫描的“未证”不是不可笼证明。该新证书保存在诊断目录，不回写冻结科学表。
+- **d04/first_unproved，δ=27/256**：最后捕获 `_cap`，λ区间=['-1/8', '-1/16']，λ端点=-1/8，连接/封口 at=0，段=294，步=52/64。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=0、parent内片=0、扁平片=0；限制特征 vertex-edge，移动支撑顶点=[0]，障碍支撑顶点=[1, 2]，归一重叠=-0.00028838。
+  - 最后**完成**尝试返回：`{"mode": "capped:1/16:4", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d05/first_unproved，δ=1/4**：最后捕获 `_cap`，λ区间=['-1/8', '-1/16']，λ端点=-1/8，连接/封口 at=0，段=2，步=19/32。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=1、parent内片=0、扁平片=1；限制特征 edge-vertex，移动支撑顶点=[1, 2]，障碍支撑顶点=[0]，归一重叠=-0.0054613。
+  - 最后**完成**尝试返回：`{"mode": "capped:1/16:4", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d06/first_unproved，δ=47/128**：最后捕获 `_cap`，λ区间=['-1/2', '-7/16']，λ端点=-1/2，连接/封口 at=0，段=213，步=50/64。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=1、parent内片=0、扁平片=1；限制特征 vertex-edge，移动支撑顶点=[2]，障碍支撑顶点=[0, 1]，归一重叠=-0.0011501。
+  - 最后**完成**尝试返回：`{"mode": "capped:1/4:16", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d07/first_unproved，δ=53/256**：最后捕获 `_connect`，λ区间=['-1/16', '0']，λ端点=0，连接/封口 at=4，段=39，步=10/128。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=1、parent内片=0、扁平片=1；限制特征 edge-edge，移动支撑顶点=[1, 2]，障碍支撑顶点=[0, 1]，归一重叠=-0.0045346。
+  - 最后**完成**尝试返回：`{"mode": "capped:1/8:8", "detail": {"reason": "connection_four_point_witness_missing", "where": {"step": 21, "segment": 77, "steps": 128}, "interval": 3}}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d07/interior_1，δ=2929/12800**：候选Γ逐顶点覆盖检查失败（尚无对应完整见证段，查询点=[['2', '2']]），λ区间=['-1', '-15/16']，λ端点=None，连接/封口 at=None，段=None，步=None/None。最近盖：移动 {'kind': 'rotated', 'piece': 0}，障碍 parent=1、parent内片=0、扁平片=1；限制特征 vertex-edge，移动支撑顶点=[1]，障碍支撑顶点=[0, 3]，归一重叠=-0.088111。
+  - 最后**完成**尝试返回：`{"mode": "capped:1:32", "detail": {"reason": "individual_interval_has_no_winding_loop", "interval": 0}}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d07/interior_2，δ=1629/6400**：封口目标原点检查失败（尚未开始缩放链，无链步数），λ区间=['-1', '-15/16']，λ端点=-1，连接/封口 at=0，段=None，步=None/None。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=0、parent内片=0、扁平片=0；限制特征 vertex-edge，移动支撑顶点=[0]，障碍支撑顶点=[1, 2]，归一重叠=-0.027359。
+  - 最后**完成**尝试返回：`{"mode": "capped:1:32", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d07/interior_3，δ=3587/12800**：封口目标原点检查失败（尚未开始缩放链，无链步数），λ区间=['-1', '-15/16']，λ端点=-1，连接/封口 at=0，段=None，步=None/None。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=0、parent内片=0、扁平片=0；限制特征 vertex-edge，移动支撑顶点=[0]，障碍支撑顶点=[1, 2]，归一重叠=-0.060736。
+  - 最后**完成**尝试返回：`{"mode": "capped:1:32", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d07/interior_4，δ=979/3200**：封口目标原点检查失败（尚未开始缩放链，无链步数），λ区间=['-1', '-15/16']，λ端点=-1，连接/封口 at=0，段=None，步=None/None。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=0、parent内片=0、扁平片=0；限制特征 vertex-edge，移动支撑顶点=[0]，障碍支撑顶点=[1, 2]，归一重叠=-0.094114。
+  - 最后**完成**尝试返回：`{"mode": "capped:1:32", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **d08/first_unproved，δ=13/128**：本轮成功，不存在最终失败位置。新证书通过生产与独立核验器，并复核为 `TRAPPED_TRANSLATION`；原有限预算扫描的“未证”不是不可笼证明。该新证书保存在诊断目录，不回写冻结科学表。
+- **k01/first_unproved，δ=19/64**：封口目标原点检查失败（尚未开始缩放链，无链步数），λ区间=['-1', '-15/16']，λ端点=-1，连接/封口 at=0，段=None，步=None/None。最近盖：移动 {'kind': 'exact', 'piece': 1}，障碍 parent=1、parent内片=1、扁平片=5；限制特征 vertex-edge，移动支撑顶点=[2]，障碍支撑顶点=[0, 3]，归一重叠=-0.17469。
+  - 最后**完成**尝试返回：`{"mode": "capped:1:32", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+- **k02/first_unproved，δ=47/128**：封口目标原点检查失败（尚未开始缩放链，无链步数），λ区间=['-1', '-15/16']，λ端点=-1，连接/封口 at=0，段=None，步=None/None。最近盖：移动 {'kind': 'exact', 'piece': 0}，障碍 parent=1、parent内片=1、扁平片=5；限制特征 vertex-edge，移动支撑顶点=[6]，障碍支撑顶点=[0, 3]，归一重叠=-0.24777。
+  - 最后**完成**尝试返回：`{"mode": "capped:1:32", "detail": "cap_origin_not_covered"}`。捕获失败可来自随后耗尽预算的当前尝试，二者不强行视为同一位置。
+
+#### 诊断性判断
+
+1. d03 在原首未证点 δ=1/4、d08 在 δ=13/128 得到新的双核验笼证书，二者同时复核 `TRAPPED_TRANSLATION`，直接表明至少这两处原下界未抬高含有提议器资源/搜索不足；不是引理不可用。原科学表不改，本节单独记录改进。
+2. ρ=0 切片成功但同区间收缩比值较大，且细分后下降，只定位当前固定 Γ/见证的收缩余量损失；不能据此宣称全部屏障都失败。比值已经较小而实际连接/封口仍失败，则观测到的是本提议器该连接/封口构造未成功，未证明不存在其他连接。
+3. 对未取得 ρ=0 屏障的采样角，不能计算那条尚未获得的 Γ 的容量，也不能强行在“方法过松”和“搜索不足”间二选一。d07 四内点给出切片成功数、具体局部失败与适用的比值，供 T2c 针对性比较精确墙函数/更强 Γ 构造，而不是不可逃结论。
+4. k01/k02 的所有已采样 t=0 均无严格贯入，最后实际阻断于封口目标原点检查；当前转动片分支只尝试封口弧，不搜索转动片覆盖整周的无封口闭链。这是本提议器明确的搜索边界，不是“不存在笼”的结论。
+5. 最终是否放开按转角精确墙函数应由所有者据这些有限、可复算事实决定。本单没有实现按 u 精确墙函数。
+
+证据：`diagnostics/final_03/summary.json`、逐点 `proposal_trace.json`/`slice_diagnostics.json`、`diagnostic_readout.json`、`slice_origin_audit.json`。原路径来源、δ、完整累计角端点、各 Γ 及固定见证、ρ 成功/失败有理包络和源快照均落盘。
+
+完整可点击入口：[终版14点](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/final_03/summary.json) · [诊断源快照](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/final_03/source_manifest.json) · [全部诊断逐件SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/artifact_manifest.json)。
 
 ## 8. 静态准入与收尾验证
 
@@ -163,52 +314,58 @@
 
 原policy含42297个CRLF，本单修改后按工单统一为LF；旧3659条与其他字段是JSON值/规范摘要不变，不是原始文件字节不变。[旧原字节](file:///D:/eab-evidence/reports/codex/T2b_evidence/policy_before_t2b.json)及开工ZIP完整保留。三分析器仍逐字节不变。
 
-最终完整静态随收尾全档执行，原样末行：`exact construction AST gate: 0 violation(s)`。此前静态预检虽0违例，但扫描期间提议器测试在改动，准确标为NON_FROZEN；不拿它替代最终完整静态。
+原生产交付的完整静态随当时全档执行，历史原样末行：`exact construction AST gate: 0 violation(s)`。此前静态预检虽0违例，但扫描期间提议器测试在改动，准确标为NON_FROZEN；不拿它替代最终完整静态。
 <!-- T2B_STATIC_END -->
 
 <!-- T2B_GATES_BEGIN -->
-开工全档 `t2b_baseline_20261025` 已完成，15529项、0 failed/skip；69模块实际执行覆盖完整，2426文件与开工ZIP相同。四分片原样末行：
-```text
-3883 passed in 1492.69s (0:24:52)
-3882 passed in 1968.88s (0:32:48)
-3882 passed in 1568.37s (0:26:08)
-3882 passed in 2059.05s (0:34:19)
-exact construction AST gate: 0 violation(s)
-```
+### 原生产交付的运行记录（历史，仅供溯源）
 
-[完整基线](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_baseline_20261025/summary.json)。以下另列新代码收尾运行，不混用基线。
+旧基线15529项、旧快档9694项、旧全档15800项均属于独立核验器合入前的原生产交付，不是当前续单收尾。旧报告全文保存在续工基线ZIP的 `reports/codex/T2b_report.md`，不丢弃原始证据；不把旧节点数量、旧受测字节或当时待办状态搬作当前结论。
 
-### 收尾快档（原样末行）
-[t2b_final_fast_20261025](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_fast_20261025/summary.json)
-```text
-9694 passed in 1529.96s (0:25:29)
-```
+- [旧基线摘要](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_baseline_20261025/summary.json) · [旧基线日志原字节](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_baseline_20261025/raw_runner_bytes.zip)
+- [旧快档摘要](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_fast_20261025/summary.json) · [旧快档日志原字节](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_fast_20261025/raw_runner_bytes.zip)
+- [旧全档摘要](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_full_20261025/summary.json) · [旧全档日志原字节](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_full_20261025/raw_runner_bytes.zip)
+- [旧全档受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_full_20261025/tested_source.zip) · [续工基线与旧报告全文](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/baseline_anchor/source.zip)
 
-### 收尾全档固定四分片（原样末行）
-[t2b_final_full_20261025](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_full_20261025/summary.json)
-```text
-3950 passed in 1480.50s (0:24:40)
-3950 passed in 2122.24s (0:35:22)
-3950 passed in 1652.57s (0:27:32)
-3950 passed in 1828.83s (0:30:28)
-exact construction AST gate: 0 violation(s)
-```
-
-快档实际执行 **9694** 项、全档 **15800** 项；两次均0 failed、0 skip，收集/分派/实际call节点多重集合相同，逐模块运行监测覆盖完整。两次source_manifest完全相同，运行期间导出树与现场树均未改。快档耗时 1542.976 s，全档耗时 2288.878 s；全仓快档未达到单进程约5分钟的长期成本目标，本单未改既有测试或算法以追求时限。
-
-[受测字节ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_full_20261025/tested_source.zip)保留临时导出的实际运行版本。日志LF视图转换前的原字节另存各run `raw_runner_bytes.zip`，对应 `lf_export.json`逐文件给出双SHA；JSON值、测试结论和末行未改。
-
-仅在两次运行完成后回填报告与交付元数据；`src/`、`tests/`、`tools/`及静态准入账本仍为受测字节。这是H1字节导出验证，不是所有者安排的新鲜Git树。
-
-[双轮节点/来源机械核对](file:///D:/eab-evidence/reports/codex/T2b_evidence/final_pair_audit.json)确认70模块实际执行覆盖（63函数模块、7声明模块），620份代码/测试/工具/准入账本仍为受测字节。[逐项P0交接核查](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/requirements.json)机器记录271个T2b节点、24变异、39伪造、198个成功下界探针及明确待办；它不是独立核验器或里程碑对抗核查。
-
-复跑（将run名换成全新名称；包装器固定外置TEMP/TMP、禁cache、显式basetemp、禁pyc）：
-```powershell
-python -X utf8 tools/t2b_run_gates.py --name <new_fast_name>
-python -X utf8 tools/t2b_run_gates.py --name <new_full_name> --runslow
-python -X utf8 tools/t2b_delivery_audit.py
-```
+本次独立核验器及新增门已包含的新运行，只在下列§8.1按实测结果列出。
 <!-- T2B_GATES_END -->
+
+### 8.1 续单静态与当前收尾：中断作废，未通过
+
+续单新增静态准入 **0**；原98个唯一键（生产35、测试辅助63）不变，policy总数3757；独立核验器新增准入0。三分析器、policy和既有生产数学源码逐字未变。静态0违例不是数值安全证明。
+
+**新快档 `t2b_dual_final_fast_20261026` 已因只读测试失败而中断作废，不是完整RED、更不是GREEN。** 根会话仅向自己启动的会话69279发送Ctrl-C，退出码1；已只读检查两个确切run名均无遗留进程。停机保存的进度为收集10269项、9830个call、1 failed、0 skipped，已记录耗时1003.109 s；这不是完整运行总耗时。原runner `TESTING` 状态已过期，以[中断作废记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/INTERRUPTED_INVALID_RUN.json)为准。**不存在最终pytest汇总末行，不补造、不拼接；全档 `t2b_dual_final_full_20261026` 目录未创建，全档与最终静态均未运行。** 此次中断前耗时已超过5分钟，不能宣称达到快档成本目标。
+
+失败具名门：
+
+```text
+tests/test_t2b_v_static_admissions.py::test_t2b_v_static_analyzers_and_policy_are_byte_unchanged
+```
+
+| 核对项 | SHA256 / 结果 |
+|---|---|
+| 独立只读测试固定policy期望 | `621df0519431552c8cea255cf756f1bcb5c3acc90cb301ff0048649b1916cc5d` |
+| 续工5c0f80f基线及当前未改policy | `1610328c764c644c38d38ea11ffcc9fc5818370c44bd43d2a220ee3335437e6c` |
+| 基线与当前policy | 逐字节相同，3757项；3815884字节 |
+| 三个静态分析器 | 均与该只读测试的期望SHA一致 |
+
+[干净ZIP最小复现](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/baseline_reproduction.json)直接从2579文件的干净开工ZIP读取测试AST常量和policy字节，重现同一冲突；当前独立测试、policy和三个分析器均与开工ZIP逐字相同。因此根因是**合入基线已有的只读静态测试SHA不兼容**，不是本续单修改policy，也不是引理判定或拒收条件代码分歧；尚未发现数学反例。按所有者约束停止，不改独立测试、不倒退policy迁就哈希、不放宽门。
+
+具名最小复现已实际执行，[定向pytest原始记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/pytest.txt)对应的原样末行：
+
+```text
+1 failed in 0.08s
+```
+
+复现命令（与记录一致；pytest禁缓存、显式basetemp）：
+
+```powershell
+python -X utf8 -m pytest -q -p no:cacheprovider --basetemp D:/eab-evidence/reports/codex/T2b_evidence/tmp/independent_policy_pin_minimal tests/test_t2b_v_static_admissions.py::test_t2b_v_static_analyzers_and_policy_are_byte_unchanged
+```
+
+中断证据：[中断时源码清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/source_manifest.json) · [中断源码ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_source.zip) SHA `e0bff88dd7f8ce2305440d3cb87402f82fc0ea2cc10ed4a01858e740c854b8cd` · [中断日志原字节ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_raw_bytes.zip) SHA `bde0a21e2e2f0a6c29f2754c27770a745358e8a95a85e39662ab057da78fd6f6` · [归档核对记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/interrupted_fast_archive.json)。2614个源码ZIP成员尺寸与SHA逐一核对；它明确命名为 `interrupted_source.zip`，**不是通过测试的源码归档**。不声称运行节点全集相等、模块覆盖完成、双轮源清单一致或全档通过。运行日志原字节先归档，再保存LF视图；不规范化parser原始样本。
+
+新静态预检的原样末行为 `exact construction AST gate: 0 violation(s)`，仅见[非最终静态预检](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/static_preflight/summary.json)；这是最终冻结前的专项预检，**不是未运行的最终全档静态门**，不能覆盖只读字节合同失败。所有者裁定后须用全新run名重跑快档与四分片全档；本次作废运行永不拼接为绿。
 
 ## 9. 工单订正清单
 
@@ -216,26 +373,35 @@ python -X utf8 tools/t2b_delivery_audit.py
 2. `where/reason` 的具体字符串与对象级缺失键定位在引理中未编码，本实现另明示诊断约定；不改变条件编号。
 3. 工单许可逐站证明缺口准入；T2a旧门把整个追加尾段及总数固定，本单仅做上述机械计数/切片兼容，不删门、不放宽规则、不修改分析器。已询问所有者但未收到额外回复；此处按工单授权边界实施，不冒称另获来函批准。
 
+4. 续单补充：`_cap` 在步数上限小于8时真实抛出未赋值局部变量异常；已按§3.1仅加两行资源守卫，前3红1绿、后67绿。既有≥8分支与诊断final_03的128步路径不变；不修改引理或迁就真值。
+
+5. 当前阻塞：只读独立静态门固定policy SHA与5c0f80f开工基线及当前未改字节均不符，干净ZIP复现见§8.1；这是合入基线已有的测试字节锚冲突，不是引理数学分歧。本代理不修订只读测试或policy，快档停止作废、全档未跑，等待所有者裁定。
+
 ## 10. 建议并入设计的新增清单
 
 - `SE2CageCertificate`：`from_json/from_data/to_json/to_data`，精确值往返；数据类本身不等于接受。
 - `verify_se2_cage(instance, certificate)`、`SE2CageVerification(valid, condition, reason, where, counts)`；成功 `ACCEPTED`，拒收 `V0/CHAIN/V1/.../V6`。
 - `counts` 保存已检查片、收缩不等式、屏障段、连接四边形、起始片对及带符号绕数；不是覆盖率证明。
 - 工具 `CageResources`、`propose_cage`、`scientific_instance`；状态 `CERTIFIED_CAGE/UNPROVED/PROPOSAL_UNVERIFIED`。
-- 科学汇总显式 `production_only_pending_independent`，不与双路验收混用。
+- 原科学来源JSON保留产生时 `production_only_pending_independent`；当前仓内汇总以 `production_and_independent_verified` 补记实测验收，不改原来源字节。
 
 `docs/eab2_design.md` 未修改；上述为建议清单，不是已并入设计。
 
 完整新增函数、内部辅助函数、类字段及方法签名见[源码级新增清单](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/api_inventory.json)；下划线函数明确是内部实现，不建议升级为公共API。JSON字段严格沿用引理§7；新增诊断字段 `source/generation_seconds/verification_seconds/mode/intervals/uses_caps/loop_vertices` 仅属不可信提议器运行记录，不构成笼条件。
 
+### 10.1 续单诊断接口与字段
+
+[续单AST接口清单](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/continuation_api_inventory.json)记录 `ProposalTrace`、`pair_margin`、`closest_cover`及其余诊断函数、类字段、字典键与状态字面量；每项由当前受测源码AST抽取。`source=诊断`、`proposal_status`、`last_failure_per_stage`、`closest_cover`、法向平方/精确重叠分子、ρ容量包络与比值均是诊断字段，不是新的笼条件或求解器公共状态。现有 `_cap` 低预算只使用原有 `SearchLimit/UNPROVED` 出口，不增加数学状态。原 `api_inventory.json` 明确保留为第一单交付清单；设计正本未改。
+
 ## 11. 遗留与最终状态
 
 <!-- T2B_RESIDUAL_BEGIN -->
-1. **P0待外部交接**：尚未收到所有者合入 WO-T2b-V 的通知，未读取或修改该独立实现。每份入表笼证书还须双核验，双方伪造集的判定与拒收代码必须一致；不一致即停下报告。现有科学表全部为 `production_only_pending_independent`，不是最终双核验入表验收。
-2. 所有者新鲜Git树复现与Claude安排的一路独立对抗核查尚待办理；内部多代理检查不替代此项。
-3. **P1可选未做**：十例完整盖标签瓶颈诊断未做；单次d07探索仅作诊断，不计入本单PARTIAL原因。已记录逐例生成/核验性能。
-4. 下界搜索仅k=8有限网格与有限资源，区间链未改善10例圆法下界；不能声称最优、完备或临界值等号。计时是协作式，不保证抢断单次昂贵调用。
-5. 本地证据不是远程备份；未commit/push，也未修改任何既有数学API、只读引理或C++。完整改动链接见[交付清单](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/artifacts.md)，SHA与边界见[交付审计](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/delivery_audit.json)。
+1. 原25份与新增2份笼文件双核验、双方语料拒收代码、实例与逃逸专项复核已完成；10例及d07四内点P1诊断已补齐。未取得ρ=0屏障处明确未定义比值，不强行判定原因。
+2. **当前硬阻塞**是§8.1只读独立测试的policy字节锚冲突；新快档已有1失败后中断作废，无最终pytest末行；全档及最终静态未跑。等待所有者裁定后必须新run名重跑，禁止拼接或以旧绿替代。
+3. 所有者新鲜Git树复现及Claude安排的一路独立对抗核查尚未完成；本次没有获得完整字节导出绿，更不冒称已完成里程碑验收。
+4. 原扫描k=8、诊断14点和所有提议均为有限资源；两份新增封口证书只提高两例下界，不证明最优或临界值等号。固定Γ/见证余量不等于所有屏障最优值，协作式限时不保证抢断昂贵调用。
+5. 凸耳任意δ实例无独立构造器；独立逃逸oracle只覆盖有限段/尾前缀，无限尾射线仍由生产精确核验器接受。这些信任边界不因双核验笼证书而消失。
+6. 未commit/push，未改既有生产数学API、89项独立只读文件、引理、C++、policy或三个分析器；本地保存不是远程备份。本次仅回填报告和机器状态，整体明确为BLOCKED。完整交付链接见[交付清单](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/artifacts.md)，范围/净增/编码/SHA以[续单交付文件审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/resume_delivery_audit.json)为准；文件审计本身不等于测试通过。
 <!-- T2B_RESIDUAL_END -->
 
-T2B_PARTIAL：待所有者合入独立核验器，完成全部入表证书双核验及双方伪造集拒收代码对拍。
+T2B_BLOCKED：只读独立静态门钉住的policy SHA与5c0f80f基线及当前未改policy不符；新快档已中断作废、全档未运行，等待所有者裁定。
