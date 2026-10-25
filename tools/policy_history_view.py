@@ -11,7 +11,8 @@ from pathlib import Path
 
 
 # T2a owner-approved append: 3522 historical plus 137 reviewed sites; no projection change.
-COUNTS = {"imports": 648, "members": 432, "waivers": 3659,
+# T2b 所有者 2026-10-26 追认: 3659 historical plus 98 reviewed sites; no projection change.
+COUNTS = {"imports": 648, "members": 432, "waivers": 3757,
           "renewals": 106, "mutation_instrumentation_reviews": 2}
 
 

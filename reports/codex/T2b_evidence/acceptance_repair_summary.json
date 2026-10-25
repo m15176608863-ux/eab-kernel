@@ -1,0 +1,110 @@
+{
+  "schema": "t2b-acceptance-repair/1",
+  "status": "T2B_DONE",
+  "baseline_head": "c900033aa809170bb0cbb5d0dbe33b439cd187e7",
+  "owner_previous_blocker_resolved": true,
+  "source_unchanged": true,
+  "independent_unchanged": true,
+  "new_forgeries": 27,
+  "forgery_dual_pairs_original_and_lf": 54,
+  "forgery_mismatches": 0,
+  "cage_text_rechecks": 27,
+  "cages_all_accepted": true,
+  "escape_sidecars": 7,
+  "mutation": {
+    "total": 97,
+    "killed": 82,
+    "allowed_survivors": [
+      "H01",
+      "R02",
+      "R05",
+      "R10",
+      "P05",
+      "C03",
+      "C10",
+      "K01",
+      "K04",
+      "K05",
+      "V103",
+      "V104",
+      "V206",
+      "V508",
+      "V601"
+    ],
+    "unexpected": [],
+    "baseline_last_line": "365 passed in 24.58s",
+    "seconds": 645.8496844000183
+  },
+  "final_runs": [
+    {
+      "name": "t2b_acceptance_fast_02_20261026",
+      "collected": 10309,
+      "last_lines": [
+        "10309 passed in 1844.12s (0:30:44)"
+      ],
+      "seconds": 1861.1859510000795
+    },
+    {
+      "name": "t2b_acceptance_full_02_20261026",
+      "collected": 16415,
+      "last_lines": [
+        "4104 passed in 1936.59s (0:32:16)",
+        "4104 passed in 2610.53s (0:43:30)",
+        "4104 passed in 1746.74s (0:29:06)",
+        "4103 passed in 2118.91s (0:35:18)"
+      ],
+      "seconds": 2807.6644076000666
+    }
+  ],
+  "static": {
+    "last_line": "exact construction AST gate: 0 violation(s)",
+    "added_this_repair": 0,
+    "historical_t2b_admissions": 98,
+    "floating_sinks": 0
+  },
+  "final_bounds": {
+    "d01": [
+      "23/128",
+      "3/10"
+    ],
+    "d02": [
+      "63/256",
+      "1851/5120"
+    ],
+    "d03": [
+      "1/4",
+      "21/50"
+    ],
+    "d04": [
+      "13/128",
+      "1/5"
+    ],
+    "d05": [
+      "63/256",
+      "2043/5120"
+    ],
+    "d06": [
+      "93/256",
+      "5393/10240"
+    ],
+    "d07": [
+      "13/64",
+      "849/2560"
+    ],
+    "d08": [
+      "13/128",
+      "11377/51200"
+    ],
+    "k01": [
+      "75/256",
+      "3923/12800"
+    ],
+    "k02": [
+      "93/256",
+      "977/2560"
+    ]
+  },
+  "external_evidence": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\acceptance_repair_c900033_20261026",
+  "fresh_git_checkout": false,
+  "owner_repair_acceptance_claim": false
+}

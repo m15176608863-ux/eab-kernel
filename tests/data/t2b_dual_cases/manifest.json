@@ -1,0 +1,363 @@
+{
+  "schema": "eab.t2b.dual-replay/1",
+  "description": "Exact byte copies of truth_02 and science_02 lower certificates. Only fixture bytes are hashed by tests, never current implementation source. Provenance points to historical generating commit and tool version.",
+  "cases": [
+    {
+      "case_id": "truth_diamond_plates",
+      "kind": "truth",
+      "name": "diamond_plates",
+      "files": {
+        "instance": {
+          "path": "truth_diamond_plates/instance.json",
+          "sha256": "fe0eff900e37383355012c75d82d3cb8632759aecc728ef8ec55eb24828ef02a",
+          "source": "certificates/truth_02/diamond_plates/instance.json"
+        },
+        "certificate": {
+          "path": "truth_diamond_plates/certificate.json",
+          "sha256": "af30888835a7f71777fb021913cb74d86b500fcae45708dbedc1440dabb475e3",
+          "source": "certificates/truth_02/diamond_plates/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-truth-final-1"
+      }
+    },
+    {
+      "case_id": "truth_door_below",
+      "kind": "truth",
+      "name": "door_below",
+      "files": {
+        "instance": {
+          "path": "truth_door_below/instance.json",
+          "sha256": "d2588e6e7d496f2bea99e43fbb49718c0fbdae2502432e7c5d508e98ea3c1109",
+          "source": "certificates/truth_02/door_below/instance.json"
+        },
+        "certificate": {
+          "path": "truth_door_below/certificate.json",
+          "sha256": "460926d3e6a995a2dc153d8cd98f33ed3324e7558f62e08edb40bb1336cd56fd",
+          "source": "certificates/truth_02/door_below/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-truth-final-1"
+      }
+    },
+    {
+      "case_id": "truth_low_room",
+      "kind": "truth",
+      "name": "low_room",
+      "files": {
+        "instance": {
+          "path": "truth_low_room/instance.json",
+          "sha256": "79dcb2b6d40cb7de44c829b6e34c572cebd1818efacbb759899e34871e5328ce",
+          "source": "certificates/truth_02/low_room/instance.json"
+        },
+        "certificate": {
+          "path": "truth_low_room/certificate.json",
+          "sha256": "a2e2c9191bc6e1b01a5445a7c27b89bcc53d66e137d2c7642eee1a9f386f839a",
+          "source": "certificates/truth_02/low_room/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-truth-final-1"
+      }
+    },
+    {
+      "case_id": "truth_midpoint_wedges",
+      "kind": "truth",
+      "name": "midpoint_wedges",
+      "files": {
+        "instance": {
+          "path": "truth_midpoint_wedges/instance.json",
+          "sha256": "e97081ea3386b60d443d6bef764ef7e014f141bea0bfcec24699c2565dc97740",
+          "source": "certificates/truth_02/midpoint_wedges/instance.json"
+        },
+        "certificate": {
+          "path": "truth_midpoint_wedges/certificate.json",
+          "sha256": "8655fee1c6920198be69ef6b3995cfe8e7beb38b1852e768f5b92ac6df2f22ef",
+          "source": "certificates/truth_02/midpoint_wedges/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-truth-final-1"
+      }
+    },
+    {
+      "case_id": "truth_windmill",
+      "kind": "truth",
+      "name": "windmill",
+      "files": {
+        "instance": {
+          "path": "truth_windmill/instance.json",
+          "sha256": "6f384f2ca52664be53efee97417e05d7026ee817d43d5c6e793d0175caac0052",
+          "source": "certificates/truth_02/windmill/instance.json"
+        },
+        "certificate": {
+          "path": "truth_windmill/certificate.json",
+          "sha256": "27b289254140f495bb949bb0f802969681c24fd9aa575cbce339308c5d079d51",
+          "source": "certificates/truth_02/windmill/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-truth-final-1"
+      }
+    },
+    {
+      "case_id": "lower_d01",
+      "kind": "lower",
+      "name": "d01",
+      "files": {
+        "instance": {
+          "path": "lower_d01/instance.json",
+          "sha256": "507ecbb1a65dd00bb99100151a5085db0cb0c364c943c59804ebcfe5d38e72be",
+          "source": "certificates/science_02/d01/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d01/certificate.json",
+          "sha256": "4cd5850521abf8583c33ab59a0e0eb3153d6200d899f09868a996fd949c4ada1",
+          "source": "certificates/science_02/d01/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_d02",
+      "kind": "lower",
+      "name": "d02",
+      "files": {
+        "instance": {
+          "path": "lower_d02/instance.json",
+          "sha256": "69f53c1ba6cf977a0e8d81e92c49ee5c30f1bc85cfd660533cdfdea6684a2e5c",
+          "source": "certificates/science_02/d02/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d02/certificate.json",
+          "sha256": "e64b3a05e85b8e0137ceaec6afa3b31f3cf000b5547806fe35b668a6b5d70c30",
+          "source": "certificates/science_02/d02/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_d03",
+      "kind": "lower",
+      "name": "d03",
+      "files": {
+        "instance": {
+          "path": "lower_d03/instance.json",
+          "sha256": "b676811f444d55ea51a8838ac88939319ffd8015c91ba5e5d48c489bdc36df41",
+          "source": "certificates/science_02/d03/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d03/certificate.json",
+          "sha256": "0162e1bc2f9b9de6de4b5de519a190397ffccb3d66bfba7f71839e5ab547fe85",
+          "source": "certificates/science_02/d03/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_d04",
+      "kind": "lower",
+      "name": "d04",
+      "files": {
+        "instance": {
+          "path": "lower_d04/instance.json",
+          "sha256": "fb24a22cc40e7bfd835a478293839657f2ddc68922f50ccd1e03d8ed00a03149",
+          "source": "certificates/science_02/d04/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d04/certificate.json",
+          "sha256": "e22c09d441060bd41c4b3ea10ebb90c0b9ff9ea68d1e8083140ef7812e94c935",
+          "source": "certificates/science_02/d04/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_d05",
+      "kind": "lower",
+      "name": "d05",
+      "files": {
+        "instance": {
+          "path": "lower_d05/instance.json",
+          "sha256": "eed759499eed6eb9a7cd1c286fca03aec6b301a1653fc5dedc454ea76e1f7587",
+          "source": "certificates/science_02/d05/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d05/certificate.json",
+          "sha256": "eaaa5599839fdb6108e9d63dfc078238c632131fd32032a7c05d26a1a33e9758",
+          "source": "certificates/science_02/d05/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_d06",
+      "kind": "lower",
+      "name": "d06",
+      "files": {
+        "instance": {
+          "path": "lower_d06/instance.json",
+          "sha256": "1d19af419f47fd2804d5a9326867ab799a65b000f6bd6727aa923a15d1c1ce46",
+          "source": "certificates/science_02/d06/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d06/certificate.json",
+          "sha256": "b4462bcd84f2ea030945e2ff944709b6e14702af0e80dff43f678ed1824840cb",
+          "source": "certificates/science_02/d06/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_d07",
+      "kind": "lower",
+      "name": "d07",
+      "files": {
+        "instance": {
+          "path": "lower_d07/instance.json",
+          "sha256": "7b31df27f14db5a3e416e9364f264a611d5a88e70c398abe4ca5b22e92efe5c6",
+          "source": "certificates/science_02/d07/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d07/certificate.json",
+          "sha256": "1545e33c3b5e1ffcf18c79b27522cfdefd8f0be41502ed69a991b2b207ce3529",
+          "source": "certificates/science_02/d07/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_d08",
+      "kind": "lower",
+      "name": "d08",
+      "files": {
+        "instance": {
+          "path": "lower_d08/instance.json",
+          "sha256": "673eadb2cd01e8589d222c79aea8193b86c473c2da2069bb4f4deef874a84e43",
+          "source": "certificates/science_02/d08/instance.json"
+        },
+        "certificate": {
+          "path": "lower_d08/certificate.json",
+          "sha256": "a3a7eaf98284c44a547095e4565757d7adb3784836cef46f3910b2094c33d285",
+          "source": "certificates/science_02/d08/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_k01",
+      "kind": "lower",
+      "name": "k01",
+      "files": {
+        "instance": {
+          "path": "lower_k01/instance.json",
+          "sha256": "32f8b83cc9424929af7bdbb7e71d8bd23e47b202747eb4e7c19a3a17df87733f",
+          "source": "certificates/science_02/k01/instance.json"
+        },
+        "certificate": {
+          "path": "lower_k01/certificate.json",
+          "sha256": "3cc1ea07e735b387c568f27f9341fc11643aa812cfcf6bcd6a749e193a5a864d",
+          "source": "certificates/science_02/k01/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    },
+    {
+      "case_id": "lower_k02",
+      "kind": "lower",
+      "name": "k02",
+      "files": {
+        "instance": {
+          "path": "lower_k02/instance.json",
+          "sha256": "30ec0cdf42f4075cec748a9ef7eac4d5ec272ba61fb1073a97c52044dfef4141",
+          "source": "certificates/science_02/k02/instance.json"
+        },
+        "certificate": {
+          "path": "lower_k02/certificate.json",
+          "sha256": "4cff0e79e9d27ea6a573af67b04ac9d25f59d6f13670818e15fa124afbcbcd4f",
+          "source": "certificates/science_02/k02/certificate.json"
+        }
+      },
+      "producer": {
+        "source_commit": "146cc76b6e25598f00564438dee7f3282ad52e34",
+        "tool_version": "t2b-science-1"
+      }
+    }
+  ],
+  "science_endpoints": {
+    "d01": {
+      "delta_cage": "23/128",
+      "delta_escape": "3/10"
+    },
+    "d02": {
+      "delta_cage": "63/256",
+      "delta_escape": "1851/5120"
+    },
+    "d03": {
+      "delta_cage": "63/256",
+      "delta_escape": "21/50"
+    },
+    "d04": {
+      "delta_cage": "13/128",
+      "delta_escape": "1/5"
+    },
+    "d05": {
+      "delta_cage": "63/256",
+      "delta_escape": "2043/5120"
+    },
+    "d06": {
+      "delta_cage": "93/256",
+      "delta_escape": "5393/10240"
+    },
+    "d07": {
+      "delta_cage": "13/64",
+      "delta_escape": "849/2560"
+    },
+    "d08": {
+      "delta_cage": "25/256",
+      "delta_escape": "11377/51200"
+    },
+    "k01": {
+      "delta_cage": "75/256",
+      "delta_escape": "3923/12800"
+    },
+    "k02": {
+      "delta_cage": "93/256",
+      "delta_escape": "977/2560"
+    }
+  }
+}

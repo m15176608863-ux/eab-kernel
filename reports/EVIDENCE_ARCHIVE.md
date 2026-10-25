@@ -299,3 +299,48 @@ Claude 提供 c8718bb 新鲜树构建/五层差分/全档15056绿及两路验收
 - [当前交付审计](file:///D:/eab-wt/cx-e2/reports/codex/T2a_evidence/delivery_audit.json)与[外部逐件SHA清单](file:///D:/eab-evidence/reports/codex/T2a_evidence/artifact_manifest.json)重新核验旧178份持久证据未变、授权写域、UTF-8无BOM/LF、当前仓内交付及累计净增≤5MB；[外部可复跑审计脚本](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/audit_repair_delivery.py)区分原工单累计基线239ec30、本轮d60基线与历史全仓运行。全部成员以manifest相对路径定位，tmp及manifest自身不递归收录。
 
 本代理未commit/push/reset/checkout/stash/worktree/branch；返修完成待所有者合入，不改T1b历史报告。外部仅为本地保存；回退须先核SHA并保护所有者后续修改。
+
+## WO-T2b（2026-10-25）：SE(2) 笼证书与双侧括号
+
+- [中文报告](file:///D:/eab-wt/cx-e2/reports/codex/T2b_report.md)与[交付清单](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/artifacts.md)给出实际完成状态；独立 WO-T2b-V 尚未收到所有者合入通知，科学表标为 `production_only_pending_independent`，不冒称双核验验收。
+- [开工ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/baseline_anchor/source.zip)与[2426文件SHA清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/baseline_anchor/manifest.json)来自干净 `codex-work`、HEAD `146cc76b6e25598f00564438dee7f3282ad52e34`；仅字节快照，不是新鲜Git树。既有数学API、只读引理、eab2及三个静态分析器不改。
+- [十例科学证书 science_02](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02/)保存每例下界实例/笼证书、只圆实例/证书及逃逸实例/路径、所有探针与来源。完整[汇总](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02/summary.json)记录源提交、实际未提交工具/核验器SHA、源ZIP及配置；[规范JSON重核](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02_serialized_recheck.json)实际检查20份下界证书。探索 science_01 保留历史，不与终版拼接。
+- [真值 truth_02](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/truth_02/)有5笼证书和3条接受的逃逸路径；低房间只圆未证、封口链接受。[仓内固定小回放](file:///D:/eab-wt/cx-e2/tests/data/t2b_cage_replay.json)实际重核八边形与低房间证书，保留来源但不钉当前源码；[39份伪造](file:///D:/eab-wt/cx-e2/tests/data/t2b_forgeries/)是小型测试输入。
+- [逐站静态账本](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/static_admissions.json)追加98个唯一证明缺口键（生产35、测试63），浮点汇点0；旧3659条和其他policy字段的JSON值不变。原policy是CRLF，本单按LF合同规范换行；[原字节副本](file:///D:/eab-evidence/reports/codex/T2b_evidence/policy_before_t2b.json)保留，不称旧policy原始字节未变。历史门仅机械计数/切片兼容，三分析器不改。
+- [开工全档](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_baseline_20261025/summary.json)与后续具名收尾run分别保存节点、多重集合、逐模块实际执行和完整日志；收尾结果以报告实际回填为准。共享历史运行器及旧逃逸提议器输出的CRLF文本，先ZIP保留原字节并逐成员核SHA，再仅导出LF视图，JSON值和末行不变；映射见每个run的 `lf_export.json`、science_02 的 `lf_normalization.json`，不改旧来源证据。
+- [外部逐文件SHA/路径清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/artifact_manifest.json)登记本单持久证据和仓内交付（排除tmp及清单自身）；[交付审计](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/delivery_audit.json)核准写域、受保护旧文件、UTF-8无BOM/LF、净增≤5MB。临时字节导出由各run source_manifest定位，不作远程备份声称。
+
+不作Git写、不修改姊妹仓库或终止非本代理进程。回退只能先核开工ZIP的逐文件SHA，再保护所有者后续修改；独立核验器合入、双方伪造拒收代码对拍及所有者新鲜树/一路对抗验收仍须明确完成后另记。
+
+### WO-T2b 生产侧收尾（2026-10-26，原工作树）
+
+- [快档 t2b_final_fast_20261025](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_fast_20261025/summary.json)实际9694项；[全档 t2b_final_full_20261025](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_full_20261025/summary.json)固定四片共15800项；均GREEN、0 failed/skip，静态末行 `exact construction AST gate: 0 violation(s)`。跨日保留开跑时run名，不重命名或拼接运行。
+- [机械审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/final_pair_audit.json)核两个2488文件源清单完全相同，收集/分派/插件收集/实际call节点多重集合相等，70模块运行覆盖完整；620份代码/测试/工具/准入账本仍为受测字节。[受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_final_full_20261025/tested_source.zip) SHA `c15fb48bd58c9ab656738b469dd9d6e0f5be6b3575681aae60f8061f29ef4750`，2488成员逐字节与SHA复核。
+- 全部测试完成后，仅回填报告/归档/交付元数据，代码不再改。[逐项P0核查](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/requirements.json)列明271个T2b执行节点和待独立交接状态。此前提议器资源修复有[前红后绿证据](file:///D:/eab-evidence/reports/codex/T2b_evidence/resource_repair/summary.json)，未重算或改写科学扫描；旧科学源ZIP仍按原SHA保存。
+- 最终状态 **T2B_PARTIAL**：仅待所有者合入独立核验器后的全部入表证书双核验及双方伪造集拒收代码对拍；P1完整盖标签诊断未做不计作PARTIAL原因。内部多代理机械检查不冒称所有者新鲜树或独立对抗验收。
+
+<!-- T2B_CONTINUATION_5c0f80f_BLOCKED -->
+### WO-T2b 独立合入续单：BLOCKED（2026-10-26，HEAD 5c0f80f）
+
+本段仅追加本次实测记录，不改历史结论。原25份与新d03/d08两份笼证书均双核验；8燕尾族125个不同δ实例相等；13条逃逸按有限独立oracle及生产无限尾射线边界复核。双方语料0判定/条件代码不一致；我方192次有效调用单列（71不同字节对），不与130/505组计数相加作去重总数。10例加d07四内点P1诊断已完成。
+
+- [中文报告](file:///D:/eab-wt/cx-e2/reports/codex/T2b_report.md) · [续单机器摘要](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/continuation_summary.json) · [逐项核查](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/requirements.json)
+- [终版14点诊断](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/final_03/summary.json) · [新笼证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/diagnostic_03) · [逐件来源SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/new_certificates_copy.json)
+- [阻塞最小复现](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/summary.json) · [干净基线ZIP复现](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/baseline_reproduction.json)：只读独立测试policy期望SHA与干净开工基线及当前未改policy不符；最小pytest复现原样末行 `1 failed in 0.08s`。不是引理数学分歧，未发现数学反例。
+- [中断作废声明](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/INTERRUPTED_INVALID_RUN.json)：快档收集10269项，停止进度9830 calls、1 failed、0 skipped，Ctrl-C后作废；没有最终pytest末行。全档目录未创建、最终静态未运行。旧绿和非冻结静态预检0不替代当前通过。
+- [中断源码ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_source.zip) SHA `e0bff88dd7f8ce2305440d3cb87402f82fc0ea2cc10ed4a01858e740c854b8cd`；[中断日志原字节ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_raw_bytes.zip) SHA `bde0a21e2e2f0a6c29f2754c27770a745358e8a95a85e39662ab057da78fd6f6`；[中断源码清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/source_manifest.json)。2614成员与清单尺寸/SHA核对；这是中断快照，不是通过测试的源码。原日志保留后再LF导出，raw parser输入不规范化。
+- [交付文件审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/resume_delivery_audit.json) · [逐文件SHA清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/resume_artifact_manifest.json)。续单新增静态准入0；89项独立只读文件、既有生产数学源码、policy、三分析器和只读合同不改。文件完整性/范围审计不冒称全仓测试通过。
+
+当前 `T2B_BLOCKED`；等待所有者裁定只读测试字节锚，之后须新run名重新执行快档/全档，不拼接。新鲜Git树及一路独立对抗验收未声称完成；本地证据不是远程备份，未作Git写。
+
+### WO-T2b 验收返修完成（2026-10-26，c900033）
+
+本段取代上文历史“当前BLOCKED/待独立”状态，不改原始冻结证据。所有者已修复独立策略钉子并解除阻塞；生产src、89项独立侧、引理、C++与三个分析器本轮均未改。最终科学表合并d03 `[1/4,21/50]`、d08 `[13/128,11377/51200]`，其余8例不变，仍无临界值等号声称。
+
+- [最终中文报告](file:///D:/eab-wt/cx-e2/reports/codex/T2b_report.md) · [返修机器摘要](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/acceptance_repair_summary.json) · [最终科学表](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/scientific_summary.json)。累计27份笼文件文本双核验通过，最终表采用其中25份；7逃逸候选原文不改，旁记含源SHA/逐段验证，见[旁记清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/policy_sidecars/escape_reverification_02/summary.json)。
+- [27份新增伪造双SHA](file:///D:/eab-wt/cx-e2/tests/data/t2b_forgeries/acceptance_20261026/manifest.json)仅CRLF→LF；原/入库54对全部拒收、代码一致。新10项卫生、接触边界及文本入口具名门保持生产语义；[97项最终轮](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/mutation97/definitive_04/acceptance_summary.json)82语义杀、15所有者允许存活、0其他存活。01/02作废、03仅诊断，不拼接04。
+- [策略CRLF恢复](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/policy_sidecars/policy_restore.json)：相对146cc76仅1078行插入/0删除=98项，原JSON值不变。所有者2026-10-26追认证明缺口98、浮点汇点0，本轮新增准入0。
+- [新快档](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_acceptance_fast_02_20261026/summary.json) 10309项、[新全档四分片](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_acceptance_full_02_20261026/summary.json) 16415项，均GREEN、0failed/skip；静态 `exact construction AST gate: 0 violation(s)`。[双轮审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/final_pair_audit.json)保存源码ZIP及成员SHA核验。报告仅在收尾后回填，受测代码不改；本代理未做新鲜Git树或Git写操作。
+- H1路径/SHA映射：[返修逐文件归档清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/artifact_manifest.json)、[仓内修改清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/repository_manifest.json)、[净增/只读/编码审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/delivery_audit.json)。外置大件不入库，累计仓内净增≤5MB；policy是明确授权的CRLF例外，其余新/改文本UTF-8无BOM/LF。归档为本地保存，不冒称远程备份。
+
+`T2B_DONE`；所有者对本轮返修的最终接收与新鲜Git树验证不由本代理自签。

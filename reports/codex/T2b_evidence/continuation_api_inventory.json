@@ -1,0 +1,282 @@
+{
+  "schema": "eab.t2b.continuation-api-inventory/1",
+  "source": "tools/t2b_bottleneck_diagnostics.py",
+  "source_sha256": "75b7205f9212bb65f0cb9f5d24414509c6a04064f0bbf5bddfc707981e2498c4",
+  "functions": [
+    {
+      "name": "_dot",
+      "signature": "_dot(a, b)",
+      "line": 24,
+      "internal": true,
+      "docstring": null
+    },
+    {
+      "name": "_winding",
+      "signature": "_winding(loop)",
+      "line": 28,
+      "internal": true,
+      "docstring": null
+    },
+    {
+      "name": "pair_margin",
+      "signature": "pair_margin(moving, obstacle, points)",
+      "line": 41,
+      "internal": false,
+      "docstring": "Least Euclidean-normalized SAT overlap over all supplied points.\n\nSelection is diagnostic float; each returned numerator/norm-squared and\nsupport feature is exact and sufficient to recompute the selected margin."
+    },
+    {
+      "name": "closest_cover",
+      "signature": "closest_cover(polygons, obstacles, labels, points, kernel_tags=None)",
+      "line": 76,
+      "internal": false,
+      "docstring": "Max-min normalized SAT pair; ties retain the original generation order."
+    },
+    {
+      "name": "rotation_range",
+      "signature": "rotation_range(candidate)",
+      "line": 187,
+      "internal": false,
+      "docstring": "Lift rational orientation endpoints to lambda; float chooses chart only.\n\nThe rational chart choice is checked against its exact half-angle range.\nPath translations/rotation centers are ignored only for this angle range."
+    },
+    {
+      "name": "sample_intervals",
+      "signature": "sample_intervals(lower, upper, divisions)",
+      "line": 209,
+      "internal": false,
+      "docstring": null
+    },
+    {
+      "name": "required_rho_squared",
+      "signature": "required_rho_squared(radius, lower, upper)",
+      "line": 220,
+      "internal": false,
+      "docstring": "V1's minimum sufficient contraction bound, not necessary geometric loss."
+    },
+    {
+      "name": "_exact_polygons",
+      "signature": "_exact_polygons(parts, center, value, lo, hi)",
+      "line": 227,
+      "internal": true,
+      "docstring": null
+    },
+    {
+      "name": "slice_barrier",
+      "signature": "slice_barrier(parts, obstacles, center, value, lo, hi, resources)",
+      "line": 232,
+      "internal": false,
+      "docstring": null
+    },
+    {
+      "name": "erode_rotated",
+      "signature": "erode_rotated(ring, rho)",
+      "line": 250,
+      "internal": false,
+      "docstring": "Exact rational conservative Euclidean erosion, same norm bound as proposer."
+    },
+    {
+      "name": "strict_pair",
+      "signature": "strict_pair(moving, obstacle, points)",
+      "line": 262,
+      "internal": false,
+      "docstring": "Exact all-axis/all-point predicate; never use diagnostic float ranking."
+    },
+    {
+      "name": "fixed_witness_margin",
+      "signature": "fixed_witness_margin(polygons, obstacles, loop, witnesses, radius, iterations)",
+      "line": 278,
+      "internal": false,
+      "docstring": "Bracket maximum rho preserving this fixed loop and original piece pairs."
+    },
+    {
+      "name": "diagnose_slices",
+      "signature": "diagnose_slices(instance, center, candidate, resources, divisions, iterations, traced)",
+      "line": 313,
+      "internal": false,
+      "docstring": null
+    },
+    {
+      "name": "measure_case",
+      "signature": "measure_case(case_id, delta, candidate, output, resources, divisions, iterations)",
+      "line": 364,
+      "internal": false,
+      "docstring": null
+    },
+    {
+      "name": "main",
+      "signature": "main()",
+      "line": 395,
+      "internal": false,
+      "docstring": null
+    }
+  ],
+  "classes": [
+    {
+      "name": "ProposalTrace",
+      "line": 91,
+      "instance_fields": [
+        "cell_meta",
+        "failure_count",
+        "last_by_stage",
+        "original_cells",
+        "original_witness"
+      ],
+      "methods": [
+        {
+          "name": "__init__",
+          "signature": "__init__(self)"
+        },
+        {
+          "name": "__enter__",
+          "signature": "__enter__(self)"
+        },
+        {
+          "name": "__exit__",
+          "signature": "__exit__(self, *unused)"
+        },
+        {
+          "name": "cells",
+          "signature": "cells(self, polygons, obstacles, resources, deadline, refs=None)"
+        },
+        {
+          "name": "witness",
+          "signature": "witness(self, cells, points)"
+        },
+        {
+          "name": "report",
+          "signature": "report(self)"
+        }
+      ]
+    }
+  ],
+  "dictionary_or_subscript_keys": [
+    "a",
+    "all_sampled_angles_have_strict_barrier",
+    "angle_path_delta",
+    "angle_path_source",
+    "angle_radians_diagnostic",
+    "angle_range_lambda",
+    "at",
+    "axis_edge",
+    "axis_source",
+    "b",
+    "base",
+    "cage_scan",
+    "cap_at",
+    "case_id",
+    "center",
+    "certificate",
+    "closest_cover",
+    "complete",
+    "context",
+    "contraction_ratios",
+    "cover_selection",
+    "definition",
+    "delta",
+    "delta_disk",
+    "delta_escape",
+    "diagnostic",
+    "disk",
+    "divisions",
+    "elapsed_seconds",
+    "exact_overlap_numerator",
+    "failed_rho",
+    "failed_upper_checked",
+    "failed_witness_calls",
+    "failure_sequence",
+    "feature_type",
+    "finish",
+    "first_unproved_delta",
+    "fixed_witness_margin",
+    "geometry",
+    "host",
+    "inequality",
+    "interval",
+    "interval_refinement",
+    "intervals",
+    "intervals_with_margin",
+    "iterations",
+    "kind",
+    "knots",
+    "lambda",
+    "lambda_interval",
+    "lambda_value",
+    "last_failure_per_stage",
+    "loop",
+    "margin_iterations",
+    "midpoint",
+    "moving",
+    "moving_kernel_index",
+    "moving_polygon",
+    "moving_reference",
+    "moving_source",
+    "moving_support_vertices",
+    "nonclaim",
+    "norm_upper_relative_factor_max_diagnostic",
+    "normal",
+    "normal_squared",
+    "normalized_overlap_diagnostic",
+    "obstacle",
+    "obstacle_flat_piece",
+    "obstacle_parent",
+    "obstacle_piece_in_parent",
+    "obstacle_polygon",
+    "obstacle_support_vertices",
+    "obstacles",
+    "outside_scope",
+    "path_delta",
+    "path_orientation_endpoints",
+    "piece",
+    "pieces",
+    "point",
+    "point_index",
+    "point_name",
+    "points",
+    "proposal_final_failure",
+    "proposal_status",
+    "radius",
+    "ratio_interpretation",
+    "ratio_upper_unbounded_by_zero_lower_margin",
+    "refinements",
+    "resources",
+    "rho",
+    "rho_required_over_margin_lower_diagnostic",
+    "rho_required_over_margin_upper_diagnostic",
+    "rho_zero_status",
+    "ring",
+    "rows",
+    "sample_origin",
+    "samples",
+    "sampling",
+    "sat",
+    "seconds",
+    "segment",
+    "slice_samples",
+    "source",
+    "sources_unchanged",
+    "stage",
+    "start",
+    "status",
+    "strict",
+    "strict_slice_barriers",
+    "successful_rho",
+    "timing_boundary",
+    "u1",
+    "v1_min_sufficient_rho_diagnostic",
+    "v1_min_sufficient_rho_squared_exact",
+    "valid",
+    "value",
+    "vertices",
+    "winding",
+    "witnesses"
+  ],
+  "status_literals_observed": [
+    "BRACKETED_FIXED_WITNESS_MARGIN",
+    "LOOP_RESOURCE_LIMIT",
+    "NO_CANDIDATE_WINDING_LOOP",
+    "SINGLE_SIDED_SEARCH_LIMIT",
+    "STRICT_WINDING_BARRIER_AT_SINGLE_ANGLE",
+    "STRICT_WITNESS_OR_WINDING_UNPROVED"
+  ],
+  "scope": "Untrusted diagnostic tool only. Extracted key/state occurrences are not new public mathematical contracts. Existing api_inventory.json remains the first-delivery inventory.",
+  "resource_behavior_change": "Existing _cap rejects max_cap_steps < 8 via SearchLimit(homotopy_step_limit); no new solver/cage state."
+}
