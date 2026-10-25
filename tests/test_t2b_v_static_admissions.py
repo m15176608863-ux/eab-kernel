@@ -18,8 +18,10 @@ EXPECTED_TOOL_HASHES = {
     "tools/check_exact_construction.py": "cc6143a27369f1247718b2e48ae80f3afb7b5060b23de845437a53b5a0768517",
     "tools/exact_construction_subset.py": "35e6262a7c36ea5f20679f047dd6f030feeb6fcbe8be7813573212829b503274",
     "tools/exact_construction_flow.py": "814f00ab607726c7753fa86ddedc08fd728eb48c4e57b8a61dda55140c3cd1db",
-    "tools/exact_construction_policy.json": "621df0519431552c8cea255cf756f1bcb5c3acc90cb301ff0048649b1916cc5d",
 }
+# The policy file is shared and grows with later reviewed admissions of other
+# work orders (owner ruling 2026-10-26), so it is not byte-pinned here. The
+# independent files' own zero-admission property is asserted below.
 IMPLEMENTATION_FILES = (
     "tests/t2b_independent_cage_verifier.py",
     "tests/t2b_truth_geometry.py",
@@ -28,7 +30,7 @@ IMPLEMENTATION_FILES = (
 )
 
 
-def test_t2b_v_static_analyzers_and_policy_are_byte_unchanged():
+def test_t2b_v_static_analyzers_are_byte_unchanged():
     for relative, expected in EXPECTED_TOOL_HASHES.items():
         actual = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
         assert actual == expected, relative
