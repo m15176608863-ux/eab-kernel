@@ -1,0 +1,61 @@
+{
+  "schema": "t2b-p0-handoff-1",
+  "production_side_verified": true,
+  "overall_status": "PARTIAL_PENDING_INDEPENDENT_INTEGRATION",
+  "p0": {
+    "verifier": "implemented; final tests execute current frozen source; no existing mathematical API edits",
+    "proposer": "finite disk/rotated adaptive-chain/cap proposals; resource repair covered by final tests",
+    "truth": {
+      "cases": 8,
+      "accepted_cages": 5,
+      "accepted_escapes": 3,
+      "low_room_requires_caps": true
+    },
+    "scientific_brackets": {
+      "cases": 10,
+      "serialized_cage_and_disk_files": 20,
+      "accepted_escape_bounds": 10,
+      "successful_lower_probes_translation_trapped": 198,
+      "upper_bounds_improved": 7,
+      "dual_verification": "pending owner integration; not performed"
+    },
+    "mutations": {
+      "internal_source_named_tests": 24,
+      "forgeries": 39,
+      "independent_forgery_crosscheck": "pending"
+    },
+    "final_tests": {
+      "full_count": 15800,
+      "t2b_by_file": {
+        "tests/test_t2b_cage.py": 116,
+        "tests/test_t2b_metamorphic.py": 55,
+        "tests/test_t2b_mutations.py": 24,
+        "tests/test_t2b_ordering.py": 28,
+        "tests/test_t2b_proposer.py": 19,
+        "tests/test_t2b_replay.py": 3,
+        "tests/test_t2b_static_admissions.py": 26
+      },
+      "skipped": 0,
+      "failed": 0,
+      "node_multisets_equal": true,
+      "runtime_module_coverage_complete": true
+    },
+    "static": {
+      "last_line": "exact construction AST gate: 0 violation(s)",
+      "added_unique_admissions": 98,
+      "production": 35,
+      "tests": 63,
+      "rounded_sink_admissions": 0
+    }
+  },
+  "p1": {
+    "performance": "recorded per case; diagnostic only",
+    "full_cover_label_bottleneck_diagnostics": "not done; optional"
+  },
+  "owner_actions": [
+    "integrate accepted WO-T2b-V and notify this line",
+    "run both verifiers on every in-table cage and both forgery corpora; stop on any result/code mismatch",
+    "arrange fresh Git tree reproduction and one independent adversarial milestone review"
+  ],
+  "scientific_rescan_performed_by_this_audit": false
+}

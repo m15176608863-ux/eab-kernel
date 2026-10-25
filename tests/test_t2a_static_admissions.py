@@ -56,7 +56,7 @@ def test_t2a_site_reviews_preserve_baseline_and_match_report():
     for path, expected in SCANNERS.items():
         assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == expected
 
-    added = policy["waivers"][BASE_WAIVERS:]
+    added = policy["waivers"][BASE_WAIVERS:BASE_WAIVERS+len(ledger["entries"])]
     assert added and len(added) == len(ledger["entries"])
     identities = set()
     for row, recorded in zip(added, ledger["entries"]):
