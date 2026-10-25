@@ -286,3 +286,16 @@ Claude 提供 c8718bb 新鲜树构建/五层差分/全档15056绿及两路验收
 - 当前[逐文件SHA/路径清单](file:///D:/eab-evidence/reports/codex/T2a_evidence/artifact_manifest.json)覆盖本次持久外部证据（排除tmp及清单自身）和仓内交付；源ZIP成员另由对应source_manifest覆盖。[交付审计](file:///D:/eab-wt/cx-e2/reports/codex/T2a_evidence/delivery_audit.json)重新核对完整日志、节点、模块覆盖、受测代码、冻结证书、UTF-8无BOM与净增≤5MB；4项原有文件修改严格限于归档登记、准入policy、纯度计数及历史计数视图。
 
 本单执行完成；所有者新鲜Git树、一路独立对抗验收及T1b正式追加勘误仍由Claude负责。未commit、未改C++或既有数学API，未干预非本代理启动的进程。外部归档是本地保存而非远程备份；回滚必须先对照SHA并保护所有者后续修改。
+
+### WO-T2a 验收返修（2026-10-25，t2a @ d60b79b）
+
+本节为当前状态，以上续裁定收尾属于所有者提交d60b79b之前的历史。所有者来函确认新鲜Git树复现和三路非作者核查通过：13份证书、7320次对拍0分歧；健全性10000随机例与25手推退化例0缺陷。该结果按[所有者裁定](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/owner_ruling.json)登记，不冒称本代理重跑或持有其全部原日志；所有者另跑的新鲜树全仓全档完成结果尚未由本代理记录。
+
+- 返修前实查分支`t2a`、HEAD `d60b79b0b0c7f671e34971a3596648727846b8af`、干净工作树；[2425文件回退ZIP](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/before_repair.zip)及[成员SHA/入口](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/intake.json)另保留原外部artifact_manifest，ZIP SHA `459435616e1f45f832a355ac32432b27c10bc955f781c387f69269dd1d8e8f49`。
+- **证书内嵌的生产块来自早一版源码，终版源码复核结果逐项相同。** 原内嵌 `se2_paths.py` SHA `9b791d2885edb2e62e8c9c1a00f17c393391f5d4a030d525ce24d7bfcfa5e39e` 保留不改；按裁定重跑10例和门洞3例的新完整结果在[final_reverify_20261025](file:///D:/eab-evidence/reports/codex/T2a_evidence/final_reverify_20261025/)，绑定终版SHA `14bfd823dda1c438ffd136128f73545236d5e2bbbb428a3b1eb5e09efc79bbdf` 和d60b79b。[运行记录](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/reverify.json)、[逐项比较](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/comparison.json)：13例生产/oracle整块对原两套记录完全相同，12例VERIFIED_ESCAPE、原door_below拒收；生产903对、oracle948对。原证书和verification_01共41文件不改，原SHA不重写；新27个JSON只作CRLF→LF规范，前后解析值及SHA完整记录。
+- 回放小输入[tests/data/t2a_escape_replay.json](file:///D:/eab-wt/cx-e2/tests/data/t2a_escape_replay.json)仅替换1436个CRLF，JSON值不变；[转换映射](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/replay_lf_conversion.json)给出旧SHA `bf9ffbf76792abd344906448478686725322b2ba806a843b6c52bdd0d22a7168`、新SHA `f3d0c9d523cfab8275b3949744a2d576eb63503dee43495e18d02291ee15338a`。当前交付审计及artifact_manifest的repository_delivery同步为新SHA；不改原冻结输入的几何或出处字段。
+- [本轮完整指定门checks_02](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/checks_02/summary.json)：全T2a含slow108项、纯度38项，另独立复跑准入15项、回放2项，全0 failed/skip/deselected，静态 `exact construction AST gate: 0 violation(s)`。两个many补门、新开线段变异及门洞全端点自由/段内贯入门见[报告§10.5](file:///D:/eab-wt/cx-e2/reports/codex/T2a_report.md)；本轮无新增准入，仍137=44+93。首轮checks_01的临时父目录漏建导致36个setup errors，原脚本/日志保留；只修外部执行器，新目录完整重跑，不拼接绿片段。
+- 本轮只改三份测试、回放数据、报告和证据，`src/`、工具、policy、三分析器、C++及T1b报告与d60b79b逐字节相同；所有者对H1计数和两类证明缺口的追认仅写报告。按裁定不重跑全仓快/全档；旧9415/15521记录仍属于原交付，不能冒充本轮新增测试运行。
+- [当前交付审计](file:///D:/eab-wt/cx-e2/reports/codex/T2a_evidence/delivery_audit.json)与[外部逐件SHA清单](file:///D:/eab-evidence/reports/codex/T2a_evidence/artifact_manifest.json)重新核验旧178份持久证据未变、授权写域、UTF-8无BOM/LF、当前仓内交付及累计净增≤5MB；[外部可复跑审计脚本](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/audit_repair_delivery.py)区分原工单累计基线239ec30、本轮d60基线与历史全仓运行。全部成员以manifest相对路径定位，tmp及manifest自身不递归收录。
+
+本代理未commit/push/reset/checkout/stash/worktree/branch；返修完成待所有者合入，不改T1b历史报告。外部仅为本地保存；回退须先核SHA并保护所有者后续修改。

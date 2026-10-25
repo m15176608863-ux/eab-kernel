@@ -1,9 +1,19 @@
-# WO-T2a artifact index (owner ruling continuation)
+# WO-T2a artifact index (d60b79b acceptance repair)
 
-Final fast (9415) and full four-shard (15521) gates are GREEN; static gate has 0 violations. Historical BLOCKED and INVALIDATED evidence remains preserved. Owner fresh-tree and independent acceptance are pending; no Git writes.
+The owner reports fresh-tree reproduction and three non-author reviews passed. This test/data/document-only repair reran all 13 certificates with the frozen final production source; exact results agree with the originals. Current repair gates: all T2a including slow 108, purity 38, static admissions 15, replay 2 passed; static 0 violations. The 9415/15521 whole-repository runs below are pre-repair history, not rerun for this repair. Historical BLOCKED/INVALIDATED/failed-environment evidence remains preserved. No Codex Git writes; owner merge is pending.
 
-- [Final fast summary](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast_r2/summary.json)
-- [Final full summary](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/summary.json)
+- [Final-source certificate re-verification](file:///D:/eab-evidence/reports/codex/T2a_evidence/final_reverify_20261025/summary.json)
+- [Exact old/new comparison](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/comparison.json)
+- [Re-verification command, source hashes and LF normalization](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/reverify.json)
+- [Current acceptance-repair checks](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/checks_02/summary.json)
+- [Owner acceptance and ratification record](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/owner_ruling.json)
+- [d60b79b rollback snapshot manifest](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/intake.json)
+- [Replay CRLF to LF byte audit](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/replay_lf_conversion.json)
+- [Repair verification runner](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/run_acceptance_checks.py)
+- [Current delivery audit script](file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/audit_repair_delivery.py)
+
+- [Pre-repair final fast summary](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast_r2/summary.json)
+- [Pre-repair final full summary](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/summary.json)
 - [Final tested source ZIP](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/tested_source.zip)
 - [Tested source archive record](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/tested_source_archive.json)
 - [Invalidated first final fast run](file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast/state.json)

@@ -1,5 +1,5 @@
 {
-  "status": "DONE_OWNER_REVIEW_PENDING",
+  "status": "DONE_ACCEPTANCE_REPAIR_VERIFIED",
   "base_commit": "239ec30863db52d531531f77003da46fc3441908",
   "accepted_path_count": 10,
   "se2_segments": 286,
@@ -227,7 +227,7 @@
       "certificate": "file:///D:/eab-evidence/reports/codex/T2a_evidence/certificates/k02.json"
     }
   ],
-  "gate_boundary": "Final fast 9415 and full 15521 (four shards) are GREEN, zero failed/skipped, exact node multisets and actual module execution verified; static gate zero violations. Source stayed unchanged throughout both runs. Owner fresh-Git-tree and independent acceptance remain pending.",
+  "gate_boundary": "Original whole-repository fast/full results are pre-repair history. Current test/data/document-only repair: all T2a including slow 108 passed, purity 38 passed, standalone admissions 15 and replay 2 passed; whole-repository static zero violations. No src/tools/policy/C++ changes. Owner reports fresh-tree reproduction and non-author acceptance passed; owner ongoing full-run completion is not asserted here.",
   "p2_endpoint_experiment": "NOT_RUN_OPTIONAL",
   "p2_metamorphic": "TARGETED_PASS",
   "static_admission_counts": {
@@ -275,7 +275,8 @@
       "static_last_line": null,
       "summary": "file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast_r2/summary.json",
       "module_coverage_complete": true,
-      "fresh_git_checkout": false
+      "fresh_git_checkout": false,
+      "scope": "pre-acceptance-repair historical run"
     },
     "full": {
       "name": "resume_final_full",
@@ -293,7 +294,8 @@
       "static_last_line": "exact construction AST gate: 0 violation(s)",
       "summary": "file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/summary.json",
       "module_coverage_complete": true,
-      "fresh_git_checkout": false
+      "fresh_git_checkout": false,
+      "scope": "pre-acceptance-repair historical run"
     }
   },
   "invalidated_run": "file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_fast/state.json",
@@ -301,5 +303,33 @@
   "history_counter_checks": "file:///D:/eab-evidence/reports/codex/T2a_evidence/ruling_resume_20261025/history_counter_after.json",
   "tested_source_archive": "file:///D:/eab-evidence/reports/codex/T2a_evidence/resume_final_full/tested_source_archive.json",
   "final_source_sha256": "14bfd823dda1c438ffd136128f73545236d5e2bbbb428a3b1eb5e09efc79bbdf",
-  "owner_review_pending": true
+  "repair_base_commit": "d60b79b0b0c7f671e34971a3596648727846b8af",
+  "owner_acceptance_reported": true,
+  "owner_merge_pending": true,
+  "acceptance_repair": {
+    "checks": "file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/checks_02/summary.json",
+    "owner_ruling": "file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/owner_ruling.json",
+    "new_admissions": 0,
+    "src_unchanged": true,
+    "all_t2a_with_slow_passed": 108,
+    "purity_passed": 38,
+    "standalone_admissions_passed": 15,
+    "standalone_replay_passed": 2,
+    "replay_lf_sha256": "f3d0c9d523cfab8275b3949744a2d576eb63503dee43495e18d02291ee15338a",
+    "internal_endpoint_free_doorway_penetration_tau": "1663/6144",
+    "whole_repository_rerun": false
+  },
+  "certificate_provenance": {
+    "old_embedded_source_sha256": "9b791d2885edb2e62e8c9c1a00f17c393391f5d4a030d525ce24d7bfcfa5e39e",
+    "final_source_sha256": "14bfd823dda1c438ffd136128f73545236d5e2bbbb428a3b1eb5e09efc79bbdf",
+    "reverified_cases": 13,
+    "verified_escape": 12,
+    "rejected_candidate": 1,
+    "production_pairs": 903,
+    "oracle_pairs": 948,
+    "original_certificates_unchanged": true,
+    "production_and_oracle_blocks_equal": true,
+    "summary": "file:///D:/eab-evidence/reports/codex/T2a_evidence/final_reverify_20261025/summary.json",
+    "comparison": "file:///D:/eab-evidence/reports/codex/T2a_evidence/acceptance_repair_20261025/comparison.json"
+  }
 }

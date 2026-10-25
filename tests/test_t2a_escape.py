@@ -176,3 +176,61 @@ def test_internal_motion_domain_mutation_is_killed(monkeypatch):
     monkeypatch.setattr(SE2Motion, "__post_init__", namespace["__post_init__"])
     with pytest.raises(AssertionError, match="motion domain must reject"):
         semantic_gate()
+
+
+def test_subthreshold_doorway_rejects_crossing_with_every_endpoint_strictly_free():
+    """Independent Sturm/G0 oracle checks a false escape with free endpoints.
+
+    The eroded width after a quarter-turn is 385/512, wider than the 3/4
+    doorway by 1/512. Raising the final pose above the roof must not hide
+    the exact interior overlap on the last segment. Expected times follow
+    from the upper support line, not a production event or root primitive.
+    """
+    from eab.kernel2d.exact import polygons_overlap_exact
+    from m5a_independent_oracle import overlap as oracle_overlap, ring_at
+
+    delta = F(127, 1024)
+    moving, obstacles = doorway(delta)
+    motions = tuple(SE2Motion(*spec) for spec in doorway_motion_specs()[:2]) + (
+        SE2Motion(0, (0, 6), (0, 3)),)
+    path = path_from_motions(moving, motions)
+    assert path.poses[0] == moving
+    assert len(path.poses) == 4 and len(obstacles) == 5
+    assert min(y for _, y in path.poses[-1]) == F(7807, 1024) > 7
+    # Check all shared endpoints, not just the initial and final configurations.
+    for pose in path.poses:
+        for obstacle in obstacles:
+            assert polygons_overlap_exact(pose, obstacle) == -1
+            assert oracle_overlap(pose, obstacle) == -1
+
+    probe_time = F(1, 2)
+    probe = tuple(motions[2].at(point, probe_time) for point in path.poses[2])
+    spec = (motions[2].u1, motions[2].translation, motions[2].center)
+    assert ring_at(path.poses[2], spec, probe_time) == probe
+    expected_probe_states = (-1, -1, -1, 1, 1)
+    assert tuple(polygons_overlap_exact(probe, obstacle) for obstacle in obstacles) == expected_probe_states
+    assert tuple(oracle_overlap(probe, obstacle) for obstacle in obstacles) == expected_probe_states
+
+    result = paths.verify_se2_escape(moving, obstacles, path, ((0, 0), (0, 100)))
+    assert not result.valid, "free doorway endpoints must not certify the penetrating interior"
+    assert result.reason == "a rigid path segment enters strict overlap"
+    # checked_segments counts the failed segment too: index 2 is the third.
+    assert result.checked_segments == 3 and result.checked_pairs == 15
+    assert len(result.segment_results) == 3
+    assert all(len(row) == 5 for row in result.segment_results)
+    assert all(pair.status == "FREE" for row in result.segment_results[:2] for pair in row)
+    assert tuple(pair.status for pair in result.segment_results[2]) == (
+        "FREE", "FREE", "FREE", "PENETRATES", "PENETRATES")
+    assert result.ray_verification is None
+
+    expected_tau = (F(6) - (F(9, 2) - delta)) / 6
+    assert expected_tau == F(1663, 6144) < probe_time
+    for obstacle_index in (3, 4):
+        pair = result.segment_results[2][obstacle_index]
+        assert pair.initial_state == pair.end_state == -1
+        assert pair.exact_time == expected_tau and not pair.immediate
+        oracle = first_penetration(path.poses[2], obstacles[obstacle_index], spec)
+        assert oracle["initial_state"] == oracle["end_state"] == -1
+        assert oracle["status"] == "PENETRATES" and not oracle["immediate"]
+        assert oracle["root"].sign((-expected_tau, 1)) == 0
+        assert any(state == 1 for _, state in oracle["probes"])

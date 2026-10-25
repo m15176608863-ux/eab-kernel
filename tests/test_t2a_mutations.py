@@ -95,3 +95,47 @@ def test_named_internal_mutation_is_killed(monkeypatch, name, replacements, guar
     exec(compile(source, "<"+module_name+">", "exec"), mutant.__dict__)
     with pytest.raises(AssertionError, match=assertion):
         guard(mutant)
+
+
+@pytest.mark.parametrize("name,gate_name,assertion", [
+    ("many_first_obstacle", "test_many_reversed_order_selects_later_listed_irrational_minimum",
+     "earliest obstacle is not necessarily the first listed"),
+    ("many_no_initial_overlap_priority", "test_many_initial_overlap_precedes_immediate_contact_with_all_zero_ties",
+     "initial overlap takes precedence"),
+    ("open_segment_drops_endpoints", "test_internal_overlap_with_free_endpoints",
+     "return interval left boundary"),
+    ("open_segment_drops_endpoints", "test_many_preserves_all_earliest_obstacles",
+     "many must retain the exact first penetration boundary"),
+    ("open_segment_drops_endpoints", "test_persistent_collinearity_uses_projection_endpoints",
+     "closed-segment projection endpoints must remain"),
+])
+def test_many_and_closed_endpoint_internal_mutations_are_killed(monkeypatch, name, gate_name, assertion):
+    import test_t2a_penetration as gates
+
+    # Execute the actual named semantic gate unchanged on the original source
+    # before redirecting its production entry points to an internally mutated module.
+    getattr(gates, gate_name)()
+    source = Path(production.__file__).read_text(encoding="utf-8")
+    if name == "many_first_obstacle":
+        original = "first = min(_algebraic_time(result.exact_time) for _, result in occupied)"
+        replacement = "first = _algebraic_time(occupied[0][1].exact_time)"
+    elif name == "many_no_initial_overlap_priority":
+        original = 'status = "INITIAL_OVERLAP" if any(result.status == "INITIAL_OVERLAP" for _, result in tied) else "PENETRATES"'
+        replacement = "status = tied[0][1].status"
+    else:
+        original = "candidates.extend(_event_times(*polynomials))"
+        replacement = ("candidates.extend(time for time in _event_times(*polynomials) "
+                       "if time.sign_polynomial(*polynomials[1]) > 0 "
+                       "and time.sign_polynomial(*polynomials[2]) > 0)")
+    assert source.count(original) == 1, "mutation target must be unique and present"
+    source = source.replace(original, replacement, 1)
+    module_name = "eab.kernel2d._t2a_mutation_"+name
+    mutant = ModuleType(module_name)
+    monkeypatch.setitem(sys.modules, module_name, mutant)
+    exec(compile(source, "<"+module_name+">", "exec"), mutant.__dict__)
+    monkeypatch.setattr(gates, "se2_first_penetration", mutant.se2_first_penetration)
+    monkeypatch.setattr(gates, "se2_first_penetration_many", mutant.se2_first_penetration_many)
+    monkeypatch.setattr(gates, "_event_partition", mutant._event_partition)
+    # An incidental ArithmeticError/TypeError cannot satisfy this exact assertion.
+    with pytest.raises(AssertionError, match=assertion):
+        getattr(gates, gate_name)()

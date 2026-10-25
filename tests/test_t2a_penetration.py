@@ -110,7 +110,8 @@ def test_persistent_collinearity_uses_projection_endpoints():
     polynomials = _line_polynomials(a, 2, b, 0)
     assert not any(polynomials[0])
     events = ((a, b, "VE", 2, 0, polynomials),)
-    assert _event_partition(events) == (0, F(1, 4), F(1, 2), 1)
+    assert _event_partition(events) == (0, F(1, 4), F(1, 2), 1), \
+        "semantic: closed-segment projection endpoints must remain in the partition"
     got = se2_first_penetration(a.start, b.start, a.motion)
     assert got.status == "FREE", "sustained collinear sliding contact is allowed"
 
@@ -127,7 +128,8 @@ def test_rational_probe_is_strictly_between_nearby_algebraic_roots():
 def test_many_preserves_all_earliest_obstacles():
     obstacles = (shifted(SQUARE, 2), shifted(SQUARE, 2), shifted(SQUARE, 3))
     got = se2_first_penetration_many(SQUARE, obstacles, SE2Motion(0, (4, 0)))
-    assert got.status == "PENETRATES" and got.exact_time == F(1, 4)
+    assert got.status == "PENETRATES" and got.exact_time == F(1, 4), \
+        "semantic: many must retain the exact first penetration boundary"
     assert got.obstacle_indices == (0, 1)
     assert {index for index, _ in got.incidences} == {0, 1}
     assert got.results[2].exact_time == F(1, 2)
@@ -144,6 +146,47 @@ def test_many_mixed_rational_and_irrational_times():
     assert got.obstacle_indices == (0,)
     assert isinstance(got.exact_time, RealAlgebraic)
     assert got.results[1].exact_time == F(1, 3)
+
+
+def test_many_reversed_order_selects_later_listed_irrational_minimum():
+    square = ((-1, -1), (1, -1), (1, 1), (-1, 1))
+    walls = tuple(((x, -3), (3, -3), (3, 3), (x, 3)) for x in (F(7, 5), F(6, 5)))
+    got = se2_first_penetration_many(square, walls, SE2Motion(1))
+    assert got.obstacle_indices == (1,), \
+        "semantic: the earliest obstacle is not necessarily the first listed obstacle"
+    assert got.status == "PENETRATES" and not got.immediate and not got.touches_end
+    # The later listed wall has 11*s*s-10*s+1=0 at its first entry;
+    # the earlier listed wall first enters at s=1/3.
+    assert isinstance(got.exact_time, RealAlgebraic)
+    assert got.exact_time.sign_polynomial(1, -10, 11) == 0
+    assert F(1, 10) < got.exact_time < F(1, 8)
+    assert got.results[0].exact_time == F(1, 3)
+    assert got.results[1].exact_time == got.exact_time
+    assert tuple(result.status for result in got.results) == ("PENETRATES", "PENETRATES")
+    assert tuple(result.initial_state for result in got.results) == (-1, -1)
+    assert tuple(result.end_state for result in got.results) == (-1, -1)
+    assert got.incidences == got.features == ((1, ("VE", 1, 3)),)
+    assert got.results[1].incidences == got.results[1].features == (("VE", 1, 3),)
+
+
+def test_many_initial_overlap_precedes_immediate_contact_with_all_zero_ties():
+    obstacles = (shifted(SQUARE, 1), shifted(SQUARE, F(1, 2)))
+    got = se2_first_penetration_many(SQUARE, obstacles, SE2Motion(0, (1, 0)))
+    assert got.status == "INITIAL_OVERLAP", \
+        "semantic: initial overlap takes precedence over an earlier listed immediate contact"
+    assert got.obstacle_indices == (0, 1)
+    assert isinstance(got.exact_time, QuadraticTime) and got.exact_time == 0
+    assert got.immediate and not got.touches_end
+    assert tuple(result.status for result in got.results) == ("PENETRATES", "INITIAL_OVERLAP")
+    assert tuple(result.initial_state for result in got.results) == (0, 1)
+    assert tuple(result.end_state for result in got.results) == (1, 1)
+    assert all(result.exact_time == 0 and result.immediate for result in got.results)
+    assert got.incidences == tuple((i, label) for i, result in enumerate(got.results)
+                                  for label in result.incidences)
+    assert got.features == tuple((i, label) for i, result in enumerate(got.results)
+                                for label in result.features)
+    assert {i for i, _ in got.incidences} == {0, 1}
+    assert (0, ("VE", 1, 3)) in got.incidences
 
 
 @pytest.mark.parametrize("bad", [0.0, True, "0"])
