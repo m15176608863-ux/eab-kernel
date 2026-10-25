@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_only_authorized_history_view_count_changes():
     source = (ROOT / "tools/policy_history_view.py").read_text("utf-8")
-    t2b_note = "# T2b work-order append: 3659 historical plus 98 reviewed sites; no projection change.\n"
+    t2b_note = "# T2b 所有者 2026-10-26 追认: 3659 historical plus 98 reviewed sites; no projection change.\n"
     assert source.count(t2b_note) == 1 and source.count('"waivers": 3757') == 1
     source = source.replace(t2b_note, "").replace('"waivers": 3757', '"waivers": 3659')
     note = "# T2a owner-approved append: 3522 historical plus 137 reviewed sites; no projection change.\n"

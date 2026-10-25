@@ -1,10 +1,10 @@
 # WO-T2b：SE(2) 笼证书与刚体临界公差双侧括号
 
-**当前工单状态：BLOCKED。** 本次仅回填报告与机器状态，不将中断运行记为通过。已完数学与P1诊断证据保留；只读独立测试的policy字节锚与开工基线不兼容，需所有者裁定。禁止执行原DONE回填脚本。
+**当前工单状态：T2B_DONE。** 所有者旧阻塞已解除；本轮补门、97项语义变异重跑、策略CRLF修复、逃逸旁记和新全仓收尾均已完成，未修改生产核验器或独立侧。
 
 **一句话结论：10例的“困住下界—逃逸上界”已完成双路复核，原25份与诊断新增2份笼证书全部双核验通过，d03与d08的下界另有提高；括号仍有宽度，不能据此声称临界值已求出。**
 
-开工日期：2026-10-25；阻塞交付记录：2026-10-26（Asia/Singapore）。执行：Codex；所有者：Claude。本文区分已完专项证据与未完成全仓收尾；不把中断或待办写成通过。
+开工日期：2026-10-25；验收返修：2026-10-26（Asia/Singapore）。执行：Codex；所有者：Claude。旧中断运行永久作废；新收尾独立运行，不拼接历史日志。
 
 ## 1. 开工合同、范围、回退与归属
 
@@ -15,7 +15,7 @@
 | 写域 | `D:/eab-wt/cx-e2` 与 `D:/eab-evidence/reports/codex/T2b_evidence/` |
 | 非目标 | C++/eab2、既有数学函数语义、理论合同修改、多体运动、精确墙函数、临界值等号或新颖性表述 |
 | 回退锚 | [2426 文件字节 ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/baseline_anchor/source.zip)与[成员 SHA256](file:///D:/eab-evidence/reports/codex/T2b_evidence/baseline_anchor/manifest.json)；不自动 reset，不覆盖所有者后续修改 |
-| 成功标准 | P0 逐项证据、真值一致、24 内部变异报红、静态零违例、收尾快/全档真实执行；独立核验器合入后每份入表证书双核验且伪造拒收代码一致 |
+| 成功标准 | P0 逐项证据、真值一致、原24内部变异与核查方97项变异语义复跑、静态零违例、收尾快/全档真实执行；独立核验器合入后每份入表证书双核验且伪造拒收代码一致 |
 | 新鲜树边界 | 本代理只使用字节快照/导出，不作 Git 写操作，不宣称所有者新鲜 worktree 验收 |
 
 [机器工作合同](file:///D:/eab-evidence/reports/codex/T2b_evidence/work_contract.json)。`docs/t2b_cage_lemma.md` 第 5 版为只读理论合同；正确性论证引用其 §4，不另写替代理论。SE(2) 指定路径首入归本仓库 M5a；石根华原文归属沿用 T2a D1–D3、D6–D8。单块、邻居固定；块在自身坐标中按 δK 腐蚀；有理八边形 K 为标题模型，方形 K 仅为 T1b 对照。
@@ -26,9 +26,17 @@
 
 独立核验一律经其原始文件解析入口 `load_json`（或调用它的 `_load_result`），保留重复键及整数原记号检查；不将普通 `json.load` 结果直接送入 `verify_cage`。只将成功状态 `ACCEPTED` 与 `OK` 视作语义相同，拒收条件 `V0/CHAIN/V1…V6` 必须逐字相同；check id、reason、where及实现计数不要求相同。
 
+### 1.2 验收返修基线与所有者裁定
+
+本轮实查干净 `codex-work`、HEAD `c900033aa809170bb0cbb5d0dbe33b439cd187e7`。所有者将前轮整合提交为 `7b09646`，并自行修正独立静态测试策略钉子（`86b337b`，经 main `1aabd70` 合入），旧 BLOCKED 已解除。回退锚为 [2616文件字节ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/baseline_source.zip)及[成员SHA与执行合同](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/baseline.json)。本轮不改 `src/` 或独立侧任何文件；policy只按明确裁定恢复CRLF，注释补追认日期。
+
+以下是**所有者验收回函**而非本代理新跑数量：25份入表笼证书三方接受；实例独立重建一致；13条逃逸上界经独立SE(2)路径核验成立；不变圆下界在1/256网格上为该方法最优（解析推导）；18147差分逐项一致，2844份接受证书整体碰撞抽检0问题；98个新准入均属证明缺口、浮点汇点0。原测试集的变异牙未通过：97项中49存活，因此本轮必须补门重跑，不能仅凭核验器正确就声称测试充分。
+
 ## 2. 生产核验器与合同对照
 
 [实现](file:///D:/eab-wt/cx-e2/src/eab/kernel2d/se2_cage.py)只使用标准库与精确整数/Fraction。浮点提议、搜索失败、显示舍入均不进入接受条件。输入实例与证书分开传入，逐顶点、逐障碍、逐顺序核对。
+
+**证据级判定一律走 JSON 文本入口。** Python dict 入口为内存精确数据便利接口，允许 int/Fraction，且无法恢复已被普通JSON解析丢弃的重复键与 `-0`；不据此冒称解析卫生已检查。具名门 `test_truth_and_science_rechecks_use_json_text_entry` 在5份真值与10份科学下界的实际回放中监视生产参数必须为str、独立侧必须逐文件调用 `load_json`；不是源码字符串或哈希断言。
 
 | 引理条件 | 生产函数 | 具名门（另见参数项及伪造目录） |
 |---|---|---|
@@ -102,43 +110,45 @@
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | d01 | 方形；0 | 23/128 | 23/128 | 3/10 | 1/3 | 77/640 | 231/640 | 2 | 否 |
 | d02 | 方形；0 | 63/256 | 63/256 | 1851/5120 | 1/2 | 591/5120 | 591/2560 | 2 | 否 |
-| d03 | 方形；0 | 63/256 | 63/256 | 21/50 | 3/7 | 1113/6400 | 2597/6400 | 2 | 否 |
+| d03 | 方形；0 | 63/256 | 1/4 | 21/50 | 3/7 | 17/100 | 119/300 | 4 | 是 |
 | d04 | 方形；1 | 13/128 | 13/128 | 1/5 | 3/14 | 63/640 | 147/320 | 2 | 否 |
 | d05 | 八边形；0 | 63/256 | 63/256 | 2043/5120 | 24/41 | 783/5120 | 10701/40960 | 2 | 否 |
 | d06 | 八边形；0 | 93/256 | 93/256 | 5393/10240 | 24/41 | 1673/10240 | 68593/245760 | 2 | 否 |
 | d07 | 八边形；0 | 13/64 | 13/64 | 849/2560 | 24/65 | 329/2560 | 4277/12288 | 2 | 否 |
-| d08 | 八边形；1 | 25/256 | 25/256 | 11377/51200 | 12/49 | 6377/51200 | 312473/614400 | 2 | 否 |
+| d08 | 八边形；1 | 25/256 | 13/128 | 11377/51200 | 12/49 | 6177/51200 | 100891/204800 | 2 | 是 |
 | k01 | 方形；0 | 75/256 | 75/256 | 3923/12800 | 1/3 | 173/12800 | 519/12800 | 2 | 否 |
 | k02 | 八边形；0 | 93/256 | 93/256 | 977/2560 | 12/29 | 47/2560 | 1363/30720 | 2 | 否 |
 
-标题模型八边形 K 为 d05–d08、k02；其余为方形对照。原science_02扫描时全部10例 `δ_cage=δ_disk`，仅表示此资源/网格下区间链没有提高下界，不能推断圆判据完备。7例逃逸上界收窄（d02、d05–d08、k01、k02），其余保留重核通过的 T2a 上界。
+标题模型八边形 K 为 d05–d08、k02；其余为方形对照。上表已合并诊断新增下界：**d03 [1/4,21/50]、d08 [13/128,11377/51200]**；其他8例不变。原science_02扫描时全部10例 `δ_cage=δ_disk`，仅表示此资源/网格下区间链没有提高下界，不能推断圆判据完备。7例逃逸上界收窄（d02、d05–d08、k01、k02），其余保留重核通过的 T2a 上界。
 
-终版扫描总耗时 **132.8529 s**，源文件运行前后字节不变。每例下界实例为 `science_02/<ID>/instance.json`、证书为 `certificate.json`；圆证书另列 `disk_instance.json/disk_certificate.json`，逃逸端点/路径另列 `escape_instance.json/escape_candidate.json`。每个成功的下界探针都另核 `TRAPPED_TRANSLATION`；10个最终逃逸端点的笼提议均为 `UNPROVED`。
+原science_02完整扫描总耗时 **132.8529 s**，源文件运行前后字节不变。最终d03/d08下界取 `diagnostic_03/<ID>/instance.json` 与 `certificate.json`；其他8例下界取 `science_02/<ID>/instance.json`、`certificate.json`；圆证书另列 `disk_instance.json/disk_certificate.json`，逃逸端点/路径另列 `escape_instance.json/escape_candidate.json`。每个成功的下界探针都另核 `TRAPPED_TRANSLATION`；10个最终逃逸端点的笼提议均为 `UNPROVED`。
 
-[完整科学表/探针轨迹/参数](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02/summary.json) · [10例证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02/) · [20份规范JSON复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02_serialized_recheck.json)。
+[原冻结科学表/探针轨迹/参数](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02/summary.json) · [最终合并科学表](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/scientific_summary.json) · [10例原证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02/) · [20份规范JSON复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/science_02_serialized_recheck.json)。
 
 固定小子集实际回放两份证书（八边形 d07 和低房间封口），比较完整状态、计数及有理端点，不钉当前源码：[输入](file:///D:/eab-wt/cx-e2/tests/data/t2b_cage_replay.json)、[具名门](file:///D:/eab-wt/cx-e2/tests/test_t2b_replay.py)。来源提交/工具与源ZIP保留在外置目录，不将历史哈希改成当前哈希。
 <!-- T2B_SCIENCE_END -->
 
 ### 5.1 入表证书、实例与逃逸复核
 
-- **25/25笼文件接受**：truth_02的5份、science_02的10份下界与10份只圆证书，均生产 `ACCEPTED`、独立 `OK`。表中有理数、原证书和原扫描源ZIP不变；没有用后来的源码哈希覆盖旧来源。
+- **25/25笼文件接受**：truth_02的5份、science_02的10份下界与10份只圆证书，均生产 `ACCEPTED`、独立 `OK`。原科学扫描有理数、原证书和原扫描源ZIP不变；最终展示表合并两份已核验的提高下界；没有用后来的源码哈希覆盖旧来源。
 - **8个燕尾族、121个不同 `(case, δ)` 实例相等**：覆盖此次科学扫描用到的全部成功/失败下界与上界探针，包括73个不同成功下界点（原198条成功记录中有重复），以及24份保存的cage/disk/escape端点实例。生产实例与 `dovetail_instance` 经 `canonical_instance` 比较逐项相等。[实例明细](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/instance_escape/run_01/instances.json)。
-- **凸耳k01/k02无独立任意δ实例构造器**：本次实例仍由生产生成器给出；其起始几何在T2a中曾按竖条剖分独立核查。这一历史核查不能升级为本次任意δ的独立生成。
+- **凸耳k01/k02：无独立生成器，验收时已按支撑距离与竖条剖分独立复核。** 本次实例仍由生产生成器给出，不把独立复核说成已有任意δ的独立生成器。
 - **13条逃逸通过**：10条科学上界与3条真值路径，共396段、1204次生产片对检查、1249次独立oracle调用，有限段语义、并列标签/精确事件时刻和所有中间端点位姿一致。独立oracle核的是有限刚体段与尾射线前缀；无限尾射线仍由现有生产精确平移核验器接受，不声称新增了独立无限射线证明。[完整复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/instance_escape/run_01/summary.json)。
 
-快档[具名双核验门](file:///D:/eab-wt/cx-e2/tests/test_t2b_dual_verifier.py)固定保存5份真值及10份下界，另核8个燕尾族的cage/escape两端、8类拒收条件和4种原始JSON记号；44项定向通过。冻结数据只核自身完整性，不钉当前源码，不依赖Git或外置目录。[输入与历史来源](file:///D:/eab-wt/cx-e2/tests/data/t2b_dual_cases/manifest.json)。
+快档[具名双核验门](file:///D:/eab-wt/cx-e2/tests/test_t2b_dual_verifier.py)固定保存5份真值及10份原下界，另核8个燕尾族的原cage/escape两端、8类拒收条件和4种原始JSON记号；前轮44项通过，本轮新增2项文本入口spy后为46项。冻结数据只核自身完整性，不钉当前源码，不依赖Git或外置目录。[输入与历史来源](file:///D:/eab-wt/cx-e2/tests/data/t2b_dual_cases/manifest.json)。本轮另将原25份及新增d03/d08共27份外置笼文件全部经生产文本与独立load_json重核，全部接受且输入/源码不变：[逐份当前结果](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/cages_text_recheck.json)。不将固定15份spy声称为27份完整回放。
 
-### 5.2 续单新增的双核验下界（不改冻结原表）
+7份收窄上界候选的原 `PROPOSAL_UNVERIFIED` 标签和字节不改；旁置 `science_02/<ID>/escape_verification.json` 明列δ、源SHA、逐段计数和结论。[七份旁记索引与SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/policy_sidecars/escape_reverification_02/summary.json)：260个刚体段、780个生产片对、801次独立oracle调用，全部通过；无限尾射线为生产精确核验，独立有限oracle边界未扩大。
 
-瓶颈诊断增加资源后，在原“首未证δ”处找到以下两份封口笼证书；两核验器均接受，且平移另核为 `TRAPPED_TRANSLATION`。原 science_02 表和外置JSON仍为冻结历史结果；此表是补充结论，不改原 δ_disk。上界继续使用§5.1已复核的逃逸证书。
+### 5.2 合并下界的来源（原始文件不改）
+
+瓶颈诊断增加资源后，在原“首未证δ”处找到以下两份封口笼证书；两核验器均接受，且平移另核为 `TRAPPED_TRANSLATION`。原 science_02 表和外置JSON仍为冻结历史结果；这两行现已合并进§5最终表；不改原 δ_disk。上界继续使用§5.1已复核的逃逸证书。
 
 | ID | 新 δ_cage | δ_esc | δ*_T | 新宽度 | 相对宽度 | N | 封口 |
 |---|---:|---:|---:|---:|---:|---:|---|
 | d03 | 1/4 | 21/50 | 3/7 | 17/100 | 119/300 | 4 | 是 |
 | d08 | 13/128 | 11377/51200 | 12/49 | 6177/51200 | 100891/204800 | 2 | 是 |
 
-所以最终入表为**原25份笼文件＋2份新下界证书**双核验通过，不是27个独立几何实例。[新增证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/diagnostic_03)，[逐字节复制与SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/new_certificates_copy.json)，[诊断实例复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/instance_escape/diagnostic_instances_final_03/summary.json)。8个燕尾族原121个不同 `(case,δ)` 加4个新d07内点，共125个不同δ实例独立比对相等；14份诊断保存实例中12份有独立燕尾构造器且全部相等。凸耳两例与无限尾射线的独立性边界仍按§5.1保留。
+所以累计已复核**原25份笼文件＋2份新下界证书**且全部双核验通过；最终表采用其中25份（5真值＋10当前下界＋10圆），另2份旧下界保留溯源，不是27个独立几何实例。[新增证书](file:///D:/eab-evidence/reports/codex/T2b_evidence/certificates/diagnostic_03)，[逐字节复制与SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/new_certificates_copy.json)，[诊断实例复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/instance_escape/diagnostic_instances_final_03/summary.json)。8个燕尾族原121个不同 `(case,δ)` 加4个新d07内点，共125个不同δ实例独立比对相等；14份诊断保存实例中12份有独立燕尾构造器且全部相等。凸耳两例与无限尾射线的独立性边界仍按§5.1保留。
 
 ## 6. 变异与伪造集
 
@@ -153,6 +163,51 @@
 [生产侧逐项记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/our_corpus/results.json) · [独立侧覆盖清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/v_corpus/inventory.json)。这些是有限语料实测，不将所有者先前9042例差分或95项变异的验收数字冒称本次重跑结果。
 
 补充运行我方6个原测试文件，245项通过；仅在未变异生产原函数上捕获192次有效调用，独立文件解析核验192次 `OK`，共71个不同原始(instance,certificate)字节对。覆盖这6个原测试文件中全部实际正例构造，动态编译的禁守卫变体从未参与对拍。新资源8步正例及两份新诊断证书另外双核验，不计入这192次。这192次不是与原130次、独立侧505次合并去重后的总数，三组计数分别保留。[逐nodeid捕获记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/our_corpus/positive_capture/summary.json)。
+
+### 6.2 所有者变异核查后的补门
+
+原24项门不能代替核查方97项单项变异：原测试集有49项存活，本次补足遗漏防线而不修改生产核验器。[新增27个具名伪造测试](file:///D:/eab-wt/cx-e2/tests/test_t2b_acceptance_forgeries.py)逐项断言首个拒收代码；[54个JSON及双SHA清单](file:///D:/eab-wt/cx-e2/tests/data/t2b_forgeries/acceptance_20261026/manifest.json)仅作CRLF→LF，未重编码JSON。原文与入库版本共54对双核验全部按预期拒收、0分歧，见[逐项复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/forgeries/dual_recheck.json)。原39份伪造保留，现共66份。
+
+| 条件 | 新增伪造ID |
+|---|---|
+| V0 | B0x、P06、P02、A01、P03、P04、R03、R07、H12、H13、R06 |
+| CHAIN | K03、K06、K07、K08、K10、K11 |
+| V2 | V201、V204 |
+| V3 | V302 |
+| V4 | V401、V403 |
+| V5 | V501、V502、V503、V505 |
+| V6 | V603 |
+
+[新增卫生与接触门](file:///D:/eab-wt/cx-e2/tests/test_t2b_acceptance_hygiene.py)逐项覆盖 radius `"6/2"`、`3.0`、rho布尔、嵌套未知键、错误format/kind、三坐标点、凸环共线点、区间数不符、内核片下标越界，均以原始文本双核验拒收V0；`test_strict_points_edge_touching_vertex_is_not_penetration` 用边恰接顶点及严格重叠正对照。首次卫生/接触及文本入口门末行 `57 passed in 3.34s`；27伪造门末行 `27 passed in 2.63s`。补强单侧接触、未知嵌套键及结构化越界拒收后，最终三文件合跑 `84 passed in 6.57s`。只将I/O和调用断言直接写入真实具名测试驱动体，不新增数值oracle、策略白名单或准入；原24条helper证明缺口诊断随其消除，三个修改测试文件局部静态0。
+
+<!-- T2B_ACCEPTANCE_MUTANTS_BEGIN -->
+最终轮 `definitive_04`：**97项全部完成，82项被语义测试杀死，15项仅落在所有者明确允许列表，非允许存活0。** 控制原版末行 `365 passed in 24.58s`；每项执行同一365节点，共35405个变异节点调用，无skip。总耗时 645.850 s。97份变体源码SHA互异，每份为核查方定义的一个生产内部变异；不在结果后追加假数据。
+
+| 条件/范围 | 单项变异 | 语义杀死 | 允许存活 |
+|---|---:|---:|---:|
+| V0/parse | 14 | 13 | 1 |
+| V0/binding | 3 | 3 | 0 |
+| V0/rings | 10 | 7 | 3 |
+| V0/radius | 3 | 3 | 0 |
+| V0/partition | 7 | 6 | 1 |
+| V0/disk | 2 | 2 | 0 |
+| V0/counts | 8 | 7 | 1 |
+| V0/indices | 2 | 1 | 1 |
+| CHAIN | 12 | 9 | 3 |
+| V1 | 7 | 5 | 2 |
+| V2 | 7 | 6 | 1 |
+| V3 | 4 | 4 | 0 |
+| V4 | 4 | 4 | 0 |
+| V5 | 9 | 8 | 1 |
+| V6 | 5 | 4 | 1 |
+| **总计** | **97** | **82** | **15** |
+
+允许存活：`H01、R02、R05、R10、P05、C03、C10、K01、K04、K05、V103、V104、V206、V508、V601`。全部是所有者预列的等价或不影响健全性项；未引入任何额外豁免或新蕴含论证。所有者原允许的H11、V404也已被新增具名门杀死。这里不将“存活”改称“杀死”，亦不把82/97当全输入域正确性证明。
+
+仅统计原版先绿、变体触发的语义AssertionError（含明确的“非法下标/区间数必须返回V0而非泄漏IndexError”公共返回合同断言）。静态准入10次、站点不唯一/源匹配23次失败单独排除，源码哈希不作杀死；未捕获的意外异常不算语义杀死。01轮因外部basetemp父目录未创建作废；02轮因补门追加而中断作废；03轮完整82/15但为闭子集整理前的诊断轮，不拼进04。最终只采用04当前测试字节。
+
+[最终97项汇总](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/mutation97/definitive_04/acceptance_summary.json) · [逐项测试/源码差异/原始日志](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/mutation97/definitive_04/results/) · [受测字节ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/mutation97/definitive_04/tested_source.zip)。
+<!-- T2B_ACCEPTANCE_MUTANTS_END -->
 
 ## 7. 瓶颈诊断与对 T2c 的含义
 
@@ -274,15 +329,17 @@
 
 #### 诊断性判断
 
-1. d03 在原首未证点 δ=1/4、d08 在 δ=13/128 得到新的双核验笼证书，二者同时复核 `TRAPPED_TRANSLATION`，直接表明至少这两处原下界未抬高含有提议器资源/搜索不足；不是引理不可用。原科学表不改，本节单独记录改进。
+1. d03 在原首未证点 δ=1/4、d08 在 δ=13/128 得到新的双核验笼证书，二者同时复核 `TRAPPED_TRANSLATION`，直接表明至少这两处原下界未抬高含有提议器资源/搜索不足；不是引理不可用。原science_02外置JSON不回写，两项改进已合并§5展示表。
 2. ρ=0 切片成功但同区间收缩比值较大，且细分后下降，只定位当前固定 Γ/见证的收缩余量损失；不能据此宣称全部屏障都失败。比值已经较小而实际连接/封口仍失败，则观测到的是本提议器该连接/封口构造未成功，未证明不存在其他连接。
-3. 对未取得 ρ=0 屏障的采样角，不能计算那条尚未获得的 Γ 的容量，也不能强行在“方法过松”和“搜索不足”间二选一。d07 四内点给出切片成功数、具体局部失败与适用的比值，供 T2c 针对性比较精确墙函数/更强 Γ 构造，而不是不可逃结论。
+3. 对未取得 ρ=0 屏障的采样角，不能计算那条尚未获得的 Γ 的容量，也不能强行在“方法过松”和“搜索不足”间二选一。d07 四内点给出切片成功数、具体局部失败与适用的比值，供 T2c 按D4先改进 Γ、连接与封口构造，而不是不可逃结论。
 4. k01/k02 的所有已采样 t=0 均无严格贯入，最后实际阻断于封口目标原点检查；当前转动片分支只尝试封口弧，不搜索转动片覆盖整周的无封口闭链。这是本提议器明确的搜索边界，不是“不存在笼”的结论。
-5. 最终是否放开按转角精确墙函数应由所有者据这些有限、可复算事实决定。本单没有实现按 u 精确墙函数。
+5. 本单没有实现按 u 精确墙函数；所有者已据这些有限、可复算事实作出下述D4裁定，暂不放开。
 
 证据：`diagnostics/final_03/summary.json`、逐点 `proposal_trace.json`/`slice_diagnostics.json`、`diagnostic_readout.json`、`slice_origin_audit.json`。原路径来源、δ、完整累计角端点、各 Γ 及固定见证、ρ 成功/失败有理包络和源快照均落盘。
 
 完整可点击入口：[终版14点](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/final_03/summary.json) · [诊断源快照](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/final_03/source_manifest.json) · [全部诊断逐件SHA](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/diagnostics/artifact_manifest.json)。
+
+**所有者2026-10-26 D4裁定：T2c先改进提议器**（封口目标选取、整周闭链、自适应细分），暂不放开按转角精确的墙函数。依据是区间细分后V1所需收缩/可用余量大多小于1，当前失败集中于封口目标和连接构造，凸耳缺整周闭链搜索，且增加资源已提高d03/d08下界；这是下一单的方法选择，不是未证点“不可逃”的结论。
 
 ## 8. 静态准入与收尾验证
 
@@ -312,7 +369,7 @@
 
 机械兼容仅三处：历史视图3659→3757及注释；T2a只审自己的137条切片；历史源码门先撤销T2b计数/注释再核原指纹，并继续对增删一条准入报红。纯度门仅53→54并注明 `se2_cage`，禁词、白名单、依赖图不放宽。
 
-原policy含42297个CRLF，本单修改后按工单统一为LF；旧3659条与其他字段是JSON值/规范摘要不变，不是原始文件字节不变。[旧原字节](file:///D:/eab-evidence/reports/codex/T2b_evidence/policy_before_t2b.json)及开工ZIP完整保留。三分析器仍逐字节不变。
+原policy含42297个CRLF；首轮错误地整份改为LF，本轮按所有者裁定恢复CRLF（43375个CRLF、无裸LF），JSON内容不改。`git diff 146cc76 -- tools/exact_construction_policy.json` 为1078行插入、0行删除，恰为98项追加，不再整份换行抖动。`BASE_POLICY_SHA=621df…` 是146cc76中真实存在的原CRLF策略blob，保留其历史含义，不替换成当前哈希；当前SHA为 `03aaf6b35227c38fd6a6a80ddc1d49214cbd3f87779ffb44092c9a1547daeb92`。[字节恢复审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/policy_sidecars/policy_restore.json)。98条证明缺口、浮点汇点0已由**所有者2026-10-26追认**，`policy_history_view.py` 注释与机械历史逆变换同步。三分析器不改，本轮新增准入0。
 
 原生产交付的完整静态随当时全档执行，历史原样末行：`exact construction AST gate: 0 violation(s)`。此前静态预检虽0违例，但扫描期间提议器测试在改动，准确标为NON_FROZEN；不拿它替代最终完整静态。
 <!-- T2B_STATIC_END -->
@@ -330,52 +387,42 @@
 本次独立核验器及新增门已包含的新运行，只在下列§8.1按实测结果列出。
 <!-- T2B_GATES_END -->
 
-### 8.1 续单静态与当前收尾：中断作废，未通过
+### 8.1 本轮新收尾（c900033验收返修）
 
-续单新增静态准入 **0**；原98个唯一键（生产35、测试辅助63）不变，policy总数3757；独立核验器新增准入0。三分析器、policy和既有生产数学源码逐字未变。静态0违例不是数值安全证明。
+旧 `t2b_dual_final_fast_20261026` 因只读policy钉子冲突中断，永久作废；原最小复现 `1 failed in 0.08s` 与[中断档案](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/INTERRUPTED_INVALID_RUN.json)保留。所有者已在c900033前修复只读测试，本代理没有修改独立侧文件。此处不再把已解除的历史阻塞当当前待办。
 
-**新快档 `t2b_dual_final_fast_20261026` 已因只读测试失败而中断作废，不是完整RED、更不是GREEN。** 根会话仅向自己启动的会话69279发送Ctrl-C，退出码1；已只读检查两个确切run名均无遗留进程。停机保存的进度为收集10269项、9830个call、1 failed、0 skipped，已记录耗时1003.109 s；这不是完整运行总耗时。原runner `TESTING` 状态已过期，以[中断作废记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/INTERRUPTED_INVALID_RUN.json)为准。**不存在最终pytest汇总末行，不补造、不拼接；全档 `t2b_dual_final_full_20261026` 目录未创建，全档与最终静态均未运行。** 此次中断前耗时已超过5分钟，不能宣称达到快档成本目标。
+<!-- T2B_ACCEPTANCE_GATES_BEGIN -->
+**本轮快档与全档均GREEN。** 快档10309项；全档16415项、固定四分片，均含已合入独立核验器测试。0 failed、0 skipped；收集/分派/插件收集/实际call节点多重集合相等；70个生产模块运行覆盖完整。两轮2673文件源清单相同，运行前后live和导出字节无变化。
 
-失败具名门：
+| 新run | 分片 | 原样末行 |
+|---|---:|---|
+| `t2b_acceptance_fast_02_20261026` | 1 | `10309 passed in 1844.12s (0:30:44)` |
+| `t2b_acceptance_full_02_20261026` | 1 | `4104 passed in 1936.59s (0:32:16)` |
+| `t2b_acceptance_full_02_20261026` | 2 | `4104 passed in 2610.53s (0:43:30)` |
+| `t2b_acceptance_full_02_20261026` | 3 | `4104 passed in 1746.74s (0:29:06)` |
+| `t2b_acceptance_full_02_20261026` | 4 | `4103 passed in 2118.91s (0:35:18)` |
 
-```text
-tests/test_t2b_v_static_admissions.py::test_t2b_v_static_analyzers_and_policy_are_byte_unchanged
-```
-
-| 核对项 | SHA256 / 结果 |
-|---|---|
-| 独立只读测试固定policy期望 | `621df0519431552c8cea255cf756f1bcb5c3acc90cb301ff0048649b1916cc5d` |
-| 续工5c0f80f基线及当前未改policy | `1610328c764c644c38d38ea11ffcc9fc5818370c44bd43d2a220ee3335437e6c` |
-| 基线与当前policy | 逐字节相同，3757项；3815884字节 |
-| 三个静态分析器 | 均与该只读测试的期望SHA一致 |
-
-[干净ZIP最小复现](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/baseline_reproduction.json)直接从2579文件的干净开工ZIP读取测试AST常量和policy字节，重现同一冲突；当前独立测试、policy和三个分析器均与开工ZIP逐字相同。因此根因是**合入基线已有的只读静态测试SHA不兼容**，不是本续单修改policy，也不是引理判定或拒收条件代码分歧；尚未发现数学反例。按所有者约束停止，不改独立测试、不倒退policy迁就哈希、不放宽门。
-
-具名最小复现已实际执行，[定向pytest原始记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/blocker_independent_policy_pin/pytest.txt)对应的原样末行：
+静态原样末行：
 
 ```text
-1 failed in 0.08s
+exact construction AST gate: 0 violation(s)
 ```
 
-复现命令（与记录一致；pytest禁缓存、显式basetemp）：
+快档含收集审计耗时 1861.186 s，全档 2807.664 s；快档超过5分钟成本目标，准确记录，不宣称达标。第一轮 `t2b_acceptance_fast_20261026` 在1800s预算到期时作废，最后进度10224/10309、0失败/跳过，无最终pytest末行；原文/源码已归档，见[作废记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_acceptance_fast_20261026/INVALID_RUN.json)。本轮 `_02` 从头重跑，不拼接；仅外部[预算适配器](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/run_extended_budget.py)把快档墙钟预算1800→3600s，测试、覆盖/多重集合/冻结审计、900s停滞守卫和全档10800s预算均不变，仓内运行器一字未改。独立侧文件89项与c900033开工字节相同；本轮新准入0，原98项仍为src35＋tests63、浮点汇点0。
 
-```powershell
-python -X utf8 -m pytest -q -p no:cacheprovider --basetemp D:/eab-evidence/reports/codex/T2b_evidence/tmp/independent_policy_pin_minimal tests/test_t2b_v_static_admissions.py::test_t2b_v_static_analyzers_and_policy_are_byte_unchanged
-```
-
-中断证据：[中断时源码清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/source_manifest.json) · [中断源码ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_source.zip) SHA `e0bff88dd7f8ce2305440d3cb87402f82fc0ea2cc10ed4a01858e740c854b8cd` · [中断日志原字节ZIP](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_dual_final_fast_20261026/interrupted_raw_bytes.zip) SHA `bde0a21e2e2f0a6c29f2754c27770a745358e8a95a85e39662ab057da78fd6f6` · [归档核对记录](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/interrupted_fast_archive.json)。2614个源码ZIP成员尺寸与SHA逐一核对；它明确命名为 `interrupted_source.zip`，**不是通过测试的源码归档**。不声称运行节点全集相等、模块覆盖完成、双轮源清单一致或全档通过。运行日志原字节先归档，再保存LF视图；不规范化parser原始样本。
-
-新静态预检的原样末行为 `exact construction AST gate: 0 violation(s)`，仅见[非最终静态预检](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/static_preflight/summary.json)；这是最终冻结前的专项预检，**不是未运行的最终全档静态门**，不能覆盖只读字节合同失败。所有者裁定后须用全新run名重跑快档与四分片全档；本次作废运行永不拼接为绿。
+[快档完整结果](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_acceptance_fast_02_20261026/summary.json) · [全档完整结果](file:///D:/eab-evidence/reports/codex/T2b_evidence/t2b_acceptance_full_02_20261026/summary.json) · [双轮及ZIP成员审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/final_pair_audit.json)。两轮各有 `tested_source.zip`、逐文件 `source_manifest.json`、保存原始日志字节的 `raw_runner_bytes.zip` 与LF视图映射；不重算测试或拼接日志。收尾后只回填报告/元数据，1532份非report受测文件仍逐字相同；这是字节导出验证，不冒称新鲜Git树。
+<!-- T2B_ACCEPTANCE_GATES_END -->
 
 ## 9. 工单订正清单
 
 1. 未发现足以改变笼定理接受集合/真值结论的最小反例；理论合同不改。
 2. `where/reason` 的具体字符串与对象级缺失键定位在引理中未编码，本实现另明示诊断约定；不改变条件编号。
-3. 工单许可逐站证明缺口准入；T2a旧门把整个追加尾段及总数固定，本单仅做上述机械计数/切片兼容，不删门、不放宽规则、不修改分析器。已询问所有者但未收到额外回复；此处按工单授权边界实施，不冒称另获来函批准。
+3. 工单许可逐站证明缺口准入；T2a旧门把整个追加尾段及总数固定，本单仅做上述机械计数/切片兼容，不删门、不放宽规则、不修改分析器。所有者2026-10-26已追认98条证明缺口准入、浮点汇点0；本轮仅补追认注释与CRLF恢复，不新增准入。
 
 4. 续单补充：`_cap` 在步数上限小于8时真实抛出未赋值局部变量异常；已按§3.1仅加两行资源守卫，前3红1绿、后67绿。既有≥8分支与诊断final_03的128步路径不变；不修改引理或迁就真值。
 
-5. 当前阻塞：只读独立静态门固定policy SHA与5c0f80f开工基线及当前未改字节均不符，干净ZIP复现见§8.1；这是合入基线已有的测试字节锚冲突，不是引理数学分歧。本代理不修订只读测试或policy，快档停止作废、全档未跑，等待所有者裁定。
+5. 历史policy钉子阻塞已由所有者解除；旧作废快档不恢复为绿。生产核验器无误但原测试集变异牙不足，本轮按97项核查补门；不通过修改生产代码或放宽独立侧来使结果一致。
+6. 证据级文本入口与内存dict便利入口明确分离；7份原逃逸候选保留 `PROPOSAL_UNVERIFIED` 产生时状态，以旁置核验记录给出实际验证，不改候选字节。
 
 ## 10. 建议并入设计的新增清单
 
@@ -393,15 +440,19 @@ python -X utf8 -m pytest -q -p no:cacheprovider --basetemp D:/eab-evidence/repor
 
 [续单AST接口清单](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/continuation_api_inventory.json)记录 `ProposalTrace`、`pair_margin`、`closest_cover`及其余诊断函数、类字段、字典键与状态字面量；每项由当前受测源码AST抽取。`source=诊断`、`proposal_status`、`last_failure_per_stage`、`closest_cover`、法向平方/精确重叠分子、ρ容量包络与比值均是诊断字段，不是新的笼条件或求解器公共状态。现有 `_cap` 低预算只使用原有 `SearchLimit/UNPROVED` 出口，不增加数学状态。原 `api_inventory.json` 明确保留为第一单交付清单；设计正本未改。
 
+### 10.2 验收返修新增项
+
+本轮不增加生产函数、数学状态或准入；新增内容仅为具名测试与外置核验记录。旁记schema `t2b-escape-verification-record-1` 的主要字段为 `delta/verdict/candidate_status_preserved/candidate_sha256/instance_sha256/provenance.source_sha256/production/independent_finite_oracle/segment_counts/ray_prefix_counts/all_pose_endpoints_equal/all_pair_semantics_equal/diagnostic_timing_seconds/scope_note/audit_file`。`VERIFIED_ESCAPE` 为已核验证据记录，原候选 `PROPOSAL_UNVERIFIED` 不改；`independent_finite_oracle.infinite_ray_verified=false` 明确独立范围。返修汇总 `t2b-acceptance-repair/1`、变异KILLED/SURVIVED和运行GREEN仅为验收记录，不是新的内核状态。设计正本仍未修改。
+
 ## 11. 遗留与最终状态
 
 <!-- T2B_RESIDUAL_BEGIN -->
-1. 原25份与新增2份笼文件双核验、双方语料拒收代码、实例与逃逸专项复核已完成；10例及d07四内点P1诊断已补齐。未取得ρ=0屏障处明确未定义比值，不强行判定原因。
-2. **当前硬阻塞**是§8.1只读独立测试的policy字节锚冲突；新快档已有1失败后中断作废，无最终pytest末行；全档及最终静态未跑。等待所有者裁定后必须新run名重跑，禁止拼接或以旧绿替代。
-3. 所有者新鲜Git树复现及Claude安排的一路独立对抗核查尚未完成；本次没有获得完整字节导出绿，更不冒称已完成里程碑验收。
-4. 原扫描k=8、诊断14点和所有提议均为有限资源；两份新增封口证书只提高两例下界，不证明最优或临界值等号。固定Γ/见证余量不等于所有屏障最优值，协作式限时不保证抢断昂贵调用。
-5. 凸耳任意δ实例无独立构造器；独立逃逸oracle只覆盖有限段/尾前缀，无限尾射线仍由生产精确核验器接受。这些信任边界不因双核验笼证书而消失。
-6. 未commit/push，未改既有生产数学API、89项独立只读文件、引理、C++、policy或三个分析器；本地保存不是远程备份。本次仅回填报告和机器状态，整体明确为BLOCKED。完整交付链接见[交付清单](file:///D:/eab-wt/cx-e2/reports/codex/T2b_evidence/artifacts.md)，范围/净增/编码/SHA以[续单交付文件审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/resume_5c0f80f_20261026/resume_delivery_audit.json)为准；文件审计本身不等于测试通过。
+1. 原25份与新增2份笼文件双核验、双方语料/实例/逃逸专项与14点诊断已完成；最终科学表已合并两例提高下界，仍不能声称临界值等号。
+2. 本轮97项语义变异82杀/15允许存活、新快/全档与静态均完成；旧阻塞已解除，旧中断轮仍作废，不拼接。
+3. 所有者已给出四路验收结论，本轮针对变异牙返修；本代理仍只做字节导出复现，不冒称新鲜Git树，也不自签所有者对返修的最终验收。
+4. 诊断为有限资源/固定Γ见证；缺失ρ=0屏障时比值未定义。T2c依D4先改善提议器，不从搜索失败推出可逃或不可逃。
+5. 凸耳无独立生成器，验收时已按支撑距离与竖条剖分独立复核；本代理逃逸oracle的有限段/尾前缀边界与所有者独立路径验收分列，不混称同一验证。
+6. 未作Git写，未改src、独立侧、引理、C++或三个分析器；policy仅按本轮明确裁定恢复CRLF。范围、净增与逐文件SHA见[本轮交付审计](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/delivery_audit.json)及[逐件SHA清单](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/artifact_manifest.json)；累计仓内净增小于5MB。本地保存不等于远程备份。
 <!-- T2B_RESIDUAL_END -->
 
-T2B_BLOCKED：只读独立静态门钉住的policy SHA与5c0f80f基线及当前未改policy不符；新快档已中断作废、全档未运行，等待所有者裁定。
+T2B_DONE

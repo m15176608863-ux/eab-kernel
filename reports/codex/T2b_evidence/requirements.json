@@ -1,10 +1,10 @@
 {
   "schema": "t2b-p0-handoff-1",
   "production_side_verified": true,
-  "overall_status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
+  "overall_status": "T2B_DONE",
   "p0": {
-    "verifier": "Unchanged production verifier; completed dual-verifier and focused checks; current final repository gates incomplete",
-    "proposer": "Finite proposals; two-line low-cap-budget repair has focused before/after tests, not complete current final gates",
+    "verifier": "Unchanged production verifier; final fast/full and dual/mutation semantic gates passed",
+    "proposer": "Finite proposer; prior low-cap-budget repair covered by current final fast/full",
     "truth": {
       "cases": 8,
       "accepted_cages": 5,
@@ -47,60 +47,54 @@
           "certificate_directory": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d08",
           "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
         }
-      ]
+      ],
+      "final_rows_merged": true
     },
     "mutations": {
-      "internal_source_named_tests": 24,
-      "forgeries": 39,
-      "independent_forgery_crosscheck": "complete; all compared refusal condition codes equal"
+      "original_internal_named_tests": 24,
+      "forgeries": 66,
+      "new_forgeries": 27,
+      "mutant97_total": 97,
+      "semantic_killed": 82,
+      "allowed_survivors": [
+        "H01",
+        "R02",
+        "R05",
+        "R10",
+        "P05",
+        "C03",
+        "C10",
+        "K01",
+        "K04",
+        "K05",
+        "V103",
+        "V104",
+        "V206",
+        "V508",
+        "V601"
+      ],
+      "unexpected_survivors": []
     },
     "final_tests": {
-      "complete": false,
-      "valid_completed_run": false,
-      "overall_pass": false,
-      "fast_status": "INVALIDATED_INTERRUPTED_AFTER_READONLY_TEST_FAILURE",
-      "fast_run": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\t2b_dual_final_fast_20261026",
-      "partial_progress": {
-        "complete": false,
-        "elapsed_seconds": 1003.1089999999385,
-        "collected": 10269,
-        "calls": 9830,
-        "failed": 1,
-        "skipped": 0,
-        "current": "tests/test_tia2d_export.py::test_formal_single_body_roles_free_only_the_named_body[3-TIA-G4]",
-        "started_epoch": 1792948810.9530122,
-        "last_event_epoch": 1792948810.9530122
-      },
-      "fast_final_pytest_last_line": null,
-      "full_status": "NOT_RUN",
-      "full_run_planned": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\t2b_dual_final_full_20261026",
-      "full_count": null,
-      "full_final_pytest_last_lines": null,
-      "node_multisets_equal": null,
-      "runtime_module_coverage_complete": false,
-      "source_manifests_equal": null,
-      "final_static_status": "NOT_RUN",
-      "minimal_reproduction_last_line": "1 failed in 0.08s",
-      "resume_rule": "Owner ruling/correction required; new fast/full run names; never splice interrupted logs"
+      "fast_count": 10309,
+      "full_count": 16415,
+      "skipped": 0,
+      "failed": 0,
+      "node_multisets_equal": true,
+      "runtime_module_coverage_complete": true,
+      "new_run_names": [
+        "t2b_acceptance_fast_02_20261026",
+        "t2b_acceptance_full_02_20261026"
+      ]
     },
     "static": {
+      "last_line": "exact construction AST gate: 0 violation(s)",
       "added_unique_admissions": 98,
       "production": 35,
       "tests": 63,
       "rounded_sink_admissions": 0,
-      "historical_original_delivery_last_line": "exact construction AST gate: 0 violation(s)",
-      "status": "NOT_RUN_FINAL",
-      "last_line": null,
-      "original_added_unique_admissions_scope": "Original production delivery: 98 unique keys, 35 src plus 63 test helpers",
-      "continuation_added_unique_admissions": 0,
-      "policy_total_unique_entries": 3757,
-      "independent_added_admissions": 0,
-      "preflight_only": {
-        "exit_code": 0,
-        "last_line": "exact construction AST gate: 0 violation(s)",
-        "seconds": 181.23383779998403,
-        "purpose": "preflight; final full run remains required"
-      }
+      "new_this_repair": 0,
+      "owner_ratification": "2026-10-26"
     }
   },
   "p1": {
@@ -109,9 +103,7 @@
     "diagnostic_missing_zero_shrink_barrier_ratio": "undefined, not fabricated or replaced by another angle"
   },
   "owner_actions": [
-    "Rule on immutable independent static-test policy SHA incompatibility already present in clean intake",
-    "After authorized correction/ruling, rerun complete fast and four-shard full gates with new names; do not splice invalid run",
-    "Arrange fresh Git tree reproduction and one independent adversarial milestone review"
+    "Owner acceptance of this repair and fresh Git tree reproduction; no agent Git writes."
   ],
   "scientific_rescan_performed_by_this_audit": false,
   "original_delivery_record": {
@@ -175,8 +167,8 @@
     ],
     "scientific_rescan_performed_by_this_audit": false
   },
-  "production_side_verified_scope": "Original delivery and completed focused mathematical checks only; not a current whole-repository pass",
-  "current_whole_repository_verified": false,
+  "production_side_verified_scope": "Current final fast/full byte exports plus targeted dual/corpus/mutation checks; not fresh Git checkout.",
+  "current_whole_repository_verified": true,
   "continuation": {
     "original_cage_files": 25,
     "supplementary_cage_files": 2,
@@ -326,7 +318,7 @@
       }
     ]
   },
-  "blocker": {
+  "resolved_historical_blocker": {
     "status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
     "baseline_head": "5c0f80f4c4eea9406c672dd28954eb1722961fbe",
     "failing_nodeid": "tests/test_t2b_v_static_admissions.py::test_t2b_v_static_analyzers_and_policy_are_byte_unchanged",
@@ -494,6 +486,18 @@
     "current_whole_repository_pass_claim": false,
     "source_archive_member_integrity_checked": true,
     "completed_runtime_module_coverage_claim": false,
-    "source_manifests_fast_full_equal": null
+    "source_manifests_fast_full_equal": null,
+    "resolution": "Owner fixed independent pin before clean c900033; old interrupted run remains invalid."
+  },
+  "acceptance_repair": {
+    "baseline": "c900033aa809170bb0cbb5d0dbe33b439cd187e7",
+    "new_forgeries": 27,
+    "new_forgeries_dual_mismatches": 0,
+    "evidence_input": "JSON text only; independent load_json",
+    "static_new_admissions": 0,
+    "mutant97": "82 semantic killed, 15 owner-allowed survivors, 0 unexpected",
+    "final_runs": "both GREEN; new names; no splicing",
+    "escape_sidecars": 7,
+    "source_and_independent_unchanged": true
   }
 }

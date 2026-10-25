@@ -1,5 +1,5 @@
 {
-  "source": "certificates/science_02/summary.json",
+  "source": "science_02 original frozen JSON plus diagnostic_03 d03/d08 accepted improvements",
   "acceptance": "production_and_independent_verified",
   "complete_scan": true,
   "rows": [
@@ -38,15 +38,17 @@
       "element": "square",
       "wall_erosion": 0,
       "delta_disk": "63/256",
-      "delta_cage": "63/256",
+      "delta_cage": "1/4",
       "delta_escape": "21/50",
       "delta_translation_star": "3/7",
-      "width": "1113/6400",
-      "relative_width_to_translation_star": "2597/6400",
-      "intervals": 2,
-      "uses_caps": false,
+      "width": "17/100",
+      "relative_width_to_translation_star": "119/300",
+      "intervals": 4,
+      "uses_caps": true,
       "acceptance": "production_and_independent_verified",
-      "outside_bracket": "UNPROVED"
+      "outside_bracket": "UNPROVED",
+      "certificate_directory": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d03",
+      "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
     },
     {
       "case_id": "d04",
@@ -113,15 +115,17 @@
       "element": "octagon",
       "wall_erosion": 1,
       "delta_disk": "25/256",
-      "delta_cage": "25/256",
+      "delta_cage": "13/128",
       "delta_escape": "11377/51200",
       "delta_translation_star": "12/49",
-      "width": "6377/51200",
-      "relative_width_to_translation_star": "312473/614400",
+      "width": "6177/51200",
+      "relative_width_to_translation_star": "100891/204800",
       "intervals": 2,
-      "uses_caps": false,
+      "uses_caps": true,
       "acceptance": "production_and_independent_verified",
-      "outside_bracket": "UNPROVED"
+      "outside_bracket": "UNPROVED",
+      "certificate_directory": "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\certificates\\diagnostic_03\\d08",
+      "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
     },
     {
       "case_id": "k01",
@@ -184,7 +188,9 @@
       "source": "diagnostics/final_03; supplementary result, original science_02 unchanged"
     }
   ],
-  "historical_rows_frozen_except_current_acceptance": true,
-  "work_order_status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
-  "acceptance_scope": "Individual mathematical cage certificates; not whole-repository gate acceptance"
+  "historical_rows_frozen_except_current_acceptance": false,
+  "work_order_status": "T2B_DONE",
+  "acceptance_scope": "Individual mathematical cage certificates; not whole-repository gate acceptance",
+  "final_rows_merged": true,
+  "complete_scan_scope": "Original science_02 scan only; diagnostic_03 improves two final rows without rescanning frozen evidence."
 }

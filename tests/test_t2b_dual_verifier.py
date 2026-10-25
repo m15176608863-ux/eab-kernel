@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+import t2b_independent_cage_verifier as independent_module
 
 from eab.kernel2d.se2_cage import verify_se2_cage
 from t2b_cage_proposer import scientific_instance
@@ -59,6 +60,37 @@ def test_all_five_truth_and_ten_table_lower_cages_have_dual_acceptance(case):
         certificate = json.loads(certificate_path.read_text("utf-8"))
         assert certificate["chain"]["kind"] == "capped"
         assert len(certificate["caps"]) == 2
+
+
+@pytest.mark.parametrize("kind,expected_count", [("truth", 5), ("lower", 10)])
+def test_truth_and_science_rechecks_use_json_text_entry(monkeypatch, kind, expected_count):
+    """Spy on real replays, not source spelling or an already decoded dict."""
+    production_original = verify_se2_cage
+    loader_original = independent_module.load_json
+    production_calls = []
+    independent_loads = []
+
+    def production_text_only(instance, certificate):
+        assert type(instance) is str and type(certificate) is str
+        production_calls.append((instance, certificate))
+        return production_original(instance, certificate)
+
+    def independent_raw_loader(path):
+        independent_loads.append(path)
+        return loader_original(path)
+
+    monkeypatch.setitem(globals(), "verify_se2_cage", production_text_only)
+    monkeypatch.setattr(independent_module, "load_json", independent_raw_loader)
+    expected_paths = []
+    for case in CASES:
+        if case["kind"] != kind:
+            continue
+        instance_path = DATA / case["files"]["instance"]["path"]
+        certificate_path = DATA / case["files"]["certificate"]["path"]
+        expected_paths.extend((instance_path, certificate_path))
+        test_all_five_truth_and_ten_table_lower_cages_have_dual_acceptance(case)
+    assert len(production_calls) == expected_count
+    assert independent_loads == expected_paths
 
 
 @pytest.mark.parametrize("name,condition", [

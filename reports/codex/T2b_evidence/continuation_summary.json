@@ -1,6 +1,6 @@
 {
   "schema": "eab.t2b.continuation-summary/1",
-  "status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
+  "status": "HISTORICAL_CONTINUATION_BLOCKER_RESOLVED_BY_OWNER",
   "baseline_head": "5c0f80f4c4eea9406c672dd28954eb1722961fbe",
   "facts": {
     "original_cage_files": 25,
@@ -319,7 +319,8 @@
     "current_whole_repository_pass_claim": false,
     "source_archive_member_integrity_checked": true,
     "completed_runtime_module_coverage_claim": false,
-    "source_manifests_fast_full_equal": null
+    "source_manifests_fast_full_equal": null,
+    "resolution": "Owner correction merged before c900033; this historical interrupted run remains invalid."
   },
   "current_whole_repository_pass_claim": false,
   "final_runs_complete": false,
@@ -336,5 +337,7 @@
     "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\blocker_independent_policy_pin\\summary.json": "f24c7c5104484291400ab58030941e10be8bc248e0842313f6b23f0b4f301602",
     "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\resume_5c0f80f_20261026\\blocker_independent_policy_pin\\baseline_reproduction.json": "ff52723aa1426124d2b50359d21e08fbf680175fd29ec8dbe0473b0b98fc3f8c",
     "D:\\eab-evidence\\reports\\codex\\T2b_evidence\\t2b_dual_final_fast_20261026\\INTERRUPTED_INVALID_RUN.json": "af8d792cd4903cb3b336501e4426c942fa9fb68b50afcee1f4f8c845372a1c3c"
-  }
+  },
+  "historical_status": "BLOCKED_IMMUTABLE_TEST_POLICY_SHA",
+  "current_status_reference": "requirements.json / acceptance_repair_summary.json"
 }

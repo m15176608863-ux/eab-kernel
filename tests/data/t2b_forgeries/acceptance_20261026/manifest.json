@@ -1,0 +1,522 @@
+{
+  "schema": "eab.t2b.acceptance-forgeries/1",
+  "owner_intake_date": "2026-10-26",
+  "source_directory": "D:/eab-evidence/reports/codex/T2b_evidence/acceptance_inputs_20261026/forgeries",
+  "source_role": "owner-supplied non-author mutation review",
+  "repository_byte_conversion": "CRLF -> LF only; JSON tokens otherwise unchanged",
+  "cases": [
+    {
+      "case_id": "A01",
+      "directory": "F_A01_radius_bound_first_piece_only",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "4f1ec2a982d614722754dfeef295e1d00a061173e8ff7a8163388fa1217f7b69",
+          "repository_sha256": "ab2e90dace6c8bb925f85d973625a5e64c37fa3773038da9c79dfa5e197c5b5a",
+          "source_bytes": 82819,
+          "repository_bytes": 75389
+        }
+      }
+    },
+    {
+      "case_id": "B0x",
+      "directory": "F_B0x_plugged_obstacles",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "ed8da27cea70a259966418e473a1540dd66c57a61c37efd0f89823791f899bd1",
+          "repository_sha256": "0eee854572224b1aa63660595b0b2044e6f8552a127dd8aa171b72732cb70392",
+          "source_bytes": 11478,
+          "repository_bytes": 10336
+        }
+      }
+    },
+    {
+      "case_id": "H12",
+      "directory": "F_H12_unknown_piece_kind_skips_V1",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "8725aeeda3b6ab3cc4c575fd72943c77f4c374ebca90ab717adb614a6364bc51",
+          "repository_sha256": "8f9bf6e21ab8b3d36278d6a0df0d527576089d290bd6f44d852f1733ae56d5c2",
+          "source_bytes": 24693,
+          "repository_bytes": 22323
+        }
+      }
+    },
+    {
+      "case_id": "H13",
+      "directory": "F_H13_unknown_ref_tag",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "9d26c4d46f99c98a002e2a3f05b5e9da2cb6e9e121a602c1398225c59dd20bf0",
+          "repository_sha256": "06cffc645858cbd23e3ef646aa13eb4744a22c3c962aac2834d227915d8c0bdf",
+          "source_bytes": 1142,
+          "repository_bytes": 1012
+        },
+        "cert.json": {
+          "source_sha256": "762b9c8c9162cfc4a2421bfc57793a5e9e99797e14d1c05d784777aa917d7054",
+          "repository_sha256": "63eeded65dc7b2fb63ced924fb8c7b84155191c94098b8a44dd5574ee22d8899",
+          "source_bytes": 133203,
+          "repository_bytes": 121319
+        }
+      }
+    },
+    {
+      "case_id": "K03",
+      "directory": "F_K03_closed_chain_short_span",
+      "expected_condition": "CHAIN",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "1246d74b061af38e21c1300423dfb609bdc5fc25e95e9370e46c80d8012fbfc6",
+          "repository_sha256": "b637ec3f1db40acdc7ace5c94c67168922df33ed0d2b577094b2b629763faa4f",
+          "source_bytes": 60168,
+          "repository_bytes": 54534
+        }
+      }
+    },
+    {
+      "case_id": "K06",
+      "directory": "F_K06_missing_transition_links",
+      "expected_condition": "CHAIN",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "0f7822afdb2a1e13e7a2b2d7e74b1cca673737b8b18f1d241ba270e0edffaae1",
+          "repository_sha256": "bd4516b529da3cf32541da2ae9d307fde3ce4dedc98a31e0c1061e377c195b57",
+          "source_bytes": 135030,
+          "repository_bytes": 122401
+        }
+      }
+    },
+    {
+      "case_id": "K07",
+      "directory": "F_K07_seam_link_omitted",
+      "expected_condition": "CHAIN",
+      "files": {
+        "instance.json": {
+          "source_sha256": "9d26c4d46f99c98a002e2a3f05b5e9da2cb6e9e121a602c1398225c59dd20bf0",
+          "repository_sha256": "06cffc645858cbd23e3ef646aa13eb4744a22c3c962aac2834d227915d8c0bdf",
+          "source_bytes": 1142,
+          "repository_bytes": 1012
+        },
+        "cert.json": {
+          "source_sha256": "e9889cedd059e5e15cda9b54273ead716f2a38d533b9ebaecedb5944c7d30c57",
+          "repository_sha256": "2359aebb750e0ee4d8ba2e9e53fc6febdbbca05931404231c65e561cc5a3b1cd",
+          "source_bytes": 587082,
+          "repository_bytes": 536379
+        }
+      }
+    },
+    {
+      "case_id": "K08",
+      "directory": "F_K08_link_first_polyline_unbound",
+      "expected_condition": "CHAIN",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "75f2d23d484944c3ab4bb3d6b584da45b19b60764f701447601cb2f7ace30dd8",
+          "repository_sha256": "e0e823672fb81f8e46275b656d131bbbb2a87575012191dfe9a066e60dc0dd39",
+          "source_bytes": 142845,
+          "repository_bytes": 129502
+        }
+      }
+    },
+    {
+      "case_id": "K10",
+      "directory": "F_K10_seam_bound_to_last_interval",
+      "expected_condition": "CHAIN",
+      "files": {
+        "instance.json": {
+          "source_sha256": "9d26c4d46f99c98a002e2a3f05b5e9da2cb6e9e121a602c1398225c59dd20bf0",
+          "repository_sha256": "06cffc645858cbd23e3ef646aa13eb4744a22c3c962aac2834d227915d8c0bdf",
+          "source_bytes": 1142,
+          "repository_bytes": 1012
+        },
+        "cert.json": {
+          "source_sha256": "6e25e0a76dc8c3917a6250727a830c5885a7f15ac437ba656ab3f7e24aeed6c8",
+          "repository_sha256": "3da31688ff9595cb51917c0b665c19ff8e161bea121882d8f0950c2a33b3931e",
+          "source_bytes": 595358,
+          "repository_bytes": 543914
+        }
+      }
+    },
+    {
+      "case_id": "K11",
+      "directory": "F_K11_cap_N_bound_to_first_loop",
+      "expected_condition": "CHAIN",
+      "files": {
+        "instance.json": {
+          "source_sha256": "9d26c4d46f99c98a002e2a3f05b5e9da2cb6e9e121a602c1398225c59dd20bf0",
+          "repository_sha256": "06cffc645858cbd23e3ef646aa13eb4744a22c3c962aac2834d227915d8c0bdf",
+          "source_bytes": 1142,
+          "repository_bytes": 1012
+        },
+        "cert.json": {
+          "source_sha256": "6f2cb8454f5bd1965a101fba47832d8c19ee9bbdf523d6961a0062a993bca572",
+          "repository_sha256": "dcf567c52c7a3542b512aac70d8faada80bc4dc5fe33ddb200966597af9b4bb9",
+          "source_bytes": 156400,
+          "repository_bytes": 142802
+        }
+      }
+    },
+    {
+      "case_id": "P02",
+      "directory": "F_P02_wider_equal_area_piece",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "d1b93d8d8369de26797280be85eb122b2fe2fce0b4284e84e4f2f8aa9bdfaf6d",
+          "repository_sha256": "a5c60801b6987d365ca4974b121d7a5f3920c87a04d1b0a4927d99012b36cc3e",
+          "source_bytes": 7471,
+          "repository_bytes": 6720
+        }
+      }
+    },
+    {
+      "case_id": "P03",
+      "directory": "F_P03_overlapping_pieces_hide_pin",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "90070b36653143f54562a0eee42c76f0c10f8fb6fcf906f5c942ae616799ad8d",
+          "repository_sha256": "155d0d2beddae373f08cffcb0d5b4161d8158742640630f3fc89b9e40be38102",
+          "source_bytes": 888,
+          "repository_bytes": 776
+        },
+        "cert.json": {
+          "source_sha256": "0388fa8345de64dd3bfec2160d587bc3ace210e8f9b44fd5605410fdcd971219",
+          "repository_sha256": "e8803047ec3da915f11c3359709ecb94f93b10e4ad643e47548bcfa836d459da",
+          "source_bytes": 5087,
+          "repository_bytes": 4538
+        }
+      }
+    },
+    {
+      "case_id": "P04",
+      "directory": "F_P04_partition_misses_pinned_corner",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "90070b36653143f54562a0eee42c76f0c10f8fb6fcf906f5c942ae616799ad8d",
+          "repository_sha256": "155d0d2beddae373f08cffcb0d5b4161d8158742640630f3fc89b9e40be38102",
+          "source_bytes": 888,
+          "repository_bytes": 776
+        },
+        "cert.json": {
+          "source_sha256": "fc066c2390caad01d149c22013e720168e3683a7ae8f93a836f5c0a8b3788634",
+          "repository_sha256": "178a45fd554cbff2fb0bca3f1b6219ddc9bcf8c2754bdeaedc85256845e305ce",
+          "source_bytes": 4943,
+          "repository_bytes": 4412
+        }
+      }
+    },
+    {
+      "case_id": "P06",
+      "directory": "F_P06_out_of_range_obstacle_piece",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "8624846ee30e6c9f7b459e55c3e8129cbb2bb8392cc34b87c606f6b923f9a1ab",
+          "repository_sha256": "e49fc5c3dc77d9cc061304e52beacbd086dc6b7dc105a52bd2ff2934253465b8",
+          "source_bytes": 11322,
+          "repository_bytes": 10198
+        }
+      }
+    },
+    {
+      "case_id": "R03",
+      "directory": "F_R03_bowtie_obstacle_lobe_uncovered",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "122c06b66b5cd37ec9272c4bd5a6c0565fb6dcf51955b1e32bd0253224195bd8",
+          "repository_sha256": "1cd1109d658c90e7518b7a0c5b822121e6b1abe450eabab52966a9c6ee62d315",
+          "source_bytes": 888,
+          "repository_bytes": 776
+        },
+        "cert.json": {
+          "source_sha256": "12071c328a472448d9ca933e37e093e47a7379d02ee3e5b4f707dee6b816a52c",
+          "repository_sha256": "ee2116529d3e16d3bb0f83d975c7e399d1079bbda320d4a2844e3ebf11a82bd2",
+          "source_bytes": 4900,
+          "repository_bytes": 4373
+        }
+      }
+    },
+    {
+      "case_id": "R06",
+      "directory": "F_R06_nonconvex_kernel_false_sat",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "76b16ff4c72bf9973ba52f443b4d06900ef64630e1f6ad82aeee8c1294c94f04",
+          "repository_sha256": "40d8cc80ce9b8b70b54379e9ad67ea46a9d9793e97276ad539a453d76ecdf2cd",
+          "source_bytes": 1244,
+          "repository_bytes": 1096
+        },
+        "cert.json": {
+          "source_sha256": "743b88eeb33d0efd164db0c1a4f5099f6f3b547eedf7a8680c34c86020331018",
+          "repository_sha256": "cb1b66695b8c78673242116c0a67eeae098d7914c56eaf79a875ae5e1d8c75cf",
+          "source_bytes": 519678,
+          "repository_bytes": 471070
+        }
+      }
+    },
+    {
+      "case_id": "R07",
+      "directory": "F_R07_doubly_traversed_half_pin",
+      "expected_condition": "V0",
+      "files": {
+        "instance.json": {
+          "source_sha256": "c8f3f55f127c820bd41380557f09f5bf4e4c39d3f3f700bb5a3e50e7f9acef47",
+          "repository_sha256": "b9738a724d89c7fc8277087bb30774ae167e4e46bfd1abd4ba5e0bb95d16791c",
+          "source_bytes": 888,
+          "repository_bytes": 776
+        },
+        "cert.json": {
+          "source_sha256": "1a27a25bac59424716a6675b15a3e0e0d816be8cd59c46ef3e67b2d55cd13f4e",
+          "repository_sha256": "7cfb07ee3efccd81290d83288365a2a564c98d6cde001708fdefe7f74fab5df2",
+          "source_bytes": 5101,
+          "repository_bytes": 4554
+        }
+      }
+    },
+    {
+      "case_id": "V201",
+      "directory": "F_V201_kernel_outside_body",
+      "expected_condition": "V2",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "ccc007616b31e06ee3734e98b234d6515c2fba8bd4f0cc34cec0041f50f43560",
+          "repository_sha256": "68341b725334ce98fa7c0494d514165111f63a8855636c880aa0fb5b640bd5ea",
+          "source_bytes": 5630,
+          "repository_bytes": 5074
+        }
+      }
+    },
+    {
+      "case_id": "V204",
+      "directory": "F_V204_kernel_first_vertex_only",
+      "expected_condition": "V2",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "06479df37f42d50d730e8df8c9c2891ed139cc08888d4726ce65bb2bca72520e",
+          "repository_sha256": "cd006600d5d57df0773332a3a1510c283431e8aa4e5a12024e9ef00f54c5aa8f",
+          "source_bytes": 27151,
+          "repository_bytes": 24573
+        }
+      }
+    },
+    {
+      "case_id": "V302",
+      "directory": "F_V302_polygon_outside_circle",
+      "expected_condition": "V3",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "5549f492c309a38013bd73c51b5045362dc57c3dda80cb56e1fe2dca8de07d27",
+          "repository_sha256": "a86f3aa004c9961230f97b89e0a896da0d9bee36979ac34c9394ed488efb428e",
+          "source_bytes": 12153,
+          "repository_bytes": 10962
+        }
+      }
+    },
+    {
+      "case_id": "V401",
+      "directory": "F_V401_segment_end_unchecked",
+      "expected_condition": "V4",
+      "files": {
+        "instance.json": {
+          "source_sha256": "1d5396354bfc5ca46a4671c68c90aa1a055e316e7264c2ce127b930368b9654f",
+          "repository_sha256": "c404ba9406a2c1df7b9e43634d545dd0abb2be391ac4a89b01595ee1645b2418",
+          "source_bytes": 950,
+          "repository_bytes": 838
+        },
+        "cert.json": {
+          "source_sha256": "4fa6bea9e531298356f2312a1710b8fb2726007f37d2bb1866646c3680be645d",
+          "repository_sha256": "62daa8bfe53fe145e8f8103bdc583fb558677cf2710c622499a7ebd269dce087",
+          "source_bytes": 7199,
+          "repository_bytes": 6476
+        }
+      }
+    },
+    {
+      "case_id": "V403",
+      "directory": "F_V403_touching_chimney_triangles",
+      "expected_condition": "V4",
+      "files": {
+        "instance.json": {
+          "source_sha256": "d1f3b7bba15a099b5b102dbcc0d2c61e751e23e4a42fe139934ef53c31c02f3a",
+          "repository_sha256": "d15c9291bb1cd7e70661bdcfc4abb75ac148171904aa539f8ec0f6f8584130e8",
+          "source_bytes": 936,
+          "repository_bytes": 824
+        },
+        "cert.json": {
+          "source_sha256": "847217548510ad0d1c42a5eca77047c2969bf32a16eb94089a2d3d1d433f9b13",
+          "repository_sha256": "615e1e3cf918579c4f5aa2b8d2ad69a21f4da1013e5c6742e93995842e246178",
+          "source_bytes": 11301,
+          "repository_bytes": 10172
+        }
+      }
+    },
+    {
+      "case_id": "V501",
+      "directory": "F_V501_cap_checks_first_polyline_only",
+      "expected_condition": "V5",
+      "files": {
+        "instance.json": {
+          "source_sha256": "62148d79822b9d044dae55b7738f052861647e8d61761d125406a9c02c1997a2",
+          "repository_sha256": "9bf950405ec3956e528a4063651df456da404c1a2dc3d0146cdf61a4bfbe57b7",
+          "source_bytes": 944,
+          "repository_bytes": 832
+        },
+        "cert.json": {
+          "source_sha256": "e5ab6557765e11e8489095b2e9c8614c9c74c0593266b28483c295063095b01c",
+          "repository_sha256": "cdaabb1a6f518b4ed4db52e9433298f578607ac6aed345c311695b9deeb8f318",
+          "source_bytes": 10791,
+          "repository_bytes": 9733
+        }
+      }
+    },
+    {
+      "case_id": "V502",
+      "directory": "F_V502_cap_quad_drops_corner",
+      "expected_condition": "V5",
+      "files": {
+        "instance.json": {
+          "source_sha256": "d8848cc15503a61003216a12bca6a4fd883c6bc578e913c828aa1f55eed2f88d",
+          "repository_sha256": "0ecc71a58e56ad4a0bedb7597b18348c2a9b3ab199fab9b42e6285933c7084b6",
+          "source_bytes": 624,
+          "repository_bytes": 548
+        },
+        "cert.json": {
+          "source_sha256": "843ea0560f1f16bfab0e3807b1105446b82586a911daed54cc6c022b2988dd13",
+          "repository_sha256": "95595fef6766bec49b4dbfcebdcca9f2cb08b44f98ded7445e55fd881c1be27f",
+          "source_bytes": 4486,
+          "repository_bytes": 4032
+        }
+      }
+    },
+    {
+      "case_id": "V503",
+      "directory": "F_V503_cap_N_left_swapped",
+      "expected_condition": "V5",
+      "files": {
+        "instance.json": {
+          "source_sha256": "9d26c4d46f99c98a002e2a3f05b5e9da2cb6e9e121a602c1398225c59dd20bf0",
+          "repository_sha256": "06cffc645858cbd23e3ef646aa13eb4744a22c3c962aac2834d227915d8c0bdf",
+          "source_bytes": 1142,
+          "repository_bytes": 1012
+        },
+        "cert.json": {
+          "source_sha256": "af396a935ddf0a4be5e2b1d0b471502196d186533ec8f343c5cd3376c2ee53fa",
+          "repository_sha256": "42b0dcb9b1aa3ed5b23b8b9a30375a640f0c7fd05465bc13b9e35124e43014eb",
+          "source_bytes": 129747,
+          "repository_bytes": 117863
+        }
+      }
+    },
+    {
+      "case_id": "V505",
+      "directory": "F_V505_cap_N_uses_I1_right",
+      "expected_condition": "V5",
+      "files": {
+        "instance.json": {
+          "source_sha256": "9d26c4d46f99c98a002e2a3f05b5e9da2cb6e9e121a602c1398225c59dd20bf0",
+          "repository_sha256": "06cffc645858cbd23e3ef646aa13eb4744a22c3c962aac2834d227915d8c0bdf",
+          "source_bytes": 1142,
+          "repository_bytes": 1012
+        },
+        "cert.json": {
+          "source_sha256": "3e88a986224d47e48190aaf1f5ec674c8d1b13b3195be1e944dd80379b54d1a5",
+          "repository_sha256": "b4b18cc59662adb21050e739dad98536dc61710aaefe30862ae8ad0b913f4e00",
+          "source_bytes": 130131,
+          "repository_bytes": 118247
+        }
+      }
+    },
+    {
+      "case_id": "V603",
+      "directory": "F_V603_start_loop_zero_winding",
+      "expected_condition": "V6",
+      "files": {
+        "instance.json": {
+          "source_sha256": "9d26c4d46f99c98a002e2a3f05b5e9da2cb6e9e121a602c1398225c59dd20bf0",
+          "repository_sha256": "06cffc645858cbd23e3ef646aa13eb4744a22c3c962aac2834d227915d8c0bdf",
+          "source_bytes": 1142,
+          "repository_bytes": 1012
+        },
+        "cert.json": {
+          "source_sha256": "4b1aee85e16c4865e865f1d71376bdc3b4177caac3639bfd8959a833c2e4fd49",
+          "repository_sha256": "9c9f9e89b973fc20ba2026dd1c864d6dafbc51761986dbc4c6260b8f7c90845a",
+          "source_bytes": 242681,
+          "repository_bytes": 221500
+        }
+      }
+    }
+  ]
+}
