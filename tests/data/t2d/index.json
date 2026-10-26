@@ -1,0 +1,1618 @@
+{
+  "schema": "eab.t2d.fixed-replay/1",
+  "freezer_tool_version": "t2d-replay-build-1",
+  "producer": {
+    "source_commit": "84bcc048b22883f1faeab1930414e55885cfcaac",
+    "tool_version": "t2d-certificates-1",
+    "source_manifest_sha256": "908a613521f7a69ec7021144750107e2f5062c188a160528cdc290351b1920b2",
+    "evidence_manifest_sha256": "4a0f194a54c6eec8d36567cda4751a27c89fed7bd2476622214ec94cf8d9f72b",
+    "origin": "D:\\eab-evidence\\reports\\codex\\T2d_evidence\\certificates\\run_01"
+  },
+  "direct_algebraic_instance_verification": false,
+  "timing_exclusions": [
+    "wall-clock diagnostic timings only"
+  ],
+  "cases": [
+    {
+      "id": "N4_square_cage_k6",
+      "N": 4,
+      "element": "square",
+      "kind": "cage",
+      "k": 6,
+      "file": "case_01.json.gz",
+      "bytes": 3160,
+      "sha256": "03eb3febeb090293e770f202749a350707a790e78f842d43b186ac7f53a611f5",
+      "decoded_bytes": 21025,
+      "decoded_sha256": "ad4c98b30d475f04552efe6cdac7e275d5e30bddc5bdd21113a6c1fe79a9debd",
+      "source_bundle": "N4_square_cage_k6/bundle.json",
+      "source_bundle_sha256": "b90780deed05f44182745d48ba11ed8f47684fbfde5079d173a2c2137e2b2078"
+    },
+    {
+      "id": "N8_octagon_cage_k8",
+      "N": 8,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 8,
+      "file": "case_02.json.gz",
+      "bytes": 4380,
+      "sha256": "4d0675249c097b63c5c2e51ef3138a219d7f5b1e4378168b4b1e521ce097d2d2",
+      "decoded_bytes": 32499,
+      "decoded_sha256": "eae81c4c04fe32cb636f4f03224a087c4122545f4b3ec95236f912255dcac1d8",
+      "source_bundle": "N8_octagon_cage_k8/bundle.json",
+      "source_bundle_sha256": "35d557a9cc287c69c78ca66e319c4b6f4fe8eff79df31d39c34267bcc0acde14"
+    },
+    {
+      "id": "N16_K16_cage_k10",
+      "N": 16,
+      "element": "K16",
+      "kind": "cage",
+      "k": 10,
+      "file": "case_03.json.gz",
+      "bytes": 5845,
+      "sha256": "6fd1d8d86fd91ef4790306ec36ed454a27a5edc553d68d31ef3a90e907fd5ce4",
+      "decoded_bytes": 47277,
+      "decoded_sha256": "790a0c29edf3b684c6a34dc6732e03b3163fa67d0376d576fbd8a793cd138446",
+      "source_bundle": "N16_K16_cage_k10/bundle.json",
+      "source_bundle_sha256": "3fa45654c5ed33ec9a418eac4f825749d5e626cbdd6aa6c5f8f60c3d88faf8d7"
+    },
+    {
+      "id": "N4_octagon_escape_k20",
+      "N": 4,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 20,
+      "file": "case_04.json.gz",
+      "bytes": 3720,
+      "sha256": "6985229621c505864e707fe99c0ef906975f1606d092971e6054ddd865978b00",
+      "decoded_bytes": 27724,
+      "decoded_sha256": "f32883779282489dd61c0c0f3d9beb78b0418612e02c3c87ceea2fd8792e8b16",
+      "source_bundle": "N4_octagon_escape_k20/bundle.json",
+      "source_bundle_sha256": "e150eaba6e5123578647385e53019db0db35ea074d92ffcfd9f2fcf0473ef373"
+    },
+    {
+      "id": "N8_K16_escape_k20",
+      "N": 8,
+      "element": "K16",
+      "kind": "escape",
+      "k": 20,
+      "file": "case_05.json.gz",
+      "bytes": 5772,
+      "sha256": "9d136c0cbc7da6fa41a44c4bbd974179f9a9fdb30016afd6b75444e82ed745bc",
+      "decoded_bytes": 45823,
+      "decoded_sha256": "4f124718271bffb9c999fbb0e155f4123ddfd747b95aeafc4cdf5589381da889",
+      "source_bundle": "N8_K16_escape_k20/bundle.json",
+      "source_bundle_sha256": "cd355215caf85aec93dd48b3fc4c8f03d82d59009965fd497c47b62032c97051"
+    },
+    {
+      "id": "N32_K16_escape_k20",
+      "N": 32,
+      "element": "K16",
+      "kind": "escape",
+      "k": 20,
+      "file": "case_06.json.gz",
+      "bytes": 14503,
+      "sha256": "5a9534cbf56b7b33d47e032f696aa546dfffea2642fa7c7110027c8b403dab25",
+      "decoded_bytes": 101703,
+      "decoded_sha256": "d9b8443b2da63ca1d24c2e82686c7a6ff507332ff75b571b9e0a4c7d63c4b97c",
+      "source_bundle": "N32_K16_escape_k20/bundle.json",
+      "source_bundle_sha256": "7b68227a6e816c1d1fdb84417d73aac2c6e0d791ed38385d6078d57506793d53"
+    },
+    {
+      "id": "N8_square_mixed_escape",
+      "N": 8,
+      "element": "square",
+      "kind": "escape",
+      "k": null,
+      "file": "case_07.json.gz",
+      "bytes": 14342,
+      "sha256": "9a136cc5838e9acf4d76c70667c0bd8c0190519b1a1d1d761551ade8eb56b20e",
+      "decoded_bytes": 107935,
+      "decoded_sha256": "5b50b18ec6ae42c7507388cdb798465f7c708c7674c68d911eb96c65539cb4d1",
+      "source_bundle": "N8_square_mixed_escape/bundle.json",
+      "source_bundle_sha256": "2c23ac8b7fd0233233d7cfb1838130fd93e10bb416ec224ccdbd6f435ba53ceb"
+    },
+    {
+      "id": "N16_square_mixed_escape",
+      "N": 16,
+      "element": "square",
+      "kind": "escape",
+      "k": null,
+      "file": "case_08.json.gz",
+      "bytes": 21025,
+      "sha256": "3fc140d25ab04dca1abe6b56c4b1778adb807e5c4b22ced6baa9b64211293753",
+      "decoded_bytes": 141045,
+      "decoded_sha256": "c47d1503161c0dbe7705bc41663bbeb3d55dc68710ac9266a795e7be504b7868",
+      "source_bundle": "N16_square_mixed_escape/bundle.json",
+      "source_bundle_sha256": "aec6dcb4f595f52c08c729a0af8b846d8f422528397b5b25b743a186c5d71ab7"
+    },
+    {
+      "id": "N32_square_mixed_escape",
+      "N": 32,
+      "element": "square",
+      "kind": "escape",
+      "k": null,
+      "file": "case_09.json.gz",
+      "bytes": 21831,
+      "sha256": "4ed167153e3c8fdd74d517413fcfc861ca218f27c48594eb2dc81a07603852b4",
+      "decoded_bytes": 143216,
+      "decoded_sha256": "3e34d05b6605ff938caf69aa2e1f36b0ef75f6207ebcd1202e746eec72653caf",
+      "source_bundle": "N32_square_mixed_escape/bundle.json",
+      "source_bundle_sha256": "5f39af6886d41a33c436b7a4b1aedf50d7482be0681b1076dcc95958a20dbb57"
+    }
+  ],
+  "complete_case_ledger": [
+    {
+      "id": "N4_square_cage_k6",
+      "N": 4,
+      "element": "square",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N4_square_cage_k6/bundle.json",
+      "verified_delta": "15404710162785993707/55340232221128654848",
+      "target_delta": {
+        "a": "125/192",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_cage_k8",
+      "N": 4,
+      "element": "square",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N4_square_cage_k8/bundle.json",
+      "verified_delta": "16053228509127345131/55340232221128654848",
+      "target_delta": {
+        "a": "509/768",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_cage_k10",
+      "N": 4,
+      "element": "square",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N4_square_cage_k10/bundle.json",
+      "verified_delta": "16215358095712682987/55340232221128654848",
+      "target_delta": {
+        "a": "2045/3072",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_escape_k6",
+      "N": 4,
+      "element": "square",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N4_square_escape_k6/bundle.json",
+      "verified_delta": "8567046209848132085/27670116110564327424",
+      "target_delta": {
+        "a": "131/192",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_escape_k9",
+      "N": 4,
+      "element": "square",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N4_square_escape_k9/bundle.json",
+      "verified_delta": "8188743841149010421/27670116110564327424",
+      "target_delta": {
+        "a": "1027/1536",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_escape_k12",
+      "N": 4,
+      "element": "square",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N4_square_escape_k12/bundle.json",
+      "verified_delta": "8141456045061620213/27670116110564327424",
+      "target_delta": {
+        "a": "8195/12288",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_escape_k15",
+      "N": 4,
+      "element": "square",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N4_square_escape_k15/bundle.json",
+      "verified_delta": "8135545070550696437/27670116110564327424",
+      "target_delta": {
+        "a": "65539/98304",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_escape_k18",
+      "N": 4,
+      "element": "square",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N4_square_escape_k18/bundle.json",
+      "verified_delta": "8134806198736830965/27670116110564327424",
+      "target_delta": {
+        "a": "524291/786432",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_square_escape_k20",
+      "N": 4,
+      "element": "square",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N4_square_escape_k20/bundle.json",
+      "verified_delta": "8134727033899631093/27670116110564327424",
+      "target_delta": {
+        "a": "2097155/3145728",
+        "b": "-1/3",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_cage_k6",
+      "N": 4,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N4_octagon_cage_k6/bundle.json",
+      "verified_delta": "46718533646623476673/133738894534394249216",
+      "target_delta": {
+        "a": "1507/1856",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_cage_k8",
+      "N": 4,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N4_octagon_cage_k8/bundle.json",
+      "verified_delta": "48285786316948409281/133738894534394249216",
+      "target_delta": {
+        "a": "6115/7424",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_cage_k10",
+      "N": 4,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N4_octagon_cage_k10/bundle.json",
+      "verified_delta": "48677599484529642433/133738894534394249216",
+      "target_delta": {
+        "a": "24547/29696",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_escape_k6",
+      "N": 4,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N4_octagon_escape_k6/bundle.json",
+      "verified_delta": "25448937050411648479/66869447267197124608",
+      "target_delta": {
+        "a": "1565/1856",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_escape_k9",
+      "N": 4,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N4_octagon_escape_k9/bundle.json",
+      "verified_delta": "24534706326055437791/66869447267197124608",
+      "target_delta": {
+        "a": "12317/14848",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_escape_k12",
+      "N": 4,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N4_octagon_escape_k12/bundle.json",
+      "verified_delta": "24420427485510911455/66869447267197124608",
+      "target_delta": {
+        "a": "98333/118784",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_escape_k15",
+      "N": 4,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N4_octagon_escape_k15/bundle.json",
+      "verified_delta": "24406142630442845663/66869447267197124608",
+      "target_delta": {
+        "a": "786461/950272",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_escape_k18",
+      "N": 4,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N4_octagon_escape_k18/bundle.json",
+      "verified_delta": "24404357023559337439/66869447267197124608",
+      "target_delta": {
+        "a": "6291485/7602176",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_octagon_escape_k20",
+      "N": 4,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N4_octagon_escape_k20/bundle.json",
+      "verified_delta": "24404165708536104415/66869447267197124608",
+      "target_delta": {
+        "a": "25165853/30408704",
+        "b": "-12/29",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_cage_k6",
+      "N": 4,
+      "element": "K16",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N4_K16_cage_k6/bundle.json",
+      "verified_delta": "1703612989716568812303/4464112065837711491072",
+      "target_delta": {
+        "a": "6855/7744",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_cage_k8",
+      "N": 4,
+      "element": "K16",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N4_K16_cage_k8/bundle.json",
+      "verified_delta": "1755926802988104493839/4464112065837711491072",
+      "target_delta": {
+        "a": "27783/30976",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_cage_k10",
+      "N": 4,
+      "element": "K16",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N4_K16_cage_k10/bundle.json",
+      "verified_delta": "1769005256305988414223/4464112065837711491072",
+      "target_delta": {
+        "a": "111495/123904",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_escape_k6",
+      "N": 4,
+      "element": "K16",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N4_K16_escape_k6/bundle.json",
+      "verified_delta": "921558245886998648145/2232056032918855745536",
+      "target_delta": {
+        "a": "7097/7744",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_escape_k9",
+      "N": 4,
+      "element": "K16",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N4_K16_escape_k9/bundle.json",
+      "verified_delta": "891041854811936167249/2232056032918855745536",
+      "target_delta": {
+        "a": "55929/61952",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_escape_k12",
+      "N": 4,
+      "element": "K16",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N4_K16_escape_k12/bundle.json",
+      "verified_delta": "887227305927553357137/2232056032918855745536",
+      "target_delta": {
+        "a": "446585/495616",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_escape_k15",
+      "N": 4,
+      "element": "K16",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N4_K16_escape_k15/bundle.json",
+      "verified_delta": "886750487317005505873/2232056032918855745536",
+      "target_delta": {
+        "a": "3571833/3964928",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_escape_k18",
+      "N": 4,
+      "element": "K16",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N4_K16_escape_k18/bundle.json",
+      "verified_delta": "886690884990687024465/2232056032918855745536",
+      "target_delta": {
+        "a": "28573817/31719424",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N4_K16_escape_k20",
+      "N": 4,
+      "element": "K16",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N4_K16_escape_k20/bundle.json",
+      "verified_delta": "886684499027152901457/2232056032918855745536",
+      "target_delta": {
+        "a": "114294905/126877696",
+        "b": "-109/242",
+        "q": "5/4"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_square_cage_k6",
+      "N": 8,
+      "element": "square",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N8_square_cage_k6/bundle.json",
+      "verified_delta": "19309603308369763809/59951918239556042752",
+      "target_delta": {
+        "a": "563/832",
+        "b": "-4/13",
+        "q": "85/64"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_square_cage_k8",
+      "N": 8,
+      "element": "square",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N8_square_cage_k8/bundle.json",
+      "verified_delta": "20012164850239561185/59951918239556042752",
+      "target_delta": {
+        "a": "2291/3328",
+        "b": "-4/13",
+        "q": "85/64"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_square_cage_k10",
+      "N": 8,
+      "element": "square",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N8_square_cage_k10/bundle.json",
+      "verified_delta": "20187805235707010529/59951918239556042752",
+      "target_delta": {
+        "a": "9203/13312",
+        "b": "-4/13",
+        "q": "85/64"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_cage_k6",
+      "N": 8,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N8_octagon_cage_k6/bundle.json",
+      "verified_delta": "25863766250885699833/61104839744162889728",
+      "target_delta": {
+        "a": "3019/3392",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_cage_k8",
+      "N": 8,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N8_octagon_cage_k8/bundle.json",
+      "verified_delta": "26579838591637608697/61104839744162889728",
+      "target_delta": {
+        "a": "12235/13568",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_cage_k10",
+      "N": 8,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N8_octagon_cage_k10/bundle.json",
+      "verified_delta": "26758856676825585913/61104839744162889728",
+      "target_delta": {
+        "a": "49099/54272",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_escape_k6",
+      "N": 8,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N8_octagon_escape_k6/bundle.json",
+      "verified_delta": "55546584985781580271/122209679488325779456",
+      "target_delta": {
+        "a": "3125/3392",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_escape_k9",
+      "N": 8,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N8_octagon_escape_k9/bundle.json",
+      "verified_delta": "53875749524027126255/122209679488325779456",
+      "target_delta": {
+        "a": "24629/27136",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_escape_k12",
+      "N": 8,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N8_octagon_escape_k12/bundle.json",
+      "verified_delta": "53666895091307819503/122209679488325779456",
+      "target_delta": {
+        "a": "196661/217088",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_escape_k15",
+      "N": 8,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N8_octagon_escape_k15/bundle.json",
+      "verified_delta": "53640788287217906159/122209679488325779456",
+      "target_delta": {
+        "a": "1572917/1736704",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_escape_k18",
+      "N": 8,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N8_octagon_escape_k18/bundle.json",
+      "verified_delta": "53637524936706666991/122209679488325779456",
+      "target_delta": {
+        "a": "12582965/13893632",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_octagon_escape_k20",
+      "N": 8,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N8_octagon_escape_k20/bundle.json",
+      "verified_delta": "53637175292009034223/122209679488325779456",
+      "target_delta": {
+        "a": "50331701/55574528",
+        "b": "-24/53",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_cage_k6",
+      "N": 8,
+      "element": "K16",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N8_K16_cage_k6/bundle.json",
+      "verified_delta": "872914529733792893119/1918461383665793368064",
+      "target_delta": {
+        "a": "795/832",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_cage_k8",
+      "N": 8,
+      "element": "K16",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N8_K16_cage_k8/bundle.json",
+      "verified_delta": "895396499073626409151/1918461383665793368064",
+      "target_delta": {
+        "a": "3219/3328",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_cage_k10",
+      "N": 8,
+      "element": "K16",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N8_K16_cage_k10/bundle.json",
+      "verified_delta": "901016991408584788159/1918461383665793368064",
+      "target_delta": {
+        "a": "12915/13312",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_escape_k6",
+      "N": 8,
+      "element": "K16",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N8_K16_escape_k6/bundle.json",
+      "verified_delta": "1865732895946697871641/3836922767331586736128",
+      "target_delta": {
+        "a": "821/832",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_escape_k9",
+      "N": 8,
+      "element": "K16",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N8_K16_escape_k9/bundle.json",
+      "verified_delta": "1813274967487086334233/3836922767331586736128",
+      "target_delta": {
+        "a": "6477/6656",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_escape_k12",
+      "N": 8,
+      "element": "K16",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N8_K16_escape_k12/bundle.json",
+      "verified_delta": "1806717726429634892057/3836922767331586736128",
+      "target_delta": {
+        "a": "51725/53248",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_escape_k15",
+      "N": 8,
+      "element": "K16",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N8_K16_escape_k15/bundle.json",
+      "verified_delta": "1805898071297453461785/3836922767331586736128",
+      "target_delta": {
+        "a": "413709/425984",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_escape_k18",
+      "N": 8,
+      "element": "K16",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N8_K16_escape_k18/bundle.json",
+      "verified_delta": "1805795614405930783001/3836922767331586736128",
+      "target_delta": {
+        "a": "3309581/3407872",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_K16_escape_k20",
+      "N": 8,
+      "element": "K16",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N8_K16_escape_k20/bundle.json",
+      "verified_delta": "1805784636881839067417/3836922767331586736128",
+      "target_delta": {
+        "a": "13238285/13631488",
+        "b": "-101/208",
+        "q": "17/16"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_square_cage_k6",
+      "N": 16,
+      "element": "square",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N16_square_cage_k6/bundle.json",
+      "verified_delta": "1734308769806735255/5188146770730811392",
+      "target_delta": {
+        "a": "1189/1728",
+        "b": "-8/27",
+        "q": "365/256"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_square_cage_k8",
+      "N": 16,
+      "element": "square",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N16_square_cage_k8/bundle.json",
+      "verified_delta": "1795107364776236951/5188146770730811392",
+      "target_delta": {
+        "a": "4837/6912",
+        "b": "-8/27",
+        "q": "365/256"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_square_cage_k10",
+      "N": 16,
+      "element": "square",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N16_square_cage_k10/bundle.json",
+      "verified_delta": "1810307013518612375/5188146770730811392",
+      "target_delta": {
+        "a": "19429/27648",
+        "b": "-8/27",
+        "q": "365/256"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_cage_k6",
+      "N": 16,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N16_octagon_cage_k6/bundle.json",
+      "verified_delta": "18235447989771489217/41505174165846491136",
+      "target_delta": {
+        "a": "173/192",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_cage_k8",
+      "N": 16,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N16_octagon_cage_k8/bundle.json",
+      "verified_delta": "18721836749527502785/41505174165846491136",
+      "target_delta": {
+        "a": "701/768",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_cage_k10",
+      "N": 16,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N16_octagon_cage_k10/bundle.json",
+      "verified_delta": "18843433939466506177/41505174165846491136",
+      "target_delta": {
+        "a": "2813/3072",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_escape_k6",
+      "N": 16,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N16_octagon_escape_k6/bundle.json",
+      "verified_delta": "101731691054448917/216172782113783808",
+      "target_delta": {
+        "a": "179/192",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_escape_k9",
+      "N": 16,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N16_octagon_escape_k9/bundle.json",
+      "verified_delta": "98776203798987029/216172782113783808",
+      "target_delta": {
+        "a": "1411/1536",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_escape_k12",
+      "N": 16,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N16_octagon_escape_k12/bundle.json",
+      "verified_delta": "98406767892054293/216172782113783808",
+      "target_delta": {
+        "a": "11267/12288",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_escape_k15",
+      "N": 16,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N16_octagon_escape_k15/bundle.json",
+      "verified_delta": "98360588403687701/216172782113783808",
+      "target_delta": {
+        "a": "90115/98304",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_escape_k18",
+      "N": 16,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N16_octagon_escape_k18/bundle.json",
+      "verified_delta": "98354815967641877/216172782113783808",
+      "target_delta": {
+        "a": "720899/786432",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_octagon_escape_k20",
+      "N": 16,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N16_octagon_escape_k20/bundle.json",
+      "verified_delta": "98354197492351253/216172782113783808",
+      "target_delta": {
+        "a": "2883587/3145728",
+        "b": "-4/9",
+        "q": "1105/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_cage_k6",
+      "N": 16,
+      "element": "K16",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N16_K16_cage_k6/bundle.json",
+      "verified_delta": "1057862489582982019821/2213032828092842770432",
+      "target_delta": {
+        "a": "240321/245696",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_cage_k8",
+      "N": 16,
+      "element": "K16",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N16_K16_cage_k8/bundle.json",
+      "verified_delta": "1083796468037195021037/2213032828092842770432",
+      "target_delta": {
+        "a": "972801/982784",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_cage_k10",
+      "N": 16,
+      "element": "K16",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N16_K16_cage_k10/bundle.json",
+      "verified_delta": "1090279962650748271341/2213032828092842770432",
+      "target_delta": {
+        "a": "3902721/3931136",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_escape_k6",
+      "N": 16,
+      "element": "K16",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N16_K16_escape_k6/bundle.json",
+      "verified_delta": "204912684629251519335/402369605107789594624",
+      "target_delta": {
+        "a": "247999/245696",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_escape_k9",
+      "N": 16,
+      "element": "K16",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N16_K16_escape_k9/bundle.json",
+      "verified_delta": "199411537684418458471/402369605107789594624",
+      "target_delta": {
+        "a": "1957119/1965568",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_escape_k12",
+      "N": 16,
+      "element": "K16",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N16_K16_escape_k12/bundle.json",
+      "verified_delta": "198723894316314325863/402369605107789594624",
+      "target_delta": {
+        "a": "15630079/15724544",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_escape_k15",
+      "N": 16,
+      "element": "K16",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N16_K16_escape_k15/bundle.json",
+      "verified_delta": "198637938895301309287/402369605107789594624",
+      "target_delta": {
+        "a": "125013759/125796352",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_escape_k18",
+      "N": 16,
+      "element": "K16",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N16_K16_escape_k18/bundle.json",
+      "verified_delta": "198627194467674682215/402369605107789594624",
+      "target_delta": {
+        "a": "1000083199/1006370816",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_K16_escape_k20",
+      "N": 16,
+      "element": "K16",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N16_K16_escape_k20/bundle.json",
+      "verified_delta": "198626043279000400743/402369605107789594624",
+      "target_delta": {
+        "a": "4000321279/4025483264",
+        "b": "-1744/3839",
+        "q": "1241/1024"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_square_cage_k6",
+      "N": 32,
+      "element": "square",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N32_square_cage_k6/bundle.json",
+      "verified_delta": "10245987431458992553/30408304684005588992",
+      "target_delta": {
+        "a": "9325/13504",
+        "b": "-64/211",
+        "q": "22265/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_square_cage_k8",
+      "N": 32,
+      "element": "square",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N32_square_cage_k8/bundle.json",
+      "verified_delta": "10602334751974683049/30408304684005588992",
+      "target_delta": {
+        "a": "37933/54016",
+        "b": "-64/211",
+        "q": "22265/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_square_cage_k10",
+      "N": 32,
+      "element": "square",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N32_square_cage_k10/bundle.json",
+      "verified_delta": "10691421582103605673/30408304684005588992",
+      "target_delta": {
+        "a": "152365/216064",
+        "b": "-64/211",
+        "q": "22265/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_cage_k6",
+      "N": 32,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N32_octagon_cage_k6/bundle.json",
+      "verified_delta": "512546617460534651/1152921504606846976",
+      "target_delta": {
+        "a": "6323/6976",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_cage_k8",
+      "N": 32,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N32_octagon_cage_k8/bundle.json",
+      "verified_delta": "526057416342646139/1152921504606846976",
+      "target_delta": {
+        "a": "25619/27904",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_cage_k10",
+      "N": 32,
+      "element": "octagon",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N32_octagon_cage_k10/bundle.json",
+      "verified_delta": "529435116063174011/1152921504606846976",
+      "target_delta": {
+        "a": "102803/111616",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_escape_k6",
+      "N": 32,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N32_octagon_escape_k6/bundle.json",
+      "verified_delta": "14948680044566337367/31417111000536580096",
+      "target_delta": {
+        "a": "6541/6976",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_escape_k9",
+      "N": 32,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N32_octagon_escape_k9/bundle.json",
+      "verified_delta": "14519149230105876311/31417111000536580096",
+      "target_delta": {
+        "a": "51565/55808",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_escape_k12",
+      "N": 32,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N32_octagon_escape_k12/bundle.json",
+      "verified_delta": "14465457878298318679/31417111000536580096",
+      "target_delta": {
+        "a": "411757/446464",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_escape_k15",
+      "N": 32,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N32_octagon_escape_k15/bundle.json",
+      "verified_delta": "14458746459322373975/31417111000536580096",
+      "target_delta": {
+        "a": "3293293/3571712",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_escape_k18",
+      "N": 32,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N32_octagon_escape_k18/bundle.json",
+      "verified_delta": "14457907531950380887/31417111000536580096",
+      "target_delta": {
+        "a": "26345581/28573696",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_octagon_escape_k20",
+      "N": 32,
+      "element": "octagon",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N32_octagon_escape_k20/bundle.json",
+      "verified_delta": "14457817646874810199/31417111000536580096",
+      "target_delta": {
+        "a": "105381997/114294784",
+        "b": "-48/109",
+        "q": "4505/4096"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_cage_k6",
+      "N": 32,
+      "element": "K16",
+      "kind": "cage",
+      "k": 6,
+      "bundle": "N32_K16_cage_k6/bundle.json",
+      "verified_delta": "1815284064556776120497/3762271099908293394432",
+      "target_delta": {
+        "a": "273601/278464",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_cage_k8",
+      "N": 32,
+      "element": "K16",
+      "kind": "cage",
+      "k": 8,
+      "bundle": "N32_K16_cage_k8/bundle.json",
+      "verified_delta": "1859373179008826433713/3762271099908293394432",
+      "target_delta": {
+        "a": "1107457/1113856",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_cage_k10",
+      "N": 32,
+      "element": "K16",
+      "kind": "cage",
+      "k": 10,
+      "bundle": "N32_K16_cage_k10/bundle.json",
+      "verified_delta": "1870395457621839012017/3762271099908293394432",
+      "target_delta": {
+        "a": "4442881/4455424",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_escape_k6",
+      "N": 32,
+      "element": "K16",
+      "kind": "escape",
+      "k": 6,
+      "bundle": "N32_K16_escape_k6/bundle.json",
+      "verified_delta": "161071253035742524081/313522591659024449536",
+      "target_delta": {
+        "a": "282303/278464",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_escape_k9",
+      "N": 32,
+      "element": "K16",
+      "kind": "escape",
+      "k": 9,
+      "bundle": "N32_K16_escape_k9/bundle.json",
+      "verified_delta": "156784811352904299185/313522591659024449536",
+      "target_delta": {
+        "a": "2227967/2227712",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_escape_k12",
+      "N": 32,
+      "element": "K16",
+      "kind": "escape",
+      "k": 12,
+      "bundle": "N32_K16_escape_k12/bundle.json",
+      "verified_delta": "156249006142549521073/313522591659024449536",
+      "target_delta": {
+        "a": "17793279/17821696",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_escape_k15",
+      "N": 32,
+      "element": "K16",
+      "kind": "escape",
+      "k": 15,
+      "bundle": "N32_K16_escape_k15/bundle.json",
+      "verified_delta": "156182030491255173809/313522591659024449536",
+      "target_delta": {
+        "a": "142315775/142573568",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_escape_k18",
+      "N": 32,
+      "element": "K16",
+      "kind": "escape",
+      "k": 18,
+      "bundle": "N32_K16_escape_k18/bundle.json",
+      "verified_delta": "156173658534843380401/313522591659024449536",
+      "target_delta": {
+        "a": "1138495743/1140588544",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_K16_escape_k20",
+      "N": 32,
+      "element": "K16",
+      "kind": "escape",
+      "k": 20,
+      "bundle": "N32_K16_escape_k20/bundle.json",
+      "verified_delta": "156172761539513545393/313522591659024449536",
+      "target_delta": {
+        "a": "4553969919/4562354176",
+        "b": "-6464/13053",
+        "q": "16705/16384"
+      },
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N8_square_mixed_escape",
+      "N": 8,
+      "element": "square",
+      "kind": "escape",
+      "k": null,
+      "bundle": "N8_square_mixed_escape/bundle.json",
+      "verified_delta": "185792159389/549755813888",
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N16_square_mixed_escape",
+      "N": 16,
+      "element": "square",
+      "kind": "escape",
+      "k": null,
+      "bundle": "N16_square_mixed_escape/bundle.json",
+      "verified_delta": "384996244747/1099511627776",
+      "production_valid": true,
+      "independent_valid": true
+    },
+    {
+      "id": "N32_square_mixed_escape",
+      "N": 32,
+      "element": "square",
+      "kind": "escape",
+      "k": null,
+      "bundle": "N32_square_mixed_escape/bundle.json",
+      "verified_delta": "21457082189314646865/60816609368011177984",
+      "production_valid": true,
+      "independent_valid": true
+    }
+  ]
+}
