@@ -91,7 +91,7 @@ def test_t2c2_frozen_payload_integrity_and_exact_directed_transfer(row):
     target = Q5(F(target["a"]), F(target["b"]))
     verified = Q5(F(metadata["verified_delta"]))
     critical = critical_delta(row["element"])
-    epsilon = Q5(F(1, 2 ** row["k"]))
+    epsilon = Q5(F(1, 1 << row["k"]))
     if row["kind"] == "cage":
         assert target == critical - epsilon
         assert target < verified < critical
@@ -218,5 +218,5 @@ def test_t2c2_same_escape_motions_collide_on_paired_lower_instance(row):
                for pair in independent["pairs"] if pair["kind"] == "se2")
     metadata = lower["metadata"]
     target = metadata["target_delta"]
-    assert Q5(F(target["a"]), F(target["b"])) == critical_delta(row["element"]) - F(1, 2 ** row["k"])
+    assert Q5(F(target["a"]), F(target["b"])) == critical_delta(row["element"]) - F(1, 1 << row["k"])
     assert Q5(F(metadata["verified_delta"])) > Q5(F(target["a"]), F(target["b"]))

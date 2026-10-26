@@ -188,10 +188,11 @@ def test_l01_baseline_waiver_does_not_admit_new_higher_order_cone_source():
                for row in issues), ("G6L-01 baseline waiver must not expand to a new callback", issues)
 
 
-def test_l01_full_repository_copy_rejects_real_map_implant_and_changed_dependency(tmp_path):
+def test_l01_full_repository_copy_rejects_real_map_implant_and_changed_dependency(tmp_path_factory):
     """Historical nodeid retained: dependency edits now preserve local reviews."""
     import shutil
 
+    tmp_path = tmp_path_factory.mktemp("r12")
     copy_root = tmp_path / "repo"
     for folder in ("src", "tests", "tools"):
         shutil.copytree(ROOT / folder, copy_root / folder)

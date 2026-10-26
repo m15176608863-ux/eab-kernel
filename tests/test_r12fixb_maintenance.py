@@ -45,7 +45,8 @@ def test_local_review_fixture(monkeypatch):
     return path, source, waivers
 
 
-def test_unrelated_source_comment_keeps_real_repository_gate_green(tmp_path):
+def test_unrelated_source_comment_keeps_real_repository_gate_green(tmp_path_factory):
+    tmp_path = tmp_path_factory.mktemp("r12b")
     copy_root = tmp_path / "repo"
     for folder in ("src", "tests", "tools"):
         shutil.copytree(ROOT / folder, copy_root / folder)

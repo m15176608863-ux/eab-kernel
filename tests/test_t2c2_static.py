@@ -72,6 +72,12 @@ def test_t2c2_exact_sources_reject_internal_floating_injections():
         for node in ast.walk(tree):
             if isinstance(node, ast.Constant) and type(node.value) is float:
                 forbidden.append((node.lineno, "floating literal"))
+            elif isinstance(node, ast.BinOp) and isinstance(node.op, ast.Pow):
+                exponent = node.right
+                if isinstance(exponent, ast.UnaryOp) and isinstance(exponent.op, (ast.UAdd, ast.USub)):
+                    exponent = exponent.operand
+                if not (isinstance(exponent, ast.Constant) and type(exponent.value) is int):
+                    forbidden.append((node.lineno, "power exponent is not an integer constant"))
             elif isinstance(node, ast.Call):
                 name = dotted(node.func)
                 if name in ("float", "builtins.float") or name.startswith((
@@ -94,13 +100,16 @@ def test_t2c2_exact_sources_reject_internal_floating_injections():
     source = helper.read_text("utf-8")
     tree = ast.parse(source)
     target = next(node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef))
+    for exact_power in ("Q5(5) ** 2", "Q5(5) ** -2", "Q5(5) ** +2"):
+        audit(exact_power)
     for injection in (
             "float(0)", "import builtins as b; b.float(0)",
             "convert = float; convert(0)", "import math; math.sqrt(4)",
             "from math import sin as sine; sine(0)",
             "import numpy as np; np.asarray([0])",
             "from struct import unpack as decode; decode('d', b'12345678')",
-            "import ctypes; ctypes.c_double(0)", "value = 0.5"):
+            "import ctypes; ctypes.c_double(0)", "value = 0.5",
+            "value = 5 ** F(1, 2)", "value = 5 ** exponent", "value = 5 ** True"):
         # Reparse for each mutation: injections never accumulate or touch disk.
         mutant = ast.parse(source)
         selected = next(node for node in ast.walk(mutant)

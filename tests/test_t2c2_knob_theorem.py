@@ -45,6 +45,8 @@ def test_q5_exact_field_arithmetic_sign_and_order():
     assert Q5(-9, 4).sign() == -1
     assert Q5(-20, 9).sign() == 1
     assert Q5(0).sign() == 0
+    assert not Q5(0) and Q5(1) and root and Q5(161, -72)
+    assert Q5(1, 1) != Q5(1, 0)
     assert -root < 0 < root and root <= root and root >= root
     assert abs(-root) == root
     assert hash(Q5(F(1, 2))) == hash(F(1, 2))
@@ -58,6 +60,16 @@ def test_q5_exact_field_arithmetic_sign_and_order():
         assert a**0 == 1 and a**3 == a*a*a
         if a != 0:
             assert a**-3*a**3 == 1
+    # (2+sqrt(5))**n has norm (-1)**n.  Its conjugate is nonzero
+    # even for Pell near-zero values beyond binary64 cancellation at n=14.
+    p, q, expected_sign = 1, 0, 1
+    for n in range(1, 33):
+        p, q, expected_sign = 2*p+5*q, p+2*q, -expected_sign
+        assert p*p-5*q*q == expected_sign
+        if n >= 14:
+            assert Q5(p, -q).sign() == expected_sign
+            assert Q5(-p, q).sign() == -expected_sign
+            assert Q5(p, -q) != 0
 
 
 def test_q5_rejects_nonexact_inputs_zero_division_and_float_conversion():
@@ -73,21 +85,59 @@ def test_q5_rejects_nonexact_inputs_zero_division_and_float_conversion():
     with _rejects(TypeError):
         Q5(1).__float__()
     with _rejects(TypeError):
-        Q5(1)**F(1, 2)
+        Q5(1).__pow__(F(1, 2))
+
+
+def test_q5_float_comparisons_raise_instead_of_returning_false():
+    # Deliberately nonexact boundary input: never used in arithmetic or a
+    # geometric predicate, only to require every comparison to reject it.
+    bad = F(1, 2).__float__()
+    with _rejects(TypeError):
+        Q5(1) == bad
+    with _rejects(TypeError):
+        bad == Q5(1)
+    with _rejects(TypeError):
+        Q5(1) != bad
+    with _rejects(TypeError):
+        bad != Q5(1)
+    with _rejects(TypeError):
+        Q5(1) < bad
+    with _rejects(TypeError):
+        bad < Q5(1)
+    with _rejects(TypeError):
+        Q5(1) <= bad
+    with _rejects(TypeError):
+        bad <= Q5(1)
+    with _rejects(TypeError):
+        Q5(1) > bad
+    with _rejects(TypeError):
+        bad > Q5(1)
+    with _rejects(TypeError):
+        Q5(1) >= bad
+    with _rejects(TypeError):
+        bad >= Q5(1)
 
 
 def test_lemma_a_zero_critical_slack_and_exact_main_chord():
-    exact.verify_a_zero()
+    assert exact.verify_a_zero() == (Q5(1), Q5(1))
     for element in ELEMENTS:
+        assert exact.lemma_a_metrics(element, 0)["secondary_squared_margin"] == 1
+        critical = exact.verify_a_critical(element)
+        expected = (Q5(F(-1, 6), F(4, 9)) if element == "square"
+                    else Q5(F(95, 3364), F(205, 841)))
+        assert critical["secondary_squared_margin"] == expected
+        assert critical["secondary_residual"] > 0 and expected > 0
         m = exact.verify_lemma_a(element)
+        assert m == critical
         assert m["radius"] == F(1, 2)
         assert m["h3"] == (4 if element == "square" else F(41, 12))
 
 
 def test_lemma_a_zero_rejects_internal_secondary_bound_mutation():
-    with patch.object(exact, "SECONDARY_BOUND", F(2)):
-        with _rejects(AssertionError, "g(0)"):
-            exact.verify_a_zero()
+    for bound in (F(2), F(11, 4)):
+        with patch.object(exact, "SECONDARY_BOUND", bound):
+            with _rejects(AssertionError, "g(0)"):
+                exact.verify_a_zero()
 
 
 def test_lemma_a_critical_slack_rejects_internal_bound_mutation():
@@ -121,6 +171,7 @@ def test_symbolic_erosion_exact_section_partition_and_rational_affine_crosscheck
                  "octagon": (F(9, 25), F(37, 100))}
     for element in ELEMENTS:
         cuts, checks = exact.verify_symbolic_erosion(element)
+        assert (cuts, checks) == ((8, 15) if element == "square" else (12, 23))
         assert checks == 2*cuts-1
         lo, hi = intervals[element]
         assert lo < exact.critical_delta(element) < hi
@@ -141,12 +192,44 @@ def test_symbolic_erosion_rejects_old_octagon_top_intercept_inside_model():
             exact.verify_symbolic_erosion("octagon")
 
 
+def test_symbolic_erosion_rejects_underreported_octagon_widest_pair_at_midpoint():
+    d = exact.critical_delta("octagon")
+    right = exact._right_vertices("octagon", d)
+    changed = right[:2]+((1-17*d/12, 1-5*d/12), (1-17*d/12, 1+5*d/12))+right[3:]
+    with patch.object(exact, "_right_vertices", return_value=changed):
+        with _rejects(AssertionError, "independent section erosion"):
+            exact.verify_symbolic_erosion("octagon")
+
+
+def test_symbolic_partition_rejects_one_missing_element_height_event():
+    element = "octagon"
+    d = exact.critical_delta(element)
+    profile = tuple((y, x) for x, y in exact._right_vertices(element, d))
+    lo, hi = profile[0][0], profile[-1][0]
+    cuts = {y for y, _ in profile}
+    events = {height-d*vy for height, _ in exact.CAVITY_PROFILE
+              for _, vy in exact.element_vertices(element) if lo < height-d*vy < hi}
+    cuts.update(events)
+    assert exact.verify_section_partition(element, d, profile, sorted(cuts)) == 12
+    removed = min(events-{y for y, _ in profile})
+    with _rejects(AssertionError, "missing element-height event cut"):
+        exact.verify_section_partition(element, d, profile, sorted(cuts-{removed}))
+
+
 def test_lemma_c_exact_farthest_vertices_and_all_eight_edge_distances():
     assert exact.verify_q_containment() == 6
     assert exact.verify_c_edges() == (F(9, 10), F(4, 5), F(4, 5), F(9, 10),
                                       F(9, 10), F(4, 5), F(4, 5), F(9, 10))
     for element in ELEMENTS:
-        maximum, points = exact.verify_lemma_c(element)
+        maximum, points = exact.verify_c_radius(element)
+        expected = (Q5(F(5, 12), F(1, 18)) if element == "square"
+                    else Q5(F(8509, 30276), F(175, 2523)))
+        top_x, top_y = ((Q5(F(-1, 6), F(1, 6)), Q5(F(4, 3), F(1, 6)))
+                       if element == "square" else
+                       (Q5(F(-1, 87), F(5, 58)), Q5(F(34, 29), F(6, 29))))
+        assert maximum == expected
+        assert points == ((top_x, top_y), (-top_x, top_y))
+        assert exact.verify_lemma_c(element) == (maximum, points)
         assert maximum < F(4, 5)
         assert points[0][0] == -points[1][0]
 
@@ -163,6 +246,25 @@ def test_lemma_c_edge_distance_rejects_internal_q_vertex_mutation():
     with patch.object(exact, "Q_VERTICES", changed):
         with _rejects(AssertionError, "Q must have four"):
             exact.verify_c_edges()
+
+
+def test_q_containment_rejects_outside_vertex_even_when_both_chains_mirror():
+    changed = tuple((F(11, 10)*x, y) if abs(x) == 1 else (x, y)
+                    for x, y in exact.Q_VERTICES)
+    with patch.object(exact, "Q_VERTICES", changed):
+        with _rejects(AssertionError, "Q must stay inside A"):
+            exact.verify_q_containment()
+
+
+def test_q_containment_rejects_an_unchecked_left_chain_vertex():
+    changed = exact.Q_VERTICES[:6]+((F(-11, 10), F(1)),)+exact.Q_VERTICES[7:]
+    with patch.object(exact, "Q_VERTICES", changed):
+        with _rejects(AssertionError, "Q left chain must mirror"):
+            exact.verify_q_containment()
+    changed = exact.MOVING_VERTICES[:9]+((F(-9, 10), F(1)),)+exact.MOVING_VERTICES[10:]
+    with patch.object(exact, "MOVING_VERTICES", changed):
+        with _rejects(AssertionError, "A left chain must mirror"):
+            exact.verify_q_containment()
 
 
 def test_lemma_d_all_eleven_strip_projections():
@@ -183,8 +285,24 @@ def test_lemma_e_vertical_extrema_and_piecewise_cavity_width():
     assert cuts == (F(1, 6), F(1, 5), F(1), F(9, 5), F(11, 6), F(2))
     assert widths == (F(1, 2), F(3, 5), F(1), F(3, 5), F(1, 2), F(1, 2))
     for element in ELEMENTS:
-        lo, hi = exact.verify_lemma_e(element)
+        lo, hi = exact.verify_e_vertical(element)
+        expected = ((Q5(F(1, 2), F(-1, 25)), Q5(F(3, 2), F(1, 10)))
+                    if element == "square" else
+                    (Q5(F(69, 145), F(-3, 145)), Q5(F(3, 2), F(1, 15))))
+        assert (lo, hi) == expected
+        assert exact.verify_lemma_e(element) == expected
         assert F(1, 6) < lo < hi < 2
+
+
+def test_rotate_minus_phi_actual_matrix_is_orthogonal_with_unit_determinant():
+    origin, x_axis, y_axis = exact.rotate_minus_phi(((F(0), F(1)), (F(1), F(1)), (F(0), F(2))))
+    assert origin == exact.CENTER
+    u = tuple(a-b for a, b in zip(x_axis, origin))
+    v = tuple(a-b for a, b in zip(y_axis, origin))
+    assert u[0]*u[0]+u[1]*u[1] == 1
+    assert v[0]*v[0]+v[1]*v[1] == 1
+    assert u[0]*v[0]+u[1]*v[1] == 0, "actual rotation columns must be orthogonal"
+    assert u[0]*v[1]-u[1]*v[0] == 1, "actual rotation must have determinant one"
 
 
 def test_lemma_e_vertical_rejects_internal_rotation_number_mutation():
@@ -235,6 +353,28 @@ def test_exact_critical_escape_disk_turn_closed_strip_and_infinite_lift():
         assert result["status"] == "EXACT_CRITICAL_ESCAPE"
         assert result["vertices"] == count
         assert result["horizontal"] == (F(-1, 2), F(1, 2))
+        assert result["sections"] == ((8, 15) if element == "square" else (12, 23))
+        assert result["radius_squared"] is not None and result["farthest"] is not None, \
+            "critical escape needs the rotation-disk proof"
+        assert (result["radius_squared"], result["farthest"]) == exact.verify_c_radius(element)
+        assert result["vertical"] == exact.verify_e_vertical(element)
+
+
+def test_composite_proofs_execute_each_required_semantic_gate():
+    # Wiring check, separate from the direct exact-value and geometry-negative
+    # gates above: each wrapped call still executes the real semantic checker.
+    with patch.object(exact, "verify_a_critical", wraps=exact.verify_a_critical) as checked:
+        exact.verify_lemma_a("square")
+        checked.assert_called_once_with("square")
+    with patch.object(exact, "verify_q_containment", wraps=exact.verify_q_containment) as checked:
+        exact.verify_lemma_c("square")
+        checked.assert_called_once_with()
+    with patch.object(exact, "verify_c_edges", wraps=exact.verify_c_edges) as checked:
+        exact.verify_lemma_c("square")
+        checked.assert_called_once_with()
+    with patch.object(exact, "verify_e_cavity", wraps=exact.verify_e_cavity) as checked:
+        exact.verify_lemma_e("square")
+        checked.assert_called_once_with()
 
 
 def test_exact_horizontal_projection_rejects_internal_rotation_mutation():

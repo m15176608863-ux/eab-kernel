@@ -2,7 +2,7 @@
 
 **一句话：对本单指定的 8 弦凸耳、墙不腐蚀和两种容差元，精确核验支持所有者定理——允许转动后临界公差恰好下降 √5/2−1，约 11.8%；方形与八边形的相对降幅相同。**
 
-当前交付状态为 **PARTIAL，仅差验收口径确认**：有限证书采用“有向有理代理双核验＋精确包含转移”，不是不可修改的原核验器直接接收无理实例；已向所有者询问这一口径，尚待确认。收尾快档10428项、全档16550项及静态门已全绿。未发现定理反例，未修改定理稿。
+**T2C2_DONE。所有者 2026-10-26 确认**接受“有向有理代理双核验＋精确包含转移”作为 §5 第 3 项交付口径；这仍不是不可修改的原核验器直接接收无理实例。原交付已提交为 `1488914`，原收尾快档10428项、全档16550项及静态门全绿。此次10项验收返修已完成，50变异、定向67门、静态及新全仓快档10436门通过，见 §9；未发现定理反例，未修改定理稿。
 
 ## 1. 合同、基线与解释边界
 
@@ -23,16 +23,16 @@
 
 “不取到”指困住侧的上确界不属于困住集合：`δ<δ°` 困住，`δ=δ°` 已能在允许接触的约定下逃逸。
 
-实现为 [标准库 Q(√5) 辅助模块](file:///D:/eab-wt/cx-e2/tests/t2c2_knob_exact.py)及 [24 个定理测试](file:///D:/eab-wt/cx-e2/tests/test_t2c2_knob_theorem.py)。系数为 Fraction，符号只比较有理平方，拒绝浮点转换；除法使用共轭与有理范数。主 oracle 是手写支撑、水平截面及仿射分区，不调用生产腐蚀、SE(2) 路径或两侧笼核验器。
+实现为 [标准库 Q(√5) 辅助模块](file:///D:/eab-wt/cx-e2/tests/t2c2_knob_exact.py)及 [31 个定理测试](file:///D:/eab-wt/cx-e2/tests/test_t2c2_knob_theorem.py)。系数为 Fraction，符号只比较有理平方，拒绝浮点转换；除法使用共轭与有理范数。主 oracle 是手写支撑、水平截面及仿射分区，不调用生产腐蚀、SE(2) 路径或两侧笼核验器。
 
 下表测试名均位于上述定理测试文件；反向门修改辅助模型内部的常数、顶点或阈值函数，并匹配目标数学断言，非修改已产出的真假结果。
 
 |义务|精确结果|正向门|具名反向门后缀/变异|
 |---|---|---|---|
 |Q(√5) 四则、符号|共轭、乘除逆、异号平方比较；零除与非精确输入拒收|`test_q5_exact_field_arithmetic_sign_and_order`、`test_q5_rejects_nonexact_inputs_zero_division_and_float_conversion`|拒收门不将浮点转为 Fraction 后悄悄接收|
-|A：g(0)>0|3²>8，且3>0|`test_lemma_a_zero_critical_slack_and_exact_main_chord`|`test_lemma_a_zero_rejects_internal_secondary_bound_mutation`：3→2|
+|A：g(0)>0|`lemma_a_metrics(element,0)` 实算平方余量恰为1，正残量为3|`test_lemma_a_zero_critical_slack_and_exact_main_chord`|`test_lemma_a_zero_rejects_internal_secondary_bound_mutation`：3→2及11/4|
 |A：g(δ°)>0|先核正残量，再核残量²−10r²>0；方形为 −1/6+4√5/9，八边形为 95/3364+205√5/841|同上|`test_lemma_a_critical_slack_rejects_internal_bound_mutation`：3→5/2|
-|A：主弦取等|r(δ°)=1/2，r√5/2+δ°h=1，四侧支撑一致|同上|`test_lemma_a_main_rejects_internal_support_mutation`：h+1/1000；`test_lemma_a_equality_rejects_internal_critical_delta_shift`：δ°+2^-20|
+|A：主弦取等|r(δ°)=1/2，四侧支撑一致；已删对所有δ成立的半径定义恒等式|同上|`test_lemma_a_main_rejects_internal_support_mutation`：h+1/1000；`test_lemma_a_equality_rejects_internal_critical_delta_shift`：δ°+2^-20|
 |符号腐蚀完整性|方形11点、八边形9点；凹角截线已纳入|`test_symbolic_erosion_exact_section_partition_and_rational_affine_crosscheck`|`test_symbolic_erosion_rejects_old_octagon_top_intercept_inside_model`：1/3→旧错误1/2|
 |C：最远顶点与圆包含|两种最远点均为两个颈顶角；ρ²见 §3，均<4/5|`test_lemma_c_exact_farthest_vertices_and_all_eight_edge_distances`|`test_lemma_c_radius_rejects_internal_disk_bound_mutation`：4/5→2/5|
 |C：Q 的8边距离平方|4边为4/5，4边为9/10|同上|`test_lemma_c_edge_distance_rejects_internal_q_vertex_mutation`：一个底点坐标+1/1000|
@@ -57,7 +57,7 @@
 两种的实际竖直极值**不同**；定理 E 的“相同”是共同包络，非两种实际极值相同。
 
 1. 精确核 `ρ²<4/5`、Q 的各边距及 `Q⊆A`。整个刚体在以 c 为心的严格内圆内，绕 c 的全部转动均不进入墙/地板内部。
-2. 取 `cos=2/√5, sin=−1/√5`，核 `cos²+sin²=1`；两个腐蚀环的水平投影均**恰为** `[-1/2,1/2]`，不是近似小于颈宽。
+2. 取 `cos=2/√5, sin=−1/√5`，从 `rotate_minus_phi` 对 c 及两个基向量的实际输出提取矩阵，核 `RᵀR=I`、`det R=1`，不只检查未必实际使用的两个常数；两个腐蚀环的水平投影均**恰为** `[-1/2,1/2]`，不是近似小于颈宽。
 3. 转后最低点严格高于 `1/6`；闭条带 `[-1/2,1/2]×[1/6,∞)` 内无墙或地板内部。所有非负竖直位移保留这个条带，故整段上移及无限尾自由。边界接触允许。
 
 ## 4. 有限证书：有理接口差异不隐藏
@@ -72,7 +72,7 @@ cage verified_delta = d_hi−2^-k > target_delta = δ°−2^-k
 escape verified_delta = d_lo+2^-k < target_delta = δ°+2^-k
 ```
 
-笼直接核验更小的移动体，困住性转移到更大的目标；逃逸直接核验更大的移动体，路径转移到更小的目标。墙保持不变。每份元数据分列目标 `(a,b)`、实际代理、严格方向、整数夹逼证据及 `direct_algebraic_instance_verification=false`。这是**代理双核验＋精确包含转移**，仍待所有者确认可作为本单原字面义务的交付口径。
+笼直接核验更小的移动体，困住性转移到更大的目标；逃逸直接核验更大的移动体，路径转移到更小的目标。墙保持不变。每份元数据分列目标 `(a,b)`、实际代理、严格方向、整数夹逼证据及 `direct_algebraic_instance_verification=false`。这一**代理双核验＋精确包含转移**交付口径已获**所有者 2026-10-26 确认**。旧 JSON 的历史待定状态不改写，由 §9 出处附录注明后续裁定。
 
 [正式52份清单与逐文件SHA](file:///D:/eab-evidence/reports/codex/T2c2_evidence/certificates/run_01/manifest.json) · [全部52行证书表](file:///D:/eab-evidence/reports/codex/T2c2_evidence/certificates_audit_01/README.md) · [完整状态/计数/时刻对拍](file:///D:/eab-evidence/reports/codex/T2c2_evidence/certificates_audit_01/summary.json)。正式运行207.08秒；pilot仅估时，不拼接入正式数据。
 
@@ -81,7 +81,7 @@ escape verified_delta = d_lo+2^-k < target_delta = δ°+2^-k
 |方形|δ°−2^-k，k=6…12|7|16,32,32,64,64,128,128|δ°+2^-k，k=6…24|19|所有代理双接受|
 |八边形|δ°−2^-k，k=6…12|7|16,32,32,64,64,128,128|δ°+2^-k，k=6…24|19|所有代理双接受|
 
-- 每个笼均为**只含不变圆片**的两个角区间闭链，无 caps、无转动收缩片。D 的点为有理圆周点，外半径及每边到原点距离平方精确核验，内切半径严格大于1/2。生产与独立各核280个屏障段，生产核280个连接四边形，独立总检查166941项。
+- 每个笼均为**只含不变圆片**的两个角区间闭链，无 caps、无转动收缩片。D 的有理圆周点及逐边距离平方由生成器 `circle_polygon` 精确检查；**D 内切半径 > 1/2 由生成器保证，生产与独立通用核验器不检查这一特设颈宽条件**。核验器接受完整闭链证书；另由不变圆盘半径 `r>1/2` 与引理 B 给出定理几何理由，不混称。生产与独立各核280个屏障段，生产核280个连接四边形，独立总检查166941项。
 - 笼生产走 JSON 文本入口，独立走 `load_json` 文本入口。14个代理处 T1b 均 `TRAPPED_TRANSLATION`；目标处另有包含转移与精确 `δ<δ*_T`。
 - 每条逃逸只有绕 c 转到有理 Cayley 参数 `u=2−s0`、竖直上移4两个有限段，再接+y射线。生产有限刚体对228，独立含射线前缀有限对342；两者范围不同，不伪称计数应相等。
 - 旧独立 oracle 的 `infinite_ray_verified=false` 原样保留。另用它独立构造的终点及精确竖直半平面证成全部38条无限尾；固定回放还核更强的“有限刚体段终点已经高于全部墙顶”。不把新补证改写为旧 oracle 自己核了无限尾。
@@ -111,7 +111,7 @@ escape verified_delta = d_lo+2^-k < target_delta = δ°+2^-k
 
 `tools/` 为不可信提议层、可用浮点的范围沿用T2c1所有者验收补记；不重开已裁定的tools整文件静态缺口。[局部静态与路径预算](file:///D:/eab-evidence/reports/codex/T2c2_evidence/static/README.md)、[内部数学复核](file:///D:/eab-evidence/reports/codex/T2c2_evidence/static/mathematical_review.md)不是所有者独立验收。
 
-P1的e=1、segments=8/16括号未开展，不因此计PARTIAL。路径守卫只做了只读预查：在现有复制前缀38下，150字符basetemp＋最长实际Python312缓存相对路径72=260，已经不能满足严格<260；按约30字符缓存余量计为265。未擅改只读复制测试或偷偷缩小基准路径使其假绿，也未新增必失败快档门。此项留给所有者安排缩名/支持预算裁定。
+P1的e=1、segments=8/16括号未开展，不因此计PARTIAL。原路径预查确实发现旧38字符复制前缀不满足预算；本次按验收返修第9项，在三个既有复制测试中仅把自动长测试名目录改为短 `tmp_path_factory.mktemp` 名称，测试体及复制范围不变。新增[快档路径守卫](file:///D:/eab-wt/cx-e2/tests/test_t2c2_paths.py)从实际 AST 取复制前缀，枚举真实复制范围 `src/tests/tools` 中所有文件，保持150字符basetemp及额外30字符缓存余量；最长相对路径64，三个预算为256、255、250，均严格<260。门内另注入过长前缀/文件名并要求报红，没有降低150基准或省掉缓存余量。
 
 ## 7. 开工全档与收尾快档/全档
 
@@ -146,14 +146,14 @@ exact construction AST gate: 0 violation(s)
 
 [基线摘要](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_baseline_20261026/summary.json) · [收尾快档摘要](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_final_fast_20261026/summary.json) · [收尾全档摘要](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_final_full_20261026/summary.json)。三轮均GREEN、0failed、0skip，收集/分派/插件收集/实际call节点多重集合相同，70个src/eab模块均实际执行。快档执行53个新增节点，全档执行59个新增节点。
 
-两轮收尾源清单2711成员完全相同；全程源快照与运行中的工作树均无漂移。报告及归档条目仅在两轮完成后回填，最终受测代码与当前代码逐字节一致。[双轮独立机械审计](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/gate_pair_audit.json)与[受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_final_full_20261026/tested_source.zip)保存成员核对及SHA。基线、快档、全档总墙钟分别2410.895、1764.922、2683.659秒；串行调度，未叠加多轮全仓运行，不声称达到日常约5分钟目标。
+原交付两轮收尾源清单2711成员完全相同；当时源快照与运行中的工作树均无漂移，报告及归档条目在两轮完成后回填。[双轮独立机械审计](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/gate_pair_audit.json)与[受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_final_full_20261026/tested_source.zip)保存成员核对及SHA；这些是1488914交付的历史运行，不冒充此次返修后的受测源码。基线、快档、全档总墙钟分别2410.895、1764.922、2683.659秒；串行调度，未叠加多轮全仓运行，不声称达到日常约5分钟目标。
 <!-- T2C2_GATE_RESULTS_END -->
 
 完成的新run输出先保存原字节ZIP，再仅作UTF-8/LF展示规范化；映射保留原SHA及LF SHA，不改变状态、计数、源码快照或证书输入，不拼接中断运行。
 
 ## 8. 交付、回退与遗留
 
-机器证据入口见 [正式证书目录](file:///D:/eab-evidence/reports/codex/T2c2_evidence/certificates/run_01/)；[仓内改动SHA](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/repository_manifest.json)、[净增/只读/编码审计](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/delivery_audit.json)、[全部外置成果SHA清单](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/artifact_manifest.json)、[逐项需求交付表](file:///D:/eab-evidence/reports/codex/T2c2_evidence/requirements.json)。只新增15个仓内文件，既有文件只追加归档登记；净增严格小于3MB、每个新文件小于1MB。所有新交付的源/文档均UTF-8无BOM/LF，保留只读policy原CRLF；大型证据在指定外置目录，不写仓库根。
+原交付机器证据入口见 [正式证书目录](file:///D:/eab-evidence/reports/codex/T2c2_evidence/certificates/run_01/)；[当时仓内改动SHA](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/repository_manifest.json)、[当时净增/只读/编码审计](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/delivery_audit.json)、[原外置成果SHA清单](file:///D:/eab-evidence/reports/codex/T2c2_evidence/delivery_final_01/artifact_manifest.json)、[历史逐项需求表](file:///D:/eab-evidence/reports/codex/T2c2_evidence/requirements.json)。原交付新增15个仓内文件、既有文件只追加归档登记；其中待定状态由本次附录取代，原JSON不改。此次返修的改动与累计净增另见§9，仍须严格小于3MB、每个新文件小于1MB；大型证据只在指定外置目录。
 
 重跑科学证据或全仓门须使用新目录/run名，不覆盖本次冻结数据：
 
@@ -167,6 +167,82 @@ python -X utf8 D:/eab-evidence/reports/codex/T2c2_evidence/run_gates.py --name "
 python -X utf8 D:/eab-evidence/reports/codex/T2c2_evidence/run_gates.py --name "t2c2_recheck_full_$stamp" --runslow
 ```
 
-遗留仅为本单“有理代理双核验＋精确包含转移”替代直接无理实例双核验的所有者口径确认；未擅自扩大不可修改核验器的数域。所有者安排的新鲜树和独立对抗验收亦不由本代理自签。P1未做不作为PARTIAL原因。本地归档不是远程备份。
+“有理代理双核验＋精确包含转移”的原遗留已由所有者2026-10-26确认关闭，未扩大不可修改核验器的数域。所有者同时告知两路非作者核查通过；本代理不把自己的多代理审阅改称该独立验收。所有者的新鲜树全档正在另行执行，本轮按指令不重跑全档、不代签其结果。P1的e=1及细刻面预览未做，不作为PARTIAL原因；路径守卫已补。本地归档不是远程备份。
 
-T2C2_PARTIAL：现有核验器只接收有理实例，已交付有向有理代理双核验与精确包含转移；该替代口径待所有者确认。
+## 9. 验收返修（2026-10-26，基线1488914）
+
+返修前2711文件干净字节锚见[快照清单](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/baseline_anchor/manifest.json)及[回退ZIP](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/baseline_anchor/source.zip)。本轮不commit，不改src、核验器、独立侧、定理稿、引理、三个静态分析器或policy；受测字节副本不是新鲜Git树。
+
+### 9.1 精确检查与测试的牙
+
+|验收项|返修后的具名门/证据|
+|---|---|
+|1：A/C/E及完整逃逸的直接正向检查|`test_lemma_a_zero_critical_slack_and_exact_main_chord` 直接调用 `verify_a_critical` 并比较两种精确平方余量；C门直接比较两种ρ²、两最远点及8边距；E门直接比较两种精确竖直范围与6折点宽度；完整逃逸门比较截面计数(8,15)/(12,23)、半径/最远点、水平及竖直投影。|
+|组合调用不可悄悄脱开|`test_composite_proofs_execute_each_required_semantic_gate` 使用wraps运行真实检查并核调用，专门保护组合连线；它与直接精确值、几何负例分开，不把调用计数当数学证明。|
+|2：截面分区完备|`test_symbolic_erosion_rejects_underreported_octagon_widest_pair_at_midpoint` 注入指定低报双点；`verify_section_partition` 枚举每个K高度事件，`test_symbolic_partition_rejects_one_missing_element_height_event` 删除一个非顶点事件后必须拒绝。|
+|3：Q⊆A左右两侧|显式断言A、Q左链为已检查右链的镜像；`test_q_containment_rejects_outside_vertex_even_when_both_chains_mirror` 在两侧对称外移最宽点；另有仅左链破坏的负例。|
+|4：实际转动矩阵|`test_rotate_minus_phi_actual_matrix_is_orthogonal_with_unit_determinant` 从函数实际输出构造两列并精确核单位长度、正交和det=1。|
+|5：去掉恒等式、g(0)实算|删除半径定义的同义反复，保留临界半径=1/2；两K的 `lemma_a_metrics(element,0)` 实算余量=1。反例 `SECONDARY_BOUND=11/4` 的余量=−7/16，专门拒绝放宽一单位阈值。|
+|6：非整数幂与Pell近零|额外AST审计拒绝所有指数非整数常量的 `**`（包括 `5 ** F(1,2)`、变量及bool）；带正负号整数字面量允许。算术门独立递推Pell整数，核n=14…32正反近零符号，不以浮点判符号。|
+|7：Q5边角|新增 `__bool__`，断言 `Q5(1,1)!=Q5(1,0)`；12个左右比较方向均拒绝浮点。唯一故意生成的浮点是拒收边界输入，不进入Q5算术或几何判定，不新增浮点汇点准入。|
+|9：路径预算|[预算记录](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/path_budget_01.json)保留实际前缀与最长文件；150+12+64+30=256<260，不用缩小basetemp造绿。|
+
+### 9.2 出处附录，不改原清单
+
+`manifest.source.source_commit=a0eb727` 只表示运行基线，实际运行来自**非干净工作树**；后续交付提交为 `148891476ce64f6731ec14d7d111a81f98667125`。原源ZIP的12个文件、总239008字节，与原源清单和该提交Git blob逐字节一致。这不是全部依赖闭包，也不是当时在干净提交上运行的声明。详见[出处附录](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/provenance/README.md)、[机器记录](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/provenance/provenance_addendum.json)及[可重跑脚本](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/provenance/audit_provenance.py)。
+
+新附录的 `source_manifest_sha256` 唯一指原 `source_manifest.json` 的字节哈希，`certificate_manifest_sha256` 唯一指原 `manifest.json`，逐字段映射三个旧记录。旧证书审计中同名键实际指证书清单的歧义在附录明确更正；旧清单、旧JSON及其SHA不改。
+
+```text
+T2c2 provenance audit: 12/12 source files match delivery; 6 historical inputs unchanged; 3 hash-key mappings verified
+```
+
+### 9.3 50变异与收尾运行
+
+正式 `mutation50_02` 从头完整执行两份核查方脚本的40+10项，653.0秒；**45项报红，5项为所有者允许的等价/冗余存活，0未施加、0收集/环境错误**。每项保留实际变异源、完整stdout/stderr、命令、返回码与源SHA；运行后2712文件副本恢复原字节。[完整结果](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/mutation50_02/summary.json)及[逐项分类](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/mutation50_02/classification.json)。
+
+|存活项|理由与边界|
+|---|---|
+|M17|−φ变为+φ仍为刚体转动；本例左右镜像对称，另一方向同样给出等宽出口及相同极值。不是一般非对称物体的等价声明。|
+|M21|只放宽函数内部水平投影断言；返回的实际极值没变，外层正向测试仍直接断言恰为±1/2。冗余守卫变弱，不表示容许3/5宽的逃逸。|
+|M25|内部圆半径上界4/5放宽至1；返回的两种精确ρ²及外层ρ²<4/5仍直接核验，故对固定输入冗余。|
+|M42|固定11顶点下锥界加9仍为真；仅是当前固定几何的较弱冗余断言，不声称对任意移动体等价。|
+|M65|两种固定K的次弦支撑本来对称相等；改为≤h3+99不改变精确支撑、余量及逃逸结果，属于固定输入上的冗余放宽。|
+
+49项保留原替换定义；唯一失效的旧字面量M28作[等价重键](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/mutation50_02/anchor_rekey.json)：`b²>8 → b²>7` 对应实算 `margin>0 → margin>−1`。新锚在g(0)及g(δ°)有两处，仍用原脚本的 `replace(...,1)`，实际变异落在g(0)；11/4反例将其杀死。没有把NOT_APPLIED算作杀死，也没有以源码哈希或语法错误当数学红灯。脚本仅另加日志、TEMP目录、LF及环境/收集错误整轮作废守卫，见[改编清单](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/mutation50_02/script_adaptations.json)和[守卫补记](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/mutation50_02/script_adaptations_addendum.json)。
+
+M06同时由Pell n=14近零符号断言和新增AST幂门杀死；M18/M19由实际矩阵非正交杀死；M23/M27/M28由错误体/外点/负余量未被拒绝的具名反例杀死。M44/M53/M54/M55属于真实检查调用被删的**组合连线门**；M37属于目标竖直包络守卫被绕过、改由下游断言报错的**守卫身份门**，不夸称它产生被接受的假逃逸。其余逐项语义失败节点和断言见分类记录。
+
+首轮 `mutation50_01` 因basetemp父目录缺失出现环境错误，已停止本代理启动的进程并[整轮作废](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/mutation50_01/state.json)；02从头重跑全部50，未拼接01结果。
+
+本轮定向含慢测试与未改分析器的完整静态门，[命令、日志与摘要](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/targeted_01/summary.json)原样末行：
+
+```text
+67 passed in 34.19s
+exact construction AST gate: 0 violation(s)
+```
+
+另外实际重跑三个改过临时目录的既有复制慢测，[完整日志](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/copy_tests_targeted_02.log)原样末行：
+
+```text
+3 passed in 786.98s (0:13:06)
+```
+
+新增准入清单仍为 **`[]`**，新增证明缺口准入0、浮点汇点准入0；原CRLF policy与三个分析器SHA不变。不是整个测试进程从不产生float的声明：拒收边界测试有一个故意的浮点样本，数学和证书判定不使用它。三个复制测试仅改临时目录创建，原lifecycle测试的整文件CRLF保持；其余本轮新/改源文档为UTF-8无BOM/LF。
+
+收尾全仓快档新run `t2c2_acceptance_fast_01_20261026` 完整GREEN，[摘要](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_acceptance_fast_01_20261026/summary.json)及[完整日志](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_acceptance_fast_01_20261026/shard_1.txt)原样末行：
+
+```text
+10436 passed in 1953.99s (0:32:33)
+```
+
+10436个节点收集/分派/插件收集/实际call多重集合一致，0failed、0skip，70个src/eab模块实际执行；其中61个T2c2快档节点。运行器总墙钟1973.391699199914秒，不声称达到日常约5分钟目标。受测2712文件导出及运行时工作树均无漂移；本报告和归档登记仅在运行结束后回填，受测代码/数据未改。[受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2c2_evidence/t2c2_acceptance_fast_01_20261026/tested_source.zip)按源清单逐成员核对。运行原字节ZIP与LF映射保留，不拼接结果。
+
+### 9.4 最终交付与遗留边界
+
+- [返修逐项闭合表](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/delivery/requirements.json)取代旧需求表的PENDING/PARTIAL状态；旧表不改写。
+- [仓内文件SHA清单](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/delivery/repository_manifest.json)、[净增/只读/编码/受测源码审计](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/delivery/delivery_audit.json)、[外置逐文件H1归档清单](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/delivery/artifact_manifest.json)。返修只新增1个路径测试，修改9个既有测试/文档；累计本工单仓内净增仍<3MB，无删除。
+- 569个旧外置成果逐件SHA保持不变；核查方输入原字节不改；原源清单和52份科学证书没有重跑或“刷新源码哈希”。三分析器与CRLF policy无变化、0新增准入，src/核验器/独立侧/定理/引理一字不改。
+- 本轮不commit、不做任何Git写操作。所有者的新鲜树全档结果不由本代理代签；依指令未重跑全档。P1的e=1与细刻面预览未开展，不计PARTIAL；原路径遗留已关闭。没有尚未完成的本轮必修项。
+
+T2C2_DONE

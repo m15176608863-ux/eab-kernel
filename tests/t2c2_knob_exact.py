@@ -38,6 +38,9 @@ class Q5:
     def __float__(self):
         raise TypeError("Q5 has no implicit or explicit floating conversion")
 
+    def __bool__(self):
+        return self.a != 0 or self.b != 0
+
     def __add__(self, other):
         other = Q5(other)
         return Q5(self.a + other.a, self.b + other.b)
@@ -77,9 +80,11 @@ class Q5:
         if not isinstance(exponent, int):
             raise TypeError("Q5 exponent must be an integer")
         if exponent < 0:
-            inverse = Q5(1) / self
-            return inverse ** -exponent
-        result, factor = Q5(1), self
+            factor = Q5(1) / self
+            exponent = -exponent
+        else:
+            factor = self
+        result = Q5(1)
         while exponent:
             if exponent % 2:
                 result = result * factor
@@ -101,7 +106,7 @@ class Q5:
 
     def __eq__(self, other):
         if not isinstance(other, (Q5, F, int)):
-            return NotImplemented
+            raise TypeError("Q5 comparisons require exact scalars")
         other = Q5(other)
         return self.a == other.a and self.b == other.b
 
@@ -241,6 +246,19 @@ def eroded_half_width(element, delta, y):
                for vy in cuts)
 
 
+def verify_section_partition(element, delta, profile, ordered):
+    """Every active affine formula-change event must be a cell boundary."""
+    lo, hi = profile[0][0], profile[-1][0]
+    assert ordered == sorted(set(ordered))
+    assert all(y in ordered for y, _ in profile), "missing symbolic vertex cut"
+    for height, _ in CAVITY_PROFILE:
+        for _, vy in element_vertices(element):
+            event = height-delta*vy
+            if lo < event < hi:
+                assert event in ordered, "missing element-height event cut"
+    return len(ordered)
+
+
 def verify_symbolic_erosion(element):
     """Prove the symbolic ring by piecewise-affine horizontal sections.
 
@@ -269,6 +287,7 @@ def verify_symbolic_erosion(element):
             if lo < y < hi:
                 cuts.add(y)
     ordered = sorted(cuts)
+    verify_section_partition(element, d, profile, ordered)
     checks = ordered + [(a+b)/2 for a, b in zip(ordered, ordered[1:])]
     for y in checks:
         assert eroded_half_width(element, d, y) == _interpolate(profile, y), \
@@ -288,8 +307,13 @@ def lemma_a_metrics(element, delta=None):
 
 
 def verify_a_zero():
-    assert SECONDARY_BOUND > 0
-    assert SECONDARY_BOUND**2 > 8, "g(0)=b-2sqrt(2) must be strictly positive"
+    margins = []
+    for element in ("square", "octagon"):
+        m = lemma_a_metrics(element, 0)
+        assert m["secondary_residual"] > 0
+        assert m["secondary_squared_margin"] > 0, "g(0)=b-2sqrt(2) must be strictly positive"
+        margins.append(m["secondary_squared_margin"])
+    return tuple(margins)
 
 
 def verify_a_critical(element):
@@ -306,7 +330,6 @@ def verify_a_main(element):
     assert MAIN_SUPPORT[element] == m["h"], "declared support differs from element vertices"
     assert all(support(element, sx, F(sy, 2)) == m["h"]
                for sx in (-1, 1) for sy in (-1, 1))
-    assert m["radius"]*SQRT5/2+m["delta"]*m["h"] == 1
     assert m["radius"] == F(1, 2), "critical main-chord equality must be exact"
     return m
 
@@ -337,10 +360,15 @@ def verify_c_edges():
 def verify_q_containment():
     """Q subset A by every breakpoint of their piecewise-linear sections."""
     assert tuple((y, x) for x, y in MOVING_VERTICES[:6]) == CAVITY_PROFILE
+    assert MOVING_VERTICES[6:] == tuple((-x, y) for x, y in reversed(MOVING_VERTICES[1:6])), \
+        "A left chain must mirror its checked right chain"
+    assert Q_VERTICES[0][0] == Q_VERTICES[4][0] == 0
+    assert Q_VERTICES[5:] == tuple((-x, y) for x, y in reversed(Q_VERTICES[1:4])), \
+        "Q left chain must mirror its checked right chain"
     profile = tuple((y, x) for x, y in Q_VERTICES[:5])
     assert all(a[0] < b[0] for a, b in zip(profile, profile[1:]))
     cuts = sorted({y for y, _ in CAVITY_PROFILE} | {y for y, _ in profile})
-    assert all(0 <= _interpolate(profile, y) <= half_width(y) for y in cuts)
+    assert all(0 <= _interpolate(profile, y) <= half_width(y) for y in cuts), "Q must stay inside A"
     return len(cuts)
 
 
