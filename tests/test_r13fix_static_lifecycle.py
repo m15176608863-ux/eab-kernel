@@ -187,7 +187,8 @@ def caller(q: Fraction):
     assert analysis.return_kind(calls[0]) == expected
 
 
-def test_repository_scan_rejects_all_three_new_lifecycle_sources_without_waivers(tmp_path):
+def test_repository_scan_rejects_all_three_new_lifecycle_sources_without_waivers(tmp_path_factory):
+    tmp_path = tmp_path_factory.mktemp("r13")
     for folder in ("src", "tests", "tools"):
         shutil.copytree(ROOT / folder, tmp_path / folder,
                         ignore=shutil.ignore_patterns("__pycache__", ".pytest_cache"))

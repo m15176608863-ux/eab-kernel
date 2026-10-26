@@ -1,0 +1,119 @@
+{
+  "schema": "eab.t2c2.fixed-replay/1",
+  "producer": {
+    "source_commit": "a0eb727b4a2c59561ff59b96b447bc61d4fa05e7",
+    "tool_version": "t2c2-certificates-2",
+    "source_manifest_sha256": "5bd4cb3dfaa7545cce4bfe756b8cdaf92d2a669425b76825131739a5b68c974c",
+    "origin": "D:\\eab-evidence\\reports\\codex\\T2c2_evidence\\certificates\\run_01"
+  },
+  "direct_irrational_verification": false,
+  "timing_exclusions": [
+    "wall-clock diagnostic timings only"
+  ],
+  "cases": [
+    {
+      "id": "square_cage_k6",
+      "element": "square",
+      "kind": "cage",
+      "k": 6,
+      "slow": false,
+      "file": "sc6.gz",
+      "bytes": 3337,
+      "sha256": "cb624b7cfd12630ae8dd8fa2b5e578dfb2996217a27a91cff7d73990127aa841",
+      "decoded_bytes": 25618,
+      "decoded_sha256": "316c7a16acd0b0b5a1764771e4bc79ab79f537832fbe40b5771be961d52cd931",
+      "source_bundle": "square/cage_k06/bundle.json"
+    },
+    {
+      "id": "square_cage_k12",
+      "element": "square",
+      "kind": "cage",
+      "k": 12,
+      "slow": true,
+      "file": "sc12.gz",
+      "bytes": 4960,
+      "sha256": "23b19189cdfebe08df45b3678d2e86ae1576d4f8a1705d243d754a3d8e6112f9",
+      "decoded_bytes": 39618,
+      "decoded_sha256": "f19b642e172b69783244ffeb9822bb47abf7ae6e74c69ef61bf0d5022745e3c1",
+      "source_bundle": "square/cage_k12/bundle.json"
+    },
+    {
+      "id": "square_escape_k6",
+      "element": "square",
+      "kind": "escape",
+      "k": 6,
+      "slow": false,
+      "file": "se6.gz",
+      "bytes": 7488,
+      "sha256": "066d283e1e6d25ab8e4fd7f8c7b43de22d5b3bdd091b2c937379978015658a0f",
+      "decoded_bytes": 61027,
+      "decoded_sha256": "9879bdcb1224dd323edaab37d6a183ea70a5a0340a57a0c941f8f6d0bf1b5231",
+      "source_bundle": "square/escape_k06/bundle.json"
+    },
+    {
+      "id": "square_escape_k24",
+      "element": "square",
+      "kind": "escape",
+      "k": 24,
+      "slow": true,
+      "file": "se24.gz",
+      "bytes": 7540,
+      "sha256": "a886b2fc0e90e570b4cf1774a92faa272b25e4515133d6f7ccb9de6e3d685e86",
+      "decoded_bytes": 61077,
+      "decoded_sha256": "11d2ed386f9db43908df1af7eece4e8ec5a09c5544bc26e55a5db4b8be9f0fc2",
+      "source_bundle": "square/escape_k24/bundle.json"
+    },
+    {
+      "id": "octagon_cage_k6",
+      "element": "octagon",
+      "kind": "cage",
+      "k": 6,
+      "slow": false,
+      "file": "oc6.gz",
+      "bytes": 3314,
+      "sha256": "7d290ae95936e78301d80bafda8627189d3d8eae44a695e31131784e8563a6ac",
+      "decoded_bytes": 24403,
+      "decoded_sha256": "e24a8cd360b1eef078a365e18afd41aa0943eb8eabef7a2aa7186572831a3f1e",
+      "source_bundle": "octagon/cage_k06/bundle.json"
+    },
+    {
+      "id": "octagon_cage_k12",
+      "element": "octagon",
+      "kind": "cage",
+      "k": 12,
+      "slow": true,
+      "file": "oc12.gz",
+      "bytes": 4993,
+      "sha256": "1facdc50bb996b5ae0efd649719fd0fe3cdc641a1e88cee608b0e8585fd0151b",
+      "decoded_bytes": 38741,
+      "decoded_sha256": "49ee0f681c27b771ac3563b17b26008c2c1b2bbd4adc75508b12984ce7b70fdd",
+      "source_bundle": "octagon/cage_k12/bundle.json"
+    },
+    {
+      "id": "octagon_escape_k6",
+      "element": "octagon",
+      "kind": "escape",
+      "k": 6,
+      "slow": false,
+      "file": "oe6.gz",
+      "bytes": 6670,
+      "sha256": "27619f20a9077d7204220def6ac551cf641451b36df96170e80e973adcb60236",
+      "decoded_bytes": 54565,
+      "decoded_sha256": "de610e221d1b2503f084478f842c07d8437efb439f31506cf1d60adda7398fb5",
+      "source_bundle": "octagon/escape_k06/bundle.json"
+    },
+    {
+      "id": "octagon_escape_k24",
+      "element": "octagon",
+      "kind": "escape",
+      "k": 24,
+      "slow": true,
+      "file": "oe24.gz",
+      "bytes": 6674,
+      "sha256": "84ac89488729679b150e84bb9fb8f3e59c59efdbafc068e0e425fc3da3c2209d",
+      "decoded_bytes": 54544,
+      "decoded_sha256": "d18101b95db40bff5f84a35a77a337f3819889bb59ca12801e5c04237f35fe8c",
+      "source_bundle": "octagon/escape_k24/bundle.json"
+    }
+  ]
+}
