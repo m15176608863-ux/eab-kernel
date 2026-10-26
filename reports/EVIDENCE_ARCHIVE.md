@@ -394,3 +394,23 @@ Claude 提供 c8718bb 新鲜树构建/五层差分/全档15056绿及两路验收
 - H1登记：[外置逐文件SHA清单](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/delivery/artifact_manifest.json)、[仓内改动SHA](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/delivery/repository_manifest.json)、[最终净增/只读/编码审计](file:///D:/eab-evidence/reports/codex/T2c2_evidence/acceptance_repair_20261026/delivery/delivery_audit.json)。569个旧外置成果及核查方输入原SHA不变，52科学证书不重跑、不改源哈希。返修新增1文件、修改9文件，累计本单仓内净增<3MB，无删除；原lifecycle测试保留整文件CRLF，其余新/改源码文档UTF8无BOM/LF。原始运行字节先存ZIP再规范LF展示，独立于数学输入。
 
 **T2C2_DONE**；e=1和细刻面P1未做不计PARTIAL，路径守卫遗留已关闭。归档是本地证据，不冒称远程备份。
+
+## WO-T2d（2026-10-26）：凸耳族精确核验与有限证书
+
+- [中文报告](file:///D:/eab-wt/cx-e2/reports/codex/T2d_report.md)：12行精确值一致、9个S情形临界逃逸、另3个方形仅报告临界括号。定理稿、引理、核验器、独立侧、三个分析器及CRLF policy不改；不作Git写。
+- 开工干净 `codex-work @ 84bcc048b22883f1faeab1930414e55885cfcaac`；2713文件[回退ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/baseline_anchor/source.zip)及[逐文件SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/baseline_anchor/manifest.json)，不冒称新鲜Git树。
+- [全表/临界转动/圆模型精确结果](file:///D:/eab-evidence/reports/codex/T2d_evidence/exact_01/exact_summary.json)，显示小数仅作数值诊断。定向数学门[52项记录](file:///D:/eab-evidence/reports/codex/T2d_evidence/targeted_01/summary.json)：`52 passed in 95.45s (0:01:35)`；`exact construction AST gate: 0 violation(s)`。
+- 正式93份：[逐文件SHA与完整返回](file:///D:/eab-evidence/reports/codex/T2d_evidence/certificates/run_01/manifest.json)、[源清单](file:///D:/eab-evidence/reports/codex/T2d_evidence/certificates/run_01/source_manifest.json)、[651成员源ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/certificates/run_01/source_snapshot.zip)、[一致性审计](file:///D:/eab-evidence/reports/codex/T2d_evidence/certificates_audit_01/summary.json)。36不变圆片笼、54条带逃逸、3方形混合逃逸全部双接受；36同δ平移困住，57独立无限尾补证，同δ矛盾0，数学输入浮点0。82份active依赖全程无漂移。基线提交不是实际生成树干净的声明。
+- [方形上界](file:///D:/eab-evidence/reports/codex/T2d_evidence/certificates_audit_01/square_brackets.json)均严格小于δ_disk+2^-12；N32原提议略超目标，减少δ后同一路径重核。pickle始终未加载，只作隔离opcode数值提取，见[pilot边界清单](file:///D:/eab-evidence/reports/codex/T2d_evidence/pilot_inventory.json)。
+- [固定9份回放](file:///D:/eab-wt/cx-e2/tests/data/t2d/index.json)，压缩数据和索引138773字节，5快4慢；[正式回放](file:///D:/eab-evidence/reports/codex/T2d_evidence/replay_validation_01/summary.json)为 `16 passed in 202.61s (0:03:22)`，实际完整返回核对，不钉当前源码。既有slow清单仅追加4节点。
+- 新增准入清单空、浮点汇点准入0。收尾快/全档、受测源ZIP、最终净增与逐文件SHA在完成后追加；不重算93份冻结证据。P1未开展不计PARTIAL，所有者新鲜树及独立验收不自签。
+
+### WO-T2d 收尾补记
+
+上段待办已关闭：收尾[快档](file:///D:/eab-evidence/reports/codex/T2d_evidence/t2d_final_fast_20261026_01/summary.json) `10504 passed in 1919.44s (0:31:59)`；[快慢全档](file:///D:/eab-evidence/reports/codex/T2d_evidence/t2d_final_full_20261026_01/summary.json)16630项，四片及静态原样末行见[报告§9](file:///D:/eab-wt/cx-e2/reports/codex/T2d_report.md)。两轮GREEN、0failed/skip、节点多重集合一致、70模块实际执行，静态0violation，运行时无源漂移。
+
+- 两轮2737成员manifest及[受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/t2d_final_full_20261026_01/tested_source.zip)字节完全相同；ZIP SHA256 `d5bdce41c3987c501f794d392af69c51a381f5a96597c28a10815ce9f47b6dd9`。不是新鲜Git树；结束后仅报告/登记回填，不改代码或证书。[双轮源和节点审计](file:///D:/eab-evidence/reports/codex/T2d_evidence/delivery_final_01/gate_pair_audit.json)。
+- [逐项闭合表](file:///D:/eab-evidence/reports/codex/T2d_evidence/requirements.json)、[仓内改动SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/delivery_final_01/repository_manifest.json)、[只读/净增/编码审计](file:///D:/eab-evidence/reports/codex/T2d_evidence/delivery_final_01/delivery_audit.json)、[外置逐文件SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/delivery_final_01/artifact_manifest.json)。24新文件，既有仅本登记及slow清单追加，净增小于0.32MB；0新增准入，三个分析器/CRLF policy及其他旧文件字节不变。
+- 各轮原文本ZIP及换行映射保留原字节，不更改JSON语义或末行。fast的归档工具nullable-static错误单独保存作废尝试，修复后独立重归档；不是测试失败或重跑拼接。93份数学证书未重算、未改来源哈希；9份pytest实际几何回放与93份外置几何全审计的范围在报告中分列。
+
+**T2D_DONE**。方形N≥8等号仍为猜想；P1未开展不计PARTIAL，所有者新鲜树和独立对抗验收仍由所有者安排。
