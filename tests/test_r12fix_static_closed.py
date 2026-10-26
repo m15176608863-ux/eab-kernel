@@ -192,7 +192,7 @@ def test_l01_full_repository_copy_rejects_real_map_implant_and_changed_dependenc
     """Historical nodeid retained: dependency edits now preserve local reviews."""
     import shutil
 
-    copy_root = tmp_path / "closed_repository_copy"
+    copy_root = tmp_path / "repo"
     for folder in ("src", "tests", "tools"):
         shutil.copytree(ROOT / folder, copy_root / folder)
     path = "src/eab/kernel3d/covers3.py"

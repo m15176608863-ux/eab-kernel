@@ -166,7 +166,7 @@
 
 ### 6.2 所有者变异核查后的补门
 
-原24项门不能代替核查方97项单项变异：原测试集有49项存活，本次补足遗漏防线而不修改生产核验器。[新增27个具名伪造测试](file:///D:/eab-wt/cx-e2/tests/test_t2b_acceptance_forgeries.py)逐项断言首个拒收代码；[54个JSON及双SHA清单](file:///D:/eab-wt/cx-e2/tests/data/t2b_forgeries/acceptance_20261026/manifest.json)仅作CRLF→LF，未重编码JSON。原文与入库版本共54对双核验全部按预期拒收、0分歧，见[逐项复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/forgeries/dual_recheck.json)。原39份伪造保留，现共66份。
+原24项门不能代替核查方97项单项变异：原测试集有49项存活，本次补足遗漏防线而不修改生产核验器。[新增27个具名伪造测试](file:///D:/eab-wt/cx-e2/tests/test_t2b_acceptance_forgeries.py)逐项断言首个拒收代码；[54个JSON及双SHA清单](file:///D:/eab-wt/cx-e2/tests/data/t2b_forgeries/acc/manifest.json)仅作CRLF→LF，未重编码JSON。原文与入库版本共54对双核验全部按预期拒收、0分歧，见[逐项复核](file:///D:/eab-evidence/reports/codex/T2b_evidence/acceptance_repair_c900033_20261026/forgeries/dual_recheck.json)。原39份伪造保留，现共66份。
 
 | 条件 | 新增伪造ID |
 |---|---|

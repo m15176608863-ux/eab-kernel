@@ -1,0 +1,342 @@
+{
+  "schema": "eab.t2c1.fixed-replay/1",
+  "producer": {
+    "source_commit": "cfa3e90b8fcca2117021bb12df188322199f3cfe",
+    "tool_version": "t2c1-science-1",
+    "role": "completed scientific run and replay revalidation; historical copied inputs retain origin chain",
+    "source_manifest": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\certificates\\joint_01\\source_manifest.json",
+    "source_manifest_sha256": "10db2d3a7ae539c3c4dfec220513a6af8667926a1e1f5eb0d64ed9f33ce17945",
+    "tested_source_zip": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\certificates\\joint_01\\tested_source.zip",
+    "dirty_source_bytes_preserved": true,
+    "selection_sources": [
+      {
+        "role": "joint",
+        "directory": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\certificates\\joint_01",
+        "summary": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\certificates\\joint_01\\summary.json",
+          "sha256": "c60f99cfe45d96caa6727f7ecc934dfe2559ee57725fe98c6e6ace45b7f68533"
+        },
+        "state": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\certificates\\joint_01\\state.json",
+          "sha256": "80aaf16a1b6b3a244e86b8daca0fc8b6f0a20bf6d8d9b374841258b805febec0"
+        },
+        "source_manifest": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\certificates\\joint_01\\source_manifest.json",
+          "sha256": "10db2d3a7ae539c3c4dfec220513a6af8667926a1e1f5eb0d64ed9f33ce17945"
+        }
+      },
+      {
+        "role": "supplemental_1",
+        "directory": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\high_budget_d01_01",
+        "summary": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\high_budget_d01_01\\summary.json",
+          "sha256": "e4db4157b2589a69721bbdba3260a69c596b0121c0ed91b5f18da4d877ec4744"
+        },
+        "state": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\high_budget_d01_01\\state.json",
+          "sha256": "80aaf16a1b6b3a244e86b8daca0fc8b6f0a20bf6d8d9b374841258b805febec0"
+        },
+        "source_manifest": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\high_budget_d01_01\\source_manifest.json",
+          "sha256": "607679570fb94e96426d4535f256055764a9ec5f43ca0b5869ff723a78ea9519"
+        }
+      },
+      {
+        "role": "supplemental_2",
+        "directory": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\closed_chain_high_budget_01",
+        "summary": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\closed_chain_high_budget_01\\summary.json",
+          "sha256": "6909b55507a916baca8cf8c47c94c55274bb9e378de6a65ec6a36c9985757ca2"
+        },
+        "state": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\closed_chain_high_budget_01\\state.json",
+          "sha256": "80aaf16a1b6b3a244e86b8daca0fc8b6f0a20bf6d8d9b374841258b805febec0"
+        },
+        "source_manifest": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\closed_chain_high_budget_01\\source_manifest.json",
+          "sha256": "df4a29b648e9937109ff690496669fc807e94fbd291ccbc0233a86ab70af1e4b"
+        }
+      },
+      {
+        "role": "supplemental_3",
+        "directory": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\fine_escape_03",
+        "summary": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\fine_escape_03\\summary.json",
+          "sha256": "7ed34afcb76657de8b02ee21977ade6dd5f579b8012cacbdbca41e6953d35b64"
+        },
+        "state": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\fine_escape_03\\state.json",
+          "sha256": "80aaf16a1b6b3a244e86b8daca0fc8b6f0a20bf6d8d9b374841258b805febec0"
+        },
+        "source_manifest": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\fine_escape_03\\source_manifest.json",
+          "sha256": "66d35a3a50e8a788ca99a28e6f9b4f82fa4d0c0dbe5a6643a58161dcf20e01ee"
+        }
+      },
+      {
+        "role": "endpoint_diagnostic",
+        "directory": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\observer_endpoints_01",
+        "summary": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\observer_endpoints_01\\summary.json",
+          "sha256": "21898879db7445aa4ab696e92ce3e23a9b2c53458df02f469bb95d3fe69da3aa"
+        },
+        "state": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\observer_endpoints_01\\state.json",
+          "sha256": "80aaf16a1b6b3a244e86b8daca0fc8b6f0a20bf6d8d9b374841258b805febec0"
+        },
+        "source_manifest": {
+          "path": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\observer_endpoints_01\\source_manifest.json",
+          "sha256": "5f8f8d92f4fdbc3a07b16eb0fb2345b4974cf607b617acb3059943b91749b327"
+        }
+      }
+    ],
+    "selection_summary": "D:\\eab-evidence\\reports\\codex\\T2c1_evidence\\final_selection_02\\summary.json",
+    "selection_summary_sha256": "fe24dffb264a92a452c06ed9e17b0749489620feb52dc8e53a049302355f164f"
+  },
+  "timing_exclusions": [
+    "wall-clock diagnostic timings only; exact_time is retained"
+  ],
+  "escape_scope": "production infinite ray; independent finite path and ray prefix only",
+  "cases": [
+    {
+      "case_id": "d01",
+      "file": "d01.json.gz",
+      "sha256": "b0b5b685761f1ed08fedd7644bbb392b2272d2992d95afc80618e5172a4f3ce8",
+      "decoded_sha256": "043af4d9410bbde2606fc2523ef213dcd0e5111b5a430ef37c7219cd6418493e",
+      "bytes": 16779,
+      "decoded_bytes": 360931,
+      "delta_cage": "257/1024",
+      "delta_escape": "1211/4096",
+      "delta_translation_star": "1/3",
+      "old_delta_cage": "23/128",
+      "old_delta_escape": "3/10",
+      "kind": "dovetail",
+      "head_width": "5/2",
+      "neck_width": "3/2",
+      "element": "square",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.14725840010214597,
+      "escape_samples": 1,
+      "intervals": 12,
+      "uses_caps": true,
+      "full_circle": false
+    },
+    {
+      "case_id": "d02",
+      "file": "d02.json.gz",
+      "sha256": "70139a538fddc9f65873c1833fd4806d1fde132e27c78189f4fb59f5487db8c1",
+      "decoded_sha256": "ee0746573042602408c688865a6acf3c1ae2df3d2e47ce72c2cc23653c799875",
+      "bytes": 26213,
+      "decoded_bytes": 604610,
+      "delta_cage": "81/256",
+      "delta_escape": "1451/4096",
+      "delta_translation_star": "1/2",
+      "old_delta_cage": "63/256",
+      "old_delta_escape": "1851/5120",
+      "kind": "dovetail",
+      "head_width": "7/2",
+      "neck_width": "3/2",
+      "element": "square",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.14753749989904463,
+      "escape_samples": 1,
+      "intervals": 8,
+      "uses_caps": true,
+      "full_circle": false
+    },
+    {
+      "case_id": "d03",
+      "file": "d03.json.gz",
+      "sha256": "c385de97c4eb8b19472c56df9243edc87a205145198c6ac3f719fa2cd6c0e0e1",
+      "decoded_sha256": "8b230536cdf9b90099007d75ab742ec5cf317b2d64cd0a6c0333f5cb80e7069f",
+      "bytes": 7757,
+      "decoded_bytes": 139484,
+      "delta_cage": "597/2048",
+      "delta_escape": "843/2048",
+      "delta_translation_star": "3/7",
+      "old_delta_cage": "1/4",
+      "old_delta_escape": "21/50",
+      "kind": "dovetail",
+      "head_width": "5/2",
+      "neck_width": "1",
+      "element": "square",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.15123369998764247,
+      "escape_samples": 1,
+      "intervals": 8,
+      "uses_caps": true,
+      "full_circle": false
+    },
+    {
+      "case_id": "d04",
+      "file": "d04.json.gz",
+      "sha256": "66afc9b8a8b517af5fd1d3191b626a67215eada34618a94f361172ed92ec0bbc",
+      "decoded_sha256": "2732d1dcc1acd429cdb887801d5707797b5909db5312d1d32fada30c5d597cde",
+      "bytes": 25815,
+      "decoded_bytes": 646352,
+      "delta_cage": "573/4096",
+      "delta_escape": "397/2048",
+      "delta_translation_star": "3/14",
+      "old_delta_cage": "13/128",
+      "old_delta_escape": "1/5",
+      "kind": "dovetail",
+      "head_width": "5/2",
+      "neck_width": "1",
+      "element": "square",
+      "wall_erosion": 1,
+      "cage_slow": false,
+      "build_cage_seconds": 0.20979130000341684,
+      "escape_samples": 1,
+      "intervals": 8,
+      "uses_caps": true,
+      "full_circle": false
+    },
+    {
+      "case_id": "d05",
+      "file": "d05.json.gz",
+      "sha256": "8f344ce5e75a6699f8eda7584e4151768fad8cb6aa1d3f99eadf7bbf9f7c5941",
+      "decoded_sha256": "bc40e5ae2ca2cd1351b08208eb617f73b97cb3409b079623a92d50424635ecef",
+      "bytes": 28022,
+      "decoded_bytes": 649595,
+      "delta_cage": "687/2048",
+      "delta_escape": "1595/4096",
+      "delta_translation_star": "24/41",
+      "old_delta_cage": "63/256",
+      "old_delta_escape": "2043/5120",
+      "kind": "dovetail",
+      "head_width": "7/2",
+      "neck_width": "3/2",
+      "element": "octagon",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.1249640000751242,
+      "escape_samples": 1,
+      "intervals": 8,
+      "uses_caps": true,
+      "full_circle": false
+    },
+    {
+      "case_id": "d06",
+      "file": "d06.json.gz",
+      "sha256": "084edc9184c72151ec4622f786629bf2e7c3260eaca2df81dce38092509e80e2",
+      "decoded_sha256": "ad9f77c271ea142e12398c089651e6f2544315969ac8d3fef046a0325bc72125",
+      "bytes": 3183,
+      "decoded_bytes": 31612,
+      "delta_cage": "747/2048",
+      "delta_escape": "1037/2048",
+      "delta_translation_star": "24/41",
+      "old_delta_cage": "93/256",
+      "old_delta_escape": "5393/10240",
+      "kind": "dovetail",
+      "head_width": "3",
+      "neck_width": "1",
+      "element": "octagon",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.09577339992392808,
+      "escape_samples": 1,
+      "intervals": 2,
+      "uses_caps": false,
+      "full_circle": true
+    },
+    {
+      "case_id": "d07",
+      "file": "d07.json.gz",
+      "sha256": "ec980e079d8697cda60c11c0956606c1f6c0b443af6d28e6f42d80ebebcbdf4d",
+      "decoded_sha256": "899bcd0db642719d9870228fdda6d675fc7cc866f5edead89e22f82fefad8ad0",
+      "bytes": 16180,
+      "decoded_bytes": 331002,
+      "delta_cage": "1019/4096",
+      "delta_escape": "1293/4096",
+      "delta_translation_star": "24/65",
+      "old_delta_cage": "13/64",
+      "old_delta_escape": "849/2560",
+      "kind": "dovetail",
+      "head_width": "5/2",
+      "neck_width": "3/2",
+      "element": "octagon",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.13769509992562234,
+      "escape_samples": 1,
+      "intervals": 12,
+      "uses_caps": true,
+      "full_circle": false
+    },
+    {
+      "case_id": "d08",
+      "file": "d08.json.gz",
+      "sha256": "fd54cd21b55c9c49d521edac58733db8254f55f2148f69ee8d13e4426fe90881",
+      "decoded_sha256": "031075c231a882a269ba5df1c1dbf20704436c21809fd3d83e5bfeaec498f15c",
+      "bytes": 27334,
+      "decoded_bytes": 603629,
+      "delta_cage": "325/2048",
+      "delta_escape": "55/256",
+      "delta_translation_star": "12/49",
+      "old_delta_cage": "13/128",
+      "old_delta_escape": "11377/51200",
+      "kind": "dovetail",
+      "head_width": "3",
+      "neck_width": "3/2",
+      "element": "octagon",
+      "wall_erosion": 1,
+      "cage_slow": false,
+      "build_cage_seconds": 0.250247799907811,
+      "escape_samples": 1,
+      "intervals": 15,
+      "uses_caps": true,
+      "full_circle": false
+    },
+    {
+      "case_id": "k01",
+      "file": "k01.json.gz",
+      "sha256": "02d2f6079f4d6107ca919dc7715299ad147e1d2d4a500392009feb4500c0d3bf",
+      "decoded_sha256": "63bafbfc8422ec29f9b4a40e556c3d305167ef0ea830e7b64b4fb07b1d259a1a",
+      "bytes": 5118,
+      "decoded_bytes": 64151,
+      "delta_cage": "301/1024",
+      "delta_escape": "1209/4096",
+      "delta_translation_star": "1/3",
+      "old_delta_cage": "75/256",
+      "old_delta_escape": "3923/12800",
+      "kind": "knob",
+      "head_width": "2",
+      "neck_width": "1",
+      "element": "square",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.273017399944365,
+      "escape_samples": 1,
+      "intervals": 2,
+      "uses_caps": false,
+      "full_circle": true
+    },
+    {
+      "case_id": "k02",
+      "file": "k02.json.gz",
+      "sha256": "663ec5bb746220aeaed0ca58ee41a03a2a3e1f4fc9519738e9432772e418eb96",
+      "decoded_sha256": "f968c4bdf4dd8bd3da9202b9046f452c23a9856bc468d3dffe444b3f96a1ad64",
+      "bytes": 4004,
+      "decoded_bytes": 41519,
+      "delta_cage": "747/2048",
+      "delta_escape": "375/1024",
+      "delta_translation_star": "12/29",
+      "old_delta_cage": "93/256",
+      "old_delta_escape": "977/2560",
+      "kind": "knob",
+      "head_width": "2",
+      "neck_width": "1",
+      "element": "octagon",
+      "wall_erosion": 0,
+      "cage_slow": false,
+      "build_cage_seconds": 0.20807880000211298,
+      "escape_samples": 1,
+      "intervals": 2,
+      "uses_caps": false,
+      "full_circle": true
+    }
+  ]
+}
