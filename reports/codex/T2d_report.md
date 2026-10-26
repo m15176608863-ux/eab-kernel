@@ -1,12 +1,14 @@
 # WO-T2d：凸耳族的刚体临界公差——精确核验报告
 
-**一句话结论：** P0完成：12行精确值均与定理稿一致，9种条带情形的临界逃逸精确成立，93份有限公差证书全部双接受；另3种方形仅证明宽度小于2^-12的临界括号，等号仍为猜想；收尾快档10504项、全档16630项及静态门全部通过。
+**一句话结论：** P0完成：12行精确值一致、9种临界逃逸精确成立、93份有限证书双接受；另3种方形仅有宽度小于2^-12的临界括号，等号仍为猜想；原交付全档16630项通过，本轮8项验收返修闭合，快档10510项、含慢定向78项及静态门全部通过。
 
 ## 1. 白话结论与边界
 
 同一个凸耳，能否转着退出，不只取决于刻面有多细，也取决于采用哪一种腐蚀容差元。本单严格区分：九种满足条带条件的情形，可以在精确临界值处“先转后升”；方形容差元的 N=8、16、32 不能用这条特定路径证明等号，只能报告已核验的上下界与猜想。
 
-这里的“自由”允许边界接触，禁止内部相交；不是工程间隙裕量、力学轨迹等价、材料标定或生产工程验证。不涉及 C++/eab2，不作新颖性或实现优先性表述，沿用石根华入口块理论的归属口径。
+定理与证明归属所有者的第 2 版定理稿；石根华入口块理论的归属沿用 WO-T2a D1（SE(2) 指定路径首入是本仓库 M5a 的结果）；不作新颖性或实现序数宣传。
+
+这里的“自由”允许边界接触，禁止内部相交；不是工程间隙裕量、力学轨迹等价、材料标定或生产工程验证。不涉及 C++/eab2。
 
 只讨论 `head_width=2, neck_width=1, height=2, wall=2`、固定墙不腐蚀、N∈{4,8,16,32}、三种指定 K。N=64、128 的结果只用于标注为“数值”的趋势展示，不冒称生产生成器支持这些 N。
 
@@ -153,7 +155,9 @@
 
 圆模型的平移阈值逐 K 顶点核方程 `|k|²δ²+k_xδ−3/4=0` 的最小正根，非预设取最右顶点而略过其余顶点。
 
-|K|δ_T∞（精确）|δ_disk∞/δ_T∞（精确）|比值（数值）|
+本单只精确计算了圆形模型本身；有限 N 收敛到它的论证来自定理稿，本单只以 N = 64、128 的数值显示趋势，未作精确证明。
+
+|K|δ_T∞（精确）|δ_disk∞/δ_T∞（精确）|圆形模型下的比值（数值）|
 |---|---|---|---:|
 |方形|(√7−1)/4|(√14+√2)/6|0.859311824858|
 |八边形|(6√651−72)/169|(√651+12)/39|0.961915426778|
@@ -172,7 +176,7 @@
 
 比值可以围绕极限振荡；这些有限N不是单调收敛证明。64/128两种非方形的最小弦在这次检查中仍满足S，不推断更大N永不漂出允许锥。
 
-**含义（仅限已支撑部分）：** 九个S情形的精确收益并非都等于刻面项；五个主弦例精确相等，另外四例的正差值有精确比较门。指定三K的圆模型极限值表显示不同的容差元各向异性贡献。`N²G_facet=4/(√(1+4/N²)+1)` 给出刻面项的2/N²渐近式。方形约14.07%的圆模型差值仍按δ_disk计算，不把尚未证明的方形刚体阈值等号写成已证含义，也不推广到任意“更接近圆”的容差元序列。
+**含义（仅限已支撑部分）：** 九个S情形的精确收益并非都等于刻面项；五个主弦例精确相等，另外四例的正差值有精确比较门。指定三K的表仅比较不同容差元在圆形模型下的比值。`N²G_facet=4/(√(1+4/N²)+1)` 给出刻面项的2/N²渐近式。方形约14.07%的圆模型差值仍按δ_disk计算，不把尚未证明的方形刚体阈值等号写成已证含义，也不推广到任意“更接近圆”的容差元序列。
 
 ## 8. 静态门、成本与回退锚点
 
@@ -238,5 +242,78 @@ exact construction AST gate: 0 violation(s)
 - P0逐项闭合见[requirements.json](file:///D:/eab-evidence/reports/codex/T2d_evidence/requirements.json)。本单未发现需要停单的定理错误；方形极限比值的代数次数措辞已在§7明确，不擅改所有者定理稿。
 - P1的方形临界混合运动精确构造、N64全套证书未开展，不因此单列PARTIAL。
 - 本地多代理内部复核不是Claude安排的独立对抗验收；所有者的新鲜树/合并后最终验证仍由所有者安排。本代理不作Git写，也不代签里程碑验收。
+
+## 11. 验收返修（2026-10-26，基线52d3b63）
+
+所有者本轮裁定告知：三路非作者核查均通过；另份独立实现核对12行精确表、93份证书代理方向及方形严格上界，比较器独立参考178360例0分歧。该结论归于所有者提供的验收结果，不冒称本代理重新执行了这些核查。本节仅记录本轮8项测试与措辞返修。
+
+开工为干净 `codex-work @ 52d3b631118f70750e6af355bd35ddd725e05df5`；[2737文件回退ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/baseline_anchor/source.zip)与[基线SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/baseline_anchor/manifest.json)已保存。只修改测试与文档；`src/`、核验器、独立侧、精确辅助模块、定理稿、引理、三个分析器、policy及冻结证书只读。不作Git写。
+
+<!-- T2D_ACCEPTANCE_REPAIR_RESULTS_BEGIN -->
+### 11.1 八项返修与具名门
+
+本轮八项已闭合；完整可机读对照见[返修 requirements](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/requirements.json)。下面的测试均为最终源版本实际运行，不借用所有者核查结果代替本轮门。
+
+|项|改动及边界|具名门／核验|
+|---|---|---|
+|1 比较器|补齐 `Surd(3) < Surd(3,1,2)`、`Surd(3) > Surd(3,-1,2)`、`Surd(3,1,2) > 3`。固定种子20261026，10896对、双向21792次比较。|[values](file:///D:/eab-wt/cx-e2/tests/test_t2d_values.py)：`test_t2d_cross_field_order_signs_and_scaled_equalities`、`test_t2d_comparator_fixed_seed_independent_interval_fuzz`、`test_t2d_interval_oracle_rejects_internal_comparator_mutation`；M04被目标断言杀死。|
+|2 条件C|`verify_C(4, "square", F(3,20))` 必须在旋转半径处以 `rotation radius` 报错。|同上：`test_t2d_C_unsafe_delta_is_rejected_by_rotation_radius`；M23、M24均杀死。|
+|3 圆盘余量|全部12例在 δ_disk+2^-40 调用 `verify_disk_subset`，必须报 `disk is not contained`，不能以稍后另一条断言替代。|[critical escape](file:///D:/eab-wt/cx-e2/tests/test_t2d_critical_escape.py)：`test_t2d_disk_subset_rejects_a_tiny_positive_threshold_excess`；M32杀死。|
+|4 台账方向|复制实际台账的笼／逃逸行，分别改到错误的一侧。JSON使用δ_disk±2^-40的96位有理包围区间向错侧端点，精确检查错侧距离在[2^-40,2^-39)；不修改冻结台账。|[replay](file:///D:/eab-wt/cx-e2/tests/test_t2d_replay.py)：`test_t2d_ledger_rejects_tiny_wrong_side_proxy_for_each_kind`；M40由方向语义断言杀死。|
+|5 浮点门|`**`／`**=`同查；非整数常量指数拒绝；负指数须能确认底数为Fraction／Surd。标记pow、operator.pow、.__pow__、cmath、decimal、动态import、F.__float__及可解析别名；可静态确认int/int的真除（含1/2与/=）被标记。|[static](file:///D:/eab-wt/cx-e2/tests/test_t2d_static.py)：`test_t2d_exact_sources_reject_internal_floating_injections`、`test_t2d_exact_runtime_outputs_reject_internal_float_injections`；60项AST内部注入、3项运行时内部注入全部拒绝。|
+|6 归属|报告开头逐字采用所有者指定的定理稿、石根华理论和M5a归属句。|[requirements第6项](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/requirements.json)保存原句及逐字核对；不改归属合同。|
+|7 圆形模型|§7逐字补充“本单只精确计算了圆形模型本身……”限制句；表头改为“圆形模型下的比值”。|同清单第7项逐字核对；有限N的精确收敛证明仍归于定理稿，本单只提供数值趋势。|
+|8 原变异复跑|原45条替换及脚本字节不改；最终版本39项非等价全部语义杀死，恰有6项预定等价存活，0环境／收集错误。|[最终逐项语义复核](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/mutation_audit_02/semantic_review.json)，见下表。|
+
+区间oracle仅以原始有理三元组、`Fraction`、整数`isqrt`和有理闭区间细化计算，不调用被测比较器、符号函数或bounds；独立处理精确相等后，非等值须区间严格分离。样本为10000对一般输入、256对Pell近零、512对跨域近等、128对缩放精确等值；按本oracle倍增细化，Pell／跨域两组至少各有一对样本分别细化到不低于512／256位才区间分离，不称每对样本均有此精度下界。精度耗尽报错，不猜相等；另把实际比较器内部替换为恒零，验证oracle语义断言报红。有限模糊测试不冒充比较器全域证明。
+
+静态源局部筛查对解包、海象、循环／with／推导式、函数／异步函数／lambda参数及except／match捕获等简单重绑定保守置为unknown，不把影子变量误认精确构造器。原有故意验证Surd转换抛TypeError的测试，只在**确切调用AST、确切assertRaises上下文和确切测试函数名**同时匹配时窄允许；F.__float__和其他转换仍拒绝。此筛查不是任意Python动态调度的通用类型证明。原三个分析器一字不改，policy原CRLF保留，新增准入清单 `[]`，证明缺口／浮点汇点新增准入均0。
+
+运行时门遍历三个精确模块的120个代表性输出根：含全部12行、9个S情形临界逃逸、3个圆形模型和截面输出；递归检查Surd的a/b/q、字典键值和容器成员，拒绝float及未知输出类型。三处真实内部计算变异分别在弧坐标计算前、墙体构造前、仿射斜率计算处引入整数真除，均由输出检查报红，不在输出列表末尾追加假浮点。这是具名代表输入的输出闭包检查，不称为所有输入的无浮点证明。[最终静态子集记录](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/static/recorded_03/summary.json)。
+
+### 11.2 原45项变异与六项存活理由
+
+[最终完整运行](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/mutation_audit_02/README.md)对45/45条逐一确认唯一字面替换，保存原／变异源、diff、完整stdout/stderr和命令。核查方原脚本SHA256为 `a2b8005088b4997d463293a5347b1d415f9b81cfadb7f20fc84ed5c531d01fe2`，未修改；外置包装只改输出／隔离临时路径及记录，仍用原8 worker、`-x`快档参数，不插入`--runslow`。含慢范围由独立的完整定向运行负责。
+
+39项首失败节点、失败断言与相关栈上下文均逐项核对，不以非零退出码、哈希断言或收集失败充数。M30／M31／M34／M39虽由运行时输出门先触发，栈内失败仍是实际转动对齐、支持点、条带几何或独立截面下确界断言，不是词法拦截。所有6项存活均属所有者预先列明的等价项，理由限于当前合同域：
+
+|存活项|逐项理由|
+|---|---|
+|M15|只删u1=1/4的正侧候选，其镜像保有相同r/q/H；后续并列极小弦仍从完整edges枚举。并非同时删掉一对镜像弦。|
+|M29|12行的非空极小弦镜像对具有相同S真假，因此all／any在本族相同；不推广到混合状态或非对称输入。|
+|M33|活动弦定义δ=(r−√q/2)/H，故所核width精确恒为1/2；圆盘包含与端点支持另核。此处==改<=不改变合同域结果。|
+|M36|改选镜像活动弦只反转转向；A、K及左右墙反射对称，仍是有效临界逃逸；合同不要求唯一转向。|
+|M37|固定对称Q和K的左右支持余量逐项相等，重复右侧不改变结果；[精确事实](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/mutation_audit_02/equivalence_facts.json)核了180对支持，不授权推广到非对称域。|
+|M38|保留交点重合的零宽包络段只增加冗余表示；消费者集合去重切点，并在开区间重新取实际最小线，逐点包络与核验结果不变。|
+
+详见[六项等价边界](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/mutation_audit_02/equivalent_survivors.md)。没有其他存活项。
+
+### 11.3 最终验证与原样末行
+
+[targeted_02](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/targeted_02/summary.json)运行全部7个 `tests/test_t2d_*.py`，显式`--runslow`，随后运行未改全仓静态门；源字节全过程不变。原样末行：
+
+```text
+78 passed in 307.75s (0:05:07)
+exact construction AST gate: 0 violation(s)
+```
+
+最终新快档 [t2d_repair_fast_01](file:///D:/eab-evidence/reports/codex/T2d_evidence/t2d_repair_fast_01/summary.json) 为GREEN，10510节点，0failed／0skip，执行节点多重集合与收集相同；70个模块实际执行且缺失0。原样末行：
+
+```text
+10510 passed in 1843.71s (0:30:43)
+```
+
+完整第一轮targeted_01与mutation_audit保留为前一静态修订版的过程证据；最终只认targeted_02与mutation_audit_02，不拼接两轮结果。第二轮新增的是简单重绑定保守拒绝与11个反例，最终AST反例总数60。快档只跑本轮这一新run；按所有者裁定**不重跑全档**。所有者另行安排的新鲜树全档不是本代理运行，本报告不预签其结果；上轮§10中的验收安排是历史状态，本轮三路非作者通过仅按所有者已提供裁定记载。
+
+### 11.4 字节、归档与交付边界
+
+最终含慢定向与快档的2737成员源清单逐字节一致；原变异脚本复制的911成员中，908个源码／数据成员与该清单逐SHA一致，另3个是既有 `tools/__pycache__` 字节码（h1_execution_plugin、h1_module_coverage、m5c_publish_combined的cpython-312.pyc），不属于H1源码清单。911复制成员运行期间均无漂移，不把这3个缓存冒称源码。[跨运行源与要求审计](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/closure_checks.json)、[快档受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/t2d_repair_fast_01/tested_source.zip)（SHA256 `7ae06a42cdb201e93fa9b16f4e14ed3b076468febc7c7560a00974deb5682c89`）保存实际受测字节。这里仍是H1字节副本，`fresh_git_checkout=false`，不冒称新鲜Git树。快档结束后仅本报告和归档登记回填，代码不变。
+
+只改4个测试和2份报告／登记，0新增或删除仓内文件；其余2731文件与52d3b63锚点一致，671项旧外置成果及核查输入逐SHA未变，93份冻结证书未重算或改来源哈希。新／改仓内文件UTF8无BOM、LF；[只读／编码／净增审计](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/delivery/readonly_encoding_growth.json)给出精确净增字节（门限<5MB），[仓内SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/delivery/repository_manifest.json)、[全部本轮外置成果SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/delivery/artifact_manifest.json)按H1登记在[EVIDENCE_ARCHIVE](file:///D:/eab-wt/cx-e2/reports/EVIDENCE_ARCHIVE.md)。
+
+运行文本的原字节先封存，再提供LF展示：[本轮原文本ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/repair_original_text_bytes.zip)与[换行／哈希映射](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/repair_text_encoding_map.json)，快档另有原字节ZIP及映射；JSON语义和日志末行保持不变。日志记录中的原始raw_sha256仍指归档原字节，不为展示换行改写历史哈希。
+
+本轮无未闭合返修项。不改科学结论：方形N≥8的刚体阈值等号仍仅为猜想与括号；P1未开展不计PARTIAL。无commit、push或其他Git写操作。
+<!-- T2D_ACCEPTANCE_REPAIR_RESULTS_END -->
 
 T2D_DONE

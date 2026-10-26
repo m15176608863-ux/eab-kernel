@@ -414,3 +414,22 @@ Claude 提供 c8718bb 新鲜树构建/五层差分/全档15056绿及两路验收
 - 各轮原文本ZIP及换行映射保留原字节，不更改JSON语义或末行。fast的归档工具nullable-static错误单独保存作废尝试，修复后独立重归档；不是测试失败或重跑拼接。93份数学证书未重算、未改来源哈希；9份pytest实际几何回放与93份外置几何全审计的范围在报告中分列。
 
 **T2D_DONE**。方形N≥8等号仍为猜想；P1未开展不计PARTIAL，所有者新鲜树和独立对抗验收仍由所有者安排。
+
+### WO-T2d 验收返修（2026-10-26，基线52d3b63）
+
+所有者告知三路非作者核查通过，本轮只修8项测试与措辞小项；不改src、核验器、独立侧、精确辅助模块、定理稿、引理、三个分析器、policy或冻结证书，不commit，不重跑全档。最终结果将在本段后追加，旧记录及原SHA保留。
+
+- [中文报告“验收返修”](file:///D:/eab-wt/cx-e2/reports/codex/T2d_report.md)、[执行合同](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/work_contract.json)。开工干净 `52d3b631118f70750e6af355bd35ddd725e05df5`；[2737文件回退ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/baseline_anchor/source.zip)、[成员SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/baseline_anchor/manifest.json)及[671项既有外置证据SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/baseline_anchor/prior_external_manifest.json)。字节副本不冒充新鲜Git树。
+- 核查方只读输入：[原45项变异脚本](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_inputs_20261026b/mutate.py)、[原结果目录](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_inputs_20261026b/)。原脚本与变异替换字符串不改；本轮完整stdout和语义归类另存返修目录，不以非零退出码单独声称杀死缺陷。
+- 比较器补测为10896对、双向21792次精确比较，含Pell近零和跨域近等；[定向过程](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/values/summary_values_01.json)。最终含慢定向、静态与全仓快档末行、变异逐项理由及交付清单将在收尾追加。
+
+### WO-T2d 验收返修收尾补记
+
+上段待办已闭合，最终修订以 [targeted_02](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/targeted_02/summary.json)、[mutation_audit_02](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/mutation_audit_02/semantic_review.json) 和新 [t2d_repair_fast_01](file:///D:/eab-evidence/reports/codex/T2d_evidence/t2d_repair_fast_01/summary.json) 为准；第一轮过程保留，不拼接。
+
+- 含慢T2d定向及未改静态门原样末行：`78 passed in 307.75s (0:05:07)`、`exact construction AST gate: 0 violation(s)`。原45变异逐条精确替换，39/39非等价语义杀死，仅M15/M29/M33/M36/M37/M38等价存活，0环境／收集错误，逐项边界见[返修报告§11](file:///D:/eab-wt/cx-e2/reports/codex/T2d_report.md)。
+- 快档原样末行：`10510 passed in 1843.71s (0:30:43)`；GREEN、0failed／skip、收集与执行多重集合相同、70模块实际执行。2737成员[受测源码ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/t2d_repair_fast_01/tested_source.zip) SHA256 `7ae06a42cdb201e93fa9b16f4e14ed3b076468febc7c7560a00974deb5682c89`，源清单与最终定向相同；原变异脚本复制911成员，其中908源码／数据与H1清单逐SHA一致，3个既有tools/__pycache__字节码非H1源码，完整复制清单运行0漂移。结束后仅报告／登记回填；不是新鲜Git树。本轮遵裁定不重跑全档，不代签所有者另行新鲜树结果。
+- H1映射：[8项要求闭合](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/requirements.json)、[跨运行审计](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/closure_checks.json)、[仓内改动SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/delivery/repository_manifest.json)、[只读／编码／净增](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/delivery/readonly_encoding_growth.json)、[外置逐文件SHA](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/delivery/artifact_manifest.json)。仅4测试+2文档变动，0新增／删除，671项旧证据含93份冻结证书与核查输入原SHA不变；新准入0，三个原分析器和CRLF policy不变。
+- 60项AST内部反例、120个代表输出根及3项内部运行时浮点反例通过；补足简单名称重绑定保守拒绝，不声称任意Python输入的完整类型证明。新／改仓内文件UTF8无BOM/LF，原运行文本字节保存在[本轮文本ZIP](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/repair_original_text_bytes.zip)和[LF映射](file:///D:/eab-evidence/reports/codex/T2d_evidence/acceptance_repair_20261026/repair_text_encoding_map.json)，快档另行封存；原raw_sha256不改。
+
+**T2D_DONE**。无新增数学结论、无Git写；方形N≥8等号仍仅为猜想，P1未做不计PARTIAL。

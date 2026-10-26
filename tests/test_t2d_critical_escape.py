@@ -70,6 +70,14 @@ def test_t2d_disk_radius_numeric_mutation_is_rejected():
             escape.verify_critical_escape(16, "octagon")
 
 
+def test_t2d_disk_subset_rejects_a_tiny_positive_threshold_excess():
+    # The failure must be containment, not the later active-support equality.
+    for n, element in tuple(exact.TABLE):
+        delta = exact.family_values(n, element)["delta"] + F(1, 1 << 40)
+        with unittest.TestCase().assertRaisesRegex(AssertionError, "disk is not contained"):
+            escape.verify_disk_subset(n, element, delta)
+
+
 def test_t2d_upward_ray_geometry_mutation_is_rejected():
     original = exact.family_geometry
 

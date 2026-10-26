@@ -194,7 +194,7 @@ def test_t2d_replay_manifest_scope_provenance_and_no_same_delta_contradictions()
         critical = exact.family_values(row["N"], row["element"])["delta"]
         delta = rational(row["verified_delta"])
         assert row["production_valid"] and row["independent_valid"]
-        assert (delta < critical) if row["kind"] == "cage" else (delta > critical)
+        assert (delta < critical) if row["kind"] == "cage" else (delta > critical), "ledger proxy is on the wrong critical side"
     assert sum(row["kind"] == "cage" for row in ledger) == 36
     assert sum(row["kind"] == "escape" for row in ledger) == 57
 
@@ -202,6 +202,24 @@ def test_t2d_replay_manifest_scope_provenance_and_no_same_delta_contradictions()
 def test_t2d_frozen_identity_and_exact_directed_transfer():
     for row in read_index()["cases"]:
         verify_instance_identity(read_payload(row))
+
+
+def test_t2d_ledger_rejects_tiny_wrong_side_proxy_for_each_kind():
+    # Change the ledger INPUT, then invoke its actual direction assertion.
+    # The JSON scalar stays rational: enclose critical +/- 2^-40 at 96 bits
+    # and choose the endpoint farther into the wrong side. No float is used.
+    for kind, sign in (("cage", 1), ("escape", -1)):
+        index = copy.deepcopy(read_index())
+        row = next(item for item in index["complete_case_ledger"] if item["kind"] == kind)
+        critical = exact.family_values(row["N"], row["element"])["delta"]
+        epsilon = F(1, 1 << 40)
+        lower, upper = (critical + sign*epsilon).bounds(96)
+        wrong = upper if kind == "cage" else lower
+        assert epsilon <= sign*(wrong-critical) < 2*epsilon
+        row["verified_delta"] = str(wrong)
+        with patch(__name__ + ".read_index", return_value=index):
+            with unittest.TestCase().assertRaisesRegex(AssertionError, "ledger proxy is on the wrong critical side"):
+                test_t2d_replay_manifest_scope_provenance_and_no_same_delta_contradictions()
 
 
 def test_t2d_N4_cage_real_replay_and_translation(tmp_path):
